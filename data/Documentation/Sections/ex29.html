@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.9. Using new kinds of value in properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.11. Variations: arrays, logs, queues, stacks, sets, sieves and rings</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,115 +19,186 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Crane's Leg 1" -->
-<!-- SEARCH SECTION "Ex 53" -->
-<!-- SEARCH SORT "Ex 004-009-053" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc61.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc63.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.9. Using new kinds of value in properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "I Didn't Come All The Way From Great Portland Street" -->
+<!-- SEARCH SECTION "Ex 406" -->
+<!-- SEARCH SORT "Ex 020-011-406" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc349.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc351.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.11. Variations: arrays, logs, queues, stacks, sets, sieves and rings</b></font></td></tr></table>
 <p>
-<p>Having created a new kind of value called &quot;brightness&quot;, we are free to use it in the ordinary way like this:
+<p>Lists are highly adaptable, and many other collection-like constructions can be made using them. This section introduces no new material, but simply suggests some of the variations which are possible.
 <p>
-<blockquote><font color="#000080">The lantern has a brightness called the flame strength. The flame strength of the lantern is blazing.
+<p>1. The traditional computing term <b>array</b> means a list of values accessed by their entry numbers, often used in mathematical computations. The difference between an array and a list is mostly one of attitude, but usually arrays are fixed in length whereas lists can expand or contract.
+<p>
+<p>2. A <b>log</b> is a list which records the most recently arrived values, but does not allow itself to grow indefinitely. In the following, which remembers the seven most recently taken items, new values arrive at the end while old ones eventually disappear from the front:
+<p>
+<blockquote><font color="#000080">The most-recently-taken list is a list of objects that varies.
+<br>Carry out taking something (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the most-recently-taken list to the last 6 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the item to the most-recently-taken list.
+<br>After taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (So, your recent acquisitions: [most-recently-taken list].)&quot;
 </font></blockquote><p>
 <p>
-<p>The &quot;flame strength&quot; property is now only allowed to have one of four values we allowed: guttering light, weak light, radiant light or blazing light. Inform will not allow anything else to be put into it, or allow it to be compared to (say) the number 3.
+<p>Note that the most-recently-taken list begins play as the empty list, grows as the first few items are taken, but then stabilises at length 7 thereafter. If we need to remember recent history, but only <i>recent</i> history, then a log is better than a list which can grow indefinitely, because there is no risk of speed reduction or memory exhaustion in a very long game.
 <p>
-<p>However, it seems artificial to call the brightness of the lantern &quot;flame strength&quot;, when we could instead simply call it &quot;brightness&quot;, so we are also allowed this:
+<p>3. A <b>queue</b> is a list of values which are waiting for attention. New values join at the back, while those being dealt with are removed from the front (whereupon the whole queue moves up one). An empty queue means that nobody is waiting for attention: but there is, in principle, no upper limit to the size of a queue, as anyone who has tried to make a couchette reservation at Roma Termini will know.
 <p>
-<blockquote><font color="#000080">The lantern has a brightness. The lantern is blazing.
+<p>Queues typically form when two independent processes are at work, but going at different or variable speeds. An empty queue looks just like any other list:
+<p>
+<blockquote><font color="#000080">The queue is a list of objects that varies.
 </font></blockquote><p>
 <p>
-<p>New kinds of value are very convenient when substituting variations in text:
+<p>(Invariably people, in fact, but lists can only be of kinds of value: so, &quot;list of objects&quot;.) Once we identify a &quot;new customer&quot;, we can join him to the queue thus:
 <p>
-<blockquote><font color="#000080">A dead end is a kind of room with printed name &quot;Dead End&quot; and description &quot;This is a dead end, where crags in the uneven rock are caught by the [brightness of the lantern] flame you hold aloft. Despite [river sound] there is no sign of the stream.&quot; A dead end is usually dark.
+<blockquote><font color="#000080">add the new customer to the queue;
 </font></blockquote><p>
 <p>
-<p>The &quot;brightness of the lantern&quot; in square brackets is printed not as literal text, but as whatever the brightness currently is. (This is called a text substitution, and will be the subject of the next chapter.) If the brightness had been a number from 1 to 4, this would have resulted in something like &quot;... by the 3 flame...&quot;, but since it is a new kind of value, the result is &quot;... by the radiant flame...&quot;
+<p>The process of serving the customers needs to make sure there is actually somebody waiting in the queue before it does anything:
 <p>
-<a href=doc67.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Text with substitutions</b></font></a><i> for more on varying what is printed</i><p><p>
+<blockquote><font color="#000080">Every turn when the number of entries in the queue is not 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next customer be entry 1 of the queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The next customer] is served and leaves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the queue.
+</font></blockquote><p>
+<p>
+<p>Of course queues can also be constructed which empty from other positions, rather than the front: or we could make what computer scientists sometimes call a <b>deque</b>, a &quot;double-ended queue&quot; where new values arrive at both ends.
+<p>
+<p>4. A <b>stack</b> is like a queue except that values arrive at, and are removed from, the same end. Stacks are slightly faster if the active end is the back rather than the front, though this will only be noticeable if they grow quite large.
+<p>
+<p>To put a value V onto a stack S (which is known as &quot;pushing&quot;) is simple:
+<p>
+<blockquote><font color="#000080">add V to S;
+</font></blockquote><p>
+<p>
+<p>And to remove a value from the top of the stack (which is known as &quot;pulling&quot;):
+<p>
+<blockquote><font color="#000080">let N be the number of entries in S;
+<br>let V be entry N of S;
+<br>remove entry N of S;
+</font></blockquote><p>
+<p>
+<p>Note that the middle line, accessing entry N, will fail if N = 0, that is, if the stack is empty: Inform's list routines will produce a run-time problem message.
+<p>
+<p>Stacks are useful if some long-term process is constantly being interrupted by newer and more urgent demands, but they can also be used in planning. If a character has a long-term goal, which needs various short-term goals to be achieved along the way, then a stack can represent the goals currently being pursued. The top of the stack represents what the character is trying to achieve now. If the character realises that it needs to achieve something else first, we put that new goal onto the top of the stack, and it becomes the new current goal. When the character completes a task, it can be removed, and we can go back to trying to finish whatever is now on top. When the stack is empty, the character has achieved the original goal.
+<p>
+<p>5. Notoriously, <b>set</b> has 464 distinct meanings in the Oxford English Dictionary, making it the single most ambiguous word in the language. Here we mean not the home of a badger or the Egyptian god of the desert, but the mathematical sense: a collection of values (sometimes called &quot;elements&quot;) without duplicates, and which is normally written in brace notation and in some natural order for the reader's convenience.
+<p>
+<p>The trick here is to maintain the principle that, at all times, our list is sorted in order and contains no duplicates. To provide an example, we start with two sets of numbers:
+<p>
+<blockquote><font color="#000080">let S be {2, 4, 8, 16, 32, 64};
+<br>let T be {2, 4, 6, 10};
+</font></blockquote><p>
+<p>
+<p>Here we add an element to T:
+<p>
+<blockquote><font color="#000080">add 8 to T, if absent; sort T;
+</font></blockquote><p>
+<p>
+<p>The &quot;if absent&quot; clause ensures that no duplicate can occur, and by sorting T afterwards, we maintain the principle that a set must remain in order - so T is now {2, 4, 6, 8, 10}, not {2, 4, 6, 10, 8}. (Inform's sorting algorithm is fast on nearly-sorted lists, so frequent sorting is not as inefficient as it might look.)
+<p>
+<p>We next take the union of T and S, that is, the set containing everything which is in either or both:
+<p>
+<blockquote><font color="#000080">let U be S; add T to U, if absent; sort U;
+</font></blockquote><p>
+<p>
+<p>This makes U = {2, 4, 6, 8, 10, 16, 32, 64}, and once again no duplicates occur and we preserve the sorting. The intersection of T and S, the set of elements in both of them, is a little trickier:
+<p>
+<blockquote><font color="#000080">let I be T;
+<br>repeat with the element running through T:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the element is not listed in S, remove the element from I.
+</font></blockquote><p>
+<p>
+<p>(Faster methods could be devised which exploit the sortedness of T and S, but are not worth it for shortish lists.) This produces I = {2, 4, 8}. Lastly, we can form the set difference, consisting of those elements which are in S but not in T:
+<p>
+<blockquote><font color="#000080">let D be S; remove T from D, if present;
+</font></blockquote><p>
+<p>
+<p>Here, as with intersection, since all we do is to strike out unwanted elements, the surviving ones remain in order and there is no need to sort when we are finished. This produces D = {16, 32, 64}.
+<p>
+<p>6. A <b>sieve</b> is used to make a complicated choice where there are many constraints, by ruling out impossible cases to see what is left. The term derives from the kitchen utensil (for sieving fine grains of flour), but via the name of the &quot;sieve of Eratosthenes&quot;, an ancient Greek method for determining the prime numbers.
+<p>
+<p>Using a sieve is much like using a set, and the difference is mainly one of outlook - we are interested in what does not belong, rather than what does.
+<p>
+<p>7. A <b>ring</b> is not so much a row of values, more a circle, with the last and first entries thought of as adjacent. One position is usually thought of as special, and is the place where new items are added: this may as well be entry 1. For instance, to add &quot;new item&quot; to the ring:
+<p>
+<blockquote><font color="#000080">add the item at entry 1 in the ring;
+</font></blockquote><p>
+<p>
+<p>To set &quot;item&quot; to the frontmost value and extract it from the ring:
+<p>
+<blockquote><font color="#000080">let the item be entry 1 of the ring;
+<br>remove entry 1 from the ring;
+</font></blockquote><p>
+<p>
+<p>And we can rotate the ring in either direction, making a different entry the new entry 1 and therefore the new frontmost value:
+<p>
+<blockquote><font color="#000080">rotate the ring;
+<br>rotate the ring backwards;
+</font></blockquote><p>
+<p>
 <p><hr><p>
-<a name="e279"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex279.html#e279 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>51</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex279.html#e279 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Undertomb</font></b></a><br>A small map of dead ends, in which the sound of an underground river has different strengths in different caves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex279.html#e279 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e135"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex135.html#e135 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>52</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex135.html#e135 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Signs and Portents</font></b></a><br>Signpost that points to various destinations, depending on how the player has turned it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex135.html#e135 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e29"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc62.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>53</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc62.html#e29 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">The Crane's Leg 1</font></b></a><br>A description text that automatically highlights the ways in which the object differs from a standard member of its kind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex29.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e29"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc350.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>406</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc350.html#e29 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> I Didn't Come All The Way From Great Portland Street</font></b></a><br>In this fiendishly difficult puzzle, which may perhaps owe some inspiration to a certain BBC Radio panel game (1967-), a list is used as a set of actions to help enforce the rule that the player must keep going for ten turns without hesitation, repetition, or deviating from the subject on the card.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex29.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<blockquote><font color="#000080">When you see a long object, you don't have to think that it is too long if being long is the property given by the nature. It is proved by the fact that a duckling, having short legs, will cry if you try to draw them out by force, and that a crane, having long legs, will protest you with tears if you try to cut them with a knife. -- Zhuangzi
+<p>There is very little to this, in fact. The tricky rule to enforce is Repetition: the player is forbidden to repeat any previously tried action. We keep track of this by keeping a set of past actions, which for want of a better term is called the &quot;tally&quot;. All we need to do is:
+<p>
+<blockquote><font color="#000080">if the current action is listed in the tally, challenge for &quot;Repetition of [the current action]!&quot;;
+<br>otherwise add the current action to the tally.
 </font></blockquote><p>
 <p>
-<p>Suppose we have an extremely detailed world model in which every object is characterized by many features -- in this example, material and height, though one could add more. Suppose further that we would like to generate descriptions of these things automatically for the most part, drawing the player's attention only to those aspects of the object that are particularly interesting.
+<p>Note that the tally can never contain duplicates, and that when, at the end of the round, we print it out, we sort it first - this makes a more natural-looking sentence. (Sorting a list of actions uses the natural order for actions: compare the sequence on the Actions page of the Index.) The full text, then, is:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode146(code) {
+function pasteCode505(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]The Crane[=0x0027=]s Leg[=0x0022=][=0x000A=][=0x000A=]Material is a kind of value. The materials are wood, glass, stone, cloth, paper, clay, and metal. A thing has a material.[=0x000A=][=0x000A=]A height is a kind of value. 3 feet 11 inches specifies a height. A thing has a height. Definition: a thing is tall if its height is 6 feet 0 inches or more. Definition: a thing is short if its height is 2 feet 0 inches or less.[=0x000A=][=0x000A=][So far, we have generally dealt with cases where the property of a thing can be a number (such as 3), a value (such as brightness), or a unit (like height, here). It is also possible for a thing to have a property which names another thing, as in [=0x0022=]The mother of the baby trout is the large trout[=0x0022=] -- where [=0x0022=]mother[=0x0022=] is a property, and its value, in the case of the baby trout, is large trout. We would define such a property with a line such as [=0x0022=]A fish has a thing called the mother.[=0x0022=]][=0x000A=][=0x000A=][In practice, though, this is a bit confusing as syntax; moreover, Inform has a much more powerful construct for talking about the ways in which one object relates to another object. A full discussion of this will have to wait for the chapter on Relations. For now, it is enough to say that we can do this:][=0x000A=][=0x000A=]Imitation relates various things to one thing (called the ideal). The verb to imitate (it imitates, they imitate, it is imitating) implies the imitation relation.[=0x000A=][=0x000A=][This will allow us to declare that some objects imitate other objects, like so:][=0x000A=][=0x000A=]A chair is a kind of supporter. A chair is always enterable. A chair is usually wood. The height of a chair is usually 4 feet 0 inches. The ordinary chair is a chair. Every chair imitates the ordinary chair.[=0x000A=][=0x000A=]A table is a kind of supporter. A table is usually wood. The height of a table is usually 3 feet 8 inches. The ordinary table is a table. Every table imitates the ordinary table.[=0x000A=][=0x000A=]A rock is a kind of thing. A rock is usually stone. The ordinary rock is a rock. Every rock imitates the ordinary rock. The height of a rock is usually 0 feet 3 inches.[=0x000A=][=0x000A=]A jug is a kind of container. A jug is usually clay. The ordinary jug is a jug. Every jug imitates the ordinary jug. The height of a jug is usually 0 feet 8 inches.[=0x000A=][=0x000A=][Now each of these types has one ideal representative which has the fundamental attributes of its kind: the ordinary chair is the most chairlike chair imaginable, the ordinary table is the epitome of tableness, and so on. We are also allowed to refer to [=0x0022=]the ideal of the chair[=0x0022=], thanks to the way we defined imitation. (Again, the relations chapter offers a much more detailed explanation of how relations may be defined.)][=0x000A=][=0x000A=]The description of a thing is usually [=0x0022=][comparison with ideal][run paragraph on][=0x0022=].[=0x000A=][=0x000A=]To say comparison with ideal:[=0x000A=][=0x0009=]let the sample be the ideal of the noun;[=0x000A=][=0x0009=]if the sample is not a thing:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Perfectly conforming to your expectations of its type.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=]if the material of the noun is not the material of the sample:[=0x000A=][=0x0009=][=0x0009=]if the height of the noun is not the height of the sample:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the noun is shorter than the sample, say [=0x0022=]Unusually short at [height of the noun], and made of [material of the noun].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise say [=0x0022=]Unusually tall at [height of the noun], and made of [material of the noun].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]Distinct mostly in being made of [material of the noun].[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]if the height of the noun is not the height of the sample:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the noun is shorter than the sample, say [=0x0022=]Unusually short at [height of the noun].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise say [=0x0022=]Unusually tall at [height of the noun].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]In every respect [a sample].[=0x0022=][=0x000A=][=0x000A=]The Pleasure Garden is a room. [=0x0022=]At the riverbank, a pleasing garden, having many curving paths and one straight.[=0x0022=][=0x000A=][=0x000A=]The low table is a table in the Pleasure Garden. The height of the low table is 2 feet 3 inches. On the low table is a metal rock called a gold nugget.[=0x000A=][=0x000A=]Test me with [=0x0022=]x table / x nugget[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]I Didn[=0x0027=]t Come All The Way From Great Portland Street[=0x0022=][=0x000A=][=0x000A=]The Paris Theatre is a room. An instrument is a kind of thing. The violin, the tuba, the xylophone and the triangle are instruments. The violin is inside the case. The tuba, the xylophone, the radish, the case, the bust of Nicholas Parsons, the purple felt hat and the triangle are in the Paris Theatre.[=0x000A=][=0x000A=]The Round is a scene. The Round begins when play begins. The Round ends when the turn count is 10.[=0x000A=][=0x000A=]The tally is a list of stored actions that varies.[=0x000A=][=0x000A=]When the Round begins:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]And the subject on the card is... musical instruments. Will you carry out for us something to do with that, please, for ten turns starting - now![=0x0027=][=0x0022=][=0x000A=][=0x000A=]When the Round ends:[=0x000A=][=0x0009=]sort the tally;[=0x000A=][=0x0009=]say [=0x0022=]Phweeep![paragraph break][=0x0027=]So, when the whistle goes ten turns are up, you get a point for acting when the whistle blows, and in that round you entertained us by [the tally], and you also get a bonus point for keeping going until the whistle went.[=0x0027=][=0x0022=];[=0x000A=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]To challenge for (infraction - text):[=0x000A=][=0x0009=]say [=0x0022=]Bzzzzt! [=0x0027=]And [one of]Clement Freud[or]Derek Nimmo[or]Kenneth Williams[or]Peter Jones[at random] has challenged.[=0x0027=][paragraph break][=0x0027=][infraction][=0x0027=][paragraph break][=0x0027=]Well, as it[=0x0027=]s your first time playing the game, and the audience was enjoying your contribution so much, I will disallow the challenge, you have [10 minus the turn count] turn[s] left on musical instruments, starting... now![=0x0022=][=0x000A=][=0x000A=]Before doing something:[=0x000A=][=0x0009=]if the current action is listed in the tally, challenge for [=0x0022=]Repetition of [the current action]![=0x0022=];[=0x000A=][=0x0009=]otherwise add the current action to the tally;[=0x000A=][=0x0009=]if waiting, challenge for [=0x0022=]Hesitation![=0x0022=];[=0x000A=][=0x0009=]if not looking and not waiting and the noun is not an instrument and the second noun is not an instrument, challenge for [=0x0022=]Deviation![=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look / wait / examine bust / take tuba / put radish in tuba / get triangle / hit xylophone / get tuba / examine tuba / get violin[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode146()"><img border=0 src=../doc_images/paste.png></a> &quot;The Crane's Leg&quot;
+<a href="javascript:pasteCode505()"><img border=0 src=../doc_images/paste.png></a> &quot;I Didn't Come All The Way From Great Portland Street&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Material is a kind of value. The materials are wood, glass, stone, cloth, paper, clay, and metal. A thing has a material.
+<blockquote><font color="#000080">The Paris Theatre is a room. An instrument is a kind of thing. The violin, the tuba, the xylophone and the triangle are instruments. The violin is inside the case. The tuba, the xylophone, the radish, the case, the bust of Nicholas Parsons, the purple felt hat and the triangle are in the Paris Theatre.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A height is a kind of value. 3 feet 11 inches specifies a height. A thing has a height. Definition: a thing is tall if its height is 6 feet 0 inches or more. Definition: a thing is short if its height is 2 feet 0 inches or less.
+<blockquote><font color="#000080">The Round is a scene. The Round begins when play begins. The Round ends when the turn count is 10.
 </font></blockquote><p>
 <p>
-<p>So far, we have generally dealt with cases where the property of a thing can be a number (such as 3), a value (such as brightness), or a unit (like height, here). It is also possible for a thing to have a property which names another thing, as in &quot;The mother of the baby trout is the large trout&quot; -- where &quot;mother&quot; is a property, and its value, in the case of the baby trout, is large trout. We would define such a property with a line such as &quot;A fish has a thing called the mother.&quot;
-<p>
-<p>In practice, though, this is a bit confusing as syntax; moreover, Inform has a much more powerful construct for talking about the ways in which one object relates to another object. A full discussion of this will have to wait for the chapter on Relations. For now, it is enough to say that we can do this:
-<p>
-<blockquote><font color="#000080">Imitation relates various things to one thing (called the ideal). The verb to imitate (it imitates, they imitate, it is imitating) implies the imitation relation.
+<blockquote><font color="#000080">The tally is a list of stored actions that varies.
 </font></blockquote><p>
 <p>
-<p>This will allow us to declare that some objects imitate other objects, like so:
-<p>
-<blockquote><font color="#000080">A chair is a kind of supporter. A chair is always enterable. A chair is usually wood. The height of a chair is usually 4 feet 0 inches. The ordinary chair is a chair. Every chair imitates the ordinary chair.
+<blockquote><font color="#000080">When the Round begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'And the subject on the card is... musical instruments. Will you carry out for us something to do with that, please, for ten turns starting - now!'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A table is a kind of supporter. A table is usually wood. The height of a table is usually 3 feet 8 inches. The ordinary table is a table. Every table imitates the ordinary table.
+<blockquote><font color="#000080">When the Round ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the tally;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Phweeep![paragraph break]'So, when the whistle goes ten turns are up, you get a point for acting when the whistle blows, and in that round you entertained us by [the tally], and you also get a bonus point for keeping going until the whistle went.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A rock is a kind of thing. A rock is usually stone. The ordinary rock is a rock. Every rock imitates the ordinary rock. The height of a rock is usually 0 feet 3 inches.
+<blockquote><font color="#000080">To challenge for (infraction - text):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Bzzzzt! 'And [one of]Clement Freud[or]Derek Nimmo[or]Kenneth Williams[or]Peter Jones[at random] has challenged.'[paragraph break]'[infraction]'[paragraph break]'Well, as it's your first time playing the game, and the audience was enjoying your contribution so much, I will disallow the challenge, you have [10 minus the turn count] turn[s] left on musical instruments, starting... now!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A jug is a kind of container. A jug is usually clay. The ordinary jug is a jug. Every jug imitates the ordinary jug. The height of a jug is usually 0 feet 8 inches.
+<blockquote><font color="#000080">Before doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current action is listed in the tally, challenge for &quot;Repetition of [the current action]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise add the current action to the tally;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if waiting, challenge for &quot;Hesitation!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if not looking and not waiting and the noun is not an instrument and the second noun is not an instrument, challenge for &quot;Deviation!&quot;.
 </font></blockquote><p>
 <p>
-<p>Now each of these types has one ideal representative which has the fundamental attributes of its kind: the ordinary chair is the most chairlike chair imaginable, the ordinary table is the epitome of tableness, and so on. We are also allowed to refer to &quot;the ideal of the chair&quot;, thanks to the way we defined imitation. (Again, the relations chapter offers a much more detailed explanation of how relations may be defined.)
-<p>
-<blockquote><font color="#000080">The description of a thing is usually &quot;[comparison with ideal][run paragraph on]&quot;.
+<blockquote><font color="#000080">Test me with &quot;look / wait / examine bust / take tuba / put radish in tuba / get triangle / hit xylophone / get tuba / examine tuba / get violin&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say comparison with ideal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the sample be the ideal of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the sample is not a thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Perfectly conforming to your expectations of its type.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the material of the noun is not the material of the sample:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the height of the noun is not the height of the sample:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun is shorter than the sample, say &quot;Unusually short at [height of the noun], and made of [material of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Unusually tall at [height of the noun], and made of [material of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Distinct mostly in being made of [material of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the height of the noun is not the height of the sample:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun is shorter than the sample, say &quot;Unusually short at [height of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Unusually tall at [height of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;In every respect [a sample].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Pleasure Garden is a room. &quot;At the riverbank, a pleasing garden, having many curving paths and one straight.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The low table is a table in the Pleasure Garden. The height of the low table is 2 feet 3 inches. On the low table is a metal rock called a gold nugget.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x table / x nugget&quot;.
-</font></blockquote><p>
-<p>
-<p>So far the effect is not very deep, but we could take the auto-description a great deal further: providing a larger and more interesting set of variations; or writing a complicated set of rules such that the player only notices height variations when carrying a ruler; or switching between several player-characters, each of whom notices a different subset of characteristics. But these refinements would require more input from later chapters.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc62.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>(The Paris Theatre in Lower Regent Street, London, was for many years the home of BBC radio panel games.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc350.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc63.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>407</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex293.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Circle of Misery</font></b></a><br>Retrieving items from an airport luggage carousel is such fun, how can we resist simulating it, using a list as a ring buffer?<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e344"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>408</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex344.html#e344 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fibonacci Sequence</font></b></a><br>The modest Leonardo Fibonacci of Pisa will be only too happy to construct his sequence on request, using an array.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>409</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex354.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e57"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>410</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex57.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lugubrious Pete's Delicatessen</font></b></a><br>In this evocation of supermarket deli counter life, a list is used as a queue to keep track of who is waiting to be served.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e91"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex91.html#e91 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>411</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex91.html#e91 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sieve of Eratosthenes</font></b></a><br>The haughty Eratosthenes of Cyrene will nevertheless consent to sieve prime numbers on request.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex91.html#e91 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e96"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>412</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex96.html#e96 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Eyes, Fingers, Toes</font></b></a><br>A safe with a multi-number combination, meant to be dialed over multiple turns, is implemented using a log of the last three numbers dialed. The log can then be compared to the safe's correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc349.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc351.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

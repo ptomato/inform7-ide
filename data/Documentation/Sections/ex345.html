@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.28. To say one of</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.3. Pattern matching</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,101 +19,112 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Blink" -->
-<!-- SEARCH SECTION "Ex 418" -->
-<!-- SEARCH SORT "Ex 024-028-418" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc421.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc423.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.28. To say one of</b></font></td></tr></table>
+<!-- SEARCH TITLE "Ahem" -->
+<!-- SEARCH SECTION "Ex 165" -->
+<!-- SEARCH SORT "Ex 011-003-165" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc161.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc163.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.3. Pattern matching</b></font></td></tr></table>
 <p>
-<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
+<p>The following phrases all use different wording from each other:
 <p>
-<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
-<p>
-<blockquote><font color="#000080">To say one of -- beginning say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
-<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
-<br>To say or -- continuing say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
-<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<blockquote><font color="#000080">award 2 points
+<br>award 8 points
+<br>award 30 points
 </font></blockquote><p>
 <p>
-<p>The 3rd invocation of this (say) might compile the following:
+<p>but they have the same meaning, with only one detail being different between them. A single definition (internal to Inform, since &quot;award ... points&quot; comes built in) covers these and all similar cases. It is written like so:
 <p>
-<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
-<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
-<br>}
+<blockquote><font color="#000080">To award (some - a number) points: ...
 </font></blockquote><p>
 <p>
-<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
+<p>This pattern of words matches the text &quot;award 4 points&quot;, and indeed &quot;award four points&quot;, but not
 <p>
-<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
-<p>
-<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
+<blockquote><font color="#000080">award &quot;blue cheese&quot; points;
 </font></blockquote><p>
 <p>
-<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
+<p>which results in the following error:
 <p>
-<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
+<blockquote><font color="#000080"><b>Problem.</b> You wrote 'award &quot;blue cheese&quot; points' <img border=0 src=../doc_images/Reveal.png>, but '&quot;blue cheese&quot;' seems to be some text, whereas I was expecting to find a number there.
+</font></blockquote><p>
 <p>
-<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
+<p>The number does not need to be a literal constant such as 52, but can be anything which works out to be a number: the name of a number variable, for instance.
+<p>
+<p>The bracketed part of the definition takes the form (name - what it is). The definition only applies if the text supplied agrees with the &quot;what it is&quot; part - for instance, 8 agreed with being a number, but &quot;blue cheese&quot; did not. If the definition does apply, then the name holds whatever value was supplied. For instance:
+<p>
+<blockquote><font color="#000080">To slam shut (box - an open container): say &quot;With great panache, you slam shut [the box].&quot;
+</font></blockquote><p>
+<p>
+<p>The &quot;what it is&quot; will usually be a description of some objects, or the name of a kind of value, but it is also allowed to give a specific value. For instance, we could define:
+<p>
+<blockquote><font color="#000080">To award (some - 13) points: say &quot;You shiver uncontrollably.&quot;
+</font></blockquote><p>
+<p>
+<p>which would withhold this unlucky bounty, applying only to that one case. (As elsewhere in Inform, more specific definitions take priority over more general ones, so &quot;award (some - 13) points&quot; takes priority over &quot;award (some - a number) points&quot;.)
+<p>
+<p>Sometimes it will not be possible to tell if the value supplied meets the requirements until the game is actually playing. If, at run-time, no definition fits some phrase which has to be carried out, a run-time problem message is produced.
+<p>
+<p>Finally, and more straightforwardly, we can specify variations in wording using slashes between alternative words in a &quot;To ...&quot; definition. For instance:
+<p>
+<blockquote><font color="#000080">To award (some - a number) point/points: ...
+</font></blockquote><p>
+<p>
+<p>allows the final word to be either &quot;point&quot; or &quot;points&quot;. Slashes like this can only be used with literal words (not bracketed values) and give alternative forms only of a single word at a time. (If we need more variation than that, we should make more than one definition.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc422.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>418</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc422.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc162.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>165</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc162.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ahem</font></b></a><br>Writing a phrase, with several variant forms, whose function is to follow a rule several times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we are writing a game in which the mood of the piece changes, and we would like to have lots of descriptions that vary according to its current state. We might in that case want to create our own &quot;by atmosphere&quot; token, to control text variations, like this:
+<p>As we see in the example here, it is possible to use slashed variations in more than one place in a phrase, and to offer a number of separate forms. The main rule of thumb to remember is that value inputs for the phrase should always be separated by some text; so
+<p>
+<blockquote><font color="#000080">To do/follow (chosen rule - a rule) exactly/precisely/just/-- (N - a number) time/times:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;....
+</font></blockquote><p>
+<p>
+<p>would cause a problem when we tried to call it with
+<p>
+<blockquote><font color="#000080">follow the throat-clearing rule 2 times.
+</font></blockquote><p>
+<p>
+<p>In general, we probably don't need to make our phrase definitions quite so flexible as this, but it's a good idea to account for &quot;a&quot; vs. &quot;the&quot;, and for the possibility of using singular and plural forms, especially when writing extensions or other source to be shared.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode517(code) {
+function pasteCode264(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Blink[=0x0022=][=0x000A=][=0x000A=]Atmosphere is a kind of value. The atmospheres are normal, melancholy, and creepy.[=0x000A=][=0x000A=]The current atmosphere is an atmosphere that varies.[=0x000A=][=0x000A=]To say by atmosphere -- ending say_one_of with marker I7_SOO_ATM:[=0x000A=][=0x0009=](- {-close-brace} -).[=0x000A=][=0x000A=][Since we[=0x0027=]re operating within the untyped Inform 6, we can make use of the fact that kinds of value are (internally) just constants, enumerated in the same order in which they were originally defined. In other words, [=0x0022=]normal[=0x0022=] at the I6 level translates to 1, [=0x0022=]melancholy[=0x0022=] to 2, and [=0x0022=]creepy[=0x0022=] to 3; so we can return the value of the current atmosphere, and thereby select option 1, 2, or 3:][=0x000A=][=0x000A=]Include (-[=0x000A=][ I7_SOO_ATM oldval count;[=0x000A=][=0x0009=]if (count [=0x003C=] (+ current atmosphere +)) return count;[=0x000A=][=0x0009=]return (+ current atmosphere +); ];[=0x000A=]-)[=0x000A=][=0x000A=][And that concludes the hard part. Now to test that it works:][=0x000A=][=0x000A=]The Flat is a room. [=0x0022=]A small [one of]but cozy[or]depressing[or]imprisoning[by atmosphere] flat. Outside the window, the sun is [one of][or][or]apparently [by atmosphere]shining and there is a brisk breeze through the leaves of the birch trees. [one of]It would be quite nice weather for a walk[or]The rest of the world apparently has no appreciation of what you suffer[or]It all looks deceptively normal[by atmosphere].[=0x0022=][=0x000A=][=0x000A=]Instead of waiting when the current atmosphere is normal:[=0x000A=][=0x0009=]say [=0x0022=]Everything stretches wide and flat for just a moment, as though all the world around you were painted on a thin rubber sheet that is being [italic type]stretched[roman type]. Then it snaps back into place, leaving your ears ringing. But that little glitch was enough to warn you. Someone is tampering with space-time again. Someone very close by.[=0x0022=];[=0x000A=][=0x0009=]now the current atmosphere is creepy.[=0x000A=][=0x000A=]Test me with [=0x0022=]look / z / look[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Ahem[=0x0022=][=0x000A=][=0x000A=]To do/follow (chosen rule - a rule) exactly/precisely/just (N - a number) time/times:[=0x000A=][=0x0009=]repeat with index running from 1 to N:[=0x000A=][=0x0009=][=0x0009=]follow chosen rule.[=0x000A=][=0x000A=]This is the throat-clearing rule:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Ahem,[=0x0027=] says [a random visible person who is not the player].[=0x0022=][=0x000A=][=0x000A=]After waiting:[=0x000A=][=0x0009=]do the throat-clearing rule just one time.[=0x000A=][=0x000A=]Instead of listening:[=0x000A=][=0x0009=]follow the throat-clearing rule precisely three times.[=0x000A=][=0x000A=]Instead of smelling:[=0x000A=][=0x0009=]follow the throat-clearing rule exactly 2 times.[=0x000A=][=0x000A=]Chateau Marmont is a room. Tom, Jack, Zsa-Zsa, and Wilma-Faye are people in the Chateau. Zsa-Zsa and Wilma-Faye are women.[=0x000A=][=0x000A=]Test me with [=0x0022=]wait / smell / listen[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode517()"><img border=0 src=../doc_images/paste.png></a> &quot;Blink&quot;
+<a href="javascript:pasteCode264()"><img border=0 src=../doc_images/paste.png></a>  &quot;Ahem&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Atmosphere is a kind of value. The atmospheres are normal, melancholy, and creepy.
+<blockquote><font color="#000080">To do/follow (chosen rule - a rule) exactly/precisely/just (N - a number) time/times:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with index running from 1 to N:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow chosen rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The current atmosphere is an atmosphere that varies.
+<blockquote><font color="#000080">This is the throat-clearing rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Ahem,' says [a random visible person who is not the player].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say by atmosphere -- ending say_one_of with marker I7_SOO_ATM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<blockquote><font color="#000080">After waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;do the throat-clearing rule just one time.
 </font></blockquote><p>
 <p>
-<p>Since we're operating within the untyped Inform 6, we can make use of the fact that kinds of value are (internally) just constants, enumerated in the same order in which they were originally defined. In other words, &quot;normal&quot; at the I6 level translates to 1, &quot;melancholy&quot; to 2, and &quot;creepy&quot; to 3; so we can return the value of the current atmosphere, and thereby select option 1, 2, or 3:
-<p>
-<blockquote><font color="#000080">Include (-
-<br>[ I7_SOO_ATM oldval count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if (count < (+ current atmosphere +)) return count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;return (+ current atmosphere +); ];
-<br>-)
+<blockquote><font color="#000080">Instead of listening:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the throat-clearing rule precisely three times.
 </font></blockquote><p>
 <p>
-<p>And that concludes the hard part. Now to test that it works:
-<p>
-<blockquote><font color="#000080">The Flat is a room. &quot;A small [one of]but cozy[or]depressing[or]imprisoning[by atmosphere] flat. Outside the window, the sun is [one of][or][or]apparently [by atmosphere]shining and there is a brisk breeze through the leaves of the birch trees. [one of]It would be quite nice weather for a walk[or]The rest of the world apparently has no appreciation of what you suffer[or]It all looks deceptively normal[by atmosphere].&quot;
+<blockquote><font color="#000080">Instead of smelling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the throat-clearing rule exactly 2 times.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waiting when the current atmosphere is normal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Everything stretches wide and flat for just a moment, as though all the world around you were painted on a thin rubber sheet that is being [italic type]stretched[roman type]. Then it snaps back into place, leaving your ears ringing. But that little glitch was enough to warn you. Someone is tampering with space-time again. Someone very close by.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the current atmosphere is creepy.
+<blockquote><font color="#000080">Chateau Marmont is a room. Tom, Jack, Zsa-Zsa, and Wilma-Faye are people in the Chateau. Zsa-Zsa and Wilma-Faye are women.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / z / look&quot;.
+<blockquote><font color="#000080">Test me with &quot;wait / smell / listen&quot;.
 </font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc422.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc162.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e381"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex381.html#e381 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>419</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex381.html#e381 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex381.html#e381 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc421.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc423.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e145"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex145.html#e145 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>166</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex145.html#e145 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ferragamo Again</font></b></a><br>Using the same phrase to produce different results with different characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex145.html#e145 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc163.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.2. How actions are processed</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.20. Ambiguities</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,21 +19,24 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "How actions are processed" -->
-<!-- SEARCH SECTION "12.2" -->
-<!-- SEARCH SORT "012-002-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc178.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc180.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.2. How actions are processed</b></font></td></tr></table>
+<!-- SEARCH TITLE "Ambiguities" -->
+<!-- SEARCH SECTION "11.20" -->
+<!-- SEARCH SORT "011-020-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc178.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc180.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.20. Ambiguities</b></font></td></tr></table>
 <p>
-<p>The following flow chart shows the natural course of events when Inform deals with a new action - a &quot;taking&quot; action in the case drawn. For quite a long time, the action may still fail, and it may be that nothing actually happens: but eventually a deciding line is crossed, and once that happens the action will certainly succeed.
+<p>Another possible ambiguity occurs when a phrase might match two lexically different possibilities using the same words.
 <p>
-<p><img border=0 src=../doc_images/achart.png>
+<blockquote><font color="#000080">say the dishcloth;
+</font></blockquote><p>
 <p>
-<p>The coloured boxes on this chart represent &quot;rulebooks&quot;, that is, collections of rules with a common purpose. The orange boxes for Before, Instead and After were covered in the Basic Actions chapter, but the blue boxes are new. The orange boxes are where we put rules to handle unusual situations, or unexpected events: special rules to cover the opening of a container which happens to be booby-trapped, or walking through a doorway into a room where a surprise party is about to be sprung.
+<p>could be construed as a usage of either of these cases:
 <p>
-<p>Blue boxes hold the mundane, everyday rules - the generic ways that particular actions behave. Every action provides these: &quot;Check&quot; rules, to see if it makes sense - for instance, to see that the player is not trying to take his or her own body, or a whole room, or something he or she already has; then &quot;Carry out&quot; rules, to actually do what the action is supposed to do - in the case of taking, to move an object into the player's possession; and finally &quot;Report&quot; rules, which tell the player what has happened - perhaps printing up &quot;Taken.&quot;
+<blockquote><font color="#000080">say the (something - a thing)
+<br>say (something - a thing)
+</font></blockquote><p>
 <p>
-<p>When we create a new action, we add a new column to the blue rows in this diagram. As we shall see, we can also put new rules into the existing blue boxes: for instance, if we wanted to increase physical realism by forbidding the player to carry more than a certain weight, we would want to add a new &quot;check taking&quot; rule, and this is entirely legal.
+<p>These of course have different effects - one produces the name with a definite article, the other just the name, so the difference is important.
 <p>
-<p>In subsequent chapters, we will see ways to intervene at almost every point in the above diagram - from how &quot;Can we see or touch things?&quot; is reckoned, to each and every individual rule in all of these books. Action-processing may be the single most important thing Inform does, so the system is designed to be immensely flexible. On the other hand, that does make it a lot to take in at one look. Newcomers should probably concentrate on &quot;Instead&quot; and &quot;After&quot; as the basic tools for designing the situations turning up routinely in interactive fiction. There are guidelines at the end of this chapter offering advice on which tricks to use when it comes to more complicated needs.
+<p>The rule here is that whichever possibility contains the most words, in this case &quot;say the (...)&quot;, takes precedence, because it's assumed to be a more specific form of the less wordy version.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc180.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

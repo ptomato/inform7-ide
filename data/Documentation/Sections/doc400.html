@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.6. Extensions and story file formats</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.2. The Standard Rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,38 +19,25 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Extensions and story file formats" -->
-<!-- SEARCH SECTION "24.6" -->
-<!-- SEARCH SORT "024-006-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc399.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc401.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.6. Extensions and story file formats</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Standard Rules" -->
+<!-- SEARCH SECTION "24.2" -->
+<!-- SEARCH SORT "024-002-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc399.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc401.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.2. The Standard Rules</b></font></td></tr></table>
 <p>
-<p>Inform compiles to several different story file formats, and in each case uses only a small part of their abilities - especially when it comes to fancy tricks with the keyboard or screen. So people may well want to write extensions which provide access to some of these tricks (like &quot;Basic Screen Effects&quot;, included in the standard Inform distribution, but more so). Unfortunately, these tricks are very likely to fail to compile - or fail to work - on some of the possible story file formats, so the resulting extension would probably go wrong (and mysteriously wrong) for users who have chosen a different format.
+<p>When any source text is run through Inform, a secret first line is inserted, which reads:
 <p>
-<p>Inform therefore provides a way for extensions to declare the formats they are compatible with. All that is required is to add a proviso in brackets after the title is declared:
-<p>
-<blockquote><font color="#000080">Version 2 of Basic Screen Effects (for Z-Machine version 5 or 8 only) by Emily Short begins here.
+<blockquote><font color="#000080">Include the Standard Rules by Graham Nelson.
 </font></blockquote><p>
 <p>
-<p>Other examples might be &quot;(for Glulx only)&quot;, or &quot;(for Z-machine only)&quot; - which means any version of the Z-machine, even version 6. If no such proviso is given, the extension is assumed to be compatible with every story file format.
+<p>The &quot;Standard Rules&quot; file contains the definitions of the basic kinds, phrases, actions and grammar described in this documentation: for instance, it includes lines like
 <p>
-<p>Extensions are also able to include material which is only used on some story file formats and not others - in principle, this might allow the same facilities to be provided to the author whatever story file format is used, but to achieve these effects differently depending on the current Settings. The convention here is exactly like &quot;not for release&quot;: if a heading or subheading in the source text contains a bracketed proviso, then the material under that heading (and under its dependent subheadings) will be ignored if the current story file format does not match. For example:
-<p>
-<blockquote><font color="#000080">Section 2.3G (for Glulx only)
+<blockquote><font color="#000080">A container is a kind of thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To reveal the explosion:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;[...the Glulx way...]
-</font></blockquote><p>
+<p>...without which Inform would be lost. Although including the Standard Rules is compulsory, it is treated internally as if it were any other &quot;extension&quot;.
 <p>
-<blockquote><font color="#000080">Section 2.3Z (for Z-machine only)
-</font></blockquote><p>
+<p>What happens when an &quot;Include&quot; sentence is reached is that the sentence is replaced with the whole text of the file in question, often many paragraphs long.
 <p>
-<blockquote><font color="#000080">To reveal the explosion:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;[...the Z-machine way...]
-</font></blockquote><p>
+<p>If the file has already been included, then the sentence is simply ignored. This is so that we can have two extensions, each of which needs the other: if A says to include B, and B says to include A, the result is that including one automatically includes the other, so we always get both which ever we ask for - not that there is a hideous infinite regress.
 <p>
-<p>would ensure that &quot;reveal the explosion&quot; works nicely whichever story file format is used.
-<p>
-<p><hr><p>
-<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>413</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex241.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Tilt 3</font></b></a><br>Displaying the card suits from our deck of cards with red and black colored unicode symbols.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc399.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc401.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

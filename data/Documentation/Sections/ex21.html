@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.3. Pattern matching</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.11. Now...</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,120 +19,103 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Ferragamo Again" -->
-<!-- SEARCH SECTION "Ex 159" -->
-<!-- SEARCH SORT "Ex 011-003-159" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc158.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc160.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.3. Pattern matching</b></font></td></tr></table>
+<!-- SEARCH TITLE "Technological Terror" -->
+<!-- SEARCH SECTION "Ex 124" -->
+<!-- SEARCH SORT "Ex 008-011-124" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.11. Now...</b></font></td></tr></table>
 <p>
-<p>The following phrases all use different wording from each other:
+<p>As Chapter 5 has already discussed, Inform looks at a whole range of &quot;relations&quot; between objects, many of which we can change. The general rule is as follows. Suppose S is a sentence about a relationship between things. Then there are three things we can do with S:
 <p>
-<blockquote><font color="#000080">award 2 points
-<br>award 8 points
-<br>award 30 points
+<blockquote><font color="#000080">S. - The relation holds at the start of play.
+<br>if S, ...; - Does the relation hold right now?
+<br>now S; - Make the relation hold from now on.
 </font></blockquote><p>
 <p>
-<p>but they have the same meaning, with only one detail being different between them. A single definition (internal to Inform, since &quot;award ... points&quot; comes built in) covers these and all similar cases. It is written like so:
+<p>For instance,
 <p>
-<blockquote><font color="#000080">To award (some - a number) points: ...
+<blockquote><font color="#000080">The apple is in the basket.
+<br>if the apple is in the basket, ...;
+<br>now the apple is in the basket;
 </font></blockquote><p>
 <p>
-<p>This pattern of words matches the text &quot;award 4 points&quot;, and indeed &quot;award four points&quot;, but not
+<p>The effect of &quot;now the apple is in the basket&quot; is identical to &quot;move the apple to the basket&quot;, so this appears to offer nothing new; and &quot;now&quot; duplicates other things already available, too, because &quot;now the oaken door is open&quot; does the same thing as &quot;change the oaken door to open&quot;. But &quot;now&quot; is more general and more flexible. For instance,
 <p>
-<blockquote><font color="#000080">award &quot;blue cheese&quot; points;
+<blockquote><font color="#000080">now the top hat is worn by Mr Darcy;
 </font></blockquote><p>
 <p>
-<p>which results in the following error:
+<p>will make the hat worn, rather than simply carried, by Darcy: this is something which could not be done with the &quot;move&quot; phrase. We can also apply &quot;now&quot; to many things at once:
 <p>
-<blockquote><font color="#000080"><b>Problem.</b> You wrote 'award &quot;blue cheese&quot; points' <img border=0 src=../doc_images/Reveal.png>, but '&quot;blue cheese&quot;' seems to be some text, whereas I was expecting to find a number there.
+<blockquote><font color="#000080">now all the doors are open;
+<br>now all of the things in the sack are in the box;
 </font></blockquote><p>
 <p>
-<p>The number does not need to be a literal constant such as 52, but can be anything which works out to be a number: the name of a number variable, for instance.
-<p>
-<p>The bracketed part of the definition takes the form (name - what it is). The definition only applies if the text supplied agrees with the &quot;what it is&quot; part - for instance, 8 agreed with being a number, but &quot;blue cheese&quot; did not. If the definition does apply, then the name holds whatever value was supplied. For instance:
-<p>
-<blockquote><font color="#000080">To slam shut (box - an open container): say &quot;With great panache, you slam shut [the box].&quot;
-</font></blockquote><p>
-<p>
-<p>The &quot;what it is&quot; will usually be a description of some objects, or the name of a kind of value, but it is also allowed to give a specific value. For instance, we could define:
-<p>
-<blockquote><font color="#000080">To award (some - 13) points: say &quot;You shiver uncontrollably.&quot;
-</font></blockquote><p>
-<p>
-<p>which would withhold this unlucky bounty, applying only to that one case. (As elsewhere in Inform, more specific definitions take priority over more general ones, so &quot;award (some - 13) points&quot; takes priority over &quot;award (some - a number) points&quot;.)
-<p>
-<p>Sometimes it will not be possible to tell if the value supplied meets the requirements until the game is actually playing. If, at run-time, no definition fits some phrase which has to be carried out, a run-time problem message is produced.
-<p>
-<p>Finally, and more straightforwardly, we can specify variations in wording using slashes between alternative words in a &quot;To ...&quot; definition. For instance:
-<p>
-<blockquote><font color="#000080">To award (some - a number) point/points: ...
-</font></blockquote><p>
-<p>
-<p>allows the final word to be either &quot;point&quot; or &quot;points&quot;. Slashes like this can only be used with literal words (not bracketed values) and give alternative forms only of a single word at a time. (If we need more variation than that, we should make more than one definition.)
+<p>The second of these moves the entire contents of the sack to the box.
 <p>
 <p><hr><p>
-<a name="e153"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>158</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex153.html#e153 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ahem</font></b></a><br>Writing a phrase, with several variant forms, whose function is to follow a rule several times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e271"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex271.html#e271 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>123</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex271.html#e271 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bee Chambers</font></b></a><br>A maze with directions between rooms randomized at the start of play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex271.html#e271 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e21"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc159.html#e21 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc159.html#e21 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ferragamo Again</font></b></a><br>Using the same phrase to produce different results with different characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex21.html#e21 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e21"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e21 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>124</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc125.html#e21 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Technological Terror</font></b></a><br>A ray gun which destroys objects, leaving their component parts behind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex21.html#e21 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Here we use phrases that match individual items where possible, and the general kind otherwise:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode258(code) {
+function pasteCode221(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Ferragamo Again[=0x0022=][=0x000A=][=0x000A=]The Break Room is a room. Vanessa, Tina, and Lisa are women in the Break Room. Mark and Holman are men in the Break Room.[=0x000A=][=0x000A=]Understand the commands [=0x0022=]ask[=0x0022=] and [=0x0022=]tell[=0x0022=] and [=0x0022=]answer[=0x0022=] as something new.[=0x000A=][=0x000A=]Understand [=0x0022=]talk about [any subject][=0x0022=] as talking about. Talking about is an action applying to one visible thing.[=0x000A=][=0x000A=]Understand [=0x0022=]talk about [text][=0x0022=] as talking randomly about. Talking randomly about is an action applying to one topic. Carry out talking randomly about: say [=0x0022=]Mostly you[=0x0027=]re interested in [the list of subjects].[=0x0022=][=0x000A=][=0x000A=]Carry out talking about something:[=0x000A=][=0x0009=]change the previous subject to the noun.[=0x000A=][=0x000A=]Report talking about something:[=0x000A=][=0x0009=]say [=0x0022=]You chat for a while about [the noun].[=0x0022=][=0x000A=][=0x000A=]A subject is a kind of thing. Assyrian vowel sounds, designer handbags, and instant run-off voting are subjects. Understand [=0x0022=]linguistics[=0x0022=] and [=0x0022=]mute[=0x0022=] and [=0x0022=]stop[=0x0022=] as sounds. Understand [=0x0022=]prada[=0x0022=] and [=0x0022=]tods[=0x0022=] and [=0x0022=]coach[=0x0022=] and [=0x0022=]carmen marc valvo[=0x0022=] as designer handbags. Understand [=0x0022=]reform[=0x0022=] and [=0x0022=]election[=0x0022=] and [=0x0022=]election fraud[=0x0022=] and [=0x0022=]two-party system[=0x0022=] and [=0x0022=]Diebold[=0x0022=] as instant run-off voting.[=0x000A=][=0x000A=]To say (annoyed-person - a person) gestures in irritation:[=0x000A=][=0x0009=]say [=0x0022=][The annoyed-person] sighs heavily. [run paragraph on][=0x0022=][=0x000A=][=0x000A=]To say (annoyed-person - Vanessa) gestures in irritation:[=0x000A=][=0x0009=]say [=0x0022=][The annoyed-person] takes off her glasses and polishes them on her sleeve. [run paragraph on][=0x0022=].[=0x000A=][=0x000A=]To say (annoyed-person - Holman) gestures in irritation:[=0x000A=][=0x0009=]say [=0x0022=]Holman bobs his head. [run paragraph on][=0x0022=][=0x000A=][=0x000A=]The previous subject is a subject that varies.[=0x000A=][=0x000A=]Instead of talking about something for more than one turn:[=0x000A=][=0x0009=]if the noun is the previous subject, say [=0x0022=][a random visible person gestures in irritation]Maybe you should let this one go.[line break][paragraph break][=0x0022=];[=0x000A=][=0x0009=]otherwise continue the action.[=0x000A=][=0x000A=]Test me with [=0x0022=]talk about chocolate / talk about vowel sounds / g / talk about handbags / talk about prada / talk about tods[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Technological Terror[=0x0022=][=0x000A=][=0x000A=]The Decomposition Ray Gun is a thing carried by the player.[=0x000A=][=0x000A=][First we need to define our shooting action:][=0x000A=][=0x000A=]Shooting it with is an action applying to two things.[=0x000A=][=0x000A=]Check shooting something with something:[=0x000A=][=0x0009=]if the player is not carrying the Ray Gun, say [=0x0022=]You are pathetically unarmed![=0x0022=] instead;[=0x000A=][=0x0009=]if the second noun is not the Ray Gun, say [=0x0022=][The second noun] does not fire.[=0x0022=] instead;[=0x000A=][=0x0009=]if the noun is the Ray Gun, say [=0x0022=]Nice trick if you can do it![=0x0022=] instead;[=0x000A=][=0x0009=]if the noun is the player, say [=0x0022=]That would be disastrous![=0x0022=] instead.[=0x000A=][=0x000A=][Next, some grammar to allow the player to use this action:][=0x000A=][=0x000A=]Understand [=0x0022=]shoot [gun] at [something ungunlike][=0x0022=] as shooting it with (with nouns reversed).[=0x000A=][=0x000A=]Definition: a thing is ungunlike if it is not the gun.[=0x000A=][=0x000A=]Understand [=0x0022=]shoot [something ungunlike] with [gun][=0x0022=] as shooting it with. Understand [=0x0022=]shoot [something] with [something][=0x0022=] as shooting it with.[=0x000A=][=0x000A=]Understand [=0x0022=]shoot [something] at [something][=0x0022=] as shooting it with (with nouns reversed). Understand [=0x0022=]fire [gun] at [something ungunlike][=0x0022=] as shooting it with (with nouns reversed). Understand [=0x0022=]fire at [something ungunlike] with [gun][=0x0022=] as shooting it with. Understand [=0x0022=]fire at [something] with [something][=0x0022=] as shooting it with.[=0x000A=][=0x000A=][Strictly speaking, we only need these last grammar lines (with [=0x0022=]understand shoot something...[=0x0022=]) in order to define an action that the player can take. Adding more grammar lines means that Inform will try to match the most specific ones first, which is useful when the player types something ambiguous and there is one choice that obviously fits this action better than the others. See the chapter on Understanding for a further discussion.][=0x000A=][=0x000A=][Here we get to use [=0x0022=]now...[=0x0022=] to give it its destructive effect:][=0x000A=][=0x000A=]Carry out shooting something with something:[=0x000A=][=0x0009=]say [=0x0022=]ZAP! [The noun] twinkles out of existence! [if something is part of the noun][The list of things which are part of the noun] clatter to the ground! [end if][paragraph break][=0x0022=];[=0x000A=][=0x0009=]now every thing which is part of the noun is in the location;[=0x000A=][=0x0009=]remove the noun from play.[=0x000A=][=0x000A=]The Deathbot Assembly Line is a room. [=0x0022=]Here is the heart of the whole operation, where your opponents are assembled fresh from scrap metal and bits of old car.[=0x0022=] The dangerous robot is a thing in the Assembly Line. [=0x0022=]One dangerous robot looks ready to take you on![=0x0022=] A robotic head, a drill arm, a needle arm, a crushing leg and a kicking leg are parts of the dangerous robot.[=0x000A=][=0x000A=]Instead of examining something when something is part of the noun:[=0x000A=][=0x0009=]say [=0x0022=][The noun] consists of [a list of things which are part of the noun].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x robot / shoot robot / fire at kicking leg / shoot gun at drill arm / look[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode258()"><img border=0 src=../doc_images/paste.png></a> &quot;Ferragamo Again&quot;
+<a href="javascript:pasteCode221()"><img border=0 src=../doc_images/paste.png></a> &quot;Technological Terror&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Break Room is a room. Vanessa, Tina, and Lisa are women in the Break Room. Mark and Holman are men in the Break Room.
+<blockquote><font color="#000080">The Decomposition Ray Gun is a thing carried by the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the commands &quot;ask&quot; and &quot;tell&quot; and &quot;answer&quot; as something new.
+<p>First we need to define our shooting action:
+<p>
+<blockquote><font color="#000080">Shooting it with is an action applying to two things.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;talk about [any subject]&quot; as talking about. Talking about is an action applying to one visible thing.
+<blockquote><font color="#000080">Check shooting something with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not carrying the Ray Gun, say &quot;You are pathetically unarmed!&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not the Ray Gun, say &quot;[The second noun] does not fire.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the Ray Gun, say &quot;Nice trick if you can do it!&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;That would be disastrous!&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;talk about [text]&quot; as talking randomly about. Talking randomly about is an action applying to one topic. Carry out talking randomly about: say &quot;Mostly you're interested in [the list of subjects].&quot;
+<p>Next, some grammar to allow the player to use this action:
+<p>
+<blockquote><font color="#000080">Understand &quot;shoot [gun] at [something ungunlike]&quot; as shooting it with (with nouns reversed).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out talking about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the previous subject to the noun.
+<blockquote><font color="#000080">Definition: a thing is ungunlike if it is not the gun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report talking about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You chat for a while about [the noun].&quot;
+<blockquote><font color="#000080">Understand &quot;shoot [something ungunlike] with [gun]&quot; as shooting it with. Understand &quot;shoot [something] with [something]&quot; as shooting it with.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A subject is a kind of thing. Assyrian vowel sounds, designer handbags, and instant run-off voting are subjects. Understand &quot;linguistics&quot; and &quot;mute&quot; and &quot;stop&quot; as sounds. Understand &quot;prada&quot; and &quot;tods&quot; and &quot;coach&quot; and &quot;carmen marc valvo&quot; as designer handbags. Understand &quot;reform&quot; and &quot;election&quot; and &quot;election fraud&quot; and &quot;two-party system&quot; and &quot;Diebold&quot; as instant run-off voting.
+<blockquote><font color="#000080">Understand &quot;shoot [something] at [something]&quot; as shooting it with (with nouns reversed). Understand &quot;fire [gun] at [something ungunlike]&quot; as shooting it with (with nouns reversed). Understand &quot;fire at [something ungunlike] with [gun]&quot; as shooting it with. Understand &quot;fire at [something] with [something]&quot; as shooting it with.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (annoyed-person - a person) gestures in irritation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The annoyed-person] sighs heavily. [run paragraph on]&quot;
+<p>Strictly speaking, we only need these last grammar lines (with &quot;understand shoot something...&quot;) in order to define an action that the player can take. Adding more grammar lines means that Inform will try to match the most specific ones first, which is useful when the player types something ambiguous and there is one choice that obviously fits this action better than the others. See the chapter on Understanding for a further discussion.
+<p>
+<p>Here we get to use &quot;now...&quot; to give it its destructive effect:
+<p>
+<blockquote><font color="#000080">Carry out shooting something with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;ZAP! [The noun] twinkles out of existence! [if something is part of the noun][The list of things which are part of the noun] clatter to the ground! [end if][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing which is part of the noun is in the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (annoyed-person - Vanessa) gestures in irritation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The annoyed-person] takes off her glasses and polishes them on her sleeve. [run paragraph on]&quot;.
+<blockquote><font color="#000080">The Deathbot Assembly Line is a room. &quot;Here is the heart of the whole operation, where your opponents are assembled fresh from scrap metal and bits of old car.&quot; The dangerous robot is a thing in the Assembly Line. &quot;One dangerous robot looks ready to take you on!&quot; A robotic head, a drill arm, a needle arm, a crushing leg and a kicking leg are parts of the dangerous robot.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (annoyed-person - Holman) gestures in irritation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Holman bobs his head. [run paragraph on]&quot;
+<blockquote><font color="#000080">Instead of examining something when something is part of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] consists of [a list of things which are part of the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The previous subject is a subject that varies.
+<blockquote><font color="#000080">Test me with &quot;x robot / shoot robot / fire at kicking leg / shoot gun at drill arm / look&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of talking about something for more than one turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the previous subject, say &quot;[a random visible person gestures in irritation]Maybe you should let this one go.[line break][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise continue the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;talk about chocolate / talk about vowel sounds / g / talk about handbags / talk about prada / talk about tods&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc159.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc158.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc160.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

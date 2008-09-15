@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.11. Limits on the size of numbers</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.10. Commands consisting only of nouns</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,104 +19,108 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Alias" -->
-<!-- SEARCH SECTION "Ex 236" -->
-<!-- SEARCH SORT "Ex 014-011-236" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc223.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc225.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.11. Limits on the size of numbers</b></font></td></tr></table>
+<!-- SEARCH TITLE "Misadventure" -->
+<!-- SEARCH SECTION "Ex 287" -->
+<!-- SEARCH SORT "Ex 016-010-287" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc260.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc262.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.10. Commands consisting only of nouns</b></font></td></tr></table>
 <p>
-<p>There are still some serious restrictions. Inform has only whole numbers, not floating-point (though we could in principle simulate at least fixed-point numbers by writing something like &quot;10.99kg specifies a weight&quot;). And in its normal setting (see below), Inform only allows numbers from -32768 to 32767. Since a London bus only weighs 7000kg, 32000kg is plenty: on the other hand, if we wanted to measure weight in grammes instead, the limit would be just 32kg, an amount which a human can just about lift.
+<p>In every example so far, and in almost all practical cases, the first word in a command which results in an action will be something fixed: a verb, in fact. When we write
 <p>
-<p>The limit also begins to bite when using multiple-number specifications. Internally, Inform stores the above &quot;running time&quot; as a number of seconds, so that 3'59 is actually stored as 239. Calculating the maximum legal running time is a nuisance, so we can instead check the &quot;Kinds&quot; page of the index, where we read that:
-<p>
-<blockquote><font color="#000080"><b>running time</b> (<i>plural</i> running times)
-<br><i>Written in the following form:</i> 3'59
-<br><i>Maximum value allowed:</i> 546'07
+<blockquote><font color="#000080">Understand &quot;photograph [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>The maximum legal running time is therefore a little over 9 hours, so the new Tori Amos album will not be a problem, but some of the more punishing German operas might break the bank.
+<p>we are saying that the first word of such a command will always be &quot;photograph&quot;. Occasionally, though, we would like to understand a noun as a command, perhaps in a situation where the command is obvious. If we say:
 <p>
-<p>These restrictions are a nuisance, but can normally be managed, and we gain the ability to run the resulting work of IF on a very wide variety of computers indeed, some extremely small. If we do need larger numbers, we can change to the Glulx virtual machine (using the Settings panel), which buys us integers in the much larger range -2147483648 to 2147483647 but at the cost of being playable on fewer devices.
+<blockquote><font color="#000080">Understand &quot;[something]&quot; as examining.
+</font></blockquote><p>
+<p>
+<p>then the command &quot;examine&quot; will be implicit when the player types a bare noun:
+<p>
+<blockquote><font color="#000080">A red box and a blue ball are here.
+<br>> BALL
+<br>The blue ball is plaited from many small leather patches.
+</font></blockquote><p>
+<p>
+<p>so that the command &quot;ball&quot; has resulted in the action &quot;examining the blue ball&quot;.
+<p>
+<p>This is a feature which should be used sparingly, since it could easily lead to confusion if not carefully explained to the player. By default, it is not used at all.
+<p>
+<p>It also has what may be a serious limitation: verbless commands like this work only when typed by the player as actions to follow - they do not work as instructions for other people. So for instance SVEN, BALL would not ask Sven to try examining the ball - instead it would generate the action &quot;answering ball to Sven&quot;. (This is because the Inform parser decides whether PERSON, SOME TEXT is a request or just conversation by looking at the first word after the comma to see if it's a command.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e412"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc224.html#e412 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>236</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc224.html#e412 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Alias</font></b></a><br>A telephone with phone numbers of the standard American seven-digit length.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex412.html#e412 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e412"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc261.html#e412 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>287</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc261.html#e412 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Misadventure</font></b></a><br>A going by name command which does respect movement rules, and accepts names of rooms as commands.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex412.html#e412 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Seven-digit telephone numbers are too long for Inform to handle when compiling to the Z-Machine, but they will work under Glulx. To have this example succeed, make sure that you have selected the Glulx option in your settings menu.
+<p>The original Adventure allowed the player to type the names of rooms in order to move to them, and it is now not too difficult for us to do the same. Adventure restricted this option to adjacent rooms, but we might want to be a bit more flexible, so we will accept any room:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode330(code) {
+function pasteCode383(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Alias[=0x0022=][=0x000A=][=0x000A=]A telephone is a kind of thing. Understand [=0x0022=]phone[=0x0022=] or [=0x0022=]telephone[=0x0022=] as a telephone.[=0x000A=][=0x000A=]A phone number is a kind of value. 999-9999 specifies a phone number.[=0x000A=][=0x000A=][Now we borrow some techniques from the Understanding chapter to set up dialing actions:][=0x000A=][=0x000A=]Understand [=0x0022=]dial [phone number] on [telephone][=0x0022=] as dialing it on. Understand [=0x0022=]dial [phone number] on [something][=0x0022=] as dialing it on.[=0x000A=][=0x000A=]Understand the commands [=0x0022=]phone[=0x0022=] or [=0x0022=]telephone[=0x0022=] or [=0x0022=]call[=0x0022=] as [=0x0022=]dial[=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=]call [text][=0x0022=] or [=0x0022=]phone [text][=0x0022=] or [=0x0022=]dial [text][=0x0022=] or [=0x0022=]telephone [text][=0x0022=] as a mistake ([=0x0022=]That[=0x0027=]s not a number you know.[=0x0022=]).[=0x000A=][=0x000A=]Dialing it on is an action applying to one phone number and one thing.[=0x000A=][=0x000A=]Report dialing it on:[=0x000A=][=0x0009=]say [=0x0022=]You dial [the phone number understood].[=0x0022=][=0x000A=][=0x000A=][This much is enough to let us dial telephone numbers and have Inform report that we[=0x0027=]ve done so; it doesn[=0x0027=]t actually provide a telephone system such that we could reach and converse with other characters (but see the other telephone examples in the recipe book for more on how one might do that).][=0x000A=][=0x000A=][We[=0x0027=]ll set up a little political espionage scenario from which our player can make calls:][=0x000A=][=0x000A=]The Senator[=0x0027=]s Junior Suite is a room. [=0x0022=]The Senator appears, unfortunately, to have very precise habits: little in the room has been moved from its usual place; the trash can is empty; the bed has been remade[if the blue paper is unexamined]. There may in fact be nothing to find here[end if].[=0x0022=][=0x000A=][=0x000A=]The bed is an enterable scenery supporter in the Junior Suite.[=0x000A=][=0x000A=]The player is wearing a housekeeping uniform and a brunette wig. The player carries a telephone called a Nokia.[=0x000A=][=0x000A=][Borrowing again from the chapter on Understanding, we might arrange things so that the player knows and can call a few standard numbers with such syntax as CALL HOME:][=0x000A=][=0x000A=]Understand [=0x0022=]home[=0x0022=] as 555-9200.[=0x000A=][=0x000A=][And what if we[=0x0027=]d like to have the player learn some phone numbers during the game?][=0x000A=][=0x000A=]A thing can be examined or unexamined. Carry out examining something: now the noun is examined.[=0x000A=][=0x000A=]Understand [=0x0022=]Stephen[=0x0022=] as 555-2513 when the blue paper is examined.[=0x000A=][=0x000A=][This will understand CALL STEPHEN once the paper is examined; before that, the player will just get the [=0x0022=]That[=0x0027=]s not a number you know[=0x0022=] response that Inform uses for all attempts to call unknown names.][=0x000A=][=0x000A=][We[=0x0027=]d better plant this paper for the player to find:][=0x000A=][=0x000A=]The blue paper is in the drawer. The description of the blue paper is [=0x0022=]It reads: [=0x0027=]Call Stephen - 555-2513[=0x0027=].[=0x0022=][=0x000A=][=0x000A=]The drawer is part of the dresser. It is closed and openable. The dresser is in The Senator[=0x0027=]s Junior Suite. The lamp is on the dresser. The description of the dresser is [=0x0022=]The single drawer is [if the drawer is open]open[otherwise]shut[end if].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]dial 555-9999 / call home on the telephone / phone the president / call stephen / open drawer / read paper / call stephen / put phone in drawer / close drawer / call stephen[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Misadventure[=0x0022=][=0x000A=][=0x000A=]Plover Room is a room. [=0x0022=]You[=0x0027=]re in a small chamber lit by an eerie green light. An extremely narrow tunnel exits to the west. A dark corridor leads northeast.[=0x0022=][=0x000A=][=0x000A=]The Dark Corridor is northeast of Plover Room. Plover Room is south of the Dark Corridor. The printed name of the Dark Corridor is [=0x0022=]Dark Room[=0x0022=]. The description of the Dark Corridor is [=0x0022=]You[=0x0027=]re in the dark-room. A corridor leading south is the only exit.[=0x0022=][=0x000A=][=0x000A=]The Alcove is west of Plover Room. [=0x0022=]You are in an alcove. A small northwest path seems to widen after a short distance. An extremely tight tunnel leads east. It looks like a very tight squeeze. An eerie light can be seen at the other end.[=0x0022=][=0x000A=][=0x000A=]Northwest of the Alcove is the Misty Cavern. The description of Misty Cavern is [=0x0022=]You are following a wide path around the outer edge of a large cavern. Far below, through a heavy white mist, strange splashing noises can be heard. The mist rises up through a fissure in the ceiling. The path exits to the south and west.[=0x0022=] West of Misty Cavern is the Alcove.[=0x000A=][=0x000A=]Understand [=0x0022=][any room][=0x0022=] as going by name. Understand [=0x0022=]go to [any room][=0x0022=] as going by name.[=0x000A=][=0x000A=]Going by name is an action applying to one thing.[=0x000A=][=0x000A=][We should reject movement to the player[=0x0027=]s current location, or to anywhere he hasn[=0x0027=]t been and can[=0x0027=]t see:][=0x000A=][=0x000A=]Check going by name:[=0x000A=][=0x0009=]if the noun is the location, say [=0x0022=]You[=0x0027=]re already in [the location].[=0x0022=] instead;[=0x000A=][=0x0009=]if the noun is not adjacent and the noun is unvisited, say [=0x0022=]That noun did not make sense in this context.[=0x0022=] instead.[=0x000A=][=0x000A=][The assumption here is that the player does know the names of the rooms adjacent to his current location, even if he hasn[=0x0027=]t been there yet.][=0x000A=][=0x000A=][Now for the travel itself. The simplest way to ensure that the usual movement rules will still apply is to convert GO BY NAME into a GO action, and here the best route comes to our aid:][=0x000A=][=0x000A=]Carry out going by name:[=0x000A=][=0x0009=]let aim be the best route from the location to the noun, using doors;[=0x000A=][=0x0009=]if aim is not a direction, say [=0x0022=]You can[=0x0027=]t think how to get there from here.[=0x0022=] instead;[=0x000A=][=0x0009=]say [=0x0022=](heading [aim])[command clarification break][=0x0022=];[=0x000A=][=0x0009=]try going aim;[=0x000A=][=0x0009=]if the location is not the noun, say [=0x0022=]You[=0x0027=]ll have to stop here.[=0x0022=][=0x000A=][=0x000A=][This will allow the player to travel toward rooms he has already visited even if they are several moves away.][=0x000A=][=0x000A=][Finally, so that the player can also use the names of doors as commands:][=0x000A=][=0x000A=]Understand [=0x0022=][door][=0x0022=] as entering.[=0x000A=][=0x000A=][And in keeping with the original, we might add to our scenario a rule or two about restrictions on movement, just to test that it[=0x0027=]s all working right:][=0x000A=][=0x000A=]The player carries a plover egg and a platinum pyramid. The description of the egg is [=0x0022=]Plover[=0x0027=]s eggs, by the way, are quite large.[=0x0022=] The printed name of the egg is [=0x0022=]emerald the size of a plover[=0x0027=]s egg[=0x0022=]. Understand [=0x0022=]emerald[=0x0022=] as the egg. The description of the pyramid is [=0x0022=]The platinum pyramid is 8 inches on a side![=0x0022=][=0x000A=][=0x000A=]Instead of going to the Plover Room from the Alcove when the player carries something which is not the plover egg:[=0x000A=][=0x0009=]say [=0x0022=]Something you[=0x0027=]re carrying won[=0x0027=]t fit through the tunnel with you. You[=0x0027=]d best take inventory and drop something.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]go to misty cavern / go to dark corridor / go to plover room / go to alcove / go to dark corridor / drop pyramid / go to dark corridor / g / go to alcove / g / go to misty cavern[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode330()"><img border=0 src=../doc_images/paste.png></a> &quot;Alias&quot;
+<a href="javascript:pasteCode383()"><img border=0 src=../doc_images/paste.png></a> &quot;Misadventure&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A telephone is a kind of thing. Understand &quot;phone&quot; or &quot;telephone&quot; as a telephone.
+<blockquote><font color="#000080">Plover Room is a room. &quot;You're in a small chamber lit by an eerie green light. An extremely narrow tunnel exits to the west. A dark corridor leads northeast.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A phone number is a kind of value. 999-9999 specifies a phone number.
+<blockquote><font color="#000080">The Dark Corridor is northeast of Plover Room. Plover Room is south of the Dark Corridor. The printed name of the Dark Corridor is &quot;Dark Room&quot;. The description of the Dark Corridor is &quot;You're in the dark-room. A corridor leading south is the only exit.&quot;
 </font></blockquote><p>
 <p>
-<p>Now we borrow some techniques from the Understanding chapter to set up dialing actions:
-<p>
-<blockquote><font color="#000080">Understand &quot;dial [phone number] on [telephone]&quot; as dialing it on. Understand &quot;dial [phone number] on [something]&quot; as dialing it on.
+<blockquote><font color="#000080">The Alcove is west of Plover Room. &quot;You are in an alcove. A small northwest path seems to widen after a short distance. An extremely tight tunnel leads east. It looks like a very tight squeeze. An eerie light can be seen at the other end.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the commands &quot;phone&quot; or &quot;telephone&quot; or &quot;call&quot; as &quot;dial&quot;.
+<blockquote><font color="#000080">Northwest of the Alcove is the Misty Cavern. The description of Misty Cavern is &quot;You are following a wide path around the outer edge of a large cavern. Far below, through a heavy white mist, strange splashing noises can be heard. The mist rises up through a fissure in the ceiling. The path exits to the south and west.&quot; West of Misty Cavern is the Alcove.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;call [text]&quot; or &quot;phone [text]&quot; or &quot;dial [text]&quot; or &quot;telephone [text]&quot; as a mistake (&quot;That's not a number you know.&quot;).
+<blockquote><font color="#000080">Understand &quot;[any room]&quot; as going by name. Understand &quot;go to [any room]&quot; as going by name.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Dialing it on is an action applying to one phone number and one thing.
+<blockquote><font color="#000080">Going by name is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report dialing it on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You dial [the phone number understood].&quot;
+<p>We should reject movement to the player's current location, or to anywhere he hasn't been and can't see:
+<p>
+<blockquote><font color="#000080">Check going by name:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the location, say &quot;You're already in [the location].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not adjacent and the noun is unvisited, say &quot;That noun did not make sense in this context.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>This much is enough to let us dial telephone numbers and have Inform report that we've done so; it doesn't actually provide a telephone system such that we could reach and converse with other characters (but see the other telephone examples in the recipe book for more on how one might do that).
+<p>The assumption here is that the player does know the names of the rooms adjacent to his current location, even if he hasn't been there yet.
 <p>
-<p>We'll set up a little political espionage scenario from which our player can make calls:
+<p>Now for the travel itself. The simplest way to ensure that the usual movement rules will still apply is to convert GO BY NAME into a GO action, and here the best route comes to our aid:
 <p>
-<blockquote><font color="#000080">The Senator's Junior Suite is a room. &quot;The Senator appears, unfortunately, to have very precise habits: little in the room has been moved from its usual place; the trash can is empty; the bed has been remade[if the blue paper is unexamined]. There may in fact be nothing to find here[end if].&quot;
+<blockquote><font color="#000080">Carry out going by name:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the noun, using doors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if aim is not a direction, say &quot;You can't think how to get there from here.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not the noun, say &quot;You'll have to stop here.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The bed is an enterable scenery supporter in the Junior Suite.
+<p>This will allow the player to travel toward rooms he has already visited even if they are several moves away.
+<p>
+<p>Finally, so that the player can also use the names of doors as commands:
+<p>
+<blockquote><font color="#000080">Understand &quot;[door]&quot; as entering.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is wearing a housekeeping uniform and a brunette wig. The player carries a telephone called a Nokia.
+<p>And in keeping with the original, we might add to our scenario a rule or two about restrictions on movement, just to test that it's all working right:
+<p>
+<blockquote><font color="#000080">The player carries a plover egg and a platinum pyramid. The description of the egg is &quot;Plover's eggs, by the way, are quite large.&quot; The printed name of the egg is &quot;emerald the size of a plover's egg&quot;. Understand &quot;emerald&quot; as the egg. The description of the pyramid is &quot;The platinum pyramid is 8 inches on a side!&quot;
 </font></blockquote><p>
 <p>
-<p>Borrowing again from the chapter on Understanding, we might arrange things so that the player knows and can call a few standard numbers with such syntax as CALL HOME:
-<p>
-<blockquote><font color="#000080">Understand &quot;home&quot; as 555-9200.
+<blockquote><font color="#000080">Instead of going to the Plover Room from the Alcove when the player carries something which is not the plover egg:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Something you're carrying won't fit through the tunnel with you. You'd best take inventory and drop something.&quot;
 </font></blockquote><p>
 <p>
-<p>And what if we'd like to have the player learn some phone numbers during the game?
-<p>
-<blockquote><font color="#000080">A thing can be examined or unexamined. Carry out examining something: now the noun is examined.
+<blockquote><font color="#000080">Test me with &quot;go to misty cavern / go to dark corridor / go to plover room / go to alcove / go to dark corridor / drop pyramid / go to dark corridor / g / go to alcove / g / go to misty cavern&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;Stephen&quot; as 555-2513 when the blue paper is examined.
-</font></blockquote><p>
-<p>
-<p>This will understand CALL STEPHEN once the paper is examined; before that, the player will just get the &quot;That's not a number you know&quot; response that Inform uses for all attempts to call unknown names.
-<p>
-<p>We'd better plant this paper for the player to find:
-<p>
-<blockquote><font color="#000080">The blue paper is in the drawer. The description of the blue paper is &quot;It reads: 'Call Stephen - 555-2513'.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The drawer is part of the dresser. It is closed and openable. The dresser is in The Senator's Junior Suite. The lamp is on the dresser. The description of the dresser is &quot;The single drawer is [if the drawer is open]open[otherwise]shut[end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;dial 555-9999 / call home on the telephone / phone the president / call stephen / open drawer / read paper / call stephen / put phone in drawer / close drawer / call stephen&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc224.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc261.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc223.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc225.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e149"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>288</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex149.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Safari Guide</font></b></a><br>The same functionality, but making the player continue to move until he reaches his destination or a barrier, handling all openable doors on the way.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc260.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc262.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

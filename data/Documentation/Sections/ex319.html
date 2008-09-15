@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.14. Exchanging files with other programs</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.5. Every turn</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,124 +19,191 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Flathead News Network" -->
-<!-- SEARCH SECTION "Ex 408" -->
-<!-- SEARCH SORT "Ex 021-014-408" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc359.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc361.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.14. Exchanging files with other programs</b></font></td></tr></table>
+<!-- SEARCH TITLE "Witnessed 1" -->
+<!-- SEARCH SECTION "Ex 136" -->
+<!-- SEARCH SORT "Ex 009-005-136" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc137.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc139.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.5. Every turn</b></font></td></tr></table>
 <p>
-<p>Provided we declare the files in the right way, it is easy for one project to read a file created by another project.
+<p>The passage of time in interactive fiction is broken up into a succession of turns, in each of which the player types a request and is given a response. Usually each such request triggers one action, but sometimes a whole sequence are fired off, as when the player types &quot;get all&quot; in a cluttered room.
 <p>
-<p>But if we want more rapid communication, between two projects which are each playing at the same time, we need to be more careful. What if project A tries to read the file at the same moment that project B is writing it?
+<p>One of the last things to happen in each turn is that Inform will apply any rules which have been set to occur &quot;every turn&quot;, like so:
 <p>
-<p>To avoid this, we have a concept of files being &quot;ready&quot;. A file is ready if it exists, and is completely written, and not in use elsewhere. The following conditions can be used:
-<p>
-<blockquote><font color="#000080">if the file of Invariants exists...
-<br>if ready to read the file of Invariants...
+<blockquote><font color="#000080">Every turn, say &quot;The summer breeze shakes the apple-blossom.&quot;
 </font></blockquote><p>
 <p>
-<p>A file cannot be ready to read if it does not exist, so this is a stronger condition. If A and B are attempting communication in real time, both running at once, then Project A should check that an external file owned by B is ready before it tries to read it. Files can also be marked as ready or not ready, in effect claiming them, thus:
+<p>This is equivalent to writing:
 <p>
-<blockquote><font color="#000080">mark the file of Invariants as ready to read;
-<br>mark the file of Invariants as not ready to read;
+<blockquote><font color="#000080">An every turn rule: say &quot;The summer breeze shakes the apple-blossom.&quot;
 </font></blockquote><p>
 <p>
-<p>Possibilities really begin to open up when project A is our story file, but B is not another story file at all: it is some external program such as a Web service, say. (Of course this is harder to set up, since the player needs to have both A and B running at the same time, but for games running on an Internet server this can all be made seamless.)
+<p>Note that the text about blossom, which will quickly become tiresome, is said at the end of every turn, not at the beginning, and in particular not before the player's first opportunity to type a command.
 <p>
-<p>When Inform begins writing a table, or text, to a file, it initially marks the file as not ready: only when the table or text is completely written and the file about to close is the file marked as ready.
+<p>As usual when defining rules, we can add stipulations: any condition can be attached using &quot;when&quot;.
 <p>
-<p>In order to write non-story-file programs as B, communicating with story files as A, we need to know the file format used by Inform. An Inform file is currently a Unix text file (with 10 as the line division character), encoded as ASCII Latin-1. (We would like to use Unicode at some point in the future, but the Glk and Glulx layers are still not fully converted to Unicode.) It opens with a single header line in the form:
-<p>
-<blockquote><font color="#000080">* //IFID// leafname
+<blockquote><font color="#000080">Every turn when in the Orchard, say &quot;The summer breeze shakes the apple-blossom.&quot;
 </font></blockquote><p>
 <p>
-<p>The opening character is an asterisk if the file is currently ready, a hyphen if the file is currently not ready. The IFID between the slashes is the IFID number of the project which last wrote to the file. (Marking &quot;ready&quot; or &quot;not ready&quot; does not count as a write for this purpose.) If an external program wrote the file, it should call itself something which will not clash with any story file's IFID. The leafname is the filename text used inside the story file where the file was declared. For instance:
-<p>
-<blockquote><font color="#000080">* //4122DDA8-A153-46BC-8F57-42220F9D8795// ice
+<blockquote><font color="#000080">Every turn when the player can see the rotting fish, say &quot;Your nose twitches involuntarily.&quot;
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e319"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc360.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>408</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc360.html#e319 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flathead News Network</font></b></a><br>Using external files, together with a simple Unix script running in the background, to provide live news headlines inside a story file.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e319"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc138.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>136</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc138.html#e319 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Witnessed 1</font></b></a><br>A kind of battery which can be put into different devices, and which will lose power after extended use.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This example can only work if we have a separate program running in the background while the story file is being played, and as such it will only work if we set things up in a special way. Exactly how to do this will vary from platform to platform.
-<p>
-<p>First, the source text for the Inform end of the communication line:
+<p>The following example makes fairly ample use of material that we haven't seen yet, but gives some idea of the flexibility of every turn rules. Suppose we want to have a number of electrical devices, all of which may be powered by a set of batteries. The batteries will all need to be discharged as they are used (regardless of what device they happen to be controlling at the moment). So:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode507(code) {
+function pasteCode234(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Flathead News Network[=0x0022=][=0x000A=][=0x000A=]The file of RSS Requests is called [=0x0022=]rssrequest[=0x0022=].[=0x000A=][=0x000A=]The file of RSS Responses (owned by project [=0x0022=]RSS-SCRIPT[=0x0022=]) is called [=0x0022=]rssreply[=0x0022=].[=0x000A=][=0x000A=]To request (RSS feed address - text):[=0x000A=][=0x0009=]mark the file of RSS Responses as not ready to read;[=0x000A=][=0x0009=]write the RSS feed address to the file of RSS Requests.[=0x000A=][=0x000A=]Newsroom is a room. [=0x0022=]This is the secret nerve-centre of FNN, the Flathead News Network.[=0x0022=][=0x000A=][=0x000A=]The BBC button is in the Newsroom. Instead of pushing the BBC button: say [=0x0022=]Bong![=0x0022=]; request [=0x0022=]newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml[=0x0022=].[=0x000A=][=0x000A=]The NASA button is in the Newsroom. Instead of pushing the NASA button: say [=0x0022=]Bang![=0x0022=]; request [=0x0022=]www.nasa.gov/rss/breaking_news.rss[=0x0022=].[=0x000A=][=0x000A=]The WHO button is in the Newsroom. Instead of pushing the WHO button: say [=0x0022=]Bing![=0x0022=]; request [=0x0022=]www.gallifreyone.com/news.xml[=0x0022=].[=0x000A=][=0x000A=]A screen is in the Newsroom.[=0x000A=][=0x000A=]Instead of examining the screen:[=0x000A=][=0x0009=]if ready to read the file of RSS Responses, say [=0x0022=]From the screen you read:[line break][text of the file of RSS Responses][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]The screen remains blank for now.[=0x0022=][=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Witnessed[=0x0022=][=0x000A=][=0x000A=]A battery is a kind of thing. A battery has a number called charge. The charge of a battery is usually 15.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with hollow running through battery compartments:[=0x000A=][=0x0009=][=0x0009=]if the hollow is part of a switched on device (called the machine):[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if a battery (called cell) is in the hollow:[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]decrease the charge of the cell by 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]carry out the warning about failure activity with the machine;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]if the cell is discharged, carry out the putting out activity with the machine;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]carry out the putting out activity with the machine.[=0x000A=][=0x000A=]Warning about failure of something is an activity.[=0x000A=][=0x000A=]Rule for warning about failure of a device (called the machine):[=0x000A=][=0x0009=]if a random battery compartment which is part of the machine contains a battery (called the power source):[=0x000A=][=0x0009=][=0x0009=]if the charge of the power source is 2, say [=0x0022=][The machine] is obviously going to go out quite soon.[=0x0022=][=0x000A=][=0x000A=]Putting out something is an activity.[=0x000A=][=0x000A=]Rule for putting out a device (called the machine):[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The machine] loses power and switches off![line break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]silently try switching off the machine.[=0x000A=][=0x000A=]A battery compartment is a kind of container. A battery compartment is usually closed and openable. One battery compartment is part of every device. Instead of inserting something which is not a battery into a battery compartment, say [=0x0022=]Only batteries should go in a battery compartment.[=0x0022=][=0x000A=][=0x000A=][And to get rid of annoying messages like [=0x0022=]Which would you like to close, the flashlight or the flashlight[=0x0027=]s battery compartment?[=0x0022=] when only the compartment is closable, we might add some understanding instructions:][=0x000A=][=0x000A=]Understand [=0x0022=]turn on [device][=0x0022=] as switching on.[=0x000A=][=0x000A=]Understand [=0x0022=]turn off [device][=0x0022=] as switching off.[=0x000A=][=0x000A=]Understand [=0x0022=]open [openable closed thing][=0x0022=] as opening.[=0x000A=][=0x000A=]Understand [=0x0022=]close [openable open thing][=0x0022=] as closing.[=0x000A=][=0x000A=]Understand [=0x0022=]put [something] in [container][=0x0022=] as inserting it into.[=0x000A=][=0x000A=]Instead of opening a device, try opening a random battery compartment which is part of the noun. Instead of closing a device, try closing a random battery compartment which is part of the noun. Instead of inserting a battery into a device, try inserting the noun into a random battery compartment which is part of the second noun.[=0x000A=][=0x000A=]Instead of switching on an empty device:[=0x000A=][=0x0009=]say [=0x0022=]Nothing happens, perhaps because there isn[=0x0027=]t a charged battery in [the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of switching on a battery compartment which is part of a device (called the power user), try switching on the power user.[=0x000A=][=0x000A=]Definition: a device is empty:[=0x000A=][=0x0009=]if a random battery compartment which is part of it contains a battery (called the power source):[=0x000A=][=0x0009=][=0x0009=]if the power source is discharged, yes;[=0x000A=][=0x0009=][=0x0009=]no;[=0x000A=][=0x0009=]yes.[=0x000A=][=0x000A=]Definition: a battery is discharged if its charge [=0x003C=] 1.[=0x000A=][=0x000A=]A light source is a kind of device. Carry out switching on a light source: now the noun is lit. Carry out switching off a light source: now the noun is unlit.[=0x000A=][=0x000A=]The flashlight is a light source. A D battery is a battery carried by the player.[=0x000A=][=0x000A=]The cassette recorder is a device. Every turn: if the cassette recorder is switched on, say [=0x0022=]The cassette recorder hisses faintly.[=0x0022=][=0x000A=][=0x000A=]Rule for warning about failure of the cassette recorder:[=0x000A=][=0x0009=]if a random battery compartment which is part of the cassette recorder contains a battery (called the power source):[=0x000A=][=0x0009=][=0x0009=]if the charge of the power source is 2, say [=0x0022=]The hiss from [the cassette recorder] begins to warble ominously.[=0x0022=][=0x000A=][=0x000A=]The player wears a backpack. The backpack is openable. In the backpack is the flashlight and the cassette recorder.[=0x000A=][=0x000A=]The description of the cassette recorder is [=0x0022=]Useful both for recording your notes and for capturing any odd ghostly sounds you may hear.[=0x0022=][=0x000A=][=0x000A=]The description of the backpack is [=0x0022=]An old familiar pack, which you know so well that you can find all its pockets and take things in and out of it in pitch darkness. To avoid it showing up oddly in photographs, it is entirely black, with no shiny or metallic attachments.[=0x0022=][=0x000A=][=0x000A=]The description of the flashlight is [=0x0022=]You bought a new one just for this occasion, because you were worried about bringing something too small or light. This is a heavy-duty flashlight with an adjustable-focus beam. The case is made of metal, rather than plastic, and there is a spare light-bulb inside as well. You[=0x0027=]ve put a band of masking tape around the handle and written in your initials in red marker.[=0x000A=][=0x000A=]There is a piece of red cellophane attached to the business end of the flashlight to keep it from being overly bright.[=0x0022=][=0x000A=][=0x000A=]The red cellophane is part of the flashlight.[=0x000A=][=0x000A=]Instead of doing something to the red cellophane: say [=0x0022=]You need the cellophane on the flashlight so that using it does not completely destroy your night vision.[=0x0022=][=0x000A=][=0x000A=]Thirtieth Street Station is a room. [=0x0022=]A huge, high, rectangular room with coffered ceilings, which looks grand but mostly makes you feel lonely and small. There are long benches in rows down the middle of the room, and an information desk with the train times, and a series of ticket windows, none of which matters very much at the moment.[=0x0022=][=0x000A=][=0x000A=]The benches are an enterable supporter. They are scenery in the Station. The information desk is scenery in the Station. Some ticket windows are scenery in the Station. Instead of examining scenery in the Station: say [=0x0022=]You[=0x0027=]re fairly sure that whatever is going on here has nothing to do with [the noun].[=0x0022=] Understand [=0x0022=]window[=0x0022=] as ticket windows.[=0x000A=][=0x000A=]The mural is fixed in place in Thirtieth Street. [=0x0022=]At the north side of the station is a particularly pointless and empty annex to the main room. It is dominated by a huge relief of sorts, and this is what you remember.[=0x0022=] Understand [=0x0022=]metal[=0x0022=] or [=0x0022=]relief[=0x0022=] or [=0x0022=]huge[=0x0022=] as the mural. The description of the mural is [=0x0022=]It is both stylized and confusing, but you think it might be supposed to represent the various tasks and occupations of Philadelphia[=0x0027=]s population. The portions closer to the ground look as though they have recently been subjected to a light dusting of talcum powder. No unusual prints are evident.[=0x0022=][=0x000A=][=0x000A=]The wind chimes are fixed in place in Thirtieth Street. [=0x0022=]Carefully attached to the wall with a piece of duct tape and a hook is a light-weight set of wind chimes. Someone else has been here before you, it seems.[=0x0022=] The description is [=0x0022=]Several of your friends use wind chimes as a sort of ghost alarm, since ghosts sometimes cause very localized movements of air when there is no natural breeze.[=0x0022=][=0x000A=][=0x000A=][And this last bit, borrowed from the chapter on Understanding, adds some special instructions to help Inform decide when the player is likely to be referring to a compartment and when he[=0x0027=]s likely to be referring to the device itself.][=0x000A=][=0x000A=]Does the player mean doing something other than searching to a compartment: it is unlikely. [We discourage Inform from choosing a compartment when the player uses just the name of a device or the word [=0x0027=]battery[=0x0027=].][=0x000A=][=0x000A=]Does the player mean searching a compartment: it is very likely.[=0x000A=][=0x000A=]Does the player mean inserting something into a device: it is unlikely.[=0x000A=][=0x000A=]Does the player mean inserting a battery into a battery compartment: it is very likely. [However, we teach Inform to prefer to put batteries in battery compartments.][=0x000A=][=0x000A=]Test me with [=0x0022=]test first / test second[=0x0022=].[=0x000A=][=0x000A=]Test first with [=0x0022=]i / open flashlight compartment / put battery in it / turn on flashlight / take d battery / open cassette compartment / turn on cassette / put battery in cassette compartment / turn on cassette / z / z / z / z[=0x0022=].[=0x000A=][=0x000A=]Test second with [=0x0022=]get d battery / put d battery in flashlight compartment / turn on flashlight / z / z / z / z / z / z / turn off flashlight / z / z / turn on flashlight / z[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode507()"><img border=0 src=../doc_images/paste.png></a> &quot;Flathead News Network&quot;
+<a href="javascript:pasteCode234()"><img border=0 src=../doc_images/paste.png></a> &quot;Witnessed&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Requests is called &quot;rssrequest&quot;.
+<blockquote><font color="#000080">A battery is a kind of thing. A battery has a number called charge. The charge of a battery is usually 15.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Responses (owned by project &quot;RSS-SCRIPT&quot;) is called &quot;rssreply&quot;.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with hollow running through battery compartments:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the hollow is part of a switched on device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a battery (called cell) is in the hollow:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease the charge of the cell by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the warning about failure activity with the machine;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the cell is discharged, carry out the putting out activity with the machine;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the putting out activity with the machine.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To request (RSS feed address - text):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;mark the file of RSS Responses as not ready to read;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write the RSS feed address to the file of RSS Requests.
+<blockquote><font color="#000080">Warning about failure of something is an activity.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Newsroom is a room. &quot;This is the secret nerve-centre of FNN, the Flathead News Network.&quot;
+<blockquote><font color="#000080">Rule for warning about failure of a device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random battery compartment which is part of the machine contains a battery (called the power source):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the charge of the power source is 2, say &quot;[The machine] is obviously going to go out quite soon.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The BBC button is in the Newsroom. Instead of pushing the BBC button: say &quot;Bong!&quot;; request &quot;newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml&quot;.
+<blockquote><font color="#000080">Putting out something is an activity.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The NASA button is in the Newsroom. Instead of pushing the NASA button: say &quot;Bang!&quot;; request &quot;www.nasa.gov/rss/breaking_news.rss&quot;.
+<blockquote><font color="#000080">Rule for putting out a device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The machine] loses power and switches off![line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try switching off the machine.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The WHO button is in the Newsroom. Instead of pushing the WHO button: say &quot;Bing!&quot;; request &quot;www.gallifreyone.com/news.xml&quot;.
+<blockquote><font color="#000080">A battery compartment is a kind of container. A battery compartment is usually closed and openable. One battery compartment is part of every device. Instead of inserting something which is not a battery into a battery compartment, say &quot;Only batteries should go in a battery compartment.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A screen is in the Newsroom.
+<p>And to get rid of annoying messages like &quot;Which would you like to close, the flashlight or the flashlight's battery compartment?&quot; when only the compartment is closable, we might add some understanding instructions:
+<p>
+<blockquote><font color="#000080">Understand &quot;turn on [device]&quot; as switching on.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the screen:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ready to read the file of RSS Responses, say &quot;From the screen you read:[line break][text of the file of RSS Responses]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The screen remains blank for now.&quot;
+<blockquote><font color="#000080">Understand &quot;turn off [device]&quot; as switching off.
 </font></blockquote><p>
 <p>
-<p>As far as the story file is concerned, then, it sends a request down the communication line by writing the chosen RSS feed to the file named &quot;rssrequest&quot;, and expects a reply to come back down the line by being written to the file &quot;rssreply&quot;. However, the story file needs to expect that this might take some time. (Maybe forever, if there is no program responding, or if the Internet connection is not working.) The story file marks the &quot;rssreply&quot; file as not ready before it makes a request; if it subsequently finds that the file is now ready, that must mean that the other program has done the honours, and that all is well. In the mean time, &quot;The screen remains blank for now.&quot;
-<p>
-<p>Now for the RSS-SCRIPT program. The following provides a crude but workable program suitable for running as a Perl script on a system which provides the standard Internet fetching program &quot;curl&quot;: Mac OS X, for instance. (If you have OS X, you can paste the following into a (Unix-format) text file called &quot;rss-script.pl&quot;, place it in your home folder, open the Terminal utility, type &quot;perl rss-script.pl&quot;, and then hide the Terminal window again.)
-<p>
-<blockquote><font color="#000080">for (;;) { # repeat forever:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;sleep 1&quot;); # wait 1 second
-<br>&nbsp;&nbsp;&nbsp;&nbsp;open REQUEST, &quot;rssrequest.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;# the request file has been detected:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$header_line = &lt;REQUEST&gt;; # the header line
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$rss_feed = &lt;REQUEST&gt;; # the actual content - the RSS feed URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;close REQUEST;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ($header_line =~ m/^\*/) { # if the request file is marked ready
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$rss = system(&quot;curl $rss_feed &gt;rawrss.txt&quot;); # download the RSS feed
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# read the RSS XML into a single Perl string:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open RAWRSS, &quot;rawrss.txt&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = &quot;&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while ($nl = &lt;RAWRSS&gt;) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = $raw.&quot; &quot;.$nl;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close RAWRSS;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# look for the title and description of the first item:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ($raw =~ m/\&lt;item\&gt;\&lt;title.*?\&gt;(.*?)\&lt;\/title\&gt;.*?\&lt;description.*?\&gt;(.*?)\&lt;\/description\&gt;/) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# write the reply:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open REPLY, &quot;&gt;rssreply.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print REPLY &quot;* //RSS-SCRIPT// rssreply\n&quot;, $1, &quot;\n&quot;, $2, &quot;\n&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close REPLY;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# request safely dealt with, so we can remove it:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;rm 'rssrequest.glkdata'&quot;);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>}
+<blockquote><font color="#000080">Understand &quot;open [openable closed thing]&quot; as opening.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc360.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;close [openable open thing]&quot; as closing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;put [something] in [container]&quot; as inserting it into.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of opening a device, try opening a random battery compartment which is part of the noun. Instead of closing a device, try closing a random battery compartment which is part of the noun. Instead of inserting a battery into a device, try inserting the noun into a random battery compartment which is part of the second noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of switching on an empty device:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Nothing happens, perhaps because there isn't a charged battery in [the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of switching on a battery compartment which is part of a device (called the power user), try switching on the power user.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a device is empty:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random battery compartment which is part of it contains a battery (called the power source):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the power source is discharged, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;yes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a battery is discharged if its charge < 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A light source is a kind of device. Carry out switching on a light source: now the noun is lit. Carry out switching off a light source: now the noun is unlit.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The flashlight is a light source. A D battery is a battery carried by the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The cassette recorder is a device. Every turn: if the cassette recorder is switched on, say &quot;The cassette recorder hisses faintly.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for warning about failure of the cassette recorder:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random battery compartment which is part of the cassette recorder contains a battery (called the power source):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the charge of the power source is 2, say &quot;The hiss from [the cassette recorder] begins to warble ominously.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player wears a backpack. The backpack is openable. In the backpack is the flashlight and the cassette recorder.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the cassette recorder is &quot;Useful both for recording your notes and for capturing any odd ghostly sounds you may hear.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the backpack is &quot;An old familiar pack, which you know so well that you can find all its pockets and take things in and out of it in pitch darkness. To avoid it showing up oddly in photographs, it is entirely black, with no shiny or metallic attachments.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the flashlight is &quot;You bought a new one just for this occasion, because you were worried about bringing something too small or light. This is a heavy-duty flashlight with an adjustable-focus beam. The case is made of metal, rather than plastic, and there is a spare light-bulb inside as well. You've put a band of masking tape around the handle and written in your initials in red marker.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">There is a piece of red cellophane attached to the business end of the flashlight to keep it from being overly bright.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The red cellophane is part of the flashlight.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of doing something to the red cellophane: say &quot;You need the cellophane on the flashlight so that using it does not completely destroy your night vision.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Thirtieth Street Station is a room. &quot;A huge, high, rectangular room with coffered ceilings, which looks grand but mostly makes you feel lonely and small. There are long benches in rows down the middle of the room, and an information desk with the train times, and a series of ticket windows, none of which matters very much at the moment.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The benches are an enterable supporter. They are scenery in the Station. The information desk is scenery in the Station. Some ticket windows are scenery in the Station. Instead of examining scenery in the Station: say &quot;You're fairly sure that whatever is going on here has nothing to do with [the noun].&quot; Understand &quot;window&quot; as ticket windows.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The mural is fixed in place in Thirtieth Street. &quot;At the north side of the station is a particularly pointless and empty annex to the main room. It is dominated by a huge relief of sorts, and this is what you remember.&quot; Understand &quot;metal&quot; or &quot;relief&quot; or &quot;huge&quot; as the mural. The description of the mural is &quot;It is both stylized and confusing, but you think it might be supposed to represent the various tasks and occupations of Philadelphia's population. The portions closer to the ground look as though they have recently been subjected to a light dusting of talcum powder. No unusual prints are evident.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The wind chimes are fixed in place in Thirtieth Street. &quot;Carefully attached to the wall with a piece of duct tape and a hook is a light-weight set of wind chimes. Someone else has been here before you, it seems.&quot; The description is &quot;Several of your friends use wind chimes as a sort of ghost alarm, since ghosts sometimes cause very localized movements of air when there is no natural breeze.&quot;
+</font></blockquote><p>
+<p>
+<p>And this last bit, borrowed from the chapter on Understanding, adds some special instructions to help Inform decide when the player is likely to be referring to a compartment and when he's likely to be referring to the device itself.
+<p>
+<blockquote><font color="#000080">Does the player mean doing something other than searching to a compartment: it is unlikely. [We discourage Inform from choosing a compartment when the player uses just the name of a device or the word 'battery'.]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Does the player mean searching a compartment: it is very likely.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Does the player mean inserting something into a device: it is unlikely.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Does the player mean inserting a battery into a battery compartment: it is very likely. [However, we teach Inform to prefer to put batteries in battery compartments.]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;test first / test second&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test first with &quot;i / open flashlight compartment / put battery in it / turn on flashlight / take d battery / open cassette compartment / turn on cassette / put battery in cassette compartment / turn on cassette / z / z / z / z&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test second with &quot;get d battery / put d battery in flashlight compartment / turn on flashlight / z / z / z / z / z / z / turn off flashlight / z / z / turn on flashlight / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc138.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc359.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc361.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e411"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex411.html#e411 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>137</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex411.html#e411 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Text Foosball</font></b></a><br>A game of foosball which relies heavily on every-turn rules.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex411.html#e411 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc137.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc139.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.17. Phrases to decide other things</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,76 +19,117 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Port Royal 2" -->
-<!-- SEARCH SECTION "Ex 8" -->
-<!-- SEARCH SORT "Ex 003-003-008" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
+<!-- SEARCH TITLE "A Haughty Spirit" -->
+<!-- SEARCH SECTION "Ex 178" -->
+<!-- SEARCH SORT "Ex 011-017-178" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc175.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc177.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.17. Phrases to decide other things</b></font></td></tr></table>
 <p>
-<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
+<p>A condition is a yes/no decision, but we can also take decisions where the result is a value. Suppose we want to create a concept of the &quot;grand prize&quot;, which will have different values at different times in play. Each time the &quot;grand prize&quot; is referred to, Inform will have to decide what its value is, and the following tells Inform how to make that decision:
 <p>
-<blockquote><font color="#000080">The Debris Room is west of the Crawl.
+<blockquote><font color="#000080">To decide which treasure is the grand prize:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Dark Room has been visited then decide on the silver bars;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the plover's egg.
 </font></blockquote><p>
 <p>
-<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
+<p>Note that we have to say what kind the answer will be: here it's a kind of thing called &quot;treasure&quot; (which we're supposing has already been created), and as it turns out only two treasures are ever eligible anyway (we're also supposing that the plover's egg and the silver bars are treasures already created, of course). And note also that the phrase must in all cases end with a &quot;decide on ...&quot; to say what the answer is.
 <p>
-<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
+<p>Now that we have &quot;grand prize&quot; created, we can use it just as we would use any other value, so for instance:
+<p>
+<blockquote><font color="#000080">if taking the grand prize then ...
 </font></blockquote><p>
 <p>
-<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
+<p>As this is something of a dialect difference between English speakers, &quot;what&quot; and &quot;which&quot; are synonymous here, i.e., we could equally well write something like:
 <p>
-<p>We can even explicitly make a route which turns around as it leads between two rooms:
-<p>
-<blockquote><font color="#000080">West of the Garden is south of the Meadow.
+<blockquote><font color="#000080">To decide what number is the target score: ...
 </font></blockquote><p>
 <p>
-<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
+<p>(A phrase to decide if something-or-other is exactly the same thing as a phrase to decide a truth state, and indeed, if we want to then we can use &quot;decide on T&quot;, where T is a truth state, in its definition. For instance:
 <p>
-<blockquote><font color="#000080">East of the Debris Room is nowhere.
+<blockquote><font color="#000080">To decide if time is short:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is after 10 PM, decide on true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on whether or not Jennifer is hurried.
 </font></blockquote><p>
+<p>
+<p>&quot;Decide on true&quot; is exactly equivalent to the more normally used &quot;decide yes&quot;, and of course it is optional. The last line is more interesting since it effectively delegates the answer to another condition.)
 <p>
 <p><hr><p>
-<a name="e18"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex18.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e244"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>177</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex244.html#e244 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Witnessed 2</font></b></a><br>A piece of ghost-hunting equipment that responds depending on whether or not the meter is on and a ghost is visible or touchable from the current location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e416"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e416 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e416 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex416.html#e416 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e416"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc176.html#e416 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>178</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc176.html#e416 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> A Haughty Spirit</font></b></a><br>Windows overlooking lower spaces which will prevent the player from climbing through if the lower space is too far below.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex416.html#e416 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we have a game in which the player can climb through windows which overlook rooms below. We want him to be allowed to climb out windows to reach a room on the same level or at most one level lower than the one he's on; otherwise, he should get a refusal, saying that he would break his neck.
+<p>
+<p>To figure out the height distance between the start room and the destination room, we might have a repeat loop look at all the directions one has to follow along the &quot;best route&quot; path between the two rooms, and record any ups and downs; then subtract the number of &quot;up&quot; steps from the number of &quot;down&quot; steps, and report what remains.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode96(code) {
+function pasteCode277(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]1691[=0x0022=][=0x000A=][=0x000A=]Thames Street End is a room.[=0x000A=][=0x000A=][If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher[=0x0027=]s Row. We can[=0x0027=]t put Fisher[=0x0027=]s Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let[=0x0027=]s have a map connection that bends around from west to north:][=0x000A=][=0x000A=]West of Thames Street End is north of Fisher[=0x0027=]s Row.[=0x000A=][=0x000A=][Now continuing west along Thames Street, or north along Fisher[=0x0027=]s Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They[=0x0027=]re good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let[=0x0027=]s be sure to make things clear:][=0x000A=][=0x000A=]The description of Fisher[=0x0027=]s Row is [=0x0022=]A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.[=0x0022=][=0x000A=][=0x000A=][Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.][=0x000A=][=0x000A=]Thames Street End is down from Fort James. Thames Street End is south from Fort James.[=0x000A=][=0x000A=][But we don[=0x0027=]t want the upward direction to work:][=0x000A=][=0x000A=]Up from Thames Street End is nowhere.[=0x000A=][=0x000A=]Test me with [=0x0022=]n / d / u / w / e / n / s[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]A Haughty Spirit[=0x0022=][=0x000A=][=0x000A=]To decide what number is the distance (first place - a room) rises above (second place - a room):[=0x000A=][=0x0009=]let the total distance be the number of moves from the first place to the second place;[=0x000A=][=0x0009=]if the total distance is less than 1, decide on 0;[=0x000A=][=0x0009=]let count of down moves be 0;[=0x000A=][=0x0009=]let count of up moves be 0;[=0x000A=][=0x0009=]let next place be the first place;[=0x000A=][=0x0009=]repeat with counter running from 1 to the total distance:[=0x000A=][=0x0009=][=0x0009=]let the way be the best route from the next place to the second place;[=0x000A=][=0x0009=][=0x0009=]if the way is down, let count of down moves be the count of down moves plus 1;[=0x000A=][=0x0009=][=0x0009=]if the way is up, let the count of up moves be the count of up moves plus 1;[=0x000A=][=0x0009=][=0x0009=]let next place be the room the way from next place;[=0x000A=][=0x0009=]let the decision be the count of down moves minus the count of up moves;[=0x000A=][=0x0009=]decide on the decision.[=0x000A=][=0x000A=][Now we just have to create windows and some action rules for interacting with them...][=0x000A=][=0x000A=]A window is a kind of thing. A window is always fixed in place. A window can be open or closed. A window is usually closed. A window can be openable or unopenable. A window is usually openable.[=0x000A=][=0x000A=]Understand [=0x0022=]climb through [something][=0x0022=] as entering. Understand [=0x0022=]jump through/out [something][=0x0022=] as entering.[=0x000A=][=0x000A=]Before entering a closed window:[=0x000A=][=0x0009=]say [=0x0022=][The noun] would have to be opened first.[=0x0022=] instead.[=0x000A=][=0x000A=]Instead of entering a window:[=0x000A=][=0x0009=]if the noun overlooks a room (called the far side):[=0x000A=][=0x0009=][=0x0009=]let fall be the distance the location rises above the far side;[=0x000A=][=0x0009=][=0x0009=]if fall is greater than 1, say [=0x0022=]You[=0x0027=]d break your neck.[=0x0022=] instead;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You tumble into [the far side].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move the player to the far side;[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]There[=0x0027=]s nowhere to go.[=0x0022=][=0x000A=][=0x000A=]Instead of examining a window:[=0x000A=][=0x0009=]say [=0x0022=][The noun] [if the noun is open]opens over[otherwise]gives a view of[end if] [the list of rooms overlooked by the noun].[=0x0022=][=0x000A=][=0x000A=][Here we must anticipate a little from next chapter, and provide ourselves with a way of keeping track of how windows and rooms relate to one another:][=0x000A=][=0x000A=]Overlooking relates various windows to various rooms. The verb to overlook (it overlooks, they overlook, it overlooked, it is overlooked, it is overlooking) implies the overlooking relation. The initial appearance of a window is usually [=0x0022=][The item described] overlooks [the list of rooms overlooked by the item described].[=0x0022=][=0x000A=][=0x000A=]The Square Keep is above the Winding Staircase. The Winding Staircase is above the Motte. A crown and a broken sword are in the Motte. The Bailey is west of the Motte.[=0x000A=][=0x000A=]The long window is in the Keep. The long window overlooks the Bailey and the Motte. The narrow window is in the Winding Staircase. The narrow window overlooks the Bailey.[=0x000A=][=0x000A=]Test me with [=0x0022=]jump through window / open window / jump through window / d / x narrow window / open window / climb through window / e / up / down[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode96()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
+<a href="javascript:pasteCode277()"><img border=0 src=../doc_images/paste.png></a> &quot;A Haughty Spirit&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Thames Street End is a room.
+<blockquote><font color="#000080">To decide what number is the distance (first place - a room) rises above (second place - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the total distance be the number of moves from the first place to the second place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the total distance is less than 1, decide on 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let count of down moves be 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let count of up moves be 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let next place be the first place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with counter running from 1 to the total distance:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the next place to the second place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is down, let count of down moves be the count of down moves plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is up, let the count of up moves be the count of up moves plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next place be the room the way from next place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the decision be the count of down moves minus the count of up moves;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the decision.
 </font></blockquote><p>
 <p>
-<p>If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher's Row. We can't put Fisher's Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let's have a map connection that bends around from west to north:
+<p>Now we just have to create windows and some action rules for interacting with them...
 <p>
-<blockquote><font color="#000080">West of Thames Street End is north of Fisher's Row.
+<blockquote><font color="#000080">A window is a kind of thing. A window is always fixed in place. A window can be open or closed. A window is usually closed. A window can be openable or unopenable. A window is usually openable.
 </font></blockquote><p>
 <p>
-<p>Now continuing west along Thames Street, or north along Fisher's Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They're good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let's be sure to make things clear:
-<p>
-<blockquote><font color="#000080">The description of Fisher's Row is &quot;A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.&quot;
+<blockquote><font color="#000080">Understand &quot;climb through [something]&quot; as entering. Understand &quot;jump through/out [something]&quot; as entering.
 </font></blockquote><p>
 <p>
-<p>Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.
-<p>
-<blockquote><font color="#000080">Thames Street End is down from Fort James. Thames Street End is south from Fort James.
+<blockquote><font color="#000080">Before entering a closed window:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] would have to be opened first.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>But we don't want the upward direction to work:
-<p>
-<blockquote><font color="#000080">Up from Thames Street End is nowhere.
+<blockquote><font color="#000080">Instead of entering a window:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun overlooks a room (called the far side):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let fall be the distance the location rises above the far side;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if fall is greater than 1, say &quot;You'd break your neck.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You tumble into [the far side].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the player to the far side;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There's nowhere to go.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;n / d / u / w / e / n / s&quot;.
+<blockquote><font color="#000080">Instead of examining a window:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] [if the noun is open]opens over[otherwise]gives a view of[end if] [the list of rooms overlooked by the noun].&quot;
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Here we must anticipate a little from next chapter, and provide ourselves with a way of keeping track of how windows and rooms relate to one another:
+<p>
+<blockquote><font color="#000080">Overlooking relates various windows to various rooms. The verb to overlook (it overlooks, they overlook, it overlooked, it is overlooked, it is overlooking) implies the overlooking relation. The initial appearance of a window is usually &quot;[The item described] overlooks [the list of rooms overlooked by the item described].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Square Keep is above the Winding Staircase. The Winding Staircase is above the Motte. A crown and a broken sword are in the Motte. The Bailey is west of the Motte.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The long window is in the Keep. The long window overlooks the Bailey and the Motte. The narrow window is in the Winding Staircase. The narrow window overlooks the Bailey.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;jump through window / open window / jump through window / d / x narrow window / open window / climb through window / e / up / down&quot;.
+</font></blockquote><p>
+<p>
+<p>We could then add rules to allow the player to look through windows and see things in the rooms below, but that would require more material from later chapters.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc176.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc175.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc177.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

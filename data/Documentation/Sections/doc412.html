@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.18. Catalogue of named Inform 7 types</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.14. Defining phrases in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,57 +19,52 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Catalogue of named Inform 7 types" -->
-<!-- SEARCH SECTION "24.18" -->
-<!-- SEARCH SORT "024-018-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc411.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc413.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.18. Catalogue of named Inform 7 types</b></font></td></tr></table>
+<!-- SEARCH TITLE "Defining phrases in Inform 6" -->
+<!-- SEARCH SECTION "24.14" -->
+<!-- SEARCH SORT "024-014-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc411.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc413.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.14. Defining phrases in Inform 6</b></font></td></tr></table>
 <p>
-<p>The four most basic types are <b>number</b>, <b>time</b>, <b>text</b>, and <b>object</b>. Numbers translate into I6 as integer constants. Times are stored according to I6 convention, and objects as I6 object names, in the natural way.
+<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
 <p>
-<p>Text is stored as either a string constant (if the text is fixed) or as an I6 routine to print it (if it is variable, by containing substitutions). Thus a substitution for &quot;text&quot; might turn out to be an I6 value of metaclass String, or of metaclass Routine. An I6 phrase definition needing to distinguish the possibilities can either use the I6 function &quot;metaclass&quot;, or else two different definitions can be given, one using the type &quot;string-of-text&quot; and the other &quot;text-routine&quot; (see below).
+<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+</font></blockquote><p>
 <p>
-<p>There follows a selection of the exotic types currently present in I7 which extensions might conceivably need to use in phrase definitions, but which in general are not values. Even some of those which are values cannot be stored in variables.
+<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
 <p>
-<p><b>action</b> (not a value). Matches an explicit I7 action, e.g. &quot;taking the wooden box&quot; (but not an imprecise description of an action such as &quot;taking something portable&quot;). Translates into I6 as code in void context which causes this action.
+<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
 <p>
-<p><b>boxed-quotation</b> (not a value). Matches text used for a boxed quotation. Translates into the necessary I6 arguments for the &quot;box&quot; statement.
+<p>This is an easy case since the wording never varies. More typical examples would be:
 <p>
-<p><b>condition</b> (not a value). Matches any I7 condition, e.g. &quot;the wooden box is open&quot;. Translates into an I6 value which is non-zero if and only if the condition holds.
+<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<br>To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+</font></blockquote><p>
 <p>
-<p><b>description</b> (a value, but with some limitations on use). Matches any I7 description, e.g. &quot;open containers which are in dark rooms&quot;. Translates into the address of an I6 routine which determines whether an object does or does not match the description.
+<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
 <p>
-<p><b>figure-name</b> (a value). Matches the literal name of a figure. Translates into I6 as the Blorb resource ID number for the figure.
+<blockquote><font color="#000080">say the capacity of the basket
+</font></blockquote><p>
 <p>
-<p><b>miscellaneous-value</b> (a value). Some values in I6 are known to be an object, a class, a routine or a string, but might be any of the four. I7 uses the umbrella type &quot;miscellaneous-value&quot; for exactly this ambiguity. Translates into the relevant I6 value, which I6 code can then disambiguate using the &quot;metaclass&quot; function.
+<p>might be compiled to
 <p>
-<p><b>property</b> (not a value). Matches the name of an I7 property, either an either/or property such as &quot;open&quot; or a value property such as &quot;capacity&quot;. Translates into I6 as the corresponding I6 property name (for value properties); or as the name of the corresponding I6 attribute (for either/or properties), prefaced by &quot;~&quot; if the attribute is referred to in the negation of its normal state; except that, in order to escape the Z-machine's limit on the number of attributes, I7 stores some either/or properties as I6 properties whose values are always &quot;true&quot; or &quot;false&quot;, and these properties are translated to I6 as the relevant property names. (These less efficiently stored either/or properties are distinguished by having property numbers equal to, or greater than, the I6 constant I7_FBNA.)
+<blockquote><font color="#000080">print O17_basket.capacity;
+</font></blockquote><p>
 <p>
-<p><b>rule</b> (a value). Matches the literal name of a rule. Translates into I6 as the name of the I6 routine which carries out this rule.
+<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
 <p>
-<p><b>snippet</b> (a value). There is no literal way to write a constant snippet, but several snippet variables exist inside I7, such as &quot;topic understood&quot;, and as this indicates they can be stored in global variables (though not local &quot;let&quot; variables). Snippets describe a range of words in the player's most recent command. As a result, any surviving snippet values become meaningless when a new command is typed in, or when a replacement or cut is made to the standing command. Input words are numbered from 1, as in standard I6 practice; the snippet between word number N to word number M inclusive is represented as the integer 100*N + (M-N+1), so for instance the snippet of 7 words starting at word 3 is represented as 307. Snippets translate into I6 as this integer value.
+<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
 <p>
-<p><b>text-routine</b> (a value). A type used to require text which contains at least one square-bracketed substitution. Translates into I6 as the I6 routine to print the material (and therefore a value of I6 metaclass Routine).
+<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
 <p>
-<p><b>unicode-character</b> (translates to a value). Matches a literal unicode character, e.g. &quot;unicode 78&quot; or, if names for Unicode characters have been defined, &quot;unicode Greek letter kappa&quot;. Translates into I6 as the character number, e.g. 78 or 922.
+<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+</font></blockquote><p>
 <p>
-<p>The following are likely not useful, since they translate into identification numbers which are not predictable and not easy to correlate with anything outside of some internal data structures: however -
+<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
 <p>
-<p><b>abstract-relation</b> (translates to a value). Matches the literal name of a relation, e.g. &quot;adjacency relation&quot;. Translates into I6 as a number uniquely identifying this relation.
+<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+</font></blockquote><p>
 <p>
-<p><b>activity</b> (translates to a value). Matches the literal name of a activity. Translates into I6 as a number uniquely identifying this activity.
-<p>
-<p><b>rulebook</b> (translates to a value). Matches the literal name of a rulebook. Translates into I6 as a number uniquely identifying this rulebook.
-<p>
-<p><b>scene</b> (translates to a value). Matches the literal name of a scene, e.g. &quot;Brief Encounter&quot;. Translates into I6 as a number uniquely identifying this scene.
-<p>
-<p><b>sound-name</b> (a value). Matches the literal name of a sound effect. Translates into I6 as the Blorb resource ID number for the sound data.
-<p>
-<p><b>table-column</b> (translates to a value). Matches the literal name of a table column. Translates into I6 as a number uniquely identifying this column name. (The same column name in two different tables comes out with the same table-column value.)
-<p>
-<p><b>table-name</b> (a value). Matches the literal name of a table, and can also be stored in global variables and properties. Translates into I6 as an address uniquely associated with the table (in a way which should not be relied upon).
-<p>
-<p><b>use-option</b> (translates to a value). Matches the literal name of a use option, e.g. &quot;American dialect&quot;. Translates into I6 as a number uniquely identifying this option. The value is independent of whether the option is currently being used or not.
-<p>
-<p>And the following exotic types should never be used outside of the Standard Rules: <b>outcome</b>, <b>phrase</b>, <b>returned</b>, <b>table-reference</b>, <b>topic</b>, <b>variable</b>, <b>void</b>. Finally, note that <b>kind</b> is not a type at all, and cannot be used in phrase definitions.
-<p>
+<p><hr><p>
+<a name="e129"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex129.html#e129 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>424</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex129.html#e129 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex129.html#e129 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e243"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex243.html#e243 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>425</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex243.html#e243 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex243.html#e243 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc411.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc413.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

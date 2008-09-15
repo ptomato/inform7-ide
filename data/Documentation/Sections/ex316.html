@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.9. The parts of a number specification</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,116 +19,75 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Zqlran Era 8" -->
-<!-- SEARCH SECTION "Ex 234" -->
-<!-- SEARCH SORT "Ex 014-009-234" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc221.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc223.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.9. The parts of a number specification</b></font></td></tr></table>
+<!-- SEARCH TITLE "Shawn's Bad Day" -->
+<!-- SEARCH SECTION "Ex 276" -->
+<!-- SEARCH SORT "Ex 016-004-276" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc254.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc256.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
 <p>
-<p>We often need to break up a number specification into its pieces. For instance, suppose we want to know the dollars part of $1.99? We can do this by naming the parts:
+<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
 <p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents.
+<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
 </font></blockquote><p>
 <p>
-<p>We can now find the relevant parts like so. Suppose that &quot;sum&quot; is a monetary value. Then:
+<p>Here we expect that the named item will be one that is held by the player, and the parser will use this to resolve ambiguities between names of things carried and not carried. (If the action is one which positively requires that its noun be something carried, such as &quot;eating&quot;, then a command matching this token against something not carried will generate an automatic attempt to take it.)
 <p>
-<blockquote><font color="#000080">dollars part of sum
-<br>cents part of sum
+<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
+<br>Understand &quot;drop [things preferably held]&quot; as dropping.
 </font></blockquote><p>
 <p>
-<p>are both numbers, so for instance we can
+<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
 <p>
-<blockquote><font color="#000080">say &quot;Looks like around [dollars part of sum in words] dollar[s].&quot;
+<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
 </font></blockquote><p>
 <p>
-<p>We can also go the other way:
+<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
 <p>
-<blockquote><font color="#000080">monetary value with dollars part 4 cents part 72
+<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>produces the monetary value $4.72. (Note the lack of commas or &quot;and&quot;s, and that the parts have to be given in the right order.) This is really intended to be useful when we manipulate such values in unusual ways:
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide which aspect ratio is the wider version of (AR - an aspect ratio):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let W be the width part of AR multiplied by 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let H be the height part of AR;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the wider ratio be the aspect ratio with width part W height part H;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the wider ratio.
-</font></blockquote><p>
-<p>
-<p>Declaring the parts of a number specification individually also enables us to tack one or more options onto any of the parts:
-<p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents (optional, preamble optional).
-</font></blockquote><p>
-<p>
-<p>This declares that the &quot;cents&quot; part is optional - it will be 0 if not specified - and that if omitted, the non-numeric &quot;preamble&quot; before it should also be omitted. Thus &quot;$3&quot; is now valid and equivalent to &quot;$3.00&quot;: indeed it will be the preferred form when Inform prints out a monetary value which is an exact number of dollars. If we had said that &quot;cents&quot; was optional, but not said that the preamble was optional, then &quot;$3.&quot; would have been the form - which is less satisfactory.
-<p>
-<p>There is only one other option: &quot;without leading zeros&quot;, as in the following.
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height (without leading zeros).
-</font></blockquote><p>
-<p>
-<p>This ensures that when the ratio 4:3 is printed, it will be printed as &quot;4:3&quot; and not &quot;4:03&quot; as would otherwise happen.
+<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e316"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc222.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>234</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc222.html#e316 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Zqlran Era 8</font></b></a><br>Creating an alternative system of time for our game, using new units.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex316.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e316"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc255.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc255.html#e316 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex316.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose that our game takes place on an alien planet that does not follow Earth time. On this planet, we want to track time with different units. We also want time to advance in those units, and we want to be able to set a schedule of timed events.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode328(code) {
+function pasteCode372(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Zqlran Era 8[=0x0022=][=0x000A=][=0x000A=]The Barren Lavender Surface of Zql is a room. [=0x0022=]It is late twilight on Zql. Overhead, two crescent moons, both green, mark the sluggish passage of time. A cold wind is blowing over the pale purplish ground cover, but it does not penetrate your airtight suit.[=0x0022=][=0x000A=][=0x000A=]A Zqlran date is a kind of value. 14-88 specifies a Zqlran date with parts zqls and frbs. Current zqlran date is a zqlran date that varies. The current zqlran date is 8-22. Previous zqlran date is a zqlran date that varies. The previous zqlran date is 8-20.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change left hand status line to [=0x0022=][current zqlran date], or [current zqlran date in words][=0x0022=].[=0x000A=][=0x000A=]To say (Zqlra - a Zqlran date) in words:[=0x000A=][=0x0009=]say [=0x0022=][zqls part of Zqlra] Z, [frbs part of Zqlra] f.[=0x0022=][=0x000A=][=0x000A=][Inform automatically supplies a way to say a new unit, which will look similar to the format in which we defined that unit in the first place. But we can (as shown here) create our own alternative say phrases to express the units in other ways as well.][=0x000A=][=0x000A=][Next, we need to meddle with time advancement so that time is tracked in Zqlran date rather than in minutes. This requires borrowing a trick from a later chapter, to replace Inform[=0x0027=]s built-in time handling with an alternative time handling rule of our own:][=0x000A=][=0x000A=]The Zqlran time rule is listed instead of the advance time rule in the turn sequence rules.[=0x000A=][=0x000A=]This is the Zqlran time rule:[=0x000A=][=0x0009=]increase turn count by 1;[=0x000A=][=0x0009=]change the previous zqlran date to current zqlran date;[=0x000A=][=0x0009=]change the current zqlran date to current zqlran date + 0-02;[=0x000A=][=0x0009=]repeat through the Table of Zql Schedule:[=0x000A=][=0x0009=][=0x0009=]if era entry is greater than previous zqlran date and era entry is not greater than current zqlran date:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say event entry;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say paragraph break;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]blank out the whole row.[=0x000A=][=0x000A=]Table of Zql Schedule[=0x000A=]era[=0x0009=]event[=0x000A=]8-24[=0x0009=][=0x0022=]A wisp-thin cloud blows rapidly across the face of Nepenthe, the lesser of the two green moons.[=0x0022=][=0x000A=]8-28[=0x0009=][=0x0022=]The cloud across Nepenthe clears.[=0x0022=][=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Shawn[=0x0027=]s Bad Day[=0x0022=][=0x000A=][=0x000A=]The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. [=0x0022=]A massive vault fills up one wall.[=0x0022=] The description is [=0x0022=]The vault[=0x0027=]s system includes [a list of things which are part of the vault].[=0x0022=][=0x000A=][=0x000A=]A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.[=0x000A=][=0x000A=]The security guard is a man in the Treasury. The description is [=0x0022=]His name is Shawn, and he doesn[=0x0027=]t look happy.[=0x0022=][=0x000A=][=0x000A=]The description of the green light is [=0x0022=]Off.[=0x0022=] The description of the blue light is [=0x0022=]Tranquilly on.[=0x0022=] The description of the red light is [=0x0022=]Angrily flashing.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]examine [things][=0x0022=] as multiply examining.[=0x000A=][=0x000A=]Multiply examining is an action applying to one thing.[=0x000A=][=0x000A=]Carry out multiply examining:[=0x000A=][=0x0009=]try examining the noun.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine all[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode328()"><img border=0 src=../doc_images/paste.png></a> &quot;Zqlran Era 8&quot;
+<a href="javascript:pasteCode372()"><img border=0 src=../doc_images/paste.png></a> &quot;Shawn's Bad Day&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Barren Lavender Surface of Zql is a room. &quot;It is late twilight on Zql. Overhead, two crescent moons, both green, mark the sluggish passage of time. A cold wind is blowing over the pale purplish ground cover, but it does not penetrate your airtight suit.&quot;
+<blockquote><font color="#000080">The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. &quot;A massive vault fills up one wall.&quot; The description is &quot;The vault's system includes [a list of things which are part of the vault].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A Zqlran date is a kind of value. 14-88 specifies a Zqlran date with parts zqls and frbs. Current zqlran date is a zqlran date that varies. The current zqlran date is 8-22. Previous zqlran date is a zqlran date that varies. The previous zqlran date is 8-20.
+<blockquote><font color="#000080">A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;[current zqlran date], or [current zqlran date in words]&quot;.
+<blockquote><font color="#000080">The security guard is a man in the Treasury. The description is &quot;His name is Shawn, and he doesn't look happy.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (Zqlra - a Zqlran date) in words:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[zqls part of Zqlra] Z, [frbs part of Zqlra] f.&quot;
+<blockquote><font color="#000080">The description of the green light is &quot;Off.&quot; The description of the blue light is &quot;Tranquilly on.&quot; The description of the red light is &quot;Angrily flashing.&quot;
 </font></blockquote><p>
 <p>
-<p>Inform automatically supplies a way to say a new unit, which will look similar to the format in which we defined that unit in the first place. But we can (as shown here) create our own alternative say phrases to express the units in other ways as well.
-<p>
-<p>Next, we need to meddle with time advancement so that time is tracked in Zqlran date rather than in minutes. This requires borrowing a trick from a later chapter, to replace Inform's built-in time handling with an alternative time handling rule of our own:
-<p>
-<blockquote><font color="#000080">The Zqlran time rule is listed instead of the advance time rule in the turn sequence rules.
+<blockquote><font color="#000080">Understand &quot;examine [things]&quot; as multiply examining.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the Zqlran time rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase turn count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the previous zqlran date to current zqlran date;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current zqlran date to current zqlran date + 0-02;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Zql Schedule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if era entry is greater than previous zqlran date and era entry is not greater than current zqlran date:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say event entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
+<blockquote><font color="#000080">Multiply examining is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Zql Schedule
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">era</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">event</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8-24</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A wisp-thin cloud blows rapidly across the face of Nepenthe, the lesser of the two green moons.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8-28</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The cloud across Nepenthe clears.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Carry out multiply examining:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
 </font></blockquote><p>
 <p>
-<p>Note that we could if we wished use a different device for scheduling events: this one simply prints text at scheduled eras, but we might also (for instance) make the event entry be a rule for Inform to follow, and tell Inform to carry out that rule at the scheduled time.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc222.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Test me with &quot;examine all&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc255.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc221.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc223.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e139"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>277</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex139.html#e139 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Left Hand of Autumn</font></b></a><br>The possibility of using a [things] token opens up some interesting complications, because we may want actions on multiple items to be reported differently from actions on just one. Here we look at how to make a multiple examination command that describes groups in special ways.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc254.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

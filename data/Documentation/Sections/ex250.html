@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.13. Procedural rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.5. Building lists</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,59 +19,145 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Access All Areas" -->
-<!-- SEARCH SECTION "Ex 367" -->
-<!-- SEARCH SORT "Ex 018-013-367" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc320.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc322.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.13. Procedural rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Robo 1" -->
+<!-- SEARCH SECTION "Ex 401" -->
+<!-- SEARCH SORT "Ex 020-005-401" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc343.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc345.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.5. Building lists</b></font></td></tr></table>
 <p>
-<p>Before any rule or rulebook is followed, a special rulebook is always consulted first. This is called the &quot;procedural rules&quot;, and it starts out empty: so if we write no procedural rules, empty it will remain.
+<p>We have already seen &quot;add... to...&quot;. This in fact comes in two forms:
 <p>
-<p>Like the points of order which precede a debate, the procedural rules are not intended to contribute to any decision in themselves, but merely to sort out which voices are to be heard when the time for decision comes. Should some rules be waived, or others substituted? Should the rulebook be rearranged, in certain circumstances? And so on. Procedural rules offer enormous flexibility and with them one could deconstruct Inform and put it back together in a very different shape - but in practical situations they will only occasionally be needed.
-<p>
-<p>Procedural rules are not allowed to say anything, or indeed to do anything which might have practical consequences; they are only allowed to think about the current situation (if they need to) and then use special phrases (if they choose to) which affect how other rules are to be followed. For instance:
-<p>
-<blockquote><font color="#000080">A procedural rule: if in the Timeless Void then ignore the advance time rule.
+<blockquote><font color="#000080">add V to L;
+<br>add V to L, if absent;
 </font></blockquote><p>
 <p>
-<p>Since the &quot;advance time rule&quot; is the one which moves on the number of turns and the clock, this means that the Timeless Void lives up to its name.
+<p>The former always adds V to L, while the latter does so only if V is not already somewhere in L. (Both forms are allowed only if V is compatible with the kind of entries which is supposed to be stored in L.) V is ordinarily added at the end of L, unless we specify otherwise, for instance with:
 <p>
-<p>In general, it works but is inefficient to use procedural rules to abolish or substitute rules throughout an entire game: it's much faster to use the &quot;listed in&quot; and &quot;not listed in&quot; sentences described earlier in the chapter. But if we want to bend rules in particular circumstances - as here, in the Timeless Void but nowhere else - then procedural rules are ideal.
+<blockquote><font color="#000080">add V at entry 3 in L;
+<br>add V at entry 3 in L, if absent;
+</font></blockquote><p>
+<p>
+<p>For instance &quot;add V at entry 1 in L&quot; adds V at the beginning, moving all of the existing entries up by one place. (If there are N entries in L, then we can add at any of entries 1 up to N+1: adding at entry N+1 means adding at the end.)
+<p>
+<p>A list is allowed to contain duplicates, and the order matters. For instance:
+<p>
+<blockquote><font color="#000080">let L be {2, 2, 3};
+</font></blockquote><p>
+<p>
+<p>makes L into &quot;2, 2 and 3&quot;. This is a different list to the one made by:
+<p>
+<blockquote><font color="#000080">let M be {2, 3, 2};
+</font></blockquote><p>
+<p>
+<p>even though L and M have the same values, repeated the same number of times - for two lists to be equal, they must have the same kind of entry, the same number of entries, and the same entries in each position.
+<p>
+<p>We can also strike out values:
+<p>
+<blockquote><font color="#000080">remove 2 from L;
+<br>remove 2 from L, if present;
+</font></blockquote><p>
+<p>
+<p>These each go through L and remove every 2 that's present: so for instance the L above would be reduced down to just a single entry, 3. Ordinarily &quot;remove 2 from L&quot; produces a run-time problem if L does not contain the value 2, but using the &quot;if present&quot; option lets us off this: the phrase then does nothing if L does not contain the value to be removed.
+<p>
+<p>Entries in given positions in the list can also be removed:
+<p>
+<blockquote><font color="#000080">remove entry 3 from L;
+<br>remove entries 4 to 6 from L;
+</font></blockquote><p>
+<p>
+<p>The entries are numbered from 1, so that &quot;remove entry 1 from L&quot; takes away the first entry. (The others automatically shuffle down.)
+<p>
+<p>Adding entries one at a time is pretty tiresome, but we can also append a whole list of extra entries X onto the end of any already-existing list L:
+<p>
+<blockquote><font color="#000080">let L be {2, 3};
+<br>add {60, 168} to L;
+</font></blockquote><p>
+<p>
+<p>makes L into {2, 3, 60, 168}. This is, of course, only allowed if the values in X are compatible with the kind of value L is supposed to hold. Alternatively, we can add a set at the front, or even somewhere in the middle:
+<p>
+<blockquote><font color="#000080">add {60, 168} at entry 2 in L;
+</font></blockquote><p>
+<p>
+<p>produces {2, 60, 168, 3}, with the added entries beginning at entry 2.
+<p>
+<p>Symmetrically, we can also remove from a list:
+<p>
+<blockquote><font color="#000080">let L be {2, 3, 7};
+<br>remove {3, 7} from L;
+</font></blockquote><p>
+<p>
+<p>makes L into simply {2}. (If L and the list to be added are both very large, this can be a slow process, and we might do better by sorting them and trying a more sophisticated method. But this is convenient for anything reasonable-sized.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e250"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc321.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>367</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc321.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Access All Areas</font></b></a><br>The Pointy Hat of Liminal Transgression allows its wearer to walk clean through closed doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e250"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc344.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>401</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc344.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Robo 1</font></b></a><br>A robot which watches and records the player's actions, then tries to repeat them back in the same order when he is switched into play-back mode.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This is a typical usage of procedural rules to suspend the laws of nature. Notice that we only need a procedural rule if we are going to conditionally replace or ignore the behavior of a rule at runtime.
-<p>
-<p>If we want to remove or replace one of the standard rules universally throughout the game, it is better to use the &quot;X is listed instead of Y...&quot; or &quot;X is not listed...&quot; syntax, since these will not require any runtime calculation. Procedural rules are called very frequently at runtime, so having a large number may slow down performance on slower machines.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode463(code) {
+function pasteCode500(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Access All Areas[=0x0022=][=0x000A=][=0x000A=]The extremely difficult door is north of the Standing Room and south of the Room of Walking Upside Down.  It is a locked door.[=0x000A=][=0x000A=]The player is carrying the Pointy Hat of Liminal Transgression. The hat is wearable.[=0x000A=][=0x000A=]A procedural rule: if the Hat is worn, ignore the can[=0x0027=]t go through closed doors rule.[=0x000A=][=0x000A=]Test me with [=0x0022=]n / wear hat / n[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Robo[=0x0022=][=0x000A=][=0x000A=]The Experimentation Chamber is a room. Robo is a man in the Experimentation Chamber. [=0x0022=]Robo, your prototype tin companion, stands awkwardly beside you. In the middle of his chest is a red enamel button[if the red button is switched on], currently depressed[otherwise], currently un-depressed[end if].[=0x0022=][=0x000A=][=0x000A=]The red button is a device. It is part of Robo. Instead of pushing the red button: if the red button is switched off, try switching on the red button; otherwise try switching off the red button.[=0x000A=][=0x000A=]After switching on the red button:[=0x000A=][=0x0009=]say [=0x0022=]CLICK! Robo is now in play-back mode.[=0x0022=][=0x000A=][=0x000A=]After switching off the red button:[=0x000A=][=0x0009=]say [=0x0022=]CLACK! Robo is now in observation mode.[=0x0022=][=0x000A=][=0x000A=]Definition: Robo is watching if the red button is switched off.[=0x000A=][=0x000A=]The current instruction set is a list of stored actions that varies.[=0x000A=][=0x000A=]After doing something when Robo is watching and Robo can see the player:[=0x000A=][=0x0009=]change the actor to Robo;[=0x000A=][=0x0009=]add the current action to the current instruction set;[=0x000A=][=0x0009=]change the actor to the player;[=0x000A=][=0x0009=]say [=0x0022=]Robo watches you [the current action][one of], his yellow eyes lamp-like and observant[or]. In his metal head, gears whirr[or], his brushed-copper handlebar moustaches twitching[or] impassively[at random].[=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Every turn when Robo is not watching:[=0x000A=][=0x0009=]if the number of entries in the current instruction set is 0:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Robo has run out of behavior and grinds to an (expectant) halt.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now the red button is switched off;[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]let the next task be entry 1 of the current instruction set;[=0x000A=][=0x0009=][=0x0009=]try the next task;[=0x000A=][=0x0009=][=0x0009=]remove entry 1 from the current instruction set.[=0x000A=][=0x000A=]The red block and the blue cylinder are things in the Experimentation Chamber. The counter is a supporter in the Experimentation Chamber. The counter is scenery.[=0x000A=][=0x000A=]Report Robo examining Robo:[=0x000A=][=0x0009=]say [=0x0022=]Robo examines each of his hands in turn, then each of his legs (bending over mostly double in the middle to do this).[=0x0022=] instead.[=0x000A=][=0x000A=]Report Robo examining the player:[=0x000A=][=0x0009=]say [=0x0022=]Robo stares at you, unblinkingly, for several seconds together[if a random chance of 1 in 7 succeeds]. His left moustache-bar twitches infinitesimally upward[end if].[=0x0022=] instead.[=0x000A=][=0x000A=]Report Robo taking the cylinder:[=0x000A=][=0x0009=]say [=0x0022=][one of][Robo] needs several attempts to get his metal fingers around [the cylinder] -- they are not designed for grasping small objects elegantly. But at last he succeeds[or]Once again, Robo struggles a bit before picking up [the cylinder][stopping].[=0x0022=] instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / take cylinder / take block / put cylinder on counter / put block on counter / x robo / x me / get block / drop block / press red button / z / z / z / z / z / z / z / z / z / z[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode463()"><img border=0 src=../doc_images/paste.png></a> &quot;Access All Areas&quot;
+<a href="javascript:pasteCode500()"><img border=0 src=../doc_images/paste.png></a> &quot;Robo&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The extremely difficult door is north of the Standing Room and south of the Room of Walking Upside Down.  It is a locked door.
+<blockquote><font color="#000080">The Experimentation Chamber is a room. Robo is a man in the Experimentation Chamber. &quot;Robo, your prototype tin companion, stands awkwardly beside you. In the middle of his chest is a red enamel button[if the red button is switched on], currently depressed[otherwise], currently un-depressed[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is carrying the Pointy Hat of Liminal Transgression. The hat is wearable.
+<blockquote><font color="#000080">The red button is a device. It is part of Robo. Instead of pushing the red button: if the red button is switched off, try switching on the red button; otherwise try switching off the red button.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A procedural rule: if the Hat is worn, ignore the can't go through closed doors rule.
+<blockquote><font color="#000080">After switching on the red button:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;CLICK! Robo is now in play-back mode.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;n / wear hat / n&quot;.
+<blockquote><font color="#000080">After switching off the red button:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;CLACK! Robo is now in observation mode.&quot;
 </font></blockquote><p>
 <p>
-<p>(The Pointy Hat may be useful in debugging a game, even if it never makes it into the final published work.)
+<blockquote><font color="#000080">Definition: Robo is watching if the red button is switched off.
+</font></blockquote><p>
 <p>
-<p>The &quot;can't go through closed doors rule&quot; is one of those belonging to the &quot;check going&quot; rulebook. These names are fairly explanatory when written out, but hard to remember: fortunately we don't need to remember them, as the Index panel contains a full inventory of the check, carry out and report rules for every action, showing all of their names and the order in which they are checked.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc321.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The current instruction set is a list of stored actions that varies.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After doing something when Robo is watching and Robo can see the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the actor to Robo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the current action to the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the actor to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo watches you [the current action][one of], his yellow eyes lamp-like and observant[or]. In his metal head, gears whirr[or], his brushed-copper handlebar moustaches twitching[or] impassively[at random].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when Robo is not watching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in the current instruction set is 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo has run out of behavior and grinds to an (expectant) halt.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the red button is switched off;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the next task be entry 1 of the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the next task;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the current instruction set.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The red block and the blue cylinder are things in the Experimentation Chamber. The counter is a supporter in the Experimentation Chamber. The counter is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo examining Robo:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo examines each of his hands in turn, then each of his legs (bending over mostly double in the middle to do this).&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo stares at you, unblinkingly, for several seconds together[if a random chance of 1 in 7 succeeds]. His left moustache-bar twitches infinitesimally upward[end if].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo taking the cylinder:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[one of][Robo] needs several attempts to get his metal fingers around [the cylinder] -- they are not designed for grasping small objects elegantly. But at last he succeeds[or]Once again, Robo struggles a bit before picking up [the cylinder][stopping].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / take cylinder / take block / put cylinder on counter / put block on counter / x robo / x me / get block / drop block / press red button / z / z / z / z / z / z / z / z / z / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc344.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc320.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc322.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc343.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc345.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

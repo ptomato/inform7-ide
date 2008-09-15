@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.6. New either/or properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.29. Asking which do you mean</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,92 +19,130 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Change of Basis" -->
-<!-- SEARCH SECTION "Ex 48" -->
-<!-- SEARCH SORT "Ex 004-006-048" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc58.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc60.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.6. New either/or properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "Apples" -->
+<!-- SEARCH SECTION "Ex 344" -->
+<!-- SEARCH SORT "Ex 017-029-344" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc300.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc302.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.29. Asking which do you mean</b></font></td></tr></table>
 <p>
-<p>Properties can only be given to something if its kind will permit that: we cannot make a chair &quot;dark&quot; or a room &quot;portable&quot;, for instance. When creating kinds, then, we need a way to specify the properties which that kind of thing will allow, and this will need to include new properties of our own devising.
+<p><b>1. When it happens.</b> When the player has typed an ambiguous noun reference, and Inform has not been able to decide what was meant.
 <p>
-<blockquote><font color="#000080">A dead end is either secret or ordinary.
+<p><b>2. The default behaviour.</b> A question such as &quot;Which do you mean, the laminated mahogany box or the boom box?&quot; is printed. (This activity shapes the question: it is not responsible for parsing the answer. It would be very mysterious to write rules for this activity such that nothing is printed, because the player would then have no idea what to type.)
+<p>
+<p><b>3. Examples.</b> The question is harder to print than may first appear, since one must not simply list the options, but also take into account collections of plural objects (&quot;Which do you mean, the gold-tipped pen or a gold coin?&quot;). It is probably better not to try to rewrite this.
+<p>
+<p>(a) But we can place notes before or after: here is a verbose explanation for beginners to IF.
+<p>
+<blockquote><font color="#000080">Before asking which do you mean: say &quot;Okay, so I'm going to have to ask a question now: you've typed something ambiguous, and I don't know which noun you're referring to.&quot;
 </font></blockquote><p>
 <p>
-<p>This creates just one new property, not two, as the names are taken as the two states of a single either/or property: secret means not ordinary, ordinary means not secret. Alternatively, we could just say:
-<p>
-<blockquote><font color="#000080">A dead end can be secret.
+<blockquote><font color="#000080">After asking which do you mean: say &quot;(Just type a word or two to give me more information.)&quot;
 </font></blockquote><p>
 <p>
-<p>in which case the opposite of &quot;secret&quot; would be &quot;not secret&quot;.
+<p>(b) We can also use this activity as a context for other activities. For instance:
 <p>
-<p>Note that we are free to add to the definitions of kinds which already exist, not just those we have created ourselves: for instance,
-<p>
-<blockquote><font color="#000080">A room is either indoors or outdoors.
+<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot; The great Eiffel Tower is fixed in place. Understand &quot;actual&quot; as the great Tower.
 </font></blockquote><p>
 <p>
-<p>creates a new property which all rooms either possess or don't. And so on. If we make the above definitions then by default, any dead ends created will be &quot;ordinary&quot; and any rooms created will be &quot;outdoors&quot;: that is, in the absence of other information it is assumed that a new either/or property will not be held. We could reverse this behaviour by adding:
-<p>
-<blockquote><font color="#000080">A dead end is usually secret. A room is usually indoors.
+<blockquote><font color="#000080">Rule for printing the name of the great Tower while asking which do you mean: say &quot;actual Tower&quot;. Rule for printing the name of the souvenir tower while asking which do you mean: say &quot;souvenir&quot;.
 </font></blockquote><p>
 <p>
-<p>(It is not quite true that a property can only be held by something if the kind permits it, because in exceptional cases we can give special permission. For instance, the &quot;open&quot; property is normally only applicable to doors and containers. Here we give special leave for it to apply to a specific thing:
+<p>causes TAKE TOWER (for instance) to produce a nice tidy question in reply: &quot;Which do you mean, the actual Tower or the souvenir?&quot;
 <p>
-<blockquote><font color="#000080">The umbrella is carried by the player. The umbrella can be open. The umbrella is open.
-</font></blockquote><p>
-<p>
-<p>In practice, this possibility is only occasionally needed.)
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
 <p>
 <p><hr><p>
+<a name="e180"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex180.html#e180 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>343</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex180.html#e180 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Originals</font></b></a><br>Allowing the player to create models of anything in the game world; parsing the name "model [thing]" or even just "[thing]" to refer to these newly-created models; asking "which do you mean, the model [thing] or the actual [thing]" when there is ambiguity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex180.html#e180 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e305"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc59.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>48</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc59.html#e305 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Change of Basis</font></b></a><br>Implementing sleeping and wakeful states.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex305.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e305"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc301.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>344</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc301.html#e305 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Apples</font></b></a><br>Prompting the player on how to disambiguate otherwise similar objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex305.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to allow the player to go to sleep some of the time:
+<p>Inform by default detects whether two objects can be disambiguated by any vocabulary available to the player. If so, it asks a question; if not, it picks one of the identical objects at random.
+<p>
+<p>Generally this produces good behavior. Occasionally, though, two objects have some distinguishing characteristic that doesn't appear in the object name. For instance, suppose we've created a class of apples that can be told apart depending on whether they've been bitten or not:
+<p>
+<blockquote><font color="#000080">An apple is a kind of thing. Consumption is a kind of value. The consumptions are pristine and bitten. An apple has a consumption. The description of an apple is &quot;It is [consumption].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand the consumption property as describing an apple.
+</font></blockquote><p>
+<p>
+<p>The player can meaningfully type
+<p>
+<blockquote><font color="#000080">>EAT BITTEN APPLE
+</font></blockquote><p>
+<p>
+<p>or
+<p>
+<blockquote><font color="#000080">>EAT PRISTINE APPLE
+</font></blockquote><p>
+<p>
+<p>but if he types
+<p>
+<blockquote><font color="#000080">>EAT APPLE
+</font></blockquote><p>
+<p>
+<p>Inform will, annoyingly, ask
+<p>
+<blockquote><font color="#000080">Which do you mean, an apple or the apple?
+</font></blockquote><p>
+<p>
+<p>This gives the player no indication of why Inform is making a distinction. So here we add a special &quot;printing the name&quot; rule to get around that situation:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode141(code) {
+function pasteCode441(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Change of Basis[=0x0022=][=0x000A=][=0x000A=]A person is either awake or asleep. A person is usually awake.[=0x000A=][=0x000A=][The important thing to note here is that it does not work to say [=0x0022=]the player is either asleep or awake[=0x0022=]. This is because the player is not necessarily one specific person or thing during the game: the identity of the player can be changed, as we will see later.][=0x000A=][=0x000A=][So if we want to make rules about the properties of the player, we should attach these rules to the [=0x0022=]person[=0x0022=] kind (or, if they really need to belong only to the player, to the [=0x0022=]player-character[=0x0022=] kind). A player-character is a kind of person.][=0x000A=][=0x000A=]Linear Algebra Class is a room. [=0x0022=]The blackboard is covered with square arrangements of numbers. These are supposed to convey something to you, but mostly you[=0x0027=]re finding them soporific.[=0x0022=][=0x000A=][=0x000A=][Now a few rules about changing from one state to the other:][=0x000A=][=0x000A=]Instead of sleeping: now the player is asleep; say [=0x0022=]You drop off.[=0x0022=][=0x000A=][=0x000A=]Instead of doing something other than waking up, waiting or sleeping when the player is asleep:[=0x000A=][=0x0009=]say [=0x0022=]Ssh! You[=0x0027=]re sleeping![=0x0022=][=0x000A=][=0x000A=]Instead of sleeping when the player is asleep:[=0x000A=][=0x0009=]say [=0x0022=]Zzzz.[=0x0022=][=0x000A=][=0x000A=]Instead of waking up when the player is asleep:[=0x000A=][=0x0009=]now the player is awake;[=0x000A=][=0x0009=]say [=0x0022=]You come to suddenly, wiping drool from your lips.[=0x0022=][=0x000A=][=0x000A=]Instead of doing something other than looking or sleeping when the player is awake:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]d really rather just sleep through this.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wake up / sleep / look / z / sleep / wake up / look[=0x0022=].[=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Apples[=0x0022=][=0x000A=][=0x000A=]Orchard is a room.[=0x000A=][=0x000A=]An apple is a kind of thing. Consumption is a kind of value. The consumptions are pristine and bitten. An apple has a consumption. The description of an apple is [=0x0022=]It is [consumption].[=0x0022=][=0x000A=][=0x000A=]Understand the consumption property as describing an apple.[=0x000A=][=0x000A=]Before printing the name of an apple while asking which do you mean: say [=0x0022=][consumption] [=0x0022=]. Before printing the plural name of an apple while asking which do you mean: say [=0x0022=][consumption] [=0x0022=].[=0x000A=][=0x000A=]The player carries three apples.[=0x000A=][=0x000A=]Instead of eating a pristine apple:[=0x000A=][=0x0009=]say [=0x0022=]You take a satisfying bite.[=0x0022=];[=0x000A=][=0x0009=]now the noun is bitten.[=0x000A=][=0x000A=]Instead of eating a bitten apple:[=0x000A=][=0x0009=]say [=0x0022=]You consume the apple entirely.[=0x0022=];[=0x000A=][=0x0009=]remove the noun from play.[=0x000A=][=0x000A=][Inform will also separate the bitten from the pristine apples in inventory listings and room descriptions, even though it[=0x0027=]s not clear why; we can improve on that behavior thus:][=0x000A=][=0x000A=]Before listing contents: group apples together.[=0x000A=][=0x000A=]Rule for grouping together an apple (called target):[=0x000A=][=0x0009=]let source be the holder of the target;[=0x000A=][=0x0009=]say [=0x0022=][number of apples held by the source in words] apple[s], some bitten[=0x0022=].[=0x000A=][=0x000A=]Before printing the plural name of an apple (called target):[=0x000A=][=0x0009=]let source be the holder of the target;[=0x000A=][=0x0009=]if every apple held by the source is bitten, say [=0x0022=]bitten [=0x0022=];[=0x000A=][=0x0009=]if every apple held by the source is pristine, say [=0x0022=]pristine [=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]i / eat apple / i / eat apple / pristine / i / eat apple / pristine / i[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode141()"><img border=0 src=../doc_images/paste.png></a> &quot;Change of Basis&quot;
+<a href="javascript:pasteCode441()"><img border=0 src=../doc_images/paste.png></a>  &quot;Apples&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person is either awake or asleep. A person is usually awake.
+<blockquote><font color="#000080">Orchard is a room.
 </font></blockquote><p>
 <p>
-<p>The important thing to note here is that it does not work to say &quot;the player is either asleep or awake&quot;. This is because the player is not necessarily one specific person or thing during the game: the identity of the player can be changed, as we will see later.
-<p>
-<p>So if we want to make rules about the properties of the player, we should attach these rules to the &quot;person&quot; kind (or, if they really need to belong only to the player, to the &quot;player-character&quot; kind). A player-character is a kind of person.
-<p>
-<blockquote><font color="#000080">Linear Algebra Class is a room. &quot;The blackboard is covered with square arrangements of numbers. These are supposed to convey something to you, but mostly you're finding them soporific.&quot;
+<blockquote><font color="#000080">An apple is a kind of thing. Consumption is a kind of value. The consumptions are pristine and bitten. An apple has a consumption. The description of an apple is &quot;It is [consumption].&quot;
 </font></blockquote><p>
 <p>
-<p>Now a few rules about changing from one state to the other:
-<p>
-<blockquote><font color="#000080">Instead of sleeping: now the player is asleep; say &quot;You drop off.&quot;
+<blockquote><font color="#000080">Understand the consumption property as describing an apple.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something other than waking up, waiting or sleeping when the player is asleep:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ssh! You're sleeping!&quot;
+<blockquote><font color="#000080">Before printing the name of an apple while asking which do you mean: say &quot;[consumption] &quot;. Before printing the plural name of an apple while asking which do you mean: say &quot;[consumption] &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of sleeping when the player is asleep:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Zzzz.&quot;
+<blockquote><font color="#000080">The player carries three apples.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waking up when the player is asleep:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You come to suddenly, wiping drool from your lips.&quot;
+<blockquote><font color="#000080">Instead of eating a pristine apple:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You take a satisfying bite.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is bitten.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something other than looking or sleeping when the player is awake:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd really rather just sleep through this.&quot;
+<blockquote><font color="#000080">Instead of eating a bitten apple:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You consume the apple entirely.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;wake up / sleep / look / z / sleep / wake up / look&quot;.
+<p>Inform will also separate the bitten from the pristine apples in inventory listings and room descriptions, even though it's not clear why; we can improve on that behavior thus:
+<p>
+<blockquote><font color="#000080">Before listing contents: group apples together.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc59.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Rule for grouping together an apple (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let source be the holder of the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[number of apples held by the source in words] apple[s], some bitten&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before printing the plural name of an apple (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let source be the holder of the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if every apple held by the source is bitten, say &quot;bitten &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if every apple held by the source is pristine, say &quot;pristine &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / eat apple / i / eat apple / pristine / i / eat apple / pristine / i&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc301.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc58.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc60.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e238"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex238.html#e238 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex238.html#e238 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Walls and Noses</font></b></a><br>Responding to "EXAMINE WALL" with "In which direction?", and to "EXAMINE NOSE" with "Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?"<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex238.html#e238 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc300.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc302.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

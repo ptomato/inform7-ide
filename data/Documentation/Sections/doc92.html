@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.12. Review of Chapter 6: Descriptions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.11. Adjacent rooms and routes through the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,132 +19,72 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Review of Chapter 6: Descriptions" -->
-<!-- SEARCH SECTION "6.12" -->
-<!-- SEARCH SORT "006-012-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc91.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc93.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.12. Review of Chapter 6: Descriptions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Adjacent rooms and routes through the map" -->
+<!-- SEARCH SECTION "6.11" -->
+<!-- SEARCH SORT "006-011-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc91.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc93.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.11. Adjacent rooms and routes through the map</b></font></td></tr></table>
 <p>
-<p><b>1. The lexicon.</b> Inform's lexicon is not just a figure of speech: Inform actually does maintain an alphabetical list of nouns and adjectives which can be used in descriptions, and that lexicon can be browsed in a project's Index.
+<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
 <p>
-<p>To summarise. Nouns are straightforward: they refer to specific things (&quot;wine cask&quot;) or specific kinds (even &quot;something&quot;, which refers to &quot;thing&quot;). Adjectives, however, come from three possible sources:
-<p>
-<p>(a) From either/or properties. For instance, &quot;open&quot; and &quot;closed&quot;, which are antonyms: what is not open is closed, and vice versa.
-<p>
-<p>(b) When we create a new kind of value, and allow it to be a property of a given kind, we also create new adjectives:
-<p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, blue and green. A building block is a kind of thing. A building block has a colour.
+<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
 </font></blockquote><p>
 <p>
-<p>We can now use the adjective &quot;green&quot; (for instance) in descriptions:
+<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
 <p>
-<blockquote><font color="#000080">Instead of taking a green building block, say &quot;For some reason you have an aversion to the colour green.&quot;
+<blockquote><font color="#000080">if somebody is in an adjacent room, ...
 </font></blockquote><p>
 <p>
-<p>And similarly when we use the more convenient form for single things, such as the cask in this example:
+<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
 <p>
-<blockquote><font color="#000080">The cask is either customs sealed, liable to tax or stolen goods.
+<p>If we want to ask a more direct question, we can obtain specific map connections like so:
+<p>
+<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
 </font></blockquote><p>
 <p>
-<p>(c) From direct definitions, such as the adjective &quot;occupied&quot; created by:
+<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
 <p>
-<blockquote><font color="#000080">Definition: a supporter is occupied if something is on it.
+<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
 </font></blockquote><p>
 <p>
-<p><b>2. Descriptions.</b> As we have seen, we are also allowed to use more complicated descriptions of things:
+<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
 <p>
-<blockquote><font color="#000080">an open container on the table
-<br>a woman inside a lighted room
-<br>something which is worn by somebody
-<br>a man who does not wear anything
-<br>something which supports something
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
 </font></blockquote><p>
 <p>
-<p>For the time being, this ability is of only limited use, but we will see shortly that it will let us write instructions for what the game should do under complex circumstances; e.g.,
+<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
 <p>
-<blockquote><font color="#000080">Before taking something which is in a closed transparent container: ...
-<br>Instead of wearing something which offends the player: ...
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
 </font></blockquote><p>
 <p>
-<p>We are allowed also to count the number of objects that correspond to a description, as in
+<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
 <p>
-<blockquote><font color="#000080">the number of women who are concealing weapons
-</font></blockquote><p>
-<p>
-<p>and we may ask how many of a category correspond to a description:
-<p>
-<blockquote><font color="#000080">if each door is open
-<br>if anyone is carrying all of the animals
-<br>if everybody is in the Dining Room
-<br>if some of the doors are open
-<br>if most of the doors are open (<i>i.e., more than half</i>)
-<br>if almost all of the doors are open (<i>i.e., 80 percent or more</i>)
-<br>if two women are carrying animals
-<br>if at most three doors are open
-<br>if fewer than 10 portable containers are closed
-<br>if all but two of the devices are switched on
-</font></blockquote><p>
-<p>
-<p>As we have seen,
-<p>
-<blockquote><font color="#000080">if two doors are open
-</font></blockquote><p>
-<p>
-<p>is equivalent to
-<p>
-<blockquote><font color="#000080">if at least two doors are open
-</font></blockquote><p>
-<p>
-<p>but we may insist on exactitude with
-<p>
-<blockquote><font color="#000080">if exactly two doors are open
-</font></blockquote><p>
-<p>
-<p><b>3. Seeing and touching.</b> We may also talk about what can be seen and touched by the player (or by other characters or even other objects):
-<p>
-<blockquote><font color="#000080">if the rubber chicken is visible
-</font></blockquote><p>
-<p>
-<p>means the same thing as
-<p>
-<blockquote><font color="#000080">if the player can see the rubber chicken
-</font></blockquote><p>
-<p>
-<p>but we the player need not be the focus of the question:
-<p>
-<blockquote><font color="#000080">if the video camera can see the felon
-<br>if the pool is able to be touched by the live wire
-</font></blockquote><p>
-<p>
-<p>The chapter on Advanced Actions discusses how we may change Inform's definition of what can be seen or touched, if that becomes necessary; the chapter on Relations shows how to create other &quot;is able&quot; conditions.
-<p>
-<p><b>4. Routes through the map.</b> &quot;An adjacent room&quot; is a room which can be reached in a single move from the player's current location, via a path that does not pass through any doors (open or closed).
-<p>
-<blockquote><font color="#000080">a room adjacent to the Factory Floor
-</font></blockquote><p>
-<p>
-<p>applies the same criterion to the Factory rather than the current location. We may also talk about
-<p>
-<blockquote><font color="#000080">the room east from the Factory Floor
-</font></blockquote><p>
-<p>
-<p>for example, or more complicatedly,
-<p>
-<blockquote><font color="#000080">best route from the location to the Lodestone Room
-<br>best route from the location to the Lodestone Room, using doors
-<br>best route from the location to the Lodestone Room, using even locked doors
-</font></blockquote><p>
-<p>
-<p>where the best route will be the direction to travel first when moving towards the Lodestone Room, and the optional &quot;using doors&quot; and &quot;using even locked doors&quot; indicate whether these paths should be included. Moreover, we can plot a course only through rooms that meet a certain criterion, as in
+<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
 <p>
 <blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
-<br>best route from the Drawbridge to the Keep through lighted rooms, using doors
 </font></blockquote><p>
 <p>
-<p>This can be especially useful in the case where we want to find a path for the player but only allow him to travel through rooms he has already seen once; but any adjective that applies to a room may be used in place of &quot;visited&quot; or &quot;lighted&quot; in these examples. We may find the lengths of these journeys with phrases like:
+<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
 <p>
-<blockquote><font color="#000080">number of moves from the location to the Sundial
-<br>number of moves from the location to the Sundial, using doors
-<br>number of moves from the location to the Sundial through visited rooms, using even locked doors
+<p>Lastly, we can find out how long the journey would be:
+<p>
+<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
 </font></blockquote><p>
 <p>
+<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
+<p>
+<p>Route-finding makes it possible to write quite sophisticated conditions concisely. But these sometimes run slowly, because they call for large amounts of computation. How rapidly Inform can find routes depends on which of two methods it uses. Both have advantages - one is fast but needs large amounts of memory, the other is slow but economical. We can choose between them with one of these two use options:
+<p>
+<blockquote><font color="#000080">Use fast route-finding.
+<br>Use slow route-finding.
+</font></blockquote><p>
+<p>
+<p>If neither is specified, &quot;fast&quot; is used where the project uses the Glulx virtual machine (see the Settings panel), and &quot;slow&quot; on the Z-machine, where memory is tighter. Fast route-finding is ideally suited to situations where dozens of characters are constantly route-finding through the map as they meander around in a landscape.
+<p>
+<p>(- See Indirect relations for route-finding through a relation rather than the map.)
+<p>
+<p><hr><p>
+<a name="e189"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex189.html#e189 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>74</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex189.html#e189 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex189.html#e189 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e53"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>75</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex53.html#e53 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e404"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex404.html#e404 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>76</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex404.html#e404 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex404.html#e404 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>77</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc91.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

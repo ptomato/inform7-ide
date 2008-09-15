@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.6. Actions applying to kinds of value</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.24. Printing the locale description of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,72 +19,147 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Tom's Midnight Garden" -->
-<!-- SEARCH SECTION "Ex 272" -->
-<!-- SEARCH SORT "Ex 016-006-272" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc253.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc255.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.6. Actions applying to kinds of value</b></font></td></tr></table>
+<!-- SEARCH TITLE "Priority Lab" -->
+<!-- SEARCH SECTION "Ex 333" -->
+<!-- SEARCH SORT "Ex 017-024-333" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc295.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc297.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.24. Printing the locale description of something</b></font></td></tr></table>
 <p>
-<p>Almost all actions apply to things: the player picks them up, pushes them, looks at them and so on. We only occasionally need to recognise other kinds of value, but when we do, we can. For instance:
+<p><b>1. When it happens.</b> A &quot;locale description&quot; is Inform jargon for the part of a room description which catalogues the visible items in the room. When looking, Inform will normally print the description of the room itself, followed by a locale description for the room. But if the player is in a cage in the room, there will be two locale descriptions: one for the room, then another for the cage. This activity is used to write the locale description for a single domain, and the &quot;something&quot; can be either a room, an enterable container, or an enterable supporter.
 <p>
-<blockquote><font color="#000080">Adjusting it to is an action applying to one thing and one number.
+<p><b>2. The default behaviour.</b> Is quite complicated, and is written up in full in the typeset form of the Standard Rules downloadable from the Inform website. Briefly, though: we first run the &quot;choosing notable locale objects&quot; activity to find out what ought to be mentioned here. That assembles a list of things to mention, sorted into priority order. Items with priority 1 go first, then those with priority 2, and so on. The &quot;printing a locale paragraph&quot; activity is run for each, and in practice that usually hands the job over to &quot;writing a paragraph about&quot;. Sometimes a paragraph will indeed be written, but not always. Sometimes there is nothing interesting to say, and an item is left until a final, single paragraph which gathers up the leftovers (&quot;You can also see a scarlet fish, a harmonium and a kite here.&quot;), the printing of which is done by the &quot;listing nondescript items of&quot; activity. As soon as any item picks up the either/or property &quot;mentioned&quot;, by having its name printed, it is struck out so that it will not appear subsequently, whatever its priority.
+<p>
+<p><b>3. Examples.</b> As general advice: if the effect wanted can be got using &quot;writing a paragraph about&quot; and &quot;listing nondescript items of&quot; alone, use those; if it's necessary to meddle further, use &quot;choosing notable locale objects&quot; and &quot;printing a locale paragraph&quot; to alter the normal processes; use the all-powerful &quot;printing the locale description&quot; activity only when the whole process needs to be altered, not the item-by-item workings.
+<p>
+<p>(a) In the Very Misty Moorlands, nothing on the ground can ordinarily be seen through the swirling mist, so the locale description is suppressed entirely:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode68(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for printing the locale description of the Very Misty Moorlands:[=0x000A=][=0x0009=]say [=0x0022=]Mist coils around your feet, thick as a blanket. You cannot even see the ground you walk upon.[=0x0022=] instead.[=0x000A=][=0x000A=]Report taking something in the Very Misty Moorlands:[=0x000A=][=0x0009=]say [=0x0022=]You grope blindly in the mist and pick up [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode68()"><img border=0 src=../doc_images/paste.png></a> Rule for printing the locale description of the Very Misty Moorlands:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mist coils around your feet, thick as a blanket. You cannot even see the ground you walk upon.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;adjust [something] to [a number]&quot; as adjusting it to.
+<blockquote><font color="#000080">Report taking something in the Very Misty Moorlands:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You grope blindly in the mist and pick up [the noun].&quot; instead.
 </font></blockquote><p>
 <p>
-<p>The substitution &quot;[a number]&quot; matches any number (actually any whole number that is not too large) typed by the player. Inform checks the various kinds being used to make sure that everything matches, so, for instance, this would be disallowed:
+<p>(b) Here we take the chance to insert an additional paragraph into the locale description. This does relate to an item which might be described later, but where the player doesn't know that:
 <p>
-<blockquote><font color="#000080">Understand &quot;adjust [something] to [something]&quot; as adjusting it to.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode69(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The Horological Workshop is a room. The marble table is fixed in place in the Workshop.[=0x000A=][=0x000A=]The parcel is a closed opaque container on the marble table. The alarm clock is a device in the parcel. The alarm clock is switched on.[=0x000A=][=0x000A=]Before printing the locale description of a room (called the setting):[=0x000A=][=0x0009=]if the setting encloses the alarm clock and the alarm clock is switched on, say [=0x0022=]A faint ticking noise can be heard.[=0x0022=][=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode69()"><img border=0 src=../doc_images/paste.png></a> The Horological Workshop is a room. The marble table is fixed in place in the Workshop.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The parcel is a closed opaque container on the marble table. The alarm clock is a device in the parcel. The alarm clock is switched on.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before printing the locale description of a room (called the setting):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the setting encloses the alarm clock and the alarm clock is switched on, say &quot;A faint ticking noise can be heard.&quot;
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e306"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc254.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>272</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc254.html#e306 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Tom's Midnight Garden</font></b></a><br>A clock kind that can be set to any time using "the time understood"; may be turned on and off; and will advance itself only when running. Time on the face is also reported differently depending on whether the clock is analog or digital.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex306.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e306"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc296.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>333</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc296.html#e306 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Priority Lab</font></b></a><br>A debugging rule useful for checking the priorities of objects about to be listed.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex306.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Time can also be understood as a token, and the time parsed will be recorded as &quot;the time understood&quot;. So therefore, if we wish for clocks which may be set:
+<p>When it comes time to start manipulating the priorities of items, it is useful to be able to check the table for debugging purposes; the problem is that printing the names of the objects can itself affect the way the room description is generated, foiling our debugging efforts.
+<p>
+<p>What follows is a rule to help with debugging safely, and a sample of how priorities work:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode368(code) {
+function pasteCode429(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Tom[=0x0027=]s Midnight Garden[=0x0022=][=0x000A=][=0x000A=]A clock is a kind of device. A clock has a time called the current time. A clock can be analog or digital. The current time of a clock is usually 9:01 AM. The description of a clock is [=0x0022=]It shows the time to be [if analog]about [the current time to the nearest five minutes in words][otherwise][the current time][end if].[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]set [clock] to [time][=0x0022=] as setting it by time. Setting it by time is an action applying to one thing and one time.[=0x000A=][=0x000A=]Instead of setting a clock to something:[=0x000A=][=0x0009=]say [=0x0022=][The noun] can be set only to a time of day, such as 8:00 AM, or midnight.[=0x0022=][=0x000A=][=0x000A=]Carry out setting a clock by time:[=0x000A=][=0x0009=]change the current time of the noun to the time understood.[=0x000A=][=0x000A=]Report setting a clock by time:[=0x000A=][=0x0009=]say [=0x0022=]You set [the noun] to [time understood].[=0x0022=][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with item running through switched on clocks:[=0x000A=][=0x0009=][=0x0009=]change the current time of the item to one minute after the current time of the item.[=0x000A=][=0x000A=]The Hall is a room. The grandfather clock is a fixed in place analog clock in the Hall. The travel clock is a switched on digital clock in the Hall.  When play begins: change the right hand status line to [=0x0022=][time of day][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]examine grandfather clock / set it to midnight / switch it on / wait / wait / wait / examine it / set travel clock to 4:12 / examine it[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Priority Lab[=0x0022=][=0x000A=][=0x000A=]Section 1 - Procedure[=0x000A=][=0x000A=]Before printing the locale description (this is the dump locale table rule):[=0x000A=][=0x0009=]say [=0x0022=]Locale Priority list:[=0x0022=];[=0x000A=][=0x0009=]repeat through Table of Locale Priorities:[=0x000A=][=0x0009=][=0x0009=]if notable-object entry is mentioned:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let flag be true;[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let flag be false;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][line break]  [notable-object entry]: [locale description priority entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]if flag is false, change notable-object entry to not mentioned;[=0x000A=][=0x0009=]say line break.[=0x000A=][=0x000A=][Now, let[=0x0027=]s look at some items put in a specific order. Things with low priority numbers list towards the beginning; things with high priority numbers list towards the end. (It helps to think of it as though we were making a numbered list of the paragraphs to appear in the description.) Anything numbered 0 doesn[=0x0027=]t appear at all, and the default priority of an object is 1. Thus:][=0x000A=][=0x000A=]Section 2 - Scenario[=0x000A=][=0x000A=]The Priority Lab is a room. The early bird, the worm, the leaf, the invisible object, the pebble, the twig, and the late edition are things in the Priority Lab.[=0x000A=][=0x000A=]After choosing notable locale objects:[=0x000A=][=0x0009=]set the locale priority of the early bird to 1; [list before everything else -- this would work with any number lower than 5 and higher than 0][=0x000A=][=0x0009=]set the locale priority of the invisible object to 0; [don[=0x0027=]t list at all][=0x000A=][=0x0009=]set the locale priority of the late edition to 10; [list after everything else -- this would work with any number larger than 5][=0x000A=][=0x000A=][An important cautionary note: priorities are only honored if the objects are going to get their own paragraphs (with [=0x0022=]writing a paragraph about...[=0x0022=] or because they have initial appearances). Priorities do not affect the order in which items appear in the final [=0x0022=]You can see...[=0x0022=] list, except that items with priority 0 or lower are omitted. (If we want to order the items in that list, we may want to resort to the Complex Listing extension by Emily Short.)][=0x000A=][=0x000A=][So in order for the priorities we just set to be interesting, let[=0x0027=]s give out some initial appearances and writing a paragraph rules:][=0x000A=][=0x000A=]The initial appearance of the worm is [=0x0022=]A worm inches along the ground.[=0x0022=][=0x000A=]The initial appearance of the late edition is [=0x0022=]Finally, the late edition lies at your feet.[=0x0022=][=0x000A=][=0x000A=]Rule for writing a paragraph about the early bird: say [=0x0022=]The early bird always appears first, and here it is.[=0x0022=][=0x000A=]Rule for writing a paragraph about the leaf: say [=0x0022=]Look, [a leaf]![=0x0022=][=0x000A=][=0x000A=][This procedure also means (as you can test by experiment) that after the late edition has been picked up and dropped again, it lists in no special order in the [=0x0022=]you can see...[=0x0022=] paragraph (since initial appearances only print when the object has not yet been moved).][=0x000A=][=0x000A=][The other thing to note is that by default that final collection of generic objects ([=0x0022=]You can also see...[=0x0022=]) appears at the end, regardless of the priority of everything else. If we really wanted to, though, we could force something to appear even after that paragraph, by adding a new listing rule to the locale description rules:][=0x000A=][=0x000A=]The late listing rule is listed after the you-can-also-see rule in the for printing the locale description rules.[=0x000A=][=0x000A=]A thing can be marked for late listing. A thing is usually not marked for late listing.[=0x000A=][=0x000A=]This is the late listing rule:[=0x000A=][=0x0009=]if something is marked for late listing:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Oh! And also [a list of things which are marked for late listing].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now everything is not marked for late listing;[=0x000A=][=0x0009=]continue the activity.[=0x000A=][=0x000A=][And now we set up an item to use this:][=0x000A=][=0x000A=]The afterthought is a thing in the Priority Lab.[=0x000A=][=0x000A=]After choosing notable locale objects:[=0x000A=][=0x0009=]if the afterthought is a notable-object listed in the Table of Locale Priorities:[=0x000A=][=0x0009=][=0x0009=]now the afterthought is mentioned;[=0x000A=][=0x0009=][=0x0009=]now the afterthought is marked for late listing.[=0x000A=][=0x000A=]Test me with [=0x0022=]get leaf / drop leaf / look / x invisible object / get pebble / look / get twig / look / get afterthought / look / drop twig / look / get late edition / look[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode368()"><img border=0 src=../doc_images/paste.png></a> &quot;Tom's Midnight Garden&quot;
+<a href="javascript:pasteCode429()"><img border=0 src=../doc_images/paste.png></a> &quot;Priority Lab&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A clock is a kind of device. A clock has a time called the current time. A clock can be analog or digital. The current time of a clock is usually 9:01 AM. The description of a clock is &quot;It shows the time to be [if analog]about [the current time to the nearest five minutes in words][otherwise][the current time][end if].&quot;
+<blockquote><font color="#000080">Section 1 - Procedure
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;set [clock] to [time]&quot; as setting it by time. Setting it by time is an action applying to one thing and one time.
+<blockquote><font color="#000080">Before printing the locale description (this is the dump locale table rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Locale Priority list:&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Locale Priorities:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if notable-object entry is mentioned:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let flag be true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let flag be false;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]  [notable-object entry]: [locale description priority entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if flag is false, change notable-object entry to not mentioned;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of setting a clock to something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] can be set only to a time of day, such as 8:00 AM, or midnight.&quot;
+<p>Now, let's look at some items put in a specific order. Things with low priority numbers list towards the beginning; things with high priority numbers list towards the end. (It helps to think of it as though we were making a numbered list of the paragraphs to appear in the description.) Anything numbered 0 doesn't appear at all, and the default priority of an object is 1. Thus:
+<p>
+<blockquote><font color="#000080">Section 2 - Scenario
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out setting a clock by time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current time of the noun to the time understood.
+<blockquote><font color="#000080">The Priority Lab is a room. The early bird, the worm, the leaf, the invisible object, the pebble, the twig, and the late edition are things in the Priority Lab.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report setting a clock by time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You set [the noun] to [time understood].&quot;
+<blockquote><font color="#000080">After choosing notable locale objects:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;set the locale priority of the early bird to 1; [list before everything else -- this would work with any number lower than 5 and higher than 0]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;set the locale priority of the invisible object to 0; [don't list at all]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;set the locale priority of the late edition to 10; [list after everything else -- this would work with any number larger than 5]
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through switched on clocks:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current time of the item to one minute after the current time of the item.
+<p>An important cautionary note: priorities are only honored if the objects are going to get their own paragraphs (with &quot;writing a paragraph about...&quot; or because they have initial appearances). Priorities do not affect the order in which items appear in the final &quot;You can see...&quot; list, except that items with priority 0 or lower are omitted. (If we want to order the items in that list, we may want to resort to the Complex Listing extension by Emily Short.)
+<p>
+<p>So in order for the priorities we just set to be interesting, let's give out some initial appearances and writing a paragraph rules:
+<p>
+<blockquote><font color="#000080">The initial appearance of the worm is &quot;A worm inches along the ground.&quot;
+<br>The initial appearance of the late edition is &quot;Finally, the late edition lies at your feet.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Hall is a room. The grandfather clock is a fixed in place analog clock in the Hall. The travel clock is a switched on digital clock in the Hall.  When play begins: change the right hand status line to &quot;[time of day]&quot;.
+<blockquote><font color="#000080">Rule for writing a paragraph about the early bird: say &quot;The early bird always appears first, and here it is.&quot;
+<br>Rule for writing a paragraph about the leaf: say &quot;Look, [a leaf]!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine grandfather clock / set it to midnight / switch it on / wait / wait / wait / examine it / set travel clock to 4:12 / examine it&quot;.
+<p>This procedure also means (as you can test by experiment) that after the late edition has been picked up and dropped again, it lists in no special order in the &quot;you can see...&quot; paragraph (since initial appearances only print when the object has not yet been moved).
+<p>
+<p>The other thing to note is that by default that final collection of generic objects (&quot;You can also see...&quot;) appears at the end, regardless of the priority of everything else. If we really wanted to, though, we could force something to appear even after that paragraph, by adding a new listing rule to the locale description rules:
+<p>
+<blockquote><font color="#000080">The late listing rule is listed after the you-can-also-see rule in the for printing the locale description rules.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc254.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">A thing can be marked for late listing. A thing is usually not marked for late listing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This is the late listing rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is marked for late listing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh! And also [a list of things which are marked for late listing].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now everything is not marked for late listing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the activity.
+</font></blockquote><p>
+<p>
+<p>And now we set up an item to use this:
+<p>
+<blockquote><font color="#000080">The afterthought is a thing in the Priority Lab.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After choosing notable locale objects:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the afterthought is a notable-object listed in the Table of Locale Priorities:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the afterthought is mentioned;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the afterthought is marked for late listing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get leaf / drop leaf / look / x invisible object / get pebble / look / get twig / look / get afterthought / look / drop twig / look / get late edition / look&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc296.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e59"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex59.html#e59 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Safety</font></b></a><br>A safe whose dial can be turned with SPIN SAFE TO 1131, and which will open only with the correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e94"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex94.html#e94 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex94.html#e94 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ibid.</font></b></a><br>A system which allows the author to assign footnotes to descriptions, and permits the player to retrieve them again by number, using "the number understood". Footnotes will automatically number themselves, according to the order in which the player discovers them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex94.html#e94 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc255.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc295.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

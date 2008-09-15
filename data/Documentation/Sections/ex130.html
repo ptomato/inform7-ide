@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.20. Possessions and clothing</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,56 +19,76 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Disenchantment Bay 10" -->
-<!-- SEARCH SECTION "Ex 32" -->
-<!-- SEARCH SORT "Ex 003-020-032" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc45.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc47.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.20. Possessions and clothing</b></font></td></tr></table>
+<!-- SEARCH TITLE "Port Royal 2" -->
+<!-- SEARCH SECTION "Ex 7" -->
+<!-- SEARCH SORT "Ex 003-003-007" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
 <p>
-<p>We have seen how to place objects in rooms, and in containers or on supporters. But what about people? Perhaps it could be said that they &quot;contain&quot; the fillings in their teeth, or &quot;support&quot; a top hat, but this is not very natural. Inform therefore never speaks of things being &quot;in&quot; or &quot;on&quot; people. Instead, they have two sorts of possessions: the things they carry, and the things they wear. (Body parts, such as arms and legs, are different again: see &quot;parts&quot; below for a clue to how to do these.) Thus:
+<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
 <p>
-<blockquote><font color="#000080">Mr Darcy wears a top hat. Mr Darcy carries a silver sword.
+<blockquote><font color="#000080">The Debris Room is west of the Crawl.
 </font></blockquote><p>
 <p>
-<p>In fact, Inform deduces from this not only who owns the hat and the sword, but also that Darcy has the kind &quot;person&quot;, because only people can wear or carry.
+<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
 <p>
-<p>As all the assertion verbs do, &quot;to wear&quot; and &quot;to carry&quot; have participles which Inform knows about. So we could equally well write:
-<p>
-<blockquote><font color="#000080">The scarlet coat is worn by Mr Wickham. The duelling pistol is carried by Mr Wickham.
+<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
 </font></blockquote><p>
 <p>
-<p>If we do not specify who does the wearing, or carrying, then this is assumed to be the player. Thus:
+<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
 <p>
-<blockquote><font color="#000080">A brass lantern and a rusty iron key are carried. The mosquito-repellent hat is worn.
+<p>We can even explicitly make a route which turns around as it leads between two rooms:
+<p>
+<blockquote><font color="#000080">West of the Garden is south of the Meadow.
 </font></blockquote><p>
 <p>
-<p>It would make no sense to &quot;wear&quot; the key, for instance, so Inform needs to distinguish between what is clothing and what is not. It does this with an either/or property called &quot;wearable&quot;: if something has this property then the player will be allowed to wear it, provided it can first be picked up. Anything which is worn by somebody at the start of play is assumed to be wearable (unless we say otherwise). But if nobody is initially wearing the item in question, then we have to be explicit:
+<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
 <p>
-<blockquote><font color="#000080">The player carries a scarlet gown. The gown is wearable.
+<blockquote><font color="#000080">East of the Debris Room is nowhere.
 </font></blockquote><p>
 <p>
-<p>(When we come to asking questions about the current situation, we will need to remember that &quot;to carry&quot; and &quot;to wear&quot; are different. Thus &quot;if Lancelot carries the plate armour&quot; will not be true if he is wearing it rather than carrying it under his arm. As we will later see, we can instead vaguely say &quot;if Lancelot has the plate armour&quot; to mean either carrying or wearing.)
-<p>
-<a href=doc202.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>To carry, to wear, to have</b></font></a><i> for a more detailed explanation of carrying, wearing, and possessing as Inform understands them</i><p><p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc46.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>32</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc46.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disenchantment Bay 10</font></b></a><br>Disenchantment Bay: things for the player and the characters to wear and carry.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>At this point we can dress both the Captain and the player with some appropriate props:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode119(code) {
+function pasteCode95(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('The captain wears a baseball cap. The description of the cap is [=0x0022=]It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING.[=0x0022=][=0x000A=][=0x000A=]The player is carrying a backpack and a bottle of water. The player is wearing a pair of sunglasses. The description of the sunglasses is [=0x0022=]The light off the water and the ice does get pretty bright sometimes.[=0x0022=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]1691[=0x0022=][=0x000A=][=0x000A=]Thames Street End is a room.[=0x000A=][=0x000A=][If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher[=0x0027=]s Row. We can[=0x0027=]t put Fisher[=0x0027=]s Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let[=0x0027=]s have a map connection that bends around from west to north:][=0x000A=][=0x000A=]West of Thames Street End is north of Fisher[=0x0027=]s Row.[=0x000A=][=0x000A=][Now continuing west along Thames Street, or north along Fisher[=0x0027=]s Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They[=0x0027=]re good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let[=0x0027=]s be sure to make things clear:][=0x000A=][=0x000A=]The description of Fisher[=0x0027=]s Row is [=0x0022=]A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.[=0x0022=][=0x000A=][=0x000A=][Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.][=0x000A=][=0x000A=]Thames Street End is down from Fort James. Thames Street End is south from Fort James.[=0x000A=][=0x000A=][But we don[=0x0027=]t want the upward direction to work:][=0x000A=][=0x000A=]Up from Thames Street End is nowhere.[=0x000A=][=0x000A=]Test me with [=0x0022=]n / d / u / w / e / n / s[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode119()"><img border=0 src=../doc_images/paste.png></a> The captain wears a baseball cap. The description of the cap is &quot;It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING.&quot;
+<a href="javascript:pasteCode95()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is carrying a backpack and a bottle of water. The player is wearing a pair of sunglasses. The description of the sunglasses is &quot;The light off the water and the ice does get pretty bright sometimes.&quot;
+<blockquote><font color="#000080">Thames Street End is a room.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc46.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<p>If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher's Row. We can't put Fisher's Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let's have a map connection that bends around from west to north:
+<p>
+<blockquote><font color="#000080">West of Thames Street End is north of Fisher's Row.
+</font></blockquote><p>
+<p>
+<p>Now continuing west along Thames Street, or north along Fisher's Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They're good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let's be sure to make things clear:
+<p>
+<blockquote><font color="#000080">The description of Fisher's Row is &quot;A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.&quot;
+</font></blockquote><p>
+<p>
+<p>Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.
+<p>
+<blockquote><font color="#000080">Thames Street End is down from Fort James. Thames Street End is south from Fort James.
+</font></blockquote><p>
+<p>
+<p>But we don't want the upward direction to work:
+<p>
+<blockquote><font color="#000080">Up from Thames Street End is nowhere.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;n / d / u / w / e / n / s&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc45.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc47.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex241.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

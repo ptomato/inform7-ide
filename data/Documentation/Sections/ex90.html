@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.9. Adjacent rooms and routes through the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.4. During scenes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,108 +19,148 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Mistress of Animals" -->
-<!-- SEARCH SECTION "Ex 72" -->
-<!-- SEARCH SORT "Ex 006-009-072" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc88.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc90.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.9. Adjacent rooms and routes through the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Bowler Hats and Baby Geese" -->
+<!-- SEARCH SECTION "Ex 157" -->
+<!-- SEARCH SORT "Ex 010-004-157" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc152.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc154.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.4. During scenes</b></font></td></tr></table>
 <p>
-<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
+<p>Scenes are not only useful for changing the setting, by moving items or people around and providing a little narration. We can also make the rules different in one scene from another. For instance, at a sleepy country halt there is no reason why one should not walk across the tracks: but if there is a train in the way, that would be impossible.
 <p>
-<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
+<blockquote><font color="#000080">Before going north during the Train Stop, say &quot;The train blocks your way.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
+<p>Any rule can have the clause &quot;during ...&quot; attached, provided that clause goes at the end and explicitly names a scene. This is especially useful with &quot;every turn&quot;:
 <p>
-<blockquote><font color="#000080">if somebody is in an adjacent room, ...
+<blockquote><font color="#000080">Every turn during the Train Stop, say &quot;Water is sluiced out of the tank and into the engine.&quot;
 </font></blockquote><p>
 <p>
-<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
+<p>We can test whether a scene is happening with the condition:
 <p>
-<p>If we want to ask a more direct question, we can obtain specific map connections like so:
-<p>
-<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
+<blockquote><font color="#000080">Train Stop is going on ...
 </font></blockquote><p>
 <p>
-<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
+<p>(or &quot;is happening&quot;) and there are similar conditions &quot;Train Stop has happened&quot; and &quot;Train Stop has ended&quot;. (We need to be a bit careful about which we mean: it's possible to set things up so that the Train Stop scene will play out more than once, so &quot;Train Stop is happening&quot; and &quot;Train Stop has happened&quot; might both be true at once.)
 <p>
-<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
+<p>The kind of value &quot;scene&quot; is one which is allowed to have properties - it has a tick in the &quot;properties&quot; column in the chart on the Kinds index page - and this can be very useful in describing scenes. For instance, we could write:
+<p>
+<blockquote><font color="#000080">A scene can be thrilling or dull. Train Stop is dull.
+<br>A scene has a text called cue speech. The cue speech of Train Stop is &quot;All aboard!&quot;.
 </font></blockquote><p>
 <p>
-<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
+<p>Inform has the adjectives &quot;recurring&quot;, &quot;non-recurring&quot; and &quot;going on&quot; all built in to describe scenes, and the above would add &quot;thrilling&quot; and &quot;dull&quot;. Moreover, the &quot;during&quot; clause of a rule can give a description of a scene as easily as a specific scene name. For instance:
 <p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
+<blockquote><font color="#000080">Before going north during a dull non-recurring scene, ...
 </font></blockquote><p>
-<p>
-<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
-</font></blockquote><p>
-<p>
-<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
-<p>
-<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
-<p>
-<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
-</font></blockquote><p>
-<p>
-<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
-<p>
-<p>Lastly, we can find out how long the journey would be:
-<p>
-<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
-</font></blockquote><p>
-<p>
-<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
-<p>
-<p>Route-finding makes it possible to write quite sophisticated conditions concisely. But these sometimes run slowly, because they call for large amounts of computation. How rapidly Inform can find routes depends on which of two methods it uses. Both have advantages - one is fast but needs large amounts of memory, the other is slow but economical. We can choose between them with one of these two use options:
-<p>
-<blockquote><font color="#000080">Use fast route-finding.
-<br>Use slow route-finding.
-</font></blockquote><p>
-<p>
-<p>If neither is specified, &quot;fast&quot; is used where the project uses the Glulx virtual machine (see the Settings panel), and &quot;slow&quot; on the Z-machine, where memory is tighter. Fast route-finding is ideally suited to situations where dozens of characters are constantly route-finding through the map as they meander around in a landscape.
-<p>
-<p>(- See Indirect relations for route-finding through a relation rather than the map.)
 <p>
 <p><hr><p>
-<a name="e394"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex394.html#e394 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex394.html#e394 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex394.html#e394 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e37"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex37.html#e37 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Full Moon</font></b></a><br>Random atmospheric events which last the duration of a scene.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex165.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Space Patrol - Stranded on Jupiter!</font></b></a><br>We'll be back in just a moment, with more exciting adventures of the... Space Patrol!<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e225"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>156</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex225.html#e225 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Day One</font></b></a><br>A scene which plays through a series of events in order, then ends when the list of events is exhausted.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc89.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>72</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc89.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc153.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc153.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bowler Hats and Baby Geese</font></b></a><br>Creating a category of scenes that restrict the player's behavior.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want a restless sort of character always pacing from room to room. It is quite easy to use adjacency to achieve this effect:
+<p>Scenes can have properties -- a fact that is very useful when it comes to writing a series of scenes that all need to act alike in some respect.
+<p>
+<p>Suppose we have a plot that features a number of scripted scenes, where we need the player to stand still and wait while the events of the scene play out. One way to set this up is to create a property for such scenes -- let's call them &quot;restricted&quot; -- and then write a rule that keeps the player in place while the scene happens:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode165(code) {
+function pasteCode256(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Mistress of Animals[=0x0022=][=0x000A=][=0x000A=]Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.[=0x000A=][=0x000A=]Artemis is a woman in Thebes.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]if Artemis is in a room (called the current space):[=0x000A=][=0x0009=][=0x0009=]let next space be a random room which is adjacent to the current space;[=0x000A=][=0x0009=][=0x0009=]if Artemis is visible, say [=0x0022=]Artemis heads to [the next space].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move Artemis to next space;[=0x000A=][=0x0009=][=0x0009=]if Artemis is visible, say [=0x0022=]Artemis arrives from [the current space].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / z / z / z / z[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Bowler Hats and Baby Geese[=0x0022=][=0x000A=][=0x000A=]Section 1 - The Procedure[=0x000A=][=0x000A=]A scene can be restricted or free.[=0x000A=][=0x000A=]Instead of going somewhere during a restricted scene:[=0x000A=][=0x0009=]say [=0x0022=]Better to stay here for the moment and find out what is going to happen next.[=0x0022=][=0x000A=][=0x000A=][And now let[=0x0027=]s set up our restricted scene. In it, a clown is going to turn up wherever the player is (it doesn[=0x0027=]t matter where on the map he[=0x0027=]s gotten to at this point) and do a performance; the player will not be able to leave the area until the performance completes. We[=0x0027=]ll start with the setting:][=0x000A=][=0x000A=]Section 2 - The Stage and Props[=0x000A=][=0x000A=]The Broad Lawn is a room. [=0x0022=]A sort of fun fair has been set up on this broad lawn, with the House as a backdrop: it[=0x0027=]s an attempt to give local children something to do during the bank holiday. In typical fashion, everyone is doing a very good job of ignoring the House itself, despite its swarthy roofline and dozens of blacked-out windows.[=0x0022=][=0x000A=][=0x000A=]The House is scenery in the Broad Lawn. The description is [=0x0022=]A cautious vagueness about the nature of the inhabitants is generally considered a good idea. They might be gods, or minor demons, or they might be aliens from space, or possibly they are embodiments of physical principles, or expressions of universal human experience, or... at any rate they can run time backward and forward so it warbles like an old cassette. And they[=0x0027=]re always about when somebody dies. Other than that, they[=0x0027=]re very good neighbors and no one has a word to say against.[=0x0022=][=0x000A=][=0x000A=]Instead of entering the House:[=0x000A=][=0x0009=]say [=0x0022=]You can[=0x0027=]t go in, of course. It[=0x0027=]s not a house for people.[=0x0022=][=0x000A=][=0x000A=]The Gazebo is north of the Broad Lawn. [=0x0022=]The gazebo is sometimes used for bands, but at the moment has been appropriated for the distribution of lemonade.[=0x0022=][=0x000A=][=0x000A=]The clown is a man. [=0x0022=]A clown wearing [a list of things worn by the clown] stands nearby.[=0x0022=] The description is [=0x0022=]He winks back at you.[=0x0022=][=0x000A=][=0x000A=]The clown wears a purple polka-dot bowler hat. He carries a supply of baby geese. The description of the supply of baby geese is [=0x0022=]Three or four. Or five. It[=0x0027=]s hard to count.[=0x0022=] Understand [=0x0022=]goose[=0x0022=] or [=0x0022=]gosling[=0x0022=] or [=0x0022=]goslings[=0x0022=] as the supply of baby geese.[=0x000A=][=0x000A=]There are some eggs. The description of the eggs is [=0x0022=]A blur, really.[=0x0022=][=0x000A=][=0x000A=]There is a Spanish omelet. The description of the Spanish omelet is [=0x0022=]Exquisitely prepared.[=0x0022=][=0x000A=][=0x000A=][...And now the scene itself:][=0x000A=][=0x000A=]Section 3 - The Scenes[=0x000A=][=0x000A=]The Clown Performance is a restricted scene. Clown Performance begins when the turn count is 3.[=0x000A=][=0x000A=]When Clown Performance begins:[=0x000A=][=0x0009=]move the clown to the location.[=0x000A=][=0x000A=]Every turn during Clown Performance:[=0x000A=][=0x0009=]repeat through the Table of Clowning:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][event description entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=]stop.[=0x000A=][=0x000A=]When Clown Performance ends:[=0x000A=][=0x0009=]now the clown carries the omelet.[=0x000A=][=0x000A=]Clown Performance ends when the number of filled rows in the Table of Clowning is 0.[=0x000A=][=0x000A=]Table of Clowning[=0x000A=]event description[=0x000A=][=0x0022=]A clown with a purple polka-dot bowler hat strides into the vicinity and begins to juggle baby geese.[=0x0022=][=0x000A=][=0x0022=]While the clown juggles, the baby geese visibly grow older and larger. The clown becomes unnerved.[=0x0022=][=0x000A=][=0x0022=]In an attempt to resolve the problem, the clown reverses the direction of his juggling. The geese revert to goslings.[=0x0022=][=0x000A=][=0x0022=]The goslings become smaller and smaller until the clown is juggling goose eggs[replace eggs].[=0x0022=][=0x000A=][=0x0022=]The clown throws all the eggs into the air at once and catches them in the bowler hat. He takes a bow; the audience applauds. As a final gesture, he upends his hat to release a perfectly cooked omelet.[=0x0022=][=0x000A=][=0x000A=]To say replace eggs:[=0x000A=][=0x0009=]remove the supply of baby geese from play;[=0x000A=][=0x0009=]now the clown carries the eggs.[=0x000A=][=0x000A=]Free Time is a scene. Free Time begins when Clown Performance Ends.[=0x000A=][=0x000A=]Test me with [=0x0022=]scenes / n / z/ z / look / x geese / s / x geese / x eggs / z / s[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode165()"><img border=0 src=../doc_images/paste.png></a> &quot;Mistress of Animals&quot;
+<a href="javascript:pasteCode256()"><img border=0 src=../doc_images/paste.png></a>  &quot;Bowler Hats and Baby Geese&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
+<blockquote><font color="#000080">Section 1 - The Procedure
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Artemis is a woman in Thebes.
+<blockquote><font color="#000080">A scene can be restricted or free.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is in a room (called the current space):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next space be a random room which is adjacent to the current space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next space].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move Artemis to next space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current space].&quot;
+<blockquote><font color="#000080">Instead of going somewhere during a restricted scene:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Better to stay here for the moment and find out what is going to happen next.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z&quot;.
+<p>And now let's set up our restricted scene. In it, a clown is going to turn up wherever the player is (it doesn't matter where on the map he's gotten to at this point) and do a performance; the player will not be able to leave the area until the performance completes. We'll start with the setting:
+<p>
+<blockquote><font color="#000080">Section 2 - The Stage and Props
 </font></blockquote><p>
 <p>
-<p>Of course, it helps that Artemis is the sort to like open spaces. The implementation would become more complicated if there were doors which might block transit between these locations.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc89.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The Broad Lawn is a room. &quot;A sort of fun fair has been set up on this broad lawn, with the House as a backdrop: it's an attempt to give local children something to do during the bank holiday. In typical fashion, everyone is doing a very good job of ignoring the House itself, despite its swarthy roofline and dozens of blacked-out windows.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The House is scenery in the Broad Lawn. The description is &quot;A cautious vagueness about the nature of the inhabitants is generally considered a good idea. They might be gods, or minor demons, or they might be aliens from space, or possibly they are embodiments of physical principles, or expressions of universal human experience, or... at any rate they can run time backward and forward so it warbles like an old cassette. And they're always about when somebody dies. Other than that, they're very good neighbors and no one has a word to say against.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of entering the House:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't go in, of course. It's not a house for people.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Gazebo is north of the Broad Lawn. &quot;The gazebo is sometimes used for bands, but at the moment has been appropriated for the distribution of lemonade.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The clown is a man. &quot;A clown wearing [a list of things worn by the clown] stands nearby.&quot; The description is &quot;He winks back at you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The clown wears a purple polka-dot bowler hat. He carries a supply of baby geese. The description of the supply of baby geese is &quot;Three or four. Or five. It's hard to count.&quot; Understand &quot;goose&quot; or &quot;gosling&quot; or &quot;goslings&quot; as the supply of baby geese.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">There are some eggs. The description of the eggs is &quot;A blur, really.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">There is a Spanish omelet. The description of the Spanish omelet is &quot;Exquisitely prepared.&quot;
+</font></blockquote><p>
+<p>
+<p>...And now the scene itself:
+<p>
+<blockquote><font color="#000080">Section 3 - The Scenes
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Clown Performance is a restricted scene. Clown Performance begins when the turn count is 3.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Clown Performance begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the clown to the location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn during Clown Performance:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Clowning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[event description entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Clown Performance ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the clown carries the omelet.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Clown Performance ends when the number of filled rows in the Table of Clowning is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Clowning
+<br>event description
+<br>&quot;A clown with a purple polka-dot bowler hat strides into the vicinity and begins to juggle baby geese.&quot;
+<br>&quot;While the clown juggles, the baby geese visibly grow older and larger. The clown becomes unnerved.&quot;
+<br>&quot;In an attempt to resolve the problem, the clown reverses the direction of his juggling. The geese revert to goslings.&quot;
+<br>&quot;The goslings become smaller and smaller until the clown is juggling goose eggs[replace eggs].&quot;
+<br>&quot;The clown throws all the eggs into the air at once and catches them in the bowler hat. He takes a bow; the audience applauds. As a final gesture, he upends his hat to release a perfectly cooked omelet.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say replace eggs:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the supply of baby geese from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the clown carries the eggs.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Free Time is a scene. Free Time begins when Clown Performance Ends.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;scenes / n / z/ z / look / x geese / s / x geese / x eggs / z / s&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc153.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e413"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex413.html#e413 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>73</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex413.html#e413 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex413.html#e413 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e229"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex229.html#e229 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>74</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex229.html#e229 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex229.html#e229 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc88.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc90.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc152.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc154.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

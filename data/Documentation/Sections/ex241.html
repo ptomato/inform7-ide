@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.6. Extensions and story file formats</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,532 +19,70 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Tilt 3" -->
-<!-- SEARCH SECTION "Ex 413" -->
-<!-- SEARCH SORT "Ex 024-006-413" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc399.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc401.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.6. Extensions and story file formats</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Unbuttoned Elevator Affair" -->
+<!-- SEARCH SECTION "Ex 8" -->
+<!-- SEARCH SORT "Ex 003-003-008" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
 <p>
-<p>Inform compiles to several different story file formats, and in each case uses only a small part of their abilities - especially when it comes to fancy tricks with the keyboard or screen. So people may well want to write extensions which provide access to some of these tricks (like &quot;Basic Screen Effects&quot;, included in the standard Inform distribution, but more so). Unfortunately, these tricks are very likely to fail to compile - or fail to work - on some of the possible story file formats, so the resulting extension would probably go wrong (and mysteriously wrong) for users who have chosen a different format.
+<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
 <p>
-<p>Inform therefore provides a way for extensions to declare the formats they are compatible with. All that is required is to add a proviso in brackets after the title is declared:
-<p>
-<blockquote><font color="#000080">Version 2 of Basic Screen Effects (for Z-Machine version 5 or 8 only) by Emily Short begins here.
+<blockquote><font color="#000080">The Debris Room is west of the Crawl.
 </font></blockquote><p>
 <p>
-<p>Other examples might be &quot;(for Glulx only)&quot;, or &quot;(for Z-machine only)&quot; - which means any version of the Z-machine, even version 6. If no such proviso is given, the extension is assumed to be compatible with every story file format.
+<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
 <p>
-<p>Extensions are also able to include material which is only used on some story file formats and not others - in principle, this might allow the same facilities to be provided to the author whatever story file format is used, but to achieve these effects differently depending on the current Settings. The convention here is exactly like &quot;not for release&quot;: if a heading or subheading in the source text contains a bracketed proviso, then the material under that heading (and under its dependent subheadings) will be ignored if the current story file format does not match. For example:
-<p>
-<blockquote><font color="#000080">Section 2.3G (for Glulx only)
+<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To reveal the explosion:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;[...the Glulx way...]
+<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
+<p>
+<p>We can even explicitly make a route which turns around as it leads between two rooms:
+<p>
+<blockquote><font color="#000080">West of the Garden is south of the Meadow.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 2.3Z (for Z-machine only)
-</font></blockquote><p>
+<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
 <p>
-<blockquote><font color="#000080">To reveal the explosion:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;[...the Z-machine way...]
+<blockquote><font color="#000080">East of the Debris Room is nowhere.
 </font></blockquote><p>
-<p>
-<p>would ensure that &quot;reveal the explosion&quot; works nicely whichever story file format is used.
 <p>
 <p><hr><p>
+<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex130.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc400.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>413</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc400.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Tilt 3</font></b></a><br>Displaying the card suits from our deck of cards with red and black colored unicode symbols.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Books and articles about card-playing traditionally abbreviate card names into a simple two-symbol notation: a number or letter representing the card rank, followed by a symbol indicating the card suit. Suppose that we want to emulate this notation when taking inventory in our poker game.
-<p>
-<p>The trick here is that colored output is done in different ways by the Z-Machine and by Glulx, so we'll need two different versions of the same section in order to produce this output. The relevant source is right at the beginning:
+<p>This is very simple. The interior of the elevator is a single room, but which is mapped east of both of its termini. The reverse map connection, west from the elevator, can only go to a single room, and that's what determines which floor the elevator is on.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode512(code) {
+function pasteCode96(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Tilt[=0x0022=][=0x000A=][=0x000A=]Section 0 - Colored Output in Two Forms[=0x000A=][=0x000A=][For the suit symbols, we[=0x0027=]ll want the Unicode extension included with Inform:][=0x000A=][=0x000A=]Include Unicode Character Names by Graham Nelson.[=0x000A=][=0x000A=]Rule for printing the name of a card (called target) while grouping together:[=0x000A=][=0x0009=]say [=0x0022=][rank of the target as abbreviated value][suit of the target as symbol][=0x0022=].[=0x000A=][=0x000A=]To say (current suit - a suit) as symbol:[=0x000A=][=0x0009=]if current suit is diamonds, say [=0x0022=][red letters][unicode black diamond suit][default letters][=0x0022=];[=0x000A=][=0x0009=]if current suit is spades, say [=0x0022=][unicode black spade suit][=0x0022=];[=0x000A=][=0x0009=]if current suit is clubs, say [=0x0022=][unicode black club suit][=0x0022=];[=0x000A=][=0x0009=]if current suit is hearts, say [=0x0022=][red letters][unicode black heart suit][default letters][=0x0022=].[=0x000A=][=0x000A=]Section 0Z (for Z-machine only)[=0x000A=][=0x000A=][The Basic Screen Effects extension bundled with Inform includes mechanisms to change the text color, so for the Z-machine, we need only include this:][=0x000A=][=0x000A=]Include Basic Screen Effects by Emily Short.[=0x000A=][=0x000A=]Section 0G (for Glulx only)[=0x000A=][=0x000A=][Under Glulx, we need slightly more set-up: Glulx requires that we define special user font styles when we plan to make display changes. A fuller discussion of this (and of how to define new colors) appears in the documentation of [=0x0022=]Glulx Text Effects[=0x0022=], but an implementation sufficient to our purposes would be][=0x000A=][=0x000A=]Include Glulx Text Effects by Emily Short.[=0x000A=][=0x000A=]Table of User Styles (continued)[=0x000A=]style name[=0x0009=]glulx color[=0x000A=]special-style-1[=0x0009=]g-pure-red[=0x000A=][=0x000A=]Table of Common Color Values (continued)[=0x000A=]glulx color value[=0x0009=]assigned number[=0x000A=]g-pure-red[=0x0009=]16711680[=0x0009=][== $FF0000][=0x000A=][=0x000A=]To say red letters: say first custom style.[=0x000A=][=0x000A=]To say default letters: say roman type.[=0x000A=][=0x000A=][From here, the rest of the source is mostly as we[=0x0027=]ve seen in previous examples:][=0x000A=][=0x000A=]Section 1 - Cards[=0x000A=][=0x000A=]Suit is a kind of value. The suits are hearts, clubs, diamonds, and spades. Understand [=0x0022=]heart[=0x0022=] as hearts. Understand [=0x0022=]club[=0x0022=] as clubs. Understand [=0x0022=]diamond[=0x0022=] as diamonds. Understand [=0x0022=]spade[=0x0022=] as spades.[=0x000A=][=0x000A=]A card is a kind of thing.  A card has a suit. A card has a number called rank. Understand the suit property as describing a card. Understand the rank property as describing a card.[=0x000A=][=0x000A=]52 cards are in the card repository.[=0x000A=][=0x000A=]To say (count - a number) as a card value:[=0x000A=][=0x0009=]choose row count in the Table of Value Names;[=0x000A=][=0x0009=]say [=0x0022=][term entry][=0x0022=].[=0x000A=][=0x000A=]Rule for printing the name of a card (called target):[=0x000A=][=0x0009=]say [=0x0022=][rank of the target as a card value] of [suit of the target][=0x0022=][=0x000A=][=0x000A=]To say (count - a number) as abbreviated value:[=0x000A=][=0x0009=]choose row count in the Table of Value Names;[=0x000A=][=0x0009=]say [=0x0022=][abbrev entry][=0x0022=].[=0x000A=][=0x000A=]Table of Value Names[=0x000A=]term[=0x0009=]value[=0x0009=]abbrev[=0x0009=]topic[=0x000A=][=0x0022=]ace[=0x0022=][=0x0009=][=0x0022=]1[=0x0022=][=0x0009=][=0x0022=]A[=0x0022=][=0x0009=][=0x0022=]ace/A[=0x0022=][=0x000A=][=0x0022=]deuce[=0x0022=][=0x0009=][=0x0022=]2[=0x0022=][=0x0009=][=0x0022=]2[=0x0022=][=0x0009=][=0x0022=]deuce/two[=0x0022=][=0x000A=][=0x0022=]three[=0x0022=][=0x0009=][=0x0022=]3[=0x0022=][=0x0009=][=0x0022=]3[=0x0022=][=0x0009=][=0x0022=]three[=0x0022=][=0x000A=][=0x0022=]four[=0x0022=][=0x0009=][=0x0022=]4[=0x0022=][=0x0009=][=0x0022=]4[=0x0022=][=0x0009=][=0x0022=]four[=0x0022=][=0x000A=][=0x0022=]five[=0x0022=][=0x0009=][=0x0022=]5[=0x0022=][=0x0009=][=0x0022=]5[=0x0022=][=0x0009=][=0x0022=]five[=0x0022=][=0x000A=][=0x0022=]six[=0x0022=][=0x0009=][=0x0022=]6[=0x0022=][=0x0009=][=0x0022=]6[=0x0022=][=0x0009=][=0x0022=]six[=0x0022=][=0x000A=][=0x0022=]seven[=0x0022=][=0x0009=][=0x0022=]7[=0x0022=][=0x0009=][=0x0022=]7[=0x0022=][=0x0009=][=0x0022=]seven[=0x0022=][=0x000A=][=0x0022=]eight[=0x0022=][=0x0009=][=0x0022=]8[=0x0022=][=0x0009=][=0x0022=]8[=0x0022=][=0x0009=][=0x0022=]eight[=0x0022=][=0x000A=][=0x0022=]nine[=0x0022=][=0x0009=][=0x0022=]9[=0x0022=][=0x0009=][=0x0022=]9[=0x0022=][=0x0009=][=0x0022=]nine[=0x0022=][=0x000A=][=0x0022=]ten[=0x0022=][=0x0009=][=0x0022=]10[=0x0022=][=0x0009=][=0x0022=]10[=0x0022=][=0x0009=][=0x0022=]ten[=0x0022=][=0x000A=][=0x0022=]jack[=0x0022=][=0x0009=][=0x0022=]11[=0x0022=][=0x0009=][=0x0022=]J[=0x0022=][=0x0009=][=0x0022=]jack/knave/J[=0x0022=][=0x000A=][=0x0022=]queen[=0x0022=][=0x0009=][=0x0022=]12[=0x0022=][=0x0009=][=0x0022=]Q[=0x0022=][=0x0009=][=0x0022=]queen/Q[=0x0022=][=0x000A=][=0x0022=]king[=0x0022=][=0x0009=][=0x0022=]13[=0x0022=][=0x0009=][=0x0022=]K[=0x0022=][=0x0009=][=0x0022=]king/K[=0x0022=][=0x000A=][=0x000A=]After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command includes [=0x0022=]of [suit][=0x0022=]:[=0x000A=][=0x0009=][=0x0009=]while the player[=0x0027=]s command includes [=0x0022=]of[=0x0022=], cut the matched text;[=0x000A=][=0x0009=]repeat through the Table of Value Names:[=0x000A=][=0x0009=][=0x0009=]while the player[=0x0027=]s command includes topic entry, replace the matched text with value entry.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]reconstitute deck.[=0x000A=][=0x000A=]To reconstitute deck:[=0x000A=][=0x0009=]let current suit be hearts;[=0x000A=][=0x0009=]now every card is in the card repository;[=0x000A=][=0x0009=]while a card is in the card repository:[=0x000A=][=0x0009=][=0x0009=]repeat with current rank running from 1 to 13:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let item be a random card in card repository;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change rank of item to current rank;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change suit of item to current suit;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now item is in the deck of cards;[=0x000A=][=0x0009=][=0x0009=]change current suit to the suit after the current suit.[=0x000A=][=0x000A=]Section 2 - The Deck and the Discard Pile[=0x000A=][=0x000A=]The Empty Room is a room. [=0x0022=]Nothing to see here.[=0x0022=][=0x000A=][=0x000A=]The deck of cards is in the Empty Room. It is a closed unopenable container. The description is [=0x0022=]A standard poker deck.[=0x0022=][=0x000A=][=0x000A=]The discard pile is a closed unopenable container. The description is [=0x0022=]Cards in this game are discarded face-down, so the discard pile is not very interesting to see. All you can observe is that it currently contains [if the number of cards which are in the discard pile is less than ten][the number of cards which are in the discard pile in words][otherwise]about [the rounded number of cards which are in the discard pile in words][end if] card[s].[=0x0022=][=0x000A=][=0x000A=]To decide what number is the rounded number of (described set - a description):[=0x000A=][=0x0009=]let N be the number of members of the described set;[=0x000A=][=0x0009=]let R be N divided by 5;[=0x000A=][=0x0009=]let total be R times 5;[=0x000A=][=0x0009=]decide on total.[=0x000A=][=0x000A=]Rule for printing room description details of something: do nothing instead.[=0x000A=][=0x000A=]Section 3 - Drawing and Discarding Actions[=0x000A=][=0x000A=]Understand the commands [=0x0022=]take[=0x0022=] and [=0x0022=]carry[=0x0022=] and [=0x0022=]hold[=0x0022=] and [=0x0022=]get[=0x0022=] and [=0x0022=]drop[=0x0022=] and [=0x0022=]throw[=0x0022=] and [=0x0022=]discard[=0x0022=] as something new.[=0x000A=][=0x000A=]Understand [=0x0022=]take [text][=0x0022=] or [=0x0022=]get [text][=0x0022=] or [=0x0022=]drop [text][=0x0022=] as a mistake ([=0x0022=]Here, you only draw and discard. Nothing else matters at the moment.[=0x0022=]).[=0x000A=][=0x000A=]Understand [=0x0022=]draw[=0x0022=] or [=0x0022=]draw card[=0x0022=] or [=0x0022=]draw a card[=0x0022=] as drawing. Drawing is an action applying to nothing. The drawing action has an object called the card drawn.[=0x000A=][=0x000A=]Setting action variables for drawing:[=0x000A=][=0x0009=]change the card drawn to a random card which is in the deck of cards.[=0x000A=][=0x000A=]Check drawing:[=0x000A=][=0x0009=]if the card drawn is nothing, say [=0x0022=]The deck is completely depleted.[=0x0022=] instead.[=0x000A=][=0x000A=]Check drawing:[=0x000A=][=0x0009=]if the number of cards carried by the player is greater than four,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]This is a five-card game; you must discard something before drawing anything further.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out drawing:[=0x000A=][=0x0009=]move the card drawn to the player.[=0x000A=][=0x000A=]Report drawing:[=0x000A=][=0x0009=]say [=0x0022=]You draw [a card drawn].[=0x0022=][=0x000A=][=0x000A=][=0x000A=]Understand [=0x0022=]discard [card][=0x0022=] as discarding. Discarding is an action applying to one thing.[=0x000A=][=0x000A=]Check discarding:[=0x000A=][=0x0009=]if the player does not carry the noun, say [=0x0022=]You can only discard cards from your own hand.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out discarding:[=0x000A=][=0x0009=]now the noun is in the discard pile;[=0x000A=][=0x0009=]if the discard pile is not visible, move the discard pile to the location.[=0x000A=][=0x000A=]Report discarding:[=0x000A=][=0x0009=]say [=0x0022=]You toss [the noun] nonchalantly onto the discard pile.[=0x0022=][=0x000A=][=0x000A=]Section 4 - Assessing Hands[=0x000A=][=0x000A=]Before listing contents while taking inventory: group cards together.[=0x000A=][=0x000A=]Before grouping together cards:[=0x000A=][=0x0009=]if the number of cards carried by the player is 5:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]follow the hand-ranking rules;[=0x000A=][=0x0009=][=0x0009=]if the rule succeeded, say [=0x0022=][the outcome of the rulebook][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=]some random cards[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]if the outcome of the rulebook is pair outcome, say [=0x0022=] of [rank of the first thing held by the player as a card value]s[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][number of cards carried by the player in words] assorted cards[=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=] ([=0x0022=].[=0x000A=][=0x000A=]Rule for grouping together cards:[=0x000A=][=0x0009=]say [=0x0022=][list hand][=0x0022=].[=0x000A=][=0x000A=]To say list hand:[=0x000A=][=0x0009=]let chosen card be the first thing held by the player;[=0x000A=][=0x0009=]while chosen card is a card:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][chosen card][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now chosen card is the next thing held after chosen card;[=0x000A=][=0x0009=][=0x0009=]if chosen card is a card, say [=0x0022=]-[=0x0022=].[=0x000A=][=0x000A=]After grouping together cards:[=0x000A=][=0x0009=]say [=0x0022=])[=0x0022=].[=0x000A=][=0x000A=]The hand-ranking rules is a rulebook. The hand-ranking rules have outcomes royal flush, straight flush, four of a kind, full house, flush, straight, three of a kind, two pairs, pair, high card.[=0x000A=][=0x000A=]The hand-ranking rulebook has a truth state called the flushness.[=0x000A=]The hand-ranking rulebook has a truth state called the straightness.[=0x000A=][=0x000A=]The hand-ranking rulebook has a number called the pair count.[=0x000A=]The hand-ranking rulebook has a number called the triple count.[=0x000A=]The hand-ranking rulebook has a number called the quadruple count.[=0x000A=][=0x000A=]A card can be sorted or unsorted. A card is usually unsorted.[=0x000A=][=0x000A=]Definition: a card is high if its rank is 11 or more.[=0x000A=]Definition: a card is low if its rank is 4 or less.[=0x000A=][=0x000A=]A hand-ranking rule (this is the initial sort rule):[=0x000A=][=0x0009=]now every card is unsorted;[=0x000A=][=0x0009=]while the player carries an unsorted card:[=0x000A=][=0x0009=][=0x0009=]let item be the lowest unsorted card held by the player;[=0x000A=][=0x0009=][=0x0009=]move item to the player;[=0x000A=][=0x0009=][=0x0009=]now the item is sorted;[=0x000A=][=0x0009=]if sort-debugging is true, say [=0x0022=]-- after initial sort: [list hand][=0x0022=].[=0x000A=][=0x000A=]A hand-ranking rule (this is the finding flushness rule):[=0x000A=][=0x0009=]let called suit be the suit of a random card carried by the player;[=0x000A=][=0x0009=]if every card carried by the player is called suit, change flushness to true.[=0x000A=][=0x000A=]A hand-ranking rule (this is the finding straightness rule):[=0x000A=][=0x0009=]change straightness to true;[=0x000A=][=0x0009=]let N be the rank of the highest card which is carried by the player;[=0x000A=][=0x0009=]repeat with current rank running from N - 4 to N:[=0x000A=][=0x0009=][=0x0009=]change the test rank to the current rank;[=0x000A=][=0x0009=][=0x0009=]unless the player carries a matching card:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the current rank is N - 4 and the current rank is 9 and the player carries an ace card, do nothing;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise change straightness to false.[=0x000A=][=0x000A=]A card can be quadrupled, tripled, paired or uncombined.[=0x000A=][=0x000A=]Test rank is a number that varies. Definition: a card is matching if its rank is the test rank.[=0x000A=][=0x000A=]A hand-ranking rule (this is the counting multiples rule):[=0x000A=][=0x0009=]now every card is uncombined;[=0x000A=][=0x0009=]repeat with current rank running from 1 to 13:[=0x000A=][=0x0009=][=0x0009=]change test rank to current rank;[=0x000A=][=0x0009=][=0x0009=]let N be the number of matching cards held by the player;[=0x000A=][=0x0009=][=0x0009=]if N is 4:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase the quadruple count by 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now every matching card held by the player is quadrupled;[=0x000A=][=0x0009=][=0x0009=]if N is 3:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase the triple count by 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now every matching card held by the player is tripled;[=0x000A=][=0x0009=][=0x0009=]if N is 2:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase the pair count by 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now every matching card held by the player is paired.[=0x000A=][=0x000A=]A hand-ranking rule (this is the move aces up unless there[=0x0027=]s a low straight rule):[=0x000A=][=0x0009=]unless the straightness is true and the lowest card carried by the player is an ace card and the rank of the highest card carried by the player is 5,[=0x000A=][=0x0009=][=0x0009=]now every ace card which is carried by the player is carried by the player;[=0x000A=][=0x0009=]if sort-debugging is true, say [=0x0022=]-- after ace movement rule: [list hand][=0x0022=].[=0x000A=][=0x000A=]A hand-ranking rule (this is the move pairs forward rule):[=0x000A=][=0x0009=]while the player carries a paired card:[=0x000A=][=0x0009=][=0x0009=]let selection be the lowest paired card which is carried by the player;[=0x000A=][=0x0009=][=0x0009=]move the selection to the player;[=0x000A=][=0x0009=][=0x0009=]now the selection is uncombined;[=0x000A=][=0x0009=]if sort-debugging is true, say [=0x0022=]-- after pairs movement: [list hand][=0x0022=].[=0x000A=][=0x000A=]A hand-ranking rule (this is the raise ace pairs rule):[=0x000A=][=0x0009=]if the player carries exactly two ace cards:[=0x000A=][=0x0009=][=0x0009=]repeat with item running through ace cards which are carried by the player:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]move item to the player;[=0x000A=][=0x0009=]if sort-debugging is true, say [=0x0022=]-- after paired-ace movement: [list hand][=0x0022=].[=0x000A=][=0x000A=]A hand-ranking rule (this is the move multiples forward rule):[=0x000A=][=0x0009=]while the player carries a tripled card:[=0x000A=][=0x0009=][=0x0009=]let selection be the lowest tripled card which is carried by the player;[=0x000A=][=0x0009=][=0x0009=]move the selection to the player;[=0x000A=][=0x0009=][=0x0009=]now the selection is uncombined;[=0x000A=][=0x0009=]while the player carries a quadrupled card:[=0x000A=][=0x0009=][=0x0009=]let selection be the lowest quadrupled card which is carried by the player;[=0x000A=][=0x0009=][=0x0009=]move the selection to the player;[=0x000A=][=0x0009=][=0x0009=]now the selection is uncombined;[=0x000A=][=0x0009=]if sort-debugging is true, say [=0x0022=]-- after multiples movement rule: [list hand][=0x0022=].[=0x000A=][=0x000A=]Definition: a card is ace if its rank is 1.[=0x000A=]Definition: a card is king if its rank is 13.[=0x000A=][=0x000A=]A hand-ranking rule (this is the royal-flush rule):[=0x000A=][=0x0009=]if flushness is true and straightness is true and the highest card carried by the player is king and the lowest card carried by the player is ace, royal flush.[=0x000A=][=0x000A=]A hand-ranking rule (this is the straight-flushes rule):[=0x000A=][=0x0009=]if flushness is true and straightness is true, straight flush.[=0x000A=][=0x000A=]A hand-ranking rule (this is the four-of-a-kind rule):[=0x000A=][=0x0009=]if the quadruple count is 1, four of a kind.[=0x000A=][=0x000A=]A hand-ranking rule (this is the full-house rule):[=0x000A=][=0x0009=]if the pair count is 1 and the triple count is 1, full house.[=0x000A=][=0x000A=]A hand-ranking rule (this is the flushes rule):[=0x000A=][=0x0009=]if flushness is true, flush.[=0x000A=][=0x000A=]A hand-ranking rule (this is the straights rule):[=0x000A=][=0x0009=]if straightness is true, straight.[=0x000A=][=0x000A=]A hand-ranking rule (this is the three-of-a-kind rule):[=0x000A=][=0x0009=]if triple count is 1, three of a kind.[=0x000A=][=0x000A=]A hand-ranking rule (this is the two-pair rule):[=0x000A=][=0x0009=]if the pair count is 2, two pairs.[=0x000A=][=0x000A=]A hand-ranking rule (this is the pair rule):[=0x000A=][=0x0009=]if the pair count is 1, pair.[=0x000A=][=0x000A=]A hand-ranking rule (this is the default rule):[=0x000A=][=0x0009=]high card.[=0x000A=][=0x000A=]Sort-debugging is a truth state that varies.[=0x000A=][=0x000A=]Section 5 - Testing hand identification - Not for release[=0x000A=][=0x000A=]Understand [=0x0022=]debug sorting[=0x0022=] as debugging hand sorting. Debugging hand sorting is an action out of world.[=0x000A=][=0x000A=]Carry out debugging hand sorting:[=0x000A=][=0x0009=]if sort-debugging is false, now sort-debugging is true;[=0x000A=][=0x0009=]otherwise now sort-debugging is false.[=0x000A=][=0x000A=]Report debugging hand sorting:[=0x000A=][=0x0009=]say [=0x0022=]Sort debugging is now [if sort-debugging is true]on[otherwise]off[end if].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]draw / g / g / g / g / force hand / g / g / g / g / g / g / g / g / g / g / g / g[=0x0022=].[=0x000A=][=0x000A=]Table of Testing Hands[=0x000A=]set suit[=0x0009=]set rank[=0x000A=]spades[=0x0009=]1[=0x0009=][royal flush][=0x000A=]spades[=0x0009=]13[=0x000A=]spades[=0x0009=]12[=0x000A=]spades[=0x0009=]11[=0x000A=]spades[=0x0009=]10[=0x000A=]clubs[=0x0009=]12[=0x0009=][straight flush][=0x000A=]clubs[=0x0009=]11[=0x000A=]clubs[=0x0009=]10[=0x000A=]clubs[=0x0009=]9[=0x000A=]clubs[=0x0009=]8[=0x000A=]diamonds[=0x0009=]8[=0x0009=][four of a kind][=0x000A=]hearts[=0x0009=]8[=0x000A=]spades[=0x0009=]8[=0x000A=]clubs[=0x0009=]8[=0x000A=]clubs[=0x0009=]3[=0x000A=]clubs[=0x0009=]1[=0x0009=][full house][=0x000A=]spades[=0x0009=]1[=0x000A=]hearts[=0x0009=]10[=0x000A=]spades[=0x0009=]10[=0x000A=]clubs[=0x0009=]10[=0x000A=]hearts[=0x0009=]2[=0x0009=][flush][=0x000A=]hearts[=0x0009=]5[=0x000A=]hearts[=0x0009=]7[=0x000A=]hearts[=0x0009=]11[=0x000A=]hearts[=0x0009=]12[=0x000A=]hearts[=0x0009=]1[=0x0009=][straight][=0x000A=]spades[=0x0009=]13[=0x000A=]diamonds[=0x0009=]12[=0x000A=]clubs[=0x0009=]11[=0x000A=]hearts[=0x0009=]10[=0x000A=]hearts[=0x0009=]2[=0x0009=][three of a kind][=0x000A=]spades[=0x0009=]2[=0x000A=]clubs[=0x0009=]2[=0x000A=]clubs[=0x0009=]4[=0x000A=]spades[=0x0009=]3[=0x000A=]diamonds[=0x0009=]6[=0x0009=][two pairs][=0x000A=]spades[=0x0009=]6[=0x000A=]clubs[=0x0009=]7[=0x000A=]diamonds[=0x0009=]7[=0x000A=]hearts[=0x0009=]9[=0x000A=]diamonds[=0x0009=]6[=0x0009=][two pairs, ace high][=0x000A=]spades[=0x0009=]6[=0x000A=]clubs[=0x0009=]1[=0x000A=]diamonds[=0x0009=]7[=0x000A=]hearts[=0x0009=]1[=0x000A=]hearts[=0x0009=]12[=0x0009=][pair][=0x000A=]spades[=0x0009=]12[=0x000A=]diamonds[=0x0009=]10[=0x000A=]spades[=0x0009=]7[=0x000A=]clubs[=0x0009=]4[=0x000A=]diamonds[=0x0009=]13[=0x0009=][high][=0x000A=]hearts[=0x0009=]11[=0x000A=]spades[=0x0009=]9[=0x000A=]clubs[=0x0009=]7[=0x000A=]diamonds[=0x0009=]5[=0x000A=]hearts[=0x0009=]1[=0x0009=][tricky sorting: low straight][=0x000A=]diamonds[=0x0009=]2[=0x000A=]spades[=0x0009=]3[=0x000A=]diamonds[=0x0009=]4[=0x000A=]diamonds[=0x0009=]5[=0x000A=][=0x000A=]Understand [=0x0022=]force hand[=0x0022=] as forcing a hand. Forcing a hand is an action out of world.[=0x000A=][=0x000A=]Current marker is a number that varies.[=0x000A=][=0x000A=]Carry out forcing a hand:[=0x000A=][=0x0009=]repeat with item running through cards which are carried by the player:[=0x000A=][=0x0009=][=0x0009=]increase current marker by 1;[=0x000A=][=0x0009=][=0x0009=]if current marker is greater than the number of filled rows in the Table of Testing Hands, change current marker to 1;[=0x000A=][=0x0009=][=0x0009=]choose row current marker in the Table of Testing Hands;[=0x000A=][=0x0009=][=0x0009=]change the suit of item to the set suit entry;[=0x000A=][=0x0009=][=0x0009=]change the rank of item to the set rank entry.[=0x000A=][=0x000A=]Report forcing a hand:[=0x000A=][=0x0009=]try taking inventory.[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Unbuttoned Elevator Affair[=0x0022=][=0x000A=][=0x000A=]UNCLE Headquarters is a room. [=0x0022=]The steel nerve-center of the free world[=0x0027=]s battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east.[=0x0022=][=0x000A=][=0x000A=]Del Floria[=0x0027=]s Tailor Shop is a room. [=0x0022=]Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator.[=0x0022=][=0x000A=][=0x000A=]The Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria[=0x0027=]s Tailor Shop.[=0x000A=][=0x000A=]After going to the Secret Elevator:[=0x000A=][=0x0009=]say [=0x0022=]The doors automatically close, there is a rush of motion, and they open again.[=0x0022=];[=0x000A=][=0x0009=]if UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria[=0x0027=]s Tailor Shop is mapped west of the Secret Elevator;[=0x000A=][=0x0009=]otherwise now UNCLE Headquarters is mapped west of the Secret Elevator;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Test me with [=0x0022=]east / west / east / west[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode512()"><img border=0 src=../doc_images/paste.png></a> &quot;Tilt&quot;
+<a href="javascript:pasteCode96()"><img border=0 src=../doc_images/paste.png></a> &quot;The Unbuttoned Elevator Affair&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 0 - Colored Output in Two Forms
+<blockquote><font color="#000080">UNCLE Headquarters is a room. &quot;The steel nerve-center of the free world's battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east.&quot;
 </font></blockquote><p>
 <p>
-<p>For the suit symbols, we'll want the Unicode extension included with Inform:
-<p>
-<blockquote><font color="#000080">Include Unicode Character Names by Graham Nelson.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a card (called target) while grouping together:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[rank of the target as abbreviated value][suit of the target as symbol]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say (current suit - a suit) as symbol:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if current suit is diamonds, say &quot;[red letters][unicode black diamond suit][default letters]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if current suit is spades, say &quot;[unicode black spade suit]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if current suit is clubs, say &quot;[unicode black club suit]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if current suit is hearts, say &quot;[red letters][unicode black heart suit][default letters]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 0Z (for Z-machine only)
-</font></blockquote><p>
-<p>
-<p>The Basic Screen Effects extension bundled with Inform includes mechanisms to change the text color, so for the Z-machine, we need only include this:
-<p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 0G (for Glulx only)
-</font></blockquote><p>
-<p>
-<p>Under Glulx, we need slightly more set-up: Glulx requires that we define special user font styles when we plan to make display changes. A fuller discussion of this (and of how to define new colors) appears in the documentation of &quot;Glulx Text Effects&quot;, but an implementation sufficient to our purposes would be
-<p>
-<blockquote><font color="#000080">Include Glulx Text Effects by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of User Styles (continued)
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">style name</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">glulx color</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">special-style-1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">g-pure-red</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Common Color Values (continued)
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">glulx color value</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">assigned number</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">g-pure-red</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">16711680</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[== $FF0000]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say red letters: say first custom style.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say default letters: say roman type.
-</font></blockquote><p>
-<p>
-<p>From here, the rest of the source is mostly as we've seen in previous examples:
-<p>
-<blockquote><font color="#000080">Section 1 - Cards
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Suit is a kind of value. The suits are hearts, clubs, diamonds, and spades. Understand &quot;heart&quot; as hearts. Understand &quot;club&quot; as clubs. Understand &quot;diamond&quot; as diamonds. Understand &quot;spade&quot; as spades.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A card is a kind of thing.  A card has a suit. A card has a number called rank. Understand the suit property as describing a card. Understand the rank property as describing a card.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">52 cards are in the card repository.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say (count - a number) as a card value:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row count in the Table of Value Names;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[term entry]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a card (called target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[rank of the target as a card value] of [suit of the target]&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say (count - a number) as abbreviated value:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row count in the Table of Value Names;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[abbrev entry]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Value Names
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">term</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">value</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">abbrev</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;ace&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;1&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;ace/A&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;deuce&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;2&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;2&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;deuce/two&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;three&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;3&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;3&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;three&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;four&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;4&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;4&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;four&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;five&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;5&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;5&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;five&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;six&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;6&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;6&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;six&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;seven&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;7&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;7&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;seven&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;eight&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;8&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;8&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;eight&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;nine&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;9&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;9&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;nine&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;ten&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;10&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;10&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;ten&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;jack&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;11&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;J&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;jack/knave/J&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;queen&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;12&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Q&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;queen/Q&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;king&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;13&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;K&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;king/K&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;of [suit]&quot;:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while the player's command includes &quot;of&quot;, cut the matched text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Value Names:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while the player's command includes topic entry, replace the matched text with value entry.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;reconstitute deck.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To reconstitute deck:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let current suit be hearts;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every card is in the card repository;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while a card is in the card repository:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with current rank running from 1 to 13:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let item be a random card in card repository;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change rank of item to current rank;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change suit of item to current suit;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item is in the deck of cards;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change current suit to the suit after the current suit.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - The Deck and the Discard Pile
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Empty Room is a room. &quot;Nothing to see here.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The deck of cards is in the Empty Room. It is a closed unopenable container. The description is &quot;A standard poker deck.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The discard pile is a closed unopenable container. The description is &quot;Cards in this game are discarded face-down, so the discard pile is not very interesting to see. All you can observe is that it currently contains [if the number of cards which are in the discard pile is less than ten][the number of cards which are in the discard pile in words][otherwise]about [the rounded number of cards which are in the discard pile in words][end if] card[s].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide what number is the rounded number of (described set - a description):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the number of members of the described set;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let R be N divided by 5;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be R times 5;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on total.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing room description details of something: do nothing instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 3 - Drawing and Discarding Actions
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand the commands &quot;take&quot; and &quot;carry&quot; and &quot;hold&quot; and &quot;get&quot; and &quot;drop&quot; and &quot;throw&quot; and &quot;discard&quot; as something new.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;take [text]&quot; or &quot;get [text]&quot; or &quot;drop [text]&quot; as a mistake (&quot;Here, you only draw and discard. Nothing else matters at the moment.&quot;).
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;draw&quot; or &quot;draw card&quot; or &quot;draw a card&quot; as drawing. Drawing is an action applying to nothing. The drawing action has an object called the card drawn.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Setting action variables for drawing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the card drawn to a random card which is in the deck of cards.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check drawing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the card drawn is nothing, say &quot;The deck is completely depleted.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check drawing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of cards carried by the player is greater than four,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This is a five-card game; you must discard something before drawing anything further.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out drawing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the card drawn to the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report drawing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You draw [a card drawn].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;discard [card]&quot; as discarding. Discarding is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check discarding:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player does not carry the noun, say &quot;You can only discard cards from your own hand.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out discarding:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is in the discard pile;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the discard pile is not visible, move the discard pile to the location.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report discarding:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You toss [the noun] nonchalantly onto the discard pile.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 4 - Assessing Hands
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before listing contents while taking inventory: group cards together.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before grouping together cards:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of cards carried by the player is 5:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow the hand-ranking rules;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded, say &quot;[the outcome of the rulebook]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;some random cards&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the outcome of the rulebook is pair outcome, say &quot; of [rank of the first thing held by the player as a card value]s&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[number of cards carried by the player in words] assorted cards&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for grouping together cards:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[list hand]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say list hand:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let chosen card be the first thing held by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while chosen card is a card:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[chosen card]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now chosen card is the next thing held after chosen card;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if chosen card is a card, say &quot;-&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After grouping together cards:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;)&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The hand-ranking rules is a rulebook. The hand-ranking rules have outcomes royal flush, straight flush, four of a kind, full house, flush, straight, three of a kind, two pairs, pair, high card.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The hand-ranking rulebook has a truth state called the flushness.
-<br>The hand-ranking rulebook has a truth state called the straightness.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The hand-ranking rulebook has a number called the pair count.
-<br>The hand-ranking rulebook has a number called the triple count.
-<br>The hand-ranking rulebook has a number called the quadruple count.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A card can be sorted or unsorted. A card is usually unsorted.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a card is high if its rank is 11 or more.
-<br>Definition: a card is low if its rank is 4 or less.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the initial sort rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every card is unsorted;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player carries an unsorted card:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let item be the lowest unsorted card held by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move item to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is sorted;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if sort-debugging is true, say &quot;-- after initial sort: [list hand]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the finding flushness rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let called suit be the suit of a random card carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every card carried by the player is called suit, change flushness to true.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the finding straightness rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change straightness to true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the rank of the highest card which is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with current rank running from N - 4 to N:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the test rank to the current rank;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unless the player carries a matching card:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current rank is N - 4 and the current rank is 9 and the player carries an ace card, do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change straightness to false.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A card can be quadrupled, tripled, paired or uncombined.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test rank is a number that varies. Definition: a card is matching if its rank is the test rank.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the counting multiples rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every card is uncombined;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with current rank running from 1 to 13:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change test rank to current rank;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be the number of matching cards held by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is 4:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the quadruple count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every matching card held by the player is quadrupled;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is 3:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the triple count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every matching card held by the player is tripled;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is 2:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the pair count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every matching card held by the player is paired.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the move aces up unless there's a low straight rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;unless the straightness is true and the lowest card carried by the player is an ace card and the rank of the highest card carried by the player is 5,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every ace card which is carried by the player is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if sort-debugging is true, say &quot;-- after ace movement rule: [list hand]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the move pairs forward rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player carries a paired card:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let selection be the lowest paired card which is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the selection to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the selection is uncombined;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if sort-debugging is true, say &quot;-- after pairs movement: [list hand]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the raise ace pairs rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries exactly two ace cards:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through ace cards which are carried by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move item to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if sort-debugging is true, say &quot;-- after paired-ace movement: [list hand]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the move multiples forward rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player carries a tripled card:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let selection be the lowest tripled card which is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the selection to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the selection is uncombined;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player carries a quadrupled card:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let selection be the lowest quadrupled card which is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the selection to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the selection is uncombined;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if sort-debugging is true, say &quot;-- after multiples movement rule: [list hand]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a card is ace if its rank is 1.
-<br>Definition: a card is king if its rank is 13.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the royal-flush rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if flushness is true and straightness is true and the highest card carried by the player is king and the lowest card carried by the player is ace, royal flush.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the straight-flushes rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if flushness is true and straightness is true, straight flush.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the four-of-a-kind rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the quadruple count is 1, four of a kind.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the full-house rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pair count is 1 and the triple count is 1, full house.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the flushes rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if flushness is true, flush.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the straights rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if straightness is true, straight.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the three-of-a-kind rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if triple count is 1, three of a kind.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the two-pair rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pair count is 2, two pairs.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the pair rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pair count is 1, pair.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A hand-ranking rule (this is the default rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;high card.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Sort-debugging is a truth state that varies.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 5 - Testing hand identification - Not for release
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;debug sorting&quot; as debugging hand sorting. Debugging hand sorting is an action out of world.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out debugging hand sorting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if sort-debugging is false, now sort-debugging is true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now sort-debugging is false.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report debugging hand sorting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Sort debugging is now [if sort-debugging is true]on[otherwise]off[end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;draw / g / g / g / g / force hand / g / g / g / g / g / g / g / g / g / g / g / g&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Testing Hands
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">set suit</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">set rank</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[royal flush]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[straight flush]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[four of a kind]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[full house]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[flush]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[straight]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[three of a kind]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[two pairs]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[two pairs, ace high]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[pair]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[high]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">[tricky sorting: low straight]</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;force hand&quot; as forcing a hand. Forcing a hand is an action out of world.
+<blockquote><font color="#000080">Del Floria's Tailor Shop is a room. &quot;Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Current marker is a number that varies.
+<blockquote><font color="#000080">The Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria's Tailor Shop.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out forcing a hand:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through cards which are carried by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase current marker by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if current marker is greater than the number of filled rows in the Table of Testing Hands, change current marker to 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row current marker in the Table of Testing Hands;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the suit of item to the set suit entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the rank of item to the set rank entry.
+<blockquote><font color="#000080">After going to the Secret Elevator:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The doors automatically close, there is a rush of motion, and they open again.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria's Tailor Shop is mapped west of the Secret Elevator;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now UNCLE Headquarters is mapped west of the Secret Elevator;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report forcing a hand:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try taking inventory.
+<blockquote><font color="#000080">Test me with &quot;east / west / east / west&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc400.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc399.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc401.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

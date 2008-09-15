@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.12. Implications</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.8. Extensions can interact with other extensions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,39 +19,36 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Implications" -->
-<!-- SEARCH SECTION "24.12" -->
-<!-- SEARCH SORT "024-012-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc405.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc407.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.12. Implications</b></font></td></tr></table>
+<!-- SEARCH TITLE "Extensions can interact with other extensions" -->
+<!-- SEARCH SECTION "24.8" -->
+<!-- SEARCH SORT "024-008-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc405.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc407.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.8. Extensions can interact with other extensions</b></font></td></tr></table>
 <p>
-<p>Extensions often need to define new kinds or properties, which we want to make as helpful as possible for the user. In particular, we want them not to require additional work for the author just to obtain the effect which seems only natural.
+<p>When one extension is being used, it's probably only one among several. A really general-purpose extension might want to behave differently depending on which other extensions are also present. This can be achieved using headings which are &quot;for use with&quot; (or &quot;without&quot;) other extensions. For instance:
 <p>
-<p>For example, consider Inform's built-in &quot;locked&quot; property. If a door is locked, then it cannot be opened, which seems fair enough. But if the player tries to unlock the door, he might then find the following response:
-<p>
-<blockquote><font color="#000080">That doesn't seem to be something you can unlock.
+<blockquote><font color="#000080">Chapter 2a (for use with Locksmith by Emily Short)
 </font></blockquote><p>
 <p>
-<p>Which does not seem right. In real life, almost all locked items have outwardly exposed locks which it is perfectly sensible to try to unlock, given a key. The problem is that our door has the &quot;locked&quot; property, but not the &quot;lockable&quot; one.
+<p>specifies that everything under this heading (and its subheadings, if any) will be ignored unless the extension Locksmith by Emily Short is included. Conversely,
 <p>
-<p>The Standard Rules solve this problem by including the following line:
-<p>
-<blockquote><font color="#000080">Something locked is usually lockable.
+<blockquote><font color="#000080">Chapter 2b (for use without Locksmith by Emily Short)
 </font></blockquote><p>
 <p>
-<p>This ensures that any door said by the author only to be &quot;locked&quot; will be &quot;lockable&quot; as well, and adds a small but worthwhile touch of realism.
+<p>will be ignored unless it isn't included. This allows an extension to give two variations on the same material - one if Locksmith is present, the other if not.
 <p>
-<p>Such a sentence is called an &quot;implication&quot;, as it is in the form &quot;Condition A implies Condition B&quot;. Note that the two conditions must consist of either/or properties with or without kinds attached. Thus:
+<p>Headings can also replace portions of extensions which have been included. For instance:
 <p>
-<blockquote><font color="#000080">A room in the Open Desert is usually lighted.
+<blockquote><font color="#000080">Section 6 - Hacked locking (in place of Section 1 - Regular locking in Locksmith by Emily Short)
 </font></blockquote><p>
 <p>
-<p>will not work because &quot;a room in the Open Desert&quot; is a more complicated grammatical construction than, say, &quot;lighted&quot; or &quot;a lighted room&quot;: it contains a relative clause. Inform can only deal with simple implications.
+<p>places the source text under the new heading in the place of the old (which is thrown away). If there should be two or more headings of the same name in the given extension, the first is the one replaced; if two or more headings attempt to replace the same heading in the given extension, the final attempt in source text order is the one which succeeds; and finally, heading dependencies like the above are scanned in a top-down way. Thus, if we have:
 <p>
-<p>Inform never overrides certainties with mere implications, and is cautious about allowing them to build overly long chains of argument. This is to prevent the following kind of difficulty:
-<p>
-<blockquote><font color="#000080">An open door is usually closed. A closed door is usually open.
+<blockquote><font color="#000080">Chapter 2a (for use with Locksmith by Emily Short)
+<br>...
+<br>Section 1 - Hacked marbles (in place of Section 4 in Marbles by Peter Wong)
+<br>...
 </font></blockquote><p>
 <p>
-<p>Implications have not been mentioned up to now since they are only really needed by extensions, but also because they can be tricky, with unforeseen consequences. We should handle them with care.
+<p>and we don't include Locksmith, then the replacement of Section 4 of Marbles is not made, because Section 1 - Hacked marbles is subordinate to the Chapter 2a heading which we've told Inform to ignore.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc405.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc407.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

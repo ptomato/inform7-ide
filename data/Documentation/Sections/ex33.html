@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.11. Understanding values</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.12. Writing and reading tables to external files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,116 +19,173 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Baritone, Bass" -->
-<!-- SEARCH SECTION "Ex 282" -->
-<!-- SEARCH SORT "Ex 016-011-282" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc258.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc260.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.11. Understanding values</b></font></td></tr></table>
+<!-- SEARCH TITLE "Rubies" -->
+<!-- SEARCH SECTION "Ex 415" -->
+<!-- SEARCH SORT "Ex 021-012-415" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc361.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc363.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.12. Writing and reading tables to external files</b></font></td></tr></table>
 <p>
-<p>So far every &quot;Understand&quot; sentence has ended with &quot;as&quot; and a description of an action. But we can also use &quot;Understand&quot; to supply new ways to talk about things and even values. For instance, if we create:
+<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
 <p>
-<blockquote><font color="#000080">A brass lantern is in the Building.
+<p>To save the contents of a table to a file, we use the phrase:
+<p>
+<blockquote><font color="#000080">write File of Glaciation Data from the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>then it can be called &quot;brass&quot;, or &quot;lantern&quot;, but not &quot;lamp&quot;: Inform does not really know what these words mean, and has no grasp of synonyms. We can arrange for &quot;lamp&quot; to work as well like so:
+<p>naming the file (which should be one already declared) and specifying which table it should come from. To load a file back into a table,
 <p>
-<blockquote><font color="#000080">Understand &quot;lamp&quot; as the lantern.
-<br>Understand &quot;old lamp&quot; as the lantern.
+<blockquote><font color="#000080">read File of Glaciation Data into the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>With care, we can do the same trick for entire kinds of thing at once. It is not ordinarily the case that a thing can be called by the name of its kind: if we put a woman called April into a room, then she can usually be called &quot;April&quot;, but not &quot;woman&quot;. (The exception is when we do not specify any name for her - in that case, Inform will give up and call her just &quot;woman&quot;.) So there is not usually any form of words which can refer to anything of a given kind. If we should want this, we have to say so explicitly:
+<p>We can check if a file already exists using:
 <p>
-<blockquote><font color="#000080">Understand &quot;machine&quot; as a device.
+<blockquote><font color="#000080">if File of Glaciation Data exists, ...
 </font></blockquote><p>
 <p>
-<p>Device is a kind, so now the word &quot;machine&quot; can be used to refer to any device: if there are two in the same place, the result might play out like so:
+<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
 <p>
-<blockquote><font color="#000080">>switch machine on
-<br>Which do you mean, the bale twiner or the grain thresher?
-<br>>twiner
-<br>You watch absorbed as a perfect cube of hay is trussed up like a parcel.
+<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Scenes, rules or rulebooks, in particular, are not allowed.
+<p>
+<p>And nor is text - but we can easily get around that, because indexed text (see the previous chapter) is. For instance, the following table can legally be written out to a file, weareas it would have thrown up a run-time problem if we tried it with the surface column defined simply as text:
+<p>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
-<p>
-<p>Similarly, we might conceivably want to allow new ways to recognise values - in this case, a number:
-<p>
-<blockquote><font color="#000080">Understand &quot;eleventy-one&quot; as 111.
-</font></blockquote><p>
-<p>
-<p>When making complicated names, we need to watch out for the possibility of writing a definition which will cause Inform to go around in circles (something which will show up as a &quot;Too many activities at once&quot; run-time problem). For instance,
-<p>
-<blockquote><font color="#000080">Understand &quot;[thing] substitute&quot; as the placebo.
-</font></blockquote><p>
-<p>
-<p>will fail because Inform, working left to right, needs to look for every possible object name before it can progress: one possibility is the placebo itself: to check that, it needs to look for every possible object name: and so on, never finishing. A definition like this one very likely matches too much in any case (would we really want to accept PLACEBO SUBSTITUTE or CIGARETTE SUBSTITUTE SUBSTITUTE SUBSTITUTE here, as the definition implies?).
 <p>
 <p><hr><p>
-<a name="e367"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex367.html#e367 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>281</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex367.html#e367 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Palette</font></b></a><br>An artist's workshop in which the canvas can be painted in any colour, and where painterly names for pigments ("cerulean") are accepted alongside everyday ones ("blue").<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex367.html#e367 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e270"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex270.html#e270 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>413</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex270.html#e270 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex270.html#e270 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e413"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex413.html#e413 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>414</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex413.html#e413 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex413.html#e413 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e33"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc259.html#e33 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>282</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc259.html#e33 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Baritone, Bass</font></b></a><br>Letting the player pick a gender (or perhaps other characteristics) before starting play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex33.html#e33 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e33"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc362.html#e33 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>415</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc362.html#e33 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex33.html#e33 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The &quot;reading a command&quot; activity is rather advanced; for the moment, what we need to understand is that we're intervening in commands at the start of play and insisting that the player's first instruction to the game consist of a choice of gender. After that point, the gender will be set and play will proceed as normal.
+<p>The trick here is that we need a table with indexed text in order to keep track of the players' names.
 <p>
-<p>In order to do the parsing, we define gender as a kind of value, and give several alternate names to each gender.
+<p>Part 1 largely replicates the source from &quot;Identity Theft&quot;; new material starts at Part 2.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode378(code) {
+function pasteCode514(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Baritone, Bass[=0x0022=][=0x000A=][=0x000A=]Getting Started is a room.[=0x000A=][=0x000A=]Gender is a kind of value. The genders are masculine, feminine, and unknown. Understand [=0x0022=]male[=0x0022=] or [=0x0022=]man[=0x0022=] or [=0x0022=]M[=0x0022=] as masculine. Understand [=0x0022=]female[=0x0022=] or [=0x0022=]woman[=0x0022=] or [=0x0022=]F[=0x0022=] as feminine.[=0x000A=][=0x000A=]A person has a gender. The gender of the player is unknown.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=]Please choose a gender for your character. [=0x003E=][=0x0022=].[=0x000A=][=0x000A=]After reading a command when the gender of the player is unknown:[=0x000A=][=0x0009=]if the player[=0x0027=]s command includes [=0x0022=][gender][=0x0022=]:[=0x000A=][=0x0009=][=0x0009=]now the gender of the player is the gender understood;[=0x000A=][=0x0009=][=0x0009=]if the gender of the player is masculine, now the player is male;[=0x000A=][=0x0009=][=0x0009=]if the gender of the player is feminine, now the player is female;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][line break]Thank you. We now begin...[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]change the command prompt to [=0x0022=][=0x003E=][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move the player to Sandy Beach;[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Sorry, we[=0x0027=]re not ready to go on yet -- please pick a gender to begin. [=0x003E=][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=]Sandy Beach is a room.[=0x000A=][=0x000A=]Instead of examining the player when the player is female:[=0x000A=][=0x0009=]say [=0x0022=]Congratulations, you are a girl![=0x0022=][=0x000A=][=0x000A=]Instead of examining the player when the player is male:[=0x000A=][=0x0009=]say [=0x0022=]Congratulations, you are a boy![=0x0022=][=0x000A=][=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Rubies[=0x0022=][=0x000A=][=0x000A=]Part 1 - Collecting Names[=0x000A=][=0x000A=]The player[=0x0027=]s forename is an indexed text that varies. The player[=0x0027=]s full name is an indexed text that varies.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=]What is your name? [=0x003E=] [=0x0022=][=0x000A=][=0x000A=]To decide whether collecting names:[=0x000A=][=0x0009=]if the command prompt is [=0x0022=]What is your name? [=0x003E=] [=0x0022=], yes;[=0x000A=][=0x0009=]no.[=0x000A=][=0x000A=]After reading a command when collecting names:[=0x000A=][=0x0009=]if the number of words in the player[=0x0027=]s command is greater than 5:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][paragraph break]Who are you, a member of the British royal family? No one has that many names. Let[=0x0027=]s try this again.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the player[=0x0027=]s full name to the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the player[=0x0027=]s forename to word number 1 in the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the command prompt to [=0x0022=][=0x003E=][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]Hi, [player[=0x0027=]s forename]![=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][banner text][=0x0022=];[=0x000A=][=0x0009=]move the player to the location;[=0x000A=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=]Instead of looking when collecting names: do nothing.[=0x000A=][=0x000A=]Rule for printing the banner text when collecting names: do nothing.[=0x000A=][=0x000A=]Rule for constructing the status line when collecting names: do nothing.[=0x000A=][=0x000A=]Part 2 - Adding the Leaderboard[=0x000A=][=0x000A=]File of Leaderboard is called [=0x0022=]leaderboard[=0x0022=].[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]if the File of Leaderboard exists:[=0x000A=][=0x0009=][=0x0009=]read File of Leaderboard into the Table of Leaders;[=0x000A=][=0x0009=][=0x0009=]sort the Table of Leaders in reverse scored amount order.[=0x000A=][=0x000A=]When play ends:[=0x000A=][=0x0009=]choose row 10 in the Table of Leaders; [we[=0x0027=]ve sorted the table, so the lowest score will be the one at the bottom][=0x000A=][=0x0009=]if the score is greater than scored amount entry:[=0x000A=][=0x0009=][=0x0009=]change name entry to the player[=0x0027=]s forename;[=0x000A=][=0x0009=][=0x0009=]change the scored amount entry to the score;[=0x000A=][=0x0009=]show leaderboard;[=0x000A=][=0x0009=]write the File of Leaderboard from the Table of Leaders.[=0x000A=][=0x000A=]To show leaderboard:[=0x000A=][=0x0009=]sort the Table of Leaders in reverse scored amount order;[=0x000A=][=0x0009=]say [=0x0022=]Current leading scores: [paragraph break][=0x0022=];[=0x000A=][=0x0009=]say fixed letter spacing;[=0x000A=][=0x0009=]repeat through Table of Leaders:[=0x000A=][=0x0009=][=0x0009=]if scored amount entry is greater than 0:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]  [name entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column][=0x000A=][=0x0009=][=0x0009=][=0x0009=]if N is less than 1, change N to 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say N spaces;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][scored amount entry][line break][=0x0022=];[=0x000A=][=0x0009=]say variable letter spacing.[=0x000A=][=0x000A=]To say (N - a number) spaces:[=0x000A=][=0x0009=]repeat with index running from 1 to N:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=] [=0x0022=].[=0x000A=][=0x000A=]Table of Leaders[=0x000A=]scored amount[=0x0009=]name (indexed text)[=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=][=0x000A=][And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:][=0x000A=][=0x000A=]Part 3 - Scenario[=0x000A=][=0x000A=]Carry out taking something which is not handled:[=0x000A=][=0x0009=]increase score by 1.[=0x000A=][=0x000A=]The Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.[=0x000A=][=0x000A=]Instead of waiting, end the game in victory.[=0x000A=][=0x000A=]Test me with [=0x0022=]get ruby / z[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode378()"><img border=0 src=../doc_images/paste.png></a> &quot;Baritone, Bass&quot;
+<a href="javascript:pasteCode514()"><img border=0 src=../doc_images/paste.png></a>  &quot;Rubies&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Getting Started is a room.
+<blockquote><font color="#000080">Part 1 - Collecting Names
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Gender is a kind of value. The genders are masculine, feminine, and unknown. Understand &quot;male&quot; or &quot;man&quot; or &quot;M&quot; as masculine. Understand &quot;female&quot; or &quot;woman&quot; or &quot;F&quot; as feminine.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person has a gender. The gender of the player is unknown.
+<blockquote><font color="#000080">The player's forename is an indexed text that varies. The player's full name is an indexed text that varies.
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;Please choose a gender for your character. >&quot;.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;What is your name? > &quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command when the gender of the player is unknown:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;[gender]&quot;:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the gender of the player is the gender understood;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the gender of the player is masculine, now the player is male;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the gender of the player is feminine, now the player is female;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]Thank you. We now begin...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the player to Sandy Beach;
+<blockquote><font color="#000080">To decide whether collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the command prompt is &quot;What is your name? > &quot;, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After reading a command when collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of words in the player's command is greater than 5:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let's try this again.&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Sorry, we're not ready to go on yet -- please pick a gender to begin. >&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's full name to the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's forename to word number 1 in the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, [player's forename]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[banner text]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sandy Beach is a room.
+<blockquote><font color="#000080">Instead of looking when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the player when the player is female:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a girl!&quot;
+<blockquote><font color="#000080">Rule for printing the banner text when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the player when the player is male:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a boy!&quot;
+<blockquote><font color="#000080">Rule for constructing the status line when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<p>If we had a whole series of things to ask the player about, we might define a whole series of kinds of value
-<p>
-<blockquote><font color="#000080">The vocal ranges are soprano, mezzosoprano, contralto...
+<blockquote><font color="#000080">Part 2 - Adding the Leaderboard
 </font></blockquote><p>
 <p>
-<p>and use a &quot;construction stage&quot; variable to keep track of the current stage of character-construction, as in
-<p>
-<blockquote><font color="#000080">After reading a command when the current construction stage is choosing a vocal range:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<blockquote><font color="#000080">File of Leaderboard is called &quot;leaderboard&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc259.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the File of Leaderboard exists:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read File of Leaderboard into the Table of Leaders;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row 10 in the Table of Leaders; [we've sorted the table, so the lowest score will be the one at the bottom]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the score is greater than scored amount entry:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change name entry to the player's forename;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the scored amount entry to the score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;show leaderboard;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write the File of Leaderboard from the Table of Leaders.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To show leaderboard:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Current leading scores: [paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say fixed letter spacing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Leaders:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if scored amount entry is greater than 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [name entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is less than 1, change N to 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say N spaces;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[scored amount entry][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say variable letter spacing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say (N - a number) spaces:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with index running from 1 to N:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Leaders
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">scored amount</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">name (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:
+<p>
+<blockquote><font color="#000080">Part 3 - Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out taking something which is not handled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase score by 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of waiting, end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get ruby / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc362.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc258.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc260.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc361.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc363.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

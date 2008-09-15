@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.4. Upper and lower case letters</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.19. Understanding mistakes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,108 +19,84 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Rocket Man" -->
-<!-- SEARCH SECTION "Ex 378" -->
-<!-- SEARCH SORT "Ex 019-004-378" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc330.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc332.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.4. Upper and lower case letters</b></font></td></tr></table>
+<!-- SEARCH TITLE "Query" -->
+<!-- SEARCH SECTION "Ex 307" -->
+<!-- SEARCH SORT "Ex 016-019-307" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc269.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc271.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.19. Understanding mistakes</b></font></td></tr></table>
 <p>
-<p>In most European languages the same letters can appear in two forms: as capitals, like &quot;X&quot;, mainly used to mark a name or the start of a sentence; or in their ordinary less prominent form, like &quot;x&quot;. These forms are called upper and lower case because, historically, typesetters kept lead castings of letters in two wooden cases, one above the other on the workbench. Lower case letters were in the lower box closer to hand, being more often needed.
+<p>When inspiration strikes the player, he can usually be relied upon to make a good-faith effort to communicate the new idea: he will guess the right command. If he guesses wrongly, the mistake is probably the author's, because a good author will try to anticipate all possible wordings and make all of them work.
 <p>
-<p>Human languages are complicated. Not every lower case letter has an upper case partner: ordinal markers in Hispanic languages don't, for instance, and the German &quot;ß&quot; is never used in upper case. Sometimes two different lower case letters have the same upper case form: &quot;ς&quot; and &quot;σ&quot;, two versions of the Greek sigma, both capitalise to &quot;Σ&quot;. Inform follows the international Unicode standard in coping with all this.
+<p>Nevertheless it is sometimes good practice to nudge the player towards the right wording - particularly if the player has the right idea but is not explicit enough: for instance, typing TALK TO JUDGE when we really want to know what is to be said (JUDGE, GUILTY); or if the player tries something like PLAY CHESS rather than MOVE PAWN TO KING 4. Similarly, if we make a casual reference such as &quot;In your childhood days, you loved sliding in stocking feet across this hallway&quot;, a player might type SLIDE IN STOCKING FEET: a nice idea, and which deserves a nice response, even though it asks to do something beyond the scope of the game.
 <p>
-<p>We can test whether text is in either case like so:
+<p>Inform provides a simple mechanism for recognising a command but at the same time recognising that <i>it does not properly specify an action</i>. Such commands are called &quot;mistakes&quot;, for the sake of a memorable term, but the player has not really behaved badly, and should be helped rather than reproved. For instance:
 <p>
-<blockquote><font color="#000080">if WHATEVER is in lower case
-<br>if WHATEVER is in upper case
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake.
 </font></blockquote><p>
 <p>
-<p>To pass, every character in WHATEVER must be a lower (or upper) case letter: so &quot;marbles&quot; is in lower case, but &quot;marble alley&quot; is not - the space is not a letter. (The empty text is in both lower and upper case.) And we can change the casing of text using:
+<p>While that works - the command to &quot;act&quot; is indeed rejected - it is not very good, because no very helpful message is brought up. The following is much better:
 <p>
-<blockquote><font color="#000080">WHATEVER in lower case
-<br>WHATEVER in upper case
-<br>WHATEVER in sentence case
-<br>WHATEVER in title case
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;).
 </font></blockquote><p>
 <p>
-<p>Sentence case and title case make sense only for texts longer than a single letter. Sentence case capitalises the first letter of each sentence and reduces the rest to lower case; title case capitalises the first letter of each word, and lowers the rest. For instance, if X is &quot;a ticket to Tromsø via Østfold&quot;:
+<p>Or we could once again insist on a given context:
 <p>
-<blockquote><font color="#000080">lower case: a ticket to tromsø via østfold
-<br>upper case: A TICKET TO TROMSØ VIA ØSTFOLD
-<br>title case: A Ticket To Tromsø Via Østfold
-<br>sentence case: A ticket to tromsø via østfold
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
 </font></blockquote><p>
 <p>
-<p>Accents are preserved in case changes. So (if we are using Glulx and have Unicode available) title case can turn Aristophanes' discomfortingly lower-case lines
+<p>That still has the drawback that the command &quot;act hamlet&quot; will not be recognised: so the final version we want is probably
 <p>
-<blockquote><font color="#000080">ἐξ οὗ γὰρ ἡμᾶς προὔδοσαν μιλήσιοι,
-<br>οὐκ εἶδον οὐδ᾽ ὄλισβον ὀκτωδάκτυλον,
-<br>ὃς ἦν ἂν ἡμῖν σκυτίνη &quot;πικουρία
+<blockquote><font color="#000080">Understand &quot;act [text]&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
 </font></blockquote><p>
 <p>
-<p>by raising them proudly up like so:
+<p>since the &quot;[text]&quot; part will soak up any words the player types (or none), meaning that any command at all whose first word is &quot;act&quot; will be matched.
 <p>
-<blockquote><font color="#000080">Ἐξ Οὗ Γὰρ Ἡμᾶς Προὔδοσαν Μιλήσιοι,
-<br>Οὐκ Εἶδον Οὐδ᾽ Ὄλισβον Ὀκτωδάκτυλον,
-<br>Ὃς Ἦν Ἂν Ἡμῖν Σκυτίνη &quot;Πικουρία.
+<p>The following is often useful during beta-testing of a new work, though we would not want it in the final published edition. Many authors like to ask their testers not to try anything in particular, simply to play naturally: but to record the transcript of the session, and email it back to the author. The following command is a device to allow the tester to type a comment in to the transcript:
+<p>
+<blockquote><font color="#000080">Understand &quot;! [text]&quot; as a mistake (&quot;Noted.&quot;).
 </font></blockquote><p>
 <p>
-<p>Title and sentence casing can only be approximate if done by computer. Inform looks at the letters, but is blind to the words and sentences they make up. (Note the way sentence casing did not realise &quot;Tromsø&quot; and &quot;Østfold&quot; were proper nouns.) If asked to put the name &quot;MCKAY&quot; into title casing, Inform will opt for &quot;Mckay&quot;, not recognising this as the Scottish patronymic surname &quot;McKay&quot;. Given &quot;baym dnieper&quot;, the title of David Bergelson's great Yiddish novel of 1932, it will opt for &quot;BAYM DNIEPER&quot;: but properly speaking Yiddish does not have upper case lettering at all, though nowadays it is sometimes printed as if it did. And conventions are very variable about which words should be capitalised in titles: English publishers mostly agree that connectives, articles and prepositions should be in lower case, but in France almost anything goes, with Academie Française rules giving way to avant-garde book design. In short, we cannot rely on Inform's title casing to produce a result which a human reader will always think perfect.
+<p>For instance, the tester might type &quot;! DIDN'T WE SAY DARCY WAS TALL?&quot;, to which the game would reply &quot;Noted.&quot; - and the author can search for such comments when receiving the transcript.
 <p>
-<p>This discussion has all been about how Inform prints, not about how it reads commands from the keyboard, because the latter is done case-insensitively. The virtual machines for which Inform creates programs normally flatten all command input to lower case, and in any case Understand comparison ignores casing. Thus
+<p>If we are careful, we can make the reply depend on what was typed in the mistaken command:
 <p>
-<blockquote><font color="#000080">Understand &quot;mckay&quot; as the Highland Piper.
+<blockquote><font color="#000080">Understand &quot;steal [something]&quot; as a mistake (&quot;Just TAKE [the noun] and leave without paying: that's stealing in my book.&quot;).
 </font></blockquote><p>
 <p>
-<p>means that &quot;examine McKay&quot;, &quot;examine MCKAY&quot;, &quot;examine mckay&quot;, and so forth are all equivalent. The text of the player's command probably doesn't preserve the original casing typed in any event.
-<p>
-<p>One more caution, though it will affect hardly anyone. For projects using the Z-machine, only a restricted character set is available in indexed texts: for more, we must use Glulx. A mad anomaly of ZSCII, the Z-machine character set, is that it contains the lower case letter &quot;ÿ&quot; but not its upper case form &quot;Ÿ&quot;, so that
-<p>
-<blockquote><font color="#000080">&quot;ÿ&quot; in upper case
-</font></blockquote><p>
-<p>
-<p>produces &quot;Ÿ&quot; in Glulx but &quot;ÿ&quot; in the Z-machine. This will come as a blow to Queensrÿche fans, but in all other respects any result on the Z-machine should agree with its counterpart on Glulx.
+<p>The care comes in because Inform applies much less checking to mistakes than to other actions, and odd errors will result if we try to refer to (say) &quot;the second noun&quot; in a command which did not have a second noun.
 <p>
 <p><hr><p>
+<a name="e138"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex138.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>306</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex138.html#e138 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Gorge at George</font></b></a><br>If the player tries to TALK TO a character, suggest alternative modes of conversation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex138.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e237"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc331.html#e237 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>378</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc331.html#e237 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rocket Man</font></b></a><br>Using case changes on any text produced by a "to say..." phrase.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex237.html#e237 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e237"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc270.html#e237 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>307</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc270.html#e237 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Query</font></b></a><br>Catching all questions that begin with WHO, WHAT, WHERE, and similar question words, and responding with the instruction to use commands, instead.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex237.html#e237 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We can now change the case of any text produced by a &quot;to say...&quot; phrase. This is often useful when we would like to make use of a standard say phrase in some new context. Say, for instance, that we would like to &quot;[is-are the list...]&quot; in a context that needs the first letter to be capitalized.
-<p>
-<p>We could write a new say phrase, such as &quot;to say is-are the list of (N - a description) in sentence capitalization&quot;; but there is an easier way, and that is to set an indexed text variable to the output of the to say phrase, and then print that indexed text in the case of our choice.
-<p>
-<p>For example:
+<p>First, we create a single &quot;[query]&quot; token so that we can capture all instances of such sentences in a single line:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode478(code) {
+function pasteCode403(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Rocket Man[=0x0022=][=0x000A=][=0x000A=]Instead of going somewhere from the spaceport when the player carries something:[=0x000A=][=0x0009=]let N be [=0x0022=][is-are the list of things carried by the player] really suitable gear to take to the moon?[=0x0022=] in sentence case;[=0x000A=][=0x0009=]say [=0x0022=][N][paragraph break][=0x0022=].[=0x000A=][=0x000A=]The Spaceport is a room. North of the Spaceport is the Rocket Launch Pad. The player carries a stuffed bear, a chocolate cookie, and a book.[=0x000A=][=0x000A=]The description of the book is [=0x0022=]It is entitled [italic type]Why Not To Take [sentence cased inventory] To The Moon[roman type].[=0x0022=][=0x000A=][=0x000A=]To say sentence cased inventory:[=0x000A=][=0x0009=]let N be [=0x0022=][a list of things carried by the player][=0x0022=] in title case;[=0x000A=][=0x0009=]say [=0x0022=][N][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]n / x book[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Query[=0x0022=][=0x000A=][=0x000A=]Blank Room is a room.[=0x000A=][=0x000A=]Understand [=0x0022=]who[=0x0022=] or [=0x0022=]what[=0x0022=] or [=0x0022=]when[=0x0022=] or [=0x0022=]where[=0x0022=] or [=0x0022=]why[=0x0022=] or [=0x0022=]how[=0x0022=] or [=0x0022=]who[=0x0027=]s[=0x0022=] or [=0x0022=]what[=0x0027=]s[=0x0022=] or [=0x0022=]when[=0x0027=]s[=0x0022=] or [=0x0022=]where[=0x0027=]s[=0x0022=] or [=0x0022=]why[=0x0027=]s[=0x0022=] or [=0x0022=]how[=0x0027=]s[=0x0022=] as [=0x0022=][query][=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=][query] [text][=0x0022=] as a mistake ([=0x0022=][story title] understands commands, such as [=0x0027=][command prompt]examine [a random thing that can be seen by the player][=0x0027=], but not questions. For more instructions, type HELP.[=0x0022=]).[=0x000A=][=0x000A=]Test me with [=0x0022=]who am I? / who are you? / where is this place?[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode478()"><img border=0 src=../doc_images/paste.png></a> &quot;Rocket Man&quot;
+<a href="javascript:pasteCode403()"><img border=0 src=../doc_images/paste.png></a> &quot;Query&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going somewhere from the spaceport when the player carries something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be &quot;[is-are the list of things carried by the player] really suitable gear to take to the moon?&quot; in sentence case;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[N][paragraph break]&quot;.
+<blockquote><font color="#000080">Blank Room is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Spaceport is a room. North of the Spaceport is the Rocket Launch Pad. The player carries a stuffed bear, a chocolate cookie, and a book.
+<blockquote><font color="#000080">Understand &quot;who&quot; or &quot;what&quot; or &quot;when&quot; or &quot;where&quot; or &quot;why&quot; or &quot;how&quot; or &quot;who's&quot; or &quot;what's&quot; or &quot;when's&quot; or &quot;where's&quot; or &quot;why's&quot; or &quot;how's&quot; as &quot;[query]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the book is &quot;It is entitled [italic type]Why Not To Take [sentence cased inventory] To The Moon[roman type].&quot;
+<blockquote><font color="#000080">Understand &quot;[query] [text]&quot; as a mistake (&quot;[story title] understands commands, such as '[command prompt]examine [a random thing that can be seen by the player]', but not questions. For more instructions, type HELP.&quot;).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say sentence cased inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be &quot;[a list of things carried by the player]&quot; in title case;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[N]&quot;.
+<blockquote><font color="#000080">Test me with &quot;who am I? / who are you? / where is this place?&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;n / x book&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc331.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Now the game will respond to all questions novice players might type with this reminder to look for help information.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc270.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e58"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex58.html#e58 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>379</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex58.html#e58 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Capital City</font></b></a><br>To arrange that the location information normally given on the left-hand side of the status line appears in block capitals.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex58.html#e58 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc330.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc332.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e371"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex371.html#e371 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>308</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex371.html#e371 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hot Glass Looks Like Cold Glass</font></b></a><br>Responding to references to a property that the player isn't yet allowed to mention (or when not to use "understand as a mistake").<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex371.html#e371 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc269.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc271.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

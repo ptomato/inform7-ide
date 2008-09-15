@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.3. Plural assertions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.11. Adjacent rooms and routes through the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,103 +19,108 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Get Me to the Church on Time" -->
-<!-- SEARCH SECTION "Ex 42" -->
-<!-- SEARCH SORT "Ex 004-003-042" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc55.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc57.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.3. Plural assertions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Mistress of Animals" -->
+<!-- SEARCH SECTION "Ex 75" -->
+<!-- SEARCH SORT "Ex 006-011-075" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc91.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc93.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.11. Adjacent rooms and routes through the map</b></font></td></tr></table>
 <p>
-<p>As the following examples show, sentences can make several assertions at once by using the plural. Suppose we have defined a kind called &quot;high-up fixture&quot;, for instance like so:
+<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
 <p>
-<blockquote><font color="#000080">A high-up fixture is a kind of thing. A high-up fixture is usually fixed in place.
+<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
 </font></blockquote><p>
 <p>
-<p>Then the following sentence creates two such objects and puts them in their place:
+<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
 <p>
-<blockquote><font color="#000080">The high shelf and the skylight window are high-up fixtures in the Lumber Room.
+<blockquote><font color="#000080">if somebody is in an adjacent room, ...
 </font></blockquote><p>
 <p>
-<p>since it is equivalent to saying:
+<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
 <p>
-<blockquote><font color="#000080">The high shelf is a high-up fixture. The skylight window is a high-up fixture. The high shelf is in the Lumber Room. The skylight window is in the Lumber Room.
+<p>If we want to ask a more direct question, we can obtain specific map connections like so:
+<p>
+<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
 </font></blockquote><p>
 <p>
-<p>Such plurals are allowed in almost any context, and we could even define two kinds at once:
+<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
 <p>
-<blockquote><font color="#000080">Bucket and basket are kinds of container.
+<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
 </font></blockquote><p>
 <p>
-<p>Inform constructs plurals by a fairly primitive rule, and English is so irregular a language that a more complicated rule would probably not be very much better. We sometimes need to intervene:
+<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
 <p>
-<blockquote><font color="#000080">An ox is a kind of animal. The plural of ox is oxen.
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
 </font></blockquote><p>
 <p>
-<p>We are allowed to define more than one plural for the same singular text, and for the names of things, rooms or kinds, all alternative versions will be used interchangeably. (For instance, Inform defines both &quot;people&quot; and &quot;persons&quot; as plurals of &quot;person&quot;.)
+<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
 <p>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>For the time being, please avoid syllepsis such as &quot;Darcy is wearing a hat and carrying a fishing rod.&quot;, where the &quot;and&quot; couples together prepositions (or verbs) rather than nouns.
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
+</font></blockquote><p>
 <p>
-<p></font></td></tr></table><hr><p>
+<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
+<p>
+<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
+<p>
+<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
+</font></blockquote><p>
+<p>
+<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
+<p>
+<p>Lastly, we can find out how long the journey would be:
+<p>
+<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
+</font></blockquote><p>
+<p>
+<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
+<p>
+<p>Route-finding makes it possible to write quite sophisticated conditions concisely. But these sometimes run slowly, because they call for large amounts of computation. How rapidly Inform can find routes depends on which of two methods it uses. Both have advantages - one is fast but needs large amounts of memory, the other is slow but economical. We can choose between them with one of these two use options:
+<p>
+<blockquote><font color="#000080">Use fast route-finding.
+<br>Use slow route-finding.
+</font></blockquote><p>
+<p>
+<p>If neither is specified, &quot;fast&quot; is used where the project uses the Glulx virtual machine (see the Settings panel), and &quot;slow&quot; on the Z-machine, where memory is tighter. Fast route-finding is ideally suited to situations where dozens of characters are constantly route-finding through the map as they meander around in a landscape.
+<p>
+<p>(- See Indirect relations for route-finding through a relation rather than the map.)
+<p>
+<p><hr><p>
+<a name="e189"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex189.html#e189 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>74</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex189.html#e189 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex189.html#e189 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e53"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc56.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc56.html#e53 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Get Me to the Church on Time</font></b></a><br>Using kinds of clothing to prevent the player from wearing several pairs of trousers at the same time.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e53"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc92.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>75</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc92.html#e53 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Inform's default handling of wearable things does not make any rules about what can be worn together. Suppose, however, we have a game in which there are a large number of different garments, and we want to keep the player from wearing (say) more than one pair of pants at once:
+<p>Suppose we want a restless sort of character always pacing from room to room. It is quite easy to use adjacency to achieve this effect:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode132(code) {
+function pasteCode168(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Get Me to the Church on Time[=0x0022=][=0x000A=][=0x000A=]A pair of pants and a shirt are kinds of thing. A pair of pants and a shirt are usually wearable.[=0x000A=][=0x000A=]Some golf pants are a pair of pants. The description is [=0x0022=]Checked in red and green, with tiny frolicking gophers every few inches.[=0x0022=][=0x000A=][=0x000A=]Some tuxedo trousers are a pair of pants. The description is [=0x0022=]Black, pressed, and slimming.[=0x0022=][=0x000A=][=0x000A=]The frilly shirt is a shirt. The description of the frilly shirt is [=0x0022=]She insisted.[=0x0022=][=0x000A=][=0x000A=]The polo shirt is a shirt. The description is [=0x0022=]Turquoise and bright yellow, the colors selected by your golfing buddies.[=0x0022=][=0x000A=][=0x000A=]The player wears the golf pants and the polo shirt. The player carries the tuxedo trousers and the frilly shirt.[=0x000A=][=0x000A=]The Wedding Chapel Dressing Room is a room. [=0x0022=]The bride[=0x0027=]s dressing room is a lavish suite with closets, hangers, dressmaker[=0x0027=]s dummies, boxes of straight pins and sewing notions, combs, lotions, brushes, and hair fixatives, plus room for  fifteen female attendants and a photographer. Before they shoved you out of the room you even got a glimpse of a small reference library including [=0x0027=]1001 French Braids[=0x0027=] and [=0x0027=]Corset-Lacing For Beginners.[=0x0027=][=0x000A=][=0x000A=]This is the groom[=0x0027=]s dressing room. You get a framed photograph of Elvis, a dusty mirror, and the floor space of an average toilet stall.[=0x0022=][=0x000A=][=0x000A=]The dusty mirror and the photograph of Elvis are scenery in the Dressing Room. The description of the mirror is [=0x0022=]You can[=0x0027=]t really get more than a silhouette impression of yourself.[=0x0022=] The description of Elvis is [=0x0022=]He reminds you that you[=0x0027=]d better get out there before the organist switches to Hound Dog.[=0x0022=][=0x000A=][=0x000A=][And now the rule itself, borrowed from a later chapter:][=0x000A=][=0x000A=]Instead of wearing a pair of pants when the player is wearing a pair of pants (called the wrong trousers):[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]ll have to take off [the wrong trousers] first.[=0x0022=][=0x000A=][=0x000A=]Instead of wearing a shirt when the player is wearing a shirt (called the wrong top):[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]ll have to take off [the wrong top] first.[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]From the other side of the door, you hear the organist move on from his instrumental interpretation of [=0x0027=]I Wanna Hold Your Hand[=0x0027=] to a somewhat more spirited rendition of [=0x0027=]Help! I Need Somebody![=0x0027=]. Okay, okay, but you[=0x0027=]ve been rushing things along since the 16th fairway, and you can[=0x0027=]t be more than a half-hour late... Surely that mother of hers can[=0x0027=]t blame you for that?[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]i / x trousers / wear trousers / x golf pants / take off golf pants / wear trousers / x frilly shirt / x polo shirt / wear frilly shirt / doff polo shirt / wear frilly shirt[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Mistress of Animals[=0x0022=][=0x000A=][=0x000A=]Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.[=0x000A=][=0x000A=]Artemis is a woman in Thebes.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]if Artemis is in a room (called the current space):[=0x000A=][=0x0009=][=0x0009=]let next space be a random room which is adjacent to the current space;[=0x000A=][=0x0009=][=0x0009=]if Artemis is visible, say [=0x0022=]Artemis heads to [the next space].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move Artemis to next space;[=0x000A=][=0x0009=][=0x0009=]if Artemis is visible, say [=0x0022=]Artemis arrives from [the current space].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / z / z / z / z[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode132()"><img border=0 src=../doc_images/paste.png></a> &quot;Get Me to the Church on Time&quot;
+<a href="javascript:pasteCode168()"><img border=0 src=../doc_images/paste.png></a> &quot;Mistress of Animals&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A pair of pants and a shirt are kinds of thing. A pair of pants and a shirt are usually wearable.
+<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some golf pants are a pair of pants. The description is &quot;Checked in red and green, with tiny frolicking gophers every few inches.&quot;
+<blockquote><font color="#000080">Artemis is a woman in Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some tuxedo trousers are a pair of pants. The description is &quot;Black, pressed, and slimming.&quot;
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is in a room (called the current space):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next space be a random room which is adjacent to the current space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next space].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move Artemis to next space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current space].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The frilly shirt is a shirt. The description of the frilly shirt is &quot;She insisted.&quot;
+<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The polo shirt is a shirt. The description is &quot;Turquoise and bright yellow, the colors selected by your golfing buddies.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player wears the golf pants and the polo shirt. The player carries the tuxedo trousers and the frilly shirt.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Wedding Chapel Dressing Room is a room. &quot;The bride's dressing room is a lavish suite with closets, hangers, dressmaker's dummies, boxes of straight pins and sewing notions, combs, lotions, brushes, and hair fixatives, plus room for  fifteen female attendants and a photographer. Before they shoved you out of the room you even got a glimpse of a small reference library including '1001 French Braids' and 'Corset-Lacing For Beginners.'
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the groom's dressing room. You get a framed photograph of Elvis, a dusty mirror, and the floor space of an average toilet stall.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The dusty mirror and the photograph of Elvis are scenery in the Dressing Room. The description of the mirror is &quot;You can't really get more than a silhouette impression of yourself.&quot; The description of Elvis is &quot;He reminds you that you'd better get out there before the organist switches to Hound Dog.&quot;
-</font></blockquote><p>
-<p>
-<p>And now the rule itself, borrowed from a later chapter:
-<p>
-<blockquote><font color="#000080">Instead of wearing a pair of pants when the player is wearing a pair of pants (called the wrong trousers):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'll have to take off [the wrong trousers] first.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of wearing a shirt when the player is wearing a shirt (called the wrong top):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'll have to take off [the wrong top] first.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;From the other side of the door, you hear the organist move on from his instrumental interpretation of 'I Wanna Hold Your Hand' to a somewhat more spirited rendition of 'Help! I Need Somebody!'. Okay, okay, but you've been rushing things along since the 16th fairway, and you can't be more than a half-hour late... Surely that mother of hers can't blame you for that?&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / x trousers / wear trousers / x golf pants / take off golf pants / wear trousers / x frilly shirt / x polo shirt / wear frilly shirt / doff polo shirt / wear frilly shirt&quot;.
-</font></blockquote><p>
-<p>
-<p>If we wanted to, we could make similar kinds for hats, shoes, and so on, and have a simple but effective system of clothing. A more complicated treatment might keep track of layering and describe the player's outfit differently depending on which clothes were outermost -- an example for a later chapter.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc56.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Of course, it helps that Artemis is the sort to like open spaces. The implementation would become more complicated if there were doors which might block transit between these locations.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc92.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc55.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e404"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex404.html#e404 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>76</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex404.html#e404 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex404.html#e404 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>77</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc91.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.5. Every turn</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.6. Spontaneous actions by other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,174 +19,210 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Text Foosball" -->
-<!-- SEARCH SECTION "Ex 132" -->
-<!-- SEARCH SORT "Ex 009-005-132" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc134.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc136.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.5. Every turn</b></font></td></tr></table>
+<!-- SEARCH TITLE "Boston Cream" -->
+<!-- SEARCH SECTION "Ex 187" -->
+<!-- SEARCH SORT "Ex 012-006-187" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc185.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc187.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.6. Spontaneous actions by other people</b></font></td></tr></table>
 <p>
-<p>The passage of time in interactive fiction is broken up into a succession of turns, in each of which the player types a request and is given a response. Usually each such request triggers one action, but sometimes a whole sequence are fired off, as when the player types &quot;get all&quot; in a cluttered room.
+<p>The player's actions happen not only when he types a command, but can also happen spontaneously as a result of a &quot;try&quot; phrase.
 <p>
-<p>One of the last things to happen in each turn is that Inform will apply any rules which have been set to occur &quot;every turn&quot;, like so:
-<p>
-<blockquote><font color="#000080">Every turn, say &quot;The summer breeze shakes the apple-blossom.&quot;
+<blockquote><font color="#000080">try going west
+<br>try asking Will to try going west
 </font></blockquote><p>
 <p>
-<p>This is equivalent to writing:
+<p>The latter might, of course, result in Will trying going west: or it might not - that depends on the persuasion rules. But as the author, we have the ultimate powers of persuasion, and can make Will act in any way we like, without asking:
 <p>
-<blockquote><font color="#000080">An every turn rule: say &quot;The summer breeze shakes the apple-blossom.&quot;
+<blockquote><font color="#000080">try Will going west
 </font></blockquote><p>
 <p>
-<p>Note that the text about blossom, which will quickly become tiresome, is said at the end of every turn, not at the beginning, and in particular not before the player's first opportunity to type a command.
+<p>Nobody in the simulated world requested this: it is an impulse felt by Will alone, so that - from the player's point of view - Will is acting spontaneously. The player need not be anywhere nearby, and may never know what happened. Recall that when actions work their way down through the flow-chart, they are stopped before reaching the &quot;report&quot; stage - when the player is told about them - if they are running &quot;silently&quot;. This is also where Inform stops an action which is not witnessed by the player.
 <p>
-<p>As usual when defining rules, we can add stipulations: any condition can be attached using &quot;when&quot;.
+<p>To repeat a point in the previous section: &quot;unsuccessful attempt&quot; rules do not apply to actions which the author has caused to happen, using &quot;try&quot;. When such actions fail, they invoke no special set of rules.
 <p>
-<blockquote><font color="#000080">Every turn when in the Orchard, say &quot;The summer breeze shakes the apple-blossom.&quot;
+<p>Note that the text &quot;try Will going west&quot; involves the actor's name immediately placed next to the action he is to try, which in a very few cases might cause ambiguities. If the actor's name contains a participle like &quot;going&quot; - say, if Will's full name turned out to be Mr Will Going - then we would have to write out the action name in full, using &quot;trying&quot; to clarify matters:
+<p>
+<blockquote><font color="#000080">try Will Going trying going west
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the player can see the rotting fish, say &quot;Your nose twitches involuntarily.&quot;
-</font></blockquote><p>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>Inform does not (yet) support &quot;try Will asking Elanor to try going west&quot;, but we hope to add actions of the form eventually.
 <p>
-<p><hr><p>
-<a name="e233"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>131</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex233.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Witnessed 1</font></b></a><br>A kind of battery which can be put into different devices, and which will lose power after extended use.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p></font></td></tr></table><hr><p>
+<a name="e425"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex425.html#e425 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex425.html#e425 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> IQ Test</font></b></a><br>Introducing Ogg, a person who will unlock and open a container when the player tells him to get something inside.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex425.html#e425 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e71"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc135.html#e71 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>132</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc135.html#e71 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Text Foosball</font></b></a><br>A game of foosball which relies heavily on every-turn rules.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex71.html#e71 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e71"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc186.html#e71 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc186.html#e71 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Boston Cream</font></b></a><br>A fuller implementation of Ogg, giving him a motivation of his own and allowing him to react to the situation created by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex71.html#e71 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want a game of foosball in which our opponent acts every turn, but does different things depending on where the ball currently lies. We can put together a sequence of every-turn rules to account for this, as follows:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode230(code) {
+function pasteCode286(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Text Foosball[=0x0022=][=0x000A=][=0x000A=]The Lounge is a room. [=0x0022=]The Lounge is appointed with everything necessary to rest and relaxation: a vending machine, a potted palm, a stack of Entertainment Weekly issues from 1993, and -- your pride and joy -- a foosball game.[=0x0022=][=0x000A=][=0x000A=]The foosball game is scenery in the Lounge. Understand [=0x0022=]table[=0x0022=] or [=0x0022=]football[=0x0022=] or [=0x0022=]foozball[=0x0022=] or [=0x0022=]fussball[=0x0022=] or [=0x0022=]soccer[=0x0022=] as the foosball game. The game is a supporter. On the game is a small white ball. The ball can be still, approaching, receding, or unreachable. The description of the ball is [=0x0022=]Currently [small white ball condition].[=0x0022=][=0x000A=][=0x000A=]After printing the name of the small white ball, say [=0x0022=] ([small white ball condition])[=0x0022=].[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change left hand status line to [=0x0022=]You: [score][=0x0022=];[=0x000A=][=0x0009=]change right hand status line to [=0x0022=]Joey: [Joey[=0x0027=]s score][=0x0022=].[=0x000A=][=0x000A=]Some tiny men on sticks are part of the game. Understand [=0x0022=]handles[=0x0022=] as the men. The description is [=0x0022=]Okay, a couple of the tiny men have had their feet broken off, and the table surface itself is a bit warped, and the ball resembles a quail egg in respect of shape and color. This makes for a game of unusual randomness, but skill is overrated.[=0x0022=][=0x000A=][=0x000A=]Instead of attacking or pulling or pushing the game when the ball is unreachable:[=0x000A=][=0x0009=]say [=0x0022=]You give the table a good shove, and the ball moves ever-so-slightly.[=0x0022=];[=0x000A=][=0x0009=]now the ball is still.[=0x000A=][=0x000A=]Instead of taking the white ball:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]d forfeit the game if you did that.[=0x0022=][=0x000A=][=0x000A=]Instead of turning the tiny men when the ball is unreachable:[=0x000A=][=0x0009=]say [=0x0022=]The ball has somehow gotten to a mystical point on the table where it cannot be reached, no matter what. Close inspection reveals that this point has been marked in chalk with a tiny X. Not that that does any good.[=0x0022=][=0x000A=][=0x000A=]Instead of turning the tiny men when the ball is approaching:[=0x000A=][=0x0009=]if a random chance of 2 in 3 succeeds:[=0x000A=][=0x0009=][=0x0009=]if a random chance of 1 in 2 succeeds, now the ball is receding;[=0x000A=][=0x0009=][=0x0009=]otherwise now the ball is still;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][if the ball is still]Thunk. [otherwise]Thwack! [end if]You keep the ball from reaching its goal! Now it is [small white ball condition].[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]let Joey score.[=0x000A=][=0x000A=]To let Joey score:[=0x000A=][=0x0009=]now the ball is still;[=0x000A=][=0x0009=]change Joey[=0x0027=]s score to Joey[=0x0027=]s score + 1;[=0x000A=][=0x0009=]say [=0x0022=]The ball rolls neatly into your goal, despite your efforts. [=0x0022=];[=0x000A=][=0x0009=]if Joey[=0x0027=]s score [=0x003C=] score, say [=0x0022=]You put the ball back in the center with a snap. No reason to worry yet; you[=0x0027=]re still ahead. Joey looks determined, though.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]After allowing a moment or two for Joey[=0x0027=]s gloating to pass, you replace it at the center.[=0x0022=][=0x000A=][=0x000A=]Instead of turning the tiny men when a random chance of 1 in 13 succeeds:[=0x000A=][=0x0009=]if the ball is unreachable, continue the action;[=0x000A=][=0x0009=]now the ball is unreachable;[=0x000A=][=0x0009=]say [=0x0022=]You hit the ball off-center and it rolls sluggishly into a little dip in the surface of the foosball table. [=0x0022=];[=0x000A=][=0x0009=]if Joey[=0x0027=]s score [=0x003E=] 7, say [=0x0022=][=0x0027=]You did that on purpose![=0x0027=] Joey exclaims indignantly.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]You and Joey exchange glances. This is never good.[=0x0022=][=0x000A=][=0x000A=]Instead of turning the tiny men:[=0x000A=][=0x0009=]say [=0x0022=]You madly rotate the tiny men on sticks! [=0x0022=];[=0x000A=][=0x0009=]if a random chance of 1 in 2 succeeds:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Hoorah! You hit the ball![=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now the ball is receding;[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Somehow you fail to bring your monopodal player into contact with the ball.[=0x0022=][=0x000A=][=0x000A=]Joey is a man in the Lounge. [=0x0022=]Joey is hunkered over the foosball handles on his side of the table.[=0x0022=] Joey can be active or inactive.[=0x000A=][=0x000A=]Joey[=0x0027=]s score is a number that varies.[=0x000A=][=0x000A=]Every turn: now Joey is active.[=0x000A=][=0x000A=]Every turn when the ball is approaching and Joey is active:[=0x000A=][=0x0009=]let total be Joey[=0x0027=]s score + score;[=0x000A=][=0x0009=]if total [=0x003E=] 9, make no decision;[=0x000A=][=0x0009=]now Joey is inactive;[=0x000A=][=0x0009=]let Joey score;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]Every turn when the ball is unreachable and Joey is active:[=0x000A=][=0x0009=]let total be Joey[=0x0027=]s score + score;[=0x000A=][=0x0009=]if total [=0x003E=] 9, make no decision;[=0x000A=][=0x0009=]now Joey is inactive;[=0x000A=][=0x0009=]say [=0x0022=]Joey glares angrily at the stuck ball.[=0x0022=][=0x000A=][=0x000A=]Every turn when the ball is receding and Joey is active:[=0x000A=][=0x0009=]let total be Joey[=0x0027=]s score + score;[=0x000A=][=0x0009=]if total [=0x003E=] 9, make no decision;[=0x000A=][=0x0009=]if the ball is unreachable, make no decision;[=0x000A=][=0x0009=]now Joey is inactive;[=0x000A=][=0x0009=]if a random chance of 1 in 2 succeeds:[=0x000A=][=0x0009=][=0x0009=]if a random chance of 1 in 2 succeeds, now the ball is still;[=0x000A=][=0x0009=][=0x0009=]otherwise now the ball is approaching;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Joey connects with your shot. Now the ball is [small white ball condition]![=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]now the ball is still;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Joey tries to block, but misses! Back it goes in the center, where it is [small white ball condition].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]change score to score + 1.[=0x000A=][=0x000A=]Every turn when the ball is still and Joey is active:[=0x000A=][=0x0009=]let total be Joey[=0x0027=]s score + score;[=0x000A=][=0x0009=]if total [=0x003E=] 9, make no decision;[=0x000A=][=0x0009=]if the ball is unreachable, make no decision;[=0x000A=][=0x0009=]now Joey is inactive;[=0x000A=][=0x0009=]if a random chance of 1 in 2 succeeds:[=0x000A=][=0x0009=][=0x0009=]now the ball is approaching;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Joey hits the ball solidly down towards your goal. Now it is [small white ball condition].[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Joey fails to hit the ball in your direction. It remains [small white ball condition].[=0x0022=][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]let total be Joey[=0x0027=]s score + score;[=0x000A=][=0x0009=]if total [=0x003E=] 9:[=0x000A=][=0x0009=][=0x0009=]if Joey[=0x0027=]s score [=0x003E=] score, end the game saying [=0x0022=]Rats! Joey wins![=0x0022=];[=0x000A=][=0x0009=][=0x0009=]if Joey[=0x0027=]s score [=0x003C=] score, end the game saying [=0x0022=]Victory is yours![=0x0022=];[=0x000A=][=0x0009=][=0x0009=]if Joey[=0x0027=]s score is score, end the game saying [=0x0022=]A perfect tie.[=0x0022=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Boston Cream[=0x0022=][=0x000A=][=0x000A=]The Donut Shop is a room. [=0x0022=]Vibrantly decorated in donut colors: pink, brown, and cream.[=0x0022=][=0x000A=][=0x000A=]Ogg is a man in the Donut Shop. [=0x0022=]Ogg is slumped in the corner[if Ogg carries something] with [a list of things carried by Ogg][end if]. He wears a nametag which says [=0x0027=]HELLO MY NAME IS OG.[=0x0027=][=0x0022=] Understand [=0x0022=]og[=0x0022=] as Ogg. Ogg wears a nametag. The description of the nametag is [=0x0022=]Very neatly written.[=0x0022=][=0x000A=][=0x000A=]The Donut Shop contains a transparent closed openable locked lockable enterable container called a case. The case is fixed in place. The case contains some cake donuts, some jelly donuts, and some apple fritters. [=0x0022=]The [if unopenable]damaged[otherwise]gleaming[end if] donut case [if something is in the case]contains [a list of things in the case][otherwise]has been stripped of its contents[end if].[=0x0022=] The cake donuts, the jelly donuts, and the apple fritters are edible.[=0x000A=][=0x000A=]The matching key of the case is a silver key. The silver key is in a mesh basket. The mesh basket is closed, transparent, and openable. It is in the Donut Shop.[=0x000A=][=0x000A=]Before someone taking something which is carried by the player:[=0x000A=][=0x0009=]if the person asked cannot touch the player:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Ogg looks with a fixed frown at [the noun].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]continue the action;[=0x000A=][=0x0009=]say [=0x0022=][The person asked] comes up and shakes your arm until you drop [the noun].[=0x0022=];[=0x000A=][=0x0009=]say line break;[=0x000A=][=0x0009=]silently try dropping the noun;[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Before someone unlocking a locked thing with something which is not carried by the person asked:[=0x000A=][=0x0009=]try the person asked taking the second noun;[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Before someone opening a locked thing (called the sealed chest):[=0x000A=][=0x0009=]if the person asked can see the matching key of the sealed chest:[=0x000A=][=0x0009=][=0x0009=]if the matching key of the sealed chest is enclosed by the sealed chest:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]Seeing the paradoxical location of [the matching key of the sealed chest], [the person asked] gives a howl of rage.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]award 1 point;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]end the game saying [=0x0022=]You have thwarted Ogg[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]try the person asked unlocking the sealed chest with the matching key of the sealed chest;[=0x000A=][=0x0009=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Before someone taking something which is in a closed container (called the shut chest):[=0x000A=][=0x0009=]try the person asked opening the shut chest;[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Ogg has a number called hunger.  The hunger of Ogg is 0.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]change the hunger of Ogg to the hunger of Ogg plus 1;[=0x000A=][=0x0009=]if the hunger of Ogg is 2 and Ogg is visible, say [=0x0022=]Ogg[=0x0027=]s stomach growls.[=0x0022=];[=0x000A=][=0x0009=]if the hunger of Ogg is 3 and Ogg is visible:[=0x000A=][=0x0009=][=0x0009=]if Ogg can see an edible thing (called the target):[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]Ogg eyes [the target] with obvious intent.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]Ogg glances at you in a disturbingly shifty way.[=0x0022=];[=0x000A=][=0x0009=]if the hunger of Ogg [=0x003E=] 3:[=0x000A=][=0x0009=][=0x0009=]if Ogg carries an edible thing (called the target):[=0x000A=][=0x0009=][=0x0009=][=0x0009=]try Ogg eating the target;[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let new target be a random edible thing which can be seen by Ogg;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the new target is a thing:[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]try Ogg taking the new target;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]if Ogg can touch the player, end the game saying [=0x0022=]Ogg is gnawing your ankle[=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]otherwise try Ogg taking the player.[=0x000A=][=0x000A=]The crumbs are a thing. [=0x0022=]Crumbs of [the list of edible things which cannot be seen by the player] lie scattered over the whole floor.[=0x0022=][=0x000A=][=0x000A=]Instead of asking Ogg to try doing something when Ogg cannot touch the player:[=0x000A=][=0x0009=]say [=0x0022=]Ogg tilts his head and shrugs, unable to hear your instruction clearly.[=0x0022=][=0x000A=][=0x000A=]Instead of asking Ogg to try eating something:[=0x000A=][=0x0009=]say [=0x0022=]It[=0x0027=]s not as though Ogg really needs any encouragement in that department, is it?[=0x0022=][=0x000A=][=0x000A=]Definition: Ogg is hungry if the hunger of Ogg [=0x003E=] 2.[=0x000A=][=0x000A=]Persuasion rule for asking Ogg to try doing something: if Ogg is hungry, persuasion fails; persuasion succeeds.[=0x000A=][=0x000A=]Persuasion rule for asking Ogg to try giving something edible to the player:[=0x000A=][=0x0009=]persuasion fails.[=0x000A=][=0x000A=]Unsuccessful attempt by Ogg doing something:[=0x000A=][=0x0009=]if the reason the action failed is a failing listed in the Table of Ogg Retorts:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][reply entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Ogg looks adorably confused.[=0x0022=][=0x000A=][=0x000A=]Table of Ogg Retorts[=0x000A=]failing[=0x0009=]reply[=0x000A=]can[=0x0027=]t take people[=0x0027=]s possessions rule[=0x0009=][=0x0022=][=0x0027=]Ogg too polite.[=0x0027=][=0x0022=][=0x000A=]can[=0x0027=]t take other people rule[=0x0009=][=0x0022=][=0x0027=]Ogg not that greedy.[=0x0027=][=0x0022=][=0x000A=]can[=0x0027=]t take scenery rule[=0x0009=][=0x0022=][=0x0027=][The noun] very very heavy.[=0x0027=][=0x0022=][=0x000A=]can[=0x0027=]t take what[=0x0027=]s fixed in place rule[=0x0009=][=0x0022=][=0x0027=][The noun] very heavy.[=0x0022=][=0x000A=]can[=0x0027=]t drop what[=0x0027=]s not held rule[=0x0009=][=0x0022=][=0x0027=]Hunh?[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Carry out Ogg eating an edible thing:[=0x000A=][=0x0009=]move the crumbs to the holder of Ogg;[=0x000A=][=0x0009=]change the hunger of Ogg to 0.[=0x000A=][=0x000A=]Report Ogg unlocking something with something:[=0x000A=][=0x0009=]say [=0x0022=]Ogg struggles a bit with [the second noun] in the lock of [the noun], but does eventually succeed. [=0x0027=]Hunh![=0x0027=] says Ogg.[=0x0022=];[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Carry out Ogg opening the case when the case has been open:[=0x000A=][=0x0009=]now the case is unopenable.[=0x000A=][=0x000A=]Instead of closing the unopenable case:[=0x000A=][=0x0009=]say [=0x0022=]The glass panels are no longer properly seated in their tracks, and the case cannot be closed ever again.[=0x0022=][=0x000A=][=0x000A=]Report Ogg opening the unopenable case:[=0x000A=][=0x0009=]say [=0x0022=]Ogg forces [the case] so hard that it does break.[=0x0022=];[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Report Ogg opening the case:[=0x000A=][=0x0009=]say [=0x0022=]Ogg yanks [the noun] open with such force that you fear for its structural integrity.[=0x0022=];[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Report Ogg taking something edible:[=0x000A=][=0x0009=]say [=0x0022=]Ogg acquires [the noun] with a look of tender affection.[=0x0022=];[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Report Ogg eating something:[=0x000A=][=0x0009=]say [=0x0022=]Ogg chows down on [the noun], scattering crumbs in all directions.[=0x0022=];[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Report Ogg eating something when the number of visible edible things is 1:[=0x000A=][=0x0009=]say [=0x0022=]Ogg eats [the noun] in his trademark style. You can no longer bear to watch.[=0x0022=];[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]After entering the case:[=0x000A=][=0x0009=]say [=0x0022=]You climb inside the case, folding yourself up uncomfortably.[=0x0022=][=0x000A=][=0x000A=]After locking the case with something when the player is in the case:[=0x000A=][=0x0009=]say [=0x0022=]You turn the key firmly in the lock -- amazing it locks from within, but it does -- and settle yourself for a long wait, hoping this thing is not air-tight.[=0x0022=][=0x000A=][=0x000A=]The maximum score is 1.[=0x000A=][=0x000A=]Test me with [=0x0022=]open mesh / get key / unlock case / open case / enter case / close case / lock case / wait / wait[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode230()"><img border=0 src=../doc_images/paste.png></a> &quot;Text Foosball&quot;
+<a href="javascript:pasteCode286()"><img border=0 src=../doc_images/paste.png></a> &quot;Boston Cream&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Lounge is a room. &quot;The Lounge is appointed with everything necessary to rest and relaxation: a vending machine, a potted palm, a stack of Entertainment Weekly issues from 1993, and -- your pride and joy -- a foosball game.&quot;
+<blockquote><font color="#000080">The Donut Shop is a room. &quot;Vibrantly decorated in donut colors: pink, brown, and cream.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The foosball game is scenery in the Lounge. Understand &quot;table&quot; or &quot;football&quot; or &quot;foozball&quot; or &quot;fussball&quot; or &quot;soccer&quot; as the foosball game. The game is a supporter. On the game is a small white ball. The ball can be still, approaching, receding, or unreachable. The description of the ball is &quot;Currently [small white ball condition].&quot;
+<blockquote><font color="#000080">Ogg is a man in the Donut Shop. &quot;Ogg is slumped in the corner[if Ogg carries something] with [a list of things carried by Ogg][end if]. He wears a nametag which says 'HELLO MY NAME IS OG.'&quot; Understand &quot;og&quot; as Ogg. Ogg wears a nametag. The description of the nametag is &quot;Very neatly written.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of the small white ball, say &quot; ([small white ball condition])&quot;.
+<blockquote><font color="#000080">The Donut Shop contains a transparent closed openable locked lockable enterable container called a case. The case is fixed in place. The case contains some cake donuts, some jelly donuts, and some apple fritters. &quot;The [if unopenable]damaged[otherwise]gleaming[end if] donut case [if something is in the case]contains [a list of things in the case][otherwise]has been stripped of its contents[end if].&quot; The cake donuts, the jelly donuts, and the apple fritters are edible.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;You: [score]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;Joey: [Joey's score]&quot;.
+<blockquote><font color="#000080">The matching key of the case is a silver key. The silver key is in a mesh basket. The mesh basket is closed, transparent, and openable. It is in the Donut Shop.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some tiny men on sticks are part of the game. Understand &quot;handles&quot; as the men. The description is &quot;Okay, a couple of the tiny men have had their feet broken off, and the table surface itself is a bit warped, and the ball resembles a quail egg in respect of shape and color. This makes for a game of unusual randomness, but skill is overrated.&quot;
+<blockquote><font color="#000080">Before someone taking something which is carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked cannot touch the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg looks with a fixed frown at [the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] comes up and shakes your arm until you drop [the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try dropping the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of attacking or pulling or pushing the game when the ball is unreachable:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give the table a good shove, and the ball moves ever-so-slightly.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still.
+<blockquote><font color="#000080">Before someone unlocking a locked thing with something which is not carried by the person asked:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked taking the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of taking the white ball:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd forfeit the game if you did that.&quot;
+<blockquote><font color="#000080">Before someone opening a locked thing (called the sealed chest):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked can see the matching key of the sealed chest:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the matching key of the sealed chest is enclosed by the sealed chest:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Seeing the paradoxical location of [the matching key of the sealed chest], [the person asked] gives a howl of rage.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;award 1 point;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have thwarted Ogg&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the person asked unlocking the sealed chest with the matching key of the sealed chest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of turning the tiny men when the ball is unreachable:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ball has somehow gotten to a mystical point on the table where it cannot be reached, no matter what. Close inspection reveals that this point has been marked in chalk with a tiny X. Not that that does any good.&quot;
+<blockquote><font color="#000080">Before someone taking something which is in a closed container (called the shut chest):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked opening the shut chest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of turning the tiny men when the ball is approaching:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 2 in 3 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds, now the ball is receding;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the ball is still]Thunk. [otherwise]Thwack! [end if]You keep the ball from reaching its goal! Now it is [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let Joey score.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To let Joey score:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Joey's score to Joey's score + 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ball rolls neatly into your goal, despite your efforts. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score < score, say &quot;You put the ball back in the center with a snap. No reason to worry yet; you're still ahead. Joey looks determined, though.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;After allowing a moment or two for Joey's gloating to pass, you replace it at the center.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning the tiny men when a random chance of 1 in 13 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is unreachable;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You hit the ball off-center and it rolls sluggishly into a little dip in the surface of the foosball table. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score > 7, say &quot;'You did that on purpose!' Joey exclaims indignantly.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You and Joey exchange glances. This is never good.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning the tiny men:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You madly rotate the tiny men on sticks! &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hoorah! You hit the ball!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is receding;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Somehow you fail to bring your monopodal player into contact with the ball.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Joey is a man in the Lounge. &quot;Joey is hunkered over the foosball handles on his side of the table.&quot; Joey can be active or inactive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Joey's score is a number that varies.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn: now Joey is active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is approaching and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let Joey score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is unreachable and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey glares angrily at the stuck ball.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is receding and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds, now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the ball is approaching;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey connects with your shot. Now the ball is [small white ball condition]!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey tries to block, but misses! Back it goes in the center, where it is [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change score to score + 1.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is still and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is approaching;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey hits the ball solidly down towards your goal. Now it is [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey fails to hit the ball in your direction. It remains [small white ball condition].&quot;
+<blockquote><font color="#000080">Ogg has a number called hunger.  The hunger of Ogg is 0.
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score > score, end the game saying &quot;Rats! Joey wins!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score < score, end the game saying &quot;Victory is yours!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score is score, end the game saying &quot;A perfect tie.&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the hunger of Ogg to the hunger of Ogg plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the hunger of Ogg is 2 and Ogg is visible, say &quot;Ogg's stomach growls.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the hunger of Ogg is 3 and Ogg is visible:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Ogg can see an edible thing (called the target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg eyes [the target] with obvious intent.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg glances at you in a disturbingly shifty way.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the hunger of Ogg > 3:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Ogg carries an edible thing (called the target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Ogg eating the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let new target be a random edible thing which can be seen by Ogg;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the new target is a thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Ogg taking the new target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Ogg can touch the player, end the game saying &quot;Ogg is gnawing your ankle&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise try Ogg taking the player.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc135.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">The crumbs are a thing. &quot;Crumbs of [the list of edible things which cannot be seen by the player] lie scattered over the whole floor.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Ogg to try doing something when Ogg cannot touch the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg tilts his head and shrugs, unable to hear your instruction clearly.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Ogg to try eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's not as though Ogg really needs any encouragement in that department, is it?&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: Ogg is hungry if the hunger of Ogg > 2.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking Ogg to try doing something: if Ogg is hungry, persuasion fails; persuasion succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking Ogg to try giving something edible to the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion fails.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Ogg doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is a failing listed in the Table of Ogg Retorts:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg looks adorably confused.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Ogg Retorts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">failing</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take people's possessions rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ogg too polite.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take other people rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ogg not that greedy.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take scenery rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'[The noun] very very heavy.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take what's fixed in place rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'[The noun] very heavy.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't drop what's not held rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Hunh?'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Ogg eating an edible thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the crumbs to the holder of Ogg;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the hunger of Ogg to 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg unlocking something with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg struggles a bit with [the second noun] in the lock of [the noun], but does eventually succeed. 'Hunh!' says Ogg.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Ogg opening the case when the case has been open:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the case is unopenable.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of closing the unopenable case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The glass panels are no longer properly seated in their tracks, and the case cannot be closed ever again.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg opening the unopenable case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg forces [the case] so hard that it does break.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg opening the case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg yanks [the noun] open with such force that you fear for its structural integrity.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg taking something edible:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg acquires [the noun] with a look of tender affection.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg chows down on [the noun], scattering crumbs in all directions.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg eating something when the number of visible edible things is 1:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg eats [the noun] in his trademark style. You can no longer bear to watch.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After entering the case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You climb inside the case, folding yourself up uncomfortably.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After locking the case with something when the player is in the case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You turn the key firmly in the lock -- amazing it locks from within, but it does -- and settle yourself for a long wait, hoping this thing is not air-tight.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The maximum score is 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;open mesh / get key / unlock case / open case / enter case / close case / lock case / wait / wait&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc186.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc134.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc136.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc185.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

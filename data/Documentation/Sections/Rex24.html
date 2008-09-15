@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.15. Alternate Default Messages</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.15. Goal-Seeking Characters</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,58 +19,100 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "We" -->
-<!-- SEARCH SECTION "Ex 359" -->
-<!-- SEARCH SORT "Ex 006-015-359" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc40.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc42.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.15. Alternate Default Messages</b></font></td></tr></table>
+<!-- SEARCH TITLE "Reporting rules for other characters' behavior" -->
+<!-- SEARCH SECTION "Ex 206" -->
+<!-- SEARCH SORT "Ex 007-015-206" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.15. Goal-Seeking Characters</b></font></td></tr></table>
 <p>
-<p>Often we will want to replace the text produced by Inform by default: this includes quite a wide range of text, much of which either describes the success of a command or explains why the action failed. <b>Replacing standard action report rules</b> demonstrates how we might write some rules overriding the standard output.
+<p>Goal-seeking characters are the most advanced IF life-form: they want to achieve specific outcomes, and they are able to work out plans of approach in order to bring these things about. They walk to rooms, open containers to search for things, use keys and tools, and ask leading questions in conversation.
 <p>
-<p>Currently, Inform provides no systematic way to look at large numbers of textual responses and change many of them at once. While this is something that may change later in beta development, there are already some third-party extensions available on the Inform website that do provide these facilities.
+<p>A really advanced implementation of goal-seeking behavior is beyond the scope of our examples (though extensions exist that treat the problem more thoroughly). We can accomplish a surprising amount without heavy customization, though, if we keep in mind three points of technique:
 <p>
-<p>This is especially useful if we want to change the person or tense in which the game is narrated, or if we would like to give the viewpoint character a distinctive voice and set of mannerisms.
+<p>First: it helps to think abstractly and to create broadly-defined actions as a first step to more specific tasks. For instance, a character's goal might be to eat some dinner. He'd be equally satisfied with spaghetti carbonara or with braised lamb shanks, but he needs to figure out which is available. So we might have our every turn rule (or whatever we're using to activate the character) say something like
 <p>
+<blockquote><font color="#000080">Every turn when Clark is hungry:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try Clark dining.
+</font></blockquote><p>
+<p>
+<p>Dining would then be an action we've defined specially, which looks around Clark's environment for suitable food; if it finds food, it issues a
+<p>
+<blockquote><font color="#000080">try Clark eating the suitable food;
+</font></blockquote><p>
+<p>
+<p>command; but if not, it sends Clark off to look for something likely. <b>The Man of Steel</b> demonstrates the use of this.
+<p>
+<p>Second: though it doesn't actually contribute to the goal-seeking per se, lively reporting brings characters' generated behavior to life.
+<p>
+<blockquote><font color="#000080">Clark eats a donut.
+</font></blockquote><p>
+<p>
+<p>doesn't characterize Clark very much, even though the eating may be part of a subtle, intelligent plan to seduce Lois Lane. We'll do better if we replace a lot of the character reporting rules: to that end, see the example <b>Reporting rules for other characters' behavior</b>.
+<p>
+<p>Third: goal-seeking characters notice when something is in the way of the action they want to perform. When that happens, they form a plan about how to remove the obstacle. We've already seen this kind of implementation on the player's behalf: the player will pick up items before eating them, say. We can use Before rules to do similar things for other characters, as in
+<p>
+<blockquote><font color="#000080">Before Clark eating the wrapped candy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try Clark unwrapping the candy;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the candy is wrapped, stop the action.
+</font></blockquote><p>
+<p>
+<p>Here we've set things up so that if Clark tries to eat the wrapped candy, he'll be interrupted by this other command; and if his unwrapping-the-candy attempt fails, he won't go on and eat the thing. <b>IQ Test</b> demonstrates a character who shows this kind of planning intelligence.
+<p>
+<p>Because before-rules chain neatly, we can trigger whole plans of behavior if we have a sensible set, as in
+<p>
+<blockquote><font color="#000080">Before someone entering a closed container: try the person asked opening the noun.
+<br>Before someone opening a locked container: try the person asked unlocking the noun.
+<br>Before someone unlocking a locked container: ...
+</font></blockquote><p>
+<p>
+<p>We must exercise a little bit of care if it is possible for the chain of actions to produce an endless loop - e.g., the character trying to take a key that is inside the transparent, locked box that it opens might repeatedly try to open the box, first unlocking the box, first taking the key, first opening the box, ... <b>Boston Cream</b> is a fully-worked scenario that deals with such a set of conundra.
+<p>
+<a href=Rdoc56.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Traveling Characters</b></font></a><i> for characters who plan routes to locations and travel towards them</i><p><p>
+<a href=Rdoc18.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Event Scheduling</b></font></a><i> for characters who follow a pre-written schedule of activities</i><p><p>
+<a href=Rdoc21.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Plot Management</b></font></a><i> for having a central function direct all the characters in order to further the plot</i><p><p>
 <p><hr><p>
+<a name="e77"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex77.html#e77 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>201</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex77.html#e77 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Man of Steel</font></b></a><br>An escaping action which means "go to any room you can reach from here", and is only useful to non-player characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex77.html#e77 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e24"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc41.html#e24 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>359</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc41.html#e24 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> We</font></b></a><br>Replacing the standard action report rules to reflect our own design.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex24.html#e24 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e24"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc58.html#e24 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>206</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc58.html#e24 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Reporting rules for other characters' behavior</font></b></a><br>Elaborating the report rules to be more interesting than "Clark goes west."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex24.html#e24 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we don't like the library responses for certain actions and would prefer something else. We could in theory write a lot of procedural rules which said, for instance, &quot;substitute new report dropping rule for standard report dropping rule&quot;, but this would get cumbersome. Or we could explicitly replace each report rule with &quot;The new report dropping rule is listed instead of the standard report dropping rule...&quot;.
+<p>Report rules can be a good point at which to add local color: while Inform provides default descriptions of character behavior, these are rather generic and can stand to be customized.
 <p>
-<p>Yet a third way is to slip in our replacements at the beginning of each report rulebook, and then stop the action before it got as far as calling the standard report rule. For instance, if we were designing a game in the first person plural:
+<p>For instance, if we wanted to liven up our previous Clark Kent example:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode887(code) {
+function pasteCode746(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]We[=0x0022=][=0x000A=][=0x000A=]Our Own Company is a room. It contains courage. The player carries names.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / take courage / drop names[=0x0022=].[=0x000A=][=0x000A=]First report dropping rule:[=0x000A=][=0x0009=]say [=0x0022=]We casually drop [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=]First report taking rule:[=0x000A=][=0x0009=]say [=0x0022=]We gather [the noun] to ourselves.[=0x0022=] instead.[=0x000A=][=0x000A=]First report waiting rule:[=0x000A=][=0x0009=]say [=0x0022=]We talk amongst ourselves.[=0x0022=] instead.[=0x000A=][=0x000A=]');
+    myProject.pasteCode('Report Clark Kent going a direction (called the way):[=0x000A=][=0x0009=]say [=0x0022=][one of]With a particularly weak excuse[or]Muttering[at random] about [random excuse subject], Clark heads [way].[=0x0022=] instead.[=0x000A=][=0x000A=]To say random excuse subject:[=0x000A=][=0x0009=]choose a random row in the Table of Lame Excuses; say [=0x0022=][reply entry][=0x0022=].[=0x000A=][=0x000A=]Table of Lame Excuses[=0x000A=]reply[=0x000A=][=0x0022=]needing a paper-clip[=0x0022=][=0x000A=][=0x0022=]wanting an English-Tuvalu dictionary[=0x0022=][=0x000A=][=0x0022=]walking a neighbor[=0x0027=]s dog[=0x0022=][=0x000A=][=0x0022=]hearing air-raid sirens[=0x0022=][=0x000A=][=0x0022=]having drunk too much coffee[=0x0022=][=0x000A=][=0x0022=]thinking he smells smoke[=0x0022=][=0x000A=][=0x0022=]wondering where Lois got to[=0x0022=][=0x000A=][=0x0022=]needing to speak to Jimmy[=0x0022=][=0x000A=][=0x0022=]noticing the Good Year blimp[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode887()"><img border=0 src=../doc_images/paste.png></a> &quot;We&quot;
+<a href="javascript:pasteCode746()"><img border=0 src=../doc_images/paste.png></a> Report Clark Kent going a direction (called the way):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[one of]With a particularly weak excuse[or]Muttering[at random] about [random excuse subject], Clark heads [way].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Our Own Company is a room. It contains courage. The player carries names.
+<blockquote><font color="#000080">To say random excuse subject:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Lame Excuses; say &quot;[reply entry]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / take courage / drop names&quot;.
+<blockquote><font color="#000080">Table of Lame Excuses
+<br>reply
+<br>&quot;needing a paper-clip&quot;
+<br>&quot;wanting an English-Tuvalu dictionary&quot;
+<br>&quot;walking a neighbor's dog&quot;
+<br>&quot;hearing air-raid sirens&quot;
+<br>&quot;having drunk too much coffee&quot;
+<br>&quot;thinking he smells smoke&quot;
+<br>&quot;wondering where Lois got to&quot;
+<br>&quot;needing to speak to Jimmy&quot;
+<br>&quot;noticing the Good Year blimp&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">First report dropping rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;We casually drop [the noun].&quot; instead.
-</font></blockquote><p>
+<p>It's good to be careful, as the library report rules have been designed and tested to describe every contingency (going through doors, going in vehicles, etc.): so when replacing a report rule, we should try to consider all the possible variations of the action that we might want to describe.
 <p>
-<blockquote><font color="#000080">First report taking rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;We gather [the noun] to ourselves.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">First report waiting rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;We talk amongst ourselves.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>...and so on throughout the action set.
-<p>
-<p>The fourth (and probably much the most practical) approach to overriding library messages systematically is to use an extension designed for the purpose. Several of these are available on the Inform extensions page, including one that allows us to choose a different tense and person for the messages (for example, &quot;She saw nothing special.&quot; rather than &quot;You see nothing special.&quot;).
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc41.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>However, in this case, our scenario is so simple that there are no doors, vehicles, or pushable objects, so we're safe in giving Clark a very simple reporting scheme.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc40.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc42.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e425"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex425.html#e425 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex425.html#e425 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> IQ Test</font></b></a><br>Introducing Ogg, a person who will unlock and open a container when the player tells him to get something inside.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex425.html#e425 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e71"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex71.html#e71 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex71.html#e71 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Boston Cream</font></b></a><br>A fuller implementation of Ogg, giving him a motivation of his own and allowing him to react to the situation created by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex71.html#e71 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

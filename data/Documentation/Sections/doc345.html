@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.9. Lengthening or shortening a list</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.6. Lists of objects</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,55 +19,62 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Lengthening or shortening a list" -->
-<!-- SEARCH SECTION "20.9" -->
-<!-- SEARCH SORT "020-009-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc344.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc346.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.9. Lengthening or shortening a list</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lists of objects" -->
+<!-- SEARCH SECTION "20.6" -->
+<!-- SEARCH SORT "020-006-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc344.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc346.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.6. Lists of objects</b></font></td></tr></table>
 <p>
-<p>We can explicitly change the length of a list like so:
+<p>While there are lists for any kind of value, the form that is useful most often is &quot;list of objects&quot;. There is nothing really different about this:
 <p>
-<blockquote><font color="#000080">change L to have 21 entries;
+<blockquote><font color="#000080">let L be {the pot plant, the foxglove};
 </font></blockquote><p>
 <p>
-<p>If L previously had more than 21 entries, they are thrown away (and lost forever); if L previously had fewer, then new entries are created, using the default value for whatever kind of value L holds. So extending a list of numbers will pad it out with 0s, but extending a list of texts will pad it out with the empty text &quot;&quot;, and so on.
+<p>makes a list of two objects as usual. However, a much faster and more systematic way to build lists of objects is to use descriptions. If D is any description then &quot;the list of D&quot; produces a list of all the objects matching D. For instance:
 <p>
-<p>We can also write the slightly different phrases:
-<p>
-<blockquote><font color="#000080">truncate L to 8 entries;
-<br>truncate L to the last 4 entries;
-<br>extend L to 80 entries;
+<blockquote><font color="#000080">let L be the list of open containers;
+<br>add the list of open doors to L;
 </font></blockquote><p>
 <p>
-<p>The first means &quot;shorten L to length 8 if it is currently longer than that&quot;, and would (for instance) leave a list of length 3 unchanged; the second is similar, but trims excess entries from the front rather than the back; the third means &quot;lengthen L to length 80 if it is currently shorter than that&quot;. Note that
+<p>means that L now contains the open containers (if any) followed by the open doors (if any). Or, for example:
 <p>
-<blockquote><font color="#000080">truncate L to 0 entries;
+<blockquote><font color="#000080">let L be the list of things;
+<br>remove the list of backdrops from L;
 </font></blockquote><p>
 <p>
-<p>shortens L right back down to the empty list, the shortest it can be.
+<p>makes a list of all non-backdrops.
 <p>
-<p>For example,
+<p>As mentioned above, lists of objects can be said in two additional ways:
 <p>
-<blockquote><font color="#000080">To check sorting (N - a number):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be a list of numbers;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;extend L to N entries;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to N:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change entry X of L to X;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L unrandomised is [L].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L in random order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L randomised is [L].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L in ascending order is [L].&quot;
+<blockquote><font color="#000080">&quot;[L with definite articles]&quot;
+<br>&quot;[L with indefinite articles]&quot;
 </font></blockquote><p>
 <p>
-<p>builds a list of N numbers (initially all 0), fills it with the numbers 1, 2, 3, ..., N, then randomly reorders them, then sorts them back again, recovering the original order. The text produced by &quot;check sorting 10&quot; depends partly on chance but might for instance be:
+<p>And as mentioned below, they can be sorted in property value order:
 <p>
-<blockquote><font color="#000080">L unrandomised is 1, 2, 3, 4, 5, 6, 7, 8, 9 and 10.
-<br>L randomised is 6, 2, 9, 3, 10, 1, 7, 4, 8 and 5.
-<br>L in ascending order is 1, 2, 3, 4, 5, 6, 7, 8, 9 and 10.
+<blockquote><font color="#000080">sort L in P order;
+<br>sort L in reverse P order;
 </font></blockquote><p>
 <p>
-<p>As with indexed text in the previous chapter, a project which needs really long lists should use the Glulx virtual machine - &quot;check sorting 10000&quot;, for instance, would break the default memory environment on the Z-machine, which is very tight, but works fine (if not very rapidly) on Glulx.
+<p>where P is any value property. In all other respects, lists of objects are no different to other lists.
+<p>
+<p>One special list of objects inside the Inform parser is worth mentioning. This is the &quot;multiple object list&quot;, and is used in commands like this:
+<p>
+<blockquote><font color="#000080">&gt;GET ALL
+<br>foxglove: Taken.
+<br>snake's head fritillary: Taken.
+</font></blockquote><p>
+<p>
+<p>After the parser has decided what constitutes &quot;ALL&quot; (a process which can be influenced using the &quot;deciding whether all includes&quot; activity), it forms up a list and then runs through it, starting an action for each in turn. Here the list has two entries and Inform generates the actions &quot;taking the foxglove&quot; and then &quot;taking the snake's head fritillary&quot;.
+<p>
+<p>For two technical reasons this isn't stored as a &quot;list of objects that varies&quot; - first because it needs to exist even in low-memory situations where we can't afford full list-processing, and second because there are times when changing it might be hazardous. Instead, two phrases are provided to read the list and to write it back:
+<p>
+<blockquote><font color="#000080">let L be the multiple object list;
+<br>alter the multiple object list to L;
+</font></blockquote><p>
+<p>
+<p>If there is no multiple object, say if the command was TAKE PEAR, the list will be empty: it won't be a list of size 1. The multiple object list can be read at any time, but should be altered only up to the point when the &quot;generate action rule&quot; in the turn sequence rules takes effect.
 <p>
 <p><hr><p>
-<a name="e200"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>395</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex200.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Leopard-skin</font></b></a><br>A maze that the player can escape if he performs an exact sequence of actions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e391"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>402</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex391.html#e391 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> What Makes You Tick</font></b></a><br>Building a fishing pole from several component parts that the player might put together in any order.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e398"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex398.html#e398 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>403</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex398.html#e398 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Formicidae</font></b></a><br>Manipulating the order in which items are handled after TAKE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex398.html#e398 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc344.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc346.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

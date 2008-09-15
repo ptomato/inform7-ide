@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.7. Begin and end</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.19. Changing visibility</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,95 +19,76 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Matreshka" -->
-<!-- SEARCH SECTION "Ex 161" -->
-<!-- SEARCH SORT "Ex 011-007-161" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc162.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc164.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.7. Begin and end</b></font></td></tr></table>
+<!-- SEARCH TITLE "Flashlight" -->
+<!-- SEARCH SECTION "Ex 214" -->
+<!-- SEARCH SORT "Ex 012-019-214" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc198.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc200.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.19. Changing visibility</b></font></td></tr></table>
 <p>
-<p>In practice it is not enough to apply &quot;if&quot; or &quot;while&quot; to a single phrase alone: we want to give a whole list of phrases to be followed repeatedly, or to be followed only if a condition holds.
+<p>Ordinarily, Inform has a simple model for visibility: it is either fully light or it is fully dark, and certain actions are impossible in the dark, such as examining something.
 <p>
-<p>We do this by grouping them together, and there are two ways to do this. One is as follows:
+<p>We first need to remember that darkness affects what actions are even tried, as far as the player's typed commands go. If the player is in a dark room, and there is a screwdriver on the floor, the command EXAMINE SCREWDRIVER will not try any action: the screwdriver is not &quot;in scope&quot;, which means that the parser thinks the player does not have any means of knowing it exists. (The rules for scope can be modified - see the chapter on Activities.) But let's suppose that the player types EXAMINE BOOK, and is holding the book in question. The book is now &quot;in scope&quot;, so the action &quot;examining the book&quot; is tried.
 <p>
-<blockquote><font color="#000080">To comment upon (whatever - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh look, an open door!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if whatever is openable then say &quot;But you could always shut it.&quot;
+<p>Some actions require light to be present, and &quot;examining&quot; is one of those. So Inform consults the visibility rules to see if it can go ahead. By default, there is only one visibility rule, which says &quot;yes&quot; in the light and &quot;no&quot; in darkness. Here, though, we create another one:
+<p>
+<blockquote><font color="#000080">Visibility rule when in darkness:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining the book:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You have to squint. Still...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
 </font></blockquote><p>
 <p>
-<p>Here we group two phrases together under the same &quot;if&quot;. Note that the &quot;then&quot; has been replaced by a colon, and that the indentation in the list of phrases shows how they are grouped together. That's the convention used in this manual and in the examples, but not everybody likes this Pythonesque use of indentation. So Inform also recognises a more explicit form, in which the beginning and ending are marked with the words &quot;begin&quot; and &quot;end&quot;:
+<p>A visibility rule must always conclude &quot;there is sufficient light&quot;, or &quot;there is insufficient light&quot;, or else do nothing and leave it to other rules to decide.
 <p>
-<blockquote><font color="#000080">To comment upon (whatever - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh look, an open door!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if whatever is openable then say &quot;But you could always shut it.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<p>It is a possibly unexpected fact that &quot;looking&quot; does not require light, but instead behaves differently in darkness - it prints a pseudo-room-description such as
+<p>
+<blockquote><font color="#000080"><b>Darkness</b>
+<br>It is pitch dark, and you can't see a thing.
 </font></blockquote><p>
 <p>
-<p>(Pythonesque because it's a style popularised by the programming language Python, named in turn after &quot;Monty Python's Flying Circus&quot;.)
-<p>
-<p>Similarly for while:
-<p>
-<blockquote><font color="#000080">while ...:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...
-</font></blockquote><p>
-<p>
-<p>or alternatively --
-<p>
-<blockquote><font color="#000080">while ...
-<br>begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...
-<br>end while.
-</font></blockquote><p>
-<p>
-<p>(The &quot;begin&quot; of an &quot;if&quot; must of course match an &quot;end if&quot;, not an &quot;end while&quot;, and so on.)
+<p>instead of printing the description of the player's current room. This means that the &quot;looking&quot; action is unaffected by visibility rules. All the same, what &quot;looking&quot; does in the dark can be changed by using the two activities &quot;printing the name of a dark room&quot; and &quot;printing the description of a dark room&quot; (see the Activities chapter for details).
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e151"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc163.html#e151 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>161</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc163.html#e151 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Matreshka</font></b></a><br>A SEARCH [room] action that will open every container the player can see, stopping only when there don't remain any that are closed, unlocked, and openable.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex151.html#e151 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e151"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc199.html#e151 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>214</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc199.html#e151 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flashlight</font></b></a><br>Visibility set so that looking under objects produces no result unless the player has a light source to shine there (regardless of the light level of the room).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex151.html#e151 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode260(code) {
+function pasteCode311(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Matreshka[=0x0022=][=0x000A=][=0x000A=]Ransacking is an action applying to one thing.[=0x000A=][=0x000A=]Check ransacking:[=0x000A=][=0x0009=]if the noun is not the location, say [=0x0022=]You can hardly search [the noun] from here.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out ransacking:[=0x000A=][=0x0009=]while the player can see a closed openable unlocked container (called target):[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][target]: [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]try opening the target.[=0x000A=][=0x000A=]Report ransacking:[=0x000A=][=0x0009=]say [=0x0022=]You can see nothing further worth searching.[=0x0022=][=0x000A=][=0x000A=]The Russian Gift Shop is a room. In the Russian Gift Shop is a large wooden doll. It is closed and openable. In the large wooden doll is a medium wooden doll. It is closed and openable. In the medium wooden doll is a small wooden doll. It is closed and openable. In the small wooden doll is a tiny solid wooden doll.[=0x000A=][=0x000A=][And now we need to borrow from a later chapter for the command that will make this work:][=0x000A=][=0x000A=]Understand [=0x0022=]search [any visited room][=0x0022=] as ransacking.[=0x000A=][=0x000A=]Test me with [=0x0022=]search gift shop[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Flashlight[=0x0022=][=0x000A=][=0x000A=]The Schoolhouse is a room. [=0x0022=]Though normally comfortable, the room is dark and menacing during the storm; rain sheets on the windows, and you can barely see the flash of the lighthouse only a few miles away.[=0x0022=][=0x000A=][=0x000A=]The cabinet is a fixed in place openable container in the Schoolhouse. The hurricane lantern is a thing in the Schoolhouse. [=0x0022=]A hurricane lantern hangs from a peg.[=0x0022=] The lantern is lit.[=0x000A=][=0x000A=]Visibility rule when looking under something:[=0x000A=][=0x0009=]if the player is carrying a lit thing (called lamp):[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You shine [the lamp] under [the noun]...[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]there is sufficient light;[=0x000A=][=0x0009=]there is insufficient light.[=0x000A=][=0x000A=]There is a marble. The marble can be found or lost. The marble is lost.[=0x000A=][=0x000A=]Instead of looking under the cabinet when the marble is lost:[=0x000A=][=0x0009=]move the marble to the player;[=0x000A=][=0x0009=]now the marble is found;[=0x000A=][=0x0009=]say [=0x0022=]Billy[=0x0027=]s lost marble! So that[=0x0027=]s where it got to![=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]look under cabinet / get lantern / look under cabinet[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode260()"><img border=0 src=../doc_images/paste.png></a> &quot;Matreshka&quot;
+<a href="javascript:pasteCode311()"><img border=0 src=../doc_images/paste.png></a> &quot;Flashlight&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Ransacking is an action applying to one thing.
+<blockquote><font color="#000080">The Schoolhouse is a room. &quot;Though normally comfortable, the room is dark and menacing during the storm; rain sheets on the windows, and you can barely see the flash of the lighthouse only a few miles away.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check ransacking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the location, say &quot;You can hardly search [the noun] from here.&quot; instead.
+<blockquote><font color="#000080">The cabinet is a fixed in place openable container in the Schoolhouse. The hurricane lantern is a thing in the Schoolhouse. &quot;A hurricane lantern hangs from a peg.&quot; The lantern is lit.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out ransacking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player can see a closed openable unlocked container (called target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[target]: [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try opening the target.
+<blockquote><font color="#000080">Visibility rule when looking under something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report ransacking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can see nothing further worth searching.&quot;
+<blockquote><font color="#000080">There is a marble. The marble can be found or lost. The marble is lost.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Russian Gift Shop is a room. In the Russian Gift Shop is a large wooden doll. It is closed and openable. In the large wooden doll is a medium wooden doll. It is closed and openable. In the medium wooden doll is a small wooden doll. It is closed and openable. In the small wooden doll is a tiny solid wooden doll.
+<blockquote><font color="#000080">Instead of looking under the cabinet when the marble is lost:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the marble to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the marble is found;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Billy's lost marble! So that's where it got to!&quot;
 </font></blockquote><p>
 <p>
-<p>And now we need to borrow from a later chapter for the command that will make this work:
-<p>
-<blockquote><font color="#000080">Understand &quot;search [any visited room]&quot; as ransacking.
+<blockquote><font color="#000080">Test me with &quot;look under cabinet / get lantern / look under cabinet&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;search gift shop&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc163.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Because visibility is checked before instead rules, this discovery will (correctly) occur only when the player does have enough light.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc199.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e39"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex39.html#e39 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>162</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex39.html#e39 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Princess and the Pea</font></b></a><br>The player is unable to sleep on a mattress (or stack of mattresses) because the bottom one has something uncomfortable under it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex39.html#e39 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc164.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc198.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc200.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.11. Character Knowledge and Reasoning</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.5. Viewpoint</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,292 +19,109 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Chronic Hinting Syndrome" -->
-<!-- SEARCH SECTION "Ex 309" -->
-<!-- SEARCH SORT "Ex 007-011-309" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc53.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc55.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.11. Character Knowledge and Reasoning</b></font></td></tr></table>
+<!-- SEARCH TITLE "Terror of the Sierra Madre" -->
+<!-- SEARCH SECTION "Ex 119" -->
+<!-- SEARCH SORT "Ex 005-005-119" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc25.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap5.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 5: The Viewpoint Character</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc27.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.5. Viewpoint</b></font></td></tr></table>
 <p>
-<p>A character may be endowed with knowledge and even reasoning skills. Relations form quite a good way of keeping track of such problems: for instance, we can allow characters to be acquainted with one another with a relation such as
+<p>Inform automatically creates a character for the player - a bland, personality-free entity at the outset, as we've seen. But there is no reason why the player need stick to this same identity throughout the game. Conventional fiction often jumps from one viewpoint character to another, and so can IF.
 <p>
-<blockquote><font color="#000080">Lucy knows Lady Cardew.
+<p>To do this at the most elementary level, we simply at some point
+<p>
+<blockquote><font color="#000080">change player to Janine;
 </font></blockquote><p>
 <p>
-<p>Or we might keep track of more complicated attitudes between characters, as in <b>Murder on the Orient Express</b>, in which some characters suspect others of the crime.
+<p>where Janine is a person we've already defined in the code. Now the player is in whatever location Janine inhabits, carries whatever Janine carries, and wears whatever Janine is wearing. <b>Terror of the Sierra Madre</b> shows off this effect, and also demonstrates how to make the command prompt remind the player which character he currently controls. Some games instead give this information in the status line or after the name of the location when looking, producing output like
 <p>
-<p>Alternatively, we might have a list of salient facts that are important in our game. We might declare these as values, and then characters could know, learn, and forget entries as appropriate:
-<p>
-<blockquote><font color="#000080">A fact is a kind of value. Some facts are defined by the Table of All Known Facts.
+<blockquote><font color="#000080">The Bottomless Acherousia (as Charon)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Knowledge relates various people to various facts. The verb to know (he knows, they know, he knew, it is known) implies the knowledge relation.
+<p>We could do the same by adding a line such as
+<p>
+<blockquote><font color="#000080">After printing the name of a room while constructing the status line or looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[roman type] (as [the player])&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of All Known Facts
-<br>fact   	summary
-<br>shoe-size   	&quot;Lucy wears a size 9 shoe.&quot;
-<br>sunset-time   	&quot;Sunset is at 8:22 PM this evening.&quot;
+<p>Of course, we'll need a good deal of other work to make Janine a distinct person from whichever character the player was before. The distinction may come from changed capabilities of the new character, which we can express through new rules about actions; e.g.,
+<p>
+<blockquote><font color="#000080">Instead of listening when the player is Janine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your childhood accident left you unable to hear any but the loudest noises. Currently there is only silence.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Lucy knows shoe-size.
-<br>Bob knows sunset-time and shoe-size.
-</font></blockquote><p>
+<p>Janine may also have new, different perspective on her surroundings, expressed through the descriptions of the things she looks at; <b>Uncommon Ground</b> makes a &quot;by viewpoint&quot; token for text alternatives, allowing us to tag our descriptions to indicate which variations should be shown to which viewpoint characters. <b>The Crane's Leg 1</b> and <b>2</b> offer more elaborate and specialized ways of customizing the player character's observations to depend on how he relates (physically and in attitude) to the things around him.
 <p>
-<p>Or again we might keep a whole database of information in a table: the characters in <b>Questionable Revolutions</b> know dates, countries, and a short description for each of several rebellions and popular uprisings, while in <b>Queen of Sheba</b>, Solomon is able to answer who, what, where, when, and why questions about a range of topics. This kind of approach is most useful when the characters need to display a deep knowledge of a particular field. The facts stored in the Table of All Known Facts, above, are comparatively sparse, because there we are designing a game in which not all data about the world is equally valuable: Lucy doesn't know the shoe size of every person in the game, because for some reason it is only her own shoe size that matters. On the other hand, the Table of All Known Facts can store different kinds of information, whereas the revolutions table has no way of storing shoe sizes or sunset times. And <b>Murder on the Orient Express</b> works differently again, because it is storing knowledge that concerns people and things that already exist in the world model, rather than abstract ideas. Our way of modeling character knowledge, in other words, will depend quite a lot on what kind of knowledge it is.
-<p>
-<p>The possibilities of character reasoning are similarly broad, but <b>The Problem of Edith</b> introduces one kind: the character has a concept of how different conversation topics relate to one another, so that when she is asked about a new keyword, she picks a response that makes the question most relevant to the conversation already in progress.
-<p>
-<p>We end with a longer scenario, in which we track what the character knows about the player and the conversational state: in <b>Chronic Hinting Syndrome</b>, the main character guides conversation in the direction he intends it to go, with the player's sometimes-reluctant participation.
+<p>If we want to change the tense and person of narration from the conventional present second person, we may do this as well, though at the present stage of Inform the effect relies on external extensions.
 <p>
 <p><hr><p>
-<a name="e20"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex20.html#e20 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>228</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex20.html#e20 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Murder on the Orient Express</font></b></a><br>A number of sleuths (the player among them) find themselves aboard the Orient Express, where a murder has taken place, and one of them is apparently the culprit. Naturally they do not agree on whom, but there is physical evidence which may change their minds...<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex20.html#e20 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e74"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex74.html#e74 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>253</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex74.html#e74 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Questionable Revolutions</font></b></a><br>An expansion on the previous idea, only this time we store information and let characters answer depending on their expertise in a given area.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex74.html#e74 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e212"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex212.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>252</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex212.html#e212 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Queen of Sheba</font></b></a><br>Allowing the player to use question words, and using that information to modify the response given by the other character.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex212.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e236"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>224</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex236.html#e236 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Problem of Edith</font></b></a><br>A conversation in which the main character tries to build logical connections between what the player is saying now and what went immediately before.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e375"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc54.html#e375 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>309</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc54.html#e375 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Chronic Hinting Syndrome</font></b></a><br>Using name-printing rules to keep track of whether the player knows about objects, and also to highlight things he might want to follow up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex375.html#e375 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e375"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc26.html#e375 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc26.html#e375 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Terror of the Sierra Madre</font></b></a><br>Multiple player characters who take turns controlling the action.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex375.html#e375 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we have a conversation system in which it is important to keep track of which subjects the player has heard mentioned. If we're careful to mark subjects in brackets, we can use the &quot;printing the name of&quot; activity to record which things have been mentioned so far:
+<p>Suppose we have a game where we want the player to control two different characters, swapping bodies from one turn to the next. First, the setting, and the two people who will alternately play:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode836(code) {
+function pasteCode657(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Chronic Hinting Syndrome[=0x0022=][=0x000A=][=0x000A=]A subject is a kind of thing.[=0x000A=][=0x000A=]Knowledge relates various people to various subjects. The verb to know (it knows, they know, it is known) implies the knowledge relation.[=0x000A=][=0x000A=]Awareness relates various people to various subjects. The verb to be aware of implies the awareness relation.[=0x000A=][=0x000A=]Definition: a subject is pending if the player is aware of it and it is not known by the player.[=0x000A=][=0x000A=]Instead of thinking:[=0x000A=][=0x0009=]if the number of pending subjects is 0, say [=0x0022=]You have no fresh leads at the moment.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]You recall that thus far you have not followed up with questions about [the list of pending subjects].[=0x0022=][=0x000A=][=0x000A=]After printing the name of a subject (called idea):[=0x000A=][=0x0009=]now the player is aware of the idea.[=0x000A=][=0x000A=][Now suppose that as an added convenience for the player, we let him turn on a mode in which useful conversation topics are always automatically highlighted in the text, so he doesn[=0x0027=]t waste his time trying to follow up dead leads:][=0x000A=][=0x000A=]Setting is a kind of value. The settings are bright and dull. Understand [=0x0022=]on[=0x0022=] as bright. Understand [=0x0022=]off[=0x0022=] as dull.[=0x000A=][=0x000A=]Highlighting is a setting that varies. Highlighting is dull.[=0x000A=][=0x000A=]Understand [=0x0022=]highlighting [setting][=0x0022=] as setting highlighting. Setting highlighting is an action out of world, applying to one setting.[=0x000A=][=0x000A=]Carry out setting highlighting:[=0x000A=][=0x0009=]change highlighting to the setting understood.[=0x000A=][=0x000A=]Report setting highlighting:[=0x000A=][=0x0009=]say [=0x0022=]Highlighting is now [if highlighting is dull]off[otherwise]on[end if].[=0x0022=][=0x000A=][=0x000A=]Before printing the name of a subject (called idea) when highlighting is bright:[=0x000A=][=0x0009=]unless the player knows the idea:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][bold type][=0x0022=].[=0x000A=][=0x000A=]After printing the name of a subject when highlighting is bright:[=0x000A=][=0x0009=]say [=0x0022=][roman type][=0x0022=].[=0x000A=][=0x000A=][...And the rest is peripheral.][=0x000A=][=0x000A=]The Sickbay is a room. [=0x0022=]A place arranged for Nathan[=0x0027=]s comfort, since his sickness has been prolonged and because he becomes so irritating when not comfortable.[=0x0022=] The Hallway is outside from the Sickbay.[=0x000A=][=0x000A=]A supporter can be untried or rejected. A supporter is usually untried.[=0x000A=][=0x000A=]The Sickbay contains a wobbly pedestal, a table, and a sickbed. Understand [=0x0022=]bed[=0x0022=] as the sickbed. The pedestal, the table, and the sickbed are supporters. Nathan is a man on the sickbed. The sickbed is scenery. The initial appearance of the wobbly pedestal is [=0x0022=]A wobbly pedestal near the door has sometimes been known to support vases of flowers, but is currently bare.[=0x0022=] The initial appearance of the table is [=0x0022=]There is also a table of a more ordinary sort.[=0x0022=][=0x000A=][=0x000A=]Nathan can be active or passive.[=0x000A=][=0x000A=]After printing the name of Nathan: change Nathan to passive.[=0x000A=][=0x000A=]Instead of putting the sculpture on the table:[=0x000A=][=0x0009=]now the table is rejected;[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=][Not there],[=0x0027=] [Nathan] snaps. [=0x0027=]The table is way too far from the sickbed.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Instead of putting the sculpture on the sickbed:[=0x000A=][=0x0009=]now the sickbed is rejected;[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=][Not there],[=0x0027=] [Nathan] rebukes you. [=0x0027=]You don[=0x0027=]t want me knocking it over if I roll around. In pain.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Instead of putting the sculpture on the pedestal:[=0x000A=][=0x0009=]now the pedestal is rejected;[=0x000A=][=0x0009=]say [=0x0022=]The pedestal starts to wobble so ominously that you don[=0x0027=]t dare let go.[=0x000A=][=0x000A=][=0x0027=][Not there],[=0x0027=] says [Nathan]. [=0x0027=]That thing is falling apart.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Before putting something on the down: try dropping the noun instead.[=0x000A=][=0x000A=]To say not there:[=0x000A=][=0x0009=]if all the supporters are rejected:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Look, the floor would be fine[=0x0022=];[=0x000A=][=0x0009=]otherwise if the number of rejected supporters is 1:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Yeah, anywhere but there, I[=0x0027=]m afraid[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Come on, use your head -- I can[=0x0027=]t be watching you all the time, I[=0x0027=]m sick[=0x0022=].[=0x000A=][=0x000A=]Instead of going outside when the player is carrying the sculpture:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]ve still got this sculpture to get rid of.[=0x0022=][=0x000A=][=0x000A=]Instead of going outside when the breakage is pending:[=0x000A=][=0x0009=]say [=0x0022=]You can[=0x0027=]t very well smash in front of [Nathan] his prize sculpture and then just scamper off without saying something. Appealing though the thought is at the moment.[=0x0022=][=0x000A=][=0x000A=]Instead of going outside when a subject which is not the breakage is pending:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Yeah, go ahead,[=0x0027=] says [Nathan], with a martyr-like air. [=0x0027=]It[=0x0027=]s probably best that you don[=0x0027=]t hear about [the random pending subject]. It[=0x0027=]s not something I[=0x0027=]d go into normally.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]The breakage is a subject. The description is [=0x0022=]It[=0x0027=]s not a big deal. I[=0x0027=]ll just buy a new [mental wave generator].[=0x0027=] A slight awkward pause. [=0x0027=]I mean, this one was a [gift], but don[=0x0027=]t worry about it[=0x0022=]. Understand [=0x0022=]accident[=0x0022=] or [=0x0022=]smashing[=0x0022=] or [=0x0022=]breaking[=0x0022=] or [=0x0022=]shard[=0x0022=] or [=0x0022=]mishap[=0x0022=] or [=0x0022=]shards[=0x0022=] or [=0x0022=]mistake[=0x0022=] as the breakage. Understand [=0x0022=]sculpture[=0x0022=] as the breakage when the player is not carrying the sculpture.[=0x000A=][=0x000A=]Instead of saying sorry in the presence of Nathan when the player is aware of the breakage:[=0x000A=][=0x0009=]try asking Nathan about the matter of breakage.[=0x000A=][=0x000A=]Instead of asking Nathan to try saying sorry when the player is aware of the breakage:[=0x000A=][=0x0009=]try asking Nathan about the matter of breakage.[=0x000A=][=0x000A=]The mental wave generator is a subject. The description is [=0x0022=]They[=0x0027=]re kind of expensive but I can save up. I really need one, though, because of my [dreams][=0x0022=].[=0x000A=][=0x000A=]The dreams is a subject. The description is [=0x0022=]They[=0x0027=]re not the kind of dream you want to have.[=0x0027=] He closes his eyes and contemplates these undesirable dreams. [=0x0027=]Have you ever woken up convinced you were dead? No, probably not. Well... At any rate, I need the [generator]. Oh, don[=0x0027=]t worry, they[=0x0027=]re expensive but not so expensive that I won[=0x0027=]t be able to save up for another, in a few months[=0x0022=].[=0x000A=][=0x000A=]The gift is a subject. The description is [=0x0022=][The mental wave generator] was a present from a girl named [Shari]. Actually I[=0x0027=]m not sure she[=0x0027=]d take to being called a girl[=0x0022=].[=0x000A=][=0x000A=]Shari is a subject. The description is [=0x0022=]Look, let[=0x0027=]s just not go into it, okay? I don[=0x0027=]t really want to relive all that right now. I still have a six-inch [scar] shaped like a banana in the middle of my back[=0x0022=].[=0x000A=][=0x000A=]The scar is a subject.[=0x000A=][=0x000A=]Instead of asking Nathan about the matter of the scar:[=0x000A=][=0x0009=]say [=0x0022=]Nathan clears his throat, lowers his voice, and begins to tell you the story...[=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]End of Demo -- Register to Continue!![=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]ask [someone] about [any subject][=0x0022=] as asking it about the matter of.[=0x000A=][=0x000A=]Asking it about the matter of is an action applying to one thing and one visible thing.[=0x000A=][=0x000A=]Check asking it about the matter of:[=0x000A=][=0x0009=]if the player is not aware of the second noun, say [=0x0022=]What [second noun]?[=0x0022=] instead;[=0x000A=][=0x0009=]if the noun does not know the second noun, say [=0x0022=][=0x0027=]I[=0x0027=]ve no idea,[=0x0027=] replies [the noun].[=0x0022=] instead;[=0x000A=][=0x0009=]if the player knows the second noun, say [=0x0022=]You[=0x0027=]ve already covered that. The response was [=0x0027=][description of the second noun].[=0x0027=][=0x0022=] instead.[=0x000A=][=0x000A=]Carry out asking it about the matter of:[=0x000A=][=0x0009=]now the player knows the second noun.[=0x000A=][=0x000A=]Report asking it about the matter of:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=][description of the second noun],[=0x0027=] says [the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of telling Nathan about something:[=0x000A=][=0x0009=]say [=0x0022=]He pinches the bridge of his nose. [=0x0027=]I can[=0x0027=]t really follow this right now,[=0x0027=] he says. [=0x0027=]I[=0x0027=]m sorry.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Instead of asking Nathan about something:[=0x000A=][=0x0009=]say [=0x0022=]He shrugs weakly.[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Just put that down anywhere,[=0x0027=] says [Nathan], as you come into the room. He[=0x0027=]s sitting in the sickbed with his legs straight out in front of him. [=0x0027=]I don[=0x0027=]t care where.[=0x0027=] His voice is weak, but it sharpens up for the last remark: [=0x0027=]And don[=0x0027=]t make a lot of noise about it.[=0x0027=][=0x000A=][=0x000A=]Considering that he woke you from a sound slumber to beg you to bring this thing over, his attitude is a bit much. You stare dubiously at the awkward crystal sculpture in your hands.[=0x0022=];[=0x000A=][=0x0009=]now Nathan knows every subject.[=0x000A=][=0x000A=]Instead of asking Nathan about something while the player carries the sculpture, say [=0x0022=][Nathan] moans dramatically and refuses to be drawn into conversation.[=0x0022=][=0x000A=][=0x000A=]The player is carrying an awkward crystal sculpture. Understand [=0x0022=]objet[=0x0022=] or [=0x0022=]objet de hideous[=0x0022=] as the sculpture. The description of the sculpture is [=0x0022=]It might possibly be natural, or it might be man-made. It might appeal to someone, but it is certainly not to your tastes.[=0x0022=][=0x000A=][=0x000A=]Instead of showing the sculpture to Nathan:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Please put it anywhere,[=0x0027=] he says.[=0x0022=][=0x000A=][=0x000A=]Instead of giving the sculpture to Nathan:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]No, it doesn[=0x0027=]t work if I touch it. That[=0x0027=]s why I couldn[=0x0027=]t-- well, just put it down.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]After dropping the sculpture:[=0x000A=][=0x0009=]now the player is aware of the breakage;[=0x000A=][=0x0009=]remove the sculpture from play;[=0x000A=][=0x0009=]say [=0x0022=]You are incredibly careful, but somehow the sculpture slips -- you might almost say slithers -- from your fingers and crashes into a thousand shards at the feet of [Nathan].[=0x000A=][=0x000A=]There is a tense silence.[=0x0022=][=0x000A=][=0x000A=]Before reading a command: now Nathan is active.[=0x000A=][=0x000A=]Every turn while not asking:[=0x000A=][=0x0009=]if Nathan is passive, rule succeeds;[=0x000A=][=0x0009=]if the player is carrying the sculpture:[=0x000A=][=0x0009=][=0x0009=]if showing or giving, rule succeeds;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][Nathan] opens one eye and stares at you meaningfully. He is waiting for you to deposit his objet de hideous somewhere.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=]if the breakage is pending:[=0x000A=][=0x0009=][=0x0009=]if dropping, rule succeeds;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You[=0x0027=]re not quite sure where to begin, but you can[=0x0027=]t very well leave without making at least some remark on the smashing of the sculpture.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=]if a subject is pending:[=0x000A=][=0x0009=][=0x0009=]choose a random row in the Table of Offhand Reminiscences;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][line entry][paragraph break][=0x0022=].[=0x000A=][=0x000A=]Table of Offhand Reminiscences[=0x000A=]line[=0x000A=][=0x0022=][=0x0027=]It actually is kind of a funny story about [the random pending subject],[=0x0027=] [Nathan] remarks casually.[=0x0022=][=0x000A=][=0x0022=][Nathan] chuckles under his breath. [=0x0027=]Man, I hadn[=0x0027=]t thought about [the random pending subject] in ages.[=0x0027=][=0x0022=][=0x000A=][=0x0022=]He glances sideways at you. [=0x0027=]It[=0x0027=]s nothing personal, you know, but I don[=0x0027=]t feel comfortable discussing [the random pending subject] with just anyone.[=0x0027=][=0x0022=][=0x000A=][=0x0022=][=0x0027=]I don[=0x0027=]t know why I brought up [the random pending subject] just now,[=0x0027=] [Nathan] comments. [=0x0027=]Don[=0x0027=]t mention it to anyone, if you don[=0x0027=]t mind.[=0x0027=][=0x0022=][=0x000A=][=0x0022=][=0x0027=]Okay, see, the thing about [the random pending subject] is...[=0x0027=]  [paragraph break][=0x0027=]Yes?[=0x0027=] you ask, on cue.[paragraph break][=0x0027=]...never mind.[=0x0027=][=0x0022=][=0x000A=][=0x0022=][Nathan] makes an explosive exasperated sound. [=0x0027=]Don[=0x0027=]t you want to ask me about [the random pending subject]?[=0x0027=] he demands.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]highlighting bright / put sculpture on pedestal / put it on table / put it on sickbed / drop it / think / ask nathan about breakage / think / ask him about generator / ask him about dreams / ask him about gift / ask him about shari / ask him about scar[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Terror of the Sierra Madre[=0x0022=][=0x000A=][=0x000A=]The Hay-Strewn Corridor is a room. [=0x0022=][if the player is Maleska]The horse stalls are empty: you have already drained the animals, and carried off their corpses. The house will not long sustain you now.[=0x000A=][=0x000A=]The window throws on the floor a bright square of malevolent sunlight[otherwise]The stalls for horses run down one side of the room, but the house has long stood empty. A square window without shutters looks out over the ranch, away toward the Sierras[end if].[=0x0022=][=0x000A=][=0x000A=]Teresa is a woman in the Hay-Strewn Corridor. [=0x0022=]Teresa stands opposite you[if Teresa carries something], her fingers wrapped tightly around [a list of things carried by Teresa][end if].[=0x0022=] Teresa carries a bulb of garlic and a cross.[=0x000A=][=0x000A=]Maleska is a man in the Hay-Strewn Corridor. [=0x0022=]Maleska watches you from eyes entirely black.[=0x0022=] Maleska carries a skull.[=0x000A=][=0x000A=][If we tried the text above in Inform, we would find ourselves in the Hay-Strewn Corridor and confronted by both Teresa and Maleska. If [=0x0022=]player[=0x0022=] is not set to any named person, Inform creates a bland person called [=0x0022=]yourself[=0x0022=] to represent the player. To avoid this, we set [=0x0022=]player[=0x0022=] to the person we want to begin as:][=0x000A=][=0x000A=]The player is Maleska.[=0x000A=][=0x000A=][Now the Corridor contains just two people, and we arrive on the scene as Maleska, with only Teresa facing us.][=0x000A=][=0x000A=][At the end of every turn we will use the [=0x0027=]change the player to...[=0x0027=] phrase. (This looks as if it simply changes the value of [=0x0022=]player[=0x0022=]: which it does, but it also carries out a complicated operation behind the scenes to effect the switch.)][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]if the player is Maleska, change the player to Teresa;[=0x000A=][=0x0009=]otherwise change the player to Maleska.[=0x000A=][=0x000A=][Our two characters already see the Corridor differently, but let[=0x0027=]s differentiate them further:][=0x000A=][=0x000A=]Every person has a number called strength. The strength of Teresa is 3. The strength of Maleska is 5.[=0x000A=][=0x000A=][In this small example, strength is not used for anything, except that we will display it on the status line:][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=][bold type][player][roman type] [=0x003E=] [=0x0022=];[=0x000A=][=0x0009=]change the left hand status line to [=0x0022=][player][=0x0022=];[=0x000A=][=0x0009=]change the right hand status line to [=0x0022=]STR: [strength of the player][=0x0022=].[=0x000A=][=0x000A=][That last rule doesn[=0x0027=]t quite do what we might have expected. When we print [=0x0022=][player][=0x0022=], we find that Inform usually prints [=0x0022=]yourself[=0x0022=]. This is because Inform says [=0x0022=]you[=0x0022=] to mean Teresa when talking to the player-being-Teresa, and likewise for Maleska. We want to override that in this particular story, because the rapid switches of personality are otherwise hard to follow. So:][=0x000A=][=0x000A=]Rule for printing the name of Teresa: say [=0x0022=]Teresa[=0x0022=].[=0x000A=][=0x000A=]Rule for printing the name of Maleska: say [=0x0022=]Maleska[=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look / look[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode836()"><img border=0 src=../doc_images/paste.png></a> &quot;Chronic Hinting Syndrome&quot;
+<a href="javascript:pasteCode657()"><img border=0 src=../doc_images/paste.png></a> &quot;Terror of the Sierra Madre&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A subject is a kind of thing.
+<blockquote><font color="#000080">The Hay-Strewn Corridor is a room. &quot;[if the player is Maleska]The horse stalls are empty: you have already drained the animals, and carried off their corpses. The house will not long sustain you now.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Knowledge relates various people to various subjects. The verb to know (it knows, they know, it is known) implies the knowledge relation.
+<blockquote><font color="#000080">The window throws on the floor a bright square of malevolent sunlight[otherwise]The stalls for horses run down one side of the room, but the house has long stood empty. A square window without shutters looks out over the ranch, away toward the Sierras[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Awareness relates various people to various subjects. The verb to be aware of implies the awareness relation.
+<blockquote><font color="#000080">Teresa is a woman in the Hay-Strewn Corridor. &quot;Teresa stands opposite you[if Teresa carries something], her fingers wrapped tightly around [a list of things carried by Teresa][end if].&quot; Teresa carries a bulb of garlic and a cross.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a subject is pending if the player is aware of it and it is not known by the player.
+<blockquote><font color="#000080">Maleska is a man in the Hay-Strewn Corridor. &quot;Maleska watches you from eyes entirely black.&quot; Maleska carries a skull.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of thinking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of pending subjects is 0, say &quot;You have no fresh leads at the moment.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You recall that thus far you have not followed up with questions about [the list of pending subjects].&quot;
+<p>If we tried the text above in Inform, we would find ourselves in the Hay-Strewn Corridor and confronted by both Teresa and Maleska. If &quot;player&quot; is not set to any named person, Inform creates a bland person called &quot;yourself&quot; to represent the player. To avoid this, we set &quot;player&quot; to the person we want to begin as:
+<p>
+<blockquote><font color="#000080">The player is Maleska.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of a subject (called idea):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is aware of the idea.
+<p>Now the Corridor contains just two people, and we arrive on the scene as Maleska, with only Teresa facing us.
+<p>
+<p>At the end of every turn we will use the 'change the player to...' phrase. (This looks as if it simply changes the value of &quot;player&quot;: which it does, but it also carries out a complicated operation behind the scenes to effect the switch.)
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is Maleska, change the player to Teresa;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the player to Maleska.
 </font></blockquote><p>
 <p>
-<p>Now suppose that as an added convenience for the player, we let him turn on a mode in which useful conversation topics are always automatically highlighted in the text, so he doesn't waste his time trying to follow up dead leads:
+<p>Our two characters already see the Corridor differently, but let's differentiate them further:
 <p>
-<blockquote><font color="#000080">Setting is a kind of value. The settings are bright and dull. Understand &quot;on&quot; as bright. Understand &quot;off&quot; as dull.
+<blockquote><font color="#000080">Every person has a number called strength. The strength of Teresa is 3. The strength of Maleska is 5.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Highlighting is a setting that varies. Highlighting is dull.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;highlighting [setting]&quot; as setting highlighting. Setting highlighting is an action out of world, applying to one setting.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out setting highlighting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change highlighting to the setting understood.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report setting highlighting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Highlighting is now [if highlighting is dull]off[otherwise]on[end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of a subject (called idea) when highlighting is bright:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;unless the player knows the idea:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[bold type]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of a subject when highlighting is bright:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[roman type]&quot;.
-</font></blockquote><p>
-<p>
-<p>...And the rest is peripheral.
-<p>
-<blockquote><font color="#000080">The Sickbay is a room. &quot;A place arranged for Nathan's comfort, since his sickness has been prolonged and because he becomes so irritating when not comfortable.&quot; The Hallway is outside from the Sickbay.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A supporter can be untried or rejected. A supporter is usually untried.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Sickbay contains a wobbly pedestal, a table, and a sickbed. Understand &quot;bed&quot; as the sickbed. The pedestal, the table, and the sickbed are supporters. Nathan is a man on the sickbed. The sickbed is scenery. The initial appearance of the wobbly pedestal is &quot;A wobbly pedestal near the door has sometimes been known to support vases of flowers, but is currently bare.&quot; The initial appearance of the table is &quot;There is also a table of a more ordinary sort.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Nathan can be active or passive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of Nathan: change Nathan to passive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of putting the sculpture on the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the table is rejected;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'[Not there],' [Nathan] snaps. 'The table is way too far from the sickbed.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of putting the sculpture on the sickbed:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the sickbed is rejected;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'[Not there],' [Nathan] rebukes you. 'You don't want me knocking it over if I roll around. In pain.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of putting the sculpture on the pedestal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pedestal is rejected;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pedestal starts to wobble so ominously that you don't dare let go.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">'[Not there],' says [Nathan]. 'That thing is falling apart.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before putting something on the down: try dropping the noun instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say not there:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if all the supporters are rejected:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Look, the floor would be fine&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if the number of rejected supporters is 1:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Yeah, anywhere but there, I'm afraid&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Come on, use your head -- I can't be watching you all the time, I'm sick&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going outside when the player is carrying the sculpture:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You've still got this sculpture to get rid of.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going outside when the breakage is pending:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't very well smash in front of [Nathan] his prize sculpture and then just scamper off without saying something. Appealing though the thought is at the moment.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going outside when a subject which is not the breakage is pending:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Yeah, go ahead,' says [Nathan], with a martyr-like air. 'It's probably best that you don't hear about [the random pending subject]. It's not something I'd go into normally.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The breakage is a subject. The description is &quot;It's not a big deal. I'll just buy a new [mental wave generator].' A slight awkward pause. 'I mean, this one was a [gift], but don't worry about it&quot;. Understand &quot;accident&quot; or &quot;smashing&quot; or &quot;breaking&quot; or &quot;shard&quot; or &quot;mishap&quot; or &quot;shards&quot; or &quot;mistake&quot; as the breakage. Understand &quot;sculpture&quot; as the breakage when the player is not carrying the sculpture.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of saying sorry in the presence of Nathan when the player is aware of the breakage:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try asking Nathan about the matter of breakage.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking Nathan to try saying sorry when the player is aware of the breakage:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try asking Nathan about the matter of breakage.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The mental wave generator is a subject. The description is &quot;They're kind of expensive but I can save up. I really need one, though, because of my [dreams]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The dreams is a subject. The description is &quot;They're not the kind of dream you want to have.' He closes his eyes and contemplates these undesirable dreams. 'Have you ever woken up convinced you were dead? No, probably not. Well... At any rate, I need the [generator]. Oh, don't worry, they're expensive but not so expensive that I won't be able to save up for another, in a few months&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The gift is a subject. The description is &quot;[The mental wave generator] was a present from a girl named [Shari]. Actually I'm not sure she'd take to being called a girl&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Shari is a subject. The description is &quot;Look, let's just not go into it, okay? I don't really want to relive all that right now. I still have a six-inch [scar] shaped like a banana in the middle of my back&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The scar is a subject.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking Nathan about the matter of the scar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Nathan clears his throat, lowers his voice, and begins to tell you the story...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;End of Demo -- Register to Continue!!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;ask [someone] about [any subject]&quot; as asking it about the matter of.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Asking it about the matter of is an action applying to one thing and one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check asking it about the matter of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not aware of the second noun, say &quot;What [second noun]?&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun does not know the second noun, say &quot;'I've no idea,' replies [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player knows the second noun, say &quot;You've already covered that. The response was '[description of the second noun].'&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out asking it about the matter of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player knows the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report asking it about the matter of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'[description of the second noun],' says [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of telling Nathan about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;He pinches the bridge of his nose. 'I can't really follow this right now,' he says. 'I'm sorry.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking Nathan about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;He shrugs weakly.&quot;
-</font></blockquote><p>
+<p>In this small example, strength is not used for anything, except that we will display it on the status line:
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Just put that down anywhere,' says [Nathan], as you come into the room. He's sitting in the sickbed with his legs straight out in front of him. 'I don't care where.' His voice is weak, but it sharpens up for the last remark: 'And don't make a lot of noise about it.'
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;[bold type][player][roman type] > &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;[player]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;STR: [strength of the player]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Considering that he woke you from a sound slumber to beg you to bring this thing over, his attitude is a bit much. You stare dubiously at the awkward crystal sculpture in your hands.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Nathan knows every subject.
+<p>That last rule doesn't quite do what we might have expected. When we print &quot;[player]&quot;, we find that Inform usually prints &quot;yourself&quot;. This is because Inform says &quot;you&quot; to mean Teresa when talking to the player-being-Teresa, and likewise for Maleska. We want to override that in this particular story, because the rapid switches of personality are otherwise hard to follow. So:
+<p>
+<blockquote><font color="#000080">Rule for printing the name of Teresa: say &quot;Teresa&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of asking Nathan about something while the player carries the sculpture, say &quot;[Nathan] moans dramatically and refuses to be drawn into conversation.&quot;
+<blockquote><font color="#000080">Rule for printing the name of Maleska: say &quot;Maleska&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is carrying an awkward crystal sculpture. Understand &quot;objet&quot; or &quot;objet de hideous&quot; as the sculpture. The description of the sculpture is &quot;It might possibly be natural, or it might be man-made. It might appeal to someone, but it is certainly not to your tastes.&quot;
+<blockquote><font color="#000080">Test me with &quot;look / look&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of showing the sculpture to Nathan:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Please put it anywhere,' he says.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of giving the sculpture to Nathan:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'No, it doesn't work if I touch it. That's why I couldn't-- well, just put it down.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After dropping the sculpture:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is aware of the breakage;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the sculpture from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are incredibly careful, but somehow the sculpture slips -- you might almost say slithers -- from your fingers and crashes into a thousand shards at the feet of [Nathan].
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">There is a tense silence.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before reading a command: now Nathan is active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn while not asking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Nathan is passive, rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying the sculpture:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if showing or giving, rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[Nathan] opens one eye and stares at you meaningfully. He is waiting for you to deposit his objet de hideous somewhere.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the breakage is pending:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if dropping, rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not quite sure where to begin, but you can't very well leave without making at least some remark on the smashing of the sculpture.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a subject is pending:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Offhand Reminiscences;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line entry][paragraph break]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Offhand Reminiscences
-<br>line
-<br>&quot;'It actually is kind of a funny story about [the random pending subject],' [Nathan] remarks casually.&quot;
-<br>&quot;[Nathan] chuckles under his breath. 'Man, I hadn't thought about [the random pending subject] in ages.'&quot;
-<br>&quot;He glances sideways at you. 'It's nothing personal, you know, but I don't feel comfortable discussing [the random pending subject] with just anyone.'&quot;
-<br>&quot;'I don't know why I brought up [the random pending subject] just now,' [Nathan] comments. 'Don't mention it to anyone, if you don't mind.'&quot;
-<br>&quot;'Okay, see, the thing about [the random pending subject] is...'  [paragraph break]'Yes?' you ask, on cue.[paragraph break]'...never mind.'&quot;
-<br>&quot;[Nathan] makes an explosive exasperated sound. 'Don't you want to ask me about [the random pending subject]?' he demands.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;highlighting bright / put sculpture on pedestal / put it on table / put it on sickbed / drop it / think / ask nathan about breakage / think / ask him about generator / ask him about dreams / ask him about gift / ask him about shari / ask him about scar&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc54.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc26.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc53.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc55.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e210"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex210.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>429</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex210.html#e210 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex210.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e401"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex401.html#e401 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>54</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex401.html#e401 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">The Crane's Leg 1</font></b></a><br>A description text that automatically highlights the ways in which the object differs from a standard member of its kind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex401.html#e401 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e144"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex144.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>365</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex144.html#e144 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">The Crane's Leg 2</font></b></a><br>A description text generated based on the propensities of the player-character, following different rulebooks for different characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex144.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc25.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

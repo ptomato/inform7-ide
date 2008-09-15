@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.11. Next and break</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.8. Otherwise</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,21 +19,64 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Next and break" -->
-<!-- SEARCH SECTION "11.11" -->
-<!-- SEARCH SORT "011-011-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc166.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc168.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.11. Next and break</b></font></td></tr></table>
+<!-- SEARCH TITLE "Otherwise" -->
+<!-- SEARCH SECTION "11.8" -->
+<!-- SEARCH SORT "011-008-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc166.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc168.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.8. Otherwise</b></font></td></tr></table>
 <p>
-<p>Inside &quot;repeat&quot; and &quot;while&quot; loops, the new phrases &quot;next&quot; and &quot;break&quot; can be used to go directly to the next iteration, and to exit the loop immediately, respectively. (&quot;Next&quot; is called &quot;continue&quot; in a fair number of programming languages, so Inform issues a specific problem message to help people who forget this.) In Monopoly terms, &quot;next&quot; is &quot;Advance to Go&quot; rather than &quot;go directly, do not pass Go, do not collect $200&quot; - the next iteration begins with the variable, if there is one, having cleanly moved on to the next value, just as if the loop had been run through in the normal way.
+<p>We often need code which does one thing in one circumstance, and another the rest of the time. We could do this like so:
 <p>
-<p>For instance:
-<p>
-<blockquote><font color="#000080">repeat with X running from 1 to 10:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is 4, next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[X] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is 7, break;
+<blockquote><font color="#000080">if N is 2:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<br>if N is not 2:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
 </font></blockquote><p>
 <p>
-<p>prints the text &quot;1 2 3 5 6 7&quot;, because the iteration when X is 4 is skipped over by the &quot;next&quot;, whereas iterations 8, 9 and 10 never happen, since the &quot;break&quot; when X is 7 means they are never reached.
+<p>but this is not very elegant, and besides, what if the action we take when N is 2 changes N so that it becomes something else?
 <p>
+<p>Instead we use &quot;otherwise&quot;:
+<p>
+<blockquote><font color="#000080">if N is 2:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<br>otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+</font></blockquote><p>
+<p>
+<p>When there is only a single phrase we can use the shortened form:
+<p>
+<blockquote><font color="#000080">if N is 2 then say &quot;Hooray, N is 2!&quot;;
+<br>otherwise say &quot;Boo, N is not 2...&quot;
+</font></blockquote><p>
+<p>
+<p>Often, though, what we want is to divide up a situation into many cases, and for this the abbreviation &quot;otherwise if&quot; is allowed:
+<p>
+<blockquote><font color="#000080">if N is 1 begin:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<br>otherwise if N is 2:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+<br>otherwise if N is greater than 4:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+</font></blockquote><p>
+<p>
+<p>At most one of the &quot;...&quot; clauses is ever reached - the first which works out.
+<p>
+<p>If the chain of conditions being tried consists of checking the same value over and over, we can use a convenient abbreviated form:
+<p>
+<blockquote><font color="#000080">if N is:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-- 1: say &quot;1.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-- 2: say &quot;2.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-- otherwise: say &quot;Else.&quot;;
+<br>if the dangerous item is:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-- the electric hairbrush:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mind your head.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-- the silver spoon:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Steer clear of the cutlery drawer.&quot;
+</font></blockquote><p>
+<p>
+<p>This abbreviated layout is not allowed to use &quot;begin&quot; and &quot;end&quot;: it would look too messy, and would scarcely be an abbreviation. It is also not allowed to use &quot;unless&quot; instead of &quot;if&quot;, because the result would be too tangled to follow.
+<p>
+<p>(In almost every computer programming language, the word &quot;else&quot; is used rather than &quot;otherwise&quot;: for the sake of familiarity, &quot;else&quot; can also be used here. All the same, &quot;otherwise&quot; seems closer to natural English.)
+<p>
+<p><hr><p>
+<a name="e248"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>170</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex248.html#e248 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Numberless</font></b></a><br>A simple exercise in printing the names of random numbers, comparing the use of "otherwise if...", a switch statement, or a table-based alternative.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc166.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc168.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

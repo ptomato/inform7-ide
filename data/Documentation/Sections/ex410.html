@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.11. Limits on the size of numbers</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,129 +19,104 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Model Shop" -->
-<!-- SEARCH SECTION "Ex 45" -->
-<!-- SEARCH SORT "Ex 004-005-045" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
+<!-- SEARCH TITLE "Alias" -->
+<!-- SEARCH SECTION "Ex 243" -->
+<!-- SEARCH SORT "Ex 014-011-243" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc226.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc228.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.11. Limits on the size of numbers</b></font></td></tr></table>
 <p>
-<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
+<p>There are still some serious restrictions. Inform has only whole numbers, not floating-point (though we could in principle simulate at least fixed-point numbers by writing something like &quot;10.99kg specifies a weight&quot;). And in its normal setting (see below), Inform only allows numbers from -32768 to 32767. Since a London bus only weighs 7000kg, 32000kg is plenty: on the other hand, if we wanted to measure weight in grammes instead, the limit would be just 32kg, an amount which a human can just about lift.
 <p>
-<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
+<p>The limit also begins to bite when using multiple-number specifications. Internally, Inform stores the above &quot;running time&quot; as a number of seconds, so that 3'59 is actually stored as 239. Calculating the maximum legal running time is a nuisance, so we can instead check the &quot;Kinds&quot; page of the index, where we read that:
+<p>
+<blockquote><font color="#000080"><b>running time</b> (<i>plural</i> running times)
+<br><i>Written in the following form:</i> 3'59
+<br><i>Maximum value allowed:</i> 546'07
 </font></blockquote><p>
 <p>
-<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
+<p>The maximum legal running time is therefore a little over 9 hours, so the new Tori Amos album will not be a problem, but some of the more punishing German operas might break the bank.
 <p>
-<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
-</font></blockquote><p>
-<p>
-<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot; by making them into assemblies, but in fact this one can be got around quite easily, like so -
-<p>
-<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
-</font></blockquote><p>
-<p>
-<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
-<p>
-<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
-<p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
-</font></blockquote><p>
-<p>
-<p>Something to bear in mind, though, is that in play the following may well happen:
-<p>
-<blockquote><font color="#000080">>examine nose
-<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
-</font></blockquote><p>
-<p>
-<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
-<p>
-<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
-<p>
-<p>Something to watch out for is that if we write:
-<p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. Antony and Cleopatra are people.
-</font></blockquote><p>
-<p>
-<p>then we can begin talking about &quot;Antony's nose&quot; and &quot;Cleopatra's nose&quot;: but it is not safe to discuss these before the sentence &quot;A nose is part of every person&quot; which creates them. Another pitfall is that if we then write:
-<p>
-<blockquote><font color="#000080">Marcus Tullius Cicero is a person.
-</font></blockquote><p>
-<p>
-<p>then although &quot;Marcus Tullius Cicero's nose&quot; and &quot;Cicero's nose&quot; are both valid names for the consular nose, &quot;Marcus's nose&quot; is not.
+<p>These restrictions are a nuisance, but can normally be managed, and we gain the ability to run the resulting work of IF on a very wide variety of computers indeed, some extremely small. If we do need larger numbers, we can change to the Glulx virtual machine (using the Settings panel), which buys us integers in the much larger range -2147483648 to 2147483647 but at the cost of being playable on fewer devices.
 <p>
 <p><hr><p>
-<a name="e80"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex80.html#e80 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e410"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e410 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc58.html#e410 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex410.html#e410 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e410"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc227.html#e410 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>243</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc227.html#e410 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Alias</font></b></a><br>A telephone with phone numbers of the standard American seven-digit length.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex410.html#e410 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we're particularly mechanically-minded and would like a game in which all of our mechanical devices have buttons to turn them on and off.
+<p>Seven-digit telephone numbers are too long for Inform to handle when compiling to the Z-Machine, but they will work under Glulx. To have this example succeed, make sure that you have selected the Glulx option in your settings menu.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode138(code) {
+function pasteCode337(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Model Shop[=0x0022=][=0x000A=][=0x000A=]An on/off button is a kind of thing.[=0x000A=][=0x000A=]Instead of pushing an on/off button which is part of a switched off device (called the machine):[=0x000A=][=0x0009=]try switching on the machine.[=0x000A=][=0x000A=][Here we are making a rule about how our hypothetical buttons will interact with the machines to which they belong. Instead of pushing... is a rule that pertains to actions, and we will learn more about these in the chapter on actions. [=0x0022=]...which is part of a switched off device[=0x0022=] provides a specific circumstance - this is only to apply to buttons that are stuck to a machines that can be turned on or off. [=0x0022=](called the machine)[=0x0022=] tells Inform that if it finds such a device, it should thereafter refer to it as [=0x0022=]the machine.[=0x0022=] (The called syntax is explained further in the chapter on Change.)][=0x000A=][=0x000A=][A set of three more rules will complete our instructions about using buttons to control devices:][=0x000A=][=0x000A=]Instead of pushing an on/off button which is part of a switched on device (called the machine):[=0x000A=][=0x0009=]try switching off the machine.[=0x000A=][=0x000A=]Instead of switching on an on/off button which is part of a device (called the machine):[=0x000A=][=0x0009=]try switching on the machine.[=0x000A=][=0x000A=]Instead of switching off an on/off button which is part of a device (called the machine):[=0x000A=][=0x0009=]try switching off the machine.[=0x000A=][=0x000A=][Then we hand out buttons with a free hand:][=0x000A=][=0x000A=]One on/off button is part of every device.[=0x000A=][=0x000A=]The Model Shop is a room. A model train is a fixed in place device in the Model Shop. A toy elephant is a device in the Model Shop.[=0x000A=][=0x000A=]Every turn when the model train is switched on:[=0x000A=][=0x0009=]say [=0x0022=]The model train circles your feet, blowing small puffs of steam.[=0x0022=][=0x000A=][=0x000A=]Every turn when the toy elephant is switched on:[=0x000A=][=0x0009=]say [=0x0022=]The toy elephant waves its trunk at you.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]push model train[=0x0027=]s button / push elephant[=0x0027=]s button / g / switch off model train[=0x0027=]s button[=0x0022=].[=0x000A=][=0x000A=][And now the game will have a model train[=0x0027=]s button and a toy elephant[=0x0027=]s button.][=0x000A=][=0x000A=][It may be that we want (as an added nuance) to add other names for these items. While we would want an assembly to create objects such as [=0x0022=]Lucy[=0x0027=]s hand[=0x0022=] and not [=0x0022=]Lucy hand[=0x0022=], it is entirely reasonable to want to talk about the model train button or the elephant button. We could define these additional names like so:][=0x000A=][=0x000A=]Understand [=0x0022=]elephant button[=0x0022=] or [=0x0022=]button on elephant[=0x0022=] as the elephant[=0x0027=]s button.[=0x000A=][=0x000A=]Understand [=0x0022=]model train[=0x0022=] or [=0x0022=]model[=0x0022=] or [=0x0022=]train[=0x0022=] as [=0x0022=][train][=0x0022=]. Understand [=0x0022=][train] button[=0x0022=] or  [=0x0022=]button on [train][=0x0022=] as the model train[=0x0027=]s button.[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Alias[=0x0022=][=0x000A=][=0x000A=]A telephone is a kind of thing. Understand [=0x0022=]phone[=0x0022=] or [=0x0022=]telephone[=0x0022=] as a telephone.[=0x000A=][=0x000A=]A phone number is a kind of value. 999-9999 specifies a phone number.[=0x000A=][=0x000A=][Now we borrow some techniques from the Understanding chapter to set up dialing actions:][=0x000A=][=0x000A=]Understand [=0x0022=]dial [phone number] on [telephone][=0x0022=] as dialing it on. Understand [=0x0022=]dial [phone number] on [something][=0x0022=] as dialing it on.[=0x000A=][=0x000A=]Understand the commands [=0x0022=]phone[=0x0022=] or [=0x0022=]telephone[=0x0022=] or [=0x0022=]call[=0x0022=] as [=0x0022=]dial[=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=]call [text][=0x0022=] or [=0x0022=]phone [text][=0x0022=] or [=0x0022=]dial [text][=0x0022=] or [=0x0022=]telephone [text][=0x0022=] as a mistake ([=0x0022=]That[=0x0027=]s not a number you know.[=0x0022=]).[=0x000A=][=0x000A=]Dialing it on is an action applying to one phone number and one thing.[=0x000A=][=0x000A=]Report dialing it on:[=0x000A=][=0x0009=]say [=0x0022=]You dial [the phone number understood].[=0x0022=][=0x000A=][=0x000A=][This much is enough to let us dial telephone numbers and have Inform report that we[=0x0027=]ve done so; it doesn[=0x0027=]t actually provide a telephone system such that we could reach and converse with other characters (but see the other telephone examples in the recipe book for more on how one might do that).][=0x000A=][=0x000A=][We[=0x0027=]ll set up a little political espionage scenario from which our player can make calls:][=0x000A=][=0x000A=]The Senator[=0x0027=]s Junior Suite is a room. [=0x0022=]The Senator appears, unfortunately, to have very precise habits: little in the room has been moved from its usual place; the trash can is empty; the bed has been remade[if the blue paper is unexamined]. There may in fact be nothing to find here[end if].[=0x0022=][=0x000A=][=0x000A=]The bed is an enterable scenery supporter in the Junior Suite.[=0x000A=][=0x000A=]The player is wearing a housekeeping uniform and a brunette wig. The player carries a telephone called a Nokia.[=0x000A=][=0x000A=][Borrowing again from the chapter on Understanding, we might arrange things so that the player knows and can call a few standard numbers with such syntax as CALL HOME:][=0x000A=][=0x000A=]Understand [=0x0022=]home[=0x0022=] as 555-9200.[=0x000A=][=0x000A=][And what if we[=0x0027=]d like to have the player learn some phone numbers during the game?][=0x000A=][=0x000A=]A thing can be examined or unexamined. Carry out examining something: now the noun is examined.[=0x000A=][=0x000A=]Understand [=0x0022=]Stephen[=0x0022=] as 555-2513 when the blue paper is examined.[=0x000A=][=0x000A=][This will understand CALL STEPHEN once the paper is examined; before that, the player will just get the [=0x0022=]That[=0x0027=]s not a number you know[=0x0022=] response that Inform uses for all attempts to call unknown names.][=0x000A=][=0x000A=][We[=0x0027=]d better plant this paper for the player to find:][=0x000A=][=0x000A=]The blue paper is in the drawer. The description of the blue paper is [=0x0022=]It reads: [=0x0027=]Call Stephen - 555-2513[=0x0027=].[=0x0022=][=0x000A=][=0x000A=]The drawer is part of the dresser. It is closed and openable. The dresser is in The Senator[=0x0027=]s Junior Suite. The lamp is on the dresser. The description of the dresser is [=0x0022=]The single drawer is [if the drawer is open]open[otherwise]shut[end if].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]dial 555-9999 / call home on the telephone / phone the president / call stephen / open drawer / read paper / call stephen / put phone in drawer / close drawer / call stephen[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode138()"><img border=0 src=../doc_images/paste.png></a> &quot;Model Shop&quot;
+<a href="javascript:pasteCode337()"><img border=0 src=../doc_images/paste.png></a> &quot;Alias&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An on/off button is a kind of thing.
+<blockquote><font color="#000080">A telephone is a kind of thing. Understand &quot;phone&quot; or &quot;telephone&quot; as a telephone.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of pushing an on/off button which is part of a switched off device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching on the machine.
+<blockquote><font color="#000080">A phone number is a kind of value. 999-9999 specifies a phone number.
 </font></blockquote><p>
 <p>
-<p>Here we are making a rule about how our hypothetical buttons will interact with the machines to which they belong. Instead of pushing... is a rule that pertains to actions, and we will learn more about these in the chapter on actions. &quot;...which is part of a switched off device&quot; provides a specific circumstance - this is only to apply to buttons that are stuck to a machines that can be turned on or off. &quot;(called the machine)&quot; tells Inform that if it finds such a device, it should thereafter refer to it as &quot;the machine.&quot; (The called syntax is explained further in the chapter on Change.)
+<p>Now we borrow some techniques from the Understanding chapter to set up dialing actions:
 <p>
-<p>A set of three more rules will complete our instructions about using buttons to control devices:
-<p>
-<blockquote><font color="#000080">Instead of pushing an on/off button which is part of a switched on device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching off the machine.
+<blockquote><font color="#000080">Understand &quot;dial [phone number] on [telephone]&quot; as dialing it on. Understand &quot;dial [phone number] on [something]&quot; as dialing it on.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of switching on an on/off button which is part of a device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching on the machine.
+<blockquote><font color="#000080">Understand the commands &quot;phone&quot; or &quot;telephone&quot; or &quot;call&quot; as &quot;dial&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of switching off an on/off button which is part of a device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching off the machine.
+<blockquote><font color="#000080">Understand &quot;call [text]&quot; or &quot;phone [text]&quot; or &quot;dial [text]&quot; or &quot;telephone [text]&quot; as a mistake (&quot;That's not a number you know.&quot;).
 </font></blockquote><p>
 <p>
-<p>Then we hand out buttons with a free hand:
-<p>
-<blockquote><font color="#000080">One on/off button is part of every device.
+<blockquote><font color="#000080">Dialing it on is an action applying to one phone number and one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Model Shop is a room. A model train is a fixed in place device in the Model Shop. A toy elephant is a device in the Model Shop.
+<blockquote><font color="#000080">Report dialing it on:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You dial [the phone number understood].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the model train is switched on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The model train circles your feet, blowing small puffs of steam.&quot;
+<p>This much is enough to let us dial telephone numbers and have Inform report that we've done so; it doesn't actually provide a telephone system such that we could reach and converse with other characters (but see the other telephone examples in the recipe book for more on how one might do that).
+<p>
+<p>We'll set up a little political espionage scenario from which our player can make calls:
+<p>
+<blockquote><font color="#000080">The Senator's Junior Suite is a room. &quot;The Senator appears, unfortunately, to have very precise habits: little in the room has been moved from its usual place; the trash can is empty; the bed has been remade[if the blue paper is unexamined]. There may in fact be nothing to find here[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the toy elephant is switched on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The toy elephant waves its trunk at you.&quot;
+<blockquote><font color="#000080">The bed is an enterable scenery supporter in the Junior Suite.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;push model train's button / push elephant's button / g / switch off model train's button&quot;.
+<blockquote><font color="#000080">The player is wearing a housekeeping uniform and a brunette wig. The player carries a telephone called a Nokia.
 </font></blockquote><p>
 <p>
-<p>And now the game will have a model train's button and a toy elephant's button.
+<p>Borrowing again from the chapter on Understanding, we might arrange things so that the player knows and can call a few standard numbers with such syntax as CALL HOME:
 <p>
-<p>It may be that we want (as an added nuance) to add other names for these items. While we would want an assembly to create objects such as &quot;Lucy's hand&quot; and not &quot;Lucy hand&quot;, it is entirely reasonable to want to talk about the model train button or the elephant button. We could define these additional names like so:
-<p>
-<blockquote><font color="#000080">Understand &quot;elephant button&quot; or &quot;button on elephant&quot; as the elephant's button.
+<blockquote><font color="#000080">Understand &quot;home&quot; as 555-9200.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;model train&quot; or &quot;model&quot; or &quot;train&quot; as &quot;[train]&quot;. Understand &quot;[train] button&quot; or  &quot;button on [train]&quot; as the model train's button.
+<p>And what if we'd like to have the player learn some phone numbers during the game?
+<p>
+<blockquote><font color="#000080">A thing can be examined or unexamined. Carry out examining something: now the noun is examined.
 </font></blockquote><p>
 <p>
-<p>In the second case, we are defining [train] to mean any of the three phrases &quot;train&quot;, &quot;model&quot;, and &quot;model train&quot;; so &quot;[train] button&quot; will match &quot;model train button&quot; or &quot;train button&quot; or &quot;model button&quot; equally well. See the chapter on Understanding for more on how to create alternative phrasings for the player to use.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Understand &quot;Stephen&quot; as 555-2513 when the blue paper is examined.
+</font></blockquote><p>
+<p>
+<p>This will understand CALL STEPHEN once the paper is examined; before that, the player will just get the &quot;That's not a number you know&quot; response that Inform uses for all attempts to call unknown names.
+<p>
+<p>We'd better plant this paper for the player to find:
+<p>
+<blockquote><font color="#000080">The blue paper is in the drawer. The description of the blue paper is &quot;It reads: 'Call Stephen - 555-2513'.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The drawer is part of the dresser. It is closed and openable. The dresser is in The Senator's Junior Suite. The lamp is on the dresser. The description of the dresser is &quot;The single drawer is [if the drawer is open]open[otherwise]shut[end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;dial 555-9999 / call home on the telephone / phone the president / call stephen / open drawer / read paper / call stephen / put phone in drawer / close drawer / call stephen&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc227.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e125"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>46</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex125.html#e125 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e248"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>47</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex248.html#e248 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc226.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc228.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

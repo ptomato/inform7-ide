@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.13. Going from, going to</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.17. Randomness</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,109 +19,126 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Veronica" -->
-<!-- SEARCH SECTION "Ex 94" -->
-<!-- SEARCH SORT "Ex 007-013-094" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc104.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc106.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.13. Going from, going to</b></font></td></tr></table>
+<!-- SEARCH TITLE "Do Pass Go" -->
+<!-- SEARCH SECTION "Ex 126" -->
+<!-- SEARCH SORT "Ex 008-017-126" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc130.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc132.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.17. Randomness</b></font></td></tr></table>
 <p>
-<p>Going is an action defined like any other: it is the one which happens when the player tries to go from one location to another. But it is unlike other actions because it happens in two locations, not just one, and has other complications such as vehicles and doors to contend with. To make it easier to write legible and flexible rules, &quot;going&quot; is allowed to be described in a number of special ways not open to other actions, as demonstrated by the following example game:
+<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
+<p>
+<blockquote><font color="#000080">a random number from 2 to 5
+</font></blockquote><p>
+<p>
+<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>
+<p>We can also use random conditions:
+<p>
+<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+</font></blockquote><p>
+<p>
+<p>Here is a rule which applies only 15% of the time:
+<p>
+<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
+</font></blockquote><p>
+<p>
+<p>If we make a new kind of value, we can also take random values from it:
+<p>
+<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
+</font></blockquote><p>
+<p>
+<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
+<p>
+<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode15(code) {
+function pasteCode19(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Going Going[=0x0022=][=0x000A=][=0x000A=]The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.[=0x000A=][=0x000A=]Instead of going nowhere from the Front Stacks, say [=0x0022=]Bookcases obstruct almost all passages out of here.[=0x0022=][=0x000A=][=0x000A=]Instead of going nowhere, say [=0x0022=]You really can[=0x0027=]t wander around at random in the Library.[=0x0022=][=0x000A=][=0x000A=]Before going to the Catalogue Room, say [=0x0022=]You emerge back into the Catalogue Room.[=0x0022=][=0x000A=][=0x000A=]');
+    myProject.pasteCode('When play begins, seed the random-number generator with 1234.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode15()"><img border=0 src=../doc_images/paste.png></a> &quot;Going Going&quot;
+<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going nowhere from the Front Stacks, say &quot;Bookcases obstruct almost all passages out of here.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going nowhere, say &quot;You really can't wander around at random in the Library.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before going to the Catalogue Room, say &quot;You emerge back into the Catalogue Room.&quot;
-</font></blockquote><p>
-<p>
-<p>Note that &quot;going nowhere&quot; means trying a map connection which is blank, and if no rules intervene then &quot;You can't go that way&quot; is normally printed. Unless &quot;nowhere&quot; is specified, descriptions of going apply only when there is a map connection. So &quot;going from the Musicology Section&quot; would not match if the player were trying to go east from there, since there is no map connection to the east. Similarly, &quot;going somewhere&quot; excludes blank connections.
-<p>
-<p>The places gone &quot;from&quot; or &quot;to&quot; can be specific named regions instead of rooms. This is convenient when there are several different ways into or out of an area of map but a common rule needs to apply to all: so, for example,
-<p>
-<blockquote><font color="#000080">Before going from the Cultivated Land to the Wilderness, ...
-<br>Before going nowhere from the Wilderness, say &quot;Tangled brush forces you back.&quot;
-</font></blockquote><p>
-<p>
-<p>Note that it must be &quot;going nowhere from the Wilderness&quot;, not &quot;...in the Wilderness&quot;. (Note also the caveat that the regions must be named: &quot;going from a region&quot;, or something similarly nonspecific, will not work.)
-<p>
-<p>An important point about &quot;going... from&quot; is that, as mentioned in general terms above, it requires that there is actually a map connection that way: whereas &quot;going... in&quot; does not. Suppose there is no map connection north from the Wilderness. Then:
-<p>
-<blockquote><font color="#000080">Instead of going north from the Wilderness, say &quot;You'll never read this.&quot;
-<br>Instead of going north in the Wilderness, say &quot;Oh, it's too cold.&quot;
-</font></blockquote><p>
-<p>
-<p>The first of these never happens, because it is logically impossible to go north from the Wilderness: but the second does happen. (Technically, this is because &quot;going north&quot; is the action, and &quot;in the Wilderness&quot; a separate condition tacked onto the rule.) This distinction is often useful - it allows us to write rules which apply only to feasible movements.
-<p>
-<p>This may be a good place to mention a small restriction on the ways we can specify an action for a rule to apply to, and how it can be overcome. The restriction is that the action should only involve constant quantities, so that the following does not work:
-<p>
-<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Before going to the location of the rabbit, say &quot;You pick up a scent!&quot;
-</font></blockquote><p>
-<p>
-<p>because &quot;the location of the rabbit&quot; is a quantity which changes in play (the player can pick up the rabbit and take him to the Dome, for instance). However, we can get around this restriction by defining a suitable adjective, like so:
-<p>
-<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Definition: a room is rabbit-infested if it is the location of the rabbit. Before going to a rabbit-infested room, say &quot;You pick up a scent!&quot;
-</font></blockquote><p>
+<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e161"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc105.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>94</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc105.html#e161 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Veronica</font></b></a><br>An effect that occurs only when the player leaves a region entirely.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e161"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc131.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>126</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc131.html#e161 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose that we want to have something happen when the player leaves a region we've defined. &quot;Instead of going from (the region)...&quot; will not suffice for this, because this rule will be invoked every time the player successfully leaves a room within the region, whether or not he is going to a room that is also in the same region.
-<p>
-<p>Instead we need a rule that is a bit more specific, like this:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode189(code) {
+function pasteCode223(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Veronica[=0x0022=][=0x000A=][=0x000A=]Neptune is a region.[=0x000A=][=0x000A=]Tijuana is a room.[=0x000A=][=0x000A=]High School is north of Tijuana. It is in Neptune.[=0x000A=][=0x000A=]Detective Offices is west of High School. It is in Neptune.[=0x000A=][=0x000A=]The player is in High School.[=0x000A=][=0x000A=]Instead of going from Neptune to a room which is not in Neptune:[=0x000A=][=0x0009=]say [=0x0022=]It[=0x0027=]s a bad time to leave Neptune.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]s / w / e[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Do Pass Go[=0x0022=][=0x000A=][=0x000A=]Go is a room. [=0x0022=]A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.[=0x0022=][=0x000A=][=0x000A=]The pair of dice is carried by the player.[=0x000A=][=0x000A=]The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say [=0x0022=]pair of dice[=0x0022=].[=0x000A=]Rule for printing the name of the pair of dice: say [=0x0022=]pair of dice showing [first die of the pair plus second die of the pair][=0x0022=].[=0x000A=][=0x000A=]To say detailed state of the dice:[=0x000A=][=0x0009=]if the first die of the pair is the second die of the pair, say [=0x0022=]double [first die of the pair][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=][first die of the pair] and [second die of the pair][=0x0022=].[=0x000A=][=0x000A=]The description of the pair of dice is [=0x0022=]The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].[=0x0022=][=0x000A=][=0x000A=]Rolling is an action applying to one carried thing. Understand [=0x0022=]roll [something preferably held][=0x0022=] as rolling.[=0x000A=][=0x000A=]Check rolling when the noun is not the pair of dice: say [=0x0022=]Not something you can roll.[=0x0022=] instead.[=0x000A=]Carry out rolling:[=0x000A=][=0x0009=]now the pair of dice is in the holder of the actor;[=0x000A=][=0x0009=]now the first die of the pair of dice is a random number from 1 to 6;[=0x000A=][=0x0009=]now the second die of the pair of dice is a random number from 1 to 6.[=0x000A=]Report rolling:[=0x000A=][=0x0009=]say [=0x0022=]You roll [detailed state of the dice].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice[=0x0022=].[=0x000A=][=0x000A=][Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.][=0x000A=][=0x000A=]The doubles count is a number that varies.[=0x000A=]After rolling:[=0x000A=][=0x0009=]if the first die of the pair is the second die of the pair, increase the doubles count by 1;[=0x000A=][=0x0009=]otherwise change the doubles count to 0;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Jail is a room. [=0x0022=]This is Jail, and not the Just Visiting periphery, either.[=0x0022=][=0x000A=][=0x000A=]Every turn when the doubles count is 3:[=0x000A=][=0x0009=]say [=0x0022=]The blue-uniformed policemen blows his whistle and beckons you sternly...[=0x0022=];[=0x000A=][=0x0009=]now the player carries the pair of dice;[=0x000A=][=0x0009=]now the player is in Jail;[=0x000A=][=0x0009=]now the doubles count is 0.[=0x000A=][=0x000A=]Every turn when the doubles count is 1 and the player is in Jail:[=0x000A=][=0x0009=]say [=0x0022=]The warden gruffly releases you.[=0x0022=];[=0x000A=][=0x0009=]now the player carries the pair of dice;[=0x000A=][=0x0009=]now the player is in Go.[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode189()"><img border=0 src=../doc_images/paste.png></a> &quot;Veronica&quot;
+<a href="javascript:pasteCode223()"><img border=0 src=../doc_images/paste.png></a> &quot;Do Pass Go&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Neptune is a region.
+<blockquote><font color="#000080">Go is a room. &quot;A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Tijuana is a room.
+<blockquote><font color="#000080">The pair of dice is carried by the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">High School is north of Tijuana. It is in Neptune.
+<blockquote><font color="#000080">The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say &quot;pair of dice&quot;.
+<br>Rule for printing the name of the pair of dice: say &quot;pair of dice showing [first die of the pair plus second die of the pair]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Detective Offices is west of High School. It is in Neptune.
+<blockquote><font color="#000080">To say detailed state of the dice:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, say &quot;double [first die of the pair]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[first die of the pair] and [second die of the pair]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is in High School.
+<blockquote><font color="#000080">The description of the pair of dice is &quot;The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going from Neptune to a room which is not in Neptune:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's a bad time to leave Neptune.&quot;
+<blockquote><font color="#000080">Rolling is an action applying to one carried thing. Understand &quot;roll [something preferably held]&quot; as rolling.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;s / w / e&quot;.
+<blockquote><font color="#000080">Check rolling when the noun is not the pair of dice: say &quot;Not something you can roll.&quot; instead.
+<br>Carry out rolling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pair of dice is in the holder of the actor;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the first die of the pair of dice is a random number from 1 to 6;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second die of the pair of dice is a random number from 1 to 6.
+<br>Report rolling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You roll [detailed state of the dice].&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc105.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice&quot;.
+</font></blockquote><p>
+<p>
+<p>Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.
+<p>
+<blockquote><font color="#000080">The doubles count is a number that varies.
+<br>After rolling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, increase the doubles count by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the doubles count to 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Jail is a room. &quot;This is Jail, and not the Just Visiting periphery, either.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the doubles count is 3:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The blue-uniformed policemen blows his whistle and beckons you sternly...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Jail;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the doubles count is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the doubles count is 1 and the player is in Jail:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The warden gruffly releases you.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Go.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc131.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e170"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>95</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex170.html#e170 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hagia Sophia</font></b></a><br>If the player tries to go a valid direction while on a supporter, make him stand up first; if he tries to go a nonexistent one, print a special refusal.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e60"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex60.html#e60 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>96</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex60.html#e60 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A&E</font></b></a><br>Using regions to block access to an entire area when the player does not carry a pass, regardless of which entrance he uses.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex60.html#e60 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e111"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex111.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>97</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex111.html#e111 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Polarity</font></b></a><br>A "go back" command that keeps track of the direction from which the player came, and sends him back.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex111.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e350"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>98</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex350.html#e350 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bumping into Walls</font></b></a><br>Offering the player a list of valid directions if he tries to go in a direction that leads nowhere.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc104.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc106.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e28"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>127</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex28.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e315"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex315.html#e315 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>128</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex315.html#e315 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex315.html#e315 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e380"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex380.html#e380 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>129</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex380.html#e380 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex380.html#e380 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc130.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc132.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.4. During scenes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,75 +19,182 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Shawn's Bad Day" -->
-<!-- SEARCH SECTION "Ex 268" -->
-<!-- SEARCH SORT "Ex 016-004-268" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc251.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc253.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
+<!-- SEARCH TITLE "Space Patrol - Stranded on Jupiter!" -->
+<!-- SEARCH SECTION "Ex 155" -->
+<!-- SEARCH SORT "Ex 010-004-155" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc152.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc154.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.4. During scenes</b></font></td></tr></table>
 <p>
-<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
+<p>Scenes are not only useful for changing the setting, by moving items or people around and providing a little narration. We can also make the rules different in one scene from another. For instance, at a sleepy country halt there is no reason why one should not walk across the tracks: but if there is a train in the way, that would be impossible.
 <p>
-<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
+<blockquote><font color="#000080">Before going north during the Train Stop, say &quot;The train blocks your way.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>Here we expect that the named item will be one that is held by the player, and the parser will use this to resolve ambiguities between names of things carried and not carried. (If the action is one which positively requires that its noun be something carried, such as &quot;eating&quot;, then a command matching this token against something not carried will generate an automatic attempt to take it.)
+<p>Any rule can have the clause &quot;during ...&quot; attached, provided that clause goes at the end and explicitly names a scene. This is especially useful with &quot;every turn&quot;:
 <p>
-<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
-<br>Understand &quot;drop [things preferably held]&quot; as dropping.
+<blockquote><font color="#000080">Every turn during the Train Stop, say &quot;Water is sluiced out of the tank and into the engine.&quot;
 </font></blockquote><p>
 <p>
-<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
+<p>We can test whether a scene is happening with the condition:
 <p>
-<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
+<blockquote><font color="#000080">Train Stop is going on ...
 </font></blockquote><p>
 <p>
-<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
+<p>(or &quot;is happening&quot;) and there are similar conditions &quot;Train Stop has happened&quot; and &quot;Train Stop has ended&quot;. (We need to be a bit careful about which we mean: it's possible to set things up so that the Train Stop scene will play out more than once, so &quot;Train Stop is happening&quot; and &quot;Train Stop has happened&quot; might both be true at once.)
 <p>
-<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
+<p>The kind of value &quot;scene&quot; is one which is allowed to have properties - it has a tick in the &quot;properties&quot; column in the chart on the Kinds index page - and this can be very useful in describing scenes. For instance, we could write:
+<p>
+<blockquote><font color="#000080">A scene can be thrilling or dull. Train Stop is dull.
+<br>A scene has a text called cue speech. The cue speech of Train Stop is &quot;All aboard!&quot;.
 </font></blockquote><p>
 <p>
-<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
+<p>Inform has the adjectives &quot;recurring&quot;, &quot;non-recurring&quot; and &quot;going on&quot; all built in to describe scenes, and the above would add &quot;thrilling&quot; and &quot;dull&quot;. Moreover, the &quot;during&quot; clause of a rule can give a description of a scene as easily as a specific scene name. For instance:
+<p>
+<blockquote><font color="#000080">Before going north during a dull non-recurring scene, ...
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e37"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex37.html#e37 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Full Moon</font></b></a><br>Random atmospheric events which last the duration of a scene.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc252.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>268</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc252.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc153.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc153.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Space Patrol - Stranded on Jupiter!</font></b></a><br>We'll be back in just a moment, with more exciting adventures of the... Space Patrol!<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>American radio adventure series of the 1950s were unobtrusively sponsored by breakfast cereals, as the following modest example demonstrates. Note that the scene-changing for the commercial break needs to know nothing about the actual programme it breaks into: if Part I were replaced with a different Space Patrol episode, Part II need not be changed at all.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode364(code) {
+function pasteCode254(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Shawn[=0x0027=]s Bad Day[=0x0022=][=0x000A=][=0x000A=]The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. [=0x0022=]A massive vault fills up one wall.[=0x0022=] The description is [=0x0022=]The vault[=0x0027=]s system includes [a list of things which are part of the vault].[=0x0022=][=0x000A=][=0x000A=]A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.[=0x000A=][=0x000A=]The security guard is a man in the Treasury. The description is [=0x0022=]His name is Shawn, and he doesn[=0x0027=]t look happy.[=0x0022=][=0x000A=][=0x000A=]The description of the green light is [=0x0022=]Off.[=0x0022=] The description of the blue light is [=0x0022=]Tranquilly on.[=0x0022=] The description of the red light is [=0x0022=]Angrily flashing.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]examine [things][=0x0022=] as multiply examining.[=0x000A=][=0x000A=]Multiply examining is an action applying to one thing.[=0x000A=][=0x000A=]Carry out multiply examining:[=0x000A=][=0x0009=]try examining the noun.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine all[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Space Patrol #57 - 1953-10-31 - Stranded on Jupiter![=0x0022=][=0x000A=][=0x000A=]Part I - Serial[=0x000A=][=0x000A=]Red Spot is a room. [=0x0022=]You are in the middle of a vast red oval plain. Overhead, the thick Jovian clouds swirl menacingly, and a fine acrid dust falls instead of rain.[=0x0022=] Some acrid dust is scenery in the Red Spot. The description of the dust is [=0x0022=]The rust-colored dust coats every surface. You[=0x0027=]ve no idea how deep it goes.[=0x0022=][=0x000A=][=0x000A=]Instead of going in Red Spot, say [=0x0022=]As you once told Cadet Lucky, Jupiter[=0x0027=]s a mighty big planet, maybe bigger than Iowa. Why, the Red Spot alone stretches out almost to the horizon.[=0x0022=][=0x000A=][=0x000A=]The player wears a silver uniform and rubber boots. The player carries a shovel and an Analscope. The description of the Analscope is [=0x0022=]As you recall from Space Patrol #9 - 1952-11-29 - The Electronic Burglar, the Analscope is a device for locating buried metals. That[=0x0027=]s what guided you all the way from the orbit of Uranus. (Oh, all right, Neptune.) If only you hadn[=0x0027=]t crashed![=0x0022=][=0x000A=][=0x000A=]The metal plate is a fixed in place container. It is openable and closed. In the metal plate is some water. The description of the metal plate is [=0x0022=]Stamped with the distinctive logo of the previous mission.[=0x0022=][=0x000A=][=0x000A=]Instead of examining the player, say [=0x0022=]Your hair clumps together stickily, thanks to the dustfall.[=0x0022=][=0x000A=][=0x000A=]Digging is an action applying to one thing. Understand [=0x0022=]dig [something][=0x0022=] or [=0x0022=]dig in [something][=0x0022=] as digging.[=0x000A=][=0x000A=]Instead of digging the dust, try looking under the dust. Instead of looking under the dust when the metal plate is not visible: move the metal plate to the location; say [=0x0022=]You brush aside the dust underfoot and -- what were the odds? -- it turns out that you landed just where the previous landing party did, thirteen ill-fated years ago. Here is the metal plate that covers their original well.[=0x000A=][=0x000A=]But wait! Called by the clanging of your shovel on the plate, a band of Jovian pterodactyls swoop down to attack! You[=0x0027=]re totally defenceless! You don[=0x0027=]t have a hope! You[=0x0027=]re absolutely finished![=0x0022=]; award 10 points; move K-Klak to Red Spot.[=0x000A=][=0x000A=]K-Klak the Pterodactyl is an animal. [=0x0022=]K-Klak, leader of the Jupiter Pterodactyls, menaces you. A terrifying creature of scaly wings, with a dragon[=0x0027=]s tail, K-Klak stands... about 1/8th of an inch tall.[=0x0022=] Instead of doing something to K-Klak, say [=0x0022=]K-Klak makes a frankly panicky noise and leaps backwards, out of your way.[=0x0022=][=0x000A=][=0x000A=]After opening the metal plate: award 10 points; say [=0x0022=]You have found water! You[=0x0027=]re saved! K-Klak makes a (very cautiously) pleased noise. Now to find the stolen Brainograph, and track down the crook with the thick Jewish accent and his henchmen with their thick Polish accents...[=0x0022=]; end the game in victory.[=0x000A=][=0x000A=]The maximum score is 20.[=0x000A=][=0x000A=]Part II - Cereal[=0x000A=][=0x000A=]When play begins, say [=0x0022=]Instant Ralstons and Regular Ralstons, the hot whole-wheat cereals in the red and white checkerboard packages present... SPACE PATROL... High adventure in the wild vast reaches of space... Missions of daring in the name of interplanetary justice... Travel into the future as Buzz Corey, Commander-in-Chief of the...[=0x0022=][=0x000A=][=0x000A=]Last score is a number that varies. Every turn: change the last score to the score.[=0x000A=][=0x000A=]Ralstons Ad is a scene. Ralstons Ad begins when score is not the last score. Ralstons Ad ends when the Ricechex is consumed.[=0x000A=][=0x000A=]Include Basic Screen Effects by Emily Short.[=0x000A=][=0x000A=]When Ralstons Ad begins:[=0x000A=][=0x0009=]center [=0x0022=]*** We[=0x0027=]ll be back in just a moment! ***[=0x0022=];[=0x000A=][=0x0009=]pause the game;[=0x000A=][=0x0009=]strip the player;[=0x000A=][=0x0009=]move the player to the Kitchen.[=0x000A=][=0x000A=]When Ralstons Ad ends:[=0x000A=][=0x0009=]center [=0x0022=]*** And now, back to today[=0x0027=]s exciting adventure ***[=0x0022=];[=0x000A=][=0x0009=]pause the game;[=0x000A=][=0x0009=]restore the player.[=0x000A=][=0x000A=]Saved location is a room that varies. Locker is a container. Wardrobe is a container.[=0x000A=][=0x000A=]To strip the player:[=0x000A=][=0x0009=]now every thing carried by the player is in the locker;[=0x000A=][=0x0009=]now every thing worn by the player is in the wardrobe;[=0x000A=][=0x0009=]change saved location to location.[=0x000A=][=0x000A=]To restore the player:[=0x000A=][=0x0009=]now every thing carried by the player is in the Kitchen;[=0x000A=][=0x0009=]now every thing in the locker is carried by the player;[=0x000A=][=0x0009=]now every thing in the wardrobe is worn by the player;[=0x000A=][=0x0009=]move the player to saved location.[=0x000A=][=0x000A=]The Space Patrol Kitchen is a room. [=0x0022=]The nerve center of the Space Patrol! This is where cadets fill up with their SUPER-FUEL. North leads to the astro control room, while back south is the cargo hold.[=0x0022=] A breakfast bowl is in the Kitchen. In the bowl is Ricechex. Ricechex is edible. The Ricechex can be consumed or uneaten. The Ricechex is uneaten.[=0x000A=][=0x000A=]Instead of going north in Kitchen: say [=0x0022=][refusal to leave][=0x0022=]. Instead of going south in Kitchen: say [=0x0022=][refusal to leave][=0x0022=].[=0x000A=][=0x000A=]Instead of examining the player when Ralstons Ad is happening: say [=0x0022=]You are currently being played by a generically attractive person of about 30, with very good teeth and well-kept nails.[=0x0022=][=0x000A=][=0x000A=]After eating the Ricechex: say [=0x0022=]That[=0x0027=]s right folks, always start your day the SPACE PATROL way with a tasty bowl of Ricechex, Wheatchex or good hot Ralstons. Mmmm Mmmm. You just can[=0x0027=]t get enough of the sugary goodness in Ricechex, Wheatchex and good hot Ralstons.[=0x0022=]; now the ricechex is consumed.[=0x000A=][=0x000A=]Instead of tasting the Ricechex:[=0x000A=][=0x0009=]say [=0x0022=]Wow! *wolf-whistle* Man oh man oh man! Yumm-y![=0x0022=][=0x000A=][=0x000A=]To say refusal to leave:[=0x000A=][=0x0009=]repeat through Table of Refusals:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][nope entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=]say [=0x0022=]You can[=0x0027=]t. Eat your Ricechex.[=0x0022=][=0x000A=][=0x000A=]Table of Refusals[=0x000A=]nope[=0x000A=][=0x0022=]You can[=0x0027=]t go that way in the limited universe of this sponsored message.[=0x0022=][=0x000A=][=0x0022=]Or that way.[=0x0022=][=0x000A=][=0x0022=]You[=0x0027=]ve already tried that![=0x0022=][=0x000A=][=0x0022=]Why would you want to walk away when you have an alluring bowl of Ricechex right here?[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]n / i / x me / x dust / dig dust[=0x0022=].[=0x000A=][=0x000A=]Test ad with [=0x0022=]n / s / n / s / n / i / x me / get bowl / taste ricechex / eat ricechex[=0x0022=].[=0x000A=][=0x000A=]Test ending with [=0x0022=]x plate / x k-klak / open plate[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode364()"><img border=0 src=../doc_images/paste.png></a> &quot;Shawn's Bad Day&quot;
+<a href="javascript:pasteCode254()"><img border=0 src=../doc_images/paste.png></a> &quot;Space Patrol #57 - 1953-10-31 - Stranded on Jupiter!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. &quot;A massive vault fills up one wall.&quot; The description is &quot;The vault's system includes [a list of things which are part of the vault].&quot;
+<blockquote><font color="#000080">Part I - Serial
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.
+<blockquote><font color="#000080">Red Spot is a room. &quot;You are in the middle of a vast red oval plain. Overhead, the thick Jovian clouds swirl menacingly, and a fine acrid dust falls instead of rain.&quot; Some acrid dust is scenery in the Red Spot. The description of the dust is &quot;The rust-colored dust coats every surface. You've no idea how deep it goes.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The security guard is a man in the Treasury. The description is &quot;His name is Shawn, and he doesn't look happy.&quot;
+<blockquote><font color="#000080">Instead of going in Red Spot, say &quot;As you once told Cadet Lucky, Jupiter's a mighty big planet, maybe bigger than Iowa. Why, the Red Spot alone stretches out almost to the horizon.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the green light is &quot;Off.&quot; The description of the blue light is &quot;Tranquilly on.&quot; The description of the red light is &quot;Angrily flashing.&quot;
+<blockquote><font color="#000080">The player wears a silver uniform and rubber boots. The player carries a shovel and an Analscope. The description of the Analscope is &quot;As you recall from Space Patrol #9 - 1952-11-29 - The Electronic Burglar, the Analscope is a device for locating buried metals. That's what guided you all the way from the orbit of Uranus. (Oh, all right, Neptune.) If only you hadn't crashed!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;examine [things]&quot; as multiply examining.
+<blockquote><font color="#000080">The metal plate is a fixed in place container. It is openable and closed. In the metal plate is some water. The description of the metal plate is &quot;Stamped with the distinctive logo of the previous mission.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Multiply examining is an action applying to one thing.
+<blockquote><font color="#000080">Instead of examining the player, say &quot;Your hair clumps together stickily, thanks to the dustfall.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out multiply examining:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
+<blockquote><font color="#000080">Digging is an action applying to one thing. Understand &quot;dig [something]&quot; or &quot;dig in [something]&quot; as digging.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine all&quot;.
+<blockquote><font color="#000080">Instead of digging the dust, try looking under the dust. Instead of looking under the dust when the metal plate is not visible: move the metal plate to the location; say &quot;You brush aside the dust underfoot and -- what were the odds? -- it turns out that you landed just where the previous landing party did, thirteen ill-fated years ago. Here is the metal plate that covers their original well.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc252.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">But wait! Called by the clanging of your shovel on the plate, a band of Jovian pterodactyls swoop down to attack! You're totally defenceless! You don't have a hope! You're absolutely finished!&quot;; award 10 points; move K-Klak to Red Spot.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">K-Klak the Pterodactyl is an animal. &quot;K-Klak, leader of the Jupiter Pterodactyls, menaces you. A terrifying creature of scaly wings, with a dragon's tail, K-Klak stands... about 1/8th of an inch tall.&quot; Instead of doing something to K-Klak, say &quot;K-Klak makes a frankly panicky noise and leaps backwards, out of your way.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After opening the metal plate: award 10 points; say &quot;You have found water! You're saved! K-Klak makes a (very cautiously) pleased noise. Now to find the stolen Brainograph, and track down the crook with the thick Jewish accent and his henchmen with their thick Polish accents...&quot;; end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The maximum score is 20.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Part II - Cereal
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins, say &quot;Instant Ralstons and Regular Ralstons, the hot whole-wheat cereals in the red and white checkerboard packages present... SPACE PATROL... High adventure in the wild vast reaches of space... Missions of daring in the name of interplanetary justice... Travel into the future as Buzz Corey, Commander-in-Chief of the...&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Last score is a number that varies. Every turn: change the last score to the score.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Ralstons Ad is a scene. Ralstons Ad begins when score is not the last score. Ralstons Ad ends when the Ricechex is consumed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Ralstons Ad begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;*** We'll be back in just a moment! ***&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;pause the game;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;strip the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the Kitchen.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Ralstons Ad ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;*** And now, back to today's exciting adventure ***&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;pause the game;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;restore the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Saved location is a room that varies. Locker is a container. Wardrobe is a container.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To strip the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing carried by the player is in the locker;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing worn by the player is in the wardrobe;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change saved location to location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To restore the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing carried by the player is in the Kitchen;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the locker is carried by the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the wardrobe is worn by the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to saved location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Space Patrol Kitchen is a room. &quot;The nerve center of the Space Patrol! This is where cadets fill up with their SUPER-FUEL. North leads to the astro control room, while back south is the cargo hold.&quot; A breakfast bowl is in the Kitchen. In the bowl is Ricechex. Ricechex is edible. The Ricechex can be consumed or uneaten. The Ricechex is uneaten.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going north in Kitchen: say &quot;[refusal to leave]&quot;. Instead of going south in Kitchen: say &quot;[refusal to leave]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the player when Ralstons Ad is happening: say &quot;You are currently being played by a generically attractive person of about 30, with very good teeth and well-kept nails.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After eating the Ricechex: say &quot;That's right folks, always start your day the SPACE PATROL way with a tasty bowl of Ricechex, Wheatchex or good hot Ralstons. Mmmm Mmmm. You just can't get enough of the sugary goodness in Ricechex, Wheatchex and good hot Ralstons.&quot;; now the ricechex is consumed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of tasting the Ricechex:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Wow! *wolf-whistle* Man oh man oh man! Yumm-y!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say refusal to leave:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Refusals:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[nope entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't. Eat your Ricechex.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Refusals
+<br>nope
+<br>&quot;You can't go that way in the limited universe of this sponsored message.&quot;
+<br>&quot;Or that way.&quot;
+<br>&quot;You've already tried that!&quot;
+<br>&quot;Why would you want to walk away when you have an alluring bowl of Ricechex right here?&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;n / i / x me / x dust / dig dust&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test ad with &quot;n / s / n / s / n / i / x me / get bowl / taste ricechex / eat ricechex&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test ending with &quot;x plate / x k-klak / open plate&quot;.
+</font></blockquote><p>
+<p>
+<p>Episode 57 of &quot;Space Patrol&quot; was actually called &quot;Iron Eaters Of Planet X&quot;, just in case the reader feels that any of the foregoing unfairly traduces a work of thoughtful science fiction.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc153.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e264"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex264.html#e264 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>269</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex264.html#e264 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Left Hand of Autumn</font></b></a><br>The possibility of using a [things] token opens up some interesting complications, because we may want actions on multiple items to be reported differently from actions on just one. Here we look at how to make a multiple examination command that describes groups in special ways.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex264.html#e264 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e225"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>156</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex225.html#e225 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Day One</font></b></a><br>A scene which plays through a series of events in order, then ends when the list of events is exhausted.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex90.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bowler Hats and Baby Geese</font></b></a><br>Creating a category of scenes that restrict the player's behavior.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc152.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc154.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

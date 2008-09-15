@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.1. Descriptions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.6. Lists of objects</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,100 +19,145 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Verbosity" -->
-<!-- SEARCH SECTION "Ex 2" -->
-<!-- SEARCH SORT "Ex 003-001-002" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc26.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc28.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.1. Descriptions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Formicidae" -->
+<!-- SEARCH SECTION "Ex 403" -->
+<!-- SEARCH SORT "Ex 020-006-403" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc344.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc346.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.6. Lists of objects</b></font></td></tr></table>
 <p>
-<p>At its simplest, the interactive fiction will be simulating a physical world to explore. The forerunner of today's IF is generally agreed to be a computer simulation by Will Crowther of the exploration of a cave system in the Mammoth and Flint Ridge chain of caves in Kentucky, a part of which might be described in Inform thus:
+<p>While there are lists for any kind of value, the form that is useful most often is &quot;list of objects&quot;. There is nothing really different about this:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode4(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Cave Entrance[=0x0022=][=0x000A=][=0x000A=]The Cobble Crawl is a room. [=0x0022=]You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage.[=0x0022=][=0x000A=][=0x000A=]A wicker cage is here. [=0x0022=]There is a small wicker cage discarded nearby.[=0x0022=][=0x000A=][=0x000A=]The Debris Room is west of the Crawl. [=0x0022=]You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. A note on the wall says, [=0x0027=]Magic word XYZZY[=0x0027=].[=0x0022=][=0x000A=][=0x000A=]The black rod is here. [=0x0022=]A three foot black rod with a rusty star on one end lies nearby.[=0x0022=][=0x000A=][=0x000A=]Above the Debris Room is the Sloping E/W Canyon. West of the Canyon is the Orange River Chamber.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode4()"><img border=0 src=../doc_images/paste.png></a> &quot;Cave Entrance&quot;
+<blockquote><font color="#000080">let L be {the pot plant, the foxglove};
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cobble Crawl is a room. &quot;You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage.&quot;
+<p>makes a list of two objects as usual. However, a much faster and more systematic way to build lists of objects is to use descriptions. If D is any description then &quot;the list of D&quot; produces a list of all the objects matching D. For instance:
+<p>
+<blockquote><font color="#000080">let L be the list of open containers;
+<br>add the list of open doors to L;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A wicker cage is here. &quot;There is a small wicker cage discarded nearby.&quot;
+<p>means that L now contains the open containers (if any) followed by the open doors (if any). Or, for example:
+<p>
+<blockquote><font color="#000080">let L be the list of things;
+<br>remove the list of backdrops from L;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Debris Room is west of the Crawl. &quot;You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. A note on the wall says, 'Magic word XYZZY'.&quot;
+<p>makes a list of all non-backdrops.
+<p>
+<p>As mentioned above, lists of objects can be said in two additional ways:
+<p>
+<blockquote><font color="#000080">&quot;[L with definite articles]&quot;
+<br>&quot;[L with indefinite articles]&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The black rod is here. &quot;A three foot black rod with a rusty star on one end lies nearby.&quot;
+<p>And as mentioned below, they can be sorted in property value order:
+<p>
+<blockquote><font color="#000080">sort L in P order;
+<br>sort L in reverse P order;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Above the Debris Room is the Sloping E/W Canyon. West of the Canyon is the Orange River Chamber.
+<p>where P is any value property. In all other respects, lists of objects are no different to other lists.
+<p>
+<p>One special list of objects inside the Inform parser is worth mentioning. This is the &quot;multiple object list&quot;, and is used in commands like this:
+<p>
+<blockquote><font color="#000080">&gt;GET ALL
+<br>foxglove: Taken.
+<br>snake's head fritillary: Taken.
 </font></blockquote><p>
 <p>
-<p>Here we sketch in four of Crowther's locations, and two objects: just enough to be able to walk around the caves and pick up the rod and the cage. The text in quotation marks will appear verbatim as paragraphs shown to the player as the caves are explored. The first paragraph, as we have seen, is the title of the work. The other quotations describe the places and objects introduced.
+<p>After the parser has decided what constitutes &quot;ALL&quot; (a process which can be influenced using the &quot;deciding whether all includes&quot; activity), it forms up a list and then runs through it, starting an action for each in turn. Here the list has two entries and Inform generates the actions &quot;taking the foxglove&quot; and then &quot;taking the snake's head fritillary&quot;.
 <p>
-<p>If we play this game, we find that we can type TAKE CAGE or TAKE WICKER CAGE, for instance, but not TAKE SMALL CAGE. Inform saw that we called this &quot;a wicker cage&quot; when it first appeared in the source text, and assumed that the player would call it that, too. (Whereas it didn't look inside the descriptive text to allow for TAKE SMALL CAGE or TAKE DISCARDED CAGE or TAKE NEARBY CAGE.) A small limitation here is that probably only the first 9 letters of each word are read from the player's command. This is plenty for handling the wicker cage and the black rod, but it might be embarrassing at a meeting of the Justice League to find that KISS SUPERHERO and KISS SUPERHEROINE read as if they are the same command.
+<p>For two technical reasons this isn't stored as a &quot;list of objects that varies&quot; - first because it needs to exist even in low-memory situations where we can't afford full list-processing, and second because there are times when changing it might be hazardous. Instead, two phrases are provided to read the list and to write it back:
 <p>
-<p>So we have already found that Inform has made some assumptions about what we want, and imposed some limitations on how much computational effort to go to when the work of IF is finally played. If Inform guesses what we need wrongly, we need to know more advanced features of the language in order to overcome these problems. (We shall see how to change the way the player's commands are read in the chapter on Understanding.) This is often how Inform works: make the standard way of doing things as simple as possible to describe, but allow almost any behaviour to be altered by more elaborate source text.
+<blockquote><font color="#000080">let L be the multiple object list;
+<br>alter the multiple object list to L;
+</font></blockquote><p>
+<p>
+<p>If there is no multiple object, say if the command was TAKE PEAR, the list will be empty: it won't be a list of size 1. The multiple object list can be read at any time, but should be altered only up to the point when the &quot;generate action rule&quot; in the turn sequence rules takes effect.
 <p>
 <p><hr><p>
+<a name="e391"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>402</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex391.html#e391 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> What Makes You Tick</font></b></a><br>Building a fishing pole from several component parts that the player might put together in any order.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e398"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc27.html#e398 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc27.html#e398 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex398.html#e398 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e398"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc345.html#e398 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>403</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc345.html#e398 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Formicidae</font></b></a><br>Manipulating the order in which items are handled after TAKE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex398.html#e398 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>By default, the description of a room is printed only when the player enters that room for the first time. Afterwards, the text is skipped, for brevity, though the player can see it again at any time by typing LOOK.
+<p>Suppose we have an item that produces an interesting result the first time the player lifts it -- a rock with dangerous ants revealed underneath. The effect of the surprise is a little weakened, though, if the player sees that response as the result of a TAKE ALL, when it might be printed like this:
 <p>
-<p>This is not always desirable behavior, though, especially when the description of a room changes during play or we want to be sure that the player has access to all the important details: so it is also possible to override this default.
-<p>
-<p>As we saw in the previous chapter, we can set &quot;use options&quot; to control certain aspects of the player's experience. One of the use options is the option to
-<p>
-<blockquote><font color="#000080">Use full-length room descriptions.
+<blockquote><font color="#000080">>[3] get all
+<br>tent peg: Taken.
+<br>water flask: Taken.
+<br>trading permit: Taken.
+<br>innocent-looking rock: You reach for the rock and turn it over to reveal a thriving colony of flesh-eating ants. Needless to say, you drop the rock and jump back with a decidedly effeminate scream. They can probably hear you all the way back in the base camp.
+<br>rusty nail: Taken.
 </font></blockquote><p>
 <p>
-<p>which changes the defaults so that the description of a room is printed every time a player enters a room, whether or not he has been there previously.
+<blockquote><font color="#000080">[Your score has just gone down by two points.]
+</font></blockquote><p>
+<p>
+<p>The calm response to &quot;rusty nail&quot; looks odd now, and the score change is disconnected from the event that caused it.
+<p>
+<p>To manage this, we might institute a system so that interesting objects are handled last in their list, like so:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode89(code) {
+function pasteCode502(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Verbosity[=0x0022=][=0x000A=][=0x000A=]Use full-length room descriptions.[=0x000A=][=0x000A=]The Wilkie Memorial Research Wing is a room. [=0x0022=]The research wing was built onto the science building in 1967, when the college[=0x0027=]s finances were good but its aesthetic standards at a local minimum. A dull brown corridor recedes both north and south; drab olive doors open onto the laboratories of individual faculty members. The twitchy fluorescent lighting makes the whole thing flicker, as though it might wink out of existence at any moment.[=0x000A=][=0x000A=]The Men[=0x0027=]s Restroom is immediately west of this point.[=0x0022=][=0x000A=][=0x000A=]The Men[=0x0027=]s Restroom is west of the Research Wing. [=0x0022=]Well, yes, you really shouldn[=0x0027=]t be in here. But the nearest women[=0x0027=]s room is on the other side of the building, and at this hour you have the labs mostly to yourself. All the same, you try not to read any of the things scrawled over the urinals which might have been intended in confidence.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]west / east[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Formicidae[=0x0022=][=0x000A=][=0x000A=]Section 1 - Procedure[=0x000A=][=0x000A=]The magic rule is listed before the generate action rule in the turn sequence rules.[=0x000A=][=0x000A=]A thing has a number called dramatic potential.[=0x000A=][=0x000A=]This is the magic rule:[=0x000A=][=0x0009=]let L be the multiple object list;[=0x000A=][=0x0009=]if the number of entries in L is greater than 1:[=0x000A=][=0x0009=][=0x0009=]sort L in dramatic potential order;[=0x000A=][=0x0009=][=0x0009=]alter the multiple object list to L.[=0x000A=][=0x000A=]Section 2 - Scenario[=0x000A=][=0x000A=]The Foothills is a room. [=0x0022=]The land has become hilly; though the soil is still mostly coarse yellow sand, clumps of grass are able to grow in the shadier places. Deep wagon ruts running from the southwest towards the mountains in the northeast show where generations of caravans have already passed.[=0x0022=][=0x000A=][=0x000A=]The water flask, the tent peg, and the trading permit are things in Foothills.[=0x000A=][=0x000A=]The rock is a thing in Foothills. Before printing the name of the rock when the rock is not handled: say [=0x0022=]innocent-looking [=0x0022=]. The dramatic potential of the rock is 10.[=0x000A=][=0x000A=]The rusty nail is a thing in Foothills.[=0x000A=][=0x000A=]The ant colony is a fixed in place thing. [=0x0022=]A busy group of ants are crawling to and fro in the unaccustomed sun.[=0x0022=] Rule for deciding whether all includes the ant colony while taking: it does not.[=0x000A=][=0x000A=]Instead of taking the rock when the rock is handled:[=0x000A=][=0x0009=]say [=0x0022=]It might still have a stray ant or two on it.[=0x0022=][=0x000A=][=0x000A=]After taking the rock:[=0x000A=][=0x0009=]now the rock is handled;[=0x000A=][=0x0009=]move ant colony to the location;[=0x000A=][=0x0009=]move the rock to the location;[=0x000A=][=0x0009=]say [=0x0022=]You reach for the rock and turn it over to reveal a thriving colony of flesh-eating ants. Needless to say, you drop the rock and jump back with a decidedly effeminate scream. They can probably hear you all the way back in the base camp.[=0x0022=];[=0x000A=][=0x0009=]decrease score by 2.[=0x000A=][=0x000A=]Test me with [=0x0022=]get peg / drop peg / get all / get rock[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode89()"><img border=0 src=../doc_images/paste.png></a> &quot;Verbosity&quot;
+<a href="javascript:pasteCode502()"><img border=0 src=../doc_images/paste.png></a> &quot;Formicidae&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Use full-length room descriptions.
+<blockquote><font color="#000080">Section 1 - Procedure
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Wilkie Memorial Research Wing is a room. &quot;The research wing was built onto the science building in 1967, when the college's finances were good but its aesthetic standards at a local minimum. A dull brown corridor recedes both north and south; drab olive doors open onto the laboratories of individual faculty members. The twitchy fluorescent lighting makes the whole thing flicker, as though it might wink out of existence at any moment.
+<blockquote><font color="#000080">The magic rule is listed before the generate action rule in the turn sequence rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Men's Restroom is immediately west of this point.&quot;
+<blockquote><font color="#000080">A thing has a number called dramatic potential.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Men's Restroom is west of the Research Wing. &quot;Well, yes, you really shouldn't be in here. But the nearest women's room is on the other side of the building, and at this hour you have the labs mostly to yourself. All the same, you try not to read any of the things scrawled over the urinals which might have been intended in confidence.&quot;
+<blockquote><font color="#000080">This is the magic rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be the multiple object list;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in L is greater than 1:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort L in dramatic potential order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alter the multiple object list to L.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;west / east&quot;.
+<blockquote><font color="#000080">Section 2 - Scenario
 </font></blockquote><p>
 <p>
-<p>If we type &quot;test me&quot; during play, these commands will be carried out automatically, and we can see that when we return to the Research Wing, the description is given a second time.
-<p>
-<p>Some notes: the player can also turn full-length descriptions on or off with the commands &quot;verbose&quot; and &quot;brief&quot;, or set a minimal-description setting with the command &quot;superbrief&quot;. See the previous chapter on use options for more discussion of these points.
-<p>
-<p>Moreover, we can ourselves check what the state of the descriptions is, with
-<p>
-<blockquote><font color="#000080">if set to sometimes abbreviated room descriptions: ...
-<br>if set to unabbreviated room descriptions: ...
-<br>if set to abbreviated room descriptions: ...
+<blockquote><font color="#000080">The Foothills is a room. &quot;The land has become hilly; though the soil is still mostly coarse yellow sand, clumps of grass are able to grow in the shadier places. Deep wagon ruts running from the southwest towards the mountains in the northeast show where generations of caravans have already passed.&quot;
 </font></blockquote><p>
 <p>
-<p>Finally, it is possible to exercise more precise control over what the player sees on his first and subsequent visits to a room; see the next example for details.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc27.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The water flask, the tent peg, and the trading permit are things in Foothills.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The rock is a thing in Foothills. Before printing the name of the rock when the rock is not handled: say &quot;innocent-looking &quot;. The dramatic potential of the rock is 10.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The rusty nail is a thing in Foothills.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The ant colony is a fixed in place thing. &quot;A busy group of ants are crawling to and fro in the unaccustomed sun.&quot; Rule for deciding whether all includes the ant colony while taking: it does not.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the rock when the rock is handled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It might still have a stray ant or two on it.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After taking the rock:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the rock is handled;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move ant colony to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the rock to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You reach for the rock and turn it over to reveal a thriving colony of flesh-eating ants. Needless to say, you drop the rock and jump back with a decidedly effeminate scream. They can probably hear you all the way back in the base camp.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease score by 2.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get peg / drop peg / get all / get rock&quot;.
+</font></blockquote><p>
+<p>
+<p>Note that while one could also manipulate the object list to add or remove items at this stage, there's a simpler way to control what Inform considers &quot;ALL&quot; to mean in commands: see the activity &quot;Deciding whether all includes&quot; in the activities chapter.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc345.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e35"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex35.html#e35 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex35.html#e35 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex35.html#e35 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc26.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc344.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc346.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

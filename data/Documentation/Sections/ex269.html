@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.29. Asking which do you mean</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.2. New commands for old grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,130 +19,74 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Apples" -->
-<!-- SEARCH SECTION "Ex 336" -->
-<!-- SEARCH SORT "Ex 017-029-336" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc297.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc299.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.29. Asking which do you mean</b></font></td></tr></table>
+<!-- SEARCH TITLE "Anchorite" -->
+<!-- SEARCH SECTION "Ex 271" -->
+<!-- SEARCH SORT "Ex 016-002-271" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc252.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc254.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.2. New commands for old grammar</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When the player has typed an ambiguous noun reference, and Inform has not been able to decide what was meant.
+<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
 <p>
-<p><b>2. The default behaviour.</b> A question such as &quot;Which do you mean, the laminated mahogany box or the boom box?&quot; is printed. (This activity shapes the question: it is not responsible for parsing the answer. It would be very mysterious to write rules for this activity such that nothing is printed, because the player would then have no idea what to type.)
-<p>
-<p><b>3. Examples.</b> The question is harder to print than may first appear, since one must not simply list the options, but also take into account collections of plural objects (&quot;Which do you mean, the gold-tipped pen or a gold coin?&quot;). It is probably better not to try to rewrite this.
-<p>
-<p>(a) But we can place notes before or after: here is a verbose explanation for beginners to IF.
-<p>
-<blockquote><font color="#000080">Before asking which do you mean: say &quot;Okay, so I'm going to have to ask a question now: you've typed something ambiguous, and I don't know which noun you're referring to.&quot;
+<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After asking which do you mean: say &quot;(Just type a word or two to give me more information.)&quot;
+<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
+<p>
+<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
 </font></blockquote><p>
 <p>
-<p>(b) We can also use this activity as a context for other activities. For instance:
+<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
 <p>
-<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot; The great Eiffel Tower is fixed in place. Understand &quot;actual&quot; as the great Tower.
+<p>The following example:
+<p>
+<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the name of the great Tower while asking which do you mean: say &quot;actual Tower&quot;. Rule for printing the name of the souvenir tower while asking which do you mean: say &quot;souvenir&quot;.
+<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
+<p>
+<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
 </font></blockquote><p>
 <p>
-<p>causes TAKE TOWER (for instance) to produce a nice tidy question in reply: &quot;Which do you mean, the actual Tower or the souvenir?&quot;
+<p>This is very useful when adding a new command which needs synonyms:
 <p>
-<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
+</font></blockquote><p>
+<p>
+<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
 <p>
 <p><hr><p>
-<a name="e207"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>335</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex207.html#e207 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Originals</font></b></a><br>Allowing the player to create models of anything in the game world; parsing the name "model [thing]" or even just "[thing]" to refer to these newly-created models; asking "which do you mean, the model [thing] or the actual [thing]" when there is ambiguity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e269"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc298.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>336</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc298.html#e269 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Apples</font></b></a><br>Prompting the player on how to disambiguate otherwise similar objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e269"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc253.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>271</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc253.html#e269 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Inform by default detects whether two objects can be disambiguated by any vocabulary available to the player. If so, it asks a question; if not, it picks one of the identical objects at random.
-<p>
-<p>Generally this produces good behavior. Occasionally, though, two objects have some distinguishing characteristic that doesn't appear in the object name. For instance, suppose we've created a class of apples that can be told apart depending on whether they've been bitten or not:
-<p>
-<blockquote><font color="#000080">An apple is a kind of thing. Consumption is a kind of value. The consumptions are pristine and bitten. An apple has a consumption. The description of an apple is &quot;It is [consumption].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand the consumption property as describing an apple.
-</font></blockquote><p>
-<p>
-<p>The player can meaningfully type
-<p>
-<blockquote><font color="#000080">>EAT BITTEN APPLE
-</font></blockquote><p>
-<p>
-<p>or
-<p>
-<blockquote><font color="#000080">>EAT PRISTINE APPLE
-</font></blockquote><p>
-<p>
-<p>but if he types
-<p>
-<blockquote><font color="#000080">>EAT APPLE
-</font></blockquote><p>
-<p>
-<p>Inform will, annoyingly, ask
-<p>
-<blockquote><font color="#000080">Which do you mean, an apple or the apple?
-</font></blockquote><p>
-<p>
-<p>This gives the player no indication of why Inform is making a distinction. So here we add a special &quot;printing the name&quot; rule to get around that situation:
+<p>With GET DOWN, we can replace the whole command, which will not interfere with the normal function of the TAKE verb, or allow the player to attempt to GET any other directions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode433(code) {
+function pasteCode367(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]Apples[=0x0022=][=0x000A=][=0x000A=]Orchard is a room.[=0x000A=][=0x000A=]An apple is a kind of thing. Consumption is a kind of value. The consumptions are pristine and bitten. An apple has a consumption. The description of an apple is [=0x0022=]It is [consumption].[=0x0022=][=0x000A=][=0x000A=]Understand the consumption property as describing an apple.[=0x000A=][=0x000A=]Before printing the name of an apple while asking which do you mean: say [=0x0022=][consumption] [=0x0022=]. Before printing the plural name of an apple while asking which do you mean: say [=0x0022=][consumption] [=0x0022=].[=0x000A=][=0x000A=]The player carries three apples.[=0x000A=][=0x000A=]Instead of eating a pristine apple:[=0x000A=][=0x0009=]say [=0x0022=]You take a satisfying bite.[=0x0022=];[=0x000A=][=0x0009=]now the noun is bitten.[=0x000A=][=0x000A=]Instead of eating a bitten apple:[=0x000A=][=0x0009=]say [=0x0022=]You consume the apple entirely.[=0x0022=];[=0x000A=][=0x0009=]remove the noun from play.[=0x000A=][=0x000A=][Inform will also separate the bitten from the pristine apples in inventory listings and room descriptions, even though it[=0x0027=]s not clear why; we can improve on that behavior thus:][=0x000A=][=0x000A=]Before listing contents: group apples together.[=0x000A=][=0x000A=]Rule for grouping together an apple (called target):[=0x000A=][=0x0009=]let source be the holder of the target;[=0x000A=][=0x0009=]say [=0x0022=][number of apples held by the source in words] apple[s], some bitten[=0x0022=].[=0x000A=][=0x000A=]Before printing the plural name of an apple (called target):[=0x000A=][=0x0009=]let source be the holder of the target;[=0x000A=][=0x0009=]if every apple held by the source is bitten, say [=0x0022=]bitten [=0x0022=];[=0x000A=][=0x0009=]if every apple held by the source is pristine, say [=0x0022=]pristine [=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]i / eat apple / i / eat apple / pristine / i / eat apple / pristine / i[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Anchorite[=0x0022=][=0x000A=][=0x000A=]The Solitary Place is a room. [=0x0022=]A glittering, shimmering desert without either locusts or honey.[=0x0022=] The pillar is an enterable supporter in the Solitary Place. [=0x0022=]The broken pillar is short enough to climb and sit on.[=0x0022=] The description of the pillar is [=0x0022=]Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.[=0x0022=] The player is on the pillar.[=0x000A=][=0x000A=]Understand [=0x0022=]get down[=0x0022=] as exiting.[=0x000A=][=0x000A=][This doesn[=0x0027=]t cover the case where the player just types [=0x0022=]DOWN[=0x0022=], and we don[=0x0027=]t want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:][=0x000A=][=0x000A=]Instead of going down when the player is on a supporter:[=0x000A=][=0x0009=]try exiting.[=0x000A=][=0x000A=]Test me with [=0x0022=]down / enter pillar / get down / down / get down[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode433()"><img border=0 src=../doc_images/paste.png></a>  &quot;Apples&quot;
+<a href="javascript:pasteCode367()"><img border=0 src=../doc_images/paste.png></a> &quot;Anchorite&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Orchard is a room.
+<blockquote><font color="#000080">The Solitary Place is a room. &quot;A glittering, shimmering desert without either locusts or honey.&quot; The pillar is an enterable supporter in the Solitary Place. &quot;The broken pillar is short enough to climb and sit on.&quot; The description of the pillar is &quot;Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.&quot; The player is on the pillar.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An apple is a kind of thing. Consumption is a kind of value. The consumptions are pristine and bitten. An apple has a consumption. The description of an apple is &quot;It is [consumption].&quot;
+<blockquote><font color="#000080">Understand &quot;get down&quot; as exiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the consumption property as describing an apple.
+<p>This doesn't cover the case where the player just types &quot;DOWN&quot;, and we don't want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:
+<p>
+<blockquote><font color="#000080">Instead of going down when the player is on a supporter:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try exiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of an apple while asking which do you mean: say &quot;[consumption] &quot;. Before printing the plural name of an apple while asking which do you mean: say &quot;[consumption] &quot;.
+<blockquote><font color="#000080">Test me with &quot;down / enter pillar / get down / down / get down&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries three apples.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of eating a pristine apple:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You take a satisfying bite.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is bitten.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of eating a bitten apple:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You consume the apple entirely.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
-</font></blockquote><p>
-<p>
-<p>Inform will also separate the bitten from the pristine apples in inventory listings and room descriptions, even though it's not clear why; we can improve on that behavior thus:
-<p>
-<blockquote><font color="#000080">Before listing contents: group apples together.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for grouping together an apple (called target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let source be the holder of the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[number of apples held by the source in words] apple[s], some bitten&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the plural name of an apple (called target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let source be the holder of the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every apple held by the source is bitten, say &quot;bitten &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every apple held by the source is pristine, say &quot;pristine &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / eat apple / i / eat apple / pristine / i / eat apple / pristine / i&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc298.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc253.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e307"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>337</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex307.html#e307 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Walls and Noses</font></b></a><br>Responding to "EXAMINE WALL" with "In which direction?", and to "EXAMINE NOSE" with "Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?"<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e50"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>272</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex50.html#e50 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e334"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex334.html#e334 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex334.html#e334 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex334.html#e334 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc252.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc254.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

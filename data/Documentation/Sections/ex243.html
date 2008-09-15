@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.3. Text with numbers</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.14. Defining phrases in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,87 +19,111 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Ballpark" -->
-<!-- SEARCH SECTION "Ex 56" -->
-<!-- SEARCH SORT "Ex 005-003-056" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc68.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc70.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.3. Text with numbers</b></font></td></tr></table>
+<!-- SEARCH TITLE "Pink or Blue" -->
+<!-- SEARCH SECTION "Ex 425" -->
+<!-- SEARCH SORT "Ex 024-014-425" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc411.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc413.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.14. Defining phrases in Inform 6</b></font></td></tr></table>
 <p>
-<p>When a numerical value is given in a square-bracketed substitution, it is ordinarily printed out in digits. Thus:
+<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
 <p>
-<blockquote><font color="#000080">&quot;You've been wandering around for [turn count] turns now.&quot;
+<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
 </font></blockquote><p>
 <p>
-<p>might print as &quot;You've been wandering around for 213 turns now.&quot;, if the game has been played out for exactly that many commands. Alternatively, we can add &quot;...in words&quot;, thus:
+<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
 <p>
-<blockquote><font color="#000080">&quot;You've been wandering around for [turn count in words] turns now.&quot;
+<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
+<p>
+<p>This is an easy case since the wording never varies. More typical examples would be:
+<p>
+<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<br>To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
 </font></blockquote><p>
 <p>
-<p>to get the more conversational &quot;You've been wandering around for two hundred and thirteen turns now.&quot;
+<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
 <p>
-<p>Either way, though, there is some risk of the following:
-<p>
-<blockquote><font color="#000080">You've been wandering around for one turns now.
+<blockquote><font color="#000080">say the capacity of the basket
 </font></blockquote><p>
 <p>
-<p>We can avoid this using the special substitution &quot;[s]&quot;, which prints a letter &quot;s&quot; unless the last number printed was 1. So:
+<p>might be compiled to
 <p>
-<blockquote><font color="#000080">&quot;You've been wandering around for [turn count in words] turn[s] now.&quot;
+<blockquote><font color="#000080">print O17_basket.capacity;
 </font></blockquote><p>
 <p>
-<p>will produce &quot;... for one turn now.&quot; or &quot;... for two turns now.&quot; as appropriate. This only solves one case (what about all the other plural endings, from &quot;women&quot; to &quot;cherubim&quot;?), and as we shall see we can get the same effect and very much more using the methods in the next section, so &quot;[s]&quot; is something of an anomaly. But it's memorable, and even if it only solves one small need, this is a need which turns up often.
+<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
+<p>
+<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
+<p>
+<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+</font></blockquote><p>
+<p>
+<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e129"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex129.html#e129 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>424</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex129.html#e129 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex129.html#e129 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e243"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc69.html#e243 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>56</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc69.html#e243 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ballpark</font></b></a><br>A new "to say" definition which allows the author to say "[a number in round numbers]" and get verbal descriptions like "a couple of" or "a few" as a result.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex243.html#e243 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e243"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc412.html#e243 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>425</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc412.html#e243 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex243.html#e243 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes it is more sensible to describe numbers roughly than in exact terms. For instance, we might want to have our player perceive &quot;many people&quot; rather than &quot;forty-two people&quot; on entering a room. To achieve this, we might write our own &quot;to say&quot; phrase.
+<p>Suppose we would like to allow the player to choose a gender for the main character. We'd also like this to happen at the beginning of the game and outside the main parsing sequence. &quot;When play begins&quot; seems like a good place to put this.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode149(code) {
+function pasteCode524(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Ballpark[=0x0022=][=0x000A=][=0x000A=]To say (count - a number) in round numbers:[=0x000A=][=0x0009=]repeat through the Table of Numerical Approximation:[=0x000A=][=0x0009=][=0x0009=]if count is less than threshold entry:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][approximation entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=][Phrases will be explained more thoroughly in a later chapter, but as we have already seen in the examples, we can make a [=0x0022=]To say...[=0x0022=] phrase that will allow us to create our own text substitutions. In this case, we are going to replace the specific number with a vaguer one chosen from a chart, so:][=0x000A=][=0x000A=]Table of Numerical Approximation[=0x000A=]threshold[=0x0009=]approximation[=0x000A=]1[=0x0009=][=0x0022=]no[=0x0022=][=0x000A=]2[=0x0009=][=0x0022=]one[=0x0022=][=0x000A=]3[=0x0009=][=0x0022=]a couple of[=0x0022=][=0x000A=]6[=0x0009=][=0x0022=]a few[=0x0022=][=0x000A=]11[=0x0009=][=0x0022=]some[=0x0022=][=0x000A=]21[=0x0009=][=0x0022=]many[=0x0022=][=0x000A=]1000[=0x0009=][=0x0022=]lots and lots of[=0x0022=][=0x000A=][=0x000A=][The idea here is that we will work our way through the table until we hit a line where the threshold number is higher than the number we want to express, and then print that output: so if we have less than one item, we[=0x0027=]ll print [=0x0022=]no[=0x0022=]; if we have more than none but less than two, we[=0x0027=]ll print [=0x0022=]one[=0x0022=]; if we have less than three, we[=0x0027=]ll print [=0x0022=]a couple of[=0x0022=]; if we have three, four, or five (but not six), we[=0x0027=]ll print [=0x0022=]a few.[=0x0022=]][=0x000A=][=0x000A=]A room has a number called the population. The population of a room is usually 0. The description of a room is usually [=0x0022=]You observe [population of the location in round numbers] [if population of the location is 1]person [otherwise]people [end if]here.[=0x0022=].[=0x000A=][=0x000A=]The Stadium is a room. The Hot Dog Stand is west of the Stadium. The Women[=0x0027=]s Restroom is south of the Stadium.[=0x000A=][=0x000A=]The population of the Stadium is 500. The population of the Hot Dog Stand is 3. The population of the Restroom is 750.[=0x000A=][=0x000A=]Test me with [=0x0022=]w / e / s[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Pink or Blue[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]Should your character be male or female? [=0x003E=][=0x0022=];[=0x000A=][=0x0009=]if men win, now the player is male;[=0x000A=][=0x0009=]otherwise now the player is female;[=0x000A=][=0x0009=]say paragraph break.[=0x000A=][=0x000A=][Now a piece of Inform 6 code handles the unusual input. It[=0x0027=]s not necessary to understand this to use it, and the code should work for any question you[=0x0027=]d like to ask the player. The first three words in quotation marks ([=0x0027=]male[=0x0027=], [=0x0027=]M[=0x0027=], [=0x0027=]man[=0x0027=]...) correspond to positive feedback; the later three words correspond to negative feedback. So [=0x0022=]to decide whether men win[=0x0022=] will be true if the player types one of the first three, and false if he types one of the last three.][=0x000A=][=0x000A=]To decide whether men win:[=0x000A=][=0x0009=](- Question([=0x0027=]male[=0x0027=],[=0x0027=]M//[=0x0027=],[=0x0027=]man[=0x0027=],[=0x0027=]female[=0x0027=],[=0x0027=]F//[=0x0027=],[=0x0027=]woman[=0x0027=]) -)[=0x000A=][=0x000A=]Include (-[=0x000A=][=0x000A=][ Question pos1 pos2 pos3 neg1 neg2 neg3 first_word_typed;[=0x000A=][=0x0009=]while (true) {[=0x000A=][=0x0009=][=0x0009=]VM_ReadKeyboard(buffer, parse);[=0x000A=][=0x0009=][=0x0009=]wn = 1; first_word_typed = NextWordStopped();[=0x000A=][=0x0009=][=0x0009=]if (first_word_typed == pos1 or pos2 or pos3) rtrue;[=0x000A=][=0x0009=][=0x0009=]if (first_word_typed == neg1 or neg2 or neg3) rfalse;[=0x000A=][=0x0009=][=0x0009=]print [=0x0022=]Please choose [=0x0022=], (address) pos1, [=0x0022=] or [=0x0022=], (address) neg1, [=0x0022=]. [=0x003E=] [=0x0022=];[=0x000A=][=0x0009=]}[=0x000A=]];[=0x000A=][=0x000A=][=0x000A=]-)[=0x000A=][=0x000A=]Instead of examining the player when the player is female:[=0x000A=][=0x0009=]say [=0x0022=]Congratulations, you are a girl![=0x0022=][=0x000A=][=0x000A=]Instead of examining the player when the player is male:[=0x000A=][=0x0009=]say [=0x0022=]Congratulations, you are a boy![=0x0022=][=0x000A=][=0x000A=]The Room of Self-Knowledge is a room. [=0x0022=]Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles.[=0x0022=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode149()"><img border=0 src=../doc_images/paste.png></a> &quot;Ballpark&quot;
+<a href="javascript:pasteCode524()"><img border=0 src=../doc_images/paste.png></a> &quot;Pink or Blue&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (count - a number) in round numbers:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Numerical Approximation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if count is less than threshold entry:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[approximation entry]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Should your character be male or female? >&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if men win, now the player is male;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the player is female;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<p>Phrases will be explained more thoroughly in a later chapter, but as we have already seen in the examples, we can make a &quot;To say...&quot; phrase that will allow us to create our own text substitutions. In this case, we are going to replace the specific number with a vaguer one chosen from a chart, so:
+<p>Now a piece of Inform 6 code handles the unusual input. It's not necessary to understand this to use it, and the code should work for any question you'd like to ask the player. The first three words in quotation marks ('male', 'M', 'man'...) correspond to positive feedback; the later three words correspond to negative feedback. So &quot;to decide whether men win&quot; will be true if the player types one of the first three, and false if he types one of the last three.
 <p>
-<blockquote><font color="#000080">Table of Numerical Approximation
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">threshold</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">approximation</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;no&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;one&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;a couple of&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;a few&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;some&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">21</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;many&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1000</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;lots and lots of&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">To decide whether men win:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- Question('male','M//','man','female','F//','woman') -)
 </font></blockquote><p>
 <p>
-<p>The idea here is that we will work our way through the table until we hit a line where the threshold number is higher than the number we want to express, and then print that output: so if we have less than one item, we'll print &quot;no&quot;; if we have more than none but less than two, we'll print &quot;one&quot;; if we have less than three, we'll print &quot;a couple of&quot;; if we have three, four, or five (but not six), we'll print &quot;a few.&quot;
-<p>
-<blockquote><font color="#000080">A room has a number called the population. The population of a room is usually 0. The description of a room is usually &quot;You observe [population of the location in round numbers] [if population of the location is 1]person [otherwise]people [end if]here.&quot;.
+<blockquote><font color="#000080">Include (-
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Stadium is a room. The Hot Dog Stand is west of the Stadium. The Women's Restroom is south of the Stadium.
+<blockquote><font color="#000080">[ Question pos1 pos2 pos3 neg1 neg2 neg3 first_word_typed;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while (true) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VM_ReadKeyboard(buffer, parse);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wn = 1; first_word_typed = NextWordStopped();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (first_word_typed == pos1 or pos2 or pos3) rtrue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (first_word_typed == neg1 or neg2 or neg3) rfalse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print &quot;Please choose &quot;, (address) pos1, &quot; or &quot;, (address) neg1, &quot;. > &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>];
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The population of the Stadium is 500. The population of the Hot Dog Stand is 3. The population of the Restroom is 750.
+<p>
+<blockquote><font color="#000080">-)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;w / e / s&quot;.
+<blockquote><font color="#000080">Instead of examining the player when the player is female:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a girl!&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc69.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the player when the player is male:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a boy!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Room of Self-Knowledge is a room. &quot;Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc412.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc68.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc70.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc411.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc413.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

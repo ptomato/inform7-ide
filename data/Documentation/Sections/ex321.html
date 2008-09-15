@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.8. Action- vs object-based rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.12. Check rules for actions by other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,202 +19,108 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Flotation" -->
-<!-- SEARCH SECTION "Ex 362" -->
-<!-- SEARCH SORT "Ex 018-008-362" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc315.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc317.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.8. Action- vs object-based rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "Barter Barter" -->
+<!-- SEARCH SECTION "Ex 205" -->
+<!-- SEARCH SORT "Ex 012-012-205" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc191.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc193.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.12. Check rules for actions by other people</b></font></td></tr></table>
 <p>
-<p>The example of the appraisal rules, earlier in the chapter, was a rulebook whose rules were not tied to any specific action or item. We simply created rules for this rulebook by writing &quot;An appraisal rule: ...&quot; But most Inform rules do apply to either actions (&quot;Instead of drinking the wine: ...&quot;) or items (&quot;Rule for reaching inside the flask: ...&quot;); and these two sorts of rule belong to two sorts of rulebooks. For instance, the Before, Instead and After rulebooks are based on actions, while the rulebooks associated with activities (as used by rules like &quot;Rule for printing the name of: ...&quot;) are based on items. (As it turns out, the appraisal rulebook was action-based: it simply happened that we never specified any requirements on the action.)
+<p>If we want to impose the restriction about carrying the camera on other people, we need a rule like the following:
 <p>
-<p>We have seen that the preamble for a rule can be quite complicated, but when we strip away the optional ways to limit its applicability, give it a name, and so forth, we are left with
-<p>
-<blockquote><font color="#000080">...rulebook name... [about/for/of/on/rule] [...what to apply to...]
+<blockquote><font color="#000080">Check someone photographing: if the person asked does not carry the camera, stop the action.
 </font></blockquote><p>
 <p>
-<p>where the square-bracketed parts are optional. If the rulebook is object-based, the &quot;...what to apply to...&quot; should be a description, like &quot;a container&quot;; if action-based, it should be an action, like &quot;examining an open door&quot;.
+<p>Implicitly, that &quot;someone&quot; excludes the player. Note that we say nothing in this rule, stopping the action without a word: after all, Clark might well be out of sight when trying this. If he is within sight, then we read:
 <p>
-<p><b>1. Action-based rulebooks.</b> We have already mentioned before, after and instead. Other action-based rulebooks include the check, carry out, and report rules; general rulebooks such as every turn rules, the procedural rules, the visibility rules, the turn sequence rules; and rules specially for dealing with the actions of other characters, such as the persuasion and unsuccessful attempt rules. So the following would all be valid:
-<p>
-<blockquote><font color="#000080">An every turn rule on kissing Clark:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lois glares in your direction.&quot;
+<blockquote><font color="#000080">>clark, photograph me
+<br>Clark Gable is unable to do that.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Procedural rule about someone taking the hat:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the can't take people's possessions rule.
+<p>We saw before that Inform's built-in rules all have handy names (the &quot;can't drop what's already dropped rule&quot;, and such), and that these are useful when writing better &quot;unable to...&quot; messages. So for a deluxe version, we end up with:
+<p>
+<blockquote><font color="#000080">Check someone trying photographing (this is the other people can't photograph without the camera rule): if the person asked does not carry the camera, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Visibility rule for looking under something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
+<p>And now, with ACTIONS on, we find that:
+<p>
+<blockquote><font color="#000080">>clark, photograph me
+<br>[asking Clark Gable to try photographing yourself]
+<br>[(1) Clark Gable photographing yourself]
+<br>[(1) Clark Gable photographing yourself - failed the other people can't photograph without the camera rule]
+<br>Clark Gable is unable to do that.
+<br>[asking Clark Gable to try photographing yourself - succeeded]
 </font></blockquote><p>
 <p>
-<p>...all of which will take place on the occasions when these rulebooks would ordinarily be used, but take effect only if the action is the one specified.
+<p>which means that we could have, say,
 <p>
-<p>The persuasion rules are dependent on the current action, but, since they will only be consulted when we ask someone to do something, it is only useful to write rules like
-<p>
-<blockquote><font color="#000080">Persuasion rule for asking Kent to try going: ...
-<br>Persuasion rule: ...
-</font></blockquote><p>
-<p>
-<p>and not
-<p>
-<blockquote><font color="#000080">Persuasion rule for taking the blue egg-cup: ...
-</font></blockquote><p>
-<p>
-<p>Theoretically, the when play begins and when play ends rules could be written as things such as &quot;When play begins rule for looking: ...&quot;, but this is not useful in any way: actions are not happening then, so such rules would never take effect.
-<p>
-<p>Because action-based rulebooks tend to be the more useful of the two types of rulebook under most circumstances, this is the kind of rule created by default if we say:
-<p>
-<blockquote><font color="#000080">The judgment rules are a rulebook.
-</font></blockquote><p>
-<p>
-<p>Having done this, we would now be allowed to write
-<p>
-<blockquote><font color="#000080">A judgment rule for listening to the music:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh, Mozart is really too tedious to endure.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A judgment rule about Kent Taylor kissing the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Well, he's no Clark Gable, let's put it that way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Judgment rule on eating Kraft dinner:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Bright orange and in no way related to real cheeses.&quot;
-</font></blockquote><p>
-<p>
-<p><b>2. Object-parametrized rulebooks.</b> Each activity creates three of these. For instance:
-<p>
-<blockquote><font color="#000080">Rule for printing the name of ...something...
-</font></blockquote><p>
-<p>
-<p>and equivalently, though less elegantly,
-<p>
-<blockquote><font color="#000080">Rule for printing the name ...something...
-<br>Rule for printing the name for ...something...
-</font></blockquote><p>
-<p>
-<p>Each activity also generates a before and after rulebook, as we've also seen. The reaching inside and reaching outside rules are also object-based rulebooks.
-<p>
-<p>We may make new object-based rulebooks in the process of making new activities, of course, but sometimes a whole new activity is overkill, since an activity produces three rulebooks (before, for, after). We can instead create a simple rulebook so:
-<p>
-<blockquote><font color="#000080">The flotation rules are an object-based rulebook.
-</font></blockquote><p>
-<p>
-<p>Having done this, we would be allowed to write
-<p>
-<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
-<br>A flotation rule for an inflated thing: rule succeeds.
-<br>A flotation rule: rule fails.
-</font></blockquote><p>
-<p>
-<p>And we might use the flotation rules in a circumstance like this:
-<p>
-<blockquote><font color="#000080">After inserting something into the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;
+<blockquote><font color="#000080">Unsuccessful attempt by Clark photographing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the other people can't photograph without the camera rule, say &quot;Clark is too suave to be embarrassed. 'Frankly, my dear, I don't have a camera.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Clark tries, and fails, to take a photograph.&quot;
 </font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e338"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex338.html#e338 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>204</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex338.html#e338 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Get Axe</font></b></a><br>Changing the check rules to try automatically leaving a container before attempting to take it. (And arranging things so that other people will do likewise.)<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex338.html#e338 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e321"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc316.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>362</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc316.html#e321 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flotation</font></b></a><br>Objects that can sink or float in a well, depending on their own properties and the state of the surrounding environment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex321.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e321"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc192.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>205</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc192.html#e321 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Barter Barter</font></b></a><br>Allowing characters other than the player to give objects to one another, accounting for the possibility that some items may not be desired by the intended recipients.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex321.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Here we want a rulebook to determine whether objects float or sink, so we create an object-based rulebook for the purpose. The more specific rules here, pertaining to corks and to inflated things, will be consulted first; then, as a default, the general flotation rule.
+<p>By default, if we make no modifications, telling one player to give something to another will fail, even if persuasion succeeds. This is because the default behavior of the GIVE command is interrupted by the &quot;block giving rule&quot; -- since in many cases we do not want people to exchange objects freely.
 <p>
-<p>We also want a switch that can turn flotation off at will. The rule about the big switch will be observed before the others because the when... clause makes it more specific than the other rules in the flotation rulebook.
-<p>
-<p>If we wanted, we could also put these rules into a rulebook in an explicit order, overriding Inform's automatic sorting by specificity.
+<p>However, suppose that we do want characters to be able to exchange articles freely: we allow persuasion to succeed and turn off the &quot;block giving rule&quot;.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode458(code) {
+function pasteCode304(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Flotation[=0x0022=][=0x000A=][=0x000A=]The Pumping House is a room.[=0x000A=][=0x000A=]A well is a fixed in place container in the Pumping House. The description of the well is [=0x0022=][if something is in the well]On the surface of the water you can see [a list of things in the well][otherwise]There is nothing on the surface of the water, nor can you see into the depths[end if].[=0x0022=][=0x000A=][=0x000A=]The well bottom is a container.[=0x000A=][=0x000A=]The cork, the rubber ring and a lead ingot are in the Pumping House.[=0x000A=][=0x000A=]A big switch is a fixed in place device in the Pumping House. [=0x0022=]A big switch labelled [=0x0027=]MAKE EVERYTHING SINK[=0x0027=] is mounted on one wall[if switched on]. It crackles with electricity[otherwise]. It is currently switched off and silent[end if].[=0x0022=][=0x000A=][=0x000A=]A thing can be inflated or uninflated. A thing is usually uninflated. Before printing the name of an inflated thing: say [=0x0022=]inflated [=0x0022=].[=0x000A=][=0x000A=]The rubber ring is inflated.[=0x000A=][=0x000A=]The flotation rules are an object-based rulebook.[=0x000A=][=0x000A=]A flotation rule for the cork: rule succeeds.[=0x000A=]A flotation rule for an inflated thing: rule succeeds.[=0x000A=]A flotation rule when the big switch is switched on: rule fails.[=0x000A=][=0x000A=]After inserting something into the well:[=0x000A=][=0x0009=]consider the flotation rules for the noun;[=0x000A=][=0x0009=]if the rule succeeded:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The noun] bobs on the surface.[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]move the noun to the well bottom;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The noun] sinks out of sight.[=0x0022=][=0x000A=][=0x000A=]A thing can be sinking, rising, or static. A thing is usually static.[=0x000A=][=0x000A=]Definition: a thing is wet:[=0x000A=][=0x0009=]if it is in the well, yes;[=0x000A=][=0x0009=]if it is in the well bottom, yes;[=0x000A=][=0x0009=]no.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]now every thing is static;[=0x000A=][=0x0009=]repeat with item running through wet things:[=0x000A=][=0x0009=][=0x0009=]consider the flotation rules for the item;[=0x000A=][=0x0009=][=0x0009=]if the rule failed and the item is in the well, now the item is sinking;[=0x000A=][=0x0009=][=0x0009=]if the rule succeeded and the item is in the well bottom, now the item is rising;[=0x000A=][=0x0009=]now every rising thing is in the well;[=0x000A=][=0x0009=]now every sinking thing is in the well bottom;[=0x000A=][=0x0009=]if something is rising, say [=0x0022=][The list of rising things] rise[if the number of rising things is 1]s[end if] to the surface of the well.[=0x0022=];[=0x000A=][=0x0009=]if something is sinking, say [=0x0022=][The list of sinking things] sink[if the number of sinking things is 1]s[end if] out of sight.[=0x0022=][=0x000A=][=0x000A=][And finally a few description rules to make things look prettier:][=0x000A=][=0x000A=]Rule for writing a paragraph about the well when the well contains something:[=0x000A=][=0x0009=]say [=0x0022=]The chief feature of the room is a concrete-sided well in which there float[if the number of things in the well is 1]s[end if] [a list of things in the well].[=0x0022=][=0x000A=][=0x000A=]Rule for writing a paragraph about the well:[=0x000A=][=0x0009=]say [=0x0022=]The chief feature of the room is a concrete-sided well full of water.[=0x0022=][=0x000A=][=0x000A=][As we recall from the chapter on activities, [=0x0022=]writing a paragraph about...[=0x0022=] is an activity; activities are themselves structured as sets of object-based rulebooks. The activity [=0x0022=]writing a paragraph about[=0x0022=] uses three object-based rulebooks (before writing..., for writing..., after writing...). We could have made a flotation activity as well, but in general it is overkill to make an activity to make success/failure decisions. For that purpose an object-based rulebook is sufficient.][=0x000A=][=0x000A=]Test me with [=0x0022=]get all / put cork in well / put ring in well / put ingot in well / x well / get cork / get ring / switch switch on / put cork in well / put ring in well / x well / switch switch off / switch switch on[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Barter Barter[=0x0022=][=0x000A=][=0x000A=]The block giving rule is not listed in the check giving it to rules.[=0x000A=][=0x000A=]A persuasion rule for asking people to try giving: persuasion succeeds.[=0x000A=][=0x000A=]The Trading Post is a room.[=0x000A=][=0x000A=]Meriwether Lewis is a man in the Trading Post. He carries a fluffy handmade quilt and a bag of beans. The beans are edible.[=0x000A=][=0x000A=]William Clark is a man in the Trading Post. He carries leather slippers, a journal, and a loaf of bread. The bread is edible. The slippers are wearable.[=0x000A=][=0x000A=]Instead of examining someone:[=0x000A=][=0x0009=]say [=0x0022=][The noun] is carrying [the list of things carried by the noun].[=0x0022=][=0x000A=][=0x000A=][And now we might want to implement a way to keep track of whether the recipient character wants what[=0x0027=]s being offered:][=0x000A=][=0x000A=]Check someone trying giving something to someone (this is the sneering refusal rule):[=0x000A=][=0x0009=]if the second noun dislikes the noun, stop the action.[=0x000A=][=0x000A=]Unsuccessful attempt by someone trying doing something:[=0x000A=][=0x0009=]if the reason the action failed is the sneering refusal rule, say [=0x0022=][=0x0027=]Would you care for [the noun]?[=0x0027=] [the person asked] asks solicitously of [the second noun].[=0x000A=][=0x000A=]But [the second noun] refuses [the noun] disdainfully.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=][The person asked] just appears bewildered by this improbable instruction.[=0x0022=][=0x000A=][=0x000A=]Distaste relates one person to various things. The verb to dislike (he dislikes, they dislike, he disliked, it is disliked, he is disliking) implies the distaste relation.[=0x000A=][=0x000A=]Clark dislikes the beans. Lewis dislikes the bread.[=0x000A=][=0x000A=][Since we[=0x0027=]ve defined this as a relation, we could change what the characters like and dislike during the course of the game, freely; for instance, characters might grow hungry and suddenly like all the edible articles.][=0x000A=][=0x000A=]Test me with [=0x0022=]x lewis / x clark / clark, give the slippers to lewis / clark, give the bread to lewis[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode458()"><img border=0 src=../doc_images/paste.png></a> &quot;Flotation&quot;
+<a href="javascript:pasteCode304()"><img border=0 src=../doc_images/paste.png></a> &quot;Barter Barter&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Pumping House is a room.
+<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A well is a fixed in place container in the Pumping House. The description of the well is &quot;[if something is in the well]On the surface of the water you can see [a list of things in the well][otherwise]There is nothing on the surface of the water, nor can you see into the depths[end if].&quot;
+<blockquote><font color="#000080">A persuasion rule for asking people to try giving: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The well bottom is a container.
+<blockquote><font color="#000080">The Trading Post is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The cork, the rubber ring and a lead ingot are in the Pumping House.
+<blockquote><font color="#000080">Meriwether Lewis is a man in the Trading Post. He carries a fluffy handmade quilt and a bag of beans. The beans are edible.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A big switch is a fixed in place device in the Pumping House. &quot;A big switch labelled 'MAKE EVERYTHING SINK' is mounted on one wall[if switched on]. It crackles with electricity[otherwise]. It is currently switched off and silent[end if].&quot;
+<blockquote><font color="#000080">William Clark is a man in the Trading Post. He carries leather slippers, a journal, and a loaf of bread. The bread is edible. The slippers are wearable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be inflated or uninflated. A thing is usually uninflated. Before printing the name of an inflated thing: say &quot;inflated &quot;.
+<blockquote><font color="#000080">Instead of examining someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is carrying [the list of things carried by the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The rubber ring is inflated.
+<p>And now we might want to implement a way to keep track of whether the recipient character wants what's being offered:
+<p>
+<blockquote><font color="#000080">Check someone trying giving something to someone (this is the sneering refusal rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dislikes the noun, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The flotation rules are an object-based rulebook.
+<blockquote><font color="#000080">Unsuccessful attempt by someone trying doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the sneering refusal rule, say &quot;'Would you care for [the noun]?' [the person asked] asks solicitously of [the second noun].
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
-<br>A flotation rule for an inflated thing: rule succeeds.
-<br>A flotation rule when the big switch is switched on: rule fails.
+<blockquote><font color="#000080">But [the second noun] refuses [the noun] disdainfully.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The person asked] just appears bewildered by this improbable instruction.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After inserting something into the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the well bottom;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;
+<blockquote><font color="#000080">Distaste relates one person to various things. The verb to dislike (he dislikes, they dislike, he disliked, it is disliked, he is disliking) implies the distaste relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be sinking, rising, or static. A thing is usually static.
+<blockquote><font color="#000080">Clark dislikes the beans. Lewis dislikes the bread.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is wet:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in the well, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in the well bottom, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<p>Since we've defined this as a relation, we could change what the characters like and dislike during the course of the game, freely; for instance, characters might grow hungry and suddenly like all the edible articles.
+<p>
+<blockquote><font color="#000080">Test me with &quot;x lewis / x clark / clark, give the slippers to lewis / clark, give the bread to lewis&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing is static;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through wet things:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule failed and the item is in the well, now the item is sinking;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded and the item is in the well bottom, now the item is rising;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every rising thing is in the well;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every sinking thing is in the well bottom;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is rising, say &quot;[The list of rising things] rise[if the number of rising things is 1]s[end if] to the surface of the well.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is sinking, say &quot;[The list of sinking things] sink[if the number of sinking things is 1]s[end if] out of sight.&quot;
-</font></blockquote><p>
-<p>
-<p>And finally a few description rules to make things look prettier:
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the well when the well contains something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chief feature of the room is a concrete-sided well in which there float[if the number of things in the well is 1]s[end if] [a list of things in the well].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chief feature of the room is a concrete-sided well full of water.&quot;
-</font></blockquote><p>
-<p>
-<p>As we recall from the chapter on activities, &quot;writing a paragraph about...&quot; is an activity; activities are themselves structured as sets of object-based rulebooks. The activity &quot;writing a paragraph about&quot; uses three object-based rulebooks (before writing..., for writing..., after writing...). We could have made a flotation activity as well, but in general it is overkill to make an activity to make success/failure decisions. For that purpose an object-based rulebook is sufficient.
-<p>
-<blockquote><font color="#000080">Test me with &quot;get all / put cork in well / put ring in well / put ingot in well / x well / get cork / get ring / switch switch on / put cork in well / put ring in well / x well / switch switch off / switch switch on&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc316.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc192.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc315.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc317.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc193.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

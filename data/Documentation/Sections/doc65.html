@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.12. Postscript on simulation</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.12. Values can have properties too</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,13 +19,37 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Postscript on simulation" -->
+<!-- SEARCH TITLE "Values can have properties too" -->
 <!-- SEARCH SECTION "4.12" -->
 <!-- SEARCH SORT "004-012-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc64.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc66.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.12. Postscript on simulation</b></font></td></tr></table>
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc64.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc66.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.12. Values can have properties too</b></font></td></tr></table>
 <p>
-<p>That concludes our tour through the design of the initial state of a simulated world. We have seen how to create rooms and to stock them with containers, supporters, devices, doors, men and women. The player of such a simulation can explore, move things around, open and close certain doors and containers, lock or unlock them provided a suitable key is found, switch machines on or off, and so on.
+<p>Thinking about Inform as a language, we've seen two different sorts of noun: objects - including things, rooms, doors, people, animals, and so on - and values, such as numbers, brightnesses and the like. Objects are intended to simulate actual physical things in the model world we create, whereas values are more abstract. Philosophers could argue about quite a lot of borderline cases - is &quot;northeast&quot; a physical thing? (Inform says yes.) But it's mostly a useful distinction. Inform provides slightly different facilities for handling objects than it does for handling values, because we usually have different needs for them.
 <p>
-<p>But that is about all. There is as yet no element of surprise, no aim or sense of progress to be earned, and no narrative thread. We have painted the backcloth, and laid out the properties, but the actors have yet to take the stage.
+<p>There are some differences which can't be ignored. For instance, maybe there are 80 people in the model world, maybe just one person: but there are infinitely many numbers. And we can just conjure up new people, but we can't conjure up new numbers.
+<p>
+<p>But not all kinds of value are like &quot;number&quot;: often, they behave more like objects, and then we can treat them the same way, too. To go back to the &quot;brightness&quot; example, suppose we have set things up with:
+<p>
+<blockquote><font color="#000080">Brightness is a kind of value. The brightnesses are dim, shining, and blazing.
+</font></blockquote><p>
+<p>
+<p>These are values, but we can create them freely, giving each of them names, just as we do with objects. And we could then add:
+<p>
+<blockquote><font color="#000080">A brightness can be adequate or inadequate. A brightness is usually adequate. Dim is inadequate.
+</font></blockquote><p>
+<p>
+<p>Maybe this could represent whether the amount of light is enough to read by, for instance. Just as open/closed is an either-or property for doors, which are objects, now adequate/inadequate is an either-or property for brightnesses, which are values. And values, just like objects, can also have value properties of their own:
+<p>
+<blockquote><font color="#000080">A brightness has a number called temperature. The temperature of blazing is 140. The temperature of shining is 110. The temperature of dim is 70.
+</font></blockquote><p>
+<p>
+<p>Now temperature is a numerical property of a brightness, which is a value, in just the same way that carrying capacity is a numerical property of a container, which is an object.
+<p>
+<p>Not every value can have properties, though, for basic reasons of practicality. For instance, we can't write:
+<p>
+<blockquote><font color="#000080">A number can be fun or boring.
+</font></blockquote><p>
+<p>
+<p>There are just too many numbers for Inform to store this much information. That doesn't mean we can't have adjectives to describe numbers - on the contrary, Inform has adjectives like &quot;odd&quot; and &quot;even&quot; built in, as we shall see later. But properties need storage space, because they represent information which can change unpredictably during play, and that does impose limits. (The Kinds index of any project has a useful chart showing the different kinds of value which exist, and what can be done with them.)
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc64.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc66.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

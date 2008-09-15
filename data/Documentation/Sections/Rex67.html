@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Flashbacks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.4. Looking</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,270 +19,142 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Pine 3" -->
-<!-- SEARCH SECTION "Ex 154" -->
-<!-- SEARCH SORT "Ex 004-005-154" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc19.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap4.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 4: Time and Plot</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc21.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Flashbacks</b></font></td></tr></table>
+<!-- SEARCH TITLE "Night Sky" -->
+<!-- SEARCH SECTION "Ex 144" -->
+<!-- SEARCH SORT "Ex 006-004-144" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc29.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc31.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.4. Looking</b></font></td></tr></table>
 <p>
-<p>The viewpoint character may often need to remember events long past. The easiest way to do this is with a cut-scene, in which at some relevant point we pause the game and print a long passage of text describing the memory. Because large amounts of text can be hard for the player to take in, we may want to include some pauses in the presentation of this material; this facility is provided by the Basic Screen Effects extension by Emily Short, and might work something like this:
+<p>Looking is one of the most complicated commands built into Inform, with a large number of things one might want to change.
 <p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
+<p>Looking prints the name and description of the room we're in. We can introduce variations into room names and descriptions by changing their printed name and description properties, as in
+<p>
+<blockquote><font color="#000080">change the printed name of the Church to &quot;Lightning-Struck Ruin&quot;;
+<br>change the description of the Church to &quot;The beams overhead have been burnt away and the pews are charred. Only the stone walls remain.&quot;;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the photograph for the first time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This reminds you of the summer of '69...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;wait for any key;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;... flashback content...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;wait for any key.
+<p>If we need more drastic effects, we can turn off or change either of these features by altering the rules in the carry out looking rulebook. For instance, to remove the name of the location entirely from room descriptions, we would write
+<p>
+<blockquote><font color="#000080">The room description heading rule is not listed in the carry out looking rules.
 </font></blockquote><p>
 <p>
-<p>The &quot;pause the game&quot; phrase in the same extension offers a more dramatic pause that also clears the screen before printing new text.
+<p>(A word of warning: there is one other context in which the game prints a room name — when restoring a save or undoing a move. To omit the room title here too, add
 <p>
-<p>Cut-scenes are easy to implement but should be used sparingly, since players often get impatient with long uninteractive passages. A slightly more deluxe implementation might insert an interactive scene that simply happens to be set in the past, before going on with another scene set &quot;now&quot;; and, indeed, some IF abandons the idea of &quot;now&quot; entirely, presenting pieces in a non-chronological order and letting the player work out how the sequence works together.
+<blockquote><font color="#000080">Rule for printing the name of a room: do nothing.)
+</font></blockquote><p>
 <p>
-<p>The most challenging case to implement (though still not very hard) is the one where we remove the player from one scenario, let him play through a flashback with past possessions and clothing, and then restore him to the same situation he left, with all of the same possessions and clothing. <b>Pine 3</b> shows how to do this: the code to change the player's status is isolated at the end of the example, and might fruitfully be reused.  <b>Pine 4</b> expands on the same idea by adding another flashback scene, demonstrating one that can be visited repeatedly and one that can be seen only once.
+<p>Next, the game determines what items are visible to the player and need to be described. These never include the player himself, or scenery, but other things in the environment will be made &quot;marked for listing&quot;. This is also the stage at which Inform chooses the order in which items will be listed.
 <p>
-<a href=Rdoc19.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Scene Changes</b></font></a><i> for more uses of stripping and restoring the player</i><p><p>
-<a href=Rdoc25.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Background, Memory, and Knowledge</b></font></a><i> for other ways of introducing information that the player character already knows</i><p><p>
-<a href=Rdoc41.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Alternate Default Messages</b></font></a><i> for comments on how to change the tense of an interactive scene</i><p><p>
+<p>We are allowed to meddle by changing the priorities of objects, in case we want some things to be described to the player first or last in the room description; <b>Priority Lab</b> goes into detail about how. We can also force things to be left out entirely: <b>Low Light</b> handles the case of an object that can only be seen when an extra lamp is switched on, even though the room is not otherwise considered dark. <b>Copper River</b> implements the idea of &quot;interesting&quot; and &quot;dull&quot; objects: the game determines which items are currently important to the puzzles or narrative and mentions those in the room description, while suppressing everything else.
+<p>
+<p>Then Inform carries out the writing a paragraph about... activity with anything that provides one; anything it prints the name of, it tags &quot;mentioned&quot;. Thus
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about Mr Wickham:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Wickham looks speculatively at [list of women in the location].&quot;
+</font></blockquote><p>
+<p>
+<p>will count Wickham and everyone he looks at as all having been mentioned, and will not refer to them again through the rest of the room description. More complicated uses of writing a paragraph abound. A developed system for handling supporters that don't list contents appears in <b>The Eye of the Idol</b>.
+<p>
+<p>Inform then prints the initial appearances of objects that are marked for listing but not already mentioned; and then it performs the listing nondescript items activity, collating the remaining objects into a paragraph like
+<p>
+<blockquote><font color="#000080">You can see a dog, a hen, ...
+</font></blockquote><p>
+<p>
+<p>We can pre-empt items from appearing in this paragraph or change their listing by intervening with a Before listing nondescript items... rule, as in
+<p>
+<blockquote><font color="#000080">Before listing nondescript items when the player needs the watch:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the watch is marked for listing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The watch catches your eye.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the watch to not marked for listing.
+</font></blockquote><p>
+<p>
+<p>If we wanted the watch always to be listed this way, it would be better to give it an initial appearance, but for conditional cases, the listing nondescript items activity is a good place to intervene. For instance, <b>Rip</b> uses this activity to incorporate changeable or portable items into the main description text for a room when (and only when) that is appropriate.
+<p>
+<p>The listing nondescript items activity also allows us to replace the &quot;You can see...&quot; tag with something else more fitting, if for instance we are in a dimly lit room.
+<p>
+<p>When the game compiles the list of nondescript items, it adds tags such as &quot;(open)&quot; or &quot;(empty)&quot; or &quot;(on which is a fish tank)&quot; to the names of containers and supporters. We can suppress or change the &quot;(empty)&quot; tag with the printing room description details of activity, as in
+<p>
+<blockquote><font color="#000080">Rule for printing room description details: stop.
+</font></blockquote><p>
+<p>
+<p>And we can suppress the &quot;(open)&quot; and &quot;(on which is...)&quot; sorts of tags with the &quot;omit the contents in listing&quot; phrase, as in
+<p>
+<blockquote><font color="#000080">Rule for printing the name of the bottle while not inserting or removing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the bottle contains sand, say &quot;bottle of sand&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;empty bottle&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing.
+</font></blockquote><p>
+<p>
+<p>Finally, the looking command lists visible non-scenery items that sit on scenery supporters, as in
+<p>
+<blockquote><font color="#000080">On the table is a folded newspaper.
+</font></blockquote><p>
+<p>
+<p>These paragraphs can be manipulated with the printing the locale paragraphs description activity.
+<p>
+<p>Another common thing we may want to do is change the description of a room depending on whether we've been there before (as in <b>Slightly Wrong</b>) or on how often we've visited (as in <b>Infiltration</b>). <b>Night Sky</b>, meanwhile, changes the description of a room when we've examined another object, so that the player's awareness of his environment is affected by other things the character knows.
+<p>
+<p><b>Verbosity</b> changes the default behavior that rooms are described fully only the first time the player visits.
+<p>
+<a href=Rdoc35.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Going, Pushing Things in Directions</b></font></a><i> for ways to change just those room descriptions that are shown as the result of the player's movement</i><p><p>
+<a href=Rdoc25.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Background, Memory, and Knowledge</b></font></a><i> for ways to change the room description in response to the player character's knowledge at any given stage of play</i><p><p>
 <p><hr><p>
+<a name="e306"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex306.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>333</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex306.html#e306 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Priority Lab</font></b></a><br>A debugging rule useful for checking the priorities of objects about to be listed.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex306.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e304"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>334</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex304.html#e304 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Low Light</font></b></a><br>An object that is only visible and manipulable when a bright light fixture is on.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e56"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>332</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex56.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Eye of the Idol</font></b></a><br>A systematic way to allow objects in certain places to be described in the room description body text rather than in paragraphs following the room description, and to control whether supporters list their contents or not.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e48"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex48.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>330</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex48.html#e48 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Rip</font></b></a><br>A simple way to allow objects in certain places to be described in the room description body text rather than in paragraphs following the room description.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex48.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e264"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex264.html#e264 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>337</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex264.html#e264 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Copper River</font></b></a><br>Manipulating room descriptions so that only interesting items are mentioned, while objects that are present but not currently useful to the player are ignored.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex264.html#e264 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e295"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex295.html#e295 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex295.html#e295 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex295.html#e295 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e41"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex41.html#e41 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>149</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex41.html#e41 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Infiltration</font></b></a><br>A room whose description changes depending on the number of times the player has visited.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex41.html#e41 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e67"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc20.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc20.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Pine 3</font></b></a><br>Pine: Allowing the player to visit aspects of the past in memory and describe these events to the princess, as a break from the marriage-proposal scene.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex67.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e67"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc30.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>144</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc30.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Night Sky</font></b></a><br>A room which changes its description depending on whether an object has been examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex67.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Sometimes a nice effect is to change the way things are described depending on the information the player has gained in the course of play. We could for instance write this:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode683(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Night Sky[=0x0022=][=0x000A=][=0x000A=]The Planetarium is a room. [=0x0022=][if we have examined the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if][=0x0022=][=0x000A=][=0x000A=]The sinister message is a thing in the Planetarium. [=0x0022=]A message is taped to the wall.[=0x0022=] The description is [=0x0022=][=0x0027=]BEWARE.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]look / x message / look[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode683()"><img border=0 src=../doc_images/paste.png></a> &quot;Night Sky&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Planetarium is a room. &quot;[if we have examined the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The sinister message is a thing in the Planetarium. &quot;A message is taped to the wall.&quot; The description is &quot;'BEWARE.'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / x message / look&quot;.
+</font></blockquote><p>
+<p>
+<p>On the other hand, beware that this would not work as desired:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode684(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Pine[=0x0022=][=0x000A=][=0x000A=]Part 1 - The Set-up[=0x000A=][=0x000A=][This is mostly a repeat of what we have already seen, but for the sake of producing a playable scenario, we include it. The new material appears at Part 2.][=0x000A=][=0x000A=]A person can be asleep or awake. A person can be active or passive.[=0x000A=][=0x000A=]The Spinning Tower is a room. [=0x0022=]A remote corner of the old castle, reserved for spinning and weaving tasks.[=0x0022=][=0x000A=][=0x000A=]Sleeping Beauty is an asleep woman in the Spinning Tower. [=0x0022=][if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking [attitude][end if].[=0x0022=] The description is [=0x0022=]She is even more magnificent than the rumors suggested.[=0x0022=] Understand [=0x0022=]woman[=0x0022=] or [=0x0022=]girl[=0x0022=] or [=0x0022=]princess[=0x0022=] or [=0x0022=]lady[=0x0022=] as Sleeping Beauty.[=0x000A=][=0x000A=]Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.[=0x000A=][=0x000A=]When Discovery ends: say [=0x0022=]Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.[=0x0022=]; now Beauty is passive.[=0x000A=][=0x000A=]Instead of waking an awake person: say [=0x0022=]Redundant.[=0x0022=][=0x000A=][=0x000A=]Instead of waking an asleep person: say [=0x0022=]Yes, but how?[=0x0022=][=0x000A=][=0x000A=]Instead of attacking an asleep person:[=0x000A=]now the noun is awake;[=0x000A=][=0x0009=]say [=0x0022=][The noun] sits bolt upright. [=0x0027=]Hey! Ow![=0x0027=] So much for that true love[=0x0027=]s kiss nonsense.[=0x0022=][=0x000A=][=0x000A=]Instead of kissing an asleep person:[=0x000A=][=0x0009=]now the noun is awake;[=0x000A=][=0x0009=]say [=0x0022=][The noun] slowly stirs to wakefulness![=0x0022=][=0x000A=][=0x000A=]Instead of throwing water at an asleep person:[=0x000A=][=0x0009=]now the second noun is awake;[=0x000A=][=0x0009=]remove the noun from play;[=0x000A=][=0x0009=]say [=0x0022=]You pour out [the noun] on [the second noun].[=0x000A=][=0x000A=][The second noun] wakes, shuddering. [=0x0027=]Agh! I had a terrible dream about drowning and then-- Hey![=0x0027=][=0x0022=][=0x000A=][=0x000A=]The player carries a jug of water. Understand [=0x0022=]pour [something] on [something][=0x0022=] or [=0x0022=]splash [something] at/on [something][=0x0022=] as throwing it at.[=0x000A=][=0x000A=]Table of Conversation[=0x000A=]topic[=0x0009=]reply[=0x0009=]quip[=0x000A=][=0x0022=]dream/dreams/nightmare/nightmares/sleep[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Sleep well?[=0x0027=] you ask solicitously.[=0x000A=][=0x000A=][=0x0027=]Not really,[=0x0027=] she replies, edging away from you. So much for that angle.[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Ghastly nightmares,[=0x0027=] she remarks. You nod politely.[=0x0022=][=0x000A=][=0x0022=]marriage/love/wedding/boyfriend/beau/lover[=0x0022=][=0x0009=][=0x0022=][=0x0027=]So,[=0x0027=] you say. [=0x0027=]This is a little weird since we just met, but, um. Would you like to get married?[=0x0027=][=0x000A=][=0x000A=]She looks at you nervously. [=0x0027=]Do I have to?[=0x0027=][=0x0022=][=0x0009=][=0x0022=][=0x0027=]I, er,[=0x0027=] she says. [=0x0027=]I hope I[=0x0027=]m not supposed to marry you or something.[=0x0027=][=0x0022=][=0x000A=][=0x0022=]marriage/love/wedding/boyfriend/beau/lover[=0x0022=][=0x0009=][=0x0022=][=0x0027=]I was told I was going to marry you and inherit the kingdom,[=0x0027=] you say, apologetically. [=0x0027=]Would that be very bad?[=0x0027=] This could be awkward, considering your family circumstances -- you did promise your mother that everything would be better, after this --[=0x000A=][=0x000A=][=0x0027=]Oh, it[=0x0027=]s not you -- I[=0x0027=]m seeing someone,[=0x0027=] she says, smiling quickly.[=0x000A=][=0x000A=]You try to think how to point out that it[=0x0027=]s been a hundred years since she last saw her boyfriend.[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Do you think I could go look for someone? I[=0x0027=]m seeing him, you see, and I think I[=0x0027=]ve been... sick... for a while, so he might be worried.[=0x0027=][=0x000A=][=0x000A=]You try to think how to point out that it[=0x0027=]s been a hundred years since she last saw her boyfriend. And try not to think how awkward things would be in your family if she refuses to marry you.[=0x0022=][=0x000A=][=0x0022=]marriage/love/wedding/boyfriend/beau/lover[=0x0022=][=0x0009=][=0x0022=][=0x0027=]You[=0x0027=]ve been up here for a hundred years,[=0x0027=] you say. An unpleasant thought occurs to you. [=0x0027=]Was your young man in the castle somewhere?[=0x0027=][=0x000A=][=0x000A=]She shakes her head mutely.[=0x0022=][=0x0009=][=0x0022=]She goes to the window and looks out at the now-fading thicket of briar. [=0x0027=]That took a while to grow,[=0x0027=] she observes. [=0x0027=]I[=0x0027=]ve been up here longer than I thought.[=0x0027=][=0x000A=][=0x000A=]You shrug, uncomfortable.[=0x0022=][=0x000A=][=0x000A=]Instead of asking an awake beauty about a topic listed in the Table of Conversation:[=0x000A=][=0x0009=]now Beauty is passive;[=0x000A=][=0x0009=]say [=0x0022=][reply entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=]blank out the whole row.[=0x000A=][=0x000A=]Instead of telling an awake beauty about something: try asking the noun about it.[=0x000A=][=0x000A=]Instead of asking an asleep person about something:[=0x000A=][=0x0009=]say [=0x0022=][The noun] snores.[=0x0022=][=0x000A=][=0x000A=]Marriage Proposal ends when the number of filled rows in the Table of Conversation is 0.[=0x000A=][=0x000A=]Every turn during Marriage Proposal:[=0x000A=][=0x0009=]if Beauty is active and Beauty is visible:[=0x000A=][=0x0009=][=0x0009=]repeat through Table of Conversation:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][quip entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]make no decision.[=0x000A=][=0x000A=]Every turn: now Beauty is active.[=0x000A=][=0x000A=]When Marriage Proposal ends: end the game saying [=0x0022=]This is going to take some explaining.[=0x0022=][=0x000A=][=0x000A=][So far we haven[=0x0027=]t much of a chance to affect matters and make them better. Suppose we[=0x0027=]d like to add an element to the conversation where we[=0x0027=]re allowed to tell Beauty about past events -- and explore them a bit; and if the first retelling doesn[=0x0027=]t go quite as planned, we[=0x0027=]re allowed to revisit these scenes to hit them with a bit more emphasis.][=0x000A=][=0x000A=]Part 2 - Flashbacks[=0x000A=][=0x000A=]Instead of asking an awake beauty about a topic listed in the Table of Flashback Material:[=0x000A=][=0x0009=]now Beauty is passive;[=0x000A=][=0x0009=]say [=0x0022=][reply entry][paragraph break][=0x0022=].[=0x000A=][=0x000A=]A fact is a kind of thing. The family circumstances is a fact. A fact can be known or unknown. A fact can be current or past.[=0x000A=][=0x000A=][Once known, a fact remains known permanently -- this could be useful if we wanted to make some rules about how Beauty acts when she knows different information. By contrast, a fact is only [=0x0022=]current[=0x0022=] if it is the last thing discussed. Since a player can mention a fact over and over, he can make it [=0x0022=]current[=0x0022=] again and again, and thus reactivate the flashback.][=0x000A=][=0x000A=]Table of Flashback Material[=0x000A=]topic[=0x0009=]reply[=0x000A=][=0x0022=]poor/poverty/family/money/mother/circumstances[=0x0022=] or [=0x0022=]family circumstances[=0x0022=] or [=0x0022=]my family/mother[=0x0022=][=0x0009=][=0x0022=][if family circumstances is unknown][=0x0027=]I wish you[=0x0027=]d give some thought to marrying me. You see,[=0x0027=] you say, your jaw tensing. [=0x0027=]I wouldn[=0x0027=]t ask if it weren[=0x0027=]t for my [family circumstances]...[=0x0027=][otherwise][=0x0027=]I don[=0x0027=]t think you fully understand the [family circumstances],[=0x0027=] you say.[end if][=0x0022=][=0x000A=][=0x000A=] After printing the name of a fact (called target): now the target is current; now the target is known.[=0x000A=][=0x000A=][This [=0x0022=]After printing the name...[=0x0022=] rule will be explained later in the chapter on activities; for now, it is enough to know that whenever family circumstances is mentioned in the table of flashback material, this rule will automatically be called. Now the terms under which the flashback happens:][=0x000A=][=0x000A=]Poverty flashback is a recurring scene. Poverty flashback begins when family circumstances is current. When poverty flashback begins: strip the player; move the player to the Woodcutter[=0x0027=]s Shack.[=0x000A=][=0x000A=][Note the [=0x0022=]recurring[=0x0022=] here: we want the player to be able to revisit this scene as needed.][=0x000A=][=0x000A=]The Woodcutter[=0x0027=]s Shack is a room. [=0x0022=]Your family lives in a shack in the forest. There are holes in the roof, and in the winter the snow comes in -- rain, too, for that matter. The walls aren[=0x0027=]t very well-boarded, and don[=0x0027=]t keep out the wind, and even though you live in the middle of dense woods, you can never gather enough fuel to keep this place fully heated. And then there[=0x0027=]s the stench. Pigs wander freely in and out, and your three youngest brothers play on the floor.[=0x0022=][=0x000A=][=0x000A=]Pigs are an animal in the shack. The pigs are scenery. The description is [=0x0022=]They really are very grubby, dirty animals, but what[=0x0027=]s worse than that, the value of pigs has declined a lot over the last few decades. This is hard to explain to someone who has been out of touch with the world for a while, but keeping pigs for meat is a dubious prospect when there[=0x0027=]s less and less for them to forage on.[=0x0022=] Instead of smelling the pigs: say [=0x0022=]They smell the way animals do, when they live among their own refuse.[=0x0022=]; increase the pity of Beauty by 2.[=0x000A=][=0x000A=]The brothers are a man. The description of brothers is [=0x0022=]Hans, Franz, and Lukas. Twins and then the baby. So young, and growing up fatherless; and soon to be orphaned entirely, if your mother[=0x0027=]s health does not improve.[=0x0022=] Understand [=0x0022=]brother[=0x0022=] or [=0x0022=]twin[=0x0022=] or [=0x0022=]twins[=0x0022=] or [=0x0022=]baby[=0x0022=] or [=0x0022=]franz[=0x0022=] or [=0x0022=]hans[=0x0022=] or [=0x0022=]lukas[=0x0022=] as the brothers.[=0x000A=][=0x000A=]The untidy bed is scenery in the Shack. Mother is a woman on the untidy bed. The description of mother is [=0x0022=]She is wasting away of a slow disease, her skin stretched tautly over bone. She hasn[=0x0027=]t been the same since your father left.[=0x0022=] On the bed is a folded letter.[=0x000A=][=0x000A=]The description of the letter is [=0x0022=]Many times read over and creased, the letter explains how your father has gone away with a wealthy countess and will not return. Your mother was not able to read it herself, of course, and had to have it explained to her by the parish priest. Now she keeps it by the bed and crumples it in her fits of delirium.[=0x0022=][=0x000A=][=0x000A=]Instead of kissing or touching Mother for the first time:[=0x000A=][=0x0009=]say [=0x0022=]You place a gentle kiss on her feverish brow. She looks up at you, her oldest -- yes, never mind that bit -- with a look of sincere trust and admiration.[=0x000A=][=0x000A=][=0x0027=]You[=0x0027=]ll find a way through this for us,[=0x0027=] she says, squeezing your fingers. [=0x0027=]I know you will.[=0x0027=][=0x0022=]; increase the pity of Beauty by 3.[=0x000A=][=0x000A=]Instead of kissing Mother: say [=0x0022=]You have no more heart-rending memories of affection to recount; that one incident will have to serve, for rhetorical purposes.[=0x0022=][=0x000A=][=0x000A=]Instead of waiting in the Shack: say [=0x0022=]The wind blows sharply through the walls.[=0x0022=][=0x000A=][=0x000A=]Instead of attacking someone in the Shack:[=0x000A=][=0x0009=]say [=0x0022=]Though sometimes the conditions of your life make you grouchy and impatient, you would never dream of striking a member of your own family. But from time to time you do feel the temptation.[=0x0022=][=0x000A=][=0x000A=]Beauty has a number called pity. After examining something in the Woodcutter[=0x0027=]s Shack, increase the pity of Beauty by 1. After examining mother, increase the pity of Beauty by 2. After examining the letter, increase the pity of Beauty by 3.[=0x000A=][=0x000A=]Poverty flashback ends when waiting or the time since poverty flashback began is five minutes.[=0x000A=][=0x000A=]When Poverty flashback ends:[=0x000A=][=0x0009=]now family circumstances is past;[=0x000A=][=0x0009=]say [=0x0022=]...you finish describing the miserable circumstances of your home life, and allow your attention to return to the present.[=0x0022=];[=0x000A=][=0x0009=]restore the player;[=0x000A=][=0x0009=]now Beauty is passive;[=0x000A=][=0x0009=]if Beauty is sympathetic, say [=0x0022=][=0x0027=]Oh dear![=0x0027=] she says. [=0x0027=]What a dreadful life![=0x0027=] She wrings her hands. [=0x0027=]No wonder you are eager to improve your lot...! But --[=0x0027=] Her brow clears, a new thought occurring. [=0x0027=]You needn[=0x0027=]t marry me, you know! We could arrange it differently! I am certain that my father would give you a large reward, instead, and then I would not be separated from my current boyfriend![=0x0027=][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]She makes a disgusted face, but she doesn[=0x0027=]t seem nearly so heart-wrung as you had hoped to make her. Tough audience, these modern princesses.[=0x0022=][=0x000A=][=0x000A=]Definition: Beauty is sympathetic if the pity of Beauty is greater than 4.[=0x000A=][=0x000A=]To say attitude:[=0x000A=][=0x0009=]if Beauty is sympathetic, say [=0x0022=]distressed on your behalf[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]a little confused[=0x0022=].[=0x000A=][=0x000A=][And the following is the same as in the Space Patrol example as well: we need a systematic way to remove the player[=0x0027=]s possessions, then put everything back when the flashback is over:][=0x000A=][=0x000A=]Saved location is a room that varies. Locker is a container. Wardrobe is a container.[=0x000A=][=0x000A=]To strip the player:[=0x000A=][=0x0009=] now every thing carried by the player is in the locker;[=0x000A=][=0x0009=]now every thing worn by the player is in the wardrobe;[=0x000A=][=0x0009=]change saved location to location.[=0x000A=][=0x000A=]To restore the player:[=0x000A=][=0x0009=]now every thing carried by the player is in the location;[=0x000A=][=0x0009=]now every thing in the locker is carried by the player;[=0x000A=][=0x0009=]now every thing in the wardrobe is worn by the player;[=0x000A=][=0x0009=]move the player to saved location.[=0x000A=][=0x000A=]Test me with [=0x0022=]x beauty / wake beauty / pour water on beauty / ask beauty about sleep / tell beauty about poverty / smell pigs / x mother / x letter / kiss mother / ask beauty about marriage / z / z[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Night Sky[=0x0022=][=0x000A=][=0x000A=]The Planetarium is a room. [=0x0022=][if we have listened to the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if][=0x0022=][=0x000A=][=0x000A=]The sinister message is a thing in the Planetarium. [=0x0022=]A message plays very softly, so that you would have to listen to hear it.[=0x0022=] Instead of doing anything other than listening to the message: say [=0x0022=]It[=0x0027=]s only a sound, after all.[=0x0022=]. Instead of listening to the sinister message: say [=0x0022=]A voice whispers, [=0x0027=]BEWARE[=0x0027=].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]listen to message / look[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode684()"><img border=0 src=../doc_images/paste.png></a> &quot;Pine&quot;
+<a href="javascript:pasteCode684()"><img border=0 src=../doc_images/paste.png></a> &quot;Night Sky&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Part 1 - The Set-up
+<blockquote><font color="#000080">The Planetarium is a room. &quot;[if we have listened to the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]&quot;
 </font></blockquote><p>
 <p>
-<p>This is mostly a repeat of what we have already seen, but for the sake of producing a playable scenario, we include it. The new material appears at Part 2.
-<p>
-<blockquote><font color="#000080">A person can be asleep or awake. A person can be active or passive.
+<blockquote><font color="#000080">The sinister message is a thing in the Planetarium. &quot;A message plays very softly, so that you would have to listen to hear it.&quot; Instead of doing anything other than listening to the message: say &quot;It's only a sound, after all.&quot;. Instead of listening to the sinister message: say &quot;A voice whispers, 'BEWARE'.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Spinning Tower is a room. &quot;A remote corner of the old castle, reserved for spinning and weaving tasks.&quot;
+<blockquote><font color="#000080">Test me with &quot;listen to message / look&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sleeping Beauty is an asleep woman in the Spinning Tower. &quot;[if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking [attitude][end if].&quot; The description is &quot;She is even more magnificent than the rumors suggested.&quot; Understand &quot;woman&quot; or &quot;girl&quot; or &quot;princess&quot; or &quot;lady&quot; as Sleeping Beauty.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Discovery ends: say &quot;Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.&quot;; now Beauty is passive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of waking an awake person: say &quot;Redundant.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of waking an asleep person: say &quot;Yes, but how?&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of attacking an asleep person:
-<br>now the noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sits bolt upright. 'Hey! Ow!' So much for that true love's kiss nonsense.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of kissing an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] slowly stirs to wakefulness!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of throwing water at an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You pour out [the noun] on [the second noun].
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">[The second noun] wakes, shuddering. 'Agh! I had a terrible dream about drowning and then-- Hey!'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a jug of water. Understand &quot;pour [something] on [something]&quot; or &quot;splash [something] at/on [something]&quot; as throwing it at.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Conversation
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">quip</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;dream/dreams/nightmare/nightmares/sleep&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Sleep well?' you ask solicitously.</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">'Not really,' she replies, edging away from you. So much for that angle.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ghastly nightmares,' she remarks. You nod politely.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'So,' you say. 'This is a little weird since we just met, but, um. Would you like to get married?'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">She looks at you nervously. 'Do I have to?'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I, er,' she says. 'I hope I'm not supposed to marry you or something.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I was told I was going to marry you and inherit the kingdom,' you say, apologetically. 'Would that be very bad?' This could be awkward, considering your family circumstances -- you did promise your mother that everything would be better, after this --</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">'Oh, it's not you -- I'm seeing someone,' she says, smiling quickly.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">You try to think how to point out that it's been a hundred years since she last saw her boyfriend.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Do you think I could go look for someone? I'm seeing him, you see, and I think I've been... sick... for a while, so he might be worried.'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">You try to think how to point out that it's been a hundred years since she last saw her boyfriend. And try not to think how awkward things would be in your family if she refuses to marry you.&quot;
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'You've been up here for a hundred years,' you say. An unpleasant thought occurs to you. 'Was your young man in the castle somewhere?'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">She shakes her head mutely.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;She goes to the window and looks out at the now-fading thicket of briar. 'That took a while to grow,' she observes. 'I've been up here longer than I thought.'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">You shrug, uncomfortable.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking an awake beauty about a topic listed in the Table of Conversation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of telling an awake beauty about something: try asking the noun about it.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking an asleep person about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] snores.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Marriage Proposal ends when the number of filled rows in the Table of Conversation is 0.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn during Marriage Proposal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is active and Beauty is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Conversation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[quip entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn: now Beauty is active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Marriage Proposal ends: end the game saying &quot;This is going to take some explaining.&quot;
-</font></blockquote><p>
-<p>
-<p>So far we haven't much of a chance to affect matters and make them better. Suppose we'd like to add an element to the conversation where we're allowed to tell Beauty about past events -- and explore them a bit; and if the first retelling doesn't go quite as planned, we're allowed to revisit these scenes to hit them with a bit more emphasis.
-<p>
-<blockquote><font color="#000080">Part 2 - Flashbacks
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking an awake beauty about a topic listed in the Table of Flashback Material:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A fact is a kind of thing. The family circumstances is a fact. A fact can be known or unknown. A fact can be current or past.
-</font></blockquote><p>
-<p>
-<p>Once known, a fact remains known permanently -- this could be useful if we wanted to make some rules about how Beauty acts when she knows different information. By contrast, a fact is only &quot;current&quot; if it is the last thing discussed. Since a player can mention a fact over and over, he can make it &quot;current&quot; again and again, and thus reactivate the flashback.
-<p>
-<blockquote><font color="#000080">Table of Flashback Material
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;poor/poverty/family/money/mother/circumstances&quot; or &quot;family circumstances&quot; or &quot;my family/mother&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[if family circumstances is unknown]'I wish you'd give some thought to marrying me. You see,' you say, your jaw tensing. 'I wouldn't ask if it weren't for my [family circumstances]...'[otherwise]'I don't think you fully understand the [family circumstances],' you say.[end if]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"> After printing the name of a fact (called target): now the target is current; now the target is known.
-</font></blockquote><p>
-<p>
-<p>This &quot;After printing the name...&quot; rule will be explained later in the chapter on activities; for now, it is enough to know that whenever family circumstances is mentioned in the table of flashback material, this rule will automatically be called. Now the terms under which the flashback happens:
-<p>
-<blockquote><font color="#000080">Poverty flashback is a recurring scene. Poverty flashback begins when family circumstances is current. When poverty flashback begins: strip the player; move the player to the Woodcutter's Shack.
-</font></blockquote><p>
-<p>
-<p>Note the &quot;recurring&quot; here: we want the player to be able to revisit this scene as needed.
-<p>
-<blockquote><font color="#000080">The Woodcutter's Shack is a room. &quot;Your family lives in a shack in the forest. There are holes in the roof, and in the winter the snow comes in -- rain, too, for that matter. The walls aren't very well-boarded, and don't keep out the wind, and even though you live in the middle of dense woods, you can never gather enough fuel to keep this place fully heated. And then there's the stench. Pigs wander freely in and out, and your three youngest brothers play on the floor.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Pigs are an animal in the shack. The pigs are scenery. The description is &quot;They really are very grubby, dirty animals, but what's worse than that, the value of pigs has declined a lot over the last few decades. This is hard to explain to someone who has been out of touch with the world for a while, but keeping pigs for meat is a dubious prospect when there's less and less for them to forage on.&quot; Instead of smelling the pigs: say &quot;They smell the way animals do, when they live among their own refuse.&quot;; increase the pity of Beauty by 2.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The brothers are a man. The description of brothers is &quot;Hans, Franz, and Lukas. Twins and then the baby. So young, and growing up fatherless; and soon to be orphaned entirely, if your mother's health does not improve.&quot; Understand &quot;brother&quot; or &quot;twin&quot; or &quot;twins&quot; or &quot;baby&quot; or &quot;franz&quot; or &quot;hans&quot; or &quot;lukas&quot; as the brothers.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The untidy bed is scenery in the Shack. Mother is a woman on the untidy bed. The description of mother is &quot;She is wasting away of a slow disease, her skin stretched tautly over bone. She hasn't been the same since your father left.&quot; On the bed is a folded letter.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The description of the letter is &quot;Many times read over and creased, the letter explains how your father has gone away with a wealthy countess and will not return. Your mother was not able to read it herself, of course, and had to have it explained to her by the parish priest. Now she keeps it by the bed and crumples it in her fits of delirium.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of kissing or touching Mother for the first time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You place a gentle kiss on her feverish brow. She looks up at you, her oldest -- yes, never mind that bit -- with a look of sincere trust and admiration.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">'You'll find a way through this for us,' she says, squeezing your fingers. 'I know you will.'&quot;; increase the pity of Beauty by 3.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of kissing Mother: say &quot;You have no more heart-rending memories of affection to recount; that one incident will have to serve, for rhetorical purposes.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of waiting in the Shack: say &quot;The wind blows sharply through the walls.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of attacking someone in the Shack:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Though sometimes the conditions of your life make you grouchy and impatient, you would never dream of striking a member of your own family. But from time to time you do feel the temptation.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Beauty has a number called pity. After examining something in the Woodcutter's Shack, increase the pity of Beauty by 1. After examining mother, increase the pity of Beauty by 2. After examining the letter, increase the pity of Beauty by 3.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Poverty flashback ends when waiting or the time since poverty flashback began is five minutes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Poverty flashback ends:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now family circumstances is past;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;...you finish describing the miserable circumstances of your home life, and allow your attention to return to the present.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;restore the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is sympathetic, say &quot;'Oh dear!' she says. 'What a dreadful life!' She wrings her hands. 'No wonder you are eager to improve your lot...! But --' Her brow clears, a new thought occurring. 'You needn't marry me, you know! We could arrange it differently! I am certain that my father would give you a large reward, instead, and then I would not be separated from my current boyfriend!'&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;She makes a disgusted face, but she doesn't seem nearly so heart-wrung as you had hoped to make her. Tough audience, these modern princesses.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: Beauty is sympathetic if the pity of Beauty is greater than 4.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say attitude:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is sympathetic, say &quot;distressed on your behalf&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;a little confused&quot;.
-</font></blockquote><p>
-<p>
-<p>And the following is the same as in the Space Patrol example as well: we need a systematic way to remove the player's possessions, then put everything back when the flashback is over:
-<p>
-<blockquote><font color="#000080">Saved location is a room that varies. Locker is a container. Wardrobe is a container.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To strip the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp; now every thing carried by the player is in the locker;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing worn by the player is in the wardrobe;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change saved location to location.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To restore the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing carried by the player is in the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the locker is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the wardrobe is worn by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to saved location.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x beauty / wake beauty / pour water on beauty / ask beauty about sleep / tell beauty about poverty / smell pigs / x mother / x letter / kiss mother / ask beauty about marriage / z / z&quot;.
-</font></blockquote><p>
-<p>
-<p>Because we haven't changed the endings of the &quot;Marriage Proposal&quot; scene, there is still only one way for this scenario to work out; but at least now the player has the opportunity to alter Beauty's attitude a bit (or not) before the game is done.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc20.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>The reason is that our Instead rule has pre-empted normal listening, so Inform considers that we have never successfully heard the message. The moral here is that &quot;if we have...&quot; is useful for tracking events that otherwise proceeded completely normally (picking up ordinary objects, examining things); if we have used instead to make some change, we will have to use a different approach to record that the event did occur as scheduled.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc30.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e404"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex404.html#e404 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex404.html#e404 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Pine 4</font></b></a><br>Pine: Adding a flashback scene that, instead of repeating endlessly, repeats only until the Princess has understood the point.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex404.html#e404 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc19.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc21.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e389"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex389.html#e389 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex389.html#e389 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex389.html#e389 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc31.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

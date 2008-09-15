@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.21. Primitive Inform 6 declarations of rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.17. Types are not kinds of value</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,33 +19,23 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Primitive Inform 6 declarations of rules" -->
-<!-- SEARCH SECTION "24.21" -->
-<!-- SEARCH SORT "024-021-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc414.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc416.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.21. Primitive Inform 6 declarations of rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Types are not kinds of value" -->
+<!-- SEARCH SECTION "24.17" -->
+<!-- SEARCH SORT "024-017-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc414.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc416.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.17. Types are not kinds of value</b></font></td></tr></table>
 <p>
-<p>By writing a sentence like this:
+<p>I7 has an extensive system of checking to determine whether any given value makes sense in a particular context. For example, it will not allow &quot;the capacity of the basket&quot; to be used where text is expected, since it is ultimately a number. This is called type-checking, and the language is complicated enough that there are over 50 different types built into Inform. Some of these are nameless and are used purely inside the Inform software. The remainder are catalogued in the next section.
 <p>
-<blockquote><font color="#000080">The underground rule translates into I6 as &quot;UNDERGROUND_R&quot;.
+<p>Even though there are still over 30 types which have names, relatively few of these names will ever be known to, or needed by, the user of I7. For instance, the exotic type &quot;table-column&quot; (exotic types often have hyphenated names) exists only so that the Standard Rules can make definitions like this one:
+<p>
+<blockquote><font color="#000080">To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
 </font></blockquote><p>
 <p>
-<p>we create a new rule, the &quot;underground rule&quot;, and also notify Inform that it will have no definition as I7 source text: instead, it will be provided as an I6 routine called &quot;UNDERGROUND_R&quot;. We can define this with an Include like so:
+<p>Here two exotic types are used. One, &quot;table-name&quot;, was in fact briefly mentioned in the chapter on Tables, but the other, &quot;table-column&quot;, is never explicitly described in this documentation.
 <p>
-<blockquote><font color="#000080">Include (-
-<br>[ UNDERGROUND_R;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if (real_location hasnt light) { RulebookSucceeds(); rtrue; }
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rfalse;
-<br>];
-<br>-).
-</font></blockquote><p>
+<p>In general, the &quot;exotic&quot; types not previously described in the documentation have been omitted for a reason. They cannot be stored in variables with &quot;let&quot; and will not always be allowed even in phrase definitions unless the phrase is defined using I6, like the sorting example above. It is safest to use them as little as possible, and to make no assumptions that they are bound to follow the pattern of what other I7 constructions seem to do.
 <p>
-<p>The rule should return false if it wants to make no decision, but call either RulebookSucceeds or RulebookFails and return true if it does. These routines can optionally take an argument: which will be the return value from the rulebook.
-<p>
-<p>Note that UNDERGROUND_R itself has no arguments. In the case of an action-based rulebook, the I6 variables noun, second and actor can be referred to, while for an object-based rulebook the parameter object is stored in the I6 global variable parameter_object.
-<p>
-<p>We can put this rule into a rulebook in the same way that any named rule can be:
-<p>
-<blockquote><font color="#000080">The underground rule is listed in the spot danger rules.
-</font></blockquote><p>
+<p>For instance, &quot;unicode-character&quot; does not behave like &quot;number&quot;: it is a concept used in text recognition, not a kind of value. Similarly, &quot;condition&quot; is not a Boolean true/false value but is a label applied to a sequence of words to identify it as describing a state of affairs which might or might not be true. And &quot;action&quot;, although it is the type of actual data, is a collection of information too large to be held in any single value. It therefore makes no sense to have a variable whose type is any of these, the first two being conceptually impossible, the third impracticable.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc414.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc416.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

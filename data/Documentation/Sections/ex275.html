@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.10. Defining new prepositions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,154 +19,144 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Bogart" -->
-<!-- SEARCH SECTION "Ex 223" -->
-<!-- SEARCH SORT "Ex 013-010-223" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc207.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc209.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.10. Defining new prepositions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Crusoe" -->
+<!-- SEARCH SECTION "Ex 312" -->
+<!-- SEARCH SORT "Ex 017-005-312" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc276.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc278.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
 <p>
-<p>The term preposition is used here, a little loosely, to mean anything which we add to the verb <i>to be</i> in order to talk about some relation or other. We have seen many examples already, such as:
+<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
 <p>
-<blockquote><font color="#000080">To be in - The ball is in the box.
-<br>To be part of - The lever is part of the slot machine.
+<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
+<p>
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>Assaying is an activity.
 </font></blockquote><p>
 <p>
-<p>These are easier to create than verbs, because Inform already knows the wayward grammar of <i>to be</i>, so we need not give any of the principal parts. Otherwise, the method is exactly the same. Compare the definitions in the following:
+<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
 <p>
-<blockquote><font color="#000080">Suspecting relates various people to one person.
+<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Just as it does for rulebooks, Inform defines the adjectives &quot;empty&quot; and &quot;non-empty&quot; for activities to test this state:
+<p>
+<blockquote><font color="#000080">if the analysing activity is empty, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to suspect (he suspects, they suspect, he suspected, it is suspected, he is suspecting) implies the suspecting relation.
+<p>will be true only when all three of its rulebooks are empty.
+<p>
+<p>Moreover, a newly created activity never happens, unless we take steps to make it do so. We can make an activity happen at any time by writing phrases like so:
+<p>
+<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
+<br>carry out the assaying activity;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to be suspicious of implies the suspecting relation.
+<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
+<p>
+<blockquote><font color="#000080">The last for assaying rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
 </font></blockquote><p>
 <p>
-<p>The result of this is that
+<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
 <p>
-<blockquote><font color="#000080">Hercule Poirot suspects Colonel Hotchkiss.
-<br>Hercule Poirot is suspicious of Colonel Hotchkiss.
+<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
+<p>
+<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
 </font></blockquote><p>
 <p>
-<p>are exactly equivalent, and so are these two descriptions:
-<p>
-<blockquote><font color="#000080">somebody who suspects Colonel Hotchkiss
-<br>somebody suspicious of Colonel Hotchkiss
-</font></blockquote><p>
-<p>
-<p>We can also define verbs as auxiliaries, like so:
-<p>
-<blockquote><font color="#000080">The verb to be able to approach implies the approachability relation.
-</font></blockquote><p>
-<p>
-<p>Now we can ask if Poirot &quot;can approach&quot; Hotchkiss, and so on. (Here again we need not spell out the other parts of the verb.)
+<p>so that during assays more technical names are used.
 <p>
 <p><hr><p>
-<a name="e112"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex112.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>220</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex112.html#e112 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swerve left? Swerve right? Or think about it and die?</font></b></a><br>Building a marble chute track in which a dropped marble will automatically roll downhill.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex112.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e155"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>221</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex155.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Beneath the Surface</font></b></a><br>An "underlying" relation which adds to the world model the idea of objects hidden under other objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e34"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>222</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex34.html#e34 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Abolition of Love</font></b></a><br>A thorough exploration of all the kinds of relations established so far, with the syntax to set and unset them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e228"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>311</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex228.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e275"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc208.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>223</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc208.html#e275 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bogart</font></b></a><br>Clothing for the player that layers, so that items cannot be taken off in the wrong order, and the player's inventory lists only the clothing that is currently visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex275.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e275"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc277.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>312</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc277.html#e275 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex275.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We have two things to keep track of with our layering clothing: what currently is covering something else; and what <i>can</i> cover something else. This implementation goes for a fairly simple treatment, assuming that each item of clothing will completely conceal those beneath it, and that we are not implementing entire sets of shirts, jackets, etc. But it will do for a demonstration.
+<p>Suppose we want to add rules so that any time we examine a charred object (and most of our objects can be charred), a line about the charring is appended to the end of the object description. We could use &quot;after examining...&quot;, but perhaps we would prefer for the sentence about the charring not to appear in its own paragraph.
+<p>
+<p>This is an ideal occasion for a new activity. We look at the action index for &quot;examining&quot; to identify the rule that causes the old behavior (in this case, the &quot;standard examining rule&quot;); replace this with a new rule that calls our activity; and write our &quot;printing the description&quot; activity in such a way that it uses an object's description without forcing a paragraph return afterward.
+<p>
+<p>Then we will use &quot;after printing the description&quot; to add our line about charring, and make sure that the paragraph return does occur before the prompt.
+<p>
+<p>So:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode319(code) {
+function pasteCode408(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Bogart[=0x0022=][=0x000A=][=0x000A=]Section 1 - Clothing Behavior[=0x000A=][=0x000A=][First we make our relation to represent what *is* underneath another item:][=0x000A=][=0x000A=]Underlying relates one thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.[=0x000A=][=0x000A=][And now we prevent taking a lower layer off before the thing that is worn over it:][=0x000A=][=0x000A=]Before taking off something which underlies something (called the impediment) which is worn by the player:[=0x000A=]say [=0x0022=](first removing [the impediment])[command clarification break][=0x0022=];[=0x000A=]silently try taking off the impediment;[=0x000A=]if the noun underlies something which is worn by the player, stop the action.[=0x000A=][=0x000A=]Check taking off:[=0x000A=][=0x0009=]if the noun underlies something (called the impediment) which is worn by the player, say [=0x0022=][The impediment] is in the way.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out taking off:[=0x000A=][=0x0009=]now the noun is not underlaid by anything.[=0x000A=][=0x000A=]Report taking off something:[=0x000A=][=0x0009=]say [=0x0022=]You are now wearing [a list of uppermost things worn by the player].[=0x0022=] instead.[=0x000A=][=0x000A=]Definition: a thing is uppermost if it is not under something.[=0x000A=][=0x000A=][That covers order of clothing removal, but we also want to restrict what can be worn on top of what else. This time we need Inform to have some idea of what customarily can be layered on top of what other clothing:][=0x000A=][=0x000A=]Overlying relates one thing to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.[=0x000A=][=0x000A=]Covering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering) implies the covering relation.[=0x000A=][=0x000A=][With these definitions, we can say that a jacket should go over a shirt and a shirt over an undershirt (say), and then Inform will know that a jacket will cover both shirt and undershirt.][=0x000A=][=0x000A=]Before wearing something when something (called the impediment) which covers the noun is worn by the player:[=0x000A=][=0x0009=]while the player wears something which covers the noun:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](first removing [the impediment])[command clarification break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]silently try taking off the impediment;[=0x000A=][=0x0009=][=0x0009=]if the player is wearing the impediment, stop the action.[=0x000A=][=0x000A=]Carry out wearing:[=0x000A=][=0x0009=]if the noun covers something (called the hidden item) worn by the player, now the hidden item underlies the noun.[=0x000A=][=0x000A=]Instead of looking under something which is worn by the player:[=0x000A=][=0x0009=]if something (called the underwear) underlies the noun, say [=0x0022=]You peek at [the underwear]. Yup, still there.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Just you in there.[=0x0022=][=0x000A=][=0x000A=]Instead of taking inventory:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]re carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if].[=0x0022=][=0x000A=][=0x000A=][Notice that our inventory only describes the things that the player can see as the upper layer of clothing.][=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The Trailer is a room. [=0x0022=]A full-length mirror is the main amenity in here, and that suits you just fine.[=0x0022=]  The full-length mirror is scenery in the Trailer. Instead of examining or searching the mirror, try taking inventory.[=0x000A=][=0x000A=]The player wears a fedora, a jacket, a shirt, some undershorts, an undershirt, some slacks, a pair of socks, and a pair of shoes.[=0x000A=][=0x000A=]The shirt underlies the jacket. The pair of socks underlies the pair of shoes. The undershorts underlie the slacks. The undershirt underlies the shirt.[=0x000A=][=0x000A=]The jacket overlies the shirt. The shoes overlie the socks. The slacks overlie the undershorts. The shirt overlies the undershirt.[=0x000A=][=0x000A=]Test me with [=0x0022=]x mirror / remove fedora / remove jacket / remove shirt / remove slacks / remove undershirt / remove shoes / remove socks / remove shorts / remove undershorts[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Crusoe[=0x0022=][=0x000A=][=0x000A=]Section 1 - Creating our New Activity[=0x000A=][=0x000A=]The fancy examining rule is listed instead of the standard examining rule in the carry out examining rules.[=0x000A=][=0x000A=][This instruction replaces a normal piece of the examine action, the standard examining rule, with another one of our own devising. (The replacement of the standard examining rule will be explained in more detail in the chapter on rulebooks.)][=0x000A=][=0x000A=]Printing the description of something is an activity.[=0x000A=][=0x000A=]This is the fancy examining rule:[=0x000A=][=0x0009=]carry out the printing the description activity with the noun.[=0x000A=][=0x000A=][All we have done here is enclose what is usually just a rule inside an activity. This means that we can now write before and after rules for the activity, and also add special instructions like [=0x0022=]Rule for printing the name of something while printing the description of something[=0x0022=] -- this may not be likely to arise often, but Inform now has the concept of [=0x0022=]printing the description of something[=0x0022=] as a separate context of action. Next we add the modification that lets us append to the description without a new line:][=0x000A=][=0x000A=]Rule for printing the description of something (called item):[=0x000A=][=0x0009=]say [=0x0022=][description of item] [run paragraph on][=0x0022=].[=0x000A=][=0x000A=][[=0x0022=]run paragraph on[=0x0022=] here will mean that we do not get a paragraph break following the description, even if it ends with a period. We also insert a space, so that our follow-on comments will be properly punctuated.][=0x000A=][=0x000A=]After printing the description of something charred:[=0x000A=][=0x0009=]say [=0x0022=]It is charred.[=0x0022=] instead.[=0x000A=][=0x000A=][The instead at the end of this line stops Inform for going on with any other [=0x0022=]after printing the description of...[=0x0022=] rules.][=0x000A=][=0x000A=][And now, because we want to make sure that we always do get a paragraph break after our description, we add this rule last after all the other rules. [=0x0022=]Last[=0x0022=] and [=0x0022=]first[=0x0022=] rules are covered in more detail in the chapter on rulebooks.][=0x000A=][=0x000A=]Last after printing the description of something:[=0x000A=][=0x0009=]say paragraph break.[=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The Desert Isle is a room. [=0x0022=]A pale expanse of sand, here and there developing into hillocks of grass, and a small clump of palms. The water is shallow here, and there are other islands within swimming distance -- or even wading distance, perhaps -- but none of them is any larger than your island, so it doesn[=0x0027=]t seem worth the trouble of visiting.[=0x000A=][=0x000A=]A few hundred feet out, the water turns darker blue, the sea floor drops away, and there is nothing to be seen all the way down to the horizon, except a couple of fluffy clouds, and an occasional bird.[=0x000A=][=0x000A=]The remains of your fire smolder in the stone-lined pit.[=0x0022=][=0x000A=][=0x000A=]A thing can be charred or whole. A thing is usually whole. Instead of burning something: say [=0x0022=]You hold [the noun] to the fire until it flares and chars.[=0x0022=]; change the noun to charred.[=0x000A=][=0x000A=]The player carries a stick. The description of the stick is [=0x0022=]A strip of palm from the woodiest part of the leaf, about a foot and a half long.[=0x0022=][=0x000A=][=0x000A=]The player carries a glass bottle and a piece of paper. The description of the paper is [=0x0022=]A single blank sheet.[=0x0022=] In the glass bottle is a grain of sand. The glass bottle is openable and open. Instead of burning the glass bottle: say [=0x0022=]You hold the bottle to the flame, but it grows uncomfortably warm.[=0x0022=][=0x000A=][=0x000A=]Instead of burning the grain of sand: say [=0x0022=]You drop the grain into the fire pit, where it becomes indistinguishable from all the others.[=0x0022=]; remove the grain of sand from play. Instead of dropping the grain of sand: remove the grain of sand from play; say [=0x0022=]You return the grain of sand to its brethren.[=0x0022=][=0x000A=][=0x000A=][The player[=0x0027=]s description is handled in an unusual way, and this will produce a space paragraph break there where it should not. Instead, therefore, we will add an instead for examining the player (probably a good idea anyway):][=0x000A=][=0x000A=]Instead of examining the player:[=0x000A=][=0x0009=]say [=0x0022=]You are sunburned and there is sand in cracks you didn[=0x0027=]t know existed.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]i / x stick / x bottle / x sand / x paper / x me / burn stick / x stick / burn paper / x paper[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode319()"><img border=0 src=../doc_images/paste.png></a> &quot;Bogart&quot;
+<a href="javascript:pasteCode408()"><img border=0 src=../doc_images/paste.png></a> &quot;Crusoe&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Clothing Behavior
+<blockquote><font color="#000080">Section 1 - Creating our New Activity
 </font></blockquote><p>
 <p>
-<p>First we make our relation to represent what *is* underneath another item:
-<p>
-<blockquote><font color="#000080">Underlying relates one thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.
+<blockquote><font color="#000080">The fancy examining rule is listed instead of the standard examining rule in the carry out examining rules.
 </font></blockquote><p>
 <p>
-<p>And now we prevent taking a lower layer off before the thing that is worn over it:
+<p>This instruction replaces a normal piece of the examine action, the standard examining rule, with another one of our own devising. (The replacement of the standard examining rule will be explained in more detail in the chapter on rulebooks.)
 <p>
-<blockquote><font color="#000080">Before taking off something which underlies something (called the impediment) which is worn by the player:
-<br>say &quot;(first removing [the impediment])[command clarification break]&quot;;
-<br>silently try taking off the impediment;
-<br>if the noun underlies something which is worn by the player, stop the action.
+<blockquote><font color="#000080">Printing the description of something is an activity.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check taking off:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun underlies something (called the impediment) which is worn by the player, say &quot;[The impediment] is in the way.&quot; instead.
+<blockquote><font color="#000080">This is the fancy examining rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the printing the description activity with the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out taking off:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is not underlaid by anything.
+<p>All we have done here is enclose what is usually just a rule inside an activity. This means that we can now write before and after rules for the activity, and also add special instructions like &quot;Rule for printing the name of something while printing the description of something&quot; -- this may not be likely to arise often, but Inform now has the concept of &quot;printing the description of something&quot; as a separate context of action. Next we add the modification that lets us append to the description without a new line:
+<p>
+<blockquote><font color="#000080">Rule for printing the description of something (called item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[description of item] [run paragraph on]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report taking off something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are now wearing [a list of uppermost things worn by the player].&quot; instead.
+<p>&quot;run paragraph on&quot; here will mean that we do not get a paragraph break following the description, even if it ends with a period. We also insert a space, so that our follow-on comments will be properly punctuated.
+<p>
+<blockquote><font color="#000080">After printing the description of something charred:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is charred.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is uppermost if it is not under something.
+<p>The instead at the end of this line stops Inform for going on with any other &quot;after printing the description of...&quot; rules.
+<p>
+<p>And now, because we want to make sure that we always do get a paragraph break after our description, we add this rule last after all the other rules. &quot;Last&quot; and &quot;first&quot; rules are covered in more detail in the chapter on rulebooks.
+<p>
+<blockquote><font color="#000080">Last after printing the description of something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
-<p>
-<p>That covers order of clothing removal, but we also want to restrict what can be worn on top of what else. This time we need Inform to have some idea of what customarily can be layered on top of what other clothing:
-<p>
-<blockquote><font color="#000080">Overlying relates one thing to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Covering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering) implies the covering relation.
-</font></blockquote><p>
-<p>
-<p>With these definitions, we can say that a jacket should go over a shirt and a shirt over an undershirt (say), and then Inform will know that a jacket will cover both shirt and undershirt.
-<p>
-<blockquote><font color="#000080">Before wearing something when something (called the impediment) which covers the noun is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player wears something which covers the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first removing [the impediment])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking off the impediment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player is wearing the impediment, stop the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out wearing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun covers something (called the hidden item) worn by the player, now the hidden item underlies the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of looking under something which is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the underwear) underlies the noun, say &quot;You peek at [the underwear]. Yup, still there.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Just you in there.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if].&quot;
-</font></blockquote><p>
-<p>
-<p>Notice that our inventory only describes the things that the player can see as the upper layer of clothing.
 <p>
 <blockquote><font color="#000080">Section 2 - The Scenario
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Trailer is a room. &quot;A full-length mirror is the main amenity in here, and that suits you just fine.&quot;  The full-length mirror is scenery in the Trailer. Instead of examining or searching the mirror, try taking inventory.
+<blockquote><font color="#000080">The Desert Isle is a room. &quot;A pale expanse of sand, here and there developing into hillocks of grass, and a small clump of palms. The water is shallow here, and there are other islands within swimming distance -- or even wading distance, perhaps -- but none of them is any larger than your island, so it doesn't seem worth the trouble of visiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player wears a fedora, a jacket, a shirt, some undershorts, an undershirt, some slacks, a pair of socks, and a pair of shoes.
+<blockquote><font color="#000080">A few hundred feet out, the water turns darker blue, the sea floor drops away, and there is nothing to be seen all the way down to the horizon, except a couple of fluffy clouds, and an occasional bird.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The shirt underlies the jacket. The pair of socks underlies the pair of shoes. The undershorts underlie the slacks. The undershirt underlies the shirt.
+<blockquote><font color="#000080">The remains of your fire smolder in the stone-lined pit.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The jacket overlies the shirt. The shoes overlie the socks. The slacks overlie the undershorts. The shirt overlies the undershirt.
+<blockquote><font color="#000080">A thing can be charred or whole. A thing is usually whole. Instead of burning something: say &quot;You hold [the noun] to the fire until it flares and chars.&quot;; change the noun to charred.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x mirror / remove fedora / remove jacket / remove shirt / remove slacks / remove undershirt / remove shoes / remove socks / remove shorts / remove undershorts&quot;.
+<blockquote><font color="#000080">The player carries a stick. The description of the stick is &quot;A strip of palm from the woodiest part of the leaf, about a foot and a half long.&quot;
 </font></blockquote><p>
 <p>
-<p>If we further wanted to prevent the player from taking off clothes in inappropriate places, we might add something like this:
-<p>
-<blockquote><font color="#000080">Instead of taking off something in the presence of someone who is not the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are far too modest to strip in public.&quot;
+<blockquote><font color="#000080">The player carries a glass bottle and a piece of paper. The description of the paper is &quot;A single blank sheet.&quot; In the glass bottle is a grain of sand. The glass bottle is openable and open. Instead of burning the glass bottle: say &quot;You hold the bottle to the flame, but it grows uncomfortably warm.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc208.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Instead of burning the grain of sand: say &quot;You drop the grain into the fire pit, where it becomes indistinguishable from all the others.&quot;; remove the grain of sand from play. Instead of dropping the grain of sand: remove the grain of sand from play; say &quot;You return the grain of sand to its brethren.&quot;
+</font></blockquote><p>
+<p>
+<p>The player's description is handled in an unusual way, and this will produce a space paragraph break there where it should not. Instead, therefore, we will add an instead for examining the player (probably a good idea anyway):
+<p>
+<blockquote><font color="#000080">Instead of examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are sunburned and there is sand in cracks you didn't know existed.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / x stick / x bottle / x sand / x paper / x me / burn stick / x stick / burn paper / x paper&quot;.
+</font></blockquote><p>
+<p>
+<p>The &quot;printing a description&quot; activity may be useful for other games, and can be imported just by lifting section 1.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc277.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc207.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc209.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e423"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex423.html#e423 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>313</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex423.html#e423 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex423.html#e423 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc276.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc278.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

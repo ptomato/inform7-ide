@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.29. Asking which do you mean</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.8. Replacements</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,127 +19,113 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Walls and Noses" -->
-<!-- SEARCH SECTION "Ex 337" -->
-<!-- SEARCH SORT "Ex 017-029-337" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc297.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc299.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.29. Asking which do you mean</b></font></td></tr></table>
+<!-- SEARCH TITLE "Northstar" -->
+<!-- SEARCH SECTION "Ex 399" -->
+<!-- SEARCH SORT "Ex 019-008-399" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc337.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc339.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.8. Replacements</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When the player has typed an ambiguous noun reference, and Inform has not been able to decide what was meant.
+<p>Suppose V is an indexed text which varies - perhaps a property of something, or a variable defined everywhere, or a temporary &quot;let&quot;-named value. How do we change its contents? The easiest way is simply to assign text to it. Thus:
 <p>
-<p><b>2. The default behaviour.</b> A question such as &quot;Which do you mean, the laminated mahogany box or the boom box?&quot; is printed. (This activity shapes the question: it is not responsible for parsing the answer. It would be very mysterious to write rules for this activity such that nothing is printed, because the player would then have no idea what to type.)
-<p>
-<p><b>3. Examples.</b> The question is harder to print than may first appear, since one must not simply list the options, but also take into account collections of plural objects (&quot;Which do you mean, the gold-tipped pen or a gold coin?&quot;). It is probably better not to try to rewrite this.
-<p>
-<p>(a) But we can place notes before or after: here is a verbose explanation for beginners to IF.
-<p>
-<blockquote><font color="#000080">Before asking which do you mean: say &quot;Okay, so I'm going to have to ask a question now: you've typed something ambiguous, and I don't know which noun you're referring to.&quot;
+<blockquote><font color="#000080">let V be &quot;It is now [the time of the day in words].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After asking which do you mean: say &quot;(Just type a word or two to give me more information.)&quot;
+<p>And, for instance,
+<p>
+<blockquote><font color="#000080">let V be &quot;[V]!&quot;
 </font></blockquote><p>
 <p>
-<p>(b) We can also use this activity as a context for other activities. For instance:
+<p>adds an exclamation mark at the end of V.
 <p>
-<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot; The great Eiffel Tower is fixed in place. Understand &quot;actual&quot; as the great Tower.
+<p>Otherwise, it is more useful (also a little faster) to modify V by changing its characters, words and so on. Thus:
+<p>
+<blockquote><font color="#000080">replace character number N in V with NEW
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the name of the great Tower while asking which do you mean: say &quot;actual Tower&quot;. Rule for printing the name of the souvenir tower while asking which do you mean: say &quot;souvenir&quot;.
+<p>changes the Nth character to NEW (which is not required to be a single character: it simply occupies the spot previously occupied by the Nth character). Similarly:
+<p>
+<blockquote><font color="#000080">replace word number N in V with NEW
+<br>replace punctuated word number N in V with NEW
+<br>replace unpunctuated word number N in V with NEW
+<br>replace line number N in V with NEW
+<br>replace paragraph number N in V with NEW
 </font></blockquote><p>
 <p>
-<p>causes TAKE TOWER (for instance) to produce a nice tidy question in reply: &quot;Which do you mean, the actual Tower or the souvenir?&quot;
+<p>Last, but not least, we can replace text wherever it occurs:
 <p>
-<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<blockquote><font color="#000080">replace the text FIND in V with NEW
+<br>replace the text FIND in V with NEW, case insensitively
+<br>replace the regular expression FIND in V with NEW
+<br>replace the regular expression FIND in V with NEW, case insensitively
+</font></blockquote><p>
+<p>
+<p>These match as much as they can, but again, with the matches not allowed to overlap. Thus
+<p>
+<blockquote><font color="#000080">replace the text &quot;a&quot; in V with &quot;z&quot;
+</font></blockquote><p>
+<p>
+<p>changes every lower-case &quot;a&quot; to &quot;z&quot;: the same thing done case insensitively would change each &quot;a&quot; or &quot;A&quot; to &quot;z&quot;.
+<p>
+<p>When replacing a regular expression, the replacement text also has a few special meanings (though, thankfully, many fewer than for the expression itself). Once again &quot;\n&quot; and &quot;\t&quot; can be used for line break and tab characters, and &quot;\\&quot; must be used for an actual backslash. But, very usefully, &quot;\1&quot; to &quot;\9&quot; expand as the contents of groups numbered 1 to 9, and &quot;\0&quot; to the exact text matched. So:
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;\d+&quot; in V with &quot;roughly \0&quot;
+</font></blockquote><p>
+<p>
+<p>adds the word &quot;roughly&quot; in front of any run of digits in V, because \0 becomes in turn whichever run of digits matched. And
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;(\w+) (.*)&quot; in V with &quot;\2, \1&quot;
+</font></blockquote><p>
+<p>
+<p>performs the transformation &quot;Frank Booth&quot; to &quot;Booth, Frank&quot;.
+<p>
+<p>Finally, prefixing the number by &quot;l&quot; or &quot;u&quot; forces the text it represents into lower or upper case, respectively. For instance:
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;\b(\w)(\w*)&quot; in X with &quot;\u1\l2&quot;;
+</font></blockquote><p>
+<p>
+<p>changes the casing of X to &quot;title casing&quot;, where each individual word is capitalised. (This is a little slow on large texts, since so many matches and replacements are made: it's more efficient to use the official phrases for changing case.)
 <p>
 <p><hr><p>
-<a name="e207"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>335</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex207.html#e207 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Originals</font></b></a><br>Allowing the player to create models of anything in the game world; parsing the name "model [thing]" or even just "[thing]" to refer to these newly-created models; asking "which do you mean, the model [thing] or the actual [thing]" when there is ambiguity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e269"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>336</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex269.html#e269 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Apples</font></b></a><br>Prompting the player on how to disambiguate otherwise similar objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e11"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>395</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex11.html#e11 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blackout</font></b></a><br>Filtering the names of rooms printed while in darkness.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e178"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex178.html#e178 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>396</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex178.html#e178 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Igpay Atinlay</font></b></a><br>A pig Latin filter for the player's commands.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex178.html#e178 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e66"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex66.html#e66 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>397</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex66.html#e66 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fido</font></b></a><br>A dog the player can name and un-name at will.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex66.html#e66 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e128"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex128.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>398</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex128.html#e128 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mr. Burns' Repast</font></b></a><br>Letting the player guess types for an unidentifiable fish.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex128.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e307"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc298.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>337</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc298.html#e307 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Walls and Noses</font></b></a><br>Responding to "EXAMINE WALL" with "In which direction?", and to "EXAMINE NOSE" with "Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?"<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e307"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc338.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>399</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc338.html#e307 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Northstar</font></b></a><br>Making Inform understand ASK JOSH TO TAKE INVENTORY as JOSH, TAKE INVENTORY. This requires us to use a regular expression on the player's command, replacing some of the content.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want our game to respond to &quot;EXAMINE WALL&quot; with &quot;In which direction?&quot;, and to &quot;EXAMINE NOSE&quot; with &quot;Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?&quot;
+<p>Most of the time, Inform understands commands to other characters when they take the form &quot;JOSH, TAKE INVENTORY&quot; or &quot;JOAN, WEAR THE ARMOR&quot;. But novice players might also try commands of the form ASK JOSH TO TAKE INVENTORY or ORDER JOAN TO WEAR THE ARMOR.
 <p>
-<p>For the case of EXAMINE WALL, we need a way to determine whether every item being disambiguated is a direction. We'll start by making a &quot;matched&quot; adjective which will identify items being disambiguated:
+<p>The easiest way to make Inform understand such commands is to meddle directly with the player's command, changing it into the format that the game will understand, as here:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode434(code) {
+function pasteCode498(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Walls and Noses[=0x0022=][=0x000A=][=0x000A=]Eight-Walled Chamber is a room. [=0x0022=]A perfectly octagonal room whose walls are tinted in various hues.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]wall[=0x0022=] as a direction.[=0x000A=][=0x000A=]Definition: a direction is matched if it fits the parse list.[=0x000A=]Definition: a room is matched if it fits the parse list.[=0x000A=]Definition: a thing is matched if it fits the parse list.[=0x000A=][=0x000A=]Rule for asking which do you mean when everything matched is direction:[=0x000A=][=0x0009=]say [=0x0022=]In which direction?[=0x0022=][=0x000A=][=0x000A=][Checking the parse list requires a bit of behind-the-scenes work with Inform 6. Fortunately, you don[=0x0027=]t have to understand this entirely in order to use the rest of the example:][=0x000A=][=0x000A=]To decide whether (N - an object) fits the parse list:[=0x000A=][=0x0009=](- (FindInParseList({N})) -)[=0x000A=][=0x000A=]Include (-[=0x000A=][ FindInParseList obj i k marker;[=0x000A=][=0x0009=]marker = 0;[=0x000A=][=0x0009=]for (i=1 : i[=0x003C=]=number_of_classes : i++) {[=0x000A=][=0x0009=]while (((match_classes--[=0x003E=]marker) ~= i) [=0x0026=][=0x0026=] ((match_classes--[=0x003E=]marker) ~= -i)) marker++;[=0x000A=][=0x0009=]k = match_list--[=0x003E=]marker;[=0x000A=][=0x0009=]if (k==obj) rtrue;[=0x000A=][=0x0009=]}[=0x000A=][=0x0009=]rfalse;[=0x000A=]];[=0x000A=]-)[=0x000A=][=0x000A=][Now that we[=0x0027=]ve defined our [=0x0022=]matched[=0x0022=] adjective, we can use it for other purposes as well -- even generating our own lists. Our second challege was to respond to EXAMINE NOSE with [=0x0022=]Whose nose do you mean, Frederica[=0x0027=]s, Betty[=0x0027=]s, Wilma[=0x0027=]s or your own?[=0x0022=]][=0x000A=][=0x000A=][Here we need to change the way the question is worded (not [=0x0022=]which do you mean[=0x0022=] but [=0x0022=]whose nose do you mean[=0x0022=]). We also have to the names of the noses as they[=0x0027=]re printed in this particular context, so that they don[=0x0027=]t repeat the word [=0x0022=]nose[=0x0022=] over and over. And -- as a point of good English style -- we also want [=0x0022=]your own[=0x0022=] nose always to be last on the list.][=0x000A=][=0x000A=][For this purpose we may want to use the built-in [=0x0022=]Complex Listing[=0x0022=] extension, which allows us to print specially ordered lists. So:][=0x000A=][=0x000A=]Include Complex Listing by Emily Short.[=0x000A=][=0x000A=]Wilma, Betty, and Frederica are women in the Eight-Walled Chamber. Understand [=0x0022=]lady[=0x0022=] or [=0x0022=]woman[=0x0022=] as a woman. A nose is a kind of thing. A nose is part of every person.[=0x000A=][=0x000A=]Rule for asking which do you mean when everything matched is a nose:[=0x000A=][=0x0009=]prepare a list of matched things;[=0x000A=][=0x0009=]if your nose is an output listed in the Table of Scored Listing:[=0x000A=][=0x0009=][=0x0009=]choose row with an output of your nose in the Table of Scored Listing;[=0x000A=][=0x0009=][=0x0009=]change the assigned score entry to -1;[=0x000A=][=0x0009=]say [=0x0022=]Whose nose do you mean, [the prepared list delimited in disjunctive style]?[=0x0022=][=0x000A=][=0x000A=]Rule for printing the name of a nose (called target) while asking which do you mean :[=0x000A=][=0x0009=]if everything matched is a nose:[=0x000A=][=0x0009=][=0x0009=]if the target is part of a person (called owner):[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the owner is the player, say [=0x0022=]your own[=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise say [=0x0022=][the owner][apostrophe]s[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]make no decision.[=0x000A=][=0x000A=]Understand [=0x0022=]own[=0x0022=] or [=0x0022=]mine[=0x0022=] as your nose.[=0x000A=][=0x000A=]Test me with [=0x0022=]x wall / north / x nose / mine[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Northstar[=0x0022=][=0x000A=][=0x000A=]The Northstar Cafe is a room. [=0x0022=]The Northstar is crammed with its usual brunch crowd, and you were lucky to get a table at all. You are now awaiting the arrival of your ricotta pancakes.[=0x0022=][=0x000A=][=0x000A=]Josh is a man in The Northstar Cafe. [=0x0022=]Josh is on his way past your table.[=0x0022=] The description of Josh is [=0x0022=]He is a waiter here, but you also know him socially, so he tends to be more chatty than the other waiters.[=0x0022=] A persuasion rule: persuasion succeeds.[=0x000A=][=0x000A=]After reading a command:[=0x000A=][=0x0009=]let N be indexed text;[=0x000A=][=0x0009=]let N be the player[=0x0027=]s command;[=0x000A=][=0x0009=]replace the regular expression [=0x0022=](ask|tell|order) (.+) to (.+)[=0x0022=] in N with [=0x0022=][=0x005C=]2, [=0x005C=]3[=0x0022=];[=0x000A=][=0x0009=]change the text of the player[=0x0027=]s command to N.[=0x000A=][=0x000A=]Test me with [=0x0022=]ask Josh to take inventory / tell Josh to take inventory / order Josh to take inventory[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode434()"><img border=0 src=../doc_images/paste.png></a> &quot;Walls and Noses&quot;
+<a href="javascript:pasteCode498()"><img border=0 src=../doc_images/paste.png></a> &quot;Northstar&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Eight-Walled Chamber is a room. &quot;A perfectly octagonal room whose walls are tinted in various hues.&quot;
+<blockquote><font color="#000080">The Northstar Cafe is a room. &quot;The Northstar is crammed with its usual brunch crowd, and you were lucky to get a table at all. You are now awaiting the arrival of your ricotta pancakes.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;wall&quot; as a direction.
+<blockquote><font color="#000080">Josh is a man in The Northstar Cafe. &quot;Josh is on his way past your table.&quot; The description of Josh is &quot;He is a waiter here, but you also know him socially, so he tends to be more chatty than the other waiters.&quot; A persuasion rule: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a direction is matched if it fits the parse list.
-<br>Definition: a room is matched if it fits the parse list.
-<br>Definition: a thing is matched if it fits the parse list.
+<blockquote><font color="#000080">After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be indexed text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;(ask|tell|order) (.+) to (.+)&quot; in N with &quot;\2, \3&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to N.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for asking which do you mean when everything matched is direction:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;In which direction?&quot;
+<blockquote><font color="#000080">Test me with &quot;ask Josh to take inventory / tell Josh to take inventory / order Josh to take inventory&quot;.
 </font></blockquote><p>
 <p>
-<p>Checking the parse list requires a bit of behind-the-scenes work with Inform 6. Fortunately, you don't have to understand this entirely in order to use the rest of the example:
-<p>
-<blockquote><font color="#000080">To decide whether (N - an object) fits the parse list:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- (FindInParseList({N})) -)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include (-
-<br>[ FindInParseList obj i k marker;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;marker = 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;for (i=1 : i<=number_of_classes : i++) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while (((match_classes-->marker) ~= i) && ((match_classes-->marker) ~= -i)) marker++;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;k = match_list-->marker;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if (k==obj) rtrue;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rfalse;
-<br>];
-<br>-)
-</font></blockquote><p>
-<p>
-<p>Now that we've defined our &quot;matched&quot; adjective, we can use it for other purposes as well -- even generating our own lists. Our second challege was to respond to EXAMINE NOSE with &quot;Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?&quot;
-<p>
-<p>Here we need to change the way the question is worded (not &quot;which do you mean&quot; but &quot;whose nose do you mean&quot;). We also have to the names of the noses as they're printed in this particular context, so that they don't repeat the word &quot;nose&quot; over and over. And -- as a point of good English style -- we also want &quot;your own&quot; nose always to be last on the list.
-<p>
-<p>For this purpose we may want to use the built-in &quot;Complex Listing&quot; extension, which allows us to print specially ordered lists. So:
-<p>
-<blockquote><font color="#000080">Include Complex Listing by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Wilma, Betty, and Frederica are women in the Eight-Walled Chamber. Understand &quot;lady&quot; or &quot;woman&quot; as a woman. A nose is a kind of thing. A nose is part of every person.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for asking which do you mean when everything matched is a nose:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;prepare a list of matched things;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if your nose is an output listed in the Table of Scored Listing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row with an output of your nose in the Table of Scored Listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the assigned score entry to -1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Whose nose do you mean, [the prepared list delimited in disjunctive style]?&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a nose (called target) while asking which do you mean :
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if everything matched is a nose:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the target is part of a person (called owner):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the owner is the player, say &quot;your own&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[the owner][apostrophe]s&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;own&quot; or &quot;mine&quot; as your nose.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x wall / north / x nose / mine&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc298.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Note that we have to copy N back explicitly to replace the player's command.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc338.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e253"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex253.html#e253 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>400</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex253.html#e253 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cave-troll</font></b></a><br>Determining that the command the player typed is invalid, editing it, and re-examining it to see whether it now reads correctly.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex253.html#e253 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc337.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc339.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

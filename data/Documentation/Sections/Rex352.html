@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.6. Getting Started with Conversation</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.7. Saying Simple Things</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,61 +19,139 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "The Gorge at George" -->
-<!-- SEARCH SECTION "Ex 298" -->
-<!-- SEARCH SORT "Ex 007-006-298" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc48.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc50.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.6. Getting Started with Conversation</b></font></td></tr></table>
+<!-- SEARCH TITLE "Proposal" -->
+<!-- SEARCH SECTION "Ex 167" -->
+<!-- SEARCH SORT "Ex 007-007-167" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.7. Saying Simple Things</b></font></td></tr></table>
 <p>
-<p>Traditionally, conversation is one of the most difficult things to program in interactive fiction, because of the number of factors affecting the outcome of everything the player does. While it's acceptable for >EXAMINE POT to produce the same response every time the player types it, it's a bit less acceptable for ASK JOE ABOUT HIS ADULTERY to make Joe react the same way every time.
+<p>There are times when even the commands ASK and TELL are overkill: sometimes the player doesn't have much information to offer, so TELL is never useful, for instance. If we don't want to make any distinction between modes of conversation, we can conflate the actions so that ASK LUCIUS ABOUT OLLIVANDER, TELL LUCIUS ABOUT OLLIVANDER and LUCIUS, OLLIVANDER all do the same thing: see <b>Sybil 1</b>.
 <p>
-<p>Conversation implementations often need to keep track of a lot of information: what else is going on in the model world, what the character knows, what plot phase we've reached, what mood the character is in, what else we've recently been talking about, whether we've said the same thing before (and how many times); and so on. Later in this chapter we will look at ways to model character knowledge and mood.
+<p>If we are frequently permitting the player to say things like LUCIUS, OLLIVANDER as shorthand for &quot;talk to Lucius about Ollivander&quot;, then we may also want to allow LUCIUS, OLLIVANDER? This makes the player character seem a bit slow (or at least Laconic), but it is an effective interface in some cases. The trick is that the question mark at the end of the command may prevent Inform from recognizing the keyword; should that problem arise, we may want to use Punctuation Removal to erase question marks from the player's command before attempting to interpret it.
 <p>
-<p>Then, too, we have the problem of how the player communicates his conversational intentions to the game. Technology has not yet advanced to the point where a player can simply type in remarks in full natural English and have the character detect the significance, emotional tone, and subtext, if any: so we can't have RACHEL, THIS DESSERT TASTES LIKE FEET or WILL, LOOK! OUR SINISTER METAL FOES ARE APPROACHING! or BOSS, I WOULD BE DELIGHTED TO FILE ANOTHER TPB REPORT.
+<p>Along the same lines, there are situations in conversation where similar commands do not correspond to the same actions within Inform; if we're careless about this, we may force the player to guess which vocabulary we want him to use, which is always vexing. Some cases to look out for:
 <p>
-<p>The challenge is to create an interface that is both easy for the player to use and expressive enough to be interesting. We will look at some of the common solutions in &quot;Saying Complicated Things&quot;.
+<p>Inform has actions for &quot;saying yes&quot; and &quot;saying no&quot;. Sometimes this is useful, but sometimes we want YES and SAY YES TO FRED to do the same thing. <b>Sybil 2</b> shows how to roll these responses into one; <b>Proposal</b> expands on the idea to show more ways in which a player could reasonably answer a question put by another character.
 <p>
-<p>The examples in the following sections point out ways to approach common conversation problems. None of them will offer an adequate system if we want to write a very conversationally rich game, however. This is partly because a thorough conversation system requires quite a lot of code in its own right. It's also partly because there is no one right solution to the problem of conversation design. Different games will have quite different requirements. When making decisions about a new game we have planned, it may be useful to glance through the conversation extensions available for Inform: there are quite a few, offering a range of different interfaces. Even if none is exactly suited for our needs, they may suggest ways to solve particular implementation challenges.
+<p>Again, if we want ASK SYBIL ABOUT CAKE to do the same thing as SHOW CAKE TO SYBIL, we might use the technique in <b>Nameless</b> to make objects into valid topics of conversation, and to make ASK and SHOW behave the same way.
 <p>
-<p>At the other end of the scale, though, there are times when Inform's default implementation is too complicated for what we want to do: so we will start with ways to simplify conversation, before moving to all the exotic complexities.
-<p>
-<p>Before we get into these details, though, we have a couple of examples that are literally about getting started with a converation: <b>Mimicry</b> introduces the feature that we must greet other characters before beginning to speak to them; <b>The Gorge at George</b> corrects the player's attempts to use a TALK TO command where a different mode of interaction is appropriate instead.
-<p>
+<a href=Rdoc39.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Remembering, Converting and Combining Actions</b></font></a><i> for ways to redirect one conversation command to another conversation topic</i><p><p>
+<a href=Rdoc6.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Varying What Is Read</b></font></a><i> for a way of asking the player trivia questions that he can answer only on the next turn</i><p><p>
 <p><hr><p>
-<a name="e149"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>105</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex149.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mimicry</font></b></a><br>People who must be greeted before conversation can begin.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e167"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex167.html#e167 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>87</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex167.html#e167 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 1</font></b></a><br>Direct all ASK, TELL, and ANSWER commands to ASK, and accept multiple words for certain cases.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex167.html#e167 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e143"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>89</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex143.html#e143 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 2</font></b></a><br>Making the character understand YES, SAY YES TO CHARACTER, TELL CHARACTER YES, ANSWER YES, and CHARACTER, YES.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e352"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc49.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>298</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc49.html#e352 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Gorge at George</font></b></a><br>If the player tries to TALK TO a character, suggest alternative modes of conversation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex352.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e352"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc50.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>167</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc50.html#e352 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Proposal</font></b></a><br>Asking the player a yes/no question which he must answer, and another which he may answer or not as he chooses.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex352.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we want to ask the player a question where he might say yes or no in response. There are two possible forms of this: the modal question where the player must pick one to proceed, and the non-modal question where he might also type other verbs.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode825(code) {
+function pasteCode707(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Gorge at George[=0x0022=][=0x000A=][=0x000A=]The Dusty Lot is a room. [=0x0022=]A few miles up the road from the concert venue, but at least it[=0x0027=]s cheap to park here.[=0x0022=][=0x000A=][=0x000A=]The motorcyclist is a man in the Dusty Lot. [=0x0022=]A man clad in [a list of things worn by the motorcyclist] leans against his Harley and watches you without saying anything.[=0x0022=] The Harley is scenery in the Lot. The motorcyclist wears a black leather jacket and shades. Understand [=0x0022=]man[=0x0022=] or [=0x0022=]guy[=0x0022=] as the motorcyclist.[=0x000A=][=0x000A=]Understand [=0x0022=]talk to [someone][=0x0022=] as a mistake ([=0x0022=]To start a conversation, try to ASK [the noun] ABOUT something or TELL [the noun] ABOUT something.[=0x0022=]).[=0x000A=][=0x000A=]Instead of asking the motorcyclist about something:[=0x000A=][=0x0009=]say [=0x0022=]He smirks cryptically.[=0x0022=][=0x000A=][=0x000A=]Instead of telling the motorcyclist about something:[=0x000A=][=0x0009=]say [=0x0022=]This does not seem to interest him much.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]talk to motorcyclist / ask motorcyclist about himself / tell motorcyclist about me[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Proposal[=0x0022=][=0x000A=][=0x000A=]The story genre is [=0x0022=]A Worked Example about Yes/No Questions[=0x0022=].[=0x000A=][=0x000A=]Section 1 - Asking a Modal Yes/No Question[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]Do you like Mr Spruce? [=0x0022=];[=0x000A=][=0x0009=]if player consents, now Spruce is handsome;[=0x000A=][=0x0009=]otherwise now Spruce is ugly;[=0x000A=][=0x0009=]say paragraph break.[=0x000A=][=0x000A=]Section 2 - Mr Spruce[=0x0027=]s Non-Modal Question[=0x000A=][=0x000A=]Use full-length room descriptions.[=0x000A=][=0x000A=]The Conservatory is a room. [=0x0022=]You are in a room full of plants.[=0x0022=][=0x000A=][=0x000A=]Mr Spruce is a man in the Conservatory. Mr Spruce can be apprehensive or calm. Mr Spruce is calm. Mr Spruce can be handsome or ugly.[=0x000A=][=0x000A=]At 9:02 AM: say [=0x0022=]Mr Spruce flings himself to his knees and implores you to become his lawfully wedded wife.[=0x0022=];[=0x000A=][=0x0009=]now Mr Spruce is apprehensive;[=0x000A=][=0x0009=]Mr Spruce gives up in two minutes from now.[=0x000A=][=0x000A=]At the time when Mr Spruce gives up:[=0x000A=][=0x0009=]say [=0x0022=]Mr Spruce sighs heavily, seeing that you don[=0x0027=]t intend to reply. [=0x0027=]Never mind, my dear, I[=0x0027=]ll ask later. Perhaps I should have spoken to your Papa first... yes, a gently-bred female... no wonder...[=0x0027=][=0x0022=];[=0x000A=][=0x0009=]now Mr Spruce is calm;[=0x000A=][=0x0009=]Mr Spruce departs in one minute from now.[=0x000A=][=0x000A=]At the time when Mr Spruce departs:[=0x000A=][=0x0009=]if the player can see Mr Spruce, say [=0x0022=]Mr Spruce takes his leave of you.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Mr Spruce pokes his head in to say that he is leaving.[=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]Well, that is over...[=0x0022=][=0x000A=][=0x000A=]Instead of saying yes in the presence of an ugly apprehensive Mr Spruce:[=0x000A=][=0x0009=]now Mr Spruce is calm;[=0x000A=][=0x0009=]say [=0x0022=]Remembering what your mother said to you about the stock exchange and Dear Papa, you close your eyes and accept Mr Spruce.[=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]Alas for your maiden hopes.[=0x0022=][=0x000A=][=0x000A=]Instead of saying yes in the presence of a handsome apprehensive Mr Spruce:[=0x000A=][=0x0009=]now Mr Spruce is calm;[=0x000A=][=0x0009=]say [=0x0022=]You are silent with delight for a moment before you say yes, yes![=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]How Genevieve Stubbs will cry![=0x0022=][=0x000A=][=0x000A=]Instead of saying no in the presence of an ugly apprehensive Mr Spruce:[=0x000A=][=0x0009=]now Mr Spruce is calm;[=0x000A=][=0x0009=]say [=0x0022=]Gently you inform Mr Spruce that it is impossible. He seems less deflated than you had expected.[=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]Odd, that...[=0x0022=][=0x000A=][=0x000A=]Instead of saying no in the presence of a handsome apprehensive Mr Spruce:[=0x000A=][=0x0009=]now Mr Spruce is calm;[=0x000A=][=0x0009=]say [=0x0022=]You lower your eyes and refuse petulantly, hoping to stir him to a more ardent repetition of these same requests. But then -- alack! -- he says [=0x0027=]I see how it is![=0x0027=] in a strangled voice, and strides from the room![=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]A fatal error![=0x0022=][=0x000A=][=0x000A=][And since the player might SAY YES TO SPRUCE, we had better reroute the relevant options:][=0x000A=][=0x000A=]Instead of answering Mr Spruce that [=0x0022=]no[=0x0022=], try saying no.[=0x000A=][=0x000A=]Instead of answering Mr Spruce that [=0x0022=]yes[=0x0022=], try saying yes.[=0x000A=][=0x000A=]Instead of asking Mr Spruce to try saying yes, try saying yes.[=0x000A=][=0x000A=]Instead of asking Mr Spruce to try saying no, try saying no.[=0x000A=][=0x000A=]Instead of saying sorry, try saying no.[=0x000A=][=0x000A=]Instead of asking Mr Spruce to try saying sorry, try saying no.[=0x000A=][=0x000A=]Instead of answering Mr Spruce that [=0x0022=]sorry[=0x0022=], try saying no.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / z / yes[=0x0022=].[=0x000A=][=0x000A=]Test more with [=0x0022=]z / z / z / no[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode825()"><img border=0 src=../doc_images/paste.png></a> &quot;Gorge at George&quot;
+<a href="javascript:pasteCode707()"><img border=0 src=../doc_images/paste.png></a> &quot;Proposal&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dusty Lot is a room. &quot;A few miles up the road from the concert venue, but at least it's cheap to park here.&quot;
+<blockquote><font color="#000080">The story genre is &quot;A Worked Example about Yes/No Questions&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The motorcyclist is a man in the Dusty Lot. &quot;A man clad in [a list of things worn by the motorcyclist] leans against his Harley and watches you without saying anything.&quot; The Harley is scenery in the Lot. The motorcyclist wears a black leather jacket and shades. Understand &quot;man&quot; or &quot;guy&quot; as the motorcyclist.
+<blockquote><font color="#000080">Section 1 - Asking a Modal Yes/No Question
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;talk to [someone]&quot; as a mistake (&quot;To start a conversation, try to ASK [the noun] ABOUT something or TELL [the noun] ABOUT something.&quot;).
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Do you like Mr Spruce? &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents, now Spruce is handsome;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now Spruce is ugly;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of asking the motorcyclist about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;He smirks cryptically.&quot;
+<blockquote><font color="#000080">Section 2 - Mr Spruce's Non-Modal Question
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of telling the motorcyclist about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This does not seem to interest him much.&quot;
+<blockquote><font color="#000080">Use full-length room descriptions.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;talk to motorcyclist / ask motorcyclist about himself / tell motorcyclist about me&quot;.
+<blockquote><font color="#000080">The Conservatory is a room. &quot;You are in a room full of plants.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc49.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Mr Spruce is a man in the Conservatory. Mr Spruce can be apprehensive or calm. Mr Spruce is calm. Mr Spruce can be handsome or ugly.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 9:02 AM: say &quot;Mr Spruce flings himself to his knees and implores you to become his lawfully wedded wife.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is apprehensive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Mr Spruce gives up in two minutes from now.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At the time when Mr Spruce gives up:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Spruce sighs heavily, seeing that you don't intend to reply. 'Never mind, my dear, I'll ask later. Perhaps I should have spoken to your Papa first... yes, a gently-bred female... no wonder...'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Mr Spruce departs in one minute from now.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At the time when Mr Spruce departs:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player can see Mr Spruce, say &quot;Mr Spruce takes his leave of you.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Mr Spruce pokes his head in to say that he is leaving.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Well, that is over...&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of saying yes in the presence of an ugly apprehensive Mr Spruce:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Remembering what your mother said to you about the stock exchange and Dear Papa, you close your eyes and accept Mr Spruce.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Alas for your maiden hopes.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of saying yes in the presence of a handsome apprehensive Mr Spruce:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are silent with delight for a moment before you say yes, yes!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;How Genevieve Stubbs will cry!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of saying no in the presence of an ugly apprehensive Mr Spruce:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Gently you inform Mr Spruce that it is impossible. He seems less deflated than you had expected.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Odd, that...&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of saying no in the presence of a handsome apprehensive Mr Spruce:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You lower your eyes and refuse petulantly, hoping to stir him to a more ardent repetition of these same requests. But then -- alack! -- he says 'I see how it is!' in a strangled voice, and strides from the room!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;A fatal error!&quot;
+</font></blockquote><p>
+<p>
+<p>And since the player might SAY YES TO SPRUCE, we had better reroute the relevant options:
+<p>
+<blockquote><font color="#000080">Instead of answering Mr Spruce that &quot;no&quot;, try saying no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of answering Mr Spruce that &quot;yes&quot;, try saying yes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Mr Spruce to try saying yes, try saying yes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Mr Spruce to try saying no, try saying no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of saying sorry, try saying no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Mr Spruce to try saying sorry, try saying no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of answering Mr Spruce that &quot;sorry&quot;, try saying no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / z / z / yes&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test more with &quot;z / z / z / no&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc48.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e84"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex84.html#e84 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>279</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex84.html#e84 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nameless</font></b></a><br>ASKing someone about an object rather than about a topic.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex84.html#e84 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

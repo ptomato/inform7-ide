@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.6. Lists of objects</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,143 +19,192 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "What Makes You Tick" -->
-<!-- SEARCH SECTION "Ex 392" -->
-<!-- SEARCH SORT "Ex 020-006-392" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc341.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc343.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.6. Lists of objects</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Left Hand of Autumn" -->
+<!-- SEARCH SECTION "Ex 277" -->
+<!-- SEARCH SORT "Ex 016-004-277" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc254.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc256.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
 <p>
-<p>While there are lists for any kind of value, the form that is useful most often is &quot;list of objects&quot;. There is nothing really different about this:
+<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
 <p>
-<blockquote><font color="#000080">let L be {the pot plant, the foxglove};
+<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
 </font></blockquote><p>
 <p>
-<p>makes a list of two objects as usual. However, a much faster and more systematic way to build lists of objects is to use descriptions. If D is any description then &quot;the list of D&quot; produces a list of all the objects matching D. For instance:
+<p>Here we expect that the named item will be one that is held by the player, and the parser will use this to resolve ambiguities between names of things carried and not carried. (If the action is one which positively requires that its noun be something carried, such as &quot;eating&quot;, then a command matching this token against something not carried will generate an automatic attempt to take it.)
 <p>
-<blockquote><font color="#000080">let L be the list of open containers;
-<br>add the list of open doors to L;
+<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
+<br>Understand &quot;drop [things preferably held]&quot; as dropping.
 </font></blockquote><p>
 <p>
-<p>means that L now contains the open containers (if any) followed by the open doors (if any). Or, for example:
+<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
 <p>
-<blockquote><font color="#000080">let L be the list of things;
-<br>remove the list of backdrops from L;
+<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
 </font></blockquote><p>
 <p>
-<p>makes a list of all non-backdrops.
+<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
 <p>
-<p>As mentioned above, lists of objects can be said in two additional ways:
-<p>
-<blockquote><font color="#000080">&quot;[L with definite articles]&quot;
-<br>&quot;[L with indefinite articles]&quot;
+<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>And as mentioned below, they can be sorted in property value order:
-<p>
-<blockquote><font color="#000080">sort L in P order;
-<br>sort L in reverse P order;
-</font></blockquote><p>
-<p>
-<p>where P is any value property. In all other respects, lists of objects are no different to other lists.
-<p>
-<p>One special list of objects inside the Inform parser is worth mentioning. This is the &quot;multiple object list&quot;, and is used in commands like this:
-<p>
-<blockquote><font color="#000080">&gt;GET ALL
-<br>foxglove: Taken.
-<br>snake's head fritillary: Taken.
-</font></blockquote><p>
-<p>
-<p>After the parser has decided what constitutes &quot;ALL&quot; (a process which can be influenced using the &quot;deciding whether all includes&quot; activity), it forms up a list and then runs through it, starting an action for each in turn. Here the list has two entries and Inform generates the actions &quot;taking the foxglove&quot; and then &quot;taking the snake's head fritillary&quot;.
-<p>
-<p>For two technical reasons this isn't stored as a &quot;list of objects that varies&quot; - first because it needs to exist even in low-memory situations where we can't afford full list-processing, and second because there are times when changing it might be hazardous. Instead, two phrases are provided to read the list and to write it back:
-<p>
-<blockquote><font color="#000080">let L be the multiple object list;
-<br>alter the multiple object list to L;
-</font></blockquote><p>
-<p>
-<p>If there is no multiple object, say if the command was TAKE PEAR, the list will be empty: it won't be a list of size 1. The multiple object list can be read at any time, but should be altered only up to the point when the &quot;generate action rule&quot; in the turn sequence rules takes effect.
+<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
 <p>
 <p><hr><p>
+<a name="e316"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex316.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex316.html#e316 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex316.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e139"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc342.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>392</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc342.html#e139 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> What Makes You Tick</font></b></a><br>Building a fishing pole from several component parts that the player might put together in any order.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e139"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc255.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>277</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc255.html#e139 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Left Hand of Autumn</font></b></a><br>The possibility of using a [things] token opens up some interesting complications, because we may want actions on multiple items to be reported differently from actions on just one. Here we look at how to make a multiple examination command that describes groups in special ways.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to let the player build a fishing pole out of three parts: a hook, a string, and a stick.
+<p>Suppose that we have a game in which groups of objects can have meaning apart from their individual significance -- perhaps there are spells that can only be cast by collecting just the right items in the same place.
 <p>
-<p>There are several things we must account for here. One is that our combination verb should be insensitive to ordering: it shouldn't matter whether the player types COMBINE STICK WITH STRING or COMBINE STRING WITH STICK.
+<p>In this case, one of the things the player might like to be able to do is look at several items together and get a special response, different from looking at the items individually.
 <p>
-<p>Second, we need to make sure that our implementation handles intervening stages of assembly gracefully. The player should be able to combine string and hook first, or string and stick first, and be able to complete the assembly in either case.
+<p>To make this happen, we need to do several things:
 <p>
-<p>Our implementation here uses a table of lists to determine which combinations of inputs should produce which result object. Because we sort our lists before comparing them, we guarantee that the player's ordering doesn't matter: COMBINE STICK WITH STRING will have the same effect as COMBINE STRING WITH STICK.
-<p>
-<p>What's more, our implementation could be expanded to account for many other assemblages, if we wanted object-building to be a running theme of puzzles in our game.
+<blockquote><font color="#000080">(1) we need to create a version of the EXAMINE command that can apply to multiple objects at once.
+<br>(2) we need to correct the way Inform normally deals with multiple-object commands, because we want our group description to print only one time, and we want to avoid stubs such as &quot;pear: ... apple: ...&quot; before or after the group description.
+<br>(3) we need to define a way for Inform to identify interesting groups and describe them.
+</font></blockquote><p>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode491(code) {
+function pasteCode373(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]What Makes You Tick[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]combine [something] with [something][=0x0022=] as combining it with. Combining it with is an action applying to two things. Understand the command [=0x0022=]connect[=0x0022=] as [=0x0022=]combine[=0x0022=].[=0x000A=][=0x000A=]Understand the command [=0x0022=]attach[=0x0022=] as something new. Understand [=0x0022=]attach [something] to [something][=0x0022=] as combining it with.[=0x000A=][=0x000A=]The combining it with action has an object called the item built.[=0x000A=][=0x000A=]Setting action variables for combining something with something:[=0x000A=][=0x0009=]let X be a list of objects;[=0x000A=][=0x0009=]add the noun to X;[=0x000A=][=0x0009=]add the second noun to X;[=0x000A=][=0x0009=]sort X;[=0x000A=][=0x0009=]repeat through the Table of Outcome Objects:[=0x000A=][=0x0009=][=0x0009=]let Y be the component list entry;[=0x000A=][=0x0009=][=0x0009=]sort Y;[=0x000A=][=0x0009=][=0x0009=]if X is Y:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now the item built is the result entry.[=0x000A=][=0x000A=]Check combining it with:[=0x000A=][=0x0009=]if the item built is nothing or the item built is not in limbo,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You can[=0x0027=]t combine [the noun] and [the second noun] into anything useful.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out combining it with:[=0x000A=][=0x0009=]move the item built to the holder of the noun;[=0x000A=][=0x0009=]remove the noun from play;[=0x000A=][=0x0009=]remove the second noun from play.[=0x000A=][=0x000A=]Report combining it with:[=0x000A=][=0x0009=]say [=0x0022=]You now have [an item built].[=0x0022=][=0x000A=][=0x000A=]Limbo is a container. Limbo contains a hookless fishing pole, a hooked line, and a complete fishing pole.[=0x000A=][=0x000A=]Streamside is a room. The player carries a stick, a wire hook, and a string.[=0x000A=][=0x000A=]Table of Outcome Objects[=0x000A=]component list[=0x0009=]result[=0x000A=]{stick, string}[=0x0009=]hookless fishing pole[=0x000A=]{wire hook, string}[=0x0009=]hooked line[=0x000A=]{hooked line, stick}[=0x0009=]complete fishing pole[=0x000A=]{hookless fishing pole, wire hook}[=0x0009=]complete fishing pole[=0x000A=][=0x000A=]Test me with [=0x0022=]combine stick with string / i / combine pole with hook / i[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Left Hand of Autumn[=0x0022=][=0x000A=][=0x000A=]Section 1 - Procedure[=0x000A=][=0x000A=]Understand [=0x0022=]examine [things][=0x0022=] or [=0x0022=]look at [things][=0x0022=] as multiply-examining. Multiply-examining is an action applying to one thing.[=0x000A=][=0x000A=]Understand [=0x0022=]examine [things inside] in/on [something][=0x0022=] or [=0x0022=]look at [things inside] in/on [something][=0x0022=] as multiply-examining it from. Multiply-examining it from is an action applying to two things.[=0x000A=][=0x000A=]Group-description-complete is a truth state that varies.[=0x000A=][=0x000A=]Carry out multiply-examining it from:[=0x000A=][=0x0009=]try multiply-examining the noun instead.[=0x000A=][=0x000A=]Check multiply-examining when group-description-complete is true:[=0x000A=][=0x0009=]stop the action.[=0x000A=][=0x000A=]Carry out multiply-examining:[=0x000A=][=0x0009=]let L be the list of matched things;[=0x000A=][=0x0009=]if the number of entries in L is 0, try examining the noun instead;[=0x000A=][=0x0009=]if the number of entries in L is 1, try examining entry 1 of L instead;[=0x000A=][=0x0009=]describe L;[=0x000A=][=0x0009=]say line break;[=0x000A=][=0x0009=]now group-description-complete is true.[=0x000A=][=0x000A=]Before reading a command:[=0x000A=][=0x0009=]now group-description-complete is false.[=0x000A=][=0x000A=][Now for step 2, overriding Inform[=0x0027=]s usual output of names of objects:][=0x000A=][=0x000A=]The silently announce items from multiple object lists rule is listed instead of the announce items from multiple object lists rule in the action-processing rules.[=0x000A=][=0x000A=]This is the silently announce items from multiple object lists rule:[=0x000A=][=0x0009=]unless multiply-examining or multiply-examining something from something:[=0x000A=][=0x0009=][=0x0009=]if the current item from the multiple object list is not nothing, say [=0x0022=][current item from the multiple object list]: [run paragraph on][=0x0022=].[=0x000A=][=0x000A=]Definition: a thing is matched if it is listed in the multiple object list.[=0x000A=][=0x000A=][We[=0x0027=]ll save our [=0x0022=]to describe[=0x0022=] phrase until Section 2, when we can give the game specific instructions about how to report different lists of objects.][=0x000A=][=0x000A=][Now, the player might also want to be able to refer to a group of item by some kind of group name, so let[=0x0027=]s add the option of creating a Table of Collective Names which will interpret these:][=0x000A=][=0x000A=]After reading a command:[=0x000A=][=0x0009=]repeat through the Table of Collective Names:[=0x000A=][=0x0009=][=0x0009=]let N be indexed text;[=0x000A=][=0x0009=][=0x0009=]let N be the player[=0x0027=]s command;[=0x000A=][=0x0009=][=0x0009=]let Y be indexed text;[=0x000A=][=0x0009=][=0x0009=]let Y be relevant list entry;[=0x000A=][=0x0009=][=0x0009=]while N matches the regular expression [=0x0022=][name-text entry][=0x0022=], replace the regular expression [=0x0022=](.*)[name-text entry](.*)[=0x0022=] in N with [=0x0022=][=0x005C=]1[Y][=0x005C=]2[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]change the text of the player[=0x0027=]s command to N.[=0x000A=][=0x000A=][=0x000A=]Report taking something:[=0x000A=][=0x0009=]say [=0x0022=]You pick up [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=][And as a bit of polish, because we[=0x0027=]d like SEARCH TABLE to have the same effect as EXAMINE ALL ON TABLE:][=0x000A=][=0x000A=]Understand [=0x0022=]look on [something][=0x0022=] as searching.[=0x000A=][=0x000A=]Instead of searching something which supports at least two things:[=0x000A=][=0x0009=]let L be the list of things supported by the noun;[=0x000A=][=0x0009=]describe L.[=0x000A=]Instead of searching something which contains at least two things:[=0x000A=][=0x0009=]let L be the list of things contained by the noun;[=0x000A=][=0x0009=]describe L.[=0x000A=][=0x000A=]Section 2 - Scenario[=0x000A=][=0x000A=]Eight-Walled Chamber is a room. [=0x0022=]A perfectly octagonal room whose walls are tinted in various hues.[=0x0022=][=0x000A=][=0x000A=]The display table is a supporter in the Chamber. A twig of rowan wood is on the table.[=0x000A=][=0x000A=]The player carries an apple and a pear.[=0x000A=][=0x000A=]A glove is a kind of thing. A glove is always wearable. Understand [=0x0022=]glove[=0x0022=] as a glove. The player carries a left glove and a right glove. The left glove and the right glove are gloves.[=0x000A=][=0x000A=][Now we define a few actual lists of items:][=0x000A=][=0x000A=]Fruit list is a list of objects which varies. Fruit list is { apple, pear }.[=0x000A=]Glove list is a list of objects which varies. Glove list is { right glove, left glove }.[=0x000A=]Arcane list is a list of objects which varies. Arcane list is { left glove, twig, pear }.[=0x000A=][=0x000A=]To describe (L - a list of objects):[=0x000A=][=0x0009=]sort L;[=0x000A=][=0x0009=]if L is fruit list:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Just a couple of fruits.[=0x0022=];[=0x000A=][=0x0009=]otherwise if L is glove list:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]It[=0x0027=]s a matched pair of fuzzy blue gloves.[=0x0022=];[=0x000A=][=0x0009=]otherwise if L is arcane list:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]To anyone else it might look like a random collection of objects, but these three things -- [L with definite articles] -- constitute a mystic key known as the Left Hand of Autumn. They practically hum with power.[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You see [L with indefinite articles].[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]sort fruit list;[=0x000A=][=0x0009=]sort glove list;[=0x000A=][=0x0009=]sort the arcane list.[=0x000A=][=0x000A=][We sort the lists so that regardless of how we change the rest of the code (and the order in which objects are coded), the resulting list will always be in sorted order and ready to compare with the list of items the player wants to look at. And thanks to the [=0x0022=]Reading a command[=0x0022=] code we wrote earlier, we can also teach the game to understand the player[=0x0027=]s references to [=0x0022=]the left hand of autumn[=0x0022=] as a specific collection of items.][=0x000A=][=0x000A=]Table of Collective Names[=0x000A=]name-text[=0x0009=]relevant list (indexed text)[=0x000A=][=0x0022=]left hand of autumn[=0x0022=][=0x0009=][=0x0022=][arcane list][=0x0022=][=0x000A=][=0x0022=]gloves[=0x0022=][=0x0009=][=0x0022=][glove list][=0x0022=][=0x000A=][=0x0022=]pair of gloves[=0x0022=][=0x0009=][=0x0022=][glove list][=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x apple and pear / x left and right / put pear on table / put left glove on table / x all on table / put all on table / examine all on table / get apple, twig, pear / x all on table / search table[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode491()"><img border=0 src=../doc_images/paste.png></a>  &quot;What Makes You Tick&quot;
+<a href="javascript:pasteCode373()"><img border=0 src=../doc_images/paste.png></a> &quot;The Left Hand of Autumn&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;combine [something] with [something]&quot; as combining it with. Combining it with is an action applying to two things. Understand the command &quot;connect&quot; as &quot;combine&quot;.
+<blockquote><font color="#000080">Section 1 - Procedure
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the command &quot;attach&quot; as something new. Understand &quot;attach [something] to [something]&quot; as combining it with.
+<blockquote><font color="#000080">Understand &quot;examine [things]&quot; or &quot;look at [things]&quot; as multiply-examining. Multiply-examining is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The combining it with action has an object called the item built.
+<blockquote><font color="#000080">Understand &quot;examine [things inside] in/on [something]&quot; or &quot;look at [things inside] in/on [something]&quot; as multiply-examining it from. Multiply-examining it from is an action applying to two things.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Setting action variables for combining something with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be a list of objects;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the noun to X;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the second noun to X;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort X;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Outcome Objects:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let Y be the component list entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort Y;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if X is Y:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item built is the result entry.
+<blockquote><font color="#000080">Group-description-complete is a truth state that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check combining it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item built is nothing or the item built is not in limbo,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't combine [the noun] and [the second noun] into anything useful.&quot; instead.
+<blockquote><font color="#000080">Carry out multiply-examining it from:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try multiply-examining the noun instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out combining it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the item built to the holder of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the second noun from play.
+<blockquote><font color="#000080">Check multiply-examining when group-description-complete is true:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report combining it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You now have [an item built].&quot;
+<blockquote><font color="#000080">Carry out multiply-examining:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be the list of matched things;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in L is 0, try examining the noun instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in L is 1, try examining entry 1 of L instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;describe L;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now group-description-complete is true.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Limbo is a container. Limbo contains a hookless fishing pole, a hooked line, and a complete fishing pole.
+<blockquote><font color="#000080">Before reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now group-description-complete is false.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Streamside is a room. The player carries a stick, a wire hook, and a string.
+<p>Now for step 2, overriding Inform's usual output of names of objects:
+<p>
+<blockquote><font color="#000080">The silently announce items from multiple object lists rule is listed instead of the announce items from multiple object lists rule in the action-processing rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Outcome Objects
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">component list</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">result</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">{stick, string}</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hookless fishing pole</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">{wire hook, string}</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">hooked line</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">{hooked line, stick}</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">complete fishing pole</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">{hookless fishing pole, wire hook}</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">complete fishing pole</font>&nbsp;&nbsp;&nbsp;</td>
+<blockquote><font color="#000080">This is the silently announce items from multiple object lists rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;unless multiply-examining or multiply-examining something from something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current item from the multiple object list is not nothing, say &quot;[current item from the multiple object list]: [run paragraph on]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is matched if it is listed in the multiple object list.
+</font></blockquote><p>
+<p>
+<p>We'll save our &quot;to describe&quot; phrase until Section 2, when we can give the game specific instructions about how to report different lists of objects.
+<p>
+<p>Now, the player might also want to be able to refer to a group of item by some kind of group name, so let's add the option of creating a Table of Collective Names which will interpret these:
+<p>
+<blockquote><font color="#000080">After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Collective Names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be indexed text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let Y be indexed text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let Y be relevant list entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while N matches the regular expression &quot;[name-text entry]&quot;, replace the regular expression &quot;(.*)[name-text entry](.*)&quot; in N with &quot;\1[Y]\2&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to N.
+</font></blockquote><p>
+<p>
+<p>
+<blockquote><font color="#000080">Report taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You pick up [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<p>And as a bit of polish, because we'd like SEARCH TABLE to have the same effect as EXAMINE ALL ON TABLE:
+<p>
+<blockquote><font color="#000080">Understand &quot;look on [something]&quot; as searching.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of searching something which supports at least two things:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be the list of things supported by the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;describe L.
+<br>Instead of searching something which contains at least two things:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be the list of things contained by the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;describe L.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 2 - Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Eight-Walled Chamber is a room. &quot;A perfectly octagonal room whose walls are tinted in various hues.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The display table is a supporter in the Chamber. A twig of rowan wood is on the table.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries an apple and a pear.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A glove is a kind of thing. A glove is always wearable. Understand &quot;glove&quot; as a glove. The player carries a left glove and a right glove. The left glove and the right glove are gloves.
+</font></blockquote><p>
+<p>
+<p>Now we define a few actual lists of items:
+<p>
+<blockquote><font color="#000080">Fruit list is a list of objects which varies. Fruit list is { apple, pear }.
+<br>Glove list is a list of objects which varies. Glove list is { right glove, left glove }.
+<br>Arcane list is a list of objects which varies. Arcane list is { left glove, twig, pear }.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To describe (L - a list of objects):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if L is fruit list:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Just a couple of fruits.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if L is glove list:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's a matched pair of fuzzy blue gloves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if L is arcane list:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;To anyone else it might look like a random collection of objects, but these three things -- [L with definite articles] -- constitute a mystic key known as the Left Hand of Autumn. They practically hum with power.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You see [L with indefinite articles].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort fruit list;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort glove list;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the arcane list.
+</font></blockquote><p>
+<p>
+<p>We sort the lists so that regardless of how we change the rest of the code (and the order in which objects are coded), the resulting list will always be in sorted order and ready to compare with the list of items the player wants to look at. And thanks to the &quot;Reading a command&quot; code we wrote earlier, we can also teach the game to understand the player's references to &quot;the left hand of autumn&quot; as a specific collection of items.
+<p>
+<blockquote><font color="#000080">Table of Collective Names
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">name-text</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">relevant list (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;left hand of autumn&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[arcane list]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;gloves&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[glove list]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;pair of gloves&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[glove list]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
 </tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;combine stick with string / i / combine pole with hook / i&quot;.
+<blockquote><font color="#000080">Test me with &quot;x apple and pear / x left and right / put pear on table / put left glove on table / x all on table / put all on table / examine all on table / get apple, twig, pear / x all on table / search table&quot;.
 </font></blockquote><p>
-<p>
-<p>This kind of implementation makes sense if we don't intend the player to take the fishing pole apart again, or to refer to any of its component parts once it is built. For an alternate approach that does allow assembled objects to be taken apart again, see &quot;Some Assembly Required&quot;.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc342.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc255.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e239"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>393</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex239.html#e239 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Formicidae</font></b></a><br>Manipulating the order in which items are handled after TAKE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc341.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc343.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc254.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.9. Lengthening or shortening a list</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.32. Implicitly taking something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,112 +19,95 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Leopard-skin" -->
-<!-- SEARCH SECTION "Ex 395" -->
-<!-- SEARCH SORT "Ex 020-009-395" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc344.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc346.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.9. Lengthening or shortening a list</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Big Sainsbury's" -->
+<!-- SEARCH SECTION "Ex 352" -->
+<!-- SEARCH SORT "Ex 017-032-352" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc303.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc305.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.32. Implicitly taking something</b></font></td></tr></table>
 <p>
-<p>We can explicitly change the length of a list like so:
+<p><b>1. When it happens.</b> When an action is tried which requires the actor (normally the player, of course) to be carrying something, but which is not in fact carried by that person. For instance, if the player types WEAR OVERCOAT in reference to a Moroccan overcoat currently draped over a chair.
 <p>
-<blockquote><font color="#000080">change L to have 21 entries;
+<p><b>2. The default behaviour.</b> To print text such as &quot;(first taking the Moroccan overcoat)&quot; and then silently try taking the object in question (the overcoat). If the take succeeds, the silence means that nothing else is printed: if it fails, it will say why.
+<p>
+<p>No matter what rules are written for this activity, it is impossible to use it to allow the action to go ahead even without the item. The activity allows us to change how, or if, an implicit take will happen, but not to change the consequences of failure. (To do that, we would need a procedural rule to &quot;ignore the carrying requirements rule&quot;, but this kind of unstitching of the action machinery needs to be done with caution.)
+<p>
+<p><b>3. Examples.</b> (a) Forbidding implicit takes for certain dangerous items. (This seems especially fair if taking such items might cause death: the player will not wish to be killed on the strength only of our guess as to what he might be intending to do.)
+<p>
+<blockquote><font color="#000080">Rule for implicitly taking the curare:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ordinarily you'd pick up the curare in order to be able to do that, but this seems like a good moment for caution.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>If L previously had more than 21 entries, they are thrown away (and lost forever); if L previously had fewer, then new entries are created, using the default value for whatever kind of value L holds. So extending a list of numbers will pad it out with 0s, but extending a list of texts will pad it out with the empty text &quot;&quot;, and so on.
+<p>(b) Changing the way the implicit action is reported for the player:
 <p>
-<p>We can also write the slightly different phrases:
-<p>
-<blockquote><font color="#000080">truncate L to 8 entries;
-<br>truncate L to the last 4 entries;
-<br>extend L to 80 entries;
+<blockquote><font color="#000080">Rule for implicitly taking something (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the target, say &quot;You appropriate [the target] first, of course. [run paragraph on]&quot;
 </font></blockquote><p>
 <p>
-<p>The first means &quot;shorten L to length 8 if it is currently longer than that&quot;, and would (for instance) leave a list of length 3 unchanged; the second is similar, but trims excess entries from the front rather than the back; the third means &quot;lengthen L to length 80 if it is currently shorter than that&quot;. Note that
+<p>(c) Combining implicit takes when the noun and second noun must both be carried:
 <p>
-<blockquote><font color="#000080">truncate L to 0 entries;
+<blockquote><font color="#000080">Rule for implicitly taking the noun when the second noun is a thing and the second noun is not carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking both [the noun] and [the second noun])[line break]&quot;
 </font></blockquote><p>
 <p>
-<p>shortens L right back down to the empty list, the shortest it can be.
+<p>(d) Making another character reply amusingly:
 <p>
-<p>For example,
-<p>
-<blockquote><font color="#000080">To check sorting (N - a number):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be a list of numbers;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;extend L to N entries;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to N:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change entry X of L to X;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L unrandomised is [L].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L in random order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L randomised is [L].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L in ascending order is [L].&quot;
+<blockquote><font color="#000080">Rule for implicitly taking something which is carried by the player when the person asked is Clark:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that when you're holding [the noun],' remarks Clark sulkily.&quot; instead.
 </font></blockquote><p>
-<p>
-<p>builds a list of N numbers (initially all 0), fills it with the numbers 1, 2, 3, ..., N, then randomly reorders them, then sorts them back again, recovering the original order. The text produced by &quot;check sorting 10&quot; depends partly on chance but might for instance be:
-<p>
-<blockquote><font color="#000080">L unrandomised is 1, 2, 3, 4, 5, 6, 7, 8, 9 and 10.
-<br>L randomised is 6, 2, 9, 3, 10, 1, 7, 4, 8 and 5.
-<br>L in ascending order is 1, 2, 3, 4, 5, 6, 7, 8, 9 and 10.
-</font></blockquote><p>
-<p>
-<p>As with indexed text in the previous chapter, a project which needs really long lists should use the Glulx virtual machine - &quot;check sorting 10000&quot;, for instance, would break the default memory environment on the Z-machine, which is very tight, but works fine (if not very rapidly) on Glulx.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e200"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc345.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>395</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc345.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Leopard-skin</font></b></a><br>A maze that the player can escape if he performs an exact sequence of actions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e200"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc304.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc304.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Big Sainsbury's</font></b></a><br>Making implicit takes add a minute to the clock, just as though the player had typed TAKE THING explicitly.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose (as in Infocom's Leather Goddesses of Phobos) that we have a maze that the player can escape only by performing the correct sequence of actions in the correct order. One way to do this would be to keep a list of the player's most recent actions, and see whether these match up with the combination we have established as the maze's solution.
+<p>Implicit takes are a convenience to players; in general, we would like to avoid asking players to type any more obvious commands than strictly necessary, while allowing the computer to guess as much as it safely can.
 <p>
-<p>For instance:
+<p>Occasionally, though, we have designed a timed puzzle in which the player has a limited number of moves in which to accomplish his objectives. In that case, the implicit take complicates matters, because it means that a player who types
+<p>
+<blockquote><font color="#000080">>EAT GATEAU
+<br>(first taking the gateau...)
+</font></blockquote><p>
+<p>
+<p>gets away with a spare move compared to the precise but naïf dupe who types
+<p>
+<blockquote><font color="#000080">>TAKE GATEAU
+<br>>EAT GATEAU
+</font></blockquote><p>
+<p>
+<p>...and really, that doesn't seem quite fair. The way to fix this problem is to fill in the extra minute on the clock during the implicit take; and that is indeed what we do in the following example.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode494(code) {
+function pasteCode449(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]Leopard-skin[=0x0022=][=0x000A=][=0x000A=]The Fur-Lined Maze is a room. [=0x0022=]This seemingly endless sequence of rooms is decorated in a tasteful selection of exotic furs and gilded fixtures.[=0x0022=][=0x000A=][=0x000A=]Clapping is an action applying to nothing. Understand [=0x0022=]clap[=0x0022=] as clapping.[=0x000A=]Kweepaing is an action applying to nothing. Understand [=0x0022=]kweepa[=0x0022=] as kweepaing.[=0x000A=][=0x000A=]Carry out clapping:[=0x000A=][=0x0009=]say [=0x0022=]You clap.[=0x0022=][=0x000A=][=0x000A=]Carry out kweepaing:[=0x000A=][=0x0009=]say [=0x0022=]You holler [=0x0027=]KWEEPA![=0x0027=] triumphantly.[=0x0022=][=0x000A=][=0x000A=]The maze-sequence is a list of stored actions that varies.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]add the action of jumping to the maze-sequence;[=0x000A=][=0x0009=]add the action of clapping to the maze-sequence;[=0x000A=][=0x0009=]add the action of kweepaing to the maze-sequence.[=0x000A=][=0x000A=]The attempted-sequence is a list of stored actions that varies.[=0x000A=][=0x000A=]Every turn when the player is in the Fur-Lined Maze:[=0x000A=][=0x0009=]truncate the attempted-sequence to the last two entries;[=0x000A=][=0x0009=]add the current action to the attempted-sequence;[=0x000A=][=0x0009=]if the attempted-sequence is the maze-sequence:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]That does it! You are instantly transported from the maze![=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]Test me with [=0x0022=]hop / clap / clap / hop / kweepa / hop / clap / kweepa[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Big Sainsbury[=0x0027=]s[=0x0022=][=0x000A=][=0x000A=]Sainsbury[=0x0027=]s is a room.[=0x000A=][=0x000A=]The crispy duck and the Guinness steak pie are edible things in Sainsbury[=0x0027=]s.[=0x000A=][=0x000A=]Rule for implicitly taking something:[=0x000A=][=0x0009=]follow the advance time rule;[=0x000A=][=0x0009=]continue the activity.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the right hand status line to [=0x0022=][time of day][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]take crispy duck / eat crispy duck / eat steak pie[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode494()"><img border=0 src=../doc_images/paste.png></a>  &quot;Leopard-skin&quot;
+<a href="javascript:pasteCode449()"><img border=0 src=../doc_images/paste.png></a> &quot;The Big Sainsbury's&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Fur-Lined Maze is a room. &quot;This seemingly endless sequence of rooms is decorated in a tasteful selection of exotic furs and gilded fixtures.&quot;
+<blockquote><font color="#000080">Sainsbury's is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Clapping is an action applying to nothing. Understand &quot;clap&quot; as clapping.
-<br>Kweepaing is an action applying to nothing. Understand &quot;kweepa&quot; as kweepaing.
+<blockquote><font color="#000080">The crispy duck and the Guinness steak pie are edible things in Sainsbury's.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out clapping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You clap.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out kweepaing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You holler 'KWEEPA!' triumphantly.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The maze-sequence is a list of stored actions that varies.
+<blockquote><font color="#000080">Rule for implicitly taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the advance time rule;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the activity.
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the action of jumping to the maze-sequence;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the action of clapping to the maze-sequence;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the action of kweepaing to the maze-sequence.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;[time of day]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The attempted-sequence is a list of stored actions that varies.
+<blockquote><font color="#000080">Test me with &quot;take crispy duck / eat crispy duck / eat steak pie&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the player is in the Fur-Lined Maze:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the attempted-sequence to the last two entries;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the current action to the attempted-sequence;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the attempted-sequence is the maze-sequence:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That does it! You are instantly transported from the maze!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;hop / clap / clap / hop / kweepa / hop / clap / kweepa&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc345.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc304.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc344.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc346.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e408"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex408.html#e408 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>353</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex408.html#e408 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pizza Prince</font></b></a><br>Providing a pizza buffet from which the player can take as many pieces as he wants.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex408.html#e408 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>354</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lollipop Guild</font></b></a><br>Overriding the rules to allow the player to eat something without first taking it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc303.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc305.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.7. New rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.11. Variations: arrays, logs, queues, stacks, sets, sieves and rings</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,281 +19,181 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "In Fire or in Flood" -->
-<!-- SEARCH SECTION "Ex 361" -->
-<!-- SEARCH SORT "Ex 018-007-361" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc314.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc316.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.7. New rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Fibonacci Sequence" -->
+<!-- SEARCH SECTION "Ex 408" -->
+<!-- SEARCH SORT "Ex 020-011-408" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc349.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc351.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.11. Variations: arrays, logs, queues, stacks, sets, sieves and rings</b></font></td></tr></table>
 <p>
-<p>Creating a new rulebook is also straightforward, as we see in the following modest example game:
+<p>Lists are highly adaptable, and many other collection-like constructions can be made using them. This section introduces no new material, but simply suggests some of the variations which are possible.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode86(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Appraisal[=0x0022=][=0x000A=][=0x000A=]The Passage is east of the Tomb. The green-eyed idol is in the Tomb. A Speak-Your-Progress machine is in the Passage.[=0x000A=][=0x000A=]Appraisal rules is a rulebook.[=0x000A=][=0x000A=]An appraisal rule: say [=0x0022=]Click... whirr... the score is [the score in words] points.[=0x0022=][=0x000A=][=0x000A=]An appraisal rule: if we have taken the idol then say [=0x0022=]Most importantly of all, the idol has been found.[=0x0022=][=0x000A=][=0x000A=]Instead of switching on the machine, follow the appraisal rules.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode86()"><img border=0 src=../doc_images/paste.png></a> &quot;Appraisal&quot;
+<p>1. The traditional computing term <b>array</b> means a list of values accessed by their entry numbers, often used in mathematical computations. The difference between an array and a list is mostly one of attitude, but usually arrays are fixed in length whereas lists can expand or contract.
+<p>
+<p>2. A <b>log</b> is a list which records the most recently arrived values, but does not allow itself to grow indefinitely. In the following, which remembers the seven most recently taken items, new values arrive at the end while old ones eventually disappear from the front:
+<p>
+<blockquote><font color="#000080">The most-recently-taken list is a list of objects that varies.
+<br>Carry out taking something (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the most-recently-taken list to the last 6 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the item to the most-recently-taken list.
+<br>After taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (So, your recent acquisitions: [most-recently-taken list].)&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Passage is east of the Tomb. The green-eyed idol is in the Tomb. A Speak-Your-Progress machine is in the Passage.
+<p>Note that the most-recently-taken list begins play as the empty list, grows as the first few items are taken, but then stabilises at length 7 thereafter. If we need to remember recent history, but only <i>recent</i> history, then a log is better than a list which can grow indefinitely, because there is no risk of speed reduction or memory exhaustion in a very long game.
+<p>
+<p>3. A <b>queue</b> is a list of values which are waiting for attention. New values join at the back, while those being dealt with are removed from the front (whereupon the whole queue moves up one). An empty queue means that nobody is waiting for attention: but there is, in principle, no upper limit to the size of a queue, as anyone who has tried to make a couchette reservation at Roma Termini will know.
+<p>
+<p>Queues typically form when two independent processes are at work, but going at different or variable speeds. An empty queue looks just like any other list:
+<p>
+<blockquote><font color="#000080">The queue is a list of objects that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Appraisal rules is a rulebook.
+<p>(Invariably people, in fact, but lists can only be of kinds of value: so, &quot;list of objects&quot;.) Once we identify a &quot;new customer&quot;, we can join him to the queue thus:
+<p>
+<blockquote><font color="#000080">add the new customer to the queue;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An appraisal rule: say &quot;Click... whirr... the score is [the score in words] points.&quot;
+<p>The process of serving the customers needs to make sure there is actually somebody waiting in the queue before it does anything:
+<p>
+<blockquote><font color="#000080">Every turn when the number of entries in the queue is not 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next customer be entry 1 of the queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The next customer] is served and leaves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the queue.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An appraisal rule: if we have taken the idol then say &quot;Most importantly of all, the idol has been found.&quot;
+<p>Of course queues can also be constructed which empty from other positions, rather than the front: or we could make what computer scientists sometimes call a <b>deque</b>, a &quot;double-ended queue&quot; where new values arrive at both ends.
+<p>
+<p>4. A <b>stack</b> is like a queue except that values arrive at, and are removed from, the same end. Stacks are slightly faster if the active end is the back rather than the front, though this will only be noticeable if they grow quite large.
+<p>
+<p>To put a value V onto a stack S (which is known as &quot;pushing&quot;) is simple:
+<p>
+<blockquote><font color="#000080">add V to S;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of switching on the machine, follow the appraisal rules.
+<p>And to remove a value from the top of the stack (which is known as &quot;pulling&quot;):
+<p>
+<blockquote><font color="#000080">let N be the number of entries in S;
+<br>let V be entry N of S;
+<br>remove entry N of S;
 </font></blockquote><p>
 <p>
-<p>The creation of the rulebook is all very well, but without the final sentence it would never be used. The crucial new phrase here is &quot;follow ...&quot;, which is the first of several phrases allowing us to use rules whenever we want to (rather than simply at predetermined times such as when a particular action is being tried, or at the end of every turn, and such).
+<p>Note that the middle line, accessing entry N, will fail if N = 0, that is, if the stack is empty: Inform's list routines will produce a run-time problem message.
 <p>
-<p>Like &quot;number&quot; or &quot;text&quot;, &quot;rule&quot; and &quot;rulebook&quot; are kinds of value built into Inform: &quot;the blossom rule&quot; is a value whose kind is &quot;rule&quot;, whereas &quot;the every turn rules&quot; is a value whose kind is &quot;rulebook&quot;. In fact, Inform considers a rulebook to be a special case of a rule, so that whenever a rule is required it is legal to name a rulebook instead, but not vice versa. The &quot;follow&quot; phrase here...
+<p>Stacks are useful if some long-term process is constantly being interrupted by newer and more urgent demands, but they can also be used in planning. If a character has a long-term goal, which needs various short-term goals to be achieved along the way, then a stack can represent the goals currently being pursued. The top of the stack represents what the character is trying to achieve now. If the character realises that it needs to achieve something else first, we put that new goal onto the top of the stack, and it becomes the new current goal. When the character completes a task, it can be removed, and we can go back to trying to finish whatever is now on top. When the stack is empty, the character has achieved the original goal.
 <p>
-<blockquote><font color="#000080">Instead of switching on the machine, follow the appraisal rules.
+<p>5. Notoriously, <b>set</b> has 464 distinct meanings in the Oxford English Dictionary, making it the single most ambiguous word in the language. Here we mean not the home of a badger or the Egyptian god of the desert, but the mathematical sense: a collection of values (sometimes called &quot;elements&quot;) without duplicates, and which is normally written in brace notation and in some natural order for the reader's convenience.
+<p>
+<p>The trick here is to maintain the principle that, at all times, our list is sorted in order and contains no duplicates. To provide an example, we start with two sets of numbers:
+<p>
+<blockquote><font color="#000080">let S be {2, 4, 8, 16, 32, 64};
+<br>let T be {2, 4, 6, 10};
 </font></blockquote><p>
 <p>
-<p>...expects to be applied to a value of kind &quot;rule&quot;; &quot;the appraisal rules&quot; is in fact a rulebook, but since that counts as a rule the phrase makes sense to Inform. To follow a rulebook means to run through all its rules in turn, stopping when one rule reaches an outcome; to follow a single rule means just that one, of course.
+<p>Here we add an element to T:
+<p>
+<blockquote><font color="#000080">add 8 to T, if absent; sort T;
+</font></blockquote><p>
+<p>
+<p>The &quot;if absent&quot; clause ensures that no duplicate can occur, and by sorting T afterwards, we maintain the principle that a set must remain in order - so T is now {2, 4, 6, 8, 10}, not {2, 4, 6, 10, 8}. (Inform's sorting algorithm is fast on nearly-sorted lists, so frequent sorting is not as inefficient as it might look.)
+<p>
+<p>We next take the union of T and S, that is, the set containing everything which is in either or both:
+<p>
+<blockquote><font color="#000080">let U be S; add T to U, if absent; sort U;
+</font></blockquote><p>
+<p>
+<p>This makes U = {2, 4, 6, 8, 10, 16, 32, 64}, and once again no duplicates occur and we preserve the sorting. The intersection of T and S, the set of elements in both of them, is a little trickier:
+<p>
+<blockquote><font color="#000080">let I be T;
+<br>repeat with the element running through T:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the element is not listed in S, remove the element from I.
+</font></blockquote><p>
+<p>
+<p>(Faster methods could be devised which exploit the sortedness of T and S, but are not worth it for shortish lists.) This produces I = {2, 4, 8}. Lastly, we can form the set difference, consisting of those elements which are in S but not in T:
+<p>
+<blockquote><font color="#000080">let D be S; remove T from D, if present;
+</font></blockquote><p>
+<p>
+<p>Here, as with intersection, since all we do is to strike out unwanted elements, the surviving ones remain in order and there is no need to sort when we are finished. This produces D = {16, 32, 64}.
+<p>
+<p>6. A <b>sieve</b> is used to make a complicated choice where there are many constraints, by ruling out impossible cases to see what is left. The term derives from the kitchen utensil (for sieving fine grains of flour), but via the name of the &quot;sieve of Eratosthenes&quot;, an ancient Greek method for determining the prime numbers.
+<p>
+<p>Using a sieve is much like using a set, and the difference is mainly one of outlook - we are interested in what does not belong, rather than what does.
+<p>
+<p>7. A <b>ring</b> is not so much a row of values, more a circle, with the last and first entries thought of as adjacent. One position is usually thought of as special, and is the place where new items are added: this may as well be entry 1. For instance, to add &quot;new item&quot; to the ring:
+<p>
+<blockquote><font color="#000080">add the item at entry 1 in the ring;
+</font></blockquote><p>
+<p>
+<p>To set &quot;item&quot; to the frontmost value and extract it from the ring:
+<p>
+<blockquote><font color="#000080">let the item be entry 1 of the ring;
+<br>remove entry 1 from the ring;
+</font></blockquote><p>
+<p>
+<p>And we can rotate the ring in either direction, making a different entry the new entry 1 and therefore the new frontmost value:
+<p>
+<blockquote><font color="#000080">rotate the ring;
+<br>rotate the ring backwards;
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e29"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex29.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>406</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex29.html#e29 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> I Didn't Come All The Way From Great Portland Street</font></b></a><br>In this fiendishly difficult puzzle, which may perhaps owe some inspiration to a certain BBC Radio panel game (1967-), a list is used as a set of actions to help enforce the rule that the player must keep going for ten turns without hesitation, repetition, or deviating from the subject on the card.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex29.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>407</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex293.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Circle of Misery</font></b></a><br>Retrieving items from an airport luggage carousel is such fun, how can we resist simulating it, using a list as a ring buffer?<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e344"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc315.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>361</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc315.html#e344 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> In Fire or in Flood</font></b></a><br>A BURN command; flammable objects which light other items in their vicinity and can burn for different periods of time; the possibility of having parts or contents of a flaming item which survive being burnt.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e344"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc350.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>408</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc350.html#e344 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Fibonacci Sequence</font></b></a><br>The modest Leonardo Fibonacci of Pisa will be only too happy to construct his sequence on request, using an array.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Fibonacci (a posthumous nickname) spread Arabic mathematical learning across Europe in the 13th century, and it's curious that his name lives on only for a single sequence.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode457(code) {
+function pasteCode507(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]In Fire or in Flood[=0x0022=][=0x000A=][=0x000A=]Part I - Rules for combustion[=0x000A=][=0x000A=]Heat is a kind of value. The heats are whole, damp, or flaming. A thing has a heat. A thing is usually whole.[=0x000A=][=0x000A=]A thing has a number called endurance. The endurance of a thing is usually 5. A thing has a number called turns of burning. A thing can be flammable or flame-retardant.[=0x000A=][=0x000A=]Before printing the name of something flaming:[=0x000A=][=0x0009=]say [=0x0022=]flaming [=0x0022=].[=0x000A=][=0x000A=]Before burning something when the player is not carrying something flaming:[=0x000A=][=0x0009=]if a flaming portable thing (called the lighter) is touchable:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](with [the lighter], which you first take)[command clarification break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]try taking the lighter.[=0x000A=][=0x000A=]Instead of burning something when the player is not carrying something flaming:[=0x000A=][=0x0009=]say [=0x0022=]You would first need a fire source.[=0x0022=][=0x000A=][=0x000A=]Instead of burning something flame-retardant:[=0x000A=][=0x0009=]say [=0x0022=][The noun] is not the sort of thing that catches fire.[=0x0022=][=0x000A=][=0x000A=]Instead of burning something flammable when the player is carrying something flaming (called the flame source):[=0x000A=][=0x0009=]say [=0x0022=]You light [the noun] with [the flame source].[=0x0022=];[=0x000A=][=0x0009=]change the heat of the noun to flaming.[=0x000A=][=0x000A=]Instead of burning something when the player is in the noun:[=0x000A=][=0x0009=]say [=0x0022=]That seems dangerous given that you yourself are in [the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of burning something when the player is on the noun:[=0x000A=][=0x0009=]say [=0x0022=]That seems dangerous given that you yourself are on [the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of examining something:[=0x000A=][=0x0009=]say [=0x0022=]Hm, the [printed name] appears to be [heat].[=0x0022=][=0x000A=][=0x000A=]Before taking a flaming thing:[=0x000A=][=0x0009=]let turns remaining be the endurance of the noun minus the turns of burning of the noun;[=0x000A=][=0x0009=]if turns remaining is less than two, say [=0x0022=]There[=0x0027=]s no portion of [the noun] sufficiently cool for you to pick up.[=0x0022=] instead.[=0x000A=][=0x000A=][=0x000A=][But that[=0x0027=]s only a small part of the battle. The thing about fire is that it keeps on doing fiery things even when the player is otherwise occupied: destroying items that are on fire, and spreading to other things nearby. So we need a set of rules for the fire[=0x0027=]s behavior.][=0x000A=][=0x000A=]Every turn when something is flaming:[=0x000A=][=0x0009=]follow the fire rules.[=0x000A=][=0x000A=]The fire rules is a rulebook.[=0x000A=][=0x000A=]A fire rule (this is the can[=0x0027=]t hold flaming objects rule):[=0x000A=][=0x0009=]repeat with item running through flaming things:[=0x000A=][=0x0009=][=0x0009=]if the item is held by the player:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let turns remaining be the endurance of the item minus the turns of burning of the item;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if turns remaining is less than two:[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][The item] becomes too hot to hold! [=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]try dropping the item;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]if the item is held by the player, say [=0x0022=]This is certainly painful.[=0x0022=][=0x000A=][=0x000A=]A fire rule (this is the flames spread rule):[=0x000A=][=0x0009=]repeat with item running through flaming things:[=0x000A=][=0x0009=][=0x0009=]if the turns of burning of the item is one:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]spread the flames from the item.[=0x000A=][=0x000A=]A fire rule (this is the fire destroys things rule):[=0x000A=][=0x0009=]change started printing to false;[=0x000A=][=0x0009=]repeat with item running through flaming things:[=0x000A=][=0x0009=][=0x0009=]change the turns of burning of the item to the turns of burning of the item + 1;[=0x000A=][=0x0009=][=0x0009=]if the turns of burning of the item is greater than the endurance of the item, destroy the item;[=0x000A=][=0x0009=]if started printing is true, say [=0x0022=][paragraph break][=0x0022=];[=0x000A=][=0x0009=]change started printing to false.[=0x000A=][=0x000A=][Because we[=0x0027=]ve labelled all the fire rules, we could swap their order, or turn some of them off, while allowing the others run as usual. For instance, if there were a pair of fireproof gloves in the game, we might want to turn off the [=0x0022=]can[=0x0027=]t hold flaming objects rule[=0x0022=] whenever the player is wearing them.][=0x000A=][=0x000A=][This sort of flexibility is especially useful in the context of extensions. Someone writing an extension about burning would have no way of anticipating the need for a Fireproof Gauntlet of Thog, but the author would nonetheless be able to implement one easily.][=0x000A=][=0x000A=]Definition: a thing is vulnerable if it is flammable and it is whole.[=0x000A=][=0x000A=][The contact between things is a critical factor when it comes to fire, so we might add a couple of conditional relations do determine what is touching what.][=0x000A=][=0x000A=]Reliance relates a thing (called X) to a thing (called Y) when X is part of Y or X is in Y or X is on Y. The verb to be relying on implies the reliance relation.[=0x000A=][=0x000A=]Contact relates a thing (called X) to a thing (called Y) when X is relying on Y or Y is relying on X. The verb to be joined to implies the contact relation.[=0x000A=][=0x000A=][Having these at our disposal makes it much tidier to write what happens next:][=0x000A=][=0x000A=]To spread the flames from (item - a thing):[=0x000A=][=0x0009=]change started printing to false;[=0x000A=][=0x0009=]if the item is joined to a flammable whole thing (called the sacrifice):[=0x000A=][=0x0009=][=0x0009=]if the sacrifice is visible:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change started printing to true;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]Flames engulf [the list of flammable whole things which are joined to the item].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now all the flammable whole things joined to the item are flaming.[=0x000A=][=0x000A=]Started printing is a truth state that varies. Started printing is false.[=0x000A=][=0x000A=]To destroy (item - a thing):[=0x000A=][=0x0009=]let home be the holder of the item;[=0x000A=][=0x0009=]if the item is part of something (called the superstructure), let home be the holder of the superstructure;[=0x000A=][=0x0009=]if the item is visible:[=0x000A=][=0x0009=][=0x0009=]change started printing to true;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The item] burns away[if something is relying on the item], leaving [a list of things which are relying on the item] behind[end if]. [=0x0022=];[=0x000A=][=0x0009=]if something is relying on the item,[=0x000A=][=0x0009=][=0x0009=]now all the things which are relying on the item are in the home;[=0x000A=][=0x0009=]remove the item from play;[=0x000A=][=0x0009=]now the item is damp;[=0x000A=][=0x0009=]now every flaming thing which is part of the item is damp.[=0x000A=][=0x000A=]To destroy (item - a door):[=0x000A=][=0x0009=]let home be the holder of the item;[=0x000A=][=0x0009=]if item is visible:[=0x000A=][=0x0009=][=0x0009=]change started printing to true;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The item] burns away[if something flame-retardant is part of the item], leaving [a list of flame-retardant parts of the item] behind[end if]. [=0x0022=];[=0x000A=][=0x0009=]if home is a room, now all of the flame-retardant parts of the item are in the home;[=0x000A=][=0x0009=]now the item is damp;[=0x000A=][=0x0009=]change the item to open;[=0x000A=][=0x0009=]change the item to unopenable.[=0x000A=][=0x000A=]Before printing the name of a damp door:[=0x000A=][=0x0009=]say [=0x0022=]burnt-out frame of [=0x0022=].[=0x000A=][=0x000A=]Instead of opening or closing a damp door:[=0x000A=][=0x0009=]say [=0x0022=][The noun] can no longer be opened or closed in any meaningful sense.[=0x0022=][=0x000A=][=0x000A=]Instead of doing something other than examining or dropping to a flaming thing when the turns of burning of the noun is greater than 1:[=0x000A=][=0x0009=]say [=0x0022=]Fire has too thoroughly engulfed [the noun] for that to be a good idea.[=0x0022=][=0x000A=][=0x000A=]Instead of taking something when the noun is in a flaming thing (called the receptacle):[=0x000A=][=0x0009=]say [=0x0022=]You don[=0x0027=]t quite dare reach into [the receptacle].[=0x0022=][=0x000A=][=0x000A=]Instead of touching something which is within a flaming thing (called the receptacle):[=0x000A=][=0x0009=]say [=0x0022=]It seems a little risky since [the receptacle] is on fire.[=0x0022=][=0x000A=][=0x000A=]Instead of turning something when the noun is contained in a flaming thing (called the receptacle):[=0x000A=][=0x0009=]say [=0x0022=]It seems a little risky since [the receptacle] is on fire.[=0x0022=][=0x000A=][=0x000A=]Instead of pushing or pulling something when the noun is inside a flaming thing (called the receptacle):[=0x000A=][=0x0009=]say [=0x0022=][The receptacle] deters you.[=0x0022=][=0x000A=][=0x000A=]Before burning something which is in a container when the holder of the noun contains the player:[=0x000A=][=0x0009=]say [=0x0022=]This could make things toasty for you...[=0x0022=][=0x000A=][=0x000A=][And that completes the rules which cover burning: things can catch fire, fire will spread, and gradually consume the world in flames. All of that was general and could be used in any setting, but we now provide a small game to show it off.][=0x000A=][=0x000A=]Part II - Escape from the Library of the Dead[=0x000A=][=0x000A=]The Library of the Dead is a room. [=0x0022=]This room -- little, dank, stone -- is filling with some miasma you do not quite dare breathe. It is imperative that you get out.[=0x0022=][=0x000A=][=0x000A=]The desk is a flammable supporter in the Library. A drawer is part of the desk. The drawer is a flammable closed container. It is openable, lockable, and locked. The desk is scenery.[=0x000A=][=0x000A=]A box is in the Library. A metal hinge is part of the box. The hinge is flame-retardant. The box is open, flammable, and openable. The shroud of Laertes is a flammable thing in the box.[=0x000A=][=0x000A=]Instead of examining something when something is part of the noun:[=0x000A=][=0x0009=]say [=0x0022=]You note [the list of things which are part of the noun].[=0x0022=][=0x000A=][=0x000A=]The world[=0x0027=]s last manuscript of the Psychagogoi by Aeschylus is on the desk. The manuscript is flammable. The manuscript has endurance 1.[=0x000A=][=0x000A=]The torch is a flammable flaming thing carried by the player. It has endurance 60. The asbestos sack is a flame-retardant player[=0x0027=]s holdall in the drawer.[=0x000A=][=0x000A=]The trapdoor is up of the Library and east of the Plaza. The trapdoor is a door. It is flammable, closed, lockable, and locked. [=0x0022=]A trapdoor in the ceiling is your only hope of escape[if flaming]. Fortunately, it is rapidly burning through[end if].[=0x0022=] The trapdoor has endurance 15.[=0x000A=][=0x000A=]Instead of going through the closed trapdoor, say [=0x0022=][The trapdoor] is closed.[=0x0022=][=0x000A=][=0x000A=][We can then add a special fire rule to handle the trapdoor, which will be called as part of the same sequence. Again, this would be most important if the fire rules were part of a standard extension, and the trapdoor fire rule the author[=0x0027=]s own addition.][=0x000A=][=0x000A=]A fire rule:[=0x000A=][=0x0009=]if the trapdoor is flaming and a random chance of 1 in 3 succeeds:[=0x000A=][=0x0009=][=0x0009=]let the caught thing be a random flammable whole thing which can be touched by the trapdoor;[=0x000A=][=0x0009=][=0x0009=]if the caught thing is a thing:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]A spark from [the trapdoor] catches [the caught thing]![=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now the caught thing is flaming.[=0x000A=][=0x000A=]Instead of going to the Plaza:[=0x000A=][=0x0009=]say [=0x0022=]Out at last![=0x0022=];[=0x000A=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]Test me with [=0x0022=]get manuscript / get shroud / light desk / look / g / open drawer / look / g / g / g / get sack / put shroud in sack / put manuscript in sack / close sack / light trapdoor / look / g / g / g / g / g / g / g / g / g / g / g / g / g / g / up[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Fibonacci Sequence[=0x0022=][=0x000A=][=0x000A=]Pisa is a room. Leonardo Fibonacci is a man in Pisa. [=0x0022=]The modest Italian mathematician, Leonardo Fibonacci (1170-1250), beams at you.[=0x0022=][=0x000A=][=0x000A=]Sequencing is an action applying to one number. Understand [=0x0022=]sequence [number][=0x0022=] as sequencing.[=0x000A=][=0x000A=]Instead of sequencing, say [=0x0022=]You make a feeble attempt, sketching in the sand, but it goes nowhere. Leonardo is sympathetic. [=0x0027=]Often goes wrong for me, too, actually. I didn[=0x0027=]t even invent the thing - the ancient Indians knew about it first.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Persuasion rule for asking Leonardo to try sequencing: persuasion succeeds.[=0x000A=][=0x000A=]Report Leonardo sequencing:[=0x000A=][=0x0009=]let N be the number understood;[=0x000A=][=0x0009=]say [=0x0022=]Leonardo scratches his head and makes self-deprecating remarks, before coming up with [the first N terms of the Fibonacci sequence].[=0x0022=][=0x000A=][=0x000A=][ An array need not be fixed in length, as the following example shows:][=0x000A=][=0x000A=]To decide what list of numbers is the first (F - a number) terms of the Fibonacci sequence:[=0x000A=][=0x0009=]let the Fibonacci sequence be {1, 1};[=0x000A=][=0x0009=]let N be 3;[=0x000A=][=0x0009=]while N [=0x003C=] F:[=0x000A=][=0x0009=][=0x0009=]let the last term be entry (N - 1) of the Fibonacci sequence;[=0x000A=][=0x0009=][=0x0009=]let the penultimate term be entry (N - 2) of the Fibonacci sequence;[=0x000A=][=0x0009=][=0x0009=]let the next term be the last term plus the penultimate term;[=0x000A=][=0x0009=][=0x0009=]add the next term to the Fibonacci sequence;[=0x000A=][=0x0009=][=0x0009=]increase N by 1;[=0x000A=][=0x0009=]decide on the Fibonacci sequence.[=0x000A=][=0x000A=]Test me with [=0x0022=]sequence 20 / leonardo, sequence 20[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode457()"><img border=0 src=../doc_images/paste.png></a> &quot;In Fire or in Flood&quot;
+<a href="javascript:pasteCode507()"><img border=0 src=../doc_images/paste.png></a> &quot;The Fibonacci Sequence&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Part I - Rules for combustion
+<blockquote><font color="#000080">Pisa is a room. Leonardo Fibonacci is a man in Pisa. &quot;The modest Italian mathematician, Leonardo Fibonacci (1170-1250), beams at you.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Heat is a kind of value. The heats are whole, damp, or flaming. A thing has a heat. A thing is usually whole.
+<blockquote><font color="#000080">Sequencing is an action applying to one number. Understand &quot;sequence [number]&quot; as sequencing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing has a number called endurance. The endurance of a thing is usually 5. A thing has a number called turns of burning. A thing can be flammable or flame-retardant.
+<blockquote><font color="#000080">Instead of sequencing, say &quot;You make a feeble attempt, sketching in the sand, but it goes nowhere. Leonardo is sympathetic. 'Often goes wrong for me, too, actually. I didn't even invent the thing - the ancient Indians knew about it first.'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of something flaming:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;flaming &quot;.
+<blockquote><font color="#000080">Persuasion rule for asking Leonardo to try sequencing: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before burning something when the player is not carrying something flaming:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a flaming portable thing (called the lighter) is touchable:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(with [the lighter], which you first take)[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try taking the lighter.
+<blockquote><font color="#000080">Report Leonardo sequencing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the number understood;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Leonardo scratches his head and makes self-deprecating remarks, before coming up with [the first N terms of the Fibonacci sequence].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of burning something when the player is not carrying something flaming:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You would first need a fire source.&quot;
+<p> An array need not be fixed in length, as the following example shows:
+<p>
+<blockquote><font color="#000080">To decide what list of numbers is the first (F - a number) terms of the Fibonacci sequence:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the Fibonacci sequence be {1, 1};
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be 3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while N < F:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the last term be entry (N - 1) of the Fibonacci sequence;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the penultimate term be entry (N - 2) of the Fibonacci sequence;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the next term be the last term plus the penultimate term;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add the next term to the Fibonacci sequence;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase N by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the Fibonacci sequence.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of burning something flame-retardant:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is not the sort of thing that catches fire.&quot;
+<blockquote><font color="#000080">Test me with &quot;sequence 20 / leonardo, sequence 20&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of burning something flammable when the player is carrying something flaming (called the flame source):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You light [the noun] with [the flame source].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the heat of the noun to flaming.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of burning something when the player is in the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That seems dangerous given that you yourself are in [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of burning something when the player is on the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That seems dangerous given that you yourself are on [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hm, the [printed name] appears to be [heat].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before taking a flaming thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let turns remaining be the endurance of the noun minus the turns of burning of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if turns remaining is less than two, say &quot;There's no portion of [the noun] sufficiently cool for you to pick up.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<p>But that's only a small part of the battle. The thing about fire is that it keeps on doing fiery things even when the player is otherwise occupied: destroying items that are on fire, and spreading to other things nearby. So we need a set of rules for the fire's behavior.
-<p>
-<blockquote><font color="#000080">Every turn when something is flaming:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the fire rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The fire rules is a rulebook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A fire rule (this is the can't hold flaming objects rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through flaming things:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is held by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let turns remaining be the endurance of the item minus the turns of burning of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if turns remaining is less than two:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The item] becomes too hot to hold! &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try dropping the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is held by the player, say &quot;This is certainly painful.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A fire rule (this is the flames spread rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through flaming things:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the turns of burning of the item is one:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spread the flames from the item.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A fire rule (this is the fire destroys things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change started printing to false;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through flaming things:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the turns of burning of the item to the turns of burning of the item + 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the turns of burning of the item is greater than the endurance of the item, destroy the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if started printing is true, say &quot;[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change started printing to false.
-</font></blockquote><p>
-<p>
-<p>Because we've labelled all the fire rules, we could swap their order, or turn some of them off, while allowing the others run as usual. For instance, if there were a pair of fireproof gloves in the game, we might want to turn off the &quot;can't hold flaming objects rule&quot; whenever the player is wearing them.
-<p>
-<p>This sort of flexibility is especially useful in the context of extensions. Someone writing an extension about burning would have no way of anticipating the need for a Fireproof Gauntlet of Thog, but the author would nonetheless be able to implement one easily.
-<p>
-<blockquote><font color="#000080">Definition: a thing is vulnerable if it is flammable and it is whole.
-</font></blockquote><p>
-<p>
-<p>The contact between things is a critical factor when it comes to fire, so we might add a couple of conditional relations do determine what is touching what.
-<p>
-<blockquote><font color="#000080">Reliance relates a thing (called X) to a thing (called Y) when X is part of Y or X is in Y or X is on Y. The verb to be relying on implies the reliance relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Contact relates a thing (called X) to a thing (called Y) when X is relying on Y or Y is relying on X. The verb to be joined to implies the contact relation.
-</font></blockquote><p>
-<p>
-<p>Having these at our disposal makes it much tidier to write what happens next:
-<p>
-<blockquote><font color="#000080">To spread the flames from (item - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change started printing to false;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is joined to a flammable whole thing (called the sacrifice):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the sacrifice is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change started printing to true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Flames engulf [the list of flammable whole things which are joined to the item].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all the flammable whole things joined to the item are flaming.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Started printing is a truth state that varies. Started printing is false.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To destroy (item - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let home be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is part of something (called the superstructure), let home be the holder of the superstructure;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change started printing to true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The item] burns away[if something is relying on the item], leaving [a list of things which are relying on the item] behind[end if]. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is relying on the item,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all the things which are relying on the item are in the home;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the item from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the item is damp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every flaming thing which is part of the item is damp.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To destroy (item - a door):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let home be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if item is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change started printing to true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The item] burns away[if something flame-retardant is part of the item], leaving [a list of flame-retardant parts of the item] behind[end if]. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if home is a room, now all of the flame-retardant parts of the item are in the home;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the item is damp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the item to open;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the item to unopenable.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of a damp door:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;burnt-out frame of &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of opening or closing a damp door:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] can no longer be opened or closed in any meaningful sense.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of doing something other than examining or dropping to a flaming thing when the turns of burning of the noun is greater than 1:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Fire has too thoroughly engulfed [the noun] for that to be a good idea.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking something when the noun is in a flaming thing (called the receptacle):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You don't quite dare reach into [the receptacle].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of touching something which is within a flaming thing (called the receptacle):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It seems a little risky since [the receptacle] is on fire.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning something when the noun is contained in a flaming thing (called the receptacle):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It seems a little risky since [the receptacle] is on fire.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of pushing or pulling something when the noun is inside a flaming thing (called the receptacle):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The receptacle] deters you.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before burning something which is in a container when the holder of the noun contains the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This could make things toasty for you...&quot;
-</font></blockquote><p>
-<p>
-<p>And that completes the rules which cover burning: things can catch fire, fire will spread, and gradually consume the world in flames. All of that was general and could be used in any setting, but we now provide a small game to show it off.
-<p>
-<blockquote><font color="#000080">Part II - Escape from the Library of the Dead
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Library of the Dead is a room. &quot;This room -- little, dank, stone -- is filling with some miasma you do not quite dare breathe. It is imperative that you get out.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The desk is a flammable supporter in the Library. A drawer is part of the desk. The drawer is a flammable closed container. It is openable, lockable, and locked. The desk is scenery.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A box is in the Library. A metal hinge is part of the box. The hinge is flame-retardant. The box is open, flammable, and openable. The shroud of Laertes is a flammable thing in the box.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining something when something is part of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You note [the list of things which are part of the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The world's last manuscript of the Psychagogoi by Aeschylus is on the desk. The manuscript is flammable. The manuscript has endurance 1.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The torch is a flammable flaming thing carried by the player. It has endurance 60. The asbestos sack is a flame-retardant player's holdall in the drawer.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The trapdoor is up of the Library and east of the Plaza. The trapdoor is a door. It is flammable, closed, lockable, and locked. &quot;A trapdoor in the ceiling is your only hope of escape[if flaming]. Fortunately, it is rapidly burning through[end if].&quot; The trapdoor has endurance 15.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going through the closed trapdoor, say &quot;[The trapdoor] is closed.&quot;
-</font></blockquote><p>
-<p>
-<p>We can then add a special fire rule to handle the trapdoor, which will be called as part of the same sequence. Again, this would be most important if the fire rules were part of a standard extension, and the trapdoor fire rule the author's own addition.
-<p>
-<blockquote><font color="#000080">A fire rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the trapdoor is flaming and a random chance of 1 in 3 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the caught thing be a random flammable whole thing which can be touched by the trapdoor;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the caught thing is a thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A spark from [the trapdoor] catches [the caught thing]!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the caught thing is flaming.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going to the Plaza:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Out at last!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get manuscript / get shroud / light desk / look / g / open drawer / look / g / g / g / get sack / put shroud in sack / put manuscript in sack / close sack / light trapdoor / look / g / g / g / g / g / g / g / g / g / g / g / g / g / g / up&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc315.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>The result of &quot;the first 20 terms of the Fibonacci sequence&quot; is &quot;1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584 and 4181&quot;. This is a sequence which has a knack of turning up in odd places - it was found in the 1970s to be related to the rings of florets in a sunflower, for instance - and here it is in a book about interactive fiction.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc350.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc314.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc316.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>409</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex354.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e57"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>410</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex57.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lugubrious Pete's Delicatessen</font></b></a><br>In this evocation of supermarket deli counter life, a list is used as a queue to keep track of who is waiting to be served.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e91"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex91.html#e91 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>411</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex91.html#e91 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sieve of Eratosthenes</font></b></a><br>The haughty Eratosthenes of Cyrene will nevertheless consent to sieve prime numbers on request.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex91.html#e91 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e96"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>412</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex96.html#e96 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Eyes, Fingers, Toes</font></b></a><br>A safe with a multi-number combination, meant to be dialed over multiple turns, is implemented using a log of the last three numbers dialed. The log can then be compared to the safe's correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc349.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc351.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

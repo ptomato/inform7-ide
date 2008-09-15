@@ -4,6 +4,9 @@ SUBDIRS = src po data
 
 EXTRA_DIST = \
 	autogen.sh \
+	intltool-update.in \
+	intltool-extract.in \
+	intltool-merge.in \
 	gnome-inform7.glade \
 	gnome-inform7.gladep \
 	gnome-inform7.desktop \

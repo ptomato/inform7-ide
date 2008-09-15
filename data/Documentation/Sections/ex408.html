@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.32. Implicitly taking something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,112 +19,130 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Starry Void" -->
-<!-- SEARCH SECTION "Ex 6" -->
-<!-- SEARCH SORT "Ex 003-002-006" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Pizza Prince" -->
+<!-- SEARCH SECTION "Ex 353" -->
+<!-- SEARCH SORT "Ex 017-032-353" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc303.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc305.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.32. Implicitly taking something</b></font></td></tr></table>
 <p>
-<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
+<p><b>1. When it happens.</b> When an action is tried which requires the actor (normally the player, of course) to be carrying something, but which is not in fact carried by that person. For instance, if the player types WEAR OVERCOAT in reference to a Moroccan overcoat currently draped over a chair.
 <p>
-<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
+<p><b>2. The default behaviour.</b> To print text such as &quot;(first taking the Moroccan overcoat)&quot; and then silently try taking the object in question (the overcoat). If the take succeeds, the silence means that nothing else is printed: if it fails, it will say why.
 <p>
-<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
+<p>No matter what rules are written for this activity, it is impossible to use it to allow the action to go ahead even without the item. The activity allows us to change how, or if, an implicit take will happen, but not to change the consequences of failure. (To do that, we would need a procedural rule to &quot;ignore the carrying requirements rule&quot;, but this kind of unstitching of the action machinery needs to be done with caution.)
+<p>
+<p><b>3. Examples.</b> (a) Forbidding implicit takes for certain dangerous items. (This seems especially fair if taking such items might cause death: the player will not wish to be killed on the strength only of our guess as to what he might be intending to do.)
+<p>
+<blockquote><font color="#000080">Rule for implicitly taking the curare:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ordinarily you'd pick up the curare in order to be able to do that, but this seems like a good moment for caution.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
+<p>(b) Changing the way the implicit action is reported for the player:
 <p>
-<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
-<p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
+<blockquote><font color="#000080">Rule for implicitly taking something (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the target, say &quot;You appropriate [the target] first, of course. [run paragraph on]&quot;
 </font></blockquote><p>
 <p>
-<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
+<p>(c) Combining implicit takes when the noun and second noun must both be carried:
 <p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
+<blockquote><font color="#000080">Rule for implicitly taking the noun when the second noun is a thing and the second noun is not carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking both [the noun] and [the second noun])[line break]&quot;
 </font></blockquote><p>
 <p>
-<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
+<p>(d) Making another character reply amusingly:
 <p>
-<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
+<blockquote><font color="#000080">Rule for implicitly taking something which is carried by the player when the person asked is Clark:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that when you're holding [the noun],' remarks Clark sulkily.&quot; instead.
 </font></blockquote><p>
-<p>
-<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
-<p>
-<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
-</font></blockquote><p>
-<p>
-<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
-<p>
-<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
-</font></blockquote><p>
-<p>
-<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
 <p>
 <p><hr><p>
-<a name="e225"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex225.html#e225 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e392"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex392.html#e392 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex392.html#e392 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex392.html#e392 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e200"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex200.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Big Sainsbury's</font></b></a><br>Making implicit takes add a minute to the clock, just as though the player had typed TAKE THING explicitly.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e408"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e408 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>6</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e408 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Starry Void</font></b></a><br>Creating a booth that can be seen from the outside, opened and closed, and entered as a separate room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex408.html#e408 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e408"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc304.html#e408 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>353</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc304.html#e408 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Pizza Prince</font></b></a><br>Providing a pizza buffet from which the player can take as many pieces as he wants.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex408.html#e408 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes we may want a room to be visible from the outside in one location, but treated as a separate location when we are inside. The simplest way to do this is to make the exterior form of the object into a door object, and to describe it differently from different vantage points. (Doors in general are described more fully in the Doors section of the Things chapter.)
+<p>Suppose we want the player to have a pizza buffet from which he can take a number of slices. But we don't want to actually put the slices there in front of him, because &quot;you can see 17 slices of pizza here&quot; is not the descriptive effect we want, and because we want to pretend, at least, that the pizza supply is nearly infinite. In fact, we're going to replenish the supply by allowing eaten slices to return to the buffet table (safer in IF than in real life).
+<p>
+<p>To do this, we create one object to stand in for the pizza supply, but whenever the player tries to take it, we give him a different &quot;pizza slice&quot; object instead. Thus:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode93(code) {
+function pasteCode450(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]Starry Void[=0x0022=][=0x000A=][=0x000A=]The Center Ring is a room.[=0x000A=][=0x000A=]The magician[=0x0027=]s booth is a door. [=0x0022=][if in Center Ring]A magician[=0x0027=]s booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician[=0x0027=]s booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if][=0x0022=].[=0x000A=][=0x000A=][Here we[=0x0027=]ve arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:][=0x000A=][=0x000A=]Instead of examining the magician[=0x0027=]s booth in the Center Ring:[=0x000A=][=0x0009=]say [=0x0022=]It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].[=0x0022=][=0x000A=][=0x000A=]Instead of examining the magician[=0x0027=]s booth in the Starry Void:[=0x000A=][=0x0009=]say [=0x0022=]The booth door is [if the magician[=0x0027=]s booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].[=0x0022=][=0x000A=][=0x000A=][And now we put it in place:][=0x000A=][=0x000A=]The magician[=0x0027=]s booth is inside from Center Ring and outside from Starry Void.[=0x000A=][=0x000A=][...and make sure that the booth-and-door object responds to all the names we have used for it in different places:][=0x000A=][=0x000A=]Understand [=0x0022=]door[=0x0022=] or [=0x0022=]of[=0x0022=] or [=0x0022=]the[=0x0022=] or [=0x0022=]light[=0x0022=] or [=0x0022=]crack[=0x0022=] or [=0x0022=]thin crack[=0x0022=] as the booth.[=0x000A=][=0x000A=]Test me with [=0x0022=]in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Pizza Prince[=0x0022=][=0x000A=][=0x000A=]The Pizza Prince is a room.[=0x000A=][=0x000A=]The buffet table is a supporter in Pizza Prince.[=0x000A=][=0x000A=]The pizza selection is a fixed in place thing on the buffet table. Understand [=0x0022=]slice[=0x0022=] as the pizza selection. The description is [=0x0022=]They are all cheese-only, and all luke-warm.[=0x0022=][=0x000A=][=0x000A=]Rule for writing a paragraph about the buffet table:[=0x000A=][=0x0009=]say [=0x0022=]On [the buffet table] is [a pizza selection]. [description of the pizza selection][line break][=0x0022=].[=0x000A=][=0x000A=][Now we introduce our actual pizza slices, which are retained in a container out of play until they[=0x0027=]re needed. A hundred slices ought to suffice for any but the most maniacal player:][=0x000A=][=0x000A=]A pizza slice is a kind of thing. 10 pizza slices are in Pizza Limbo. A pizza slice is always edible. [After a fashion, anyway.][=0x000A=][=0x000A=][In this example we[=0x0027=]ve set that supply to be artificially small, to make it easier to test what happens when the player reaches the limit; but we could provide many more slices to start with in Pizza Limbo, and the aim in practice would be to pick a number high enough (such as 50 or 100) that the average player will get bored of TAKE PIZZA long before he reaches the limit.][=0x000A=][=0x000A=][The main thing to be aware of is that objects consume memory in the game file, so creating a large number of pizza slices might bulk the game out. This is more of a concern if we[=0x0027=]re compiling for the Z-machine than if we[=0x0027=]re compiling for Glulx.][=0x000A=][=0x000A=][Whenever the player tries to take the selection, we want him to wind up holding an individual slice instead; but of course we need to check and make sure that he hasn[=0x0027=]t exhausted the pizza slice supply.][=0x000A=][=0x000A=]Instead of taking the pizza selection:[=0x000A=][=0x0009=]let chosen slice be a random pizza slice in Pizza Limbo;[=0x000A=][=0x0009=]if chosen slice is nothing: [That is, there were no slices remaining][=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][manager refusal][=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]move the chosen slice to the player;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Taken (gingerly).[=0x0022=][=0x000A=][=0x000A=]To say manager refusal:[=0x000A=][=0x0009=]say [=0x0022=][one of][=0x0027=]Hey![=0x0027=] barks a hitherto-unseen manager from behind you. [=0x0027=]It[=0x0027=]s an [=0x0027=]all you can eat[=0x0027=] buffet, not an [=0x0027=]all you can stuff down your pants[=0x0027=] buffet.[=0x0027=][or]You are conscious of a disapproving huff from the manager, so you refrain.[stopping][=0x0022=][=0x000A=][=0x000A=][That[=0x0027=]s fine for the case where the player is taking a new slice of pizza explicitly, but we need to handle it a little differently if the taking action is generated in response to EAT PIZZA. In that case, we need to take the slice and also change the identity of the noun, because after the implicit take action happens, the game will test whether the player is holding the noun before attempting to eat it. So we need to refocus its attention:][=0x000A=][=0x000A=]Rule for implicitly taking the pizza selection:[=0x000A=][=0x0009=]let chosen slice be a random pizza slice in Pizza Limbo;[=0x000A=][=0x0009=]if chosen slice is nothing: [That is, there were no slices remaining][=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][manager refusal][=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]move the chosen slice to the player;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](helping yourself from the selection)[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]change the noun to the chosen slice.[=0x000A=][=0x000A=][And finally, a bit of touch-up:][=0x000A=][=0x000A=]Rule for clarifying the parser[=0x0027=]s choice of the pizza selection while taking:[=0x000A=][=0x0009=]say [=0x0022=](from the magnificent selection before you)[line break][=0x0022=][=0x000A=][=0x000A=][For tidiness, we should probably also return the consumed pizza slices to Pizza Limbo so that they can be re-used later:][=0x000A=][=0x000A=]After eating a pizza slice:[=0x000A=][=0x0009=]move the noun to Pizza Limbo;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Test me with [=0x0022=]i / get pizza / g / i / get pizza / drop pizza / look / get pizza / g / look / eat pizza / g / g / g / g / get pizza / g / g / g / g / g / g / g / g / g / g / g / g / i / eat pizza / take pizza / g[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode93()"><img border=0 src=../doc_images/paste.png></a>  &quot;Starry Void&quot;
+<a href="javascript:pasteCode450()"><img border=0 src=../doc_images/paste.png></a> &quot;Pizza Prince&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Center Ring is a room.
+<blockquote><font color="#000080">The Pizza Prince is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The magician's booth is a door. &quot;[if in Center Ring]A magician's booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician's booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if]&quot;.
+<blockquote><font color="#000080">The buffet table is a supporter in Pizza Prince.
 </font></blockquote><p>
 <p>
-<p>Here we've arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:
-<p>
-<blockquote><font color="#000080">Instead of examining the magician's booth in the Center Ring:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].&quot;
+<blockquote><font color="#000080">The pizza selection is a fixed in place thing on the buffet table. Understand &quot;slice&quot; as the pizza selection. The description is &quot;They are all cheese-only, and all luke-warm.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the magician's booth in the Starry Void:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The booth door is [if the magician's booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].&quot;
+<blockquote><font color="#000080">Rule for writing a paragraph about the buffet table:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;On [the buffet table] is [a pizza selection]. [description of the pizza selection][line break]&quot;.
 </font></blockquote><p>
 <p>
-<p>And now we put it in place:
+<p>Now we introduce our actual pizza slices, which are retained in a container out of play until they're needed. A hundred slices ought to suffice for any but the most maniacal player:
 <p>
-<blockquote><font color="#000080">The magician's booth is inside from Center Ring and outside from Starry Void.
+<blockquote><font color="#000080">A pizza slice is a kind of thing. 10 pizza slices are in Pizza Limbo. A pizza slice is always edible. [After a fashion, anyway.]
 </font></blockquote><p>
 <p>
-<p>...and make sure that the booth-and-door object responds to all the names we have used for it in different places:
+<p>In this example we've set that supply to be artificially small, to make it easier to test what happens when the player reaches the limit; but we could provide many more slices to start with in Pizza Limbo, and the aim in practice would be to pick a number high enough (such as 50 or 100) that the average player will get bored of TAKE PIZZA long before he reaches the limit.
 <p>
-<blockquote><font color="#000080">Understand &quot;door&quot; or &quot;of&quot; or &quot;the&quot; or &quot;light&quot; or &quot;crack&quot; or &quot;thin crack&quot; as the booth.
+<p>The main thing to be aware of is that objects consume memory in the game file, so creating a large number of pizza slices might bulk the game out. This is more of a concern if we're compiling for the Z-machine than if we're compiling for Glulx.
+<p>
+<p>Whenever the player tries to take the selection, we want him to wind up holding an individual slice instead; but of course we need to check and make sure that he hasn't exhausted the pizza slice supply.
+<p>
+<blockquote><font color="#000080">Instead of taking the pizza selection:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let chosen slice be a random pizza slice in Pizza Limbo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if chosen slice is nothing: [That is, there were no slices remaining]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[manager refusal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the chosen slice to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken (gingerly).&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light&quot;.
+<blockquote><font color="#000080">To say manager refusal:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[one of]'Hey!' barks a hitherto-unseen manager from behind you. 'It's an 'all you can eat' buffet, not an 'all you can stuff down your pants' buffet.'[or]You are conscious of a disapproving huff from the manager, so you refrain.[stopping]&quot;
 </font></blockquote><p>
 <p>
-<p>A final nice touch, if we're so inclined, is to borrow from the Basic Actions chapter and make the player automatically open the booth door before trying to enter:
+<p>That's fine for the case where the player is taking a new slice of pizza explicitly, but we need to handle it a little differently if the taking action is generated in response to EAT PIZZA. In that case, we need to take the slice and also change the identity of the noun, because after the implicit take action happens, the game will test whether the player is holding the noun before attempting to eat it. So we need to refocus its attention:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode94(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode(' Before going through the closed magician[=0x0027=]s booth:[=0x000A=][=0x0009=]say [=0x0022=](first opening the door of the booth)[command clarification break][=0x0022=];[=0x000A=][=0x0009=]silently try opening the booth.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode94()"><img border=0 src=../doc_images/paste.png></a>  Before going through the closed magician's booth:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first opening the door of the booth)[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try opening the booth.
+<blockquote><font color="#000080">Rule for implicitly taking the pizza selection:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let chosen slice be a random pizza slice in Pizza Limbo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if chosen slice is nothing: [That is, there were no slices remaining]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[manager refusal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the chosen slice to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(helping yourself from the selection)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the noun to the chosen slice.
 </font></blockquote><p>
 <p>
-<p>For the contrasting case of a space that is nested inside another place and is not its own room -- say a stall at an open-air market, or a rowboat on a lake -- see the example &quot;Tamed&quot;.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>And finally, a bit of touch-up:
+<p>
+<blockquote><font color="#000080">Rule for clarifying the parser's choice of the pizza selection while taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(from the magnificent selection before you)[line break]&quot;
+</font></blockquote><p>
+<p>
+<p>For tidiness, we should probably also return the consumed pizza slices to Pizza Limbo so that they can be re-used later:
+<p>
+<blockquote><font color="#000080">After eating a pizza slice:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to Pizza Limbo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / get pizza / g / i / get pizza / drop pizza / look / get pizza / g / look / eat pizza / g / g / g / g / get pizza / g / g / g / g / g / g / g / g / g / g / g / g / i / eat pizza / take pizza / g&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc304.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>354</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lollipop Guild</font></b></a><br>Overriding the rules to allow the player to eat something without first taking it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc303.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc305.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

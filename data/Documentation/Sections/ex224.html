@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.17. Randomness</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.7. Moving things</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,126 +19,96 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Do Pass Go" -->
-<!-- SEARCH SECTION "Ex 123" -->
-<!-- SEARCH SORT "Ex 008-017-123" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc127.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc129.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.17. Randomness</b></font></td></tr></table>
+<!-- SEARCH TITLE "Meteoric I and II" -->
+<!-- SEARCH SECTION "Ex 117" -->
+<!-- SEARCH SORT "Ex 008-007-117" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc120.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc122.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.7. Moving things</b></font></td></tr></table>
 <p>
-<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
+<p>We have now seen how to change the properties of rooms and things, and also any freestanding values which may have a bearing on the model world. We are not allowed to change the kind of anything during play. Our remaining freedom is to move things around. It would make no sense to move rooms around, because rooms are the fixed reference points in our geography, but anything else is mobile. This even includes things which are supposedly &quot;fixed in place&quot;, for unlike the player, we have god-like powers. (There are minor restrictions: backdrops are trickier to move, since they are present in several rooms at once - see the nexy section. And doors, at the junction between two rooms, cannot be moved.)
 <p>
-<blockquote><font color="#000080">a random number from 2 to 5
+<p>Here is how to move something:
+<p>
+<blockquote><font color="#000080">move the genie's lamp to Aladdin's Cave
 </font></blockquote><p>
 <p>
-<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>The first object named has to be a thing; the destination must be a room, as here, a container, a supporter, or a person. When something is moved, all its parts and contents (and all their contents, and so on) move with it.  If the thing being moved is a person, then the destination is required to be a room or an enterable container. (In particular, a person cannot be carried by another person.)
 <p>
-<p>We can also use random conditions:
+<p>If the destination is a person, then it will be carried rather than worn: we could arrange for it to be worn instead by writing
 <p>
-<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+<blockquote><font color="#000080">now the genie's turban is worn by Aladdin
 </font></blockquote><p>
 <p>
-<p>Here is a rule which applies only 15% of the time:
-<p>
-<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
-</font></blockquote><p>
-<p>
-<p>If we make a new kind of value, we can also take random values from it:
-<p>
-<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
-</font></blockquote><p>
-<p>
-<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
-<p>
-<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode19(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('When play begins, seed the random-number generator with 1234.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
-</font></blockquote><p>
-<p>
-<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
+<p>&quot;Now...&quot; is a much more flexible phrase than &quot;move&quot;: more on this shortly.
 <p>
 <p><hr><p>
-<a name="e183"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex183.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>122</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex183.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex183.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e224"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc128.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>123</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc128.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e224"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc121.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>117</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc121.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Meteoric I and II</font></b></a><br>A meteor in the night sky which is visible from many rooms, so needs to be a backdrop, but which does not appear until 11:31 PM.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>The timing of the meteor's arrival uses features of Inform which the next chapter will go into at greater detail: suffice to say that the game below begins at half past eleven, and that one turn later is meteor time.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode220(code) {
+function pasteCode213(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Do Pass Go[=0x0022=][=0x000A=][=0x000A=]Go is a room. [=0x0022=]A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.[=0x0022=][=0x000A=][=0x000A=]The pair of dice is carried by the player.[=0x000A=][=0x000A=]The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say [=0x0022=]pair of dice[=0x0022=].[=0x000A=]Rule for printing the name of the pair of dice: say [=0x0022=]pair of dice showing [first die of the pair plus second die of the pair][=0x0022=].[=0x000A=][=0x000A=]To say detailed state of the dice:[=0x000A=][=0x0009=]if the first die of the pair is the second die of the pair, say [=0x0022=]double [first die of the pair][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=][first die of the pair] and [second die of the pair][=0x0022=].[=0x000A=][=0x000A=]The description of the pair of dice is [=0x0022=]The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].[=0x0022=][=0x000A=][=0x000A=]Rolling is an action applying to one carried thing. Understand [=0x0022=]roll [something preferably held][=0x0022=] as rolling.[=0x000A=][=0x000A=]Check rolling when the noun is not the pair of dice: say [=0x0022=]Not something you can roll.[=0x0022=] instead.[=0x000A=]Carry out rolling:[=0x000A=][=0x0009=]now the pair of dice is in the holder of the actor;[=0x000A=][=0x0009=]now the first die of the pair of dice is a random number from 1 to 6;[=0x000A=][=0x0009=]now the second die of the pair of dice is a random number from 1 to 6.[=0x000A=]Report rolling:[=0x000A=][=0x0009=]say [=0x0022=]You roll [detailed state of the dice].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice[=0x0022=].[=0x000A=][=0x000A=][Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.][=0x000A=][=0x000A=]The doubles count is a number that varies.[=0x000A=]After rolling:[=0x000A=][=0x0009=]if the first die of the pair is the second die of the pair, increase the doubles count by 1;[=0x000A=][=0x0009=]otherwise change the doubles count to 0;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Jail is a room. [=0x0022=]This is Jail, and not the Just Visiting periphery, either.[=0x0022=][=0x000A=][=0x000A=]Every turn when the doubles count is 3:[=0x000A=][=0x0009=]say [=0x0022=]The blue-uniformed policemen blows his whistle and beckons you sternly...[=0x0022=];[=0x000A=][=0x0009=]now the player carries the pair of dice;[=0x000A=][=0x0009=]now the player is in Jail;[=0x000A=][=0x0009=]now the doubles count is 0.[=0x000A=][=0x000A=]Every turn when the doubles count is 1 and the player is in Jail:[=0x000A=][=0x0009=]say [=0x0022=]The warden gruffly releases you.[=0x0022=];[=0x000A=][=0x0009=]now the player carries the pair of dice;[=0x000A=][=0x0009=]now the player is in Go.[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Meteoric I[=0x0022=][=0x000A=][=0x000A=]The time of day is 11:30 PM.[=0x000A=][=0x000A=]At 11:31 PM:[=0x000A=][=0x0009=]move meteor to the great outdoors;[=0x000A=][=0x0009=]say [=0x0022=]A meteor streaks across the sky.[=0x0022=].[=0x000A=][=0x000A=]The great outdoors is a region. The Spanish Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Swimming Pool.[=0x000A=][=0x000A=]The meteor is a backdrop. Instead of doing something to the meteor, say [=0x0022=]The meteor is no longer visible, now nothing more than a memory.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wait / wait / examine meteor / west / examine meteor / in / examine meteor[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode220()"><img border=0 src=../doc_images/paste.png></a> &quot;Do Pass Go&quot;
+<a href="javascript:pasteCode213()"><img border=0 src=../doc_images/paste.png></a> &quot;Meteoric I&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Go is a room. &quot;A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.&quot;
+<blockquote><font color="#000080">The time of day is 11:30 PM.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pair of dice is carried by the player.
+<blockquote><font color="#000080">At 11:31 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move meteor to the great outdoors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A meteor streaks across the sky.&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say &quot;pair of dice&quot;.
-<br>Rule for printing the name of the pair of dice: say &quot;pair of dice showing [first die of the pair plus second die of the pair]&quot;.
+<blockquote><font color="#000080">The great outdoors is a region. The Spanish Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Swimming Pool.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say detailed state of the dice:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, say &quot;double [first die of the pair]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[first die of the pair] and [second die of the pair]&quot;.
+<blockquote><font color="#000080">The meteor is a backdrop. Instead of doing something to the meteor, say &quot;The meteor is no longer visible, now nothing more than a memory.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the pair of dice is &quot;The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].&quot;
+<blockquote><font color="#000080">Test me with &quot;wait / wait / examine meteor / west / examine meteor / in / examine meteor&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rolling is an action applying to one carried thing. Understand &quot;roll [something preferably held]&quot; as rolling.
+<p>Or for something a little slower-moving and with no after-image:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode214(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Meteoric II[=0x0022=][=0x000A=][=0x000A=]The time of day is 4:30 PM.[=0x000A=][=0x000A=]At 4:31 PM:[=0x000A=][=0x0009=]move Phobos to the great outdoors;[=0x000A=][=0x0009=]say [=0x0022=]Phobos rises from the western horizon.[=0x0022=][=0x000A=]At 10:06 PM:[=0x000A=][=0x0009=]remove Phobos from play;[=0x000A=][=0x0009=]say [=0x0022=]Phobos sets over the eastern horizon.[=0x0022=][=0x000A=][=0x000A=]The great outdoors is a region. The Martian Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Heavy Water Swimming Pool.[=0x000A=][=0x000A=]Phobos is a backdrop. Instead of doing something to Phobos, say [=0x0022=]Phobos orbits a mere 6000km above you, which is practically touching range for astronomy. On the other hand, astronomy isn[=0x0027=]t all that practical.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wait / wait / examine phobos / west / examine phobos / in / examine phobos[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode214()"><img border=0 src=../doc_images/paste.png></a> &quot;Meteoric II&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check rolling when the noun is not the pair of dice: say &quot;Not something you can roll.&quot; instead.
-<br>Carry out rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pair of dice is in the holder of the actor;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the first die of the pair of dice is a random number from 1 to 6;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second die of the pair of dice is a random number from 1 to 6.
-<br>Report rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You roll [detailed state of the dice].&quot;
+<blockquote><font color="#000080">The time of day is 4:30 PM.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice&quot;.
+<blockquote><font color="#000080">At 4:31 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move Phobos to the great outdoors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Phobos rises from the western horizon.&quot;
+<br>At 10:06 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove Phobos from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Phobos sets over the eastern horizon.&quot;
 </font></blockquote><p>
 <p>
-<p>Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.
-<p>
-<blockquote><font color="#000080">The doubles count is a number that varies.
-<br>After rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, increase the doubles count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the doubles count to 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+<blockquote><font color="#000080">The great outdoors is a region. The Martian Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Heavy Water Swimming Pool.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jail is a room. &quot;This is Jail, and not the Just Visiting periphery, either.&quot;
+<blockquote><font color="#000080">Phobos is a backdrop. Instead of doing something to Phobos, say &quot;Phobos orbits a mere 6000km above you, which is practically touching range for astronomy. On the other hand, astronomy isn't all that practical.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the doubles count is 3:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The blue-uniformed policemen blows his whistle and beckons you sternly...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Jail;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the doubles count is 0.
+<blockquote><font color="#000080">Test me with &quot;wait / wait / examine phobos / west / examine phobos / in / examine phobos&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the doubles count is 1 and the player is in Jail:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The warden gruffly releases you.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Go.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc128.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Though we should not really use Earthly time-keeping, since the Martian day is about half an hour longer than ours.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc121.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e266"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex266.html#e266 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>124</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex266.html#e266 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex266.html#e266 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e110"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>125</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex110.html#e110 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc127.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc129.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc120.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc122.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

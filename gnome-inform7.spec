@@ -1,9 +1,9 @@
 #
 # Spec file for GNOME Inform 7
-# Change 1.fc8 to ubuntu1 for ubuntu-style release number
+# Change rel to ubuntu1 for ubuntu-style release number
 #
-%define  ver     5T18
-%define  rel     2.fc8
+%define  ver     5U92
+%define  rel     1.fc9
 %define  prefix  /usr
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
@@ -14,8 +14,11 @@ License: GPL
 Group: Applications/Development
 Source: gnome-inform7-%{ver}.tar.gz
 URL: http://www.inform-fiction.org/
-Packager: P.F. Chimento <philip.chimento@gmail.com>
-BuildRoot: %{_tmppath}/%{name}-root
+Packager: P. F. Chimento <philip.chimento@gmail.com>
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Requires(pre): GConf2
+Requires(post): GConf2
+Requires(preun): GConf2
 
 %description
 GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
@@ -23,15 +26,36 @@ development environment for Inform 7. Inform 7 is a "natural" programming
 language for writing interactive fiction (also known as text adventures.)
 
 %prep
-%setup
+%setup -q
 
 %build
 %configure
 make
 
+%pre
+if [ "$1" -gt 1 ] ; then
+  GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` \
+    gconftool-2 --makefile-uninstall-rule \
+    %{_sysconfdir}/gconf/schemas/[NAME] .schemas >/dev/null || :
+fi
+
 %install
 rm -rf %{buildroot}
+export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 %makeinstall
+unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
+
+%post
+GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` \
+  gconftool-2 --makefile-install-rule \
+  %{_sysconfdir}/gconf/schemas/%{name}.schemas &>/dev/null || :
+
+%preun
+if [ "$1" -eq 0 ] ; then
+  GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` \
+    gconftool-2 --makefile-uninstall-rule \
+    %{_sysconfdir}/gconf/schemas/%{name}.schemas &>/dev/null || :
+fi
 
 %clean
 rm -rf %{buildroot}
@@ -69,8 +93,13 @@ rm -rf %{buildroot}
 %{_datadir}/gnome-inform7/scene_icons/*.png
 %{_datadir}/pixmaps/Inform.png
 %{_datadir}/pixmaps/gnome-inform7/*
+%{_sysconfdir}/gconf/schemas/*
 
 %changelog
+* Sun Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
+- Added scriptlets for GConf2 schemas processing.
+* Fri Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to Public Beta Build 5U92.
 * Sat May 3 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Fedora 8 release bumped to 2, replacing outdated Glulx Entry Points.
 * Wed Apr 30 2008 P.F. Chimento <philip.chimento@gmail.com>

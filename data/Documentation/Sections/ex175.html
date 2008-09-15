@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.18. Does the player mean...</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.6. Regular expression matching</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,121 +19,244 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Masochism Deli" -->
-<!-- SEARCH SECTION "Ex 297" -->
-<!-- SEARCH SORT "Ex 016-018-297" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc265.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc267.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.18. Does the player mean...</b></font></td></tr></table>
+<!-- SEARCH TITLE "Alpha" -->
+<!-- SEARCH SECTION "Ex 391" -->
+<!-- SEARCH SORT "Ex 019-006-391" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc335.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc337.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.6. Regular expression matching</b></font></td></tr></table>
 <p>
-<p>When the player types an ambiguous reference, we need to work out what is meant. Consider the following source text:
+<p>When playing around with text, we tend to get into longer and trickier wrangles of matching - we find that we want to look not for simple text like &quot;gold&quot;, but for &quot;gold&quot; used only as a separate word, or for a date in YYYY-MM-DD format, or for a seemingly endless range of other possibilities. What we need is not just for Inform to provide a highly flexible matching program, but also a good notation in which to describe what we want.
 <p>
-<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot;
+<p>Fortunately, such a notation already exists. This is the &quot;regular expression&quot; notation, named for a 1950s mathematical model by the logician Stephen Kleene, applied to computing in the late 60s by Ken Thompson, borrowed almost at once by the early Unix tools of the 70s, and developed further by Henry Spencer in the 80s and Philip Hazel in the 90s. The glue holding the Internet together - the Apache web-server, the scripting languages Perl and Python, and so forth - makes indispensable use of regular expressions.
+<p>
+<p>As might be expected from the previous section, we simply have to describe the FIND text as &quot;regular expression&quot; rather than &quot;text&quot; and then the same facilities are available:
+<p>
+<blockquote><font color="#000080">WHATEVER matches the regular expression FIND
+<br>WHATEVER matches the regular expression FIND, case insensitively
+<br>WHATEVER exactly matches the regular expression FIND
+<br>WHATEVER exactly matches the regular expression FIND, case insensitively
+<br>number of times WHATEVER matches the regular expression FIND
+<br>number of times WHATEVER matches the regular expression FIND, case insensitively
 </font></blockquote><p>
 <p>
-<p>Now suppose the player types GET TOWER. The response will be:
+<p>Perhaps fairly, perhaps not, regular expressions have a reputation for being inscrutable. The basic idea is that although alphanumeric characters (letters, numbers and spaces) mean just what they look like, punctuation characters are commands with sometimes dramatic effects. Thus:
 <p>
-<blockquote><font color="#000080">Which do you mean, the great Eiffel Tower or the souvenir model Eiffel Tower?
+<blockquote><font color="#000080">if WHATEVER matches the regular expression &quot;fish&quot;, ...
+<br>if WHATEVER matches the regular expression &quot;f.*h&quot;, ...
 </font></blockquote><p>
 <p>
-<p>Which is a silly question, exposing our work of IF as something artificial. It's obvious to the author of the source text, and to the player, that the souvenir must be what is meant: but this is not obvious to the computer program running the game. Works of IF gain a subtle feeling of quality from being able to understand ambiguous references of the kind above, and Inform provides us with a way to do this by giving the parser clues in the form of &quot;Does the player mean...&quot; rules. For instance, if we add:
+<p>behave very differently. The first is just like matching the text &quot;fish&quot;, but the second matches on any sequence of characters starting with an &quot;f&quot; and ending with an &quot;h&quot;. This is not at all obvious at first sight: reading regular expressions is a skill which must be learned, like reading a musical score. A really complex regular expression can look like a soup of punctuation and even an expert will blink for a few minutes before telling you what it does - but a beginner can pick up the basics very quickly. Newcomers might like to try out and become comfortable with the features a few at a time, reading down the following list.
 <p>
-<blockquote><font color="#000080">Does the player mean taking the great Eiffel Tower: it is very unlikely.
+<p><b>1. Golden rule</b>. Don't try to remember all the characters with weird effects. Instead, if you actually mean any symbol other than a letter, digit or space to be taken literally, place a backslash &quot;\&quot; in front of it. For instance, matching the regular expression
+<p>
+<blockquote><font color="#000080">&quot;\*A\* of the Galactic Patrol&quot;
 </font></blockquote><p>
 <p>
-<p>then the response to GET TOWER will now be:
+<p>is the same as matching the text &quot;*A* of the Galactic Patrol&quot;, because the asterisks are robbed of their normal powers. This includes backslash itself: &quot;\\&quot; means a literal backslash. (Don't backslash letters or digits - that turns out to have a meaning all its own, but anyway, there is never any need.)
 <p>
-<blockquote><font color="#000080">(the souvenir model Eiffel Tower)
-<br>Taken.
+<p><b>2. Alternatives</b>. The vertical stroke &quot;|&quot; - not a letter I or L, nor the digit 1 - divides alternatives. Thus
+<p>
+<blockquote><font color="#000080">&quot;the fish|fowl|crawling thing&quot;
 </font></blockquote><p>
 <p>
-<p>&quot;Does the player mean...&quot; rules look at the actions which are possible interpretations of what the player typed, and grade them according to how likely they seem. (Note that these rules are only ever used to handle ambiguities: if the player unambiguously types GET GREAT EIFFEL TOWER, that will be the action. And the rules are only used where they are able to make a decision: if there are still multiple equally plausible meanings, the parser will ask about all possibilities, not just the most likely ones.) Rules in this rulebook can either decide nothing, or come up with one of the following verdicts:
+<p>is the same as saying match &quot;the fish&quot;, or &quot;fowl&quot;, or &quot;crawling thing&quot;.
 <p>
-<blockquote><font color="#000080">it is very likely
-<br>it is likely
-<br>it is possible
-<br>it is unlikely
-<br>it is very unlikely
+<p><b>3. Dividing with brackets</b>. Round brackets &quot;(&quot; and &quot;)&quot; group parts of the expression together.
+<p>
+<blockquote><font color="#000080">&quot;the (fish|fowl|crawling thing) in question&quot;
 </font></blockquote><p>
 <p>
-<p>If there are no &quot;does the player mean&quot; rules, or the rules make no decision on a given possible action, it will be ranked as &quot;it is possible&quot;.
+<p>is the same as saying match &quot;the fish in question&quot;, or &quot;the fowl in question&quot;, or &quot;the crawling thing in question&quot;. Note that the &quot;|&quot; ranges outwards only as far as the group it is in.
 <p>
-<p>Notice that we can also make rules about actions that apply to two objects, so for instance:
+<p><b>4. Any character</b>. The period &quot;.&quot; means any single character. So
 <p>
-<blockquote><font color="#000080">Does the player mean throwing the can of shoe polish at the shoe polish vending machine: it is likely.
+<blockquote><font color="#000080">&quot;a...z&quot;
 </font></blockquote><p>
 <p>
-<p>which nicely clarifies THROW POLISH AT POLISH, but does not comment on the likelihood of throwing the can at other things or of throwing other things at the vending machine. Moreover, the (suspected) identity of the first item will be known when the rule is consulted; thus
+<p>matches on any sequence of five characters so long as the first is &quot;a&quot; and the last is &quot;z&quot;.
 <p>
-<blockquote><font color="#000080">Does the player mean tying the noun to the noun: it is very unlikely.
+<p><b>5. Character alternatives</b>. The angle brackets &quot;&lt;&quot; and &quot;&gt;&quot; are a more concise way of specifying alternatives for a single character. Thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;aeiou&gt;b&quot;
 </font></blockquote><p>
 <p>
-<p>will tell Inform to prefer not to tie something to itself if other interpretations are available.
+<p>matches on &quot;bab&quot;, &quot;beb&quot;, &quot;bib&quot;, &quot;bob&quot; or &quot;bub&quot;, but not &quot;baob&quot; or &quot;beeb&quot; - any single character within the angle brackets is accepted. Beginning the range with &quot;^&quot; means &quot;any single character so long as it is not one of these&quot;: thus
 <p>
-<p>We may use these rules to affect all sorts of interaction with a specific object or kind of object, as in
-<p>
-<blockquote><font color="#000080">Does the player mean doing something with the cursed dagger of Thog: it is very unlikely.
-<br>Does the player mean doing something with the cursed dagger of Thog when the player is hypnotized: it is likely.
+<blockquote><font color="#000080">&quot;b&lt;^aeiou&gt;b&quot;
 </font></blockquote><p>
 <p>
-<p>...and so on.
+<p>matches on &quot;blb&quot; but not &quot;bab&quot;, &quot;beb&quot;, etc., nor on &quot;blob&quot; or &quot;bb&quot;. Because long runs like this can be a little tiresome, we are also allowed to use &quot;-&quot; to indicate whole ranges. Thus
 <p>
-<p>A final caveat. There are a handful of cases where this mechanism will not in fact help Inform to choose its way out of an ambiguous command: these occur where the grammar in question makes the first noun depend on the second, when the (little-used) &quot;[other things]&quot; or &quot;[things inside]&quot; tokens are being used. The Standard Rules has these only for the actions inserting it into, putting it on, and removing it from. But it does mean that rules like so:
-<p>
-<blockquote><font color="#000080">Does the player mean inserting the D battery into a battery compartment:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;it is very likely.
+<blockquote><font color="#000080">&quot;b&lt;a-z&gt;b&quot;
 </font></blockquote><p>
 <p>
-<p>will break the impasse only where the first noun is ambiguous, not the second.
+<p>matches a &quot;b&quot;, then any lower case English letter, then another &quot;b&quot;.
+<p>
+<p>In traditional regular expression language, square brackets rather than angle brackets are used for character ranges. In fact Inform does understand this notation (it treats square and angle brackets equally for this purpose), but square brackets would be annoying to type, since they already have a meaning in quoted text - for text substitutions.
+<p>
+<p><b>6. Popular character ranges</b>. The range &quot;&lt;0-9&gt;&quot;, matching any decimal digit, is needed so often that it has an abbreviation: &quot;\d&quot;. Thus
+<p>
+<blockquote><font color="#000080">&quot;\d\d\d\d-\d\d-\d\d&quot;
+</font></blockquote><p>
+<p>
+<p>matches, say, &quot;2006-12-03&quot;. Similarly, &quot;\s&quot; means &quot;any spacing character&quot; - a space, tab or line break. &quot;\p&quot; is a punctuation character, in the same sense used for word division in the previous section: it actually matches any of
+<p>
+<blockquote><font color="#000080">. , ! ? - / &quot; : ; ( ) [ ] { }
+</font></blockquote><p>
+<p>
+<p>&quot;\w&quot; means &quot;any character appearing in a word&quot;, and Inform defines it as anything not matching &quot;\s&quot; or &quot;\p&quot;.
+<p>
+<p>&quot;\l&quot; and &quot;\u&quot; match lower and upper case letters, respectively. These are much stronger than &quot;&lt;a-z&gt;&quot; and &quot;&lt;A-Z&gt;&quot;, since they use the complete definition in the Unicode 4.0.0 standard, so that letter-forms from all languages are catered for: for example &quot;δ&quot; matches &quot;\l&quot; and &quot;Δ&quot; matches &quot;\u&quot;.
+<p>
+<p>The reverse of these is achieved by capitalising the letter. So &quot;\D&quot; means &quot;anything not a digit&quot;, &quot;\P&quot; means &quot;anything not punctuation&quot;, &quot;\W&quot; means &quot;anything not a word character&quot;, &quot;\L&quot; means &quot;anything not a lower case letter&quot; and so on.
+<p>
+<p><b>7. Positional restrictions</b>. The notation &quot;^&quot; does not match anything, as such, but instead requires that we be positioned at the start of the text. Thus
+<p>
+<blockquote><font color="#000080">&quot;^fish&quot;
+</font></blockquote><p>
+<p>
+<p>matches only &quot;fish&quot; at the start of the text, not occurring anywhere later on. Similarly, &quot;$&quot; requires that the position be the end of the text. So
+<p>
+<blockquote><font color="#000080">&quot;fish$&quot;
+</font></blockquote><p>
+<p>
+<p>matches only if the last four characters are &quot;fish&quot;. Matching &quot;^fish$&quot; is the same thing as what Inform calls exactly matching &quot;fish&quot;.
+<p>
+<p>Another useful notation is &quot;\b&quot;, which matches a word boundary: that is, it matches no actual text, but requires the position to be a junction between a word character and a non-word character (a &quot;\w&quot; and a &quot;\W&quot;) or vice versa. Thus
+<p>
+<blockquote><font color="#000080">&quot;\bfish\b&quot;
+</font></blockquote><p>
+<p>
+<p>matches &quot;fish&quot; in &quot;some fish&quot; and also &quot;some fish, please!&quot;, but not in &quot;shellfish&quot;. (The regular expression &quot;\w*fish\b&quot; catches all words ending in &quot;fish&quot;, as we will see below.) As usual, the capitalised version &quot;\B&quot; negates this, and means &quot;not at a word boundary&quot;.
+<p>
+<p><b>8. Line break and tab</b>. The notations &quot;\n&quot; and &quot;\t&quot; are used for a line break (&quot;n&quot; for &quot;new line&quot;) and tab, respectively. Tabs normally do not occur in Inform strings, but can do when reading from files. It makes no sense to reverse these, so &quot;\N&quot; and &quot;\T&quot; produce errors.
+<p>
+<p><b>9. Repetition</b>. Placing a number in braces &quot;{&quot; and &quot;}&quot; after something says that it should be repeated that many times. Thus
+<p>
+<blockquote><font color="#000080">&quot;ax{25}&quot;
+</font></blockquote><p>
+<p>
+<p>matches only on &quot;axxxxxxxxxxxxxxxxxxxxxxxxx&quot;. More usefully, perhaps, we can specify a range of the number of repetitions:
+<p>
+<blockquote><font color="#000080">&quot;ax{2,6}&quot;
+</font></blockquote><p>
+<p>
+<p>matches only on &quot;axx&quot;, &quot;axxx&quot;, &quot;axxxx&quot;, &quot;axxxxx&quot;, &quot;axxxxxx&quot;. And we can leave the top end open: &quot;ax{2,}&quot; means &quot;a&quot; followed by at least two &quot;x&quot;s.
+<p>
+<p>Note that the braces attach only to most recent thing - so &quot;ax{2}&quot; means &quot;a&quot; followed by two of &quot;x&quot; - but, as always, we can use grouping brackets to change that. So &quot;(ax){2,}&quot; matches &quot;axax&quot;, &quot;axaxax&quot;, &quot;axaxaxax&quot;,...
+<p>
+<p>(It's probably best not to use Inform to try to match the human genome against &quot;&lt;acgt&gt;{3000000000}&quot;, but one of the most important practical uses of regular expression matching in science is in treating DNA as a string of nucleotides represented by the letters &quot;a&quot;, &quot;c&quot;, &quot;g&quot;, &quot;t&quot;, and looking for patterns.)
+<p>
+<p><b>10. Popular repetitions.</b> Three cases are so often needed that they have standard short forms:
+<p>
+<p>&quot;{0,1}&quot;, which means 0 or 1 repetition of something - in other words, doesn't so much repeat it as make it optional - is written &quot;?&quot;. Thus &quot;ax?y&quot; matches only on &quot;ay&quot; or &quot;axy&quot;.
+<p>
+<p>&quot;{0,}&quot;, which means 0 or more repetitions - in other words, any number at all - is written &quot;*&quot;. Thus &quot;ax*y&quot; matches on &quot;ay&quot;, &quot;axy&quot;, &quot;axxy&quot;, &quot;axxxy&quot;, ... and the omnivorous &quot;.*&quot; - which means &quot;anything, any number of times&quot; - matches absolutely every text.
+<p>
+<p>&quot;{1,}&quot;, which means 1 or more repetitions, is written &quot;+&quot;. So &quot;\d+&quot; matches any run of digits, for instance.
+<p>
+<p><b>11. Greedy vs lazy.</b> Once we allow things to repeat an unknown number of times, we run into an ambiguity. Sure, &quot;\d+&quot; matches the text &quot;16339b&quot;. But does it look only as far as the &quot;1&quot;, then reason that it now has one or more digits in a row, and stop? Or does it run onward devouring digits until it can do so no longer, so matching the &quot;16339&quot; part? These two strategies are called &quot;lazy&quot; and &quot;greedy&quot; respectively.
+<p>
+<p>Do we care? Well, the strategy used makes no difference to whether there is a match, but it does affect what part of the text is matched, and the number of matches there are. Unless we mark for it, all repetitions are greedy. Usually this is good, but it means that, for instance,
+<p>
+<blockquote><font color="#000080">&quot;-.+-&quot;
+</font></blockquote><p>
+<p>
+<p>applied to &quot;-alpha- -beta- -gamma-&quot; will match the whole text, because &quot;.+&quot; picks up all of &quot;alpha- -beta- -gamma&quot;. To get around this, we can mark any of the repetition operators as lazy by adding a question mark &quot;?&quot;. Thus:
+<p>
+<blockquote><font color="#000080">&quot;-.+?-&quot;
+</font></blockquote><p>
+<p>
+<p>applied to &quot;-alpha- -beta- -gamma-&quot; matches three times, producing &quot;-alpha-&quot; then &quot;-beta-&quot; then &quot;-gamma-&quot;.
+<p>
+<p>A logical but sometimes confusing consequence is that a doubled question mark &quot;??&quot; means &quot;repeat 0 or 1 times, but prefer 0 matches to 1 if both are possibilities&quot;: whereas a single question mark &quot;?&quot;, being greedy, means &quot;repeat 0 or 1 times, but prefer 1 match to 0 if both are possibilities&quot;.
+<p>
+<p><b>12. Numbered groups.</b> We have already seen that round brackets are useful to clump together parts of the regular expression - to choose within them, or repeat them. In fact, Inform numbers these from 1 upwards as they are used from left to right, and we can subsequently refer back to their contents with the notation &quot;\1&quot;, &quot;\2&quot;, ... For instance:
+<p>
+<blockquote><font color="#000080">&quot;(\w)\w*\1&quot;
+</font></blockquote><p>
+<p>
+<p>matches any run of two or more word-characters, subject to the restriction that the last one has to be the same as the first - so it matches &quot;xerox&quot; but not &quot;alphabet&quot;. When Inform matches this against &quot;xerox&quot;, first it matches the initial &quot;x&quot; against the group &quot;(\w)&quot;. It then matches &quot;\w*&quot; (&quot;any number of word-characters&quot;) against &quot;ero&quot;, so that the &quot;*&quot; runs up to 3 repetitions. It then matches &quot;\1&quot; against the final &quot;x&quot;, because &quot;\1&quot; requires it to match against whatever last matched in sub-expression 1 - which was an &quot;x&quot;.
+<p>
+<p>Numbered groups allow wicked tricks in matching, it's true, but really come into their own when it comes to replacing - as we shall see.
+<p>
+<p><b>13. Switching case sensitivity on and off.</b> The special notations &quot;(?i)&quot; and &quot;(?-i)&quot; switch sensitivity to upper vs. lower case off and on, mid-expression. Thus &quot;a(?i)bcd(?-i)e&quot; matches &quot;abcde&quot;, &quot;aBcDe&quot;, etc., but not &quot;Abcde&quot; or &quot;abcdE&quot;.
+<p>
+<p><b>14. Groups with special meanings.</b> This is the last of the special syntaxes: but it's a doozy. A round-bracketed group can be marked to behave in a special way by following the open bracket by a symbol with a special meaning. Groups like this have no number and are not counted as part of \1, \2, and so forth - they are intended not to gather up material but to have some effect of their own.
+<p>
+<blockquote><font color="#000080">&quot;(# ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a comment, that is, causes the group to do nothing and match against anything.
+<p>
+<blockquote><font color="#000080">&quot;(?= ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a lookahead: it is a form of positional requirement, like &quot;\b&quot; or &quot;^&quot;, but one which requires that the text ahead of us matches whatever is in the brackets. (It doesn't consume that text - only checks to see that it's there.) For instance &quot;\w+(?=;)&quot; matches a word followed by a semicolon, but does not match the semicolon itself.
+<p>
+<blockquote><font color="#000080">&quot;(?! ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is the same but negated: it requires that the text ahead of us does not match the material given. For instance, &quot;a+(?!z)&quot; matches any run of &quot;a&quot;s not followed by a &quot;z&quot;.
+<p>
+<blockquote><font color="#000080">&quot;(?<= ...)&quot; and &quot;(?&lt;! ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Are the same but looking behind (hence the &quot;<&quot;), not forward. These are restricted to cases where Inform can determine that the material to be matched has a definite known width. For instance, &quot;(?&lt;!shell)fish&quot; matches any &quot;fish&quot; not occurring in &quot;shellfish&quot;.
+<p>
+<blockquote><font color="#000080">&quot;(> ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a possessive, that is, causes the material to be matched and, once matched, never lets go. No matter what subsequently turns out to be convenient, it will never change its match. For instance, &quot;\d+8&quot; matches against &quot;768&quot; because Inform realises that &quot;\d+&quot; cannot be allowed to eat the &quot;8&quot; if there is to be a match, and stops it. But &quot;(>\d+)8&quot; does not match against &quot;768&quot; because now the &quot;\d+&quot;, which initially eats &quot;768&quot;, is possessive and refuses to give up the &quot;8&quot; once taken.
+<p>
+<blockquote><font color="#000080">&quot;(?(1)...)&quot; and &quot;(?(1)...|...)&quot;
+</font></blockquote><p>
+<p>
+<p>Are conditionals. These require us to match the material given if \1 has successfully matched already; in the second version, the material after the &quot;|&quot; must be matched if \1 has not successfully matched yet. And the same for 2, 3, ..., 9, of course.
+<p>
+<p>Finally, conditionals can also use lookaheads or lookbehinds as their conditions. So for instance:
+<p>
+<blockquote><font color="#000080">&quot;(?(?=\d)\d\d\d\d|AY-\d\d\d\d)&quot;
+</font></blockquote><p>
+<p>
+<p>means if you start with a digit, match four digits; otherwise match &quot;AY-&quot; followed by four digits. There are easier ways to do this, of course, but the really juicy uses of conditionals are only borderline legible and make poor examples - perhaps this is telling us something.
 <p>
 <p><hr><p>
+<a name="e152"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>390</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex152.html#e152 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">About Inform's regular expression support</font></b></a><br>Some footnotes on Inform's regular expressions, and how they compare to those of other programming languages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e175"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc266.html#e175 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>297</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc266.html#e175 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Masochism Deli</font></b></a><br>Multiple potatoes, with rules to make the player drop the hot potato first and pick it up last.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex175.html#e175 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e175"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc336.html#e175 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>391</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc336.html#e175 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Alpha</font></b></a><br>Creating a beta-testing command that matches any line starting with punctuation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex175.html#e175 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Here the player has several potatoes; we would like to make him more likely to drop the hot one, and more likely to pick up the cold one, all else being equal. At the same time, we want to phrase our rules so that they don't make the player try to take something he's already holding, or drop something he isn't.
-<p>
-<p>So:
+<p>Sometimes we want to let testers of a game insert their own comments during a transcript, without those comments wasting turns of the game or producing lengthy or inappropriate parser errors. Many testers have a habit of prefacing comments with a punctuation mark, so let's say that we'd like to catch any command that starts with any punctuation at all:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode393(code) {
+function pasteCode490(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Masochism Deli[=0x0022=][=0x000A=][=0x000A=]The Masochism Deli is a room. [=0x0022=]Recent restructurings of corporate policy restrict the [=0x0027=]lunch hour[=0x0027=] to exactly thirty-two minutes, which means that no one has time to go out. Instead, you and your coworkers eat here, in the company[=0x0027=]s very own themed lunch room.[=0x0022=][=0x000A=][=0x000A=]The plural of potato is potatoes. A potato is a kind of thing. A potato is edible.[=0x000A=][=0x000A=]Temperature is a kind of value. The temperatures are hot and cold. A potato has a temperature. A potato is usually cold.[=0x000A=][=0x000A=]Understand the temperature property as describing a potato. Before printing the name of a potato (called subject): say [=0x0022=][temperature of subject] [=0x0022=]. Before printing the plural name of a potato (called subject): say [=0x0022=][temperature of subject] [=0x0022=].[=0x000A=][=0x000A=]Does the player mean dropping a hot potato which is carried by the player: it is very likely.[=0x000A=][=0x000A=]Does the player mean taking a cold potato which is not carried by the player: it is very likely.[=0x000A=][=0x000A=]The player carries three potatoes.[=0x000A=][=0x000A=]After dropping a hot potato:[=0x000A=][=0x0009=]say [=0x0022=]The guy from Cube B sneers at your lack of potato-holding stamina.[=0x0022=][=0x000A=][=0x000A=]When play begins: now a random potato is hot.[=0x000A=][=0x000A=]Test me with [=0x0022=]inventory / drop potato / g / g / get potato / g / i / get potato[=0x0022=].[=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Alpha[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]Hi, Larry! Thanks for testing my game!![=0x0022=][=0x000A=][=0x000A=]Unimplemented Room is a room. [=0x0022=]Room description goes here...[=0x0022=][=0x000A=][=0x000A=]The scary troll is a man in Unimplemented Room.[=0x000A=][=0x000A=]After reading a command (this is the ignore beta-comments rule):[=0x000A=][=0x0009=]if the player[=0x0027=]s command matches the regular expression [=0x0022=]^[=0x005C=]p[=0x0022=]:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](Noted.)[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=]Test me with [=0x0022=]x me / x troll / !this game is a bit dull so far / kiss troll / ? does this troll do anything? / :yawn[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode393()"><img border=0 src=../doc_images/paste.png></a> &quot;Masochism Deli&quot;
+<a href="javascript:pasteCode490()"><img border=0 src=../doc_images/paste.png></a>  &quot;Alpha&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Masochism Deli is a room. &quot;Recent restructurings of corporate policy restrict the 'lunch hour' to exactly thirty-two minutes, which means that no one has time to go out. Instead, you and your coworkers eat here, in the company's very own themed lunch room.&quot;
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, Larry! Thanks for testing my game!!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The plural of potato is potatoes. A potato is a kind of thing. A potato is edible.
+<blockquote><font color="#000080">Unimplemented Room is a room. &quot;Room description goes here...&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Temperature is a kind of value. The temperatures are hot and cold. A potato has a temperature. A potato is usually cold.
+<blockquote><font color="#000080">The scary troll is a man in Unimplemented Room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the temperature property as describing a potato. Before printing the name of a potato (called subject): say &quot;[temperature of subject] &quot;. Before printing the plural name of a potato (called subject): say &quot;[temperature of subject] &quot;.
+<blockquote><font color="#000080">After reading a command (this is the ignore beta-comments rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches the regular expression &quot;^\p&quot;:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Noted.)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Does the player mean dropping a hot potato which is carried by the player: it is very likely.
+<blockquote><font color="#000080">Test me with &quot;x me / x troll / !this game is a bit dull so far / kiss troll / ? does this troll do anything? / :yawn&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Does the player mean taking a cold potato which is not carried by the player: it is very likely.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries three potatoes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After dropping a hot potato:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The guy from Cube B sneers at your lack of potato-holding stamina.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins: now a random potato is hot.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;inventory / drop potato / g / g / get potato / g / i / get potato&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc266.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc336.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc265.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc267.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc337.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

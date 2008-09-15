@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.13. The past and perfect tenses</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,127 +19,136 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "AARP-Gnosis" -->
-<!-- SEARCH SECTION "Ex 303" -->
-<!-- SEARCH SORT "Ex 017-005-303" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc273.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc275.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
+<!-- SEARCH TITLE "Tense Boxing" -->
+<!-- SEARCH SECTION "Ex 146" -->
+<!-- SEARCH SORT "Ex 009-013-146" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc145.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc147.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.13. The past and perfect tenses</b></font></td></tr></table>
 <p>
-<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
+<p>The remaining sections of this chapter go into more technical ways to think about the progress of the game through time, and can be skipped at a first reading.
 <p>
-<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
+<p>Conditions are clauses which require Inform to make a decision: is such-and-such true, or not true? We have already seen conditions attached to rules using &quot;when&quot;:
 <p>
-<blockquote><font color="#000080">Analysing something is an activity.
-<br>Assaying is an activity.
+<blockquote><font color="#000080">Instead of waiting when the Sorting Hat is in the Hall: ...
 </font></blockquote><p>
 <p>
-<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
+<p>and, as we shall later see, we will often want to write instructions like:
 <p>
-<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
-<p>
-<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
-<br>carry out the assaying activity;
+<blockquote><font color="#000080">if the Sorting Hat is in the Hall then say &quot;Hermione blinks apprehensively.&quot;
 </font></blockquote><p>
 <p>
-<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
+<p>The condition is &quot;the Sorting Hat is in the Hall&quot;, and during play this will sometimes be true and sometimes false.
 <p>
-<blockquote><font color="#000080">The last for assaying rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
+<p>A condition in the form &quot;X is Y&quot; is of course written the present tense, and refers to the current state of affairs. Three other tenses are allowed. First, the present perfect:
+<p>
+<blockquote><font color="#000080">if X has been Y ...
 </font></blockquote><p>
 <p>
-<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
+<p>is true if it has ever been the case that &quot;X is Y&quot; at the start of any turn (or any action). So, for instance,
 <p>
-<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
+<blockquote><font color="#000080">if the gate has been open ...
 </font></blockquote><p>
 <p>
-<p>so that during assays more technical names are used.
+<p>will be valid if and only if the gate has ever been made open by any action (even if it is closed now), or if it started out by being open when play began.
+<p>
+<p>Next is the past tense:
+<p>
+<blockquote><font color="#000080">if X was Y ...
+</font></blockquote><p>
+<p>
+<p>holds if and only if &quot;X is Y&quot; was true at the start of the most recent action. This is convenient when trying to describe what has changed in the course of the action, but sometimes also when making the action itself happen. For instance:
+<p>
+<blockquote><font color="#000080">if the lantern was switched on then change the lantern to switched off;
+<br>if the lantern was switched off then change the lantern to switched on;
+</font></blockquote><p>
+<p>
+<p>Completing the set is the past perfect:
+<p>
+<blockquote><font color="#000080">if X had been Y ...
+</font></blockquote><p>
+<p>
+<p>which records whether &quot;X has been Y&quot; was true at the start of the most recent action. All these verbs can of course be negated (though &quot;wasn't&quot; and &quot;hadn't&quot; are disallowed as poor style: we use &quot;was not&quot; and &quot;had not&quot; instead). So for example,
+<p>
+<blockquote><font color="#000080">if the player had not been in the Ballroom ...
+</font></blockquote><p>
+<p>
+<p>is true if the player hadn't visited the Ballroom at the start of the most recent action.
+<p>
+<p>Something we must watch out for is that variables might not have the same values in the past that they have now. As a result, writing conditions such as &quot;if the noun has been open&quot; is a bad idea, because in the past &quot;the noun&quot; very likely referred to something different. It is really only safe to talk in the past tense about definite, fixed things: &quot;if the Great Gates of Kiev have been open&quot; would be fine.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e72"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc274.html#e72 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>303</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc274.html#e72 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex72.html#e72 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e72"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc146.html#e72 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>146</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc146.html#e72 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Tense Boxing</font></b></a><br>An overview of all the variations of past and present tenses, and how they might be used.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex72.html#e72 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we have a complete Encyclopedia in our game. The player is allowed to pick up the whole set (there must not be too many volumes), but also to do things with individual volumes, and indeed to scatter these volumes all over the place. Putting a volume back in the same place as the rest of the Encyclopedia should, however, restore it to the collective. We will start out by defining general rules for collectives like this:
+<p>Here we have a box that prints out its current state and its history each time we open and close it:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode399(code) {
+function pasteCode245(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]AARP-Gnosis[=0x0022=][=0x000A=][=0x000A=]Fitting relates various things to one thing (called the home). The verb to fit (it fits, they fit, it is fitted) implies the fitting relation. Definition: a thing is missing if it is not part of the home of it.[=0x000A=][=0x000A=]A collective is a kind of thing.[=0x000A=][=0x000A=]Before doing something to something which is part of a collective:[=0x000A=][=0x0009=]let space be the holder of the home of the noun;[=0x000A=][=0x0009=]move the noun to the space.[=0x000A=][=0x000A=]Instead of examining a collective:[=0x000A=][=0x0009=]say [=0x0022=][The noun] consists of [the list of things which are part of the noun].[=0x0022=][=0x000A=][=0x000A=][Now the real work begins. One reason to make this an activity is that we might easily want to override it for specific objects; for instance, the generic collecting activity here would not deal properly with collectives of clothing where some items might be worn and others not. In that case, we would want to write another, more specific [=0x0022=]collecting[=0x0022=] activity to handle the complexities of fashion.][=0x000A=][=0x000A=]Collecting something is an activity.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with item running through collectives:[=0x000A=][=0x0009=][=0x0009=]carry out the collecting activity with the item.[=0x000A=][=0x000A=]Before collecting a thing (called the item):[=0x000A=][=0x0009=]let space be the holder of the item;[=0x000A=][=0x0009=]if space is not a thing and space is not a room:[=0x000A=][=0x0009=][=0x0009=]if something (called the other space) contains at least two things which fit the item, move item to the other space;[=0x000A=][=0x0009=][=0x0009=]if a room (called the other space) contains at least two things which fit the item, move item to the other space;[=0x000A=][=0x0009=][=0x0009=]if someone (called the owner) carries at least two things which fit the item, move item to the owner.[=0x000A=][=0x000A=]Rule for collecting a thing (called the item):[=0x000A=][=0x0009=]let space be the holder of the item;[=0x000A=][=0x0009=]if space is a thing or space is a room:[=0x000A=][=0x0009=][=0x0009=]repeat with component running through things held by the space:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the component fits the item, now the component is part of the item;[=0x000A=][=0x0009=][=0x0009=]if the number of things which are part of the item is 0, remove the item from play;[=0x000A=][=0x0009=][=0x0009=]if the number of things which are part of the item is 1:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let the last thing be a random thing which is part of the item;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]move the last thing to the space;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]remove the item from play.[=0x000A=][=0x000A=][And now for a cheerful scenario:][=0x000A=][=0x000A=]The Boise Memorial Library is a room. [=0x0022=]A concrete box of a room, roughly eight feet by fourteen, which contains all the fallout shelter has to offer by way of entertainment. Someone with a grim sense of humor has tacked a READ! literacy poster to the door, as though there were anything else to do while you await the calming of the Geiger counters.[=0x0022=] The shelf is a supporter in the Library. [=0x0022=]A battered utility shelf stands against the south wall.[=0x0022=][=0x000A=][=0x000A=]The New Idahoan Encyclopedia Set is a collective. Volume A-Aalto fits the Encyclopedia. It is part of the Set. Volume AAM-Aardvark fits the Encyclopedia. It is part of the Set. Volume Aarhus-Aaron fits the Encyclopedia. It is part of the Set. Volume AARP-Gnosis fits the Encyclopedia. It is part of the Set. Volume Gnu-Zygote fits the Encyclopedia. It is part of the Set. The Set is on the shelf.[=0x000A=][=0x000A=][Let[=0x0027=]s have the Encyclopedia describe itself differently depending on whether it[=0x0027=]s all in one place:][=0x000A=][=0x000A=]After printing the name of the Set when something missing fits the Set:[=0x000A=][=0x0009=]say [=0x0022=] (missing [a list of missing things which fit the Set])[=0x0022=][=0x000A=][=0x000A=]Before printing the name of the Set when the number of missing things which fit the set is 0:[=0x000A=][=0x0009=]say [=0x0022=]complete [=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]get aarhus-aaron / look / inventory / get aam-aardvark / look / get gnu-zygote / look / get aarp-gnosis / look / inventory / drop set / look / get set / get a-aalto / inventory[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Tense Boxing[=0x0022=][=0x000A=][=0x000A=]The Temporal Prism is a room. [=0x0022=]A room of angled mirrors, in whose surfaces you can see what is now; what just was; what has always been. A final mirror is broken and its frame gapes blackly.[=0x0022=][=0x000A=][=0x000A=]The mysterious box is in the Temporal Prism. It is an openable closed container.[=0x000A=][=0x000A=]To assess the box:[=0x000A=][=0x0009=]if the box was not open then say [=0x0022=]The box was not open.[=0x0022=];[=0x000A=][=0x0009=]if the box was open then say [=0x0022=]The box was open.[=0x0022=];[=0x000A=][=0x0009=]if the box had not been open then say [=0x0022=]The box had not been open.[=0x0022=];[=0x000A=][=0x0009=]if the box had been open then say [=0x0022=]The box had been open.[=0x0022=];[=0x000A=][=0x0009=]if the box is not open then say [=0x0022=]The box is not open.[=0x0022=];[=0x000A=][=0x0009=]if the box is open then say [=0x0022=]The box is open.[=0x0022=];[=0x000A=][=0x0009=]if the box has not been open then say [=0x0022=]The box has not been open.[=0x0022=];[=0x000A=][=0x0009=]if the box has been open then say [=0x0022=]The box has been open.[=0x0022=][=0x000A=][=0x000A=]Before opening the mysterious box:[=0x000A=][=0x0009=]say [=0x0022=]You are about to open the box.[=0x0022=];[=0x000A=][=0x0009=]assess the box.[=0x000A=][=0x000A=]Before closing the mysterious box:[=0x000A=][=0x0009=]say [=0x0022=]You are about to close the box.[=0x0022=];[=0x000A=][=0x0009=]assess the box.[=0x000A=][=0x000A=]After opening the mysterious box:[=0x000A=][=0x0009=]say [=0x0022=]You now open the box.[=0x0022=];[=0x000A=][=0x0009=]assess the box.[=0x000A=][=0x000A=]After closing the mysterious box:[=0x000A=][=0x0009=]say [=0x0022=]You now close the box.[=0x0022=];[=0x000A=][=0x0009=]assess the box.[=0x000A=][=0x000A=][Note that [=0x0022=]was...[=0x0022=] and [=0x0022=]was not...[=0x0022=] and so on may describe conditions more complicated than simple properties: we could equally well ask [=0x0022=]if the box has been in the sack[=0x0022=], [=0x0022=]if the box had been carried by the player[=0x0022=], and so on.][=0x000A=][=0x000A=][The past ([=0x0022=]if the box was...[=0x0022=]) and past perfect ([=0x0022=]if the box had been...[=0x0022=]) are especially useful for cases where we want to report on an action after the state of the item has changed; so, for instance:][=0x000A=][=0x000A=]After taking the mysterious box:[=0x000A=][=0x0009=]if the box had not been carried by the player, say [=0x0022=]You lift the mysterious box for the first time.[=0x0022=];[=0x000A=][=0x0009=]if the box had been carried by the player, say [=0x0022=]You again pick up the mysterious box.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]open box / close box / open box / take box / drop box / take box[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode399()"><img border=0 src=../doc_images/paste.png></a> &quot;AARP-Gnosis&quot;
+<a href="javascript:pasteCode245()"><img border=0 src=../doc_images/paste.png></a> &quot;Tense Boxing&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Fitting relates various things to one thing (called the home). The verb to fit (it fits, they fit, it is fitted) implies the fitting relation. Definition: a thing is missing if it is not part of the home of it.
+<blockquote><font color="#000080">The Temporal Prism is a room. &quot;A room of angled mirrors, in whose surfaces you can see what is now; what just was; what has always been. A final mirror is broken and its frame gapes blackly.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A collective is a kind of thing.
+<blockquote><font color="#000080">The mysterious box is in the Temporal Prism. It is an openable closed container.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before doing something to something which is part of a collective:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the home of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the space.
+<blockquote><font color="#000080">To assess the box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box was not open then say &quot;The box was not open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box was open then say &quot;The box was open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had not been open then say &quot;The box had not been open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had been open then say &quot;The box had been open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box is not open then say &quot;The box is not open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box is open then say &quot;The box is open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box has not been open then say &quot;The box has not been open.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box has been open then say &quot;The box has been open.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a collective:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] consists of [the list of things which are part of the noun].&quot;
+<blockquote><font color="#000080">Before opening the mysterious box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are about to open the box.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
 </font></blockquote><p>
 <p>
-<p>Now the real work begins. One reason to make this an activity is that we might easily want to override it for specific objects; for instance, the generic collecting activity here would not deal properly with collectives of clothing where some items might be worn and others not. In that case, we would want to write another, more specific &quot;collecting&quot; activity to handle the complexities of fashion.
-<p>
-<blockquote><font color="#000080">Collecting something is an activity.
+<blockquote><font color="#000080">Before closing the mysterious box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are about to close the box.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through collectives:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the collecting activity with the item.
+<blockquote><font color="#000080">After opening the mysterious box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You now open the box.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before collecting a thing (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if space is not a thing and space is not a room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if something (called the other space) contains at least two things which fit the item, move item to the other space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a room (called the other space) contains at least two things which fit the item, move item to the other space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if someone (called the owner) carries at least two things which fit the item, move item to the owner.
+<blockquote><font color="#000080">After closing the mysterious box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You now close the box.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for collecting a thing (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if space is a thing or space is a room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with component running through things held by the space:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the component fits the item, now the component is part of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 0, remove the item from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 1:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the last thing be a random thing which is part of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the last thing to the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the item from play.
+<p>Note that &quot;was...&quot; and &quot;was not...&quot; and so on may describe conditions more complicated than simple properties: we could equally well ask &quot;if the box has been in the sack&quot;, &quot;if the box had been carried by the player&quot;, and so on.
+<p>
+<p>The past (&quot;if the box was...&quot;) and past perfect (&quot;if the box had been...&quot;) are especially useful for cases where we want to report on an action after the state of the item has changed; so, for instance:
+<p>
+<blockquote><font color="#000080">After taking the mysterious box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had not been carried by the player, say &quot;You lift the mysterious box for the first time.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had been carried by the player, say &quot;You again pick up the mysterious box.&quot;
 </font></blockquote><p>
 <p>
-<p>And now for a cheerful scenario:
-<p>
-<blockquote><font color="#000080">The Boise Memorial Library is a room. &quot;A concrete box of a room, roughly eight feet by fourteen, which contains all the fallout shelter has to offer by way of entertainment. Someone with a grim sense of humor has tacked a READ! literacy poster to the door, as though there were anything else to do while you await the calming of the Geiger counters.&quot; The shelf is a supporter in the Library. &quot;A battered utility shelf stands against the south wall.&quot;
+<blockquote><font color="#000080">Test me with &quot;open box / close box / open box / take box / drop box / take box&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The New Idahoan Encyclopedia Set is a collective. Volume A-Aalto fits the Encyclopedia. It is part of the Set. Volume AAM-Aardvark fits the Encyclopedia. It is part of the Set. Volume Aarhus-Aaron fits the Encyclopedia. It is part of the Set. Volume AARP-Gnosis fits the Encyclopedia. It is part of the Set. Volume Gnu-Zygote fits the Encyclopedia. It is part of the Set. The Set is on the shelf.
-</font></blockquote><p>
+<p>This is in many respects similar to a rule beginning &quot;After taking the mysterious box for the first time...&quot;, but it is superior in most circumstances, for two reasons.
 <p>
-<p>Let's have the Encyclopedia describe itself differently depending on whether it's all in one place:
+<p>First, it will respond correctly even if the player has somehow carried the box before without taking it explicitly: for instance, if another character gave him the box, if the box were moved into his inventory as a result of another action, or if the player carried the box at the start of play. Inform begins its reckoning of time when the game begins, so if the box is defined as being open at the outset, &quot;if the box has been open&quot; will always be true.
 <p>
-<blockquote><font color="#000080">After printing the name of the Set when something missing fits the Set:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (missing [a list of missing things which fit the Set])&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of the Set when the number of missing things which fit the set is 0:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;complete &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get aarhus-aaron / look / inventory / get aam-aardvark / look / get gnu-zygote / look / get aarp-gnosis / look / inventory / drop set / look / get set / get a-aalto / inventory&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc274.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Second, &quot;after taking... for the first time&quot; fires only the first time the player attempts to take something. If the player tried to take the box, failed, and then tried again later, the &quot;for the first time...&quot; rule would not fire; our &quot;if the box has not been carried...&quot; rule would.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc146.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e201"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex201.html#e201 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>304</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex201.html#e201 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex201.html#e201 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e267"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex267.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>305</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex267.html#e267 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex267.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc273.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc275.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e104"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>147</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Elsie</font></b></a><br>A door that closes automatically one turn after the player opens it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e236"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>148</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex236.html#e236 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bruneseau's Journey</font></b></a><br>A candle which reacts to lighting and blowing actions differently depending on whether it has already been lit once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc145.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc147.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
