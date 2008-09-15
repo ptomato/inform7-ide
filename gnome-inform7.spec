@@ -62,7 +62,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
-%doc README AUTHORS COPYING NEWS ChangeLog
+%doc README AUTHORS COPYING NEWS THANKS ChangeLog
 %{_bindir}/gnome-inform7
 %{_bindir}/gtkterp-frotz
 %{_bindir}/gtkterp-glulxe
