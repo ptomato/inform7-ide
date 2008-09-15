@@ -127,3 +127,64 @@ exercise in the DM4.
 	if (word ~= 'am' or 'pm' && hour == 12) x = x + TWELVE_HOURS;
 	return x;
 ];
+
+@p Relative Time Token.
+``Time'' is an interesting kind of value since it can hold two conceptually
+different ways of thinking about time: absolute times, such as ``12:03 PM'',
+and also relative times, like ``ten minutes''. For parsing purposes, these
+are completely different from each other, and the time token above handles
+only absolute times; we need the following for relative ones.
+
+@c
+[ RELATIVE_TIME_TOKEN first_word second_word offhour mult mn original_wn;
+	original_wn = wn;
+	wn = original_wn;
+	
+	first_word = NextWordStopped(); wn--;
+	if (first_word == 'an' or 'a//') mn=1; else mn=TryNumber(wn);
+	
+    if (mn == -1000) {
+		first_word = NextWordStopped();
+		if (first_word == 'half') offhour = HALF_HOUR;
+		if (first_word == 'quarter') offhour = QUARTER_HOUR;
+		if (offhour > 0) {
+			second_word = NextWordStopped();
+			if (second_word == 'of') second_word = NextWordStopped();
+			if (second_word == 'an') second_word = NextWordStopped();
+			if (second_word == 'hour') {
+				parsed_number = offhour;
+				return GPR_NUMBER;
+			}
+		}
+		return GPR_FAIL;
+    }
+	wn++;
+	
+	first_word = NextWordStopped();
+	switch (first_word) {
+		'minutes', 'minute': mult = 1;
+		'hours', 'hour': mult = 60;
+		default: return GPR_FAIL;
+	}
+	parsed_number = mn*mult;
+	if (mult == 60) {
+		mn=TryNumber(wn);
+		if (mn ~= -1000) {
+			wn++;
+			first_word = NextWordStopped();
+			if (first_word == 'minutes' or 'minute')
+				parsed_number = parsed_number + mn;
+			else wn = wn - 2;
+		}
+	}
+	return GPR_NUMBER;
+];
+
+@p During Scene Matching.
+
+@c
+[ DuringSceneMatching prop sc;
+	for (sc=0: sc<{-value:NUMBER_CREATED(scene)}: sc++)
+		if ((scene_status-->sc == 1) && (prop(sc+1))) rtrue;
+	rfalse;
+];

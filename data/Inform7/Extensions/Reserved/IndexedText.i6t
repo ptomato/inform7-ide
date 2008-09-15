@@ -686,6 +686,12 @@ and we needn't go through any finite state machine palaver.
 	return dsize;
 ];
 
+[ INDEXED_TEXT_TY_Empty indt;
+	if ((indt==0) || (BlkType(indt) ~= INDEXED_TEXT_TY)) rfalse;
+	if (IT_CharacterLength(indt) == 0) rtrue;
+	rfalse;
+];
+
 @p Get Character.
 Characters in a text are numbered upwards from 1 by the users of this
 routine: which is why we subtract 1 when reading the array in the
@@ -834,5 +840,6 @@ there is no heap, and there are no indexed texts anyway.
 [ SetPlayersCommand indt_from; ];
 [ INDEXED_TEXT_TY_Create; ];
 [ INDEXED_TEXT_TY_Cast a b c; ];
+[ INDEXED_TEXT_TY_Empty t; rfalse; ];
 
 #ENDIF; ! IFDEF MEMORY_HEAP_SIZE

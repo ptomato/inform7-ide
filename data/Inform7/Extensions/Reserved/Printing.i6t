@@ -144,6 +144,13 @@ being set, no skipped line is needed before the prompt after all;
 rules in rulebooks; it treats all rulebooks, and in particular action rulebooks,
 the way activity rulebooks are treated. (The flag is used for short periods
 only and never across turn boundaries, prompts and so on.)
+(-2e) |PARA_CONTENTEXPECTED| is set after a paragraph division as a signal
+that if any contents looks likely to be printed soon then |say__p| needs
+to be set, because a successor paragraph will then have started. This
+is checked by calling |ParaContent()| -- while it's slow to have to call
+this routine so often, that's better than compiling inline code with the
+same effect, because minimising compiled code size is more important, and
+speed is never a big deal when printing.
 
 Not all printing is to the screen: sometimes the output is to a file, or to
 memory, and in that case we want to start the switched output at a clear
@@ -171,6 +178,14 @@ below.
 		if (say__pc & PARA_SUPPRESSPROMPTSKIP) say__pc = say__pc - PARA_SUPPRESSPROMPTSKIP;
 	}
 	#ifdef TRACE_I7_SPACING; print "[-->", say__p, say__pc, "]"; #endif;
+	say__pc = say__pc | PARA_CONTENTEXPECTED;
+];
+
+[ ParaContent;
+	if (say__pc & PARA_CONTENTEXPECTED) {
+		say__pc = say__pc - PARA_CONTENTEXPECTED;
+		say__p = 1;
+	}
 ];
 
 [ GoingLookBreak;

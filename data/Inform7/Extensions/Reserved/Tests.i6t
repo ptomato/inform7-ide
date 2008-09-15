@@ -78,12 +78,11 @@ RANDOM forces the random-number generator to a predictable seed value.
 RELATIONS lists the current state of the mutable relations.
 
 @c
-[ ShowRelationsSub rc;
-#IFDEF RELATIONS_CREATED;
-	for (rc=0:rc<{-value:NUMBER_CREATED(binary_predicate)}:rc++) Relation_ShowR(rc);
-#IFNOT;
-	say__p = 1; "No new relations have been created.";
-#ENDIF;
+[ ShowRelationsSub rc tot;
+	for (rc=0:rc<{-value:NUMBER_CREATED(binary_predicate)}:rc++)
+		tot = tot + Relation_ShowR(rc);
+	say__p = 1;
+	if (tot == 0) "No new relations have been created.";
 ];
 
 @p Rules Command.
@@ -188,8 +187,8 @@ current room, or a named item.
 		if (obj.component_parent) print " (part of ", (name) obj.component_parent, ")";
 		if (obj has worn) print " (worn)";
 	}
-	if (obj provides i7_kind) {
-		k = obj.&i7_kind-->0;
+	if (obj provides IK_0) {
+		k = KindHierarchy-->((obj.IK_0)*2);
 		if ((k ~= K2_thing) || (depth==0)) {
 			print " - ";
 			if (k == K4_door or K5_container) {
@@ -418,51 +417,51 @@ not picked up) and able to accept multiple objects.
 	switch (scope_stage) {
 		1: rtrue; ! allow multiple objects
 		2: objectloop (obj)
-        	if ((obj ofclass Object) && (obj provides i7_kind))
+        	if ((obj ofclass Object) && (obj provides IK_0))
             	PlaceInScope(obj, true);
         3: print "There seems to be no such object anywhere in the model world.^";
     }
 ];
 
-Verb meta 'abstract'
+{-testing-command:abstract}
     * scope=testcommandnoun 'to' scope=testcommandnoun -> XAbstract;
-Verb meta 'actions'
+{-testing-command:actions}
     *                                           -> ActionsOn
     * 'on'                                      -> ActionsOn
     * 'off'                                     -> ActionsOff;
-Verb meta 'gonear'
+{-testing-command:gonear}
     * scope=testcommandnoun                     -> Gonear;
-Verb meta 'purloin'
+{-testing-command:purloin}
     * scope=testcommandnoun                     -> XPurloin;
-Verb meta 'random'
+{-testing-command:random}
     *                                           -> Predictable;
-Verb meta 'relations'
+{-testing-command:relations}
 	*                                           -> ShowRelations;
-Verb meta 'rules'
+{-testing-command:rules}
 	*                                           -> RulesOn
 	* 'all'                                     -> RulesAll
 	* 'off'                                     -> RulesOff;
-Verb meta 'scenes'
+{-testing-command:scenes}
 	*                                           -> ScenesOn
 	* 'off'                                     -> ScenesOff;
-Verb meta 'scope'
+{-testing-command:scope}
     *                                           -> Scope
     * scope=testcommandnoun                     -> Scope;
-Verb meta 'showheap'
+{-testing-command:showheap}
 	*                                           -> ShowHeap;
-Verb meta 'showme'
+{-testing-command:showme}
 	*                                           -> ShowMe
 	* scope=testcommandnoun                     -> ShowMe;
-Verb meta 'showverb'
+{-testing-command:showverb}
     * special                                   -> Showverb;
-Verb meta "test"
+{-testing-command:test}
 	*                                           -> TestScript
 	* special                                   -> TestScript;
-Verb meta 'trace'
+{-testing-command:trace}
     *                                           -> TraceOn
     * number                                    -> TraceLevel
     * 'on'                                      -> TraceOn
     * 'off'                                     -> TraceOff;
-Verb meta 'tree'
+{-testing-command:tree}
     *                                           -> XTree
     * scope=testcommandnoun                     -> XTree;

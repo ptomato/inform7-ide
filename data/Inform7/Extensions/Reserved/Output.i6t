@@ -195,6 +195,7 @@ Global undo_flag;
 
 ! [4]
 Global deadflag = 0;
+Global resurrect_please = false;
 
 ! [5]
 Global not_yet_in_play = true; ! set false when first command received
@@ -208,6 +209,7 @@ Array scene_ended --> SCENE_ARRAY_SIZE;
 Array scene_status --> SCENE_ARRAY_SIZE;
 Array scene_endings --> SCENE_ARRAY_SIZE;
 Array scene_latest_ending --> SCENE_ARRAY_SIZE;
+{-array:scene_recurs}
 
 ! [6]
 Global score; ! = I7 "score"
@@ -489,6 +491,8 @@ in play, and is not a valid I7 ``object'' value.
 {-log:Compiling the object tree}
 {-call:compile_property_numberspace_forcer}
 {-call:compile_object_tree}
+{-call:compile_direction_object_constants}
+{-call:compile_runtime_relation_storage}
 
 @p Tables.
 The initial state of the I6 arrays corresponding to each I7 table: see
@@ -545,7 +549,9 @@ is only a (word) array of rule addresses, terminated with a |NULL|.)
 @p Scenes.
 
 @c
+{-log:Compiling scene details}
 {-routine:DetectSceneChange}
+{-routine:PrintSceneName}
 #IFDEF DEBUG;
 {-routine:ShowSceneStatus}
 #ENDIF;
@@ -555,6 +561,8 @@ The gleaming, aluminium and glass extension to the library: almost all of it
 material new in I7 usage.
 
 @c
+{-log:CTNL}
+
 {-segment:Actions.i6t}
 {-segment:Activities.i6t}
 {-segment:Figures.i6t}
@@ -721,6 +729,9 @@ the kinds of value in question.
 {-segment:RegExp.i6t}
 {-segment:StoredAction.i6t}
 {-segment:Lists.i6t}
+
+{-array:tableoffigures}
+{-array:tableofsounds}
 
 {-call:create_block_constants}
 

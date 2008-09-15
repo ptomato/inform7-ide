@@ -238,6 +238,18 @@ Thus rule (2) prevents us from counting this turn as the first of a sequence
 of turns in which examining something was the action, because it wasn't the
 main action of the turn.
 
+A further complication is that we need to record the qualification, or not,
+even of silent actions, because testing rules like
+
+>> Instead of taking the top hat less than three times...
+
+works by checking that (a) we are currently taking the top hat, and (b) have
+done so fewer than three times before. (b) uses the turn count described
+above; but (a) cannot simply look to see if that count is positive, since
+the action might be happening silently and thus not have contributed to the
+count; so we also record a flag to hold whether the action seems to be
+happening in this turn, silent or not.
+
 @c
 [ TrackActions readjust ct_0 ct_1 i;
 	for (i=0: PastActionsI6Routines-->i: i++) {
@@ -245,14 +257,17 @@ main action of the turn.
 			! Yes, the current action matches action pattern i:
 			if (readjust) continue;
 			(TimesActionHasHappened-->i)++;
-			if (keep_silent == false) {
-			if (LastTurnActionHappenedOn-->i ~= turns + 5)
+			if (LastTurnActionHappenedOn-->i ~= turns + 5) {
 				LastTurnActionHappenedOn-->i = turns + 5;
-				(TurnsActionHasBeenHappening-->i)++; 
+				ActionCurrentlyHappeningFlag->i = 1;
+				if (keep_silent == false)
+					(TurnsActionHasBeenHappening-->i)++;
 			}
 		} else {
 			! No, the current action doesn't match action pattern i:
 			if (keep_silent == false) { TurnsActionHasBeenHappening-->i = 0; }
+			if (LastTurnActionHappenedOn-->i ~= turns + 5)
+				ActionCurrentlyHappeningFlag->i = 0;
 		}
 	}
 ];
@@ -266,6 +281,7 @@ The necessary array allocation.
 Array TimesActionHasHappened-->(NO_PAST_TENSE_ACTIONS+1);
 Array TurnsActionHasBeenHappening-->(NO_PAST_TENSE_ACTIONS+1);
 Array LastTurnActionHappenedOn-->(NO_PAST_TENSE_ACTIONS+1);
+Array ActionCurrentlyHappeningFlag->(NO_PAST_TENSE_ACTIONS+1);
 
 Array past_chronological_record-->(NO_PAST_TENSE_CONDS+1);
 Array present_chronological_record-->(NO_PAST_TENSE_CONDS+1);

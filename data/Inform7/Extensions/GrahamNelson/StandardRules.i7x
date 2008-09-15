@@ -3,195 +3,196 @@ Version 2/080430 of the Standard Rules by Graham Nelson begins here.
 "The Standard Rules, included in every project, define the basic framework
 of kinds, actions and phrases which make Inform what it is."
 
-Document ACTIONS at doc93.
-Document ACTIVITIES at doc270.
-Document ARSUMMARY at doc179.
-Document EXTACTIVITIES at doc274.
+Document ACTIONS at doc96.
+Document ACTIVITIES at doc273.
+Document ARSUMMARY at doc182.
+Document EXTACTIVITIES at doc277.
 Document HEADINGS at doc15.
 Document KINDS at doc31.
 Document KINDSVALUE at doc61.
-Document LCARDS at doc364.
-Document NEWRULEBOOKS at doc315.
-Document PHRASES at doc157.
-Document ROOMPLAYBEGINS at doc131.
-Document SCENESINTRO at doc147.
-Document act_all at doc303.
-Document act_amuse at doc306.
-Document act_banner at doc304.
-Document act_clarify at doc297.
-Document act_cnlo at doc294.
-Document act_con at doc278.
-Document act_csl at doc290.
-Document act_darkdesc at doc289.
-Document act_darkname at doc288.
-Document act_details at doc284.
-Document act_ds at doc296.
-Document act_gt at doc283.
-Document act_implicitly at doc301.
-Document act_lc at doc282.
-Document act_lni at doc292.
-Document act_nowdark at doc286.
-Document act_nowlight at doc287.
-Document act_obit at doc305.
-Document act_pan at doc281.
-Document act_parsererror at doc302.
-Document act_pld at doc293.
-Document act_plp at doc295.
-Document act_pn at doc279.
-Document act_ppn at doc280.
-Document act_reading at doc300.
-Document act_smn at doc299.
-Document act_startvm at doc307.
-Document act_toodark at doc285.
-Document act_which at doc298.
-Document act_wpa at doc291.
+Document LCARDS at doc368.
+Document NEWRULEBOOKS at doc318.
+Document PHRASES at doc160.
+Document ROOMPLAYBEGINS at doc134.
+Document SCENESINTRO at doc150.
+Document act_all at doc306.
+Document act_amuse at doc309.
+Document act_banner at doc307.
+Document act_clarify at doc300.
+Document act_cnlo at doc297.
+Document act_con at doc281.
+Document act_csl at doc293.
+Document act_darkdesc at doc292.
+Document act_darkname at doc291.
+Document act_details at doc287.
+Document act_ds at doc299.
+Document act_gt at doc286.
+Document act_implicitly at doc304.
+Document act_lc at doc285.
+Document act_lni at doc295.
+Document act_nowdark at doc289.
+Document act_nowlight at doc290.
+Document act_obit at doc308.
+Document act_pan at doc284.
+Document act_parsererror at doc305.
+Document act_pld at doc296.
+Document act_plp at doc298.
+Document act_pn at doc282.
+Document act_ppn at doc283.
+Document act_reading at doc303.
+Document act_smn at doc302.
+Document act_startvm at doc310.
+Document act_toodark at doc288.
+Document act_which at doc301.
+Document act_wpa at doc294.
 Document kind_backdrop at doc35.
 Document kind_device at doc40.
 Document kind_door at doc38.
 Document kind_person at doc43.
 Document kind_player's at doc47.
-Document kind_time at doc136.
+Document kind_time at doc139.
 Document kind_vehicle at doc42.
-Document ph_abide at doc323.
-Document ph_addlist at doc341.
-Document ph_allow at doc193.
-Document ph_awardp at doc132.
-Document ph_beginact at doc276.
-Document ph_bestroute at doc89.
-Document ph_blankout at doc239.
-Document ph_boxed at doc79.
-Document ph_break at doc167.
-Document ph_carryout at doc274.
-Document ph_casing at doc331.
-Document ph_change at doc112.
-Document ph_changep at doc120.
-Document ph_changev at doc116.
-Document ph_changex at doc116.
-Document ph_chooserow at doc234.
-Document ph_consents at doc160.
-Document ph_consider at doc323.
-Document ph_curract at doc197.
-Document ph_displayf at doc352.
-Document ph_durations at doc138.
-Document ph_end at doc134.
-Document ph_exactm at doc332.
-Document ph_extcr at doc399.
-Document ph_filetables at doc358.
-Document ph_follow at doc315.
+Document ph_abide at doc326.
+Document ph_addlist at doc344.
+Document ph_allow at doc196.
+Document ph_awardp at doc135.
+Document ph_beginact at doc279.
+Document ph_bestroute at doc92.
+Document ph_blankout at doc242.
+Document ph_boxed at doc80.
+Document ph_break at doc170.
+Document ph_carryout at doc277.
+Document ph_casing at doc334.
+Document ph_change at doc115.
+Document ph_changep at doc123.
+Document ph_changev at doc119.
+Document ph_changex at doc119.
+Document ph_chooserow at doc237.
+Document ph_consents at doc163.
+Document ph_consider at doc326.
+Document ph_curract at doc200.
+Document ph_displayf at doc356.
+Document ph_durations at doc141.
+Document ph_end at doc137.
+Document ph_exactm at doc335.
+Document ph_extcr at doc403.
+Document ph_filetables at doc362.
+Document ph_follow at doc318.
 Document ph_frontside at doc38.
-Document ph_future at doc141.
-Document ph_goingon at doc271.
-Document ph_group at doc282.
-Document ph_happening at doc150.
-Document ph_holder at doc127.
-Document ph_if at doc161.
-Document ph_ignore at doc322.
-Document ph_increase at doc215.
-Document ph_indarkness at doc160.
-Document ph_involves at doc197.
-Document ph_islistedin at doc340.
-Document ph_lbreak at doc73.
-Document ph_let at doc171.
-Document ph_list at doc170.
-Document ph_listd at doc342.
+Document ph_future at doc144.
+Document ph_goingon at doc274.
+Document ph_group at doc285.
+Document ph_happening at doc153.
+Document ph_holder at doc130.
+Document ph_if at doc164.
+Document ph_ignore at doc325.
+Document ph_increase at doc218.
+Document ph_indarkness at doc163.
+Document ph_involves at doc200.
+Document ph_islistedin at doc343.
+Document ph_lbreak at doc74.
+Document ph_let at doc174.
+Document ph_list at doc173.
+Document ph_listd at doc345.
 Document ph_locof at doc51.
-Document ph_minspart at doc140.
-Document ph_mobjl at doc342.
-Document ph_move at doc118.
-Document ph_movebd at doc119.
-Document ph_nearest at doc138.
-Document ph_next at doc167.
-Document ph_nextstep at doc209.
-Document ph_nothing at doc158.
-Document ph_now at doc122.
-Document ph_numblank at doc239.
-Document ph_numel at doc344.
-Document ph_numof at doc81.
-Document ph_numofc at doc330.
-Document ph_numrows at doc231.
-Document ph_omit at doc279.
-Document ph_otherwise at doc164.
-Document ph_outcomer at doc319.
-Document ph_playsf at doc354.
-Document ph_plus at doc215.
-Document ph_randobj at doc129.
-Document ph_random at doc128.
-Document ph_readytr at doc360.
-Document ph_regexp at doc333.
-Document ph_remlist at doc341.
-Document ph_remove at doc121.
-Document ph_repeat at doc165.
-Document ph_replace at doc335.
-Document ph_requires at doc184.
-Document ph_result at doc172.
-Document ph_resultr at doc320.
-Document ph_revl at doc343.
-Document ph_roomdirof at doc89.
-Document ph_rotl at doc343.
-Document ph_runthrough at doc166.
-Document ph_say at doc75.
-Document ph_saya at doc68.
-Document ph_sayif at doc71.
-Document ph_saylv at doc339.
-Document ph_sayn at doc69.
-Document ph_sayoneof at doc72.
-Document ph_scope at doc296.
-Document ph_sort at doc240.
-Document ph_sortl at doc343.
-Document ph_stop at doc168.
-Document ph_stopac at doc95.
-Document ph_succeeds at doc318.
-Document ph_surrounds at doc114.
-Document ph_tabrepeat at doc235.
-Document ph_testuo at doc413.
-Document ph_thereis at doc236.
-Document ph_timeshift at doc139.
-Document ph_total at doc227.
-Document ph_truncate at doc345.
-Document ph_try at doc96.
-Document ph_tsince at doc149.
-Document ph_types at doc74.
-Document ph_updatebp at doc119.
-Document ph_while at doc162.
-Document ph_wornot at doc160.
-Document ph_writef at doc359.
-Document ph_yes at doc172.
-Document rules_after at doc97.
-Document rules_before at doc95.
-Document rules_dtpm at doc266.
-Document rules_et at doc135.
-Document rules_fail at doc182.
-Document rules_instead at doc94.
-Document rules_internal at doc325.
-Document rules_per at doc181.
-Document rules_proc at doc321.
-Document rules_ri at doc193.
-Document rules_wpb at doc131.
-Document rules_wpe at doc134.
-Document var_command at doc300.
+Document ph_minspart at doc143.
+Document ph_mobjl at doc345.
+Document ph_move at doc121.
+Document ph_movebd at doc122.
+Document ph_nearest at doc141.
+Document ph_next at doc170.
+Document ph_nextstep at doc212.
+Document ph_nothing at doc161.
+Document ph_now at doc125.
+Document ph_numblank at doc242.
+Document ph_numel at doc348.
+Document ph_numof at doc82.
+Document ph_numofc at doc333.
+Document ph_numrows at doc234.
+Document ph_omit at doc282.
+Document ph_otherwise at doc167.
+Document ph_outcomer at doc322.
+Document ph_playsf at doc358.
+Document ph_plus at doc218.
+Document ph_randobj at doc132.
+Document ph_random at doc131.
+Document ph_readytr at doc364.
+Document ph_regexp at doc336.
+Document ph_remlist at doc344.
+Document ph_remove at doc124.
+Document ph_repeat at doc168.
+Document ph_replace at doc338.
+Document ph_requires at doc187.
+Document ph_result at doc175.
+Document ph_resultr at doc323.
+Document ph_revl at doc347.
+Document ph_roomdirof at doc92.
+Document ph_rotl at doc347.
+Document ph_runthrough at doc169.
+Document ph_say at doc76.
+Document ph_saya at doc69.
+Document ph_sayif at doc72.
+Document ph_saylv at doc342.
+Document ph_sayn at doc70.
+Document ph_sayoneof at doc73.
+Document ph_scope at doc299.
+Document ph_sort at doc243.
+Document ph_sortl at doc347.
+Document ph_stop at doc171.
+Document ph_stopac at doc98.
+Document ph_succeeds at doc321.
+Document ph_surrounds at doc117.
+Document ph_tabrepeat at doc238.
+Document ph_testuo at doc417.
+Document ph_thereis at doc239.
+Document ph_timeshift at doc142.
+Document ph_total at doc230.
+Document ph_truncate at doc349.
+Document ph_try at doc99.
+Document ph_tsince at doc152.
+Document ph_types at doc75.
+Document ph_updatebp at doc122.
+Document ph_while at doc165.
+Document ph_wornot at doc163.
+Document ph_writef at doc363.
+Document ph_yes at doc175.
+Document rules_after at doc100.
+Document rules_before at doc98.
+Document rules_dtpm at doc269.
+Document rules_et at doc138.
+Document rules_fail at doc185.
+Document rules_instead at doc97.
+Document rules_internal at doc328.
+Document rules_per at doc184.
+Document rules_proc at doc324.
+Document rules_ri at doc196.
+Document rules_wpb at doc134.
+Document rules_wpe at doc137.
+Document var_command at doc303.
 Document var_location at doc64.
-Document var_noun at doc102.
-Document var_particular at doc278.
-Document var_person_asked at doc180.
-Document var_person_reaching at doc195.
-Document var_prompt at doc113.
-Document var_reason at doc182.
-Document var_score at doc132.
-Document var_sl at doc114.
-Document var_time at doc136.
-Document var_understood at doc257.
-Document visibility at doc196.
+Document var_noun at doc105.
+Document var_particular at doc281.
+Document var_person_asked at doc183.
+Document var_person_reaching at doc198.
+Document var_prompt at doc116.
+Document var_reason at doc185.
+Document var_score at doc135.
+Document var_sl at doc117.
+Document var_time at doc139.
+Document var_understood at doc260.
+Document visibility at doc199.
 
 Use MAX_ARRAYS of 1500.
 Use MAX_CLASSES of 200.
 Use MAX_VERBS of 300.
 Use MAX_LABELS of 10000.
 Use MAX_ZCODE_SIZE of 50000.
-Use MAX_STATIC_DATA of 100000.
+Use MAX_STATIC_DATA of 120000.
 Use MAX_PROP_TABLE_SIZE of 200000.
 Use MAX_INDIV_PROP_TABLE_SIZE of 20000.
 Use MAX_STACK_SIZE of 65536.
 Use MAX_SYMBOLS of 20000.
+Use MAX_EXPRESSION_NODES of 256.
 
 Use dynamic memory allocation of at least 8192 translates as
 	(- Constant DynamicMemoryAllocation = {N}; -).
@@ -254,18 +255,15 @@ he is wearing) implies the wearing relation.
 The verb to be able to see (he is seen) implies the visibility relation.
 The verb to be able to touch (he is touched) implies the touchability relation.
 
-Definition: Something is visible if the player can see it.
-Definition: Something is touchable if the player can touch it.
-Definition: Something is invisible if the player cannot see it.
-Definition: Something is untouchable if the player cannot touch it.
+Definition: Something is visible rather than invisible if the player can see it.
+Definition: Something is touchable rather than untouchable if the player can touch it.
 
 The verb to conceal (he conceals, they conceal, he concealed, it is concealed,
 he is concealing) implies the concealment relation.
-Definition: Something is concealed if the holder of it conceals it.
-Definition: Something is unconcealed if the holder of it does not conceal it.
+Definition: Something is concealed rather than unconcealed if the holder of it conceals it.
 
-Definition: Something is on-stage if (- (OnStage(t_0)) -).
-Definition: Something is off-stage if (- (~~(OnStage(t_0))) -).
+Definition: Something is on-stage rather than off-stage if I6 routine "OnStage"
+	says so (it is indirectly in one of the rooms).
 
 The verb to be greater than implies the numerically-greater-than relation.
 The verb to be less than implies the numerically-less-than relation.
@@ -306,25 +304,9 @@ Definition: A room is adjacent if it is adjacent to the location.
 
 The verb to be regionally in implies the reversed regional-containment relation.
 
-The verb to be above implies the mapping-up relation.
-The verb to be below implies the mapping-down relation.
-
-The verb to be mapped above implies the mapping-up relation.
-The verb to be mapped below implies the mapping-down relation.
-The verb to be mapped north of implies the mapping-north relation.
-The verb to be mapped northeast of implies the mapping-northeast relation.
-The verb to be mapped northwest of implies the mapping-northwest relation.
-The verb to be mapped east of implies the mapping-east relation.
-The verb to be mapped south of implies the mapping-south relation.
-The verb to be mapped southeast of implies the mapping-southeast relation.
-The verb to be mapped southwest of implies the mapping-southwest relation.
-The verb to be mapped west of implies the mapping-west relation.
-The verb to be mapped inside implies the mapping-inside relation.
-The verb to be mapped outside implies the mapping-outside relation.
-
 Include (-
-	with n_to 0, ne_to 0, e_to 0, se_to 0, s_to 0, sw_to 0, w_to 0, nw_to 0,
-	u_to 0, d_to 0, in_to 0, out_to 0,
+!	with n_to 0, ne_to 0, e_to 0, se_to 0, s_to 0, sw_to 0, w_to 0, nw_to 0,
+!	u_to 0, d_to 0, in_to 0, out_to 0,
 -) when defining a room.
 
 Section SR1/3 - Things
@@ -370,7 +352,7 @@ The specification of direction is "Represents a direction of movement, such
 as northeast or down."
 
 A direction can be privately-named or publically-named. A direction is usually
-privately-named.
+publically-named.
 A direction can be marked for listing or unmarked for listing. A direction is
 usually unmarked for listing.
 
@@ -378,55 +360,39 @@ A direction has a direction called an opposite.
 
 Include (- class CompassDirection, -) when defining a direction.
 
-A direction has a text called an I6 library direction property.
+The north is a direction.
+The northeast is a direction.
+The northwest is a direction.
+The south is a direction.
+The southeast is a direction.
+The southwest is a direction.
+The east is a direction.
+The west is a direction.
+The up is a direction.
+The down is a direction.
+The inside is a direction.
+The outside is a direction.
 
-The north is a direction with opposite south and I6 library direction property "n_to".
-The north object translates into I6 as "n_obj".
-Include (- with name 'n//' 'north', door_dir n_to, -) when defining the north.
+The north has opposite south. Understand "n" as north.
+The northeast has opposite southwest. Understand "ne" as northeast.
+The northwest has opposite southeast. Understand "nw" as northwest.
+The south has opposite north. Understand "s" as south.
+The southeast has opposite northwest. Understand "se" as southeast.
+The southwest has opposite northeast. Understand "sw" as southwest.
+The east has opposite west. Understand "e" as east.
+The west has opposite east. Understand "w" as west.
+Up has opposite down. Understand "u" as up.
+Down has opposite up. Understand "d" as down.
+Inside has opposite outside. Understand "in" as inside.
+Outside has opposite inside. Understand "out" as outside.
 
-The northeast is a direction with opposite southwest and I6 library direction property "ne_to".
-The northeast object translates into I6 as "ne_obj".
-Include (- with name 'ne' 'northeast', door_dir ne_to, -) when defining the northeast.
-
-The northwest is a direction with opposite southeast and I6 library direction property "nw_to".
-The northwest object translates into I6 as "nw_obj".
-Include (- with name 'nw' 'northwest', door_dir nw_to, -) when defining the northwest.
-
-The south is a direction with opposite north and I6 library direction property "s_to".
-The south object translates into I6 as "s_obj".
-Include (- with name 's//' 'south', door_dir s_to, -) when defining the south.
-
-The southeast is a direction with opposite northwest and I6 library direction property "se_to".
-The southeast object translates into I6 as "se_obj".
-Include (- with name 'se' 'southeast', door_dir se_to, -) when defining the southeast.
-
-The southwest is a direction with opposite northeast and I6 library direction property "sw_to".
-The southwest object translates into I6 as "sw_obj".
-Include (- with name 'sw' 'southwest', door_dir sw_to, -) when defining the southwest.
-
-The east is a direction with opposite west and I6 library direction property "e_to".
-The east object translates into I6 as "e_obj".
-Include (- with name 'e//' 'east', door_dir e_to, -) when defining the east.
-
-The west is a direction with opposite east and I6 library direction property "w_to".
-The west object translates into I6 as "w_obj".
-Include (- with name 'w//' 'west', door_dir w_to, -) when defining the west.
-
-The up is a direction with opposite down and I6 library direction property "u_to".
-The up object translates into I6 as "u_obj".
-Include (- with name 'u//' 'up', door_dir u_to, -) when defining up.
-
-The down is a direction with opposite up and I6 library direction property "d_to".
-The down object translates into I6 as "d_obj".
-Include (- with name 'd//' 'down', door_dir d_to, -) when defining down.
-
-The inside is a direction with opposite outside and I6 library direction property "in_to".
 The inside object translates into I6 as "in_obj".
-Include (- with name 'in//' 'inside', door_dir in_to, -) when defining inside.
-
-The outside is a direction with opposite inside and I6 library direction property "out_to".
 The outside object translates into I6 as "out_obj".
-Include (- with name 'out//' 'outside', door_dir out_to, -) when defining outside.
+
+The verb to be above implies the mapping-up relation.
+The verb to be mapped above implies the mapping-up relation.
+The verb to be below implies the mapping-down relation.
+The verb to be mapped below implies the mapping-down relation.
 
 Section SR1/5 - Doors
 
@@ -455,6 +421,7 @@ instead."
 A container can be enterable.
 A container can be opaque or transparent. A container is usually opaque.
 A container has a number called carrying capacity.
+The carrying capacity of a container is usually 100.
 
 Include (- has container, -) when defining a container.
 
@@ -465,6 +432,7 @@ placed, such as a table."
 
 A supporter can be enterable.
 A supporter has a number called carrying capacity.
+The carrying capacity of a supporter is usually 100.
 
 A supporter is usually fixed in place.
 
@@ -508,7 +476,7 @@ a stream, the sky or a long carpet."
 
 A backdrop is usually scenery.
 A backdrop is always fixed in place.
-A door is never pushable between rooms.
+A backdrop is never pushable between rooms.
 
 Section SR1/11 - People
 
@@ -686,11 +654,13 @@ The matched text is a snippet that varies.
 The number understood -- documented at var_understood -- is a number that varies. [*]
 The time understood is a time that varies. [*]
 The topic understood is a snippet that varies. [*]
+The truth state understood is a truth state that varies. [*]
 The current item from the multiple object list is an object that varies.
 
 The player's command variable translates into I6 as "players_command".
 The matched text variable translates into I6 as "matched_text".
 The topic understood variable translates into I6 as "parsed_number".
+The truth state understood variable translates into I6 as "parsed_number".
 The current item from the multiple object list variable translates into I6 as
 	"multiple_object_item".
 
@@ -864,9 +834,9 @@ The parse command rule translates into I6 as "PARSE_COMMAND_R".
 The timed events rule translates into I6 as "TIMED_EVENTS_R".
 
 The when play ends stage rule is listed first in the shutdown rulebook.
-The resurrect player if asked rule is listed in the shutdown rulebook.
-The print player's obituary rule is listed in the shutdown rulebook.
-The ask the final question rule is listed in the shutdown rulebook.
+The resurrect player if asked rule is listed last in the shutdown rulebook.
+The print player's obituary rule is listed last in the shutdown rulebook.
+The ask the final question rule is listed last in the shutdown rulebook.
 
 This is the when play ends stage rule: follow the when play ends rulebook.
 This is the print player's obituary rule:
@@ -993,6 +963,32 @@ Does the player mean taking something which is carried by the player
 	(this is the very unlikely to mean taking what's already carried rule):
 	it is very unlikely.
 
+Definition: a number is even rather than odd if the remainder after dividing it by 2 is 0.
+Definition: a number is positive if it is greater than zero.
+Definition: a number is negative if it is less than zero.
+
+Definition: a text is empty rather than non-empty if it is "".
+
+Definition: an indexed text is empty rather than non-empty if I6 routine "INDEXED_TEXT_TY_Empty" says so
+	(it contains no characters).
+
+A scene can be recurring or non-recurring. A scene is usually non-recurring.
+Definition: a scene is happening if I6 condition "scene_status-->(*1-1)==1"
+	says so (it is currently taking place).
+
+Definition: a table-name is empty rather than non-empty if the number of filled rows in it is 0.
+Definition: a table-name is full rather than non-full if the number of blank rows in it is 0.
+
+Definition: a rulebook is empty rather than non-empty if I6 routine "RulebookEmpty" says so (it
+	contains no rules, so that following it does nothing and makes no decision).
+
+Definition: an activity is empty rather than non-empty if I6 routine "ActivityEmpty" says so (its
+	before, for and after rulebooks are all empty).
+Definition: an activity is going on if I6 routine "TestActivity" says so (one
+	of its three rulebooks is currently being run).
+
+Definition: a list of values is empty rather than non-empty if I6 routine "LIST_OF_TY_Empty" says so
+	(it contains no entries).
 
 Part SR3 - Activities
 
@@ -1106,14 +1102,14 @@ This is the print the final question rule:
 	repeat through the Table of Final Question Options:
 		if the only if victorious entry is false or the game ended in victory:
 			if there is a final response rule entry
-				or the final response activity entry activity is not empty:
+				or the final response activity entry [activity] is not empty:
 				if there is a final question wording entry, increase named options count by 1;
 	if the named options count is less than 1, abide by the immediately quit rule;
 	say "Would you like to ";
 	repeat through the Table of Final Question Options:
 		if the only if victorious entry is false or the game ended in victory:
 			if there is a final response rule entry
-				or the final response activity entry activity is not empty:
+				or the final response activity entry [activity] is not empty:
 				if there is a final question wording entry:
 					say final question wording entry;
 					decrease named options count by 1;
@@ -1129,7 +1125,7 @@ This is the standard respond to final question rule:
 	repeat through the Table of Final Question Options:
 		if the only if victorious entry is false or the game ended in victory:
 			if there is a final response rule entry
-				or the final response activity entry activity is not empty:
+				or the final response activity entry [activity] is not empty:
 				if the player's command matches the topic entry:
 					if there is a final response rule entry, abide by final response rule entry;
 					otherwise carry out the final response activity entry activity;
@@ -1432,18 +1428,18 @@ Check an actor taking (this is the use player's holdall to avoid exceeding
 	carrying capacity rule):
 	if the number of things carried by the actor is at least the
 		carrying capacity of the actor:
-		if the actor is holding a player's holdall (called the sack):
+		if the actor is holding a player's holdall (called the current working sack):
 			let the transferred item be nothing;
 			repeat with the possible item running through things carried by
 				the actor:
 				if the possible item is not lit and the possible item is not
-					the sack, let the transferred item be the possible item;
+					the current working sack, let the transferred item be the possible item;
 			if the transferred item is not nothing:
 				issue library message taking action number 13 for the
 					transferred item;
 				silently try the actor trying inserting the transferred item
-					into the sack;
-				if the transferred item is not in the sack, stop the action;
+					into the current working sack;
+				if the transferred item is not in the current working sack, stop the action;
 
 Check an actor taking (this is the can't exceed carrying capacity rule):
 	if the number of things carried by the actor is at least the
@@ -3490,7 +3486,7 @@ Switching the story transcript off is an action out of world and applying to not
 The switching the story transcript off action translates into I6 as "ScriptOff".
 
 The switch the story transcript off rule is listed in the carry out switching the story
-	transcript on rulebook.
+	transcript off rulebook.
 The switch the story transcript off rule translates into I6 as "SWITCH_TRANSCRIPT_OFF_R".
 
 Requesting the story file version is an action out of world and applying to nothing.
@@ -3549,6 +3545,8 @@ The requesting the pronoun meanings action translates into I6 as "Pronouns".
 The announce the pronoun meanings rule is listed in the carry out requesting the
 	pronoun meanings rulebook.
 The announce the pronoun meanings rule translates into I6 as "ANNOUNCE_PRONOUN_MEANINGS_R".
+
+The understand token a time period translates into I6 as "RELATIVE_TIME_TOKEN".
 
 Section SR4/10 - Grammar
 
@@ -3853,7 +3851,7 @@ To say one of -- beginning say_one_of (documented at ph_sayoneof):
 	switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1)-1) {-open-brace}
 		0: -).
 To say or -- continuing say_one_of:
-	(- {-segment-count}: -).
+	(- @nop; {-segment-count}: -).
 To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
 	(- {-close-brace} -).
 To say at random -- ending say_one_of with marker I7_SOO_RAN:
@@ -4056,6 +4054,9 @@ Section SR5/2/1 - Values and data structures - Counting
 To decide which number is number of (S - description)
 	(documented at ph_numof):
 	(- {-number-of:S} -).
+To decide which number is number of (S - domain-description)
+	(documented at ph_numof):
+	(- {-number-of:S} -).
 
 Section SR5/2/2 - Values and data structures - Arithmetic
 
@@ -4115,6 +4116,9 @@ To decide whether a random chance of (N - number) in (M - number) succeeds:
 	(- (GenerateRandomNumber(1, {M}) <= {N}) -).
 To seed the random-number generator with (N - number):
 	(- VM_Seed_RNG({N}); -).
+To decide which value is a/-- random (S - domain-description)
+	(amended kind of value 1):
+	(- {-random-of:S} -).
 
 Section SR5/2/5 - Values and data structures - Changing stored values
 
@@ -4146,7 +4150,7 @@ To change (le - list-entry) to (w - assignable-value):
 	(- {-list-assignment}; -).
 To change (o - object) to (p - property)
 	(documented at ph_changep):
-	(- SetEitherOrProperty({o}, {p}); -).
+	(- SetEitherOrProperty({o}, {p}, false, {-adjective-definition:p}); -).
 To change (o - object) to (w - value):
 	(- WriteValueProperty({o},{-convert-adjectival-constants:w},{w}); -).
 To change (lv - existing variable) to (w - assignable-value):
@@ -4369,6 +4373,9 @@ To decide if (N - value = kov reference 1) is not listed in
 To decide what list of objects is the list of (D - description)
 	(documented at ph_listd):
 	(- LIST_OF_TY_Desc({-pointer-to-new:LIST_OF_TY}, {D}) -).
+To decide what list of values is the list of (D - domain-description)
+	(amended kind of value 0):
+	(- LIST_OF_TY_Desc({-pointer-to-new:LIST_OF_TY}, {D}, {-domain-kov:D}) -).
 To decide what list of objects is the multiple object list
 	(documented at ph_mobjl):
 	(- LIST_OF_TY_Mol({-pointer-to-new:LIST_OF_TY}) -).
@@ -4485,22 +4492,26 @@ To repeat with (loopvar - nonexisting object variable)
 	running through (OS - description) begin -- end
 	(documented at ph_runthrough):
 		(- {-loop-over:OS}  -).
+To repeat with (loopvar - nonexisting object variable)
+	running through (OS - domain-description) begin -- end
+	(documented at ph_runthrough):
+		(- {-loop-over-domain:OS}  -).
 
 Section SR5/3/4 - Loops and conditionals - Repeat through tables
 
 To repeat through (T - table-name) begin -- end
 	(documented at ph_tabrepeat):
-	(- {-require-ctvs}ct_0 = {T};
-		for (ct_1=1:ct_1<=TableRows(ct_0):ct_1++) if (TableRowIsBlank(ct_0,ct_1)==false)  -).
+	(- {-push-ctvs}
+		for ({-ct-v0}={T},{-ct-v1}=1,ct_0={-ct-v0},ct_1={-ct-v1}:{-ct-v1}<=TableRows({-ct-v0}):{-ct-v1}++,ct_0={-ct-v0},ct_1={-ct-v1}) if (TableRowIsBlank(ct_0,ct_1)==false)  -).
 To repeat through (T - table-name) in reverse order begin -- end:
-	(- {-require-ctvs}ct_0 = {T};
-		for (ct_1=TableRows(ct_0):ct_1>=1:ct_1-- ) if (TableRowIsBlank(ct_0,ct_1)==false)  -).
+	(- {-push-ctvs}
+		for ({-ct-v0}={T},{-ct-v1}=TableRows({-ct-v0}),ct_0={-ct-v0},ct_1={-ct-v1}:{-ct-v1}>=1:{-ct-v1}--,ct_0={-ct-v0},ct_1={-ct-v1}) if (TableRowIsBlank(ct_0,ct_1)==false)  -).
 To repeat through (T - table-name) in (TC - table-column) order begin -- end:
-	(- {-require-ctvs}ct_0 = {T};
-		for (ct_1=TableNextRow(ct_0,{TC},0,1):ct_1~=0:ct_1=TableNextRow(ct_0,{TC},ct_1,1))  -).
+	(- {-push-ctvs}
+		for ({-ct-v0}={T},{-ct-v1}=TableNextRow({-ct-v0},{TC},0,1),ct_0={-ct-v0},ct_1={-ct-v1}:{-ct-v1}~=0:{-ct-v1}=TableNextRow({-ct-v0},{TC},{-ct-v1},1),ct_0={-ct-v0},ct_1={-ct-v1})  -).
 To repeat through (T - table-name) in reverse (TC - table-column) order begin -- end:
-	(- {-require-ctvs}ct_0 = {T};
-		for (ct_1=TableNextRow(ct_0,{TC},0,-1):ct_1~=0:ct_1=TableNextRow(ct_0,{TC},ct_1,-1))  -).
+	(- {-push-ctvs}
+		for ({-ct-v0}={T},{-ct-v1}=TableNextRow({-ct-v0},{TC},0,-1),ct_0={-ct-v0},ct_1={-ct-v1}:{-ct-v1}~=0:{-ct-v1}=TableNextRow({-ct-v0},{TC},{-ct-v1},-1),ct_0={-ct-v0},ct_1={-ct-v1})  -).
 
 Section SR5/3/5 - Loops and conditionals - Repeat through lists
 
@@ -4603,7 +4614,7 @@ To carry out the (A - activity) activity
 To carry out the (A - activity) activity with (O - object):
 	(- CarryOutActivity({A}, {O}); -).
 
-To decide whether (A - activity) activity is going on
+[To decide whether (A - activity) activity is going on
 	(documented at ph_goingon):
 	(- (TestActivity({A})) -).
 To decide whether (A - activity) activity is not going on:
@@ -4611,7 +4622,7 @@ To decide whether (A - activity) activity is not going on:
 To decide whether (A - activity) activity is empty:
 	(- (ActivityEmpty({A})) -).
 To decide whether (A - activity) activity is not empty:
-	(- (~~(ActivityEmpty({A}))) -).
+	(- (~~(ActivityEmpty({A}))) -).]
 
 To continue the activity:
 	(- rfalse; -) - in to only.
@@ -4724,7 +4735,7 @@ Section SR5/5/2 - Model world - Outcome of play
 To end the game in death (documented at ph_end): (- deadflag=1; -).
 To end the game in victory: (- deadflag=2; -).
 To end the game saying (finale - text): (- deadflag={finale}; -).
-To resume the game: (- deadflag=0; -).
+To resume the game: (- resurrect_please = true; -).
 To decide whether the game is in progress: (- (deadflag==0) -).
 To decide whether the game is over: (- (deadflag~=0) -).
 To decide whether the game ended in death: (- (deadflag==1) -).
@@ -4778,11 +4789,12 @@ To (R - rule) in (t - time) from now:
 
 Section SR5/5/6 - Model world - Scenes
 
-To decide if (sc - scene) is happening
+[To decide if (sc - scene) is happening
 	(documented at ph_happening):
 	(- (scene_status-->({sc}-1) == 1) -).
 To decide if (sc - scene) is not happening:
-	(- (scene_status-->({sc}-1) ~= 1) -).
+	(- (scene_status-->({sc}-1) ~= 1) -).]
+
 To decide if (sc - scene) has happened:
 	(- (scene_endings-->({sc}-1)) -).
 To decide if (sc - scene) has not happened:

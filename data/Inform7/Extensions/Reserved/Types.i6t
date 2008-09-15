@@ -138,6 +138,13 @@ cast:TEXT_ROUTINE_TY
 cast:RULE_TY
 ! Deprecated: a union of the four I6-metaclass-distinguishable data types
 
++VALUE_DESCRIPTION_TY:
+description:a description of values
+singular:domain-description
+plural:domain-descriptions
+constant-compilation-method:special
+! Used only in type-checking to distinguish value from object descriptions
+
 TEMPLATE_VAR1_TY:
 is-template-variable:yes
 template-variable-number:1
@@ -334,6 +341,7 @@ can-be-type-of-global-variable:yes
 default-value: 0
 index-default-value:the action-processing rules
 constant-compilation-method:special
+i6-printing-routine:RulePrintingRule
 ! A list of rules to be followed in sequence
 
 +RULEBOOK_OUTCOME_TY:
@@ -365,16 +373,17 @@ constant-compilation-method:special
 ! Constants only: the name of an activity, stored as its internal number
 
 +SCENE_TY:
-modifying-adjective:non-recurring
-modifying-adjective:recurring
 description:the name of a scene
 singular:scene
 plural:scenes
 named-values-created-with-assertions:yes
 can-be-type-of-global-variable:yes
+used-in-let-with-cast-priority:80
 default-value: 0
 index-default-value:the Entire Game
+i6-printing-routine:PrintSceneName
 constant-compilation-method:quantitative
+apply-template:*PRINTING-ROUTINE
 ! Scenes, as numbered in sequence in order of creation (from 0 not 1)
 
 +TABLE_TY:
@@ -419,16 +428,25 @@ description:the name of a figure
 singular:figure-name
 plural:figure-names
 can-be-type-of-global-variable:yes
+used-in-let-with-cast-priority:80
 default-value:1
 index-default-value:figure of cover
 constant-compilation-method:literal
+i6-printing-routine:PrintFigureName
+apply-template:*PRINTING-ROUTINE
 ! Blorb resource ID number for a picture
 
 +SOUNDNAME_TY:
 description:the name of a sound effect
 singular:sound-name
 plural:sound-names
+can-be-type-of-global-variable:yes
+used-in-let-with-cast-priority:80
 constant-compilation-method:literal
+default-value:0
+index-default-value:<i>a silent non-sound</i>
+i6-printing-routine:PrintSoundName
+apply-template:*PRINTING-ROUTINE
 ! Blorb resource ID number for a sound effect
 
 +EXTERNALFILE_TY:
@@ -436,9 +454,12 @@ description:the name of a file
 singular:external-file
 plural:external-files
 can-be-type-of-global-variable:yes
+used-in-let-with-cast-priority:80
 default-value:0
-index-default-value:value representing a non-file
+index-default-value:<i>a non-file</i>
 constant-compilation-method:special
+i6-printing-routine:PrintExternalFileName
+apply-template:*PRINTING-ROUTINE
 ! Address of an array holding a file I/O structure managed at run-time
 
 +TRUTH_STATE_TY:
@@ -448,7 +469,10 @@ plural:truth states
 can-be-type-of-global-variable:yes
 default-value:false
 index-default-value:false
+has-i6-GPR:yes
+explicit-i6-GPR:TRUTH_STATE_TOKEN
 i6-printing-routine:DA_TruthState
+i6-printing-routine-actions:DA_TruthState
 used-in-let-with-cast-priority:50
 can-exchange:yes
 index-entry:The state of whether something is 'true' or 'false'.

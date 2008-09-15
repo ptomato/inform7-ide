@@ -62,3 +62,19 @@ $2^{31}-1 = +2147483647$: the token below accepts exactly those ranges.
 	parsed_number = n*sign; wn++;
 	return GPR_NUMBER;
 ];
+
+@p Truth states.
+And although truth states are not strictly speaking numbers, this seems as
+good a point as any to parse them:
+
+@c
+[ TRUTH_STATE_TOKEN original_wn wd;
+	original_wn = wn;
+{-call:compile_truth_state_grammar}
+	wn = original_wn;
+	wd = NextWordStopped();
+	if (wd == 'true') { parsed_number = 1; return GPR_NUMBER; }
+	if (wd == 'false') { parsed_number = 0; return GPR_NUMBER; }
+	wn = original_wn;
+	return GPR_FAIL;
+];

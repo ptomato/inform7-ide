@@ -249,9 +249,8 @@ when moved.
 			return; }
 		return RunTimeProblem(RTP_BACKDROP, F, T);
 	}
-	if (T ofclass K9_region) {
-		return RunTimeProblem(RTP_NOTBACKDROP, F, T);
-	}
+	if (~~(F ofclass K2_thing)) return RunTimeProblem(RTP_NOTTHING, F, T);
+	if (T ofclass K9_region) return RunTimeProblem(RTP_NOTBACKDROP, F, T);
 	if (F has worn) {
 		give F ~worn;
 		if (F in T) return;
@@ -487,56 +486,55 @@ Note that map connections via doors are immutable.
 @c
 [ MapConnection from_room dir
 	in_direction through_door;
-	if ((from_room ofclass K1_room) && (dir in compass)) {
-		if (from_room provides (dir.door_dir)) {
-			in_direction = from_room.(dir.door_dir);
-			if (in_direction ofclass K1_room) return in_direction;
-			if (in_direction ofclass K4_door) {
-				@push location;
-				location = from_room;
-				through_door = in_direction.door_to();
-				@pull location;
-				if (through_door ofclass K1_room) return through_door;
-			}
-		}	
+	if ((from_room ofclass K1_room) && (dir ofclass K3_direction)) {
+		in_direction = Map_Storage-->
+			((from_room.IK_1)*No_Directions + dir.IK_3);
+		if (in_direction ofclass K1_room) return in_direction;
+		if (in_direction ofclass K4_door) {
+			@push location;
+			location = from_room;
+			through_door = in_direction.door_to();
+			@pull location;
+			if (through_door ofclass K1_room) return through_door;
+		}
 	}
 	return nothing;
 ];
 
 [ RoomOrDoorFrom obj dir use_doors in_direction sl through_door;
-	if ((obj ofclass K1_room) && (dir in compass)) {
-		if (obj provides (dir.door_dir)) {
-			in_direction = obj.(dir.door_dir);
-			if (in_direction ofclass K1_room or K4_door) return in_direction;
-		}	
+	if ((obj ofclass K1_room) && (dir ofclass K3_direction)) {
+		in_direction = Map_Storage-->
+			((obj.IK_1)*No_Directions + dir.IK_3);
+		if (in_direction ofclass K1_room or K4_door) return in_direction;	
 	}
 	return nothing;
 ];
 
-[ AssertMapConnection r1 dir r2 pr;
+[ AssertMapConnection r1 dir r2 in_direction;
 	SignalMapChange();
-	pr = dir.door_dir;
-	if (r1 provides pr) {
-		if ((r1.pr == 0) || (r1.pr ofclass K1_room)) {
-			r1.pr = r2;
-			return;
-		}
-		if (r1.pr ofclass K4_door) {
-			RunTimeProblem(RTP_EXITDOOR, r1, dir);
-			return;
-		}
+	in_direction = Map_Storage-->
+		((r1.IK_1)*No_Directions + dir.IK_3);
+	if ((in_direction == 0) || (in_direction ofclass K1_room)) {
+		Map_Storage-->((r1.IK_1)*No_Directions + dir.IK_3) = r2;
+		return;
+	}
+	if (in_direction ofclass K4_door) {
+		RunTimeProblem(RTP_EXITDOOR, r1, dir);
+		return;
 	}
 	RunTimeProblem(RTP_NOEXIT, r1, dir);
 ];
 
-[ AssertMapUnconnection r1 dir r2 pr;
+[ AssertMapUnconnection r1 dir r2 in_direction;
 	SignalMapChange();
-	pr = dir.door_dir;
+	in_direction = Map_Storage-->
+		((r1.IK_1)*No_Directions + dir.IK_3);
 	if (r1 ofclass K4_door) {
 		RunTimeProblem(RTP_EXITDOOR, r1, dir);
 		return;
 	}
-	if ((r1 provides pr) && (r1.pr == r2)) r1.pr = 0;
+	if (in_direction == r2)
+		Map_Storage-->((r1.IK_1)*No_Directions + dir.IK_3) = 0;
 	return;
 ];
 
@@ -545,11 +543,10 @@ A relation between two rooms which, note, does not see connections through
 doors.
 
 @c
-[ TestAdjacency R1 R2 d pr;
-	objectloop (d in compass) {
-		pr = d.door_dir;
-		if ((R1 provides pr) && (R2 == R1.pr)) rtrue;
-	}
+[ TestAdjacency R1 R2 i row;
+	row = (R1.IK_1)*No_Directions;
+	for (i=0: i<No_Directions: i++, row++)
+		if (Map_Storage-->row == R2) rtrue;
 	rfalse;
 ];
 
@@ -586,9 +583,9 @@ then the front side is the room holding it, while the back side is |nothing|.
 
 The |door_to| property calculates the room which the door leads to; that
 of course depends on which side of it the player is standing. Similarly,
-|door_dir| calculates the direction it leads in, but returns the direction
-property (|n_to|, |s_to|, etc.) not the direction object (|n_obj|, |s_obj|,
-etc.)
+|door_dir| calculates the direction it leads in. Unlike the I6 setup, where
+|door_dir| returned the direction property (|n_to|, |s_to|, etc.), here in
+I7's template it returns the direction object (|n_obj|, |s_obj|, etc.)
 
 @c
 [ FrontSideOfDoor D; if (~~(D ofclass K4_door)) rfalse;
@@ -617,13 +614,8 @@ etc.)
 		location = LocationOf(from_room);
 		rv = D.door_dir();
 		@pull location;
-		if (rv) {
-			objectloop (dir in compass)
-				if (dir.door_dir == rv)
-					return dir;
-		}
 	}
-	return nothing;
+	return rv;
 ];
 
 @p Visibility Relation.

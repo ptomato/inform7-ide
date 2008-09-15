@@ -926,7 +926,7 @@ Arrangements are a little different here from on the Z-machine, because some
 data is retained in the case of a restart.
 
 @c
-[ VM_Initialise res;
+[ VM_Initialise res sty;
     @gestalt 4 2 res; ! Test if this interpreter has Glk...
     if (res == 0) quit; ! ...without which there would be nothing we could do
 
@@ -953,8 +953,12 @@ data is retained in the case of a restart.
         ! Open the story window.
         res = InitGlkWindow(GG_MAINWIN_ROCK);
         if (res == 0) {
-			glk_stylehint_set(3, 3, 2, 0); ! left-justify style_Header
-            gg_mainwin = glk_window_open(0, 0, 0, 3, GG_MAINWIN_ROCK);
+        	! Left-justify the header style
+			glk_stylehint_set(wintype_TextBuffer, style_Header, stylehint_Justification, 0);
+			! Try to make emphasized type in italics and not boldface
+			glk_stylehint_set(wintype_TextBuffer, style_Emphasized, stylehint_Weight, 0);
+			glk_stylehint_set(wintype_TextBuffer, style_Emphasized, stylehint_Oblique, 1);
+            gg_mainwin = glk_window_open(0, 0, 0, wintype_TextBuffer, GG_MAINWIN_ROCK);
 		}
         if (gg_mainwin == 0) quit; ! If we can't even open one window, give in
     }
@@ -967,10 +971,11 @@ data is retained in the case of a restart.
         res = InitGlkWindow(GG_STATUSWIN_ROCK);
         if (res == 0) {
             statuswin_cursize = statuswin_size;
-			for (res=0: res<=10: res++)
-				glk_stylehint_set(4, res, 9, 1); ! enable ReverseColor
-            gg_statuswin = glk_window_open(gg_mainwin, $12, statuswin_cursize,
-                4, GG_STATUSWIN_ROCK);
+			for (sty=0: sty<style_NUMSTYLES: sty++)
+				glk_stylehint_set(wintype_TextGrid, sty, stylehint_ReverseColor, 1);
+            gg_statuswin =
+            	glk_window_open(gg_mainwin, winmethod_Fixed + winmethod_Above,
+            		statuswin_cursize, wintype_TextGrid, GG_STATUSWIN_ROCK);
         }
     }
     ! It's possible that the status window couldn't be opened, in which case
@@ -986,9 +991,6 @@ data is retained in the case of a restart.
 		if (gg_backgroundchan == 0)
 			gg_backgroundchan = glk_schannel_create(GG_BACKGROUNDCHAN_ROCK);
 	}
-
-	glk_stylehint_set(wintype_TextBuffer, style_Emphasized, stylehint_Weight, 0);
-	glk_stylehint_set(wintype_TextBuffer, style_Emphasized, stylehint_Oblique, 1);
 
 	#ifdef FIX_RNG;
 	@random 10000 i;
@@ -1096,7 +1098,7 @@ to document all of that.
     if (gg_commandstr ~= 0 && gg_command_reading ~= false) {
         done = glk_get_line_stream(gg_commandstr, gg_arguments, 31);
         if (done == 0) {
-            glk_stream_close(gg_commandstr);
+            glk_stream_close(gg_commandstr, 0);
             gg_commandstr = 0;
             gg_command_reading = false;
             ! fall through to normal user input.
@@ -1198,7 +1200,7 @@ to document all of that.
         done = glk_get_line_stream(gg_commandstr, a_buffer+WORDSIZE,
         	(INPUT_BUFFER_LEN-WORDSIZE)-1);
         if (done == 0) {
-            glk_stream_close(gg_commandstr);
+            glk_stream_close(gg_commandstr, 0);
             gg_commandstr = 0;
             gg_command_reading = false;
             ! L__M(##CommandsRead, 5); would come after prompt
@@ -1705,13 +1707,13 @@ which is greatly superior in this respect).
 
         fwd = MakeColourWord(f);
         bwd = MakeColourWord(b);
-        for (i=0 : i<=10: i++) {
+        for (i=0 : i<style_NUMSTYLES: i++) {
             if (f == CLR_DEFAULT || b == CLR_DEFAULT) {  ! remove style hints
-                glk_stylehint_clear(swin, i, 7);
-                glk_stylehint_clear(swin, i, 8);
+                glk_stylehint_clear(swin, i, stylehint_TextColor);
+                glk_stylehint_clear(swin, i, stylehint_BackColor);
             } else {
-                glk_stylehint_set(swin, i, 7, fwd);
-                glk_stylehint_set(swin, i, 8, bwd);
+                glk_stylehint_set(swin, i, stylehint_TextColor, fwd);
+                glk_stylehint_set(swin, i, stylehint_BackColor, bwd);
             }
         }
 
@@ -1720,13 +1722,14 @@ which is greatly superior in this respect).
 
         if (doclear || ( window ~= 1 && (clr_fg ~= f || clr_bg ~= b) ) ) {
             glk_window_close(gg_mainwin, 0);
-            gg_mainwin = glk_window_open(0, 0, 0, 3, GG_MAINWIN_ROCK);
+            gg_mainwin = glk_window_open(0, 0, 0, wintype_TextBuffer, GG_MAINWIN_ROCK);
             if (gg_scriptstr ~= 0)
                 glk_window_set_echo_stream(gg_mainwin, gg_scriptstr);
         }
 
         gg_statuswin =
-        	glk_window_open(gg_mainwin, $12, statuswin_cursize, 4, GG_STATUSWIN_ROCK);
+        	glk_window_open(gg_mainwin, winmethod_Fixed + winmethod_Above,
+        		statuswin_cursize, wintype_TextGrid, GG_STATUSWIN_ROCK);
         if (statuswin_current && gg_statuswin) VM_MoveCursorInStatusLine(); else VM_MainWindow();
 
         if (window ~= 2) {
@@ -1816,7 +1819,8 @@ text just appears in the main window.
         ix = InitGlkWindow(GG_QUOTEWIN_ROCK);
         if (ix == 0)
             gg_quotewin =
-            	glk_window_open(gg_mainwin, $12, lines, 3, GG_QUOTEWIN_ROCK);
+            	glk_window_open(gg_mainwin, winmethod_Fixed + winmethod_Above,
+            		lines, wintype_TextBuffer, GG_QUOTEWIN_ROCK);
     } else {
         parwin = glk_window_get_parent(gg_quotewin);
         glk_window_set_arrangement(parwin, $12, lines, 0);
@@ -1888,7 +1892,7 @@ for ``real'' users, but it's probably worth keeping just the same.
     }
 ];
 
-Verb meta 'glklist'
+{-testing-command:glklist}
     *                                           -> Glklist;
 #Endif;
 

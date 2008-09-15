@@ -215,7 +215,7 @@ to behave predictably and without type-unsafe values entering code.)
 		else move player_to_be to location;
 	}
 
-	if (player_to_be ~= player) ChangePlayer(player_to_be);
+	if (player_to_be ~= player) { remove selfobj; ChangePlayer(player_to_be); }
 
 	real_location = location; SilentlyConsiderLight();
 
@@ -567,14 +567,14 @@ See the Standard Rules for comment on this.
 ];
 
 @p Resurrect Player If Asked Rule.
-If a rule in the ``when play ends'' rulebook cleared |deadflag|, by executing
+If a rule in the ``when play ends'' rulebook set |resurrect_please|, by executing
 the ``resume the game'' phrase, then this is where we notice that: making
 the shutdown rulebook succeed then tells |Main| to fall back into the turn
 sequence.
 
 @c
 [ RESURRECT_PLAYER_IF_ASKED_R;
-	if (deadflag == 0) { RulebookSucceeds(); rtrue; }
+	if (resurrect_please) { RulebookSucceeds(); resurrect_please = false; deadflag = 0; rtrue; }
 	rfalse;
 ];
 

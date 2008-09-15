@@ -349,10 +349,14 @@ fixed-pitch font used for the status line. The main window normally contains
 variable-pitch text which may even have been kerned, and character dimensions
 make little sense there.
 
+Clearing all windows (|WIN_ALL| here) has the side-effect of collapsing the
+status line, so we need to ensure that |statuswin_cursize| is reduced to 0,
+in order to keep it accurate.
+
 @c
 [ VM_ClearScreen window;
     switch (window) {
-		WIN_ALL:    @erase_window -1;
+		WIN_ALL:    @erase_window -1; statuswin_cursize = 0;
 		WIN_STATUS: @erase_window 1;
 		WIN_MAIN:   @erase_window 0;
     }
@@ -468,12 +472,13 @@ line; line 2 is underneath, and so on; columns are similarly numbered from
 ];
 
 #Iftrue (#version_number == 6);
-[ Z6_MoveCursor line column  charw;  ! 1-based position on text grid
-    @get_wind_prop 1 13 -> charw; ! font size
-    charw = charw & $FF;
-    line = 1 + charw*(line-1);
-    column = 1 + charw*(column-1);
-    @set_cursor line column;
+[ Z6_MoveCursor line column  charw charh; ! 1-based position on text grid
+	@get_wind_prop 1 13 -> charw; ! font size
+	@log_shift charw $FFF8 -> charh;
+	charw = charw / $100;
+	line = 1 + charh*(line-1);
+	column = 1 + charw*(column-1);
+	@set_cursor line column;
 ];
 #Endif;
 

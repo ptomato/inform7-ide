@@ -451,7 +451,8 @@ The return value is the number of words typed.
 		if (i == 2) {
 			VM_RestoreWindowColours();
 			VM_Style(SUBHEADER_VMSTY);
-			print (name) location, "^";
+			SL_Location(); print "^";
+			! print (name) location, "^";
 			VM_Style(NORMAL_VMSTY);
 			L__M(##Miscellany, 13);
 			continue;
@@ -662,14 +663,17 @@ Is the command a direction name, and so an implicit GO? If so, go to (K).
         ! or REPARSE_CODE if it has restructured the parse table so the whole parse
         ! must be begun again...
 
-        wn = verb_wordnum; indef_mode = false; token_filter = 0;
+        wn = verb_wordnum; indef_mode = false; token_filter = 0; parameters = 0;
+        @push actor; @push action; @push action_to_be;
+        actor = player; meta = false; action = ##Go; action_to_be = ##Go;
         l = NounDomain(compass, 0, 0);
+        @pull action_to_be; @pull action; @pull actor;
         if (l == REPARSE_CODE) jump ReParse;
 
         ! If it is a direction, send back the results:
         ! action=GoSub, no of arguments=1, argument 1=the direction.
 
-        if ((l~=0) && (l in compass)) {
+        if ((l~=0) && (l ofclass K3_direction)) {
             results-->0 = ##Go;
             results-->1 = 1;
             results-->2 = l;
@@ -954,14 +958,19 @@ and similarly for |multiinside|.
                         	(line_tdata-->pcount == NOUN_TOKEN)) {
                             l = Descriptors();  ! skip past THE etc
                             if (l~=0) etype=l;  ! don't allow multiple objects
+                        	k = parser_results-->2; @push k; @push parameters;
+                        	parameters = 1; parser_results-->2 = 0;
                             l = NounDomain(actors_location, actor, NOUN_TOKEN);
+                            @pull parameters; @pull k; parser_results-->2 = k;
                             #Ifdef DEBUG;
                             if (parser_trace >= 2) {
                                 print " [Advanced to ~noun~ token: ";
                                 if (l == REPARSE_CODE) print "re-parse request]^";
-                                if (l == 1) print "but multiple found]^";
-                                if (l == 0) print "error ", etype, "]^";
-                                if (l >= 2) print (the) l, "]^";
+                                else {
+                                	if (l == 1) print "but multiple found]^";
+                                	if (l == 0) print "error ", etype, "]^";
+                                	if (l >= 2) print (the) l, "]^";
+                                }
                             }
                             #Endif; ! DEBUG
                             if (l == REPARSE_CODE) jump ReParse;
@@ -2838,7 +2847,7 @@ for some function $f$.)
 [ Identical o1 o2 p1 p2 n1 n2 i j flag;
     if (o1 == o2) rtrue;  ! This should never happen, but to be on the safe side
     if (o1 == 0 || o2 == 0) rfalse;  ! Similarly
-    if (parent(o1) == compass || parent(o2) == compass) rfalse; ! Saves time
+    if (o1 ofclass K3_direction || o2 ofclass K3_direction) rfalse; ! Saves time
 
     !  What complicates things is that o1 or o2 might have a parsing routine,
     !  so the parser can't know from here whether they are or aren't the same.
@@ -2940,8 +2949,8 @@ the preposition |n|.)
         if (i >= REPARSE_CODE)
             print (address) VM_NumberToDictionaryAddress(i-REPARSE_CODE);
         else
-            if (i in compass && LanguageVerbLikesAdverb(verb_word))
-                LanguageDirection (i.door_dir); ! the direction name as adverb
+            if (i ofclass K3_direction)
+                print (LanguageDirection) i; ! the direction name as adverb
             else
                 print (the) i;
       .TokenPrinted;
@@ -3783,12 +3792,19 @@ Array alt_match_list --> (MATCH_LIST_WORDS+1);
 	if (cobj_flag == 2) {
 		.CodeTwo;
 		#ifdef COBJ_DEBUG;
-		print "[scoring ", (the) obj, " (simple)]^";
+		print "[scoring ", (the) obj, " (simple); parameters = ", parameters, " aw = ", advance_warning, "]^";
 		#endif;
-		if (parameters==0)
-			return ScoreDabCombo(obj, 0);
-		else
-			return ScoreDabCombo(parser_results-->2, obj);
+		@push action_to_be;
+		if (parameters==0) {
+			if (advance_warning > 0)
+				l = ScoreDabCombo(obj, advance_warning);
+			else
+				l = ScoreDabCombo(obj, 0);
+		} else {
+			l = ScoreDabCombo(parser_results-->2, obj);
+		}
+		@pull action_to_be;
+		return l;
 	}
 
 	#ifdef COBJ_DEBUG;

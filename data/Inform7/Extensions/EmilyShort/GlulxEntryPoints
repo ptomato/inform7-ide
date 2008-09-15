@@ -1,17 +1,8 @@
-Version 5 of Glulx Entry Points (for Glulx only) by Emily Short begins here.
+Version 6 of Glulx Entry Points (for Glulx only) by Emily Short begins here.
 
 "Provides hooks to allow the author to write specialized multimedia behavior that would normally go through HandleGlkEvent. This is a rather dull utility library that will be of most use to authors wanting to write Glulx extensions compatible with other Glulx extensions already in use."
 
 Use authorial modesty.
-
-Include(- 
-
-Replace HandleGlkEvent;  
-Replace IdentifyGlkObject;
-
-Global replacement_cmd_ptr;
-
--) before "Glulx.i6t".   
 
 The glulx timed activity rules is a rulebook.
 The glulx redrawing rules is a rulebook.
@@ -69,6 +60,7 @@ To decide whether glulx hyperlinks are supported:
 
 Include (-
 
+
    [ IdentifyGlkObject phase type ref rock;
       if (phase == 0) { ! Zero out references to our objects.
 	 if (FollowRulebook( (+glulx zeroing-reference rules+) ) && RulebookSucceeded()) { rtrue; }
@@ -95,7 +87,7 @@ Include (-
    ];
 
 
-  [ HandleGlkEvent ev context abortres newcmd cmdlen  N;
+  [ HandleGlkEvent ev context abortres newcmd cmdlen  ;
       context = 0; ! suppress ignored warning
       switch (ev-->0) {
 	evtype_Redraw:
@@ -136,7 +128,7 @@ Include (-
 
    ];
 
--)
+-) before "Glulx.i6t".
 
 The command-counting rules are a rulebook.
 
@@ -202,3 +194,5 @@ We also have a series of rulebooks for handling the stages of IdentifyGlkObject:
 Examples of the use of these can be seen in the extension Simple Graphics Windows.
 
 Please note that this extension is provided as a framework and as a basis for other extensions, but that currently Inform is not designed to support sound output properly.
+
+Thanks to Eliuk Blau and Jon Ingold for pointing out some bugs in version 5.

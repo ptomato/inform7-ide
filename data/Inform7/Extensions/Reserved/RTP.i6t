@@ -166,6 +166,9 @@ original source text (though in fact I7 does not use this at present).
 			print "This interpreter does not support Unicode.^";
 		RTP_BACKDROPONLY:
 			print "Only backdrops can be moved to multiple places.^";
+		RTP_NOTBACKDROP:
+			print "Tried to move ", (the) par1, " (not a thing) to ", (the) par2,
+				", but only things can move around.^";
 		}
 	print "^";
 ];
@@ -262,11 +265,13 @@ it doesn't mean it actually does have.
 	textual = property_metadata-->off; off++;
 	
 	if (ScanPropertyMetadata(obj, off)) jump PermissionFound;
-	if (obj provides i7_kind) {
-		l = (obj.#i7_kind)/2; a = obj.&i7_kind;
-		for (i=0: i<l: i++) if (ScanPropertyMetadata(a-->i, off)) jump PermissionFound;
-	} else {
-		if ((obj == selfobj) && (ScanPropertyMetadata(K8_person, off))) jump PermissionFound;
+	if (obj provides IK_0) {
+		l = obj.IK_0;
+		while (l > 0) {
+			a = l*2;
+			if (ScanPropertyMetadata(KindHierarchy-->a, off)) jump PermissionFound;
+			l = KindHierarchy-->(a+1);
+		}
 	}
 	if (issue_rtp) RunTimeProblem(RTP_UNPROVIDED, obj, textual);
 	rfalse;
@@ -325,15 +330,35 @@ An attempt to {\it write} an either/or property which is not provided will,
 however, always produce a run-time problem.
 
 @c
-[ SetEitherOrProperty o p negate;
+[ SetEitherOrProperty o p negate adj;
 	if (p<0) { p = ~p; negate = ~negate; }
-	if (WhetherProvides(o, true, p, true)) {
+	if (adj) {
+		(adj)(o);
+	} else if (WhetherProvides(o, true, p, true)) {
 		if (negate) {
 			if (p<FBNA_PROP_NUMBER) give o ~p; else o.p = false;
 		} else {
 			if (p<FBNA_PROP_NUMBER) give o p; else o.p = true;
 		}
 	}
+];
+
+@p Get Property For KOVs.
+Similarly, but for properties belonging to values.
+
+@c
+[ PropertyKOV kovp_array off inst per;
+	per = kovp_array-->0;
+	return kovp_array-->(1+(inst-1)*per+off);
+];
+
+@p Set Property For KOVs.
+Similarly, but for properties belonging to values.
+
+@c
+[ WritePropertyKOV kovp_array off inst state per;
+	per = kovp_array-->0;
+	kovp_array-->(1+(inst-1)*per+off) = state;
 ];
 
 @p Value Property.

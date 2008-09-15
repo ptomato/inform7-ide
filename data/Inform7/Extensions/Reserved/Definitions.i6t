@@ -254,10 +254,11 @@ verb, but never mind: the reference here is to the algorithm used to place
 paragraph breaks within text, which uses bitmaps composed of the following.
 
 @c
-Constant PARA_COMPLETED      = 1;
-Constant PARA_PROMPTSKIP      = 2;
+Constant PARA_COMPLETED          = 1;
+Constant PARA_PROMPTSKIP         = 2;
 Constant PARA_SUPPRESSPROMPTSKIP = 4;
-Constant PARA_NORULEBOOKBREAKS = 8;
+Constant PARA_NORULEBOOKBREAKS   = 8;
+Constant PARA_CONTENTEXPECTED    = 16;
 
 @p Descriptors in the Language of Play.
 The following constants, which must be different in value from the number
@@ -332,6 +333,7 @@ Constant RTP_LISTRANGEERROR          = 50;
 Constant RTP_REGEXPSYNTAXERROR       = 51;
 Constant RTP_NOGLULXUNICODE          = 52;
 Constant RTP_BACKDROPONLY            = 53;
+Constant RTP_NOTTHING                = 54;
 
 @p Relation Types.
 These names are identical to symbolic names used in the NI source code,
@@ -341,10 +343,6 @@ equivalence relation (``in groups''). An implicitly-defined relation is
 one which can't be used for practical purposes. A relation by routine is
 one for which $R(x, y)$ is true if and only if a given routine, called
 with arguments $x$ and $y$, says so: it is therefore read only.
-
-The |{-call:see_if_relations_created}| command defines the constant
-|RELATIONS_CREATED| if and only if there is a relation in existence of
-type other than |Relation_Implicit|.
 
 @c
 Constant Relation_Implicit   = -1;
@@ -356,7 +354,6 @@ Constant Relation_Sym_OtoO   = 5;
 Constant Relation_Sym_VtoV   = 6;
 Constant Relation_Equiv      = 7;
 Constant Relation_ByRoutine  = 8;
-{-call:see_if_relations_created}
 
 @p Template Activities.
 These are the activities defined in the Standard Rules, and the numbering
@@ -699,26 +696,16 @@ To an experienced I6 user, though, the death toll of abolished I6
 properties in I7 is breathtaking: in alphabetical order, |after|,
 |cant_go|, |daemon|, |each_turn|, |invent|, |life|, |number|, |orders|,
 |react_after|, |react_before|, |time_left|, |time_out|, |when_closed|,
-|when_off|, |when_on|, |when_open|. The losses are numerous because of the
-shift from I6's object orientation to I7's rule orientation: information
-about the behaviour of objects is no longer thought of as data attached to
-them. At that, it could have been worse: a few unused I6 library properties
-have been retained for possible future use.
+|when_off|, |when_on|, |when_open|. In May 2008, the direction properties
+|n_to|, |s_to|, |e_to|, ..., |out_to| joined the list of the missing.
+
+The losses are numerous because of the shift from I6's object orientation
+to I7's rule orientation: information about the behaviour of objects is no
+longer thought of as data attached to them. At that, it could have been
+worse: a few unused I6 library properties have been retained for possible
+future use.
 
 @c
-Property n_to; ! needed as storage for the map relationships
-Property s_to;
-Property e_to;
-Property w_to;
-Property ne_to;
-Property nw_to;
-Property se_to;
-Property sw_to;
-Property u_to;
-Property d_to;
-Property in_to;
-Property out_to;
-
 Property add_to_scope; ! used as in I6 to place component parts in scope
 Property article "a"; ! used as in I6 to implement articles
 Property capacity 100; ! = I7 "carrying capacity"
@@ -726,11 +713,10 @@ Property component_child; ! new in I7: forest structure holding "part of" relati
 Property component_parent; ! new in I7
 Property component_sibling; ! new in I7
 Property description; ! = I7 "description"
-Property door_dir; ! used as in I6 to implement two-sided doors
+Property door_dir; ! used to implement two-sided doors, but holds direction object, not a property
 Property door_to; ! used as in I6 to implement two-sided doors
 Property found_in; ! used as in I6 to implement two-sided doors and backdrops
 Property initial; ! = I7 "initial description"
-Property additive i7_kind; ! used to store the kind of an object
 Property list_together; ! used as in I6 to implement "grouping together" activity
 Property map_region; ! new in I7
 Property parse_name 0; ! used as in I6 to implement "Understand... as..." grammars
@@ -740,6 +726,20 @@ Property room_index; ! new in I7: storage for route-finding
 Property short_name 0; ! = I7 "printed name"
 Property vector; ! new in I7: storage for route-finding
 Property with_key; ! = I7 "matching key"
+
+Property IK_0; ! Instance count of the kind of the current object
+Property IK_1; ! These are instance counts within kinds K1, K2, ...
+Property IK_2; ! and it is efficient to declare the common ones with Property
+Property IK_4; ! since this results in a slightly smaller story file
+Property IK_5;
+Property IK_6;
+Property IK_8;
+
+Property IK1_link; ! These are for linked lists used to make searches faster
+Property IK2_link; ! and again it's memory-efficient to declare the common ones
+Property IK5_link; ! 
+Property IK6_link; ! 
+Property IK8_link; ! 
 
 Property articles; ! not used by I7, but an interesting hook in the parser
 Property grammar; ! not used by I7, but an interesting hook in the parser
