@@ -34,8 +34,10 @@ AC_DEFUN([AM_GCONF_SOURCE_2],
     GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
   fi
 
-  AC_ARG_WITH(gconf-source, 
-  [  --with-gconf-source=sourceaddress      Config database for installing schema files.],GCONF_SCHEMA_CONFIG_SOURCE="$withval",)
+  AC_ARG_WITH([gconf-source],
+	      AC_HELP_STRING([--with-gconf-source=sourceaddress],
+			     [Config database for installing schema files.]),
+	      [GCONF_SCHEMA_CONFIG_SOURCE="$withval"],)
 
   AC_SUBST(GCONF_SCHEMA_CONFIG_SOURCE)
   AC_MSG_RESULT([Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation])
@@ -44,8 +46,10 @@ AC_DEFUN([AM_GCONF_SOURCE_2],
     GCONF_SCHEMA_FILE_DIR='$(sysconfdir)/gconf/schemas'
   fi
 
-  AC_ARG_WITH(gconf-schema-file-dir, 
-  [  --with-gconf-schema-file-dir=dir        Directory for installing schema files.],GCONF_SCHEMA_FILE_DIR="$withval",)
+  AC_ARG_WITH([gconf-schema-file-dir],
+	      AC_HELP_STRING([--with-gconf-schema-file-dir=dir],
+			     [Directory for installing schema files.]),
+	      [GCONF_SCHEMA_FILE_DIR="$withval"],)
 
   AC_SUBST(GCONF_SCHEMA_FILE_DIR)
   AC_MSG_RESULT([Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files])
@@ -494,9 +498,10 @@ fi])
 
 
 dnl IT_PROG_INTLTOOL([MINIMUM-VERSION], [no-xml])
-# serial 36 IT_PROG_INTLTOOL
-AC_DEFUN([IT_PROG_INTLTOOL],
-[AC_PREREQ([2.50])dnl
+# serial 40 IT_PROG_INTLTOOL
+AC_DEFUN([IT_PROG_INTLTOOL], [
+AC_PREREQ([2.50])dnl
+AC_REQUIRE([AM_NLS])dnl
 
 case "$am__api_version" in
     1.[01234])
@@ -510,12 +515,19 @@ if test -n "$1"; then
     AC_MSG_CHECKING([for intltool >= $1])
 
     INTLTOOL_REQUIRED_VERSION_AS_INT=`echo $1 | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
-    INTLTOOL_APPLIED_VERSION=`awk -F\" '/\\$VERSION / { print $ 2; }' ${ac_aux_dir}/intltool-update.in`
-    [INTLTOOL_APPLIED_VERSION_AS_INT=`awk -F\" '/\\$VERSION / { split($ 2, VERSION, "."); print VERSION[1] * 1000 + VERSION[2] * 100 + VERSION[3];}' ${ac_aux_dir}/intltool-update.in`
+    INTLTOOL_APPLIED_VERSION=`intltool-update --version | head -1 | cut -d" " -f3`
+    [INTLTOOL_APPLIED_VERSION_AS_INT=`echo $INTLTOOL_APPLIED_VERSION | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
     ]
     AC_MSG_RESULT([$INTLTOOL_APPLIED_VERSION found])
     test "$INTLTOOL_APPLIED_VERSION_AS_INT" -ge "$INTLTOOL_REQUIRED_VERSION_AS_INT" ||
 	AC_MSG_ERROR([Your intltool is too old.  You need intltool $1 or later.])
+fi
+
+AC_PATH_PROG(INTLTOOL_UPDATE, [intltool-update])
+AC_PATH_PROG(INTLTOOL_MERGE, [intltool-merge])
+AC_PATH_PROG(INTLTOOL_EXTRACT, [intltool-extract])
+if test -z "$INTLTOOL_UPDATE" -o -z "$INTLTOOL_MERGE" -o -z "$INTLTOOL_EXTRACT"; then
+    AC_MSG_ERROR([The intltool scripts were not found. Please install intltool.])
 fi
 
   INTLTOOL_DESKTOP_RULE='%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@' 
@@ -562,6 +574,7 @@ AC_SUBST(INTLTOOL_POLICY_RULE)
 AC_PATH_PROG(XGETTEXT, xgettext)
 AC_PATH_PROG(MSGMERGE, msgmerge)
 AC_PATH_PROG(MSGFMT, msgfmt)
+AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
 if test -z "$XGETTEXT" -o -z "$MSGMERGE" -o -z "$MSGFMT"; then
     AC_MSG_ERROR([GNU gettext tools not found; required for intltool])
 fi
@@ -572,12 +585,7 @@ if test -z "$xgversion" -o -z "$mmversion" -o -z "$mfversion"; then
     AC_MSG_ERROR([GNU gettext tools not found; required for intltool])
 fi
 
-# Use the tools built into the package, not the ones that are installed.
-AC_SUBST(INTLTOOL_EXTRACT, '$(top_builddir)/intltool-extract')
-AC_SUBST(INTLTOOL_MERGE, '$(top_builddir)/intltool-merge')
-AC_SUBST(INTLTOOL_UPDATE, '$(top_builddir)/intltool-update')
-
-AC_PATH_PROG(INTLTOOL_PERL, perl)
+AC_PATH_PROG(INTLTOOL_PERL, [perl])
 if test -z "$INTLTOOL_PERL"; then
    AC_MSG_ERROR([perl not found; required for intltool])
 fi
@@ -623,42 +631,6 @@ AC_SUBST(DATADIRNAME)
 
 IT_PO_SUBDIR([po])
 
-dnl The following is very similar to
-dnl
-dnl	AC_CONFIG_FILES([intltool-extract intltool-merge intltool-update])
-dnl
-dnl with the following slight differences:
-dnl  - the *.in files are in ac_aux_dir,
-dnl  - if the file haven't changed upon reconfigure, it's not touched,
-dnl  - the evaluation of the third parameter enables a hack which computes
-dnl    the actual value of $libdir,
-dnl  - the user sees "executing intltool commands", instead of
-dnl    "creating intltool-extract" and such.
-dnl
-dnl Nothing crucial here, and we could use AC_CONFIG_FILES, if there were
-dnl a reason for it.
-
-AC_CONFIG_COMMANDS([intltool], [
-
-for file in intltool-extract intltool-merge intltool-update; do
-  sed -e "s|@INTLTOOL_EXTRACT@|`pwd`/intltool-extract|g" \
-      -e "s|@INTLTOOL_LIBDIR@|${INTLTOOL_LIBDIR}|g" \
-      -e "s|@INTLTOOL_PERL@|${INTLTOOL_PERL}|g" \
-	< ${ac_aux_dir}/${file}.in > ${file}.out
-  if cmp -s ${file} ${file}.out 2>/dev/null; then
-    rm -f ${file}.out
-  else
-    mv -f ${file}.out ${file}
-  fi
-  chmod ugo+x ${file}
-  chmod u+w ${file}
-done
-
-],
-[INTLTOOL_PERL='${INTLTOOL_PERL}' ac_aux_dir='${ac_aux_dir}'
-prefix="$prefix" exec_prefix="$exec_prefix" INTLTOOL_LIBDIR="$libdir" 
-INTLTOOL_EXTRACT='${INTLTOOL_EXTRACT}'])
-
 ])
 
 
@@ -674,6 +646,9 @@ dnl The following CONFIG_COMMANDS should be exetuted at the very end
 dnl of config.status.
 AC_CONFIG_COMMANDS_PRE([
   AC_CONFIG_COMMANDS([$1/stamp-it], [
+    if [ ! grep "^# INTLTOOL_MAKEFILE$" "$1/Makefile.in" ]; then
+       AC_MSG_ERROR([$1/Makefile.in.in was not created by intltoolize.])
+    fi
     rm -f "$1/stamp-it" "$1/stamp-it.tmp" "$1/POTFILES" "$1/Makefile.tmp"
     >"$1/stamp-it.tmp"
     [sed '/^#/d
@@ -682,27 +657,54 @@ AC_CONFIG_COMMANDS_PRE([
 	'"s|^|	$ac_top_srcdir/|" \
       "$srcdir/$1/POTFILES.in" | sed '$!s/$/ \\/' >"$1/POTFILES"
     ]
-    if test ! -f "$1/Makefile"; then
-      AC_MSG_ERROR([$1/Makefile is not ready.])
-    fi
-    mv "$1/Makefile" "$1/Makefile.tmp"
     [sed '/^POTFILES =/,/[^\\]$/ {
 		/^POTFILES =/!d
 		r $1/POTFILES
 	  }
-	 ' "$1/Makefile.tmp" >"$1/Makefile"]
+	 ' "$1/Makefile.in" >"$1/Makefile"]
     rm -f "$1/Makefile.tmp"
     mv "$1/stamp-it.tmp" "$1/stamp-it"
   ])
 ])dnl
 ])
 
-
 # deprecated macros
 AU_ALIAS([AC_PROG_INTLTOOL], [IT_PROG_INTLTOOL])
 # A hint is needed for aclocal from Automake <= 1.9.4:
 # AC_DEFUN([AC_PROG_INTLTOOL], ...)
 
+
+# nls.m4 serial 3 (gettext-0.15)
+dnl Copyright (C) 1995-2003, 2005-2006 Free Software Foundation, Inc.
+dnl This file is free software; the Free Software Foundation
+dnl gives unlimited permission to copy and/or distribute it,
+dnl with or without modifications, as long as this notice is preserved.
+dnl
+dnl This file can can be used in projects which are not available under
+dnl the GNU General Public License or the GNU Library General Public
+dnl License but which still want to provide support for the GNU gettext
+dnl functionality.
+dnl Please note that the actual code of the GNU gettext library is covered
+dnl by the GNU Library General Public License, and the rest of the GNU
+dnl gettext package package is covered by the GNU General Public License.
+dnl They are *not* in the public domain.
+
+dnl Authors:
+dnl   Ulrich Drepper <drepper@cygnus.com>, 1995-2000.
+dnl   Bruno Haible <haible@clisp.cons.org>, 2000-2003.
+
+AC_PREREQ(2.50)
+
+AC_DEFUN([AM_NLS],
+[
+  AC_MSG_CHECKING([whether NLS is requested])
+  dnl Default is enabled NLS
+  AC_ARG_ENABLE(nls,
+    [  --disable-nls           do not use Native Language Support],
+    USE_NLS=$enableval, USE_NLS=yes)
+  AC_MSG_RESULT($USE_NLS)
+  AC_SUBST(USE_NLS)
+])
 
 # pkg.m4 - Macros to locate and utilise pkg-config.            -*- Autoconf -*-
 # 
@@ -772,14 +774,16 @@ fi])
 # _PKG_CONFIG([VARIABLE], [COMMAND], [MODULES])
 # ---------------------------------------------
 m4_define([_PKG_CONFIG],
-[if test -n "$$1"; then
-    pkg_cv_[]$1="$$1"
- elif test -n "$PKG_CONFIG"; then
-    PKG_CHECK_EXISTS([$3],
-                     [pkg_cv_[]$1=`$PKG_CONFIG --[]$2 "$3" 2>/dev/null`],
-		     [pkg_failed=yes])
- else
-    pkg_failed=untried
+[if test -n "$PKG_CONFIG"; then
+    if test -n "$$1"; then
+        pkg_cv_[]$1="$$1"
+    else
+        PKG_CHECK_EXISTS([$3],
+                         [pkg_cv_[]$1=`$PKG_CONFIG --[]$2 "$3" 2>/dev/null`],
+			 [pkg_failed=yes])
+    fi
+else
+	pkg_failed=untried
 fi[]dnl
 ])# _PKG_CONFIG
 
@@ -823,9 +827,9 @@ See the pkg-config man page for more details.])
 if test $pkg_failed = yes; then
         _PKG_SHORT_ERRORS_SUPPORTED
         if test $_pkg_short_errors_supported = yes; then
-	        $1[]_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "$2" 2>&1`
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "$2"`
         else 
-	        $1[]_PKG_ERRORS=`$PKG_CONFIG --print-errors "$2" 2>&1`
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$$1[]_PKG_ERRORS" >&AS_MESSAGE_LOG_FD

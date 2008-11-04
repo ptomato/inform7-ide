@@ -727,6 +727,9 @@ PO_IN_DATADIR_FALSE
 POFILES
 POSUB
 MKINSTALLDIRS
+INTLTOOL_UPDATE
+INTLTOOL_MERGE
+INTLTOOL_EXTRACT
 INTLTOOL_DESKTOP_RULE
 INTLTOOL_DIRECTORY_RULE
 INTLTOOL_KEYS_RULE
@@ -747,9 +750,6 @@ INTLTOOL_THEME_RULE
 INTLTOOL_SERVICE_RULE
 INTLTOOL_POLICY_RULE
 MSGMERGE
-INTLTOOL_EXTRACT
-INTLTOOL_MERGE
-INTLTOOL_UPDATE
 INTLTOOL_PERL
 ALL_LINGUAS
 LIBOBJS
@@ -1353,12 +1353,15 @@ Optional Features:
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --disable-schemas-install	Disable the schemas installation
+  --disable-nls           do not use Native Language Support
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-gconf-source=sourceaddress      Config database for installing schema files.
-  --with-gconf-schema-file-dir=dir        Directory for installing schema files.
+  --with-gconf-source=sourceaddress
+                          Config database for installing schema files.
+  --with-gconf-schema-file-dir=dir
+                          Directory for installing schema files.
 
 Some influential environment variables:
   CC          C compiler command
@@ -6076,10 +6079,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GNOMEINFORM7" >&5
 echo $ECHO_N "checking for GNOMEINFORM7... $ECHO_C" >&6; }
 
-if test -n "$GNOMEINFORM7_CFLAGS"; then
-    pkg_cv_GNOMEINFORM7_CFLAGS="$GNOMEINFORM7_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GNOMEINFORM7_CFLAGS"; then
+        pkg_cv_GNOMEINFORM7_CFLAGS="$GNOMEINFORM7_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$pkg_modules\"") >&5
   ($PKG_CONFIG --exists --print-errors "$pkg_modules") 2>&5
   ac_status=$?
@@ -6089,13 +6093,15 @@ if test -n "$GNOMEINFORM7_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$GNOMEINFORM7_LIBS"; then
-    pkg_cv_GNOMEINFORM7_LIBS="$GNOMEINFORM7_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GNOMEINFORM7_LIBS"; then
+        pkg_cv_GNOMEINFORM7_LIBS="$GNOMEINFORM7_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"\$pkg_modules\"") >&5
   ($PKG_CONFIG --exists --print-errors "$pkg_modules") 2>&5
   ac_status=$?
@@ -6105,8 +6111,9 @@ if test -n "$GNOMEINFORM7_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6119,9 +6126,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GNOMEINFORM7_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "$pkg_modules" 2>&1`
+	        GNOMEINFORM7_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "$pkg_modules"`
         else
-	        GNOMEINFORM7_PKG_ERRORS=`$PKG_CONFIG --print-errors "$pkg_modules" 2>&1`
+	        GNOMEINFORM7_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$pkg_modules"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GNOMEINFORM7_PKG_ERRORS" >&5
@@ -6253,10 +6260,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for UUID" >&5
 echo $ECHO_N "checking for UUID... $ECHO_C" >&6; }
 
-if test -n "$UUID_CFLAGS"; then
-    pkg_cv_UUID_CFLAGS="$UUID_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UUID_CFLAGS"; then
+        pkg_cv_UUID_CFLAGS="$UUID_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"ossp-uuid\"") >&5
   ($PKG_CONFIG --exists --print-errors "ossp-uuid") 2>&5
   ac_status=$?
@@ -6266,13 +6274,15 @@ if test -n "$UUID_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$UUID_LIBS"; then
-    pkg_cv_UUID_LIBS="$UUID_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UUID_LIBS"; then
+        pkg_cv_UUID_LIBS="$UUID_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"ossp-uuid\"") >&5
   ($PKG_CONFIG --exists --print-errors "ossp-uuid") 2>&5
   ac_status=$?
@@ -6282,8 +6292,9 @@ if test -n "$UUID_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6296,9 +6307,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        UUID_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "ossp-uuid" 2>&1`
+	        UUID_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "ossp-uuid"`
         else
-	        UUID_PKG_ERRORS=`$PKG_CONFIG --print-errors "ossp-uuid" 2>&1`
+	        UUID_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "ossp-uuid"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$UUID_PKG_ERRORS" >&5
@@ -6310,10 +6321,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for UUID" >&5
 echo $ECHO_N "checking for UUID... $ECHO_C" >&6; }
 
-if test -n "$UUID_CFLAGS"; then
-    pkg_cv_UUID_CFLAGS="$UUID_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UUID_CFLAGS"; then
+        pkg_cv_UUID_CFLAGS="$UUID_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"uuid\"") >&5
   ($PKG_CONFIG --exists --print-errors "uuid") 2>&5
   ac_status=$?
@@ -6323,13 +6335,15 @@ if test -n "$UUID_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$UUID_LIBS"; then
-    pkg_cv_UUID_LIBS="$UUID_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UUID_LIBS"; then
+        pkg_cv_UUID_LIBS="$UUID_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"uuid\"") >&5
   ($PKG_CONFIG --exists --print-errors "uuid") 2>&5
   ac_status=$?
@@ -6339,8 +6353,9 @@ if test -n "$UUID_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6353,9 +6368,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        UUID_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "uuid" 2>&1`
+	        UUID_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "uuid"`
         else
-	        UUID_PKG_ERRORS=`$PKG_CONFIG --print-errors "uuid" 2>&1`
+	        UUID_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "uuid"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$UUID_PKG_ERRORS" >&5
@@ -6387,10 +6402,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for UUID" >&5
 echo $ECHO_N "checking for UUID... $ECHO_C" >&6; }
 
-if test -n "$UUID_CFLAGS"; then
-    pkg_cv_UUID_CFLAGS="$UUID_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UUID_CFLAGS"; then
+        pkg_cv_UUID_CFLAGS="$UUID_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"uuid\"") >&5
   ($PKG_CONFIG --exists --print-errors "uuid") 2>&5
   ac_status=$?
@@ -6400,13 +6416,15 @@ if test -n "$UUID_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$UUID_LIBS"; then
-    pkg_cv_UUID_LIBS="$UUID_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UUID_LIBS"; then
+        pkg_cv_UUID_LIBS="$UUID_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"uuid\"") >&5
   ($PKG_CONFIG --exists --print-errors "uuid") 2>&5
   ac_status=$?
@@ -6416,8 +6434,9 @@ if test -n "$UUID_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6430,9 +6449,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        UUID_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "uuid" 2>&1`
+	        UUID_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "uuid"`
         else
-	        UUID_PKG_ERRORS=`$PKG_CONFIG --print-errors "uuid" 2>&1`
+	        UUID_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "uuid"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$UUID_PKG_ERRORS" >&5
@@ -6609,10 +6628,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKHTML" >&5
 echo $ECHO_N "checking for GTKHTML... $ECHO_C" >&6; }
 
-if test -n "$GTKHTML_CFLAGS"; then
-    pkg_cv_GTKHTML_CFLAGS="$GTKHTML_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKHTML_CFLAGS"; then
+        pkg_cv_GTKHTML_CFLAGS="$GTKHTML_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgtkhtml-3.14\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgtkhtml-3.14") 2>&5
   ac_status=$?
@@ -6622,13 +6642,15 @@ if test -n "$GTKHTML_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$GTKHTML_LIBS"; then
-    pkg_cv_GTKHTML_LIBS="$GTKHTML_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKHTML_LIBS"; then
+        pkg_cv_GTKHTML_LIBS="$GTKHTML_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgtkhtml-3.14\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgtkhtml-3.14") 2>&5
   ac_status=$?
@@ -6638,8 +6660,9 @@ if test -n "$GTKHTML_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6652,9 +6675,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgtkhtml-3.14" 2>&1`
+	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgtkhtml-3.14"`
         else
-	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgtkhtml-3.14" 2>&1`
+	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgtkhtml-3.14"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKHTML_PKG_ERRORS" >&5
@@ -6669,10 +6692,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKHTML" >&5
 echo $ECHO_N "checking for GTKHTML... $ECHO_C" >&6; }
 
-if test -n "$GTKHTML_CFLAGS"; then
-    pkg_cv_GTKHTML_CFLAGS="$GTKHTML_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKHTML_CFLAGS"; then
+        pkg_cv_GTKHTML_CFLAGS="$GTKHTML_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgtkhtml-3.8\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgtkhtml-3.8") 2>&5
   ac_status=$?
@@ -6682,13 +6706,15 @@ if test -n "$GTKHTML_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$GTKHTML_LIBS"; then
-    pkg_cv_GTKHTML_LIBS="$GTKHTML_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKHTML_LIBS"; then
+        pkg_cv_GTKHTML_LIBS="$GTKHTML_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgtkhtml-3.8\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgtkhtml-3.8") 2>&5
   ac_status=$?
@@ -6698,8 +6724,9 @@ if test -n "$GTKHTML_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6712,9 +6739,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgtkhtml-3.8" 2>&1`
+	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgtkhtml-3.8"`
         else
-	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgtkhtml-3.8" 2>&1`
+	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgtkhtml-3.8"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKHTML_PKG_ERRORS" >&5
@@ -6749,10 +6776,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKHTML" >&5
 echo $ECHO_N "checking for GTKHTML... $ECHO_C" >&6; }
 
-if test -n "$GTKHTML_CFLAGS"; then
-    pkg_cv_GTKHTML_CFLAGS="$GTKHTML_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKHTML_CFLAGS"; then
+        pkg_cv_GTKHTML_CFLAGS="$GTKHTML_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgtkhtml-3.8\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgtkhtml-3.8") 2>&5
   ac_status=$?
@@ -6762,13 +6790,15 @@ if test -n "$GTKHTML_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$GTKHTML_LIBS"; then
-    pkg_cv_GTKHTML_LIBS="$GTKHTML_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKHTML_LIBS"; then
+        pkg_cv_GTKHTML_LIBS="$GTKHTML_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgtkhtml-3.8\"") >&5
   ($PKG_CONFIG --exists --print-errors "libgtkhtml-3.8") 2>&5
   ac_status=$?
@@ -6778,8 +6808,9 @@ if test -n "$GTKHTML_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6792,9 +6823,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libgtkhtml-3.8" 2>&1`
+	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgtkhtml-3.8"`
         else
-	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --print-errors "libgtkhtml-3.8" 2>&1`
+	        GTKHTML_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgtkhtml-3.8"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKHTML_PKG_ERRORS" >&5
@@ -6837,10 +6868,11 @@ pkg_failed=no
 { echo "$as_me:$LINENO: checking for GTKTERP" >&5
 echo $ECHO_N "checking for GTKTERP... $ECHO_C" >&6; }
 
-if test -n "$GTKTERP_CFLAGS"; then
-    pkg_cv_GTKTERP_CFLAGS="$GTKTERP_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKTERP_CFLAGS"; then
+        pkg_cv_GTKTERP_CFLAGS="$GTKTERP_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1") 2>&5
   ac_status=$?
@@ -6850,13 +6882,15 @@ if test -n "$GTKTERP_CFLAGS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
-if test -n "$GTKTERP_LIBS"; then
-    pkg_cv_GTKTERP_LIBS="$GTKTERP_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GTKTERP_LIBS"; then
+        pkg_cv_GTKTERP_LIBS="$GTKTERP_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
     { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1\"") >&5
   ($PKG_CONFIG --exists --print-errors "gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1") 2>&5
   ac_status=$?
@@ -6866,8 +6900,9 @@ if test -n "$GTKTERP_LIBS"; then
 else
   pkg_failed=yes
 fi
- else
-    pkg_failed=untried
+    fi
+else
+	pkg_failed=untried
 fi
 
 
@@ -6880,9 +6915,9 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        GTKTERP_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1" 2>&1`
+	        GTKTERP_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1"`
         else
-	        GTKTERP_PKG_ERRORS=`$PKG_CONFIG --print-errors "gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1" 2>&1`
+	        GTKTERP_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1"`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTKTERP_PKG_ERRORS" >&5
@@ -8485,6 +8520,21 @@ echo "${ECHO_T}$LINGUAS" >&6; }
 	< $srcdir/po/POTFILES.in > po/POTFILES
 
 
+  { echo "$as_me:$LINENO: checking whether NLS is requested" >&5
+echo $ECHO_N "checking whether NLS is requested... $ECHO_C" >&6; }
+    # Check whether --enable-nls was given.
+if test "${enable_nls+set}" = set; then
+  enableval=$enable_nls; USE_NLS=$enableval
+else
+  USE_NLS=yes
+fi
+
+  { echo "$as_me:$LINENO: result: $USE_NLS" >&5
+echo "${ECHO_T}$USE_NLS" >&6; }
+
+
+
+
 case "$am__api_version" in
     1.01234)
 	{ { echo "$as_me:$LINENO: error: Automake 1.5 or newer is required to use intltool" >&5
@@ -8500,14 +8550,140 @@ if test -n "0.35.0"; then
 echo $ECHO_N "checking for intltool >= 0.35.0... $ECHO_C" >&6; }
 
     INTLTOOL_REQUIRED_VERSION_AS_INT=`echo 0.35.0 | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
-    INTLTOOL_APPLIED_VERSION=`awk -F\" '/\\$VERSION / { print $ 2; }' ${ac_aux_dir}/intltool-update.in`
-    INTLTOOL_APPLIED_VERSION_AS_INT=`awk -F\" '/\\$VERSION / { split($ 2, VERSION, "."); print VERSION[1] * 1000 + VERSION[2] * 100 + VERSION[3];}' ${ac_aux_dir}/intltool-update.in`
+    INTLTOOL_APPLIED_VERSION=`intltool-update --version | head -1 | cut -d" " -f3`
+    INTLTOOL_APPLIED_VERSION_AS_INT=`echo $INTLTOOL_APPLIED_VERSION | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
 
     { echo "$as_me:$LINENO: result: $INTLTOOL_APPLIED_VERSION found" >&5
 echo "${ECHO_T}$INTLTOOL_APPLIED_VERSION found" >&6; }
     test "$INTLTOOL_APPLIED_VERSION_AS_INT" -ge "$INTLTOOL_REQUIRED_VERSION_AS_INT" ||
 	{ { echo "$as_me:$LINENO: error: Your intltool is too old.  You need intltool 0.35.0 or later." >&5
 echo "$as_me: error: Your intltool is too old.  You need intltool 0.35.0 or later." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+# Extract the first word of "intltool-update", so it can be a program name with args.
+set dummy intltool-update; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_INTLTOOL_UPDATE+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $INTLTOOL_UPDATE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_INTLTOOL_UPDATE="$INTLTOOL_UPDATE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_INTLTOOL_UPDATE="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+INTLTOOL_UPDATE=$ac_cv_path_INTLTOOL_UPDATE
+if test -n "$INTLTOOL_UPDATE"; then
+  { echo "$as_me:$LINENO: result: $INTLTOOL_UPDATE" >&5
+echo "${ECHO_T}$INTLTOOL_UPDATE" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+# Extract the first word of "intltool-merge", so it can be a program name with args.
+set dummy intltool-merge; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_INTLTOOL_MERGE+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $INTLTOOL_MERGE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_INTLTOOL_MERGE="$INTLTOOL_MERGE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_INTLTOOL_MERGE="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+INTLTOOL_MERGE=$ac_cv_path_INTLTOOL_MERGE
+if test -n "$INTLTOOL_MERGE"; then
+  { echo "$as_me:$LINENO: result: $INTLTOOL_MERGE" >&5
+echo "${ECHO_T}$INTLTOOL_MERGE" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+# Extract the first word of "intltool-extract", so it can be a program name with args.
+set dummy intltool-extract; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_INTLTOOL_EXTRACT+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $INTLTOOL_EXTRACT in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_INTLTOOL_EXTRACT="$INTLTOOL_EXTRACT" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_INTLTOOL_EXTRACT="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+INTLTOOL_EXTRACT=$ac_cv_path_INTLTOOL_EXTRACT
+if test -n "$INTLTOOL_EXTRACT"; then
+  { echo "$as_me:$LINENO: result: $INTLTOOL_EXTRACT" >&5
+echo "${ECHO_T}$INTLTOOL_EXTRACT" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test -z "$INTLTOOL_UPDATE" -o -z "$INTLTOOL_MERGE" -o -z "$INTLTOOL_EXTRACT"; then
+    { { echo "$as_me:$LINENO: error: The intltool scripts were not found. Please install intltool." >&5
+echo "$as_me: error: The intltool scripts were not found. Please install intltool." >&2;}
    { (exit 1); exit 1; }; }
 fi
 
@@ -8672,6 +8848,47 @@ echo "${ECHO_T}no" >&6; }
 fi
 
 
+# Extract the first word of "gmsgfmt", so it can be a program name with args.
+set dummy gmsgfmt; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_GMSGFMT+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $GMSGFMT in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GMSGFMT="$GMSGFMT" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_GMSGFMT="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_GMSGFMT" && ac_cv_path_GMSGFMT="$MSGFMT"
+  ;;
+esac
+fi
+GMSGFMT=$ac_cv_path_GMSGFMT
+if test -n "$GMSGFMT"; then
+  { echo "$as_me:$LINENO: result: $GMSGFMT" >&5
+echo "${ECHO_T}$GMSGFMT" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
 if test -z "$XGETTEXT" -o -z "$MSGMERGE" -o -z "$MSGFMT"; then
     { { echo "$as_me:$LINENO: error: GNU gettext tools not found; required for intltool" >&5
 echo "$as_me: error: GNU gettext tools not found; required for intltool" >&2;}
@@ -8685,14 +8902,6 @@ if test -z "$xgversion" -o -z "$mmversion" -o -z "$mfversion"; then
 echo "$as_me: error: GNU gettext tools not found; required for intltool" >&2;}
    { (exit 1); exit 1; }; }
 fi
-
-# Use the tools built into the package, not the ones that are installed.
-INTLTOOL_EXTRACT='$(top_builddir)/intltool-extract'
-
-INTLTOOL_MERGE='$(top_builddir)/intltool-merge'
-
-INTLTOOL_UPDATE='$(top_builddir)/intltool-update'
-
 
 # Extract the first word of "perl", so it can be a program name with args.
 set dummy perl; ac_word=$2
@@ -8903,10 +9112,6 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
 fi
 
 
-
-
-
-ac_config_commands="$ac_config_commands intltool"
 
 
 
@@ -9514,9 +9719,6 @@ cat >>$CONFIG_STATUS <<_ACEOF
 #
 AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"
 
-INTLTOOL_PERL='${INTLTOOL_PERL}' ac_aux_dir='${ac_aux_dir}'
-prefix="$prefix" exec_prefix="$exec_prefix" INTLTOOL_LIBDIR="$libdir"
-INTLTOOL_EXTRACT='${INTLTOOL_EXTRACT}'
 
 _ACEOF
 
@@ -9529,7 +9731,6 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "default-1") CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
-    "intltool") CONFIG_COMMANDS="$CONFIG_COMMANDS intltool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/gtkterp/Makefile") CONFIG_FILES="$CONFIG_FILES src/gtkterp/Makefile" ;;
@@ -9773,6 +9974,9 @@ PO_IN_DATADIR_FALSE!$PO_IN_DATADIR_FALSE$ac_delim
 POFILES!$POFILES$ac_delim
 POSUB!$POSUB$ac_delim
 MKINSTALLDIRS!$MKINSTALLDIRS$ac_delim
+INTLTOOL_UPDATE!$INTLTOOL_UPDATE$ac_delim
+INTLTOOL_MERGE!$INTLTOOL_MERGE$ac_delim
+INTLTOOL_EXTRACT!$INTLTOOL_EXTRACT$ac_delim
 INTLTOOL_DESKTOP_RULE!$INTLTOOL_DESKTOP_RULE$ac_delim
 INTLTOOL_DIRECTORY_RULE!$INTLTOOL_DIRECTORY_RULE$ac_delim
 INTLTOOL_KEYS_RULE!$INTLTOOL_KEYS_RULE$ac_delim
@@ -9793,9 +9997,6 @@ INTLTOOL_THEME_RULE!$INTLTOOL_THEME_RULE$ac_delim
 INTLTOOL_SERVICE_RULE!$INTLTOOL_SERVICE_RULE$ac_delim
 INTLTOOL_POLICY_RULE!$INTLTOOL_POLICY_RULE$ac_delim
 MSGMERGE!$MSGMERGE$ac_delim
-INTLTOOL_EXTRACT!$INTLTOOL_EXTRACT$ac_delim
-INTLTOOL_MERGE!$INTLTOOL_MERGE$ac_delim
-INTLTOOL_UPDATE!$INTLTOOL_UPDATE$ac_delim
 INTLTOOL_PERL!$INTLTOOL_PERL$ac_delim
 ALL_LINGUAS!$ALL_LINGUAS$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
@@ -10372,24 +10573,12 @@ done
     "default-1":C) case "$CONFIG_FILES" in *po/Makefile.in*)
         sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile
       esac ;;
-    "intltool":C)
-
-for file in intltool-extract intltool-merge intltool-update; do
-  sed -e "s|@INTLTOOL_EXTRACT@|`pwd`/intltool-extract|g" \
-      -e "s|@INTLTOOL_LIBDIR@|${INTLTOOL_LIBDIR}|g" \
-      -e "s|@INTLTOOL_PERL@|${INTLTOOL_PERL}|g" \
-	< ${ac_aux_dir}/${file}.in > ${file}.out
-  if cmp -s ${file} ${file}.out 2>/dev/null; then
-    rm -f ${file}.out
-  else
-    mv -f ${file}.out ${file}
-  fi
-  chmod ugo+x ${file}
-  chmod u+w ${file}
-done
-
- ;;
     "po/stamp-it":C)
+    if  ! grep "^# INTLTOOL_MAKEFILE$" "po/Makefile.in" ; then
+       { { echo "$as_me:$LINENO: error: po/Makefile.in.in was not created by intltoolize." >&5
+echo "$as_me: error: po/Makefile.in.in was not created by intltoolize." >&2;}
+   { (exit 1); exit 1; }; }
+    fi
     rm -f "po/stamp-it" "po/stamp-it.tmp" "po/POTFILES" "po/Makefile.tmp"
     >"po/stamp-it.tmp"
     sed '/^#/d
@@ -10398,17 +10587,11 @@ done
 	'"s|^|	$ac_top_srcdir/|" \
       "$srcdir/po/POTFILES.in" | sed '$!s/$/ \\/' >"po/POTFILES"
 
-    if test ! -f "po/Makefile"; then
-      { { echo "$as_me:$LINENO: error: po/Makefile is not ready." >&5
-echo "$as_me: error: po/Makefile is not ready." >&2;}
-   { (exit 1); exit 1; }; }
-    fi
-    mv "po/Makefile" "po/Makefile.tmp"
     sed '/^POTFILES =/,/[^\\]$/ {
 		/^POTFILES =/!d
 		r po/POTFILES
 	  }
-	 ' "po/Makefile.tmp" >"po/Makefile"
+	 ' "po/Makefile.in" >"po/Makefile"
     rm -f "po/Makefile.tmp"
     mv "po/stamp-it.tmp" "po/stamp-it"
    ;;

@@ -37,6 +37,9 @@
 
 #define I_LIKE_SKEIN
 
+/* This function is now in GTK 2.14 */
+#if !GTK_CHECK_VERSION(2,14,0)
+
 /* The following function is from Damian Iverleigh's patch to GtkContainer,
 http://mail.gnome.org/archives/gtk-devel-list/2001-October/msg00516.html */
 
@@ -58,6 +61,8 @@ gtk_container_get_focus_child (GtkContainer *container)
 
     return container->focus_child;
 }
+
+#endif /* GTK_CHECK_VERSION(2,14,0) */
 
 /* Get a pointer to the widget within the application that has the focus */
 GtkWidget *
