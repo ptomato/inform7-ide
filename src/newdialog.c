@@ -172,7 +172,7 @@ on_new_druid_realize(GtkWidget *widget, gpointer data)
     GtkTreePath *default_path = gtk_tree_path_new_from_indices(0, 0, -1);
     gtk_tree_view_expand_to_path(tree, default_path);
     gtk_tree_selection_select_path(select, default_path);
-    g_free(default_path);
+    gtk_tree_path_free(default_path);
 }
 
 gboolean
