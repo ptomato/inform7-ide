@@ -18,6 +18,8 @@
 
 static void
 put_text(window_textbuffer_t *dwin, char *buf, int len, int pos, int oldlen);
+static void
+put_text_uni(window_textbuffer_t *dwin, glui32 *buf, int len, int pos, int oldlen);
 static glui32
 put_picture(window_textbuffer_t *dwin, picture_t *pic, glui32 align);
 
@@ -81,8 +83,8 @@ window_textbuffer_t *win_textbuffer_create(window_t *win)
         dwin->lines[i].rpic = 0;
         dwin->lines[i].len = 0;
         dwin->lines[i].newline = 0;
-        memset(dwin->lines[i].chars, ' ', TBLINELEN);
-        memset(dwin->lines[i].attrs, style_Normal, TBLINELEN);
+        memset(dwin->lines[i].chars, ' ', sizeof dwin->lines[i].chars);
+        memset(dwin->lines[i].attrs, style_Normal, sizeof dwin->lines[i].attrs);
     }
 
     memcpy(dwin->styles, gli_tstyles, sizeof gli_tstyles);
@@ -104,17 +106,19 @@ void win_textbuffer_destroy(window_textbuffer_t *dwin)
     free(dwin);
 }
 
+/* temporary work space for reflow() */
+attr_t attrbuf[TBLINELEN*SCROLLBACK];
+glui32 charbuf[TBLINELEN*SCROLLBACK];
+int alignbuf[SCROLLBACK];
+picture_t *pictbuf[SCROLLBACK];
+int offsetbuf[SCROLLBACK];
+
 static void reflow(window_t *win)
 {
     window_textbuffer_t *dwin = win->data;
-    unsigned char attrbuf[TBLINELEN*SCROLLBACK];
-    unsigned char charbuf[TBLINELEN*SCROLLBACK];
-    int alignbuf[SCROLLBACK];
-    picture_t *pictbuf[SCROLLBACK];
-    int offsetbuf[SCROLLBACK];
     int inputbyte = -1;
-    int curattr = -1;
-    int oldstyle;
+    attr_t curattr;
+    attr_t oldattr;
     int i, k, p;
     int x;
 
@@ -125,7 +129,8 @@ static void reflow(window_t *win)
 
     /* copy text to temp buffers */
 
-    oldstyle = win->style;
+    oldattr = win->attr;
+    attrset(&curattr, style_Normal);
 
     x = 0;
     p = 0;
@@ -180,7 +185,7 @@ static void reflow(window_t *win)
     {
         if (i == inputbyte)
             break;
-        win->style = attrbuf[i];
+        win->attr = attrbuf[i];
 
         if (offsetbuf[x] == i)
         {
@@ -189,7 +194,7 @@ static void reflow(window_t *win)
             x ++;
         }
 
-        win_textbuffer_putchar(win, charbuf[i]);
+        win_textbuffer_putchar_uni(win, charbuf[i]);
     }
 
     /* terribly sorry about this... */
@@ -199,11 +204,11 @@ static void reflow(window_t *win)
     if (inputbyte != -1)
     {
         dwin->infence = dwin->numchars;
-        put_text(dwin, charbuf + inputbyte, p - inputbyte, dwin->numchars, 0);
+        put_text_uni(dwin, charbuf + inputbyte, p - inputbyte, dwin->numchars, 0);
         dwin->incurs = dwin->numchars;
     }
 
-    win->style = oldstyle;
+    win->attr = oldattr;
 
     touchscroll(dwin);
 }
@@ -242,7 +247,7 @@ void win_textbuffer_rearrange(window_t *win, rect_t *box)
             dwin->scrollpos = dwin->scrollmax - dwin->height + 1;
         if (dwin->scrollpos < 0)
             dwin->scrollpos = 0;
-        /* Scroll right to the bottom if GarglkPlug is not in interactive mode */
+		/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
         if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
             dwin->scrollpos = 0;
         
@@ -251,7 +256,7 @@ void win_textbuffer_rearrange(window_t *win, rect_t *box)
 }
 
 static int calcwidth(window_textbuffer_t *dwin,
-        unsigned char *chars, unsigned char *attrs,
+        glui32 *chars, attr_t *attrs,
         int numchars, int spw)
 {
     int w = 0;
@@ -260,15 +265,15 @@ static int calcwidth(window_textbuffer_t *dwin,
     a = 0;
     for (b = 0; b < numchars; b++)
     {
-        if (attrs[a] != attrs[b])
+        if (!attrequal(&attrs[a], &attrs[b]))
         {
-            w += gli_string_width(dwin->styles[attrs[a]].font,
+            w += gli_string_width_uni(attrfont(dwin->styles, &attrs[a]),
                     chars + a, b - a, spw);
             a = b;
         }
     }
 
-    w += gli_string_width(dwin->styles[attrs[a]].font,
+    w += gli_string_width_uni(attrfont(dwin->styles, &attrs[a]),
             chars + a, b - a, spw);
 
     return w;
@@ -277,12 +282,12 @@ static int calcwidth(window_textbuffer_t *dwin,
 void win_textbuffer_redraw(window_t *win)
 {
     window_textbuffer_t *dwin = win->data;
-    int drawmore = win->line_request || win->char_request;
+    int drawmore = win->line_request || win->char_request || win->line_request_uni || win->char_request_uni;
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         drawmore = 0;
-    tbline_t *ln;
+	tbline_t *ln;
     int linelen;
-    int nsp, spw;
+    int nsp, spw, pw;
     int x0, y0, x1, y1;
     int x, y, w;
     int a, b;
@@ -294,13 +299,15 @@ void win_textbuffer_redraw(window_t *win)
     x1 = (win->bbox.x1 - gli_tmarginx - gli_scroll_width) * GLI_SUBPIX;
     y0 = win->bbox.y0 + gli_tmarginy;
 
+    pw = x1 - x0 - 2 * GLI_SUBPIX;
+
 //    if (dwin->scrollmax && dwin->scrollmax < dwin->height)
 //        y0 -= (dwin->height - dwin->scrollmax) * gli_leading;
-    
-    /* Scroll right to the bottom if GarglkPlug is not in interactive mode */
+
+	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
-    
+	
     for (i = dwin->scrollpos; i < dwin->height + dwin->scrollpos; i++)
     {
         ln = dwin->lines + i;
@@ -315,9 +322,16 @@ void win_textbuffer_redraw(window_t *win)
         if (drawmore && i == dwin->scrollpos && i > 0)
             continue;
 
-        /* kill spaces at the end */
         linelen = ln->len;
-        while (i > 0 && linelen > 1 && ln->chars[linelen-1] == ' ')
+
+        /* kill spaces at the end unless they're a different color*/
+        while (i > 0 && linelen > 1 && ln->chars[linelen-1] == ' ' 
+            && dwin->styles[ln->attrs[linelen-1].style].bg == gli_window_color 
+            && !dwin->styles[ln->attrs[linelen-1].style].reverse)
+                linelen --;
+
+        /* kill characters that would overwrite the scroll bar */
+        while (linelen > 1 && calcwidth(dwin, ln->chars, ln->attrs, linelen, -1) >= pw)
             linelen --;
 
         /* top of line */
@@ -354,23 +368,23 @@ void win_textbuffer_redraw(window_t *win)
         a = 0;
         for (b = 0; b < linelen; b++)
         {
-            if (ln->attrs[a] != ln->attrs[b])
+            if (!attrequal(&ln->attrs[a], &ln->attrs[b]))
             {
-                w = gli_string_width(dwin->styles[ln->attrs[a]].font,
+                w = gli_string_width_uni(attrfont(dwin->styles, &ln->attrs[a]),
                         ln->chars + a, b - a, spw);
                 gli_draw_rect(x/GLI_SUBPIX, y,
                         w/GLI_SUBPIX, gli_leading,
-                        dwin->styles[ln->attrs[a]].bg);
+                        attrbg(dwin->styles, &ln->attrs[a]));
                 x += w;
                 a = b;
             }
         }
 
-        w = gli_string_width(dwin->styles[ln->attrs[a]].font,
+        w = gli_string_width_uni(attrfont(dwin->styles, &ln->attrs[a]),
                 ln->chars + a, b - a, spw);
         gli_draw_rect(x/GLI_SUBPIX, y,
                 w/GLI_SUBPIX, gli_leading,
-                dwin->styles[ln->attrs[a]].bg);
+                attrbg(dwin->styles, &ln->attrs[a]));
         x += w;
 
         gli_draw_rect(x/GLI_SUBPIX, y,
@@ -381,10 +395,11 @@ void win_textbuffer_redraw(window_t *win)
          * draw caret
          */
 
-        if (gli_focuswin == win && i == 0 && win->line_request)
+        if (gli_focuswin == win && i == 0 && (win->line_request || win->line_request_uni))
         {
             w = calcwidth(dwin, dwin->chars, dwin->attrs, dwin->incurs, spw);
-            gli_draw_caret(x0 + SLOP + ln->lm + w, y + gli_baseline);
+            if (w < pw - gli_caret_shape * 2 * GLI_SUBPIX)
+                gli_draw_caret(x0 + SLOP + ln->lm + w, y + gli_baseline);
         }
 
         /*
@@ -395,18 +410,18 @@ void win_textbuffer_redraw(window_t *win)
         a = 0;
         for (b = 0; b < linelen; b++)
         {
-            if (ln->attrs[a] != ln->attrs[b])
+            if (!attrequal(&ln->attrs[a], &ln->attrs[b]))
             {
-                x = gli_draw_string(x, y + gli_baseline,
-                        dwin->styles[ln->attrs[a]].font,
-                        dwin->styles[ln->attrs[a]].fg,
+                x = gli_draw_string_uni(x, y + gli_baseline,
+                        attrfont(dwin->styles, &ln->attrs[a]),
+                        attrfg(dwin->styles, &ln->attrs[a]),
                         ln->chars + a, b - a, spw);
                 a = b;
             }
         }
-        gli_draw_string(x, y + gli_baseline,
-                dwin->styles[ln->attrs[a]].font,
-                dwin->styles[ln->attrs[a]].fg,
+        gli_draw_string_uni(x, y + gli_baseline,
+                attrfont(dwin->styles, &ln->attrs[a]),
+                attrfg(dwin->styles, &ln->attrs[a]),
                 ln->chars + a, linelen - a, spw);
     }
 
@@ -517,10 +532,10 @@ static void scrolloneline(window_textbuffer_t *dwin, int forced)
     if (dwin->scrollpos < 0)
         dwin->scrollpos = 0;
 
-    /* Scroll right to the bottom if GarglkPlug is not in interactive mode */
+	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
-    
+    	
     dwin->scrollmax = MIN(dwin->scrollmax, SCROLLBACK-1);
     dwin->lastseen = MIN(dwin->lastseen, SCROLLBACK-1);
 
@@ -559,8 +574,8 @@ static void scrolloneline(window_textbuffer_t *dwin, int forced)
     dwin->lines[0].rm = dwin->radjw;
     dwin->lines[0].lpic = NULL;
     dwin->lines[0].rpic = NULL;
-    memset(dwin->chars, ' ', TBLINELEN);
-    memset(dwin->attrs, style_Normal, TBLINELEN);
+    memset(dwin->chars, ' ', TBLINELEN * 4);
+    memset(dwin->attrs, 0, TBLINELEN * sizeof(attr_t));
 
     dwin->numchars = 0;
 
@@ -579,15 +594,18 @@ static void put_text(window_textbuffer_t *dwin, char *buf, int len, int pos, int
     {
         memmove(dwin->chars + pos + len,
                 dwin->chars + pos + oldlen,
-                dwin->numchars - (pos + oldlen));
+                (dwin->numchars - (pos + oldlen)) * 4);
         memmove(dwin->attrs + pos + len,
                 dwin->attrs + pos + oldlen,
-                dwin->numchars - (pos + oldlen));
+                (dwin->numchars - (pos + oldlen)) * sizeof(attr_t));
     }
     if (len > 0)
     {
-        memmove(dwin->chars + pos, buf, len);
-        memset(dwin->attrs + pos, style_Input, len);
+        int i;
+        for (i = 0; i < len; i++) {
+            dwin->chars[pos + i] = buf[i];
+            attrset(&dwin->attrs[pos + i], style_Input);
+        }
     }
     dwin->numchars += diff;
 
@@ -602,11 +620,47 @@ static void put_text(window_textbuffer_t *dwin, char *buf, int len, int pos, int
     touch(dwin, 0);
 }
 
-void win_textbuffer_putchar(window_t *win, char ch)
+static void put_text_uni(window_textbuffer_t *dwin, glui32 *buf, int len, int pos, int oldlen)
+{
+    int diff = len - oldlen;
+
+    if (dwin->numchars + diff >= TBLINELEN)
+        return;
+
+    if (diff != 0 && pos + oldlen < dwin->numchars)
+    {
+        memmove(dwin->chars + pos + len,
+                dwin->chars + pos + oldlen,
+                (dwin->numchars - (pos + oldlen)) * 4);
+        memmove(dwin->attrs + pos + len,
+                dwin->attrs + pos + oldlen,
+                (dwin->numchars - (pos + oldlen)) * sizeof(attr_t));
+    }
+    if (len > 0)
+    {
+        int i;
+        memmove(dwin->chars + pos, buf, len * 4);
+        for (i = 0; i < len; i++)
+            attrset(&dwin->attrs[pos+i], style_Input);
+    }
+    dwin->numchars += diff;
+
+    if (dwin->inbuf)
+    {
+        if (dwin->incurs >= pos + oldlen)
+            dwin->incurs += diff;
+        else if (dwin->incurs >= pos)
+            dwin->incurs = pos + len;
+    }
+
+    touch(dwin, 0);
+}
+
+void win_textbuffer_putchar_uni(window_t *win, glui32 ch)
 {
     window_textbuffer_t *dwin = win->data;
-    unsigned char bchars[TBLINELEN];
-    unsigned char battrs[TBLINELEN];
+    glui32 bchars[TBLINELEN];
+    attr_t battrs[TBLINELEN];
     int pw;
     int bpoint;
     int saved;
@@ -621,7 +675,7 @@ void win_textbuffer_putchar(window_t *win, char ch)
     pw = pw - 2 * SLOP - dwin->radjw - dwin->ladjw;
 
     /* oops ... overflow */
-    if (dwin->numchars + 1 >= TBLINELEN) 
+    if (dwin->numchars + 1 >= TBLINELEN)
         scrolloneline(dwin, 0);
 
     if (ch == '\n')
@@ -654,7 +708,7 @@ void win_textbuffer_putchar(window_t *win, char ch)
         }
     }
 
-    if (gli_conf_quotes && win->style != style_Preformatted)
+    if (gli_conf_quotes && win->attr.style != style_Preformatted)
     {
         if (ch == '-')
         {
@@ -675,7 +729,9 @@ void win_textbuffer_putchar(window_t *win, char ch)
             dwin->dashed = 0;
     }
 
-    if (gli_conf_spaces && win->style != style_Preformatted)
+    if (gli_conf_spaces && win->attr.style != style_Preformatted 
+        && dwin->styles[win->attr.style].bg == gli_window_color 
+        && !dwin->styles[win->attr.style].reverse)
     {
         /* turn (period space space) into (period space) */
         if (gli_conf_spaces == 1)
@@ -703,7 +759,7 @@ void win_textbuffer_putchar(window_t *win, char ch)
             else if (ch != ' ' && dwin->spaced == 2)
             {
                 dwin->spaced = 0;
-                win_textbuffer_putchar(win, ' ');
+                win_textbuffer_putchar_uni(win, ' ');
             }
             else
                 dwin->spaced = 0;
@@ -711,12 +767,14 @@ void win_textbuffer_putchar(window_t *win, char ch)
     }
 
     dwin->chars[dwin->numchars] = ch;
-    dwin->attrs[dwin->numchars] = win->style;
+    dwin->attrs[dwin->numchars] = win->attr;
     dwin->numchars++;
 
     /* kill spaces at the end for line width calculation */
     linelen = dwin->numchars;
-    while (linelen > 1 && dwin->chars[linelen-1] == ' ')
+    while (linelen > 1 && dwin->chars[linelen-1] == ' ' 
+        && dwin->styles[dwin->attrs[linelen-1].style].bg == gli_window_color 
+        && !dwin->styles[dwin->attrs[linelen-1].style].reverse)
         linelen --;
 
     if (calcwidth(dwin, dwin->chars, dwin->attrs, linelen, -1) >= pw)
@@ -732,18 +790,30 @@ void win_textbuffer_putchar(window_t *win, char ch)
 
         saved = dwin->numchars - bpoint;
 
-        memcpy(bchars, dwin->chars + bpoint, saved);
-        memcpy(battrs, dwin->attrs + bpoint, saved);
+        memcpy(bchars, dwin->chars + bpoint, saved * 4);
+        memcpy(battrs, dwin->attrs + bpoint, saved * sizeof(attr_t));
         dwin->numchars = bpoint;
 
         scrolloneline(dwin, 0);
 
-        memcpy(dwin->chars, bchars, saved);
-        memcpy(dwin->attrs, battrs, saved);
+        memcpy(dwin->chars, bchars, saved * 4);
+        memcpy(dwin->attrs, battrs, saved * sizeof(attr_t));
         dwin->numchars = saved;
     }
 
     touch(dwin, 0);
+}
+
+int win_textbuffer_unputchar_uni(window_t *win, glui32 ch)
+{
+    window_textbuffer_t *dwin = win->data;
+    if (dwin->numchars > 0 && dwin->chars[dwin->numchars - 1] == ch)
+    {
+        dwin->numchars--;
+        touch(dwin, 0);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 void win_textbuffer_clear(window_t *win)
@@ -794,22 +864,22 @@ void win_textbuffer_init_line(window_t *win, char *buf, int maxlen, int initlen)
 {
     window_textbuffer_t *dwin = win->data;
     int pw;
-    
+
 #ifdef USETTS
     gli_speak_tts("\n", 1, 0);
 #endif
 
     /* because '>' prompt is ugly without extra space */
     if (dwin->numchars && dwin->chars[dwin->numchars-1] == '>')
-        win_textbuffer_putchar(win, ' ');
+        win_textbuffer_putchar_uni(win, ' ');
     if (dwin->numchars && dwin->chars[dwin->numchars-1] == '?')
-        win_textbuffer_putchar(win, ' ');
+        win_textbuffer_putchar_uni(win, ' ');
 
     /* make sure we have some space left for typing... */
     pw = (win->bbox.x1 - win->bbox.x0 - gli_tmarginx * 2) * GLI_SUBPIX;
     pw = pw - 2 * SLOP - dwin->radjw + dwin->ladjw;
     if (calcwidth(dwin, dwin->chars, dwin->attrs, dwin->numchars, -1) >= pw * 3 / 4)
-        win_textbuffer_putchar(win, '\n');
+        win_textbuffer_putchar_uni(win, '\n');
 
     dwin->lastseen = 0;
 
@@ -817,8 +887,8 @@ void win_textbuffer_init_line(window_t *win, char *buf, int maxlen, int initlen)
     dwin->inmax = maxlen;
     dwin->infence = dwin->numchars;
     dwin->incurs = dwin->numchars;
-    dwin->origstyle = win->style;
-    win->style = style_Input;
+    dwin->origattr = win->attr;
+    attrset(&win->attr, style_Input);
 
     dwin->historypos = dwin->historypresent;
 
@@ -832,6 +902,48 @@ void win_textbuffer_init_line(window_t *win, char *buf, int maxlen, int initlen)
     }
 }
 
+void win_textbuffer_init_line_uni(window_t *win, glui32 *buf, int maxlen, int initlen)
+{
+    window_textbuffer_t *dwin = win->data;
+    int pw;
+
+#ifdef USETTS
+    gli_speak_tts("\n", 1, 0);
+#endif
+
+    /* because '>' prompt is ugly without extra space */
+    if (dwin->numchars && dwin->chars[dwin->numchars-1] == '>')
+        win_textbuffer_putchar_uni(win, ' ');
+    if (dwin->numchars && dwin->chars[dwin->numchars-1] == '?')
+        win_textbuffer_putchar_uni(win, ' ');
+
+    /* make sure we have some space left for typing... */
+    pw = (win->bbox.x1 - win->bbox.x0 - gli_tmarginx * 2) * GLI_SUBPIX;
+    pw = pw - 2 * SLOP - dwin->radjw + dwin->ladjw;
+    if (calcwidth(dwin, dwin->chars, dwin->attrs, dwin->numchars, -1) >= pw * 3 / 4)
+        win_textbuffer_putchar_uni(win, '\n');
+
+    dwin->lastseen = 0;
+
+    dwin->inbuf = buf;
+    dwin->inmax = maxlen;
+    dwin->infence = dwin->numchars;
+    dwin->incurs = dwin->numchars;
+    dwin->origattr = win->attr;
+    attrset(&win->attr, style_Input);
+
+    dwin->historypos = dwin->historypresent;
+
+    if (initlen) {
+        touch(dwin, 0);
+        put_text_uni(dwin, buf, initlen, dwin->incurs, 0);
+    }
+
+    if (gli_register_arr) {
+        dwin->inarrayrock = (*gli_register_arr)(buf, maxlen, "&+#!Iu");
+    }
+}
+
 /* Abort line input, storing whatever's been typed so far. */
 void win_textbuffer_cancel_line(window_t *win, event_t *ev)
 {
@@ -839,8 +951,9 @@ void win_textbuffer_cancel_line(window_t *win, event_t *ev)
     gidispatch_rock_t inarrayrock;
     int ix;
     int len;
-    char *inbuf;
+    void *inbuf;
     int inmax;
+    int unicode = win->line_request_uni;
 
     if (!dwin->inbuf)
         return;
@@ -851,28 +964,43 @@ void win_textbuffer_cancel_line(window_t *win, event_t *ev)
 
     len = dwin->numchars - dwin->infence;
     if (win->echostr) 
-        gli_stream_echo_line(win->echostr, dwin->chars + dwin->infence, len);
+        gli_stream_echo_line_uni(win->echostr, dwin->chars + dwin->infence, len);
 
     if (len > inmax)
         len = inmax;
 
-    for (ix=0; ix<len; ix++)
-        inbuf[ix] = dwin->chars[dwin->infence+ix];
+    if (!unicode) {
+        for (ix=0; ix<len; ix++) {
+            glui32 ch = dwin->chars[dwin->infence+ix];
+            if (ch > 0xff)
+                ch = '?';
+            ((char *)inbuf)[ix] = (char)ch;
+        }
+    } else {
+        for (ix=0; ix<len; ix++)
+            ((glui32 *)inbuf)[ix] = dwin->chars[dwin->infence+ix];
+    }
 
-    win->style = dwin->origstyle;
+    win->attr = dwin->origattr;
 
     ev->type = evtype_LineInput;
     ev->win = win;
     ev->val1 = len;
+    ev->val2 = 0;
 
     win->line_request = FALSE;
+    win->line_request_uni = FALSE;
+    if (win->line_terminators) {
+        free(win->line_terminators);
+        win->line_terminators = NULL;
+    }
     dwin->inbuf = NULL;
     dwin->inmax = 0;
 
-    win_textbuffer_putchar(win, '\n');
+    win_textbuffer_putchar_uni(win, '\n');
 
     if (gli_unregister_arr) {
-        (*gli_unregister_arr)(inbuf, inmax, "&+#!Cn", inarrayrock);
+        (*gli_unregister_arr)(inbuf, inmax, unicode ? "&+#!Iu" : "&+#!Cn", inarrayrock);
     }
 }
 
@@ -911,7 +1039,7 @@ static void gcmd_accept_scroll(window_t *win, glui32 arg)
         dwin->scrollpos = dwin->scrollmax - dwin->height + 1;
     if (dwin->scrollpos < 0)
         dwin->scrollpos = 0;
-    /* Scroll right to the bottom if GarglkPlug is not in interactive mode */
+	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
     touchscroll(dwin);
@@ -937,19 +1065,21 @@ void gcmd_buffer_accept_readchar(window_t *win, glui32 arg)
 
     dwin->lastseen = 0;
     win->char_request = FALSE; 
+    win->char_request_uni = FALSE;
     gli_event_store(evtype_CharInput, win, arg, 0);
 }
 
 /* Return or enter, during line input. Ends line input. */
-static void acceptline(window_t *win)
+static void acceptline(window_t *win, glui32 keycode)
 {
     int ix;
     int len;
-    char *inbuf;
-    char *s;
+    void *inbuf;
+    glui32 *s;
     int inmax;
     gidispatch_rock_t inarrayrock;
     window_textbuffer_t *dwin = win->data;
+    int unicode = win->line_request_uni;
 
     if (!dwin->inbuf)
         return;
@@ -960,7 +1090,7 @@ static void acceptline(window_t *win)
 
     len = dwin->numchars - dwin->infence;
     if (win->echostr) 
-        gli_stream_echo_line(win->echostr, dwin->chars+dwin->infence, len);
+        gli_stream_echo_line_uni(win->echostr, dwin->chars+dwin->infence, len);
 
 #ifdef USETTS
     gli_speak_tts(dwin->chars+dwin->infence, len, 1);
@@ -969,13 +1099,17 @@ static void acceptline(window_t *win)
     /* Store in history. */
     if (len)
     {
-        s = malloc(len + 1);
-        memcpy(s, dwin->chars + dwin->infence, len);
-        s[len] = '\0';
+        s = malloc((len + 1) * 4);
+        memcpy(s, dwin->chars + dwin->infence, len * 4);
+        s[len] = 0;
 
-        /* Send "command-received" message through GtkTerp */
-        garglk_plug_send_command_text(GARGLK_PLUG(frame), s);
-        
+		/* Send "command-received" message through GtkTerp */
+		gchar *utf8 = g_ucs4_to_utf8(s, len, NULL, NULL, NULL);
+		if(utf8) {
+        	garglk_plug_send_command_text(GARGLK_PLUG(frame), utf8);
+			g_free(utf8);
+		}
+		
         if (dwin->history[dwin->historypresent])
         {
             free(dwin->history[dwin->historypresent]);
@@ -1006,21 +1140,39 @@ static void acceptline(window_t *win)
     if (len > inmax)
         len = inmax;
 
-    for (ix=0; ix<len; ix++) {
-        inbuf[ix] = dwin->chars[dwin->infence+ix];
+    if (!unicode) {
+        for (ix=0; ix<len; ix++) {
+            glui32 ch = dwin->chars[dwin->infence+ix];
+            if (ch > 0xff)
+                ch = '?';
+            ((char *)inbuf)[ix] = (char)ch;
+        }
+    } else {
+        for (ix=0; ix<len; ix++)
+            ((glui32 *)inbuf)[ix] = dwin->chars[dwin->infence+ix];
     }
 
-    win->style = dwin->origstyle;
+    win->attr = dwin->origattr;
 
-    gli_event_store(evtype_LineInput, win, len, 0);
+    if (win->line_terminators) {
+        glui32 val2 = keycode;
+        if (val2 == keycode_Return)
+            val2 = 13;
+        gli_event_store(evtype_LineInput, win, len, val2);
+        free(win->line_terminators);
+        win->line_terminators = NULL;
+    } else
+        gli_event_store(evtype_LineInput, win, len, 0);
     win->line_request = FALSE;
+    win->line_request_uni = FALSE;
     dwin->inbuf = NULL;
     dwin->inmax = 0;
 
-    win_textbuffer_putchar(win, '\n');
+    if (keycode == keycode_Return)
+        win_textbuffer_putchar_uni(win, '\n');
 
     if (gli_unregister_arr) {
-        (*gli_unregister_arr)(inbuf, inmax, "&+#!Cn", inarrayrock);
+        (*gli_unregister_arr)(inbuf, inmax, unicode ? "&+#!Iu" : "&+#!Cn", inarrayrock);
     }
 }
 
@@ -1028,8 +1180,7 @@ static void acceptline(window_t *win)
 void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
 {
     window_textbuffer_t *dwin = win->data;
-    char ch = arg;
-    char *cx;
+    glui32 *cx;
     int len;
 
     if (dwin->height < 2)
@@ -1044,6 +1195,15 @@ void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
     if (!dwin->inbuf)
         return;
 
+    if (win->line_terminators) {
+        for (cx = win->line_terminators; *cx; cx++) {
+            if (*cx == arg) {
+                acceptline(win, arg);
+                return;
+            }
+        }
+    }
+
     switch (arg)
     {
 
@@ -1055,9 +1215,9 @@ void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
             if (dwin->historypos == dwin->historypresent) {
                 len = dwin->numchars - dwin->infence;
                 if (len > 0) {
-                    cx = malloc(len + 1);
-                    memcpy(cx, &(dwin->chars[dwin->infence]), len);
-                    cx[len] = '\0';
+                    cx = malloc((len + 1) * 4);
+                    memcpy(cx, &(dwin->chars[dwin->infence]), len * 4);
+                    cx[len] = 0;
                 }
                 else {
                     cx = NULL;
@@ -1070,9 +1230,7 @@ void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
             if (dwin->historypos < 0)
                 dwin->historypos += HISTORYLEN;
             cx = dwin->history[dwin->historypos];
-            if (!cx)
-                cx = "";
-            put_text(dwin, cx, strlen(cx), dwin->infence,
+            put_text_uni(dwin, cx, cx ? strlen_uni(cx) : 0, dwin->infence,
                     dwin->numchars - dwin->infence);
             break;
 
@@ -1083,9 +1241,7 @@ void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
             if (dwin->historypos >= HISTORYLEN)
                 dwin->historypos -= HISTORYLEN;
             cx = dwin->history[dwin->historypos];
-            if (!cx)
-                cx = "";
-            put_text(dwin, cx, strlen(cx), dwin->infence, 
+            put_text_uni(dwin, cx, cx ? strlen_uni(cx) : 0, dwin->infence, 
                     dwin->numchars - dwin->infence);
             break;
 
@@ -1120,24 +1276,24 @@ void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
         case keycode_Delete:
             if (dwin->incurs <= dwin->infence)
                 return;
-            put_text(dwin, "", 0, dwin->incurs-1, 1);
+            put_text_uni(dwin, NULL, 0, dwin->incurs-1, 1);
             break;
 
         case keycode_Escape:
             if (dwin->infence >= dwin->numchars)
                 return;
-            put_text(dwin, "", 0, dwin->infence, dwin->numchars - dwin->infence);
+            put_text_uni(dwin, NULL, 0, dwin->infence, dwin->numchars - dwin->infence);
             break;
 
             /* Regular keys */
 
         case keycode_Return:
-            acceptline(win);
+            acceptline(win, arg);
             break;
 
         default:
-            if (arg >= 32 && arg <= 255)
-                put_text(dwin, &ch, 1, dwin->incurs, 0);
+            if (arg >= 32 && arg <= 0x10FFFF)
+                put_text_uni(dwin, &arg, 1, dwin->incurs, 0);
             break;
     }
 
@@ -1161,7 +1317,7 @@ put_picture(window_textbuffer_t *dwin, picture_t *pic, glui32 align)
     else
     {
         if (align != imagealign_MarginLeft && dwin->numchars)
-            win_textbuffer_putchar(dwin->owner, '\n');
+            win_textbuffer_putchar_uni(dwin->owner, '\n');
 
         if (dwin->lines[0].lpic || dwin->numchars)
             return FALSE;
@@ -1209,14 +1365,14 @@ glui32 win_textbuffer_draw_picture(window_textbuffer_t *dwin,
 glui32 win_textbuffer_flow_break(window_textbuffer_t *dwin)
 {
     while (dwin->ladjn || dwin->radjn)
-        win_textbuffer_putchar(dwin->owner, '\n');
+        win_textbuffer_putchar_uni(dwin->owner, '\n');
     return TRUE;
 }
 
 void win_textbuffer_click(window_textbuffer_t *dwin, int sx, int sy)
 {
     window_t *win = dwin->owner;
-    if (win->line_request || win->char_request)
+    if (win->line_request || win->char_request || win->line_request_uni || win->char_request_uni)
         gli_focuswin = win;
     if (sx > win->bbox.x1 - gli_scroll_width)
     {

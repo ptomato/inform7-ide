@@ -69,7 +69,7 @@ static void oncancel(GtkFileSelection *widget, void *data)
 	gtk_main_quit(); /* un-recurse back to normal loop */
 }
 
-void winopenfile(char *prompt, char *buf, int len)
+void winopenfile(char *prompt, char *buf, int len, char *filter)
 {
     /* Return if in protected mode */
     if(garglk_plug_get_protected(GARGLK_PLUG(frame)))
@@ -90,7 +90,7 @@ void winopenfile(char *prompt, char *buf, int len)
 	gtk_main(); /* recurse... */
 }
 
-void winsavefile(char *prompt, char *buf, int len)
+void winsavefile(char *prompt, char *buf, int len, char *filter)
 {
     /* Return if in protected mode */
     if(garglk_plug_get_protected(GARGLK_PLUG(frame)))

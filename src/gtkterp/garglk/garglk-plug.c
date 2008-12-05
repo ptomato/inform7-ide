@@ -17,7 +17,7 @@
 #include "glk.h"
 #include "garglk.h"
 
-#if DEBUG
+#ifdef DEBUG
 static void
 message(gchar *text)
 {

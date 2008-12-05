@@ -15,8 +15,8 @@ AM_CFLAGS = -Wall
 noinst_LIBRARIES = libgarglk.a
 
 libgarglk_a_SOURCES = gi_blorb.c gi_dispa.c nohyper.c cggestal.c cgblorb.c \
-	cgfref.c cgmisc.c cgstyle.c cgstream.c window.c winblank.c winpair.c \
-	wingrid.c wintext.c wingfx.c event.c draw.c config.c imgload.c \
+	cgfref.c cgmisc.c cgstyle.c cgstream.c cgunicod.c window.c winblank.c \
+	winpair.c wingrid.c wintext.c wingfx.c event.c draw.c config.c imgload.c \
 	imgscale.c fontdata.c sndsdl.c sysgtk.c main.c garglk.h garversion.h \
 	gi_blorb.h gi_dispa.h glk.h glkstart.h garglk-plug.h garglk-plug.c sysgtk.h
 
@@ -28,4 +28,4 @@ dbus-server.h: gtkterp-dbus.xml
 	dbus-binding-tool --prefix=garglk --mode=glib-server $< --output=$@
 
 EXTRA_DIST = cbb.hex cbi.hex cbr.hex cbz.hex lmb.hex lmi.hex lmr.hex lmz.hex \
-	garglk.ini gtkterp-dbus.xml
+	garglk.ini gtkterp-dbus.xml cgunigen.c

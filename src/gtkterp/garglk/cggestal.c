@@ -15,16 +15,16 @@ glui32 glk_gestalt_ext(glui32 id, glui32 val, glui32 *arr,
 	switch (id) {
 
 		case gestalt_Version:
-			return 0x00000601;
+			return 0x00000700;
 
 		case gestalt_LineInput:
-			if (val >= 32 && val < 256)
+			if (val >= 32 && val < 0x10ffff)
 				return TRUE;
 			else
 				return FALSE;
 
 		case gestalt_CharInput: 
-			if (val >= 32 && val < 256)
+			if (val >= 32 && val < 0x10ffff)
 				return TRUE;
 			else if (val == keycode_Return)
 				return TRUE;
@@ -32,7 +32,7 @@ glui32 glk_gestalt_ext(glui32 id, glui32 val, glui32 *arr,
 				return FALSE;
 
 		case gestalt_CharOutput: 
-			if (val >= 32 && val < 256) {
+			if (val >= 32 && val < 0x10ffff) {
 				if (arr && arrlen >= 1)
 					arr[0] = 1;
 				return gestalt_CharOutput_ExactPrint;
@@ -72,7 +72,8 @@ glui32 glk_gestalt_ext(glui32 id, glui32 val, glui32 *arr,
 			return gli_conf_sound;
 		case gestalt_SoundNotify: 
 			return FALSE;	/* i'm lazy */
-
+		case gestalt_Unicode:
+			return TRUE;
 		default:
 			return 0;
 

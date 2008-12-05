@@ -59,15 +59,15 @@ void gli_input_handle_key(glui32 key)
     switch (win->type)
     {
     case wintype_TextGrid:
-	if (win->char_request)
+	if (win->char_request || win->char_request_uni)
 	    gcmd_grid_accept_readchar(win, key);
-	if (win->line_request)
+	if (win->line_request || win->line_request_uni)
 	    gcmd_grid_accept_readline(win, key);
 	break;
     case wintype_TextBuffer:
-	if (win->char_request)
+	if (win->char_request || win->char_request_uni)
 	    gcmd_buffer_accept_readchar(win, key);
-	if (win->line_request)
+	if (win->line_request || win->line_request_uni)
 	    gcmd_buffer_accept_readline(win, key);
 	break;
     }
@@ -86,7 +86,8 @@ void gli_input_guess_focus()
     window_t *altwin;
 
     if (gli_focuswin 
-	    && (gli_focuswin->line_request || gli_focuswin->char_request)) {
+	    && (gli_focuswin->line_request || gli_focuswin->char_request ||
+			gli_focuswin->line_request_uni || gli_focuswin->char_request_uni)) {
 	return;
     }
 
@@ -94,7 +95,8 @@ void gli_input_guess_focus()
     do {
 	altwin = gli_window_iterate_treeorder(altwin);
 	if (altwin 
-		&& (altwin->line_request || altwin->char_request)) {
+		&& (altwin->line_request || altwin->char_request ||
+            altwin->line_request_uni || altwin->char_request_uni)) {
 	    break;
 	}
     } while (altwin != gli_focuswin);
@@ -118,7 +120,8 @@ void gli_input_next_focus()
     do {
 	altwin = gli_window_iterate_treeorder(altwin);
 	if (altwin 
-		&& (altwin->line_request || altwin->char_request)) {
+		&& (altwin->line_request || altwin->char_request ||
+            altwin->line_request_uni || altwin->char_request_uni)) {
 	    break;
 	}
     } while (altwin != gli_focuswin);

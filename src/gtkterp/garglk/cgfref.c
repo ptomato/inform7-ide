@@ -95,8 +95,9 @@ frefid_t glk_fileref_create_temp(glui32 usage, glui32 rock)
 {
     char *filename;
     fileref_t *fref;
-
-    filename = tmpnam(NULL);
+	char *tempdir = getenv("TEMP");
+	if(tempdir == NULL) tempdir = ".";
+    filename = tempnam(tempdir, "gargtmp");
 
     fref = gli_new_fileref(filename, usage, rock);
     if (!fref) {
@@ -179,30 +180,34 @@ frefid_t glk_fileref_create_by_prompt(glui32 usage, glui32 fmode, glui32 rock)
     fileref_t *fref;
     char buf[256];
     int val;
-    char *prompt;
+    char *prompt, *filter;
 
 	strcpy(buf, "");
 
     switch (usage & fileusage_TypeMask) {
         case fileusage_SavedGame:
             prompt = "Saved game";
+			filter = "Saved game files (*.sav)\0*.sav\0All files (*.*)\0*.*\0\0";
             break;
         case fileusage_Transcript:
             prompt = "Transcript file";
+			filter = "Text files (*.txt)\0*.txt\0All files (*.*)\0*.*\0\0";
             break;
         case fileusage_InputRecord:
             prompt = "Command record file";
+			filter = "Text files (*.txt)\0*.txt\0All files (*.*)\0*.*\0\0";
             break;
         case fileusage_Data:
         default:
             prompt = "Data file";
+			filter = "All files (*.*)\0*.*\0\0";
             break;
     }
 
     if (fmode == filemode_Read)
-		winopenfile(prompt, buf, sizeof buf);
+		winopenfile(prompt, buf, sizeof buf, filter);
     else
-		winsavefile(prompt, buf, sizeof buf);
+		winsavefile(prompt, buf, sizeof buf, filter);
 
     val = strlen(buf);
     if (!val) {
@@ -265,7 +270,11 @@ glui32 glk_fileref_does_file_exist(fileref_t *fref)
     if (stat(fref->filename, &buf))
         return 0;
 
+#ifdef S_ISREG
     if (S_ISREG(buf.st_mode))
+#else
+	if (buf.st_mode & _S_IFREG)
+#endif
         return 1;
     else
         return 0;
