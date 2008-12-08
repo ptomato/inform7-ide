@@ -66,7 +66,7 @@ void glk_stylehint_set(glui32 wintype, glui32 style, glui32 hint, glsi32 val)
 		styles[style].bg[1] = (val >> 8) & 0xff;
 		styles[style].bg[2] = (val) & 0xff;
 		break;
-	
+
 	case stylehint_ReverseColor:
 		styles[style].reverse = (hint != 0);
 		break;

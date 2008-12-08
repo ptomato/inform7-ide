@@ -25,7 +25,7 @@
  */
 
 #define gli_strict_warning(msg)   \
-    (fprintf(stderr, "Glk library error: %s\n", msg)) 
+    (fprintf(stderr, "Glk library error: %s\n", msg))
 
 extern int gli_utf8output, gli_utf8input;
 
@@ -119,9 +119,9 @@ struct picture_s
 struct style_s
 {
     int font;
-	unsigned char bg[3];
-	unsigned char fg[3];
-	int reverse;
+    unsigned char bg[3];
+    unsigned char fg[3];
+    int reverse;
 };
 
 extern int gli_image_s;	/* stride */
@@ -224,8 +224,8 @@ struct glk_stream_struct
     glui32 rock;
 
     int type; /* file, window, or memory stream */
-	int unicode; /* one-byte or four-byte chars? Not meaningful for windows */
-	
+    int unicode; /* one-byte or four-byte chars? Not meaningful for windows */
+
     glui32 readcount, writecount;
     int readable, writable;
 
@@ -343,8 +343,8 @@ struct window_textgrid_s
     attr_t origattr;
     gidispatch_rock_t inarrayrock;
 
-	/* style hints and settings */
-	style_t styles[style_NUMSTYLES];
+    /* style hints and settings */
+    style_t styles[style_NUMSTYLES];
 };
 
 typedef struct tbline_s
@@ -367,8 +367,8 @@ struct window_textbuffer_s
     tbline_t lines[SCROLLBACK];	/* XXX make this dynamic */
 
     int numchars;		/* number of chars in last line: lines[0] */
-    glui32 *chars;	/* alias to lines[0].chars */
-    attr_t *attrs;	/* alias to lines[0].attrs */
+    glui32 *chars;		/* alias to lines[0].chars */
+    attr_t *attrs;		/* alias to lines[0].attrs */
 
     /* adjust margins temporarily for images */
     int ladjw;
@@ -394,8 +394,8 @@ struct window_textbuffer_s
     attr_t origattr;
     gidispatch_rock_t inarrayrock;
 
-	/* style hints and settings */
-	style_t styles[style_NUMSTYLES];
+    /* style hints and settings */
+    style_t styles[style_NUMSTYLES];
 };
 
 struct window_graphics_s
@@ -413,26 +413,26 @@ enum { CHANNEL_IDLE, CHANNEL_SOUND, CHANNEL_MUSIC };
 
 struct glk_schannel_struct
 {
-	glui32 rock;
+    glui32 rock;
 
-	void *sample; /* Mix_Chunk (or FMOD Sound) */
-	void *music; /* Mix_Music (or FMOD Music) */
-	void *decode; /* Sound_Sample */
+    void *sample; /* Mix_Chunk (or FMOD Sound) */
+    void *music; /* Mix_Music (or FMOD Music) */
+    void *decode; /* Sound_Sample */
 
-	void *sdl_rwops; /* SDL_RWops */
-	unsigned char *sdl_memory;
-	int sdl_channel;
+    void *sdl_rwops; /* SDL_RWops */
+    unsigned char *sdl_memory;
+    int sdl_channel;
 
-	int resid; /* for notifies */
-	int status;
-	int channel;
-	int volume;
-	glui32 loop;
-	int notify;
-	int buffered;
+    int resid; /* for notifies */
+    int status;
+    int channel;
+    int volume;
+    glui32 loop;
+    int notify;
+    int buffered;
 
-	gidispatch_rock_t disprock;
-	channel_t *chain_next, *chain_prev;
+    gidispatch_rock_t disprock;
+    channel_t *chain_next, *chain_prev;
 };
 
 extern void gli_initialize_sound(void);
@@ -600,4 +600,3 @@ int attrequal(attr_t *a1, attr_t *a2);
 unsigned char *attrfg(style_t *styles, attr_t *attr);
 unsigned char *attrbg(style_t *styles, attr_t *attr);
 int attrfont(style_t *styles, attr_t *attr);
-

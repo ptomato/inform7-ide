@@ -95,8 +95,8 @@ frefid_t glk_fileref_create_temp(glui32 usage, glui32 rock)
 {
     char *filename;
     fileref_t *fref;
-	char *tempdir = getenv("TEMP");
-	if(tempdir == NULL) tempdir = ".";
+    char *tempdir = getenv("TEMP");
+    if (tempdir == NULL) tempdir = ".";
     filename = tempnam(tempdir, "gargtmp");
 
     fref = gli_new_fileref(filename, usage, rock);

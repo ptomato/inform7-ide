@@ -1,9 +1,8 @@
 #
 # Spec file for GNOME Inform 7
-# Change rel to ubuntu1 for ubuntu-style release number
 #
-%define  ver     5U92
-%define  rel     1.fc9
+%define  ver     5U92.1
+%define  rel     1.fc10
 %define  prefix  /usr
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
@@ -94,8 +93,11 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/Inform.png
 %{_datadir}/pixmaps/gnome-inform7/*
 %{_sysconfdir}/gconf/schemas/*
+%{_datadir}/locale/es/LC_MESSAGES/gnome-inform7.mo
 
 %changelog
+* Sat Dec 6 2008 P.F. Chimento <philip.chimento@gmail.com>
+- Repackaged to release .1 of Public Beta Build 5U92.
 * Sun Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Added scriptlets for GConf2 schemas processing.
 * Fri Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>

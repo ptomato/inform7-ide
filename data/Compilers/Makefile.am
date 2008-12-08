@@ -3,7 +3,7 @@ compilers_DATA = cBlorb inform-6.31-biplatform ni
 #
 # UNCOMMENT the following line when building RPMs!
 # 
-# EXTRA_DIST = $(compilers_DATA)
+EXTRA_DIST = $(compilers_DATA)
 
 ni:
 	if [ ! -f cBlorb ] || [ ! -f inform-6.31-biplatform ] || [ ! -f ni ]; \

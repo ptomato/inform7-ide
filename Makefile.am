@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src po data
+SUBDIRS = src po data debian
 
 EXTRA_DIST = \
 	autogen.sh \

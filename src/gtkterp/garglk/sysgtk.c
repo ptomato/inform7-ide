@@ -22,51 +22,51 @@ static int timeouts = 0;
 
 static int timeout(void *data)
 {
-	timeouts ++;
-	return TRUE;
+    timeouts ++;
+    return TRUE;
 }
 
 void glk_request_timer_events(glui32 millisecs)
 {
-	if (timerid != -1)
-	{
-		gtk_timeout_remove(timerid);
-		timerid = -1;
-	}
+    if (timerid != -1)
+    {
+        gtk_timeout_remove(timerid);
+        timerid = -1;
+    }
 
-	if (millisecs)
-	{
-		timerid = gtk_timeout_add(millisecs, timeout, NULL);
-	}
+    if (millisecs)
+    {
+        timerid = gtk_timeout_add(millisecs, timeout, NULL);
+    }
 }
 
 void winabort(const char *fmt, ...)
 {
-	va_list ap;
-	char buf[256];
-	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
-	va_end(ap);
-	// XXX MessageBoxA(NULL, buf, "Fatal error", MB_ICONERROR);
-	fprintf(stderr, "fatal: %s\n", buf);
-	fflush(stderr);
-	abort();
+    va_list ap;
+    char buf[256];
+    va_start(ap, fmt);
+    vsprintf(buf, fmt, ap);
+    va_end(ap);
+    // XXX MessageBoxA(NULL, buf, "Fatal error", MB_ICONERROR);
+    fprintf(stderr, "fatal: %s\n", buf);
+    fflush(stderr);
+    abort();
 }
 
 static void onokay(GtkFileSelection *widget, void *data)
 {
-	strcpy(filename, gtk_file_selection_get_filename(GTK_FILE_SELECTION(filedlog)));
-	gtk_widget_destroy(filedlog);
-	filedlog = NULL;
-	gtk_main_quit(); /* un-recurse back to normal loop */
+    strcpy(filename, gtk_file_selection_get_filename(GTK_FILE_SELECTION(filedlog)));
+    gtk_widget_destroy(filedlog);
+    filedlog = NULL;
+    gtk_main_quit(); /* un-recurse back to normal loop */
 }
 
 static void oncancel(GtkFileSelection *widget, void *data)
 {
-	strcpy(filename, "");
-	gtk_widget_destroy(filedlog);
-	filedlog = NULL;
-	gtk_main_quit(); /* un-recurse back to normal loop */
+    strcpy(filename, "");
+    gtk_widget_destroy(filedlog);
+    filedlog = NULL;
+    gtk_main_quit(); /* un-recurse back to normal loop */
 }
 
 void winopenfile(char *prompt, char *buf, int len, char *filter)
@@ -112,46 +112,46 @@ void winsavefile(char *prompt, char *buf, int len, char *filter)
 
 static void onresize(GtkWidget *widget, GtkAllocation *event, void *data)
 {
-	int newwid = event->width;
-	int newhgt = event->height;
+    int newwid = event->width;
+    int newhgt = event->height;
 
-	if (newwid == gli_image_w && newhgt == gli_image_h)
-		return;
+    if (newwid == gli_image_w && newhgt == gli_image_h)
+        return;
 
-	gli_image_w = newwid;
-	gli_image_h = newhgt;
+    gli_image_w = newwid;
+    gli_image_h = newhgt;
 
-	gli_image_s = ((gli_image_w * 3 + 3) / 4) * 4;
-	if (gli_image_rgb)
-		free(gli_image_rgb);
-	gli_image_rgb = malloc(gli_image_s * gli_image_h);
+    gli_image_s = ((gli_image_w * 3 + 3) / 4) * 4;
+    if (gli_image_rgb)
+        free(gli_image_rgb);
+    gli_image_rgb = malloc(gli_image_s * gli_image_h);
 
-	gli_force_redraw = 1;
+    gli_force_redraw = 1;
 
-	gli_windows_size_change();
+    gli_windows_size_change();
 }
 
 static void onexpose(GtkWidget *widget, GdkEventExpose *event, void *data)
 {
-	int x0 = event->area.x;
-	int y0 = event->area.y;
-	int w = event->area.width;
-	int h = event->area.height;
+    int x0 = event->area.x;
+    int y0 = event->area.y;
+    int w = event->area.width;
+    int h = event->area.height;
 
-	if (x0 < 0) x0 = 0;
-	if (y0 < 0) y0 = 0;
-	if (x0 + w > gli_image_w) w = gli_image_w - x0;
-	if (y0 + h > gli_image_h) h = gli_image_h - y0;
-	if (w < 0) return;
-	if (h < 0) return;
+    if (x0 < 0) x0 = 0;
+    if (y0 < 0) y0 = 0;
+    if (x0 + w > gli_image_w) w = gli_image_w - x0;
+    if (y0 + h > gli_image_h) h = gli_image_h - y0;
+    if (w < 0) return;
+    if (h < 0) return;
 
-	gli_windows_redraw();
+    gli_windows_redraw();
 
-	gdk_draw_rgb_image(canvas->window, canvas->style->black_gc,
-		x0, y0, w, h,
-		GDK_RGB_DITHER_NONE,
-		gli_image_rgb + y0 * gli_image_s + x0 * 3,
-		gli_image_s);
+    gdk_draw_rgb_image(canvas->window, canvas->style->black_gc,
+        x0, y0, w, h,
+        GDK_RGB_DITHER_NONE,
+        gli_image_rgb + y0 * gli_image_s + x0 * 3,
+        gli_image_s);
 }
 
 static void onbutton(GtkWidget *widget, GdkEventButton *event, void *data)
@@ -162,51 +162,51 @@ static void onbutton(GtkWidget *widget, GdkEventButton *event, void *data)
 
 static void onkeypress(GtkWidget *widget, GdkEventKey *event, void *data)
 {
-	int key = event->keyval;
+    int key = event->keyval;
 
-	switch (key)
-	{
-	case GDK_Return: gli_input_handle_key(keycode_Return); break;
-	case GDK_BackSpace: gli_input_handle_key(keycode_Delete); break;
-	case GDK_Tab: gli_input_handle_key(keycode_Tab); break;
-	case GDK_Prior: gli_input_handle_key(keycode_PageUp); break;
-	case GDK_Next: gli_input_handle_key(keycode_PageDown); break;
-	case GDK_Home: gli_input_handle_key(keycode_Home); break;
-	case GDK_End: gli_input_handle_key(keycode_End); break;
-	case GDK_Left: gli_input_handle_key(keycode_Left); break;
-	case GDK_Right: gli_input_handle_key(keycode_Right); break;
-	case GDK_Up: gli_input_handle_key(keycode_Up); break;
-	case GDK_Down: gli_input_handle_key(keycode_Down); break;
-	case GDK_Escape: gli_input_handle_key(keycode_Escape); break;
-	case GDK_F1: gli_input_handle_key(keycode_Func1); break;
-	case GDK_F2: gli_input_handle_key(keycode_Func2); break;
-	case GDK_F3: gli_input_handle_key(keycode_Func3); break;
-	case GDK_F4: gli_input_handle_key(keycode_Func4); break;
-	case GDK_F5: gli_input_handle_key(keycode_Func5); break;
-	case GDK_F6: gli_input_handle_key(keycode_Func6); break;
-	case GDK_F7: gli_input_handle_key(keycode_Func7); break;
-	case GDK_F8: gli_input_handle_key(keycode_Func8); break;
-	case GDK_F9: gli_input_handle_key(keycode_Func9); break;
-	case GDK_F10: gli_input_handle_key(keycode_Func10); break;
-	case GDK_F11: gli_input_handle_key(keycode_Func11); break;
-	case GDK_F12: gli_input_handle_key(keycode_Func12); break;
-	default:
-		if (key >= 32 && key <= 255)
-			gli_input_handle_key(key);
-	}
+    switch (key)
+    {
+    case GDK_Return: gli_input_handle_key(keycode_Return); break;
+    case GDK_BackSpace: gli_input_handle_key(keycode_Delete); break;
+    case GDK_Tab: gli_input_handle_key(keycode_Tab); break;
+    case GDK_Prior: gli_input_handle_key(keycode_PageUp); break;
+    case GDK_Next: gli_input_handle_key(keycode_PageDown); break;
+    case GDK_Home: gli_input_handle_key(keycode_Home); break;
+    case GDK_End: gli_input_handle_key(keycode_End); break;
+    case GDK_Left: gli_input_handle_key(keycode_Left); break;
+    case GDK_Right: gli_input_handle_key(keycode_Right); break;
+    case GDK_Up: gli_input_handle_key(keycode_Up); break;
+    case GDK_Down: gli_input_handle_key(keycode_Down); break;
+    case GDK_Escape: gli_input_handle_key(keycode_Escape); break;
+    case GDK_F1: gli_input_handle_key(keycode_Func1); break;
+    case GDK_F2: gli_input_handle_key(keycode_Func2); break;
+    case GDK_F3: gli_input_handle_key(keycode_Func3); break;
+    case GDK_F4: gli_input_handle_key(keycode_Func4); break;
+    case GDK_F5: gli_input_handle_key(keycode_Func5); break;
+    case GDK_F6: gli_input_handle_key(keycode_Func6); break;
+    case GDK_F7: gli_input_handle_key(keycode_Func7); break;
+    case GDK_F8: gli_input_handle_key(keycode_Func8); break;
+    case GDK_F9: gli_input_handle_key(keycode_Func9); break;
+    case GDK_F10: gli_input_handle_key(keycode_Func10); break;
+    case GDK_F11: gli_input_handle_key(keycode_Func11); break;
+    case GDK_F12: gli_input_handle_key(keycode_Func12); break;
+    default:
+        if (key >= 32 && key <= 255)
+            gli_input_handle_key(key);
+    }
 }
 
 static void onquit(GtkWidget *widget, void *data)
 {
-	/* forced exit by wm */
-	exit(0);
+    /* forced exit by wm */
+    exit(0);
 }
 
 void wininit(int *argc, char **argv)
 {
-	gtk_init(argc, &argv);
-	gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
-	gtk_widget_set_default_visual(gdk_rgb_get_visual());
+    gtk_init(argc, &argv);
+    gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
+    gtk_widget_set_default_visual(gdk_rgb_get_visual());
 }
 
 void winopen(void)
@@ -247,8 +247,8 @@ void wintitle(void)
 
 void winrepaint(int x0, int y0, int x1, int y1)
 {
-	/* and pray that gtk+ is smart enough to coalesce... */
-	gtk_widget_queue_draw_area(canvas, x0, y0, x1-x0, y1-y0);
+    /* and pray that gtk+ is smart enough to coalesce... */
+    gtk_widget_queue_draw_area(canvas, x0, y0, x1-x0, y1-y0);
 }
 
 void gli_select(event_t *event, int block)
@@ -260,20 +260,20 @@ void gli_select(event_t *event, int block)
 
     if (block)
     {
-	while (gli_curevent->type == evtype_None && !timeouts)
-	    gtk_main_iteration();
+    while (gli_curevent->type == evtype_None && !timeouts)
+        gtk_main_iteration();
     }
 
     else
     {
-	while (gtk_events_pending() && !timeouts)
-	    gtk_main_iteration();
+    while (gtk_events_pending() && !timeouts)
+        gtk_main_iteration();
     }
 
     if (gli_curevent->type == evtype_None && timeouts)
     {
-	gli_event_store(evtype_Timer, NULL, 0, 0);
-	timeouts = 0;
+    gli_event_store(evtype_Timer, NULL, 0, 0);
+    timeouts = 0;
     }
 
     gli_curevent = NULL;
