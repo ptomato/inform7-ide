@@ -70,8 +70,17 @@ float gli_conf_gamma = 1.0;
 unsigned char gli_window_color[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_color[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_color[3] = { 0x00, 0x00, 0x00 };
-
 unsigned char gli_more_color[3] = { 0x00, 0x00, 0x00 };
+
+unsigned char gli_window_save[3] = { 0xff, 0xff, 0xff };
+unsigned char gli_caret_save[3] = { 0x00, 0x00, 0x00 };
+unsigned char gli_border_save[3] = { 0x00, 0x00, 0x00 };
+unsigned char gli_more_save[3] = { 0x00, 0x00, 0x00 };
+
+int gli_override_fg = 0;
+int gli_override_bg = 0;
+int gli_override_reverse = 0;
+
 char *gli_more_prompt = "\207 more \207";
 int gli_more_align = 0;
 int gli_more_font = PROPB;
@@ -187,8 +196,12 @@ static void readoneconfig(char *fname, char *argv0, char *gamefile)
 
 		if (!strcmp(cmd, "moreprompt"))
 			gli_more_prompt = strdup(arg);
-		if (!strcmp(cmd, "morecolor"))
+
+		if (!strcmp(cmd, "morecolor")) {
 			parsecolor(arg, gli_more_color);
+			parsecolor(arg, gli_more_save);
+		}
+
 		if (!strcmp(cmd, "morefont"))
 			gli_more_font = font2idx(arg);
 		if (!strcmp(cmd, "morealign"))
@@ -243,12 +256,20 @@ static void readoneconfig(char *fname, char *argv0, char *gamefile)
 		if (!strcmp(cmd, "gamma"))
 			gli_conf_gamma = atof(arg);
 
-		if (!strcmp(cmd, "caretcolor"))
+		if (!strcmp(cmd, "caretcolor")) {
 			parsecolor(arg, gli_caret_color);
-		if (!strcmp(cmd, "bordercolor"))
+			parsecolor(arg, gli_caret_save);
+		}
+
+		if (!strcmp(cmd, "bordercolor")) {
 			parsecolor(arg, gli_border_color);
-		if (!strcmp(cmd, "windowcolor"))
+			parsecolor(arg, gli_border_save);
+		}
+
+		if (!strcmp(cmd, "windowcolor")) {
 			parsecolor(arg, gli_window_color);
+			parsecolor(arg, gli_window_save);
+		}
 
 		if (!strcmp(cmd, "lcd"))
 			gli_conf_lcd = atoi(arg);
@@ -338,8 +359,7 @@ void gli_read_config(int argc, char **argv)
 
 	for (i = 0; i < strlen(argv0); i++)
 		argv0[i] = tolower(argv0[i]);
-    
-   
+
 	/* load gamefile with basename of last argument */
 	if (strrchr(argv[argc-1], '\\'))
 		strcpy(gamefile, strrchr(argv[argc-1], '\\') + 1);
@@ -353,19 +373,8 @@ void gli_read_config(int argc, char **argv)
 
 	/* try all the usual config places */
 
-#ifdef WIN32
-	{
-		char *s;
-		strcpy(buf, argv[0]);
-		s = strrchr(buf, '\\');
-		if (s) *s = 0;
-		strcat(buf, "/garglk.ini");
-		readoneconfig(buf, argv0, gamefile);
-	}
-#else
 	strcpy(buf, "/etc/garglk.ini");
 	readoneconfig(buf, argv0, gamefile);
-#endif
 
 	if (getenv("HOME"))
 	{

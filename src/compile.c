@@ -538,11 +538,15 @@ start_cblorb_compiler(Story *thestory)
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
     
     /* Build the command line */
+	gchar *outfile = g_strconcat("output.", 
+		thestory->story_format == FORMAT_GLULX? "g" : "z", "blorb", NULL);
     gchar *working_dir = g_strdup(thestory->filename);
-    gchar **commandline = g_new(gchar *, 3);
+    gchar **commandline = g_new(gchar *, 4);
     commandline[0] = get_datafile_path_va("Compilers", "cBlorb", NULL);
     commandline[1] = g_strdup("Release.blurb");
-    commandline[2] = NULL;
+	commandline[2] = g_build_filename("Build", outfile, NULL);
+    commandline[3] = NULL;
+	g_free(outfile);
 
     GPid child_pid = run_command(working_dir, commandline, buffer);
     /* set up a watch for the exit status */
@@ -768,17 +772,12 @@ finish_release(Story *thestory)
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
         
         /* Determine the name of the compiler output file */
-        gchar *oldfile;
-        if(thestory->make_blorb)
-            oldfile = g_build_filename(thestory->filename, "story.zblorb",
-              NULL);
-            /* the Linux cBlorb compiler calls its output "story.zblorb" even if
-            it's a .gblorb file */
-        else
-            oldfile = g_build_filename(thestory->filename,"Build",
-              g_strconcat("output.", get_story_extension(thestory), NULL),
-              NULL);
-       
+        gchar *oldfile, *temp;
+		temp = g_strconcat("output.", ext, NULL);
+        oldfile = g_build_filename(thestory->filename, "Build", temp, NULL);
+		g_free(temp);
+		
+		/* try to copy the file */
         if(g_rename(oldfile, filename)) {
             if(errno == EXDEV) { 
                 /* Can't rename across devices, so physically copy the file */

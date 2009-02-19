@@ -127,6 +127,19 @@ void gos_update_width(void)
 	}
 }
 
+void gos_update_height(void)
+{
+	glui32 height_upper;
+	glui32 height_lower;
+	if (gos_curwin)
+	{
+		glk_window_get_size(gos_upper, NULL, &height_upper);
+		glk_window_get_size(gos_lower, NULL, &height_lower);
+		h_screen_rows = height_upper + height_lower + 1;
+		SET_BYTE(H_SCREEN_ROWS, h_screen_rows);
+	}
+}
+
 void reset_status_ht(void)
 {
 	glui32 height;
@@ -304,8 +317,8 @@ void screen_char (zchar c)
 
 	if (gos_upper && gos_curwin == gos_upper)
 	{
-		if (c == '\n') {
-			glk_put_char(c);
+		if (c == '\n' || c == ZC_RETURN) {
+			glk_put_char('\n');
 			curx = 1;
 			cury ++;
 		}
@@ -333,6 +346,8 @@ void screen_char (zchar c)
 	}
 	else if (gos_curwin == gos_lower)
 	{
+		if (c == ZC_RETURN)
+			glk_put_char('\n');
 		glk_put_char(c);
 	}
 }
@@ -507,6 +522,11 @@ void z_print_table (void)
 
 void z_set_colour (void)
 {
+	int zfore = zargs[0];
+	int zback = zargs[1];
+	
+	if (!(zfore == 0 && zback == 0))
+		garglk_set_zcolors(zfore, zback);
 }
 
 /*
@@ -561,10 +581,12 @@ void z_set_text_style (void)
 	if (gos_linepending && gos_curwin == gos_linewin)
 		return;
 
-	if (gos_curwin == gos_upper && style & REVERSE_STYLE)
+	if (style & REVERSE_STYLE)
 	{
-		if (gos_upper)
+		if (gos_curwin == gos_upper && gos_upper) {
 			glk_set_style(style_User1);
+		}
+		garglk_set_reversevideo(TRUE);
 	}
 	else if (style & FIXED_WIDTH_STYLE)
 		glk_set_style(style_Preformatted);
@@ -576,6 +598,10 @@ void z_set_text_style (void)
 		glk_set_style(style_Emphasized);
 	else
 		glk_set_style(style_Normal);
+	
+	if (curstyle == 0) {
+		garglk_set_reversevideo(FALSE);
+	}
 }
 
 /*

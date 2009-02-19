@@ -1073,9 +1073,9 @@ void gcmd_buffer_accept_readchar(window_t *win, glui32 arg)
 static void acceptline(window_t *win, glui32 keycode)
 {
     int ix;
-    int len;
+    int len, olen;
     void *inbuf;
-    glui32 *s;
+    glui32 *s, *o;
     int inmax;
     gidispatch_rock_t inarrayrock;
     window_textbuffer_t *dwin = win->data;
@@ -1115,23 +1115,39 @@ static void acceptline(window_t *win, glui32 keycode)
             free(dwin->history[dwin->historypresent]);
             dwin->history[dwin->historypresent] = NULL;
         }
-        dwin->history[dwin->historypresent] = s;
 
-        dwin->historypresent ++;
-        if (dwin->historypresent >= HISTORYLEN)
-            dwin->historypresent -= HISTORYLEN;
+        if (dwin->history[dwin->historypresent] != dwin->history[dwin->historyfirst] )
+            o = dwin->history[dwin->historypresent - 1];
+        else
+            o = NULL;
 
-        if (dwin->historypresent == dwin->historyfirst)
-        {
-            dwin->historyfirst++;
-            if (dwin->historyfirst >= HISTORYLEN)
-                dwin->historyfirst -= HISTORYLEN;
-        }
+        olen = o ? strlen_uni(o) : 0;
 
-        if (dwin->history[dwin->historypresent])
-        {
-            free(dwin->history[dwin->historypresent]);
-            dwin->history[dwin->historypresent] = NULL;
+        if (len != olen || memcmp(s, o, olen * sizeof(glui32))) {
+
+            dwin->history[dwin->historypresent] = s;
+
+            dwin->historypresent ++;
+            if (dwin->historypresent >= HISTORYLEN)
+                dwin->historypresent -= HISTORYLEN;
+
+            if (dwin->historypresent == dwin->historyfirst)
+            {
+                dwin->historyfirst++;
+                if (dwin->historyfirst >= HISTORYLEN)
+                    dwin->historyfirst -= HISTORYLEN;
+            }
+
+            if (dwin->history[dwin->historypresent])
+            {
+                free(dwin->history[dwin->historypresent]);
+                dwin->history[dwin->historypresent] = NULL;
+            }
+
+        } else {
+
+            free(s);
+
         }
     }
 
