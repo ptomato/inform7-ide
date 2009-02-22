@@ -4,6 +4,8 @@
 
 #SUBDIRS = fonts
 
+sysconf_DATA = gtkterp.ini
+
 INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
@@ -28,4 +30,4 @@ dbus-server.h: gtkterp-dbus.xml
 	dbus-binding-tool --prefix=garglk --mode=glib-server $< --output=$@
 
 EXTRA_DIST = cbb.hex cbi.hex cbr.hex cbz.hex lmb.hex lmi.hex lmr.hex lmz.hex \
-	garglk.ini gtkterp-dbus.xml cgunigen.c
+	gtkterp-dbus.xml cgunigen.c

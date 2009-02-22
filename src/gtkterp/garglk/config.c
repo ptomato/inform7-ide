@@ -32,7 +32,7 @@ style_t gli_tstyles[style_NUMSTYLES] =
 	{PROPZ, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* Alert */
 	{PROPR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* Note */
 	{PROPR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* BlockQuote */
-	{PROPB, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* Input */
+	{PROPB, {0xff,0xff,0xff}, {0x00,0x60,0x00}, 0}, /* Input */
 	{MONOR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* User1 */
 	{MONOR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* User2 */
 };
@@ -70,12 +70,12 @@ float gli_conf_gamma = 1.0;
 unsigned char gli_window_color[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_color[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_color[3] = { 0x00, 0x00, 0x00 };
-unsigned char gli_more_color[3] = { 0x00, 0x00, 0x00 };
+unsigned char gli_more_color[3] = { 0x00, 0x60, 0x00 };
 
 unsigned char gli_window_save[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_save[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_save[3] = { 0x00, 0x00, 0x00 };
-unsigned char gli_more_save[3] = { 0x00, 0x00, 0x00 };
+unsigned char gli_more_save[3] = { 0x00, 0x60, 0x00 };
 
 int gli_override_fg = 0;
 int gli_override_bg = 0;
@@ -85,8 +85,8 @@ char *gli_more_prompt = "\207 more \207";
 int gli_more_align = 0;
 int gli_more_font = PROPB;
 
-unsigned char gli_scroll_bg[3] = { 0xb0, 0xb0, 0xb0 };
-unsigned char gli_scroll_fg[3] = { 0x80, 0x80, 0x80 };
+unsigned char gli_scroll_bg[3] = { 0xe0, 0xe0, 0xd0 };
+unsigned char gli_scroll_fg[3] = { 0xc0, 0xc0, 0xb0 };
 int gli_scroll_width = 8;
 
 int gli_caret_shape = 2;
@@ -114,14 +114,14 @@ int gli_baseline = 15;
 int gli_leading = 20;
 
 int gli_conf_justify = 0;
-int gli_conf_quotes = 1;
-int gli_conf_spaces = 0;
+int gli_conf_quotes = 2;
+int gli_conf_spaces = 2;
 
 int gli_conf_graphics = 1;
 int gli_conf_sound = 1;
 int gli_conf_speak = 0;
 
-int gli_conf_stylehint = 0;
+int gli_conf_stylehint = 1;
 
 static void parsecolor(char *str, unsigned char *rgb)
 {
@@ -141,14 +141,12 @@ static void parsecolor(char *str, unsigned char *rgb)
 	rgb[2] = strtol(b, NULL, 16);
 }
 
-static void readoneconfig(char *fname, char *argv0, char *gamefile)
+static void readoneconfig(char *fname)
 {
 	FILE *f;
 	char buf[1024];
 	char *s;
 	char *cmd, *arg;
-	int accept = 1;
-	int i;
 
 	f = fopen(fname, "r");
 	if (!f)
@@ -166,18 +164,9 @@ static void readoneconfig(char *fname, char *argv0, char *gamefile)
 			continue;
 
 		if (buf[0] == '[')
-		{
-			for (i = 0; i < strlen(buf); i++)
-				buf[i] = tolower(buf[i]);
-
-			if (strstr(buf, argv0) || strstr(buf, gamefile))
-				accept = 1;	
-			else
-				accept = 0;
-		}
-
-		if (!accept)
 			continue;
+		/* Unlike real Gargoyle, we don't care about what interpreter we're
+		starting */
 
 		cmd = strtok(buf, "\r\n\t ");
 		if (!cmd)
@@ -342,63 +331,28 @@ static void readoneconfig(char *fname, char *argv0, char *gamefile)
 
 void gli_read_config(int argc, char **argv)
 {
-	char gamefile[1024] = "default";
-	char argv0[1024] = "default";
 	char buf[1024];
-	int i;
-
-	/* load argv0 with name of executable without suffix */
-	if (strrchr(argv[0], '\\'))
-		strcpy(argv0, strrchr(argv[0], '\\') + 1);
-	else if (strrchr(argv[0], '/'))
-		strcpy(argv0, strrchr(argv[0], '/') + 1);
-	else
-		strcpy(argv0, argv[0]);
-	if (strrchr(argv0, '.'))
-		strrchr(argv0, '.')[0] = 0;
-
-	for (i = 0; i < strlen(argv0); i++)
-		argv0[i] = tolower(argv0[i]);
-
-	/* load gamefile with basename of last argument */
-	if (strrchr(argv[argc-1], '\\'))
-		strcpy(gamefile, strrchr(argv[argc-1], '\\') + 1);
-	else if (strrchr(argv[argc-1], '/'))
-		strcpy(gamefile, strrchr(argv[argc-1], '/') + 1);
-	else
-		strcpy(gamefile, argv[argc-1]);
-
-	for (i = 0; i < strlen(gamefile); i++)
-		gamefile[i] = tolower(gamefile[i]);
 
 	/* try all the usual config places */
 
-	strcpy(buf, "/etc/garglk.ini");
-	readoneconfig(buf, argv0, gamefile);
+	strcpy(buf, "/etc/gtkterp.ini");
+	readoneconfig(buf);
+	strcpy(buf, "/usr/local/etc/gtkterp.ini");
+	readoneconfig(buf);
 
 	if (getenv("HOME"))
 	{
 		strcpy(buf, getenv("HOME"));
-		strcat(buf, "/.garglkrc");
-		readoneconfig(buf, argv0, gamefile);
+		strcat(buf, "/.gtkterprc");
+		readoneconfig(buf);
 		strcpy(buf, getenv("HOME"));
-		strcat(buf, "/garglk.ini");
-		readoneconfig(buf, argv0, gamefile);
+		strcat(buf, "/gtkterp.ini");
+		readoneconfig(buf);
 	}
 
 	getcwd(buf, sizeof buf);
-	strcat(buf, "/garglk.ini");
-	readoneconfig(buf, argv0, gamefile);
-
-	if (argc > 1)
-	{
-		strcpy(buf, argv[argc-1]);
-		if (strrchr(buf, '.'))
-			strcpy(strrchr(buf, '.'), ".ini");
-		else
-			strcat(buf, ".ini");
-		readoneconfig(buf, argv0, gamefile);
-	}
+	strcat(buf, "/gtkterp.ini");
+	readoneconfig(buf);
 }
 
 strid_t glkunix_stream_open_pathname(char *pathname, glui32 textmode, glui32 rock)
