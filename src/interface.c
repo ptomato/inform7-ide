@@ -3381,7 +3381,7 @@ create_new_dialog (void)
   new_ext_name = gtk_entry_new ();
   gtk_widget_show (new_ext_name);
   gtk_box_pack_start (GTK_BOX (vbox17), new_ext_name, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, new_ext_name, _("You can change the name of the author of the extension here."), NULL);
+  gtk_tooltips_set_tip (tooltips, new_ext_name, _("Enter a name for the new extension here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (new_ext_name), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (new_ext_name), TRUE);
   gtk_entry_set_width_chars (GTK_ENTRY (new_ext_name), 14);
@@ -3394,7 +3394,7 @@ create_new_dialog (void)
   new_ext_author = gtk_entry_new ();
   gtk_widget_show (new_ext_author);
   gtk_box_pack_start (GTK_BOX (vbox17), new_ext_author, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, new_ext_author, _("Enter a name for the new extension here."), NULL);
+  gtk_tooltips_set_tip (tooltips, new_ext_author, _("You can change the name of the author of the extension here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (new_ext_author), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (new_ext_author), TRUE);
   gtk_entry_set_width_chars (GTK_ENTRY (new_ext_author), 20);
@@ -3685,6 +3685,14 @@ create_prefs_dialog (void)
   GtkWidget *prefs_author;
   GtkWidget *label68;
   GtkWidget *vbox28;
+  GtkWidget *frame13;
+  GtkWidget *alignment25;
+  GtkWidget *vbox53;
+  GtkWidget *prefs_git_button;
+  GSList *prefs_git_button_group = NULL;
+  GtkWidget *prefs_glulxe_button;
+  GtkWidget *label101;
+  GtkWidget *label100;
   GtkWidget *frame8;
   GtkWidget *alignment15;
   GtkWidget *vbox29;
@@ -4183,6 +4191,42 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox28);
   gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox28);
 
+  frame13 = gtk_frame_new (NULL);
+  gtk_widget_show (frame13);
+  gtk_box_pack_start (GTK_BOX (vbox28), frame13, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame13), 3);
+
+  alignment25 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment25);
+  gtk_container_add (GTK_CONTAINER (frame13), alignment25);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment25), 0, 0, 12, 0);
+
+  vbox53 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox53);
+  gtk_container_add (GTK_CONTAINER (alignment25), vbox53);
+
+  prefs_git_button = gtk_radio_button_new_with_mnemonic (NULL, _("_Use Git"));
+  gtk_widget_show (prefs_git_button);
+  gtk_box_pack_start (GTK_BOX (vbox53), prefs_git_button, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (prefs_git_button), prefs_git_button_group);
+  prefs_git_button_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (prefs_git_button));
+
+  prefs_glulxe_button = gtk_radio_button_new_with_mnemonic (NULL, _("Use _Glulxe"));
+  gtk_widget_show (prefs_glulxe_button);
+  gtk_box_pack_start (GTK_BOX (vbox53), prefs_glulxe_button, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (prefs_glulxe_button), prefs_git_button_group);
+  prefs_git_button_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (prefs_glulxe_button));
+
+  label101 = gtk_label_new (_("This option specifies the interpreter to use in the\nGame tab when testing a Glulx story file. Previous\nversions of Inform always used Glulxe, but the\ndefault may be changed to Git in the future. "));
+  gtk_widget_show (label101);
+  gtk_box_pack_start (GTK_BOX (vbox53), label101, FALSE, FALSE, 5);
+  gtk_misc_set_alignment (GTK_MISC (label101), 0, 0.5);
+
+  label100 = gtk_label_new (_("<b>Glulx Interpreter</b>"));
+  gtk_widget_show (label100);
+  gtk_frame_set_label_widget (GTK_FRAME (frame13), label100);
+  gtk_label_set_use_markup (GTK_LABEL (label100), TRUE);
+
   frame8 = gtk_frame_new (NULL);
   gtk_widget_show (frame8);
   gtk_box_pack_start (GTK_BOX (vbox28), frame8, FALSE, TRUE, 0);
@@ -4219,7 +4263,7 @@ create_prefs_dialog (void)
 
   frame9 = gtk_frame_new (NULL);
   gtk_widget_show (frame9);
-  gtk_box_pack_start (GTK_BOX (vbox28), frame9, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox28), frame9, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame9), 3);
 
   alignment17 = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -4329,6 +4373,9 @@ create_prefs_dialog (void)
                     NULL);
   g_signal_connect ((gpointer) prefs_author, "changed",
                     G_CALLBACK (on_prefs_author_changed),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_git_button, "toggled",
+                    G_CALLBACK (on_prefs_git_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) prefs_clean_build_toggle, "toggled",
                     G_CALLBACK (on_prefs_clean_build_toggle_toggled),
@@ -4442,6 +4489,13 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_author, "prefs_author");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label68, "label68");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox28, "vbox28");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, frame13, "frame13");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, alignment25, "alignment25");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, vbox53, "vbox53");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_git_button, "prefs_git_button");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_glulxe_button, "prefs_glulxe_button");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label101, "label101");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label100, "label100");
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame8, "frame8");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment15, "alignment15");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox29, "vbox29");
