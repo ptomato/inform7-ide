@@ -25,6 +25,7 @@
 #include "appwindow.h"
 #include "configfile.h"
 #include "datafile.h"
+#include "elastic.h"
 #include "error.h"
 #include "file.h"
 #include "history.h"
@@ -362,6 +363,10 @@ after_app_window_realize(GtkWidget *widget, gpointer data)
     g_free(htmlfile);
     history_unblock_handlers(thestory, RIGHT);
     
+	/* Set up the signal handlers for elastic tab stops */
+	elastic_setup(GTK_TEXT_BUFFER(thestory->buffer), 
+				  GTK_TEXT_VIEW(lookup_widget(widget, "source_l")));
+	
     /* Create empty menus for the Headings and Skein Labels buttons so they 
     become active */
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,

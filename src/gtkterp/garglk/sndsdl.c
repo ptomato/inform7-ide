@@ -53,7 +53,7 @@ void gli_initialize_sound(void)
 	audio->channels = 2;
 	audio->rate = 44100;
 	output = audio;
-	if (Mix_OpenAudio(output->rate, output->format, output->channels, 2048) == -1) {
+	if (Mix_OpenAudio(output->rate, output->format, output->channels, 4096) == -1) {
 	    gli_strict_warning("SDL Mixer init failed\n");
 	    gli_strict_warning(Mix_GetError());
 	    gli_conf_sound = 0;
@@ -298,7 +298,7 @@ static glui32 load_sound_resource(glui32 snd, long *len, char **buf)
 	FILE *file;
 	char name[1024];
 
-	sprintf(name, "%s/SND%ld", gli_workdir, snd); 
+	sprintf(name, "%s/SND%ld", gli_workdir, (long int)snd); 
 
 	file = fopen(name, "rb");
 	if (!file)
@@ -413,7 +413,7 @@ static glui32 play_compressed(schanid_t chan, char *ext)
     chan->sdl_channel = Mix_GroupAvailable(FREE);
     Mix_GroupChannel(chan->sdl_channel, BUSY);
     SDL_UnlockAudio;
-    chan->decode = Sound_NewSample(chan->sdl_rwops, ext, output, 262144);
+    chan->decode = Sound_NewSample(chan->sdl_rwops, ext, output, 65536);
     Uint32 soundbytes = Sound_Decode(chan->decode);
     Sound_Sample *sample = chan->decode;
     chan->sample = Mix_QuickLoad_RAW(sample->buffer, soundbytes);

@@ -26,6 +26,7 @@
 #include "appmenu.h"
 #include "appwindow.h"
 #include "configfile.h"
+#include "elastic.h"
 #include "error.h"
 #include "extension.h"
 #include "extwindow.h"
@@ -46,6 +47,10 @@ after_ext_window_realize(GtkWidget *widget, gpointer data)
       config_file_get_int("WindowSettings", "ExtWindowWidth"),
       config_file_get_int("WindowSettings", "ExtWindowHeight"));
     
+	/* Set up the signal handlers for elastic tab stops */
+	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(widget, "ext_code"));
+	elastic_setup(gtk_text_view_get_buffer(view), view);
+	
     /* Create some submenus and attach them */
     GtkWidget *menu;
 #ifndef SUCKY_GNOME

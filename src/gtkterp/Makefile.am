@@ -2,12 +2,12 @@
 
 ## Created by Anjuta
 
-SUBDIRS = garglk frotz glulxe 
+SUBDIRS = garglk frotz glulxe git 
 
 componentdocdir = ${datadir}/doc/gtkterp
 componentdoc_DATA = \
 	AUTHORS-frotz README-frotz COPYING-frotz TODO-frotz \
-	README-glulxe TODO-garglk \
+	README-glulxe TODO-garglk README-git \
 	CharterBT.txt LuxiMono.txt \
 	License-gargoyle.txt
 

@@ -99,6 +99,7 @@ void setup_vm()
 
   /* Initialize various other things in the terp. */
   init_operands(); 
+  init_accel();
   init_serial();
 
   /* Set up the initial machine state. */

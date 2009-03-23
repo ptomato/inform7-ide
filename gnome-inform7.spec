@@ -65,6 +65,7 @@ rm -rf %{buildroot}
 %{_bindir}/gnome-inform7
 %{_bindir}/gtkterp-frotz
 %{_bindir}/gtkterp-glulxe
+%{_bindir}/gtkterp-git
 %{_docdir}/gtkterp/*
 %{_datadir}/applications/gnome-inform7.desktop
 %{_datadir}/gnome-inform7/*.png
@@ -96,6 +97,8 @@ rm -rf %{buildroot}
 %{_datadir}/locale/es/LC_MESSAGES/gnome-inform7.mo
 
 %changelog
+* Mon Feb 23 2008 P.F. Chimento <philip.chimento@gmail.com>
+- Added the gtkterp-git binary to the packing list.
 * Sat Dec 6 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Repackaged to release .1 of Public Beta Build 5U92.
 * Sun Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>

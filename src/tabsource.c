@@ -145,7 +145,7 @@ create_natural_inform_source_buffer(gboolean extension)
       (GCallback)after_source_buffer_delete_range, NULL);
     g_signal_connect_after(buffer, "insert-text",
       (GCallback)after_source_buffer_insert_text, NULL);
-    
+	
     return buffer;
 }
 

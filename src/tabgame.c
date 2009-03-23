@@ -120,7 +120,8 @@ run_project(Story *thestory)
         gtk_terp_set_interactive(terp, FALSE);
     
     if(!gtk_terp_start_game(terp, (thestory->story_format == FORMAT_GLULX)?
-      GTK_TERP_GLULXE : GTK_TERP_FROTZ, &err)) {
+       (config_file_get_bool("IDESettings", "UseGit")? 
+	   GTK_TERP_GIT : GTK_TERP_GLULXE) : GTK_TERP_FROTZ, &err)) {
         error_dialog(GTK_WINDOW(thestory->window), err,
           _("Could not start interpreter: "));
         gtk_terp_unload_game(terp);

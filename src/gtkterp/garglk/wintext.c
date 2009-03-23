@@ -1010,9 +1010,9 @@ void win_textbuffer_cancel_line(window_t *win, event_t *ev)
 static void gcmd_accept_scroll(window_t *win, glui32 arg)
 {
     window_textbuffer_t *dwin = win->data;
-    int oldpos = dwin->scrollpos;
+/*    int oldpos = dwin->scrollpos;*/
     int pageht = dwin->height - 2;        /* 1 for prompt, 1 for overlap */
-    int i;
+/*    int i;*/
 
     switch (arg)
     {

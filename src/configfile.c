@@ -20,6 +20,7 @@
 #include <gconf/gconf-client.h>
 
 #include "configfile.h"
+#include "elastic.h"
 #include "error.h"
 #include "extension.h"
 #include "inspector.h"
@@ -372,6 +373,38 @@ on_config_intelligent_inspector_changed(GConfClient *client, guint id,
 }
 
 static void
+on_config_elastic_tabstops_changed(GConfClient *client, guint id, 
+								   GConfEntry *entry, GtkWidget *toggle)
+{
+	gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+	/* update application to reflect new value */
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle)) != newvalue)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+	if(newvalue) {
+		for_each_story_window_idle((GSourceFunc)update_app_window_elastic);
+		for_each_extension_window_idle((GSourceFunc)update_ext_window_elastic);
+	} else {
+		for_each_story_buffer(elastic_remove);
+		for_each_extension_buffer(elastic_remove);
+	}
+}
+
+static void
+on_config_elastic_tab_padding_changed(GConfClient *client, guint id,
+									  GConfEntry *entry)
+{
+	int newvalue = gconf_value_get_int(gconf_entry_get_value(entry));
+	/* validate new value */
+	if(newvalue < 0) {
+		set_key_to_default(client, entry);
+		return;
+	}
+	/* update application to reflect new value */
+	for_each_story_window_idle((GSourceFunc)update_app_window_elastic);
+	for_each_extension_window_idle((GSourceFunc)update_ext_window_elastic);
+}
+
+static void
 on_config_author_name_changed(GConfClient *client, guint id, GConfEntry *entry,
                               GtkWidget *editable)
 {
@@ -504,6 +537,11 @@ static struct KeyToMonitor keys_to_monitor[] = {
     { "SyntaxSettings/AutoNumberSections",
       (GConfClientNotifyFunc)on_config_generic_bool_changed,
       "prefs_auto_number_toggle" },
+	{ "EditorSettings/ElasticTabstops", 
+	  (GConfClientNotifyFunc)on_config_elastic_tabstops_changed,
+	  "prefs_elastic_tabstops_toggle" },
+	{ "EditorSettings/ElasticTabPadding",
+	  (GConfClientNotifyFunc)on_config_elastic_tab_padding_changed, NULL },
     { "AppSettings/AuthorName",
       (GConfClientNotifyFunc)on_config_author_name_changed, "prefs_author" },
 	{ "IDESettings/UseGit", (GConfClientNotifyFunc)on_config_use_git_changed,

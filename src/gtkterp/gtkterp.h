@@ -43,7 +43,8 @@ typedef struct _GtkTerpPrivate GtkTerpPrivate;
 typedef struct _GtkTerpClass GtkTerpClass;
 typedef enum {
     GTK_TERP_FROTZ,
-    GTK_TERP_GLULXE
+    GTK_TERP_GLULXE,
+	GTK_TERP_GIT
 } GtkTerpInterpreter;
 
 struct _GtkTerp {

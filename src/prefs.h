@@ -81,10 +81,12 @@ gboolean update_app_window_fonts(GtkWidget *window);
 gboolean update_ext_window_tabs(GtkWidget *widget);
 gboolean update_app_window_tabs(GtkWidget *widget);
 gboolean update_app_window_font_sizes(GtkWidget *window);
+gboolean update_app_window_elastic(GtkWidget *window);
+gboolean update_ext_window_elastic(GtkWidget *extwindow);
 void update_source_highlight(GtkSourceBuffer *buffer);
 void on_prefs_dialog_realize(GtkWidget *widget, gpointer data);
 gboolean on_prefs_i7_extensions_view_drag_drop(GtkWidget *widget,
-                                               GdkDragContext  *drag_context,
+                                               GdkDragContext *drag_context,
                                                gint x, gint y, guint time,
                                                gpointer data);
 void on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
@@ -129,6 +131,8 @@ void on_prefs_auto_indent_toggle_toggled(GtkToggleButton *togglebutton,
                                          gpointer data);
 void on_prefs_auto_number_toggle_toggled(GtkToggleButton *togglebutton,
                                          gpointer data);
+void on_prefs_elastic_tabstops_toggle_toggled(GtkToggleButton *togglebutton,
+                                              gpointer data);
 void on_prefs_author_changed(GtkEditable *editable, gpointer data);
 void on_prefs_git_button_toggled(GtkToggleButton *togglebutton, gpointer data);
 void on_prefs_clean_build_toggle_toggled(GtkToggleButton *togglebutton,

@@ -450,8 +450,11 @@ gtk_terp_start_game(GtkTerp *terp, const GtkTerpInterpreter format,
             args[0] = g_strdup("gtkterp-glulxe");
             break;
         case GTK_TERP_FROTZ:
-        default:
             args[0] = g_strdup("gtkterp-frotz");
+			break;
+		case GTK_TERP_GIT:
+		default:
+			args[0] = g_strdup("gtkterp-git");
     }
     args[1] = g_strdup(terp->priv->filename);
     args[2] = NULL;

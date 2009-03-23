@@ -21,24 +21,19 @@
 /* You may have to edit the definition of glui16 to make sure it's really a
    16-bit unsigned integer type, and glsi16 to make sure it's really a
    16-bit signed integer type. If they're not, horrible things will happen. */
-
-#include <limits.h>
-
-#if SHRT_MAX==0x7fff
-typedef unsigned short glui16;
-typedef signed   short glsi16;
-#elif INT_MAX==0x7fff
-typedef unsigned int glui16;
-typedef signed   int glsi16;
-#else
-#error "Can't find a 16-bit integer type"
-#endif
+typedef unsigned short glui16; 
+typedef signed short glsi16; 
 
 /* Uncomment this definition to turn on memory-address checking. In
    this mode, all reads and writes to main memory will be checked to
    ensure they're in range. This is slower, but prevents malformed
    game files from crashing the interpreter. */
 /* #define VERIFY_MEMORY_ACCESS (1) */
+
+/* Uncomment this definition to turn on Glulx VM profiling. In this
+   mode, all function calls are timed, and the timing information is
+   written to a data file called "profile-raw". */
+/* #define VM_PROFILING (1) */
 
 /* Some macros to read and write integers to memory, always in big-endian
    format. */
@@ -247,5 +242,30 @@ extern glui32 do_gestalt(glui32 val, glui32 val2);
 extern int init_dispatch(void);
 extern glui32 perform_glk(glui32 funcnum, glui32 numargs, glui32 *arglist);
 extern strid_t find_stream_by_id(glui32 objid);
+
+/* profile.c */
+extern int init_profile(void);
+#if VM_PROFILING
+extern glui32 profile_opcount;
+#define profile_tick() (profile_opcount++)
+extern void profile_in(glui32 addr, int accel);
+extern void profile_out(void);
+extern void profile_fail(char *reason);
+extern void profile_quit(void);
+#else /* VM_PROFILING */
+#define profile_tick()       (0)
+#define profile_in(addr, accel)  (0)
+#define profile_out()        (0)
+#define profile_fail(reason) (0)
+#define profile_quit()       (0)
+#endif /* VM_PROFILING */
+
+/* accel.c */
+typedef glui32 (*acceleration_func)(glui32 argc, glui32 *argv);
+extern void init_accel(void);
+extern acceleration_func accel_find_func(glui32 index);
+extern acceleration_func accel_get_func(glui32 addr);
+extern void accel_set_func(glui32 index, glui32 addr);
+extern void accel_set_param(glui32 index, glui32 val);
 
 #endif /* _GLULXE_H */

@@ -15,11 +15,23 @@
 void enter_function(glui32 addr, glui32 argc, glui32 *argv)
 {
   int ix, jx;
+  acceleration_func accelfunc;
   int locallen;
   int functype;
   glui32 modeaddr, opaddr, val;
   int loctype, locnum;
+
+  accelfunc = accel_get_func(addr);
+  if (accelfunc) {
+    profile_in(addr, TRUE);
+    val = accelfunc(argc, argv);
+    profile_out();
+    pop_callstub(val);
+    return;
+  }
     
+  profile_in(addr, FALSE);
+
   /* Check the Glulx type identifier byte. */
   functype = Mem1(addr);
   if (functype != 0xC0 && functype != 0xC1) {
@@ -179,6 +191,7 @@ void enter_function(glui32 addr, glui32 argc, glui32 *argv)
 void leave_function()
 {
   stackptr = frameptr;
+  profile_out();
 }
 
 /* push_callstub():

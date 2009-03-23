@@ -7,6 +7,9 @@
 #include "glulxe.h"
 #include "opcodes.h"
 
+/* ### We could save a few cycles per operand by generating a function for
+   each operandlist type. */
+
 /* fast_operandlist[]:
    This is a handy array in which to look up operandlists quickly.
    It stores the operandlists for the first 128 opcodes, which are
@@ -221,6 +224,10 @@ operandlist_t *lookup_operandlist(glui32 opcode)
   case op_mfree:
     return &list_L;
 
+  case op_accelfunc:
+  case op_accelparam:
+    return &list_LL;
+
   default: 
     return NULL;
   }
@@ -381,7 +388,7 @@ void parse_operands(instruction_t *inst, operandlist_t *oplist)
       inst->value[ix] = value;
 
     }
-    else {
+    else {  /* modeform_Store */
       switch (mode) {
 
       case 0: /* discard value */

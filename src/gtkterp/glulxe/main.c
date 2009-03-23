@@ -36,11 +36,15 @@ void glk_main()
   if (!init_dispatch()) {
     return;
   }
+  if (!init_profile()) {
+    return;
+  }
 
   setup_vm();
   execute_loop();
   finalize_vm();
 
+  profile_quit();
   glk_exit();
 }
 

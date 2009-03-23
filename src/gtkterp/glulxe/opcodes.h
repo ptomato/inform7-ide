@@ -106,5 +106,8 @@
 #define op_malloc       (0x178)
 #define op_mfree        (0x179)
 
+#define op_accelfunc    (0x180)
+#define op_accelparam   (0x181)
+
 #endif /* _OPCODES_H */
 

@@ -30,6 +30,7 @@
 #include "colorscheme.h"
 #include "configfile.h"
 #include "datafile.h"
+#include "elastic.h"
 #include "error.h"
 #include "extension.h"
 #include "file.h"
@@ -118,6 +119,7 @@ gboolean
 update_ext_window_tabs(GtkWidget *widget) 
 {
     update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "ext_code")));
+	update_ext_window_elastic(widget);
     return FALSE; /* One-shot idle function */
 }
 
@@ -129,6 +131,7 @@ update_app_window_tabs(GtkWidget *widget)
     update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "source_r")));
     update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "inform6_l")));
     update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "inform6_r")));
+	update_app_window_elastic(widget);
     return FALSE; /* One-shot idle function */
 }
 
@@ -163,6 +166,26 @@ update_app_window_fonts(GtkWidget *window)
     update_font(widget);
     update_tabs(GTK_SOURCE_VIEW(widget));
     return FALSE; /* One-shot idle function */
+}
+
+/* Update the elastic tabstops in this main window */
+gboolean
+update_app_window_elastic(GtkWidget *window)
+{
+	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(window, "source_l"));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
+	elastic_refresh(buffer, view);
+	return FALSE; /* One-shot idle function */
+}
+
+/* Update the elastic tabstops in this extension window */
+gboolean
+update_ext_window_elastic(GtkWidget *extwindow)
+{
+	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(extwindow, "ext_code"));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
+	elastic_refresh(buffer, view);
+	return FALSE; /* One-shot idle function */
 }
 
 /* Update the font sizes of widgets in this main window that don't have
@@ -611,6 +634,14 @@ on_prefs_auto_number_toggle_toggled(GtkToggleButton *togglebutton,
 {
     config_file_set_bool("SyntaxSettings", "AutoNumberSections",
       gtk_toggle_button_get_active(togglebutton));
+}
+
+void
+on_prefs_elastic_tabstops_toggle_toggled(GtkToggleButton *togglebutton,
+                                         gpointer data)
+{
+	config_file_set_bool("EditorSettings", "ElasticTabstops",
+	  gtk_toggle_button_get_active(togglebutton));
 }
 
 void

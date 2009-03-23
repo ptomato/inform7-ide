@@ -3675,6 +3675,7 @@ create_prefs_dialog (void)
   GtkWidget *prefs_enable_highlighting_toggle;
   GtkWidget *prefs_indent_toggle;
   GtkWidget *prefs_auto_indent_toggle;
+  GtkWidget *prefs_elastic_tabstops_toggle;
   GtkWidget *prefs_follow_symbols_toggle;
   GtkWidget *alignment14;
   GtkWidget *vbox27;
@@ -4144,6 +4145,11 @@ create_prefs_dialog (void)
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_auto_indent_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_auto_indent_toggle, _("If this option is selected, Inform will track the number of tabs at the beginning of the last line and automatically indent the next line accordingly when you insert a new line by pressing return."), NULL);
 
+  prefs_elastic_tabstops_toggle = gtk_check_button_new_with_mnemonic (_("_Use elastic tabstops"));
+  gtk_widget_show (prefs_elastic_tabstops_toggle);
+  gtk_box_pack_start (GTK_BOX (vbox26), prefs_elastic_tabstops_toggle, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_elastic_tabstops_toggle, _("If this option is selected, tab stops will have variable width so that data in tables are lined up properly in columns. If you are working on a long story file on a slow computer, you may see a performance benefit by turning this off."), NULL);
+
   prefs_follow_symbols_toggle = gtk_check_button_new_with_mnemonic (_("'Intelligently' _follow symbols in source file"));
   gtk_widget_show (prefs_follow_symbols_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_follow_symbols_toggle, FALSE, FALSE, 0);
@@ -4151,7 +4157,7 @@ create_prefs_dialog (void)
 
   alignment14 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment14);
-  gtk_box_pack_start (GTK_BOX (vbox26), alignment14, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox26), alignment14, FALSE, FALSE, 0);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment14), 0, 0, 20, 0);
 
   vbox27 = gtk_vbox_new (FALSE, 0);
@@ -4170,7 +4176,7 @@ create_prefs_dialog (void)
 
   hseparator3 = gtk_hseparator_new ();
   gtk_widget_show (hseparator3);
-  gtk_box_pack_start (GTK_BOX (vbox26), hseparator3, FALSE, FALSE, 5);
+  gtk_box_pack_start (GTK_BOX (vbox26), hseparator3, FALSE, FALSE, 6);
 
   label73 = gtk_label_new_with_mnemonic (_("_Preferred author's name for Inform 7 projects"));
   gtk_widget_show (label73);
@@ -4362,6 +4368,9 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_auto_indent_toggle, "toggled",
                     G_CALLBACK (on_prefs_auto_indent_toggle_toggled),
                     NULL);
+  g_signal_connect ((gpointer) prefs_elastic_tabstops_toggle, "toggled",
+                    G_CALLBACK (on_prefs_elastic_tabstops_toggle_toggled),
+                    NULL);
   g_signal_connect ((gpointer) prefs_follow_symbols_toggle, "toggled",
                     G_CALLBACK (on_prefs_follow_symbols_toggle_toggled),
                     NULL);
@@ -4479,6 +4488,7 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_enable_highlighting_toggle, "prefs_enable_highlighting_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_indent_toggle, "prefs_indent_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_auto_indent_toggle, "prefs_auto_indent_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_elastic_tabstops_toggle, "prefs_elastic_tabstops_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_follow_symbols_toggle, "prefs_follow_symbols_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment14, "alignment14");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox27, "vbox27");

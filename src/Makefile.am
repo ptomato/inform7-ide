@@ -49,7 +49,8 @@ gnome_inform7_SOURCES = \
     tabskein.c tabskein.h \
     appmenu.c appmenu.h \
     apptoolbar.c apptoolbar.h \
-    tabdocs.c tabdocs.h
+    tabdocs.c tabdocs.h \
+	elastic.c elastic.h
 
 gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERP_LIBS) gtkterp/libgtkterp.a
 
