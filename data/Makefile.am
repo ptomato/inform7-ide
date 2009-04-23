@@ -1,8 +1,20 @@
-SUBDIRS = Compilers Documentation Inform7 Library map_icons scene_icons \
-styles
+SUBDIRS = . licenses languages styles 
 
-pkgdata_DATA = Beneath.png cblorb_failed.png cblorb_succeeded.png crash.png \
-ni_failed.png ni_failed_2.png ni_failed_3.png ni_succeeded.png \
-ni_succeeded_2.png ni_succeeded_3.png rte.png \
-inform.lang naturalinform.lang naturalinformextension.lang
-EXTRA_DIST = $(pkgdata_DATA)
+INFORMTARBALL = Inform_@PACKAGE_VERSION@_data.tar.gz
+
+dist_pkgdata_DATA = $(INFORMTARBALL)
+
+install-data-hook:
+	cd $(DESTDIR)$(pkgdatadir); \
+	$(TAR) --gzip --list --file $(INFORMTARBALL) > uninstall_manifest.txt; \
+	$(TAR) --gzip --get --file $(INFORMTARBALL); \
+	rm --force $(INFORMTARBALL); \
+	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/^\|$$/"/g' \
+		| $(XARGS) $(CHMOD) a=rX,u+w
+
+uninstall-local:
+	cd $(DESTDIR)$(pkgdatadir); \
+	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/ /\\ /' \
+		| $(XARGS) rm --force; \
+	rm --force uninstall_manifest.txt
+

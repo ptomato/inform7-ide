@@ -1,19 +1,18 @@
-/*  Copyright 2006 P.F. Chimento
- *  This file is part of GNOME Inform 7.
- * 
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
 #include <gnome.h>
@@ -342,6 +341,13 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
     } else if(g_str_has_prefix(url, "inform://Extensions")) {
         real_url = g_build_filename(g_get_home_dir(), "Inform", "Documentation",
           url + 19, NULL);
+		/* When clicking on a link to extension documentation, this is a hack to
+        get it to open in the documentation tab */
+        int right = get_current_notebook_side(GTK_WIDGET(html));
+        html = GTK_HTML(lookup_widget(GTK_WIDGET(html), 
+          right? "docs_r" : "docs_l"));
+        gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(html), right),
+          TAB_DOCUMENTATION);
     } else if(g_str_has_prefix(url, "inform:/")) {
         if(check_datafile(url + 8))
             real_url = get_datafile_path(url + 8);

@@ -1,19 +1,18 @@
-/*  Copyright 2006 P.F. Chimento
- *  This file is part of GNOME Inform 7.
- * 
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
 #include <gnome.h>
@@ -50,18 +49,13 @@ after_welcome_dialog_realize(GtkWidget *widget, gpointer data)
 {
     /* Set the background pixmap for this window */
     GtkRcStyle *newstyle = gtk_widget_get_modifier_style(widget);
-    gchar *filename = g_build_filename("gnome-inform7",
-                                       "welcome-background.png", NULL);
     newstyle->bg_pixmap_name[GTK_STATE_NORMAL] =
-      gnome_program_locate_file(gnome_program_get(),
-      GNOME_FILE_DOMAIN_APP_PIXMAP, filename,
-      TRUE, NULL);
-    g_free(filename);
+		get_datafile_path_va("Documentation", "Welcome Background.png", NULL);
     gtk_widget_modify_style(widget, newstyle);
     
-    /* Set the font size to 14 pixels for the widgets in this window */
+    /* Set the font size to 12 pixels for the widgets in this window */
     PangoFontDescription *font = pango_font_description_new();
-    pango_font_description_set_absolute_size(font, 14 * PANGO_SCALE);
+    pango_font_description_set_absolute_size(font, 12 * PANGO_SCALE);
     gtk_widget_modify_font(lookup_widget(widget, "welcome_label"), font);
     gtk_widget_modify_font(
       gtk_button_get_label_widget(lookup_widget(widget, "welcome_new_button")),

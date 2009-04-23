@@ -1,19 +1,18 @@
-/*  Copyright 2006 P.F. Chimento
- *  This file is part of GNOME Inform 7.
- * 
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
 #include <gnome.h>
@@ -36,29 +35,14 @@
 #include "tabskein.h"
 #include "windowlist.h"
 
-#define I_LIKE_SKEIN
-
 /* This function is now in GTK 2.14 */
 #if !GTK_CHECK_VERSION(2,14,0)
 
-/* The following function is from Damian Iverleigh's patch to GtkContainer,
-http://mail.gnome.org/archives/gtk-devel-list/2001-October/msg00516.html */
-
-/**
- * gtk_container_get_focus_child:
- * @container: a #GtkContainer
- * 
- * Retrieves the currently focused child of the container. See
- * gtk_container_set_focus_child().
- *
- * Return value: pointer to the widget of the focused child (NULL
- * if none is set
- **/
+/* This function is from gtkcontainer.c. Subject to terms of LGPLv2.1 */
 static GtkWidget *
-gtk_container_get_focus_child (GtkContainer *container)
+gtk_container_get_focus_child(GtkContainer *container)
 {
-    g_return_val_if_fail (container != NULL, NULL);
-    g_return_val_if_fail (GTK_IS_CONTAINER (container), NULL);
+    g_return_val_if_fail(GTK_IS_CONTAINER(container), NULL);
 
     return container->focus_child;
 }
@@ -447,11 +431,10 @@ after_notebook_l_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
         default:
             history_push_tab(thestory, LEFT, page_num);
     }
-#ifdef I_LIKE_SKEIN
+
     /* Redraw the skein if we are switching to it and it needs updating */
     if(page_num == TAB_SKEIN && thestory->drawflag[SKEIN_LEFT])
         skein_schedule_redraw(thestory->theskein, thestory);
-#endif /* I_LIKE_SKEIN */
 }
 
 void
@@ -501,11 +484,10 @@ after_notebook_r_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
         default:
             history_push_tab(thestory, RIGHT, page_num);
     }
-#ifdef I_LIKE_SKEIN
+
     /* Redraw the skein if we are switching to it and it needs updating */
     if(page_num == TAB_SKEIN && thestory->drawflag[SKEIN_RIGHT])
         skein_schedule_redraw(thestory->theskein, thestory);
-#endif /* I_LIKE_SKEIN */
 }
 
 void

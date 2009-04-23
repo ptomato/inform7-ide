@@ -1,4 +1,4 @@
-// $Id: terp.c,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: terp.c,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 // Interpreter engine.
 
 #include "git.h"
@@ -61,6 +61,8 @@ void startProgram (size_t cacheSize, enum IOMode ioMode)
     
     git_uint32 glulxPC = 0;
     git_uint32 glulxOpcode = 0;
+
+    acceleration_func accelfunc;
 
     // Initialise the code cache.
 
@@ -176,8 +178,16 @@ do_jump_abs_L7:
     NEXT;
 
 do_enter_function_L1: // Arg count is in L2.
+
+    // Check for an accelerated function
+    accelfunc = accel_get_func(L1);
+    if (accelfunc) {
+        S1 = accelfunc(L2, (glui32 *) args);
+        goto do_pop_call_stub;
+    }
+
     frame = sp;
-    // Readthe function type.
+    // Read the function type.
     L7 = memRead8(L1++);
     // Parse the local variables descriptor.
     L6 = L5 = L4 = 0;
@@ -1093,7 +1103,7 @@ do_tailcall:
         
     do_restart:
         // Reset game memory to its initial state.
-        resetMemory();
+        resetMemory(protectPos, protectSize);
         resetUndo();
 
         // Reset all the stack pointers.
@@ -1245,6 +1255,16 @@ do_tailcall:
         
     do_mfree:
         heap_free(L1);
+        NEXT;
+        
+    // Function acceleration (new with glulx spec 3.1.1)
+        
+    do_accelfunc:
+        accel_set_func(L1, L2);
+        NEXT;
+        
+    do_accelparam:
+        accel_set_param(L1, L2);
         NEXT;
         
     // Special Git opcodes

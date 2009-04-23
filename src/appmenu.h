@@ -1,19 +1,18 @@
-/* Copyright 2007 P. F. Chimento
- * This file is part of GNOME Inform 7.
- * 
- * This program is free software; you can redistribute it and/or modify
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
- * 
+ * GNU General Public License for more details.
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
 #ifndef _APPMENU_H
@@ -77,8 +76,8 @@ void on_show_scenes_activate(GtkMenuItem *menuitem, gpointer data);
 void on_show_world_activate(GtkMenuItem *menuitem, gpointer data);
 void on_next_sub_panel_activate(GtkMenuItem *menuitem, gpointer data);
 void on_inform_help_activate(GtkMenuItem *menuitem, gpointer data);
-void on_gnome_notes_activate(GtkMenuItem *menuitem, gpointer data);
 void on_license_activate(GtkMenuItem *menuitem, gpointer data);
+void on_report_a_bug_activate(GtkMenuItem *menuitem, gpointer data);
 void on_help_extensions_activate(GtkMenuItem *menuitem, gpointer data);
 void on_recipe_book_activate(GtkMenuItem *menuitem, gpointer data);
 void on_about_activate(GtkMenuItem *menuitem, gpointer data);

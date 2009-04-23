@@ -1,16 +1,11 @@
-## Process this file with automake to produce Makefile.in
-
-SUBDIRS = gtkterp
-
-INCLUDES = \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	@GNOMEINFORM7_CFLAGS@
+SUBDIRS = inweb cBlorb inform6 gtkterp ni
 
 AM_CFLAGS = -Wall
 
-bin_PROGRAMS = gnome-inform7
+# This line won't be necessary anymore in Automake 1.10a
+pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
+bin_PROGRAMS = gnome-inform7
 gnome_inform7_SOURCES = \
 	gtkterp/gtkterp.h \
 	main.c \
@@ -51,17 +46,11 @@ gnome_inform7_SOURCES = \
     apptoolbar.c apptoolbar.h \
     tabdocs.c tabdocs.h \
 	elastic.c elastic.h
-
-gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERP_LIBS) gtkterp/libgtkterp.a
-
+gnome_inform7_CPPFLAGS = \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+gnome_inform7_CFLAGS = @GNOMEINFORM7_CFLAGS@ $(AM_CFLAGS)
+gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) gtkterp/libgtkterp.a
 gnome_inform7_LDFLAGS = -L.
-
-
-
-
-
-
-
-
-
 

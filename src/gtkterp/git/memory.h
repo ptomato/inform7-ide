@@ -1,4 +1,4 @@
-// $Id: memory.h,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: memory.h,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 // Functions and macros for accessing game memory.
 
 #ifndef GIT_MEMORY_H
@@ -89,7 +89,7 @@ extern int resizeMemory (git_uint32 newSize, int isInternal);
 
 // Resets memory to its initial state. Call this when the game restarts.
 
-extern void resetMemory ();
+extern void resetMemory (git_uint32 protectPos, git_uint32 protectSize);
 
 // Disposes of all the data structures allocated in initMemory().
 

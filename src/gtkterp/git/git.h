@@ -1,5 +1,5 @@
 // Main header for git
-// $Id: git.h,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: git.h,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 
 #ifndef GIT_H
 #define GIT_H
@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "glk.h"
+#include <glk.h>
 
 #include "version.h"
 #include "config.h"
@@ -67,6 +67,8 @@ enum GestaltSelector
     GESTALT_MEM_COPY     = 6,
     GESTALT_MALLOC       = 7,
     GESTALT_MALLOC_HEAP  = 8,
+    GESTALT_ACCELERATION = 9,
+    GESTALT_ACCELFUNC    = 10,
     
     // This special selector returns 1 if the cache control
     // opcodes 'git_setcacheram' and 'git_prunecache' are available.
@@ -160,5 +162,14 @@ extern int heap_is_active ();
 extern void heap_clear ();
 extern int heap_get_summary (glui32 *valcount, glui32 **summary);
 extern int heap_apply_summary (glui32 valcount, glui32 *summary);
+
+// accel.c
+
+typedef glui32 (*acceleration_func)(glui32 argc, glui32 *argv);
+extern void init_accel ();
+extern acceleration_func accel_find_func (glui32 index);
+extern acceleration_func accel_get_func (glui32 addr);
+extern void accel_set_func (glui32 index, glui32 addr);
+extern void accel_set_param (glui32 index, glui32 val);
 
 #endif // GIT_H

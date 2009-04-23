@@ -192,6 +192,9 @@ LABEL (mcopy)
 LABEL (malloc)
 LABEL (mfree)
 
+LABEL (accelfunc)
+LABEL (accelparam)
+
 LABEL (git_setcacheram)
 LABEL (git_prunecache)
 

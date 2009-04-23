@@ -1,19 +1,18 @@
-/*  Copyright 2006 P.F. Chimento
- *  This file is part of GNOME Inform 7.
- * 
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
 #include <gnome.h>
@@ -31,8 +30,6 @@
 #include "tabskein.h"
 #include "tabsource.h"
 #include "windowlist.h"
-
-#define I_LIKE_SKEIN
 
 /* This is the list of all story structures that are currently allocated */
 static GSList *storylist = NULL;
@@ -67,11 +64,11 @@ new_story()
     newstory->handler_finished = 0;
     newstory->handler_input = 0;
     newstory->action = COMPILE_NONE;
+	newstory->copyblorbto = NULL;
     
     /* Create an empty skein */
     int foo;
     newstory->theskein = skein_new();
-#ifdef I_LIKE_SKEIN
     newstory->editingskein = FALSE;
     newstory->redrawingskein = FALSE;
     newstory->old_horizontal_spacing = 0;
@@ -94,7 +91,6 @@ new_story()
                      G_CALLBACK(skein_schedule_redraw), (gpointer)newstory);
     g_signal_connect(G_OBJECT(newstory->theskein), "show-node",
                      G_CALLBACK(show_node), (gpointer)newstory);
-#endif /* I_LIKE_SKEIN */
     
     /* Initialize the navigation history */
     for(foo = 0; foo < 2; foo++) {
@@ -149,6 +145,9 @@ delete_story(Story *oldstory)
     if(oldstory->monitor)
         gnome_vfs_monitor_cancel(oldstory->monitor);
     
+	if(oldstory->copyblorbto)
+		g_free(oldstory->copyblorbto);
+
     int side;
     for(side = 0; side < 2; side++) {
         History *foo;

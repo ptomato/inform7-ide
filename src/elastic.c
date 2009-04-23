@@ -1,8 +1,7 @@
-/*
- * elastic.c
- * Based on gedit-elastictabstops-plugin.c, released 2007-09-16 (first release)
- * Copyright (C) 2007 Nick Gravgaard
- * Adapted 2009-03-22 by P. F. Chimento
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
+ * Portions copyright (c) 2007 Nick Gravgaard (based on
+ * gedit-elastictabstops-plugin.c, released 2007-09-16)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

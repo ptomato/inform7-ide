@@ -1,29 +1,21 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*  Copyright 2007 P.F. Chimento
- *  This file is part of GNOME Inform 7.
- * 
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #include <gnome.h>
-
-#define I_LIKE_SKEIN
-
-#ifdef I_LIKE_SKEIN
 #include <math.h>
 #include <libgnomecanvas/libgnomecanvas.h>
 #include "gtkterp/gtkterp.h"
@@ -1007,12 +999,10 @@ find_node_by_coordinates(GNode *node, double x, double y)
     return NULL;
 }
 */
-#endif /*I_LIKE_SKEIN*/
 
 void
 on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 {
-#ifdef I_LIKE_SKEIN
 	GtkWidget *dialog = create_skein_spacing_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
 	thestory->old_horizontal_spacing = config_file_get_int("SkeinSettings", 
@@ -1038,19 +1028,16 @@ on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 					 G_CALLBACK(on_skein_vertical_spacing_value_changed),
 					 thestory);
 	gtk_dialog_run(GTK_DIALOG(dialog));
-#endif /*I_LIKE_SKEIN*/
 }
 
 void
 on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data)
 {
-#ifdef I_LIKE_SKEIN
 	GtkWidget *dialog = create_skein_trim_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
 	g_signal_connect(lookup_widget(dialog, "skein_trim_ok"), "clicked",
 					 G_CALLBACK(on_skein_trim_ok_clicked), thestory);
 	gtk_dialog_run(GTK_DIALOG(dialog));
-#endif /*I_LIKE_SKEIN*/
 }
 
 void
@@ -1059,8 +1046,6 @@ on_skein_play_all_clicked(GtkToolButton *toolbutton, gpointer user_data)
 	
 }
 
-
-#ifdef I_LIKE_SKEIN
 static void
 free_node_labels(GSList *item, gpointer data)
 {
@@ -1077,12 +1062,10 @@ jump_to_node(GtkMenuItem *menuitem, GNode *node)
 	Story *thestory = get_story(GTK_WIDGET(menuitem));
 	show_node(thestory->theskein, GOT_USER_ACTION, node, thestory);
 }
-#endif /*I_LIKE_SKEIN*/
 
 void
 on_skein_labels_show_menu(GtkMenuToolButton *menutoolbutton, gpointer user_data)
 {
-#ifdef I_LIKE_SKEIN
 	Story *thestory = get_story(GTK_WIDGET(menutoolbutton));
 	
 	/* Destroy the previous menu */
@@ -1105,10 +1088,8 @@ on_skein_labels_show_menu(GtkMenuToolButton *menutoolbutton, gpointer user_data)
 	
 	/* Set the menu as the drop-down menu of the button */
     gtk_menu_tool_button_set_menu(menutoolbutton, menu);
-#endif /*I_LIKE_SKEIN*/
 }
 
-#ifdef I_LIKE_SKEIN
 void
 on_skein_spacing_use_defaults_clicked(GtkButton *button, Story *thestory)
 {
@@ -1158,4 +1139,3 @@ on_skein_trim_ok_clicked(GtkButton *button, Story *thestory)
 			   -1, TRUE);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
-#endif /*I_LIKE_SKEIN*/

@@ -1,4 +1,4 @@
-// $Id: git.c,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: git.c,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 
 #include "git.h"
 #include <gi_blorb.h>
@@ -14,6 +14,8 @@ static void gitMain (const git_uint8 * game, git_uint32 gameSize, git_uint32 cac
     git_uint32 version;
     enum IOMode ioMode = IO_NULL;
     
+    init_accel ();
+
     // Initialise the Glk dispatch layer.
     git_init_dispatch();
 

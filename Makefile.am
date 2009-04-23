@@ -1,6 +1,21 @@
-## Process this file with automake to produce Makefile.in
+SUBDIRS = src po data pixmaps debian
 
-SUBDIRS = src po data debian
+desktopdir = $(datadir)/applications
+dist_desktop_DATA = gnome-inform7.desktop
+
+schemadir = @GCONF_SCHEMA_FILE_DIR@
+dist_schema_DATA = gnome-inform7.schemas
+
+docdir = $(datadir)/doc/$(PACKAGE)
+doc_DATA = AUTHORS ChangeLog COPYING NEWS README THANKS TODO
+
+install-data-local:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+	$(GCONFTOOL) --makefile-install-rule $(srcdir)/$(dist_schema_DATA)
+
+uninstall-local:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(dist_schema_DATA)
 
 EXTRA_DIST = \
 	autogen.sh \
@@ -9,42 +24,35 @@ EXTRA_DIST = \
 	intltool-merge.in \
 	gnome-inform7.glade \
 	gnome-inform7.gladep \
-	gnome-inform7.desktop \
-	gnome-inform7.spec \
-	gnome-inform7.schemas
+	gnome-inform7.spec.in
+	
+if BUILDING_RPM
+EXTRA_DIST += gnome-inform7.spec
+endif
 
-desktopdir = $(datadir)/applications
-desktop_DATA = gnome-inform7.desktop
+DISTCLEANFILES = \
+	intltool-extract \
+	intltool-merge \
+	intltool-update \
+	gnome-inform7.spec
 
-appicondir = $(datadir)/pixmaps
-appicon_DATA = pixmaps/Inform.png
-
-schemadir = @GCONF_SCHEMA_FILE_DIR@
-schema_DATA = gnome-inform7.schemas
-
-install-data-local:
-	@$(NORMAL_INSTALL)
-	if test -d $(srcdir)/pixmaps; then \
-	  $(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
-	  for pixmap in $(srcdir)/pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
-	    fi \
-	  done \
-	fi; \
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-	$(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
-
-dist-hook:
-	if test -d pixmaps; then \
-	  mkdir $(distdir)/pixmaps; \
-	  for pixmap in pixmaps/*; do \
-	    if test -f $$pixmap; then \
-	      cp -p $$pixmap $(distdir)/pixmaps; \
-	    fi \
-	  done \
-	fi
-
-uninstall-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(schema_DATA)
+if BUILDING_RPM
+RPMDIR=`$(RPM) --eval %_rpmdir`
+SRCRPMDIR=`$(RPM) --eval %_srcrpmdir`
+RPMARCH=`$(RPM) --eval %_arch`
+BINRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
+DEBUGRPM = $(PACKAGE)-debuginfo-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
+SRCRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).src.rpm
+rpm: dist
+	$(ECHO) "Building RPM package..."; \
+	$(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.gz && \
+	$(CP) $(RPMDIR)/$(BINRPM) $(srcdir) && \
+	$(CP) $(SRCRPMDIR)/$(SRCRPM) $(srcdir) && \
+	$(TEST) -e $(RPMDIR)/$(DEBUGRPM) && \
+	$(CP) $(RPMDIR)/$(DEBUGRPM) $(srcdir)
+else
+rpm:
+	@$(ECHO) \
+	"To build an RPM package, you must run configure with --enable-rpm."; \
+	exit 1
+endif

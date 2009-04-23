@@ -1,4 +1,4 @@
-// $Id: saveundo.c,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: saveundo.c,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 
 #include "git.h"
 #include <stdlib.h>
@@ -186,7 +186,6 @@ int restoreUndo (git_sint32* base, git_uint32 protectPos, git_uint32 protectSize
             for ( ; addr < (protectPos & ~0xff) ; addr += 256, ++map)
                 memcpy (gRam + addr, *map, 256);
             
-            addr += 256, ++map;
             memcpy (gRam + addr, *map, protectPos & 0xff);
             protectSize += protectPos & 0xff;
             

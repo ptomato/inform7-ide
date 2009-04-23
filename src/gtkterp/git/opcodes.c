@@ -1,4 +1,4 @@
-// $Id: opcodes.c,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: opcodes.c,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 
 #include "git.h"
 #include "opcodes.h"
@@ -448,7 +448,11 @@ void parseInstruction (git_uint32* pc, int * done)
         case op_malloc: parseLS (pc, label_malloc); break;
         case op_mfree: parseL (pc, label_mfree); break;
         
-
+        // Function acceleration
+            
+        case op_accelfunc: parseLL (pc, label_accelfunc); break;
+        case op_accelparam: parseLL (pc, label_accelparam); break;
+       
         // Special Git opcodes
         
         case op_git_setcacheram: parseL (pc, label_git_setcacheram); break;

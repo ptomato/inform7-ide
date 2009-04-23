@@ -1,4 +1,4 @@
-// $Id: memory.c,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: memory.c,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 
 #include "git.h"
 #include <stdlib.h>
@@ -120,24 +120,38 @@ int resizeMemory (git_uint32 newSize, int isInternal)
         gRamStart += RAM_OVERLAP; // Restore boundary to its previous value.
         return 1; // Failed to extend memory.
     }
+    if (newSize > gEndMem)
+        memset (newRam + gEndMem - gRamStart, 0, newSize - gEndMem);
+
     gRam = newRam - gRamStart;
     gEndMem = newSize;
     gRamStart += RAM_OVERLAP; // Restore boundary to its previous value.
     return 0;
 }
 
-void resetMemory ()
+void resetMemory (git_uint32 protectPos, git_uint32 protectSize)
 {
-  // Deactivate the heap (if it was active).
-  heap_clear();
+    git_uint32 protectEnd = protectPos + protectSize;
+    git_uint32 i;
 
-  gEndMem = gOriginalEndMem;
-    
-	// Copy the initial contents of RAM.
-	memcpy (gRam + gRamStart, gRom + gRamStart, gExtStart - gRamStart);
+    // Deactivate the heap (if it was active).
+    heap_clear();
 
-	// Zero out the extended RAM.
-	memset (gRam + gExtStart, 0, gEndMem - gExtStart);
+    gEndMem = gOriginalEndMem;
+      
+    // Copy the initial contents of RAM.
+    for (i = gRamStart; i < gExtStart; ++i)
+    {
+        if (i >= protectEnd || i < protectPos)
+            gRam [i] = gRom [i];
+    }
+
+    // Zero out the extended RAM.
+    for (i = gExtStart; i < gEndMem; ++i)
+    {
+        if (i >= protectEnd || i < protectPos)
+            gRam [i] = 0;
+    }
 }
 
 void shutdownMemory ()

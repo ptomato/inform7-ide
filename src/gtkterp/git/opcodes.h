@@ -1,4 +1,4 @@
-// $Id: opcodes.h,v 1.1 2009-03-23 21:48:09 pchimento Exp $
+// $Id: opcodes.h,v 1.2 2009-04-23 21:19:48 pchimento Exp $
 
 #ifndef OPCODES_H
 #define OPCODES_H
@@ -104,6 +104,9 @@
 #define op_mcopy        (0x171)
 #define op_malloc       (0x178)
 #define op_mfree        (0x179)
+
+#define op_accelfunc    (0x180)
+#define op_accelparam   (0x181)
 
 // Special cache control opcodes.
 

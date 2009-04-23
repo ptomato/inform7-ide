@@ -1,19 +1,18 @@
-/*  Copyright 2006 P.F. Chimento
- *  This file is part of GNOME Inform 7.
- * 
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
 #ifdef HAVE_CONFIG_H
@@ -22,28 +21,10 @@
 
 #include <gnome.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-
-#ifdef ENABLE_NLS
-#  include <libintl.h>
-#  undef _
-#  define _(String) dgettext (PACKAGE, String)
-#  ifdef gettext_noop
-#    define N_(String) gettext_noop (String)
-#  else
-#    define N_(String) (String)
-#  endif
-#else
-#  define textdomain(String) (String)
-#  define gettext(String) (String)
-#  define dgettext(Domain,Message) (Message)
-#  define dcgettext(Domain,Message,Type) (Message)
-#  define bindtextdomain(Domain,Directory) (Domain)
-#  define _(String) (String)
-#  define N_(String) (String)
-#endif
 
 #ifdef OSSP_UUID
 #  include <ossp/uuid.h> /* For systems with OSSP uuid */
@@ -93,10 +74,10 @@ run_census(gboolean wait)
 {
     /* Build the command line */
     gchar **commandline = g_new(gchar *, 5);
-    commandline[0] = get_datafile_path_va("Compilers", "ni", NULL);
-    commandline[1] = g_strdup("--rules");
-    commandline[2] = get_datafile_path_va("Inform7", "Extensions", NULL);
-    commandline[3] = g_strdup("--census");
+    commandline[0] = get_binary_path("ni");
+    commandline[1] = g_strdup("-rules");
+    commandline[2] = get_datafile_path("Extensions");
+    commandline[3] = g_strdup("-census");
     commandline[4] = NULL;
     
     if(wait)
@@ -185,9 +166,8 @@ prepare_ni_compiler(Story *thestory)
 
 /* Display the NI compiler's status in the app status bar */
 static void 
-display_ni_status(gpointer data, gchar *text) 
+display_ni_status(GtkProgressBar *progressbar, gchar *text) 
 {
-    GtkProgressBar *progressbar = (GtkProgressBar *)data;
     gint percent;
     gchar *message;
     
@@ -210,18 +190,18 @@ start_ni_compiler(Story *thestory)
     gchar **commandline; 
     if(thestory->action == COMPILE_RELEASE) {
         commandline = g_new(gchar *, 8);
-        commandline[6] = g_strdup("--release");
+        commandline[6] = g_strdup("-release");
         commandline[7] = NULL;
     } else {
         commandline = g_new(gchar *, 7);
         commandline[6] = NULL;
     }
-    commandline[0] = get_datafile_path_va("Compilers", "ni", NULL);
-    commandline[1] = g_strdup("--rules");
-    commandline[2] = get_datafile_path_va("Inform7", "Extensions", NULL);
-    commandline[3] = g_strconcat("--extension=", get_story_extension(thestory),
-      NULL);
-    commandline[4] = g_strdup("--package");
+    commandline[0] = get_binary_path("ni");
+    commandline[1] = g_strdup("-rules");
+    commandline[2] = get_datafile_path("Extensions");
+    commandline[3] = g_strconcat("-extension=", get_story_extension(thestory), 
+								 NULL);
+    commandline[4] = g_strdup("-package");
     commandline[5] = g_strdup(thestory->filename);
 
     /* Run the command and pipe its output to the text buffer. Also pipe stderr
@@ -230,7 +210,8 @@ start_ni_compiler(Story *thestory)
     GtkProgressBar *progress = gnome_appbar_get_progress(
       GNOME_APPBAR(lookup_widget(thestory->window, "main_appbar")));
     GPid pid = run_command_hook(thestory->filename, commandline, buffer,
-                                display_ni_status, progress, FALSE, TRUE);
+                                (IOHookFunc *)display_ni_status, progress, 
+								FALSE, TRUE);
     /* set up a watch for the exit status */
     g_child_watch_add(pid, (GChildWatchFunc)finish_ni_compiler, thestory);
     
@@ -368,7 +349,7 @@ get_i6_compiler_switches(gboolean release, int format)
         version_switches = g_strdup("v5");
     }
     
-    retval = g_strconcat("-wE2", debug_switches, version_switches, "x", NULL);
+    retval = g_strconcat("-wxE2", debug_switches, version_switches, NULL);
     g_free(debug_switches);
     g_free(version_switches);
     return retval;
@@ -391,18 +372,14 @@ start_i6_compiler(Story *thestory)
     
     /* Build the command line */
     gchar *working_dir = g_build_filename(thestory->filename, "Build", NULL);
-    gchar **commandline = g_new(gchar *, 8);
-    gchar *libdir = get_datafile_path_va("Library", "Natural", NULL);
-    commandline[0] = get_datafile_path_va("Compilers", "inform-6.31-biplatform",
-      NULL);
+    gchar **commandline = g_new(gchar *, 6);
+    commandline[0] = get_binary_path("inform-6.31-biplatform");
     commandline[1] = get_i6_compiler_switches(
       thestory->action == COMPILE_RELEASE, thestory->story_format);
-    commandline[2] = g_strconcat("+", libdir, NULL);
-    commandline[3] = g_strdup("$huge");
-    commandline[4] = g_strdup("auto.inf");
-    commandline[5] = g_strdup("-o");
-    commandline[6] = g_strconcat("output.", get_story_extension(thestory),NULL);
-    commandline[7] = NULL;
+    commandline[2] = g_strdup("$huge");
+    commandline[3] = g_strdup("auto.inf");
+    commandline[4] = g_strconcat("output.", get_story_extension(thestory),NULL);
+    commandline[5] = NULL;
 
     GtkProgressBar *progress = gnome_appbar_get_progress(
       GNOME_APPBAR(lookup_widget(thestory->window, "main_appbar")));
@@ -413,7 +390,6 @@ start_i6_compiler(Story *thestory)
     
     g_strfreev(commandline);
     g_free(working_dir);
-    g_free(libdir);
 }
 
 /* Display any errors from Inform 6 and decide what to do next */
@@ -528,6 +504,15 @@ prepare_cblorb_compiler(Story *thestory)
     display_status_message(thestory->window, _("Running cBlorb..."));
 }
 
+static void
+parse_cblorb_output(Story *thestory, gchar *text)
+{
+	gchar *ptr = strstr(text, "Copy blorb to: [[");
+	if(ptr) {
+		thestory->copyblorbto = g_strdup(ptr + 17);
+		*(strstr(thestory->copyblorbto, "]]")) = '\0';
+	}
+}
 
 /* Run the CBlorb compiler */
 static void 
@@ -541,14 +526,22 @@ start_cblorb_compiler(Story *thestory)
 	gchar *outfile = g_strconcat("output.", 
 		thestory->story_format == FORMAT_GLULX? "g" : "z", "blorb", NULL);
     gchar *working_dir = g_strdup(thestory->filename);
-    gchar **commandline = g_new(gchar *, 4);
-    commandline[0] = get_datafile_path_va("Compilers", "cBlorb", NULL);
-    commandline[1] = g_strdup("Release.blurb");
-	commandline[2] = g_build_filename("Build", outfile, NULL);
-    commandline[3] = NULL;
+    gchar **commandline = g_new(gchar *, 5);
+    commandline[0] = get_binary_path("cBlorb");
+	commandline[1] = g_strdup("-unix");
+    commandline[2] = g_strdup("Release.blurb");
+	commandline[3] = g_build_filename("Build", outfile, NULL);
+    commandline[4] = NULL;
 	g_free(outfile);
 
-    GPid child_pid = run_command(working_dir, commandline, buffer);
+	if(thestory->copyblorbto) {
+		g_free(thestory->copyblorbto);
+		thestory->copyblorbto = NULL;
+	}
+	
+    GPid child_pid = run_command_hook(working_dir, commandline, buffer,
+									  (IOHookFunc *)parse_cblorb_output,
+									  thestory, TRUE, FALSE);
     /* set up a watch for the exit status */
     g_child_watch_add(child_pid, (GChildWatchFunc)finish_cblorb_compiler,
                       thestory);
@@ -726,51 +719,56 @@ finish_release(Story *thestory)
     int right = choose_notebook(thestory->window, TAB_ERRORS);
     gtk_notebook_set_current_page(get_notebook(thestory->window, right),
       TAB_ERRORS);
+
+	/* Get the appropriate file name extension */
+	gchar *ext = g_strdup(thestory->make_blorb?
+	  (thestory->story_format == FORMAT_GLULX? 
+	   "gblorb" : "zblorb") : get_story_extension(thestory));
+	
+	gchar *filename = NULL;
+	if(thestory->copyblorbto == NULL) {
+		/* ask the user for a release file name if cBlorb didn't provide one */
+		
+		/* Append the extension to the file name */
+		gchar *name = g_path_get_basename(thestory->filename);
+		*(strchr(name, '.')) = '\0';
+		gchar *curfilename = g_strconcat(name, ".", ext, NULL);    
+		g_free(name);
+		
+		/* Create a file chooser */
+		GtkFileFilter *filter = gtk_file_filter_new();
+		if(thestory->story_format == FORMAT_GLULX) {
+			gtk_file_filter_set_name(filter, _("Glulx games (.ulx,.gblorb)"));
+			gtk_file_filter_add_pattern(filter, "*.ulx");
+			gtk_file_filter_add_pattern(filter, "*.gblorb");
+		} else {
+			gtk_file_filter_set_name(filter, _("Z-code games (.z?,.zblorb)"));
+			gtk_file_filter_add_pattern(filter, "*.z?");
+			gtk_file_filter_add_pattern(filter, "*.zblorb");
+		}
+		GtkWidget *dialog = gtk_file_chooser_dialog_new(
+		  _("Save the game for release"),
+		  GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+		  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		  GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+		  NULL);
+		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
+		  TRUE);
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), curfilename);
+		g_free(curfilename);
+		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
     
-    /* make up a release file name */
-    gchar *blorb_ext;
-    GtkFileFilter *filter = gtk_file_filter_new();
+		if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+			filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+		
+		gtk_widget_destroy(dialog);
+	} else {
+		filename = g_strdup(thestory->copyblorbto);
+	}
+	
+	if(filename) {
+    	/* Copy the finished file to the release location */
     
-    if(thestory->story_format == FORMAT_GLULX) {
-        blorb_ext = g_strdup("gblorb");
-        gtk_file_filter_set_name(filter, _("Glulx games (.ulx,.gblorb)"));
-        gtk_file_filter_add_pattern(filter, "*.ulx");
-        gtk_file_filter_add_pattern(filter, "*.gblorb");
-    } else {
-        blorb_ext = g_strdup("zblorb");
-        gtk_file_filter_set_name(filter, _("Z-code games (.z?,.zblorb)"));
-        gtk_file_filter_add_pattern(filter, "*.z?");
-        gtk_file_filter_add_pattern(filter, "*.zblorb");
-    }
-    
-    /* Get the appropriate file name extension */        
-    gchar *ext = g_strdup(thestory->make_blorb?
-      blorb_ext : get_story_extension(thestory));
-    g_free(blorb_ext);
-    /* Append it to the file name */
-    gchar *name = g_path_get_basename(thestory->filename);
-    gchar *pos = strchr(name, '.');
-    *pos = '\0';
-    gchar *filename = g_strconcat(name, ".", ext, NULL);    
-    g_free(name);
-    
-    /* Create a file chooser */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new(
-      _("Save the game for release"),
-      GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-      NULL);
-    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
-      TRUE);
-    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
-    g_free(filename);
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-    
-    /* Copy the finished file to the release location */
-    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        
         /* Determine the name of the compiler output file */
         gchar *oldfile, *temp;
 		temp = g_strconcat("output.", ext, NULL);
@@ -793,7 +791,6 @@ finish_release(Story *thestory)
                     g_free(filename);
                     g_free(oldfile);
                     g_free(ext);
-                    gtk_widget_destroy(dialog);
                     return;
                 }
             } else {
@@ -804,17 +801,15 @@ finish_release(Story *thestory)
                 g_free(filename);
                 g_free(oldfile);
                 g_free(ext);
-                gtk_widget_destroy(dialog);
                 return;
             }
         }
-        g_free(filename);
         g_free(oldfile);
     }
-    
-    g_free(ext);
-    gtk_widget_destroy(dialog);
-    
+	
+	g_free(filename);
+	g_free(ext);
+	
     /* Refresh the index and documentation tabs */
     reload_index_tabs(thestory, FALSE);
     html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));

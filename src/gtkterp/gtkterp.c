@@ -1,25 +1,18 @@
-/***************************************************************************
- *            gtkterp.c
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  Sun Apr 29 02:27:45 2007
- *  Copyright  2007  P.F. Chimento
- *  philip.chimento@gmail.com
- ***************************************************************************/
-
-/*
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <signal.h>
@@ -444,18 +437,21 @@ gtk_terp_start_game(GtkTerp *terp, const GtkTerpInterpreter format,
     }
     
     /* Spawn the interpreter process */
-	gchar *args[3];
+	gchar *terpname;
     switch(format) {
         case GTK_TERP_GLULXE:
-            args[0] = g_strdup("gtkterp-glulxe");
+            terpname = g_strdup("gtkterp-glulxe");
             break;
         case GTK_TERP_FROTZ:
-            args[0] = g_strdup("gtkterp-frotz");
+            terpname = g_strdup("gtkterp-frotz");
 			break;
 		case GTK_TERP_GIT:
 		default:
-			args[0] = g_strdup("gtkterp-git");
+			terpname = g_strdup("gtkterp-git");
     }
+	gchar *args[3];
+	args[0] = g_build_filename(PACKAGE_LIBEXEC_DIR, terpname, NULL);
+	g_free(terpname);
     args[1] = g_strdup(terp->priv->filename);
     args[2] = NULL;
     GPid child_pid;

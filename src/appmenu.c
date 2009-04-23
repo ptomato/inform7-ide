@@ -1,19 +1,18 @@
-/* Copyright 2007 P. F. Chimento
- * This file is part of GNOME Inform 7.
- * 
- * This program is free software; you can redistribute it and/or modify
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Library General Public License for more details.
- * 
+ * GNU General Public License for more details.
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <gnome.h>
@@ -725,21 +724,6 @@ on_inform_help_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 void
-on_gnome_notes_activate(GtkMenuItem *menuitem, gpointer data)
-{
-    int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = get_datafile_path_va("Documentation", "gnome", "gnome.html",
-      NULL);
-    html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
-      (panel == LEFT)? "docs_l" : "docs_r")), file);
-    history_push_docpage(get_story(GTK_WIDGET(menuitem)), panel, file);
-    g_free(file);
-
-    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
-      TAB_DOCUMENTATION);
-}
-
-void
 on_license_activate(GtkMenuItem *menuitem, gpointer data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
@@ -752,6 +736,16 @@ on_license_activate(GtkMenuItem *menuitem, gpointer data)
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
       TAB_DOCUMENTATION);
+}
+
+void
+on_report_a_bug_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	GError *err = NULL;
+	if(!gnome_url_show("http://inform7.com/contribute/report", &err))
+		error_dialog(NULL, err, 
+			_("The page \"http://inform7.com/contribute/report\" should have"
+			"opened in your browser:"));
 }
 
 void

@@ -1,19 +1,18 @@
-/*  Copyright 2006 P.F. Chimento
- *  This file is part of GNOME Inform 7.
+/* This file is part of GNOME Inform 7.
+ * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
  *
- *  GNOME Inform 7 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  GNOME Inform 7 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with GNOME Inform 7; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <gnome.h>
@@ -28,8 +27,6 @@
 #include "story.h"
 #include "tabskein.h"
 #include "tabsource.h"
-
-#define I_LIKE_SKEIN
 
 /* The global pointer to the inspector window */
 GtkWidget *inspector_window;
@@ -172,14 +169,12 @@ show_inspector(int which, gboolean show)
       case INSPECTOR_HEADINGS:
         inspector = lookup_widget(inspector_window, "headings_inspector");
         break;
-#ifdef I_LIKE_SKEIN
       case INSPECTOR_SKEIN:
         inspector = lookup_widget(inspector_window, "skein_inspector");
         if(show && !GTK_WIDGET_VISIBLE(inspector)
            && inspecting && inspecting->drawflag[SKEIN_INSPECTOR])
             skein_schedule_redraw(inspecting->theskein, inspecting);
         break;
-#endif /* I_LIKE_SKEIN */
       case INSPECTOR_SEARCH_FILES:
         inspector = lookup_widget(inspector_window, "search_inspector");
         break;
@@ -217,12 +212,10 @@ update_inspectors()
 void 
 refresh_inspector(Story *thestory) 
 {
-#ifdef I_LIKE_SKEIN
     /* Erase the previous story's Skein canvas */
     GtkWidget *canvas = lookup_widget(inspector_window, 
                                       "skein_inspector_canvas");
     clear_gnome_canvas_impolitely(GNOME_CANVAS(canvas));
-#endif /* I_LIKE_SKEIN */
     
     /* Set the story we are currently inspecting */
     inspecting = thestory;
@@ -247,10 +240,9 @@ refresh_inspector(Story *thestory)
               GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
         }
     }
-#ifdef I_LIKE_SKEIN    
+
     /* Refresh the skein inspector */
     skein_schedule_redraw(inspecting->theskein, inspecting);
-#endif /* I_LIKE_SKEIN */
 }
 
 /* Get the position of the inspector window and save it for the next run */
