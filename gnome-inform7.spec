@@ -1,23 +1,24 @@
+# gnome-inform7.spec.  Generated from gnome-inform7.spec.in by configure.
 #
 # Spec file for GNOME Inform 7
 #
-%define  ver     5U92.1
-%define  rel     1.fc10
-%define  prefix  /usr
 
-Summary: An IDE for the Inform 7 interactive fiction programming language
 Name: gnome-inform7
-Version: %ver
-Release: %rel
-License: GPL
-Group: Applications/Development
-Source: gnome-inform7-%{ver}.tar.gz
+Version: 5Z71
+Release: 1
+
 URL: http://www.inform-fiction.org/
-Packager: P. F. Chimento <philip.chimento@gmail.com>
+License: GPL
+
+Group: Development/Languages
+Source: gnome-inform7-5Z71.tar.gz
+# Packager: P. F. Chimento <philip.chimento@gmail.com>
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
+
+Summary: An IDE for the Inform 7 interactive fiction programming language
 
 %description
 GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
@@ -28,7 +29,7 @@ language for writing interactive fiction (also known as text adventures.)
 %setup -q
 
 %build
-%configure
+%configure --enable-manuals
 make
 
 %pre
@@ -60,44 +61,71 @@ fi
 rm -rf %{buildroot}
 
 %files
+%define pkgdatadir %{_datadir}/%{name}
+%define pkgdocdir %{_datadir}/doc/%{name}
+%define pkglibexecdir %{_libexecdir}/%{name}
 %defattr(-, root, root)
-%doc README AUTHORS COPYING NEWS THANKS ChangeLog
-%{_bindir}/gnome-inform7
-%{_bindir}/gtkterp-frotz
-%{_bindir}/gtkterp-glulxe
-%{_bindir}/gtkterp-git
-%{_docdir}/gtkterp/*
-%{_datadir}/applications/gnome-inform7.desktop
-%{_datadir}/gnome-inform7/*.png
-%{_datadir}/gnome-inform7/*.lang
-%{_datadir}/gnome-inform7/styles/*.xml
-%{_datadir}/gnome-inform7/Compilers/cBlorb
-%{_datadir}/gnome-inform7/Compilers/inform-6.31-biplatform
-%{_datadir}/gnome-inform7/Compilers/ni
-%{_datadir}/gnome-inform7/Documentation/*.html
-%{_datadir}/gnome-inform7/Documentation/manifest.txt
-%{_datadir}/gnome-inform7/Documentation/doc_images/*
-%{_datadir}/gnome-inform7/Documentation/gnome/gnome.html
-%{_datadir}/gnome-inform7/Documentation/licenses/*.html
-%{_datadir}/gnome-inform7/Documentation/Sections/*.html
-%{_datadir}/gnome-inform7/Inform7/Extensions/David*/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/Emily*/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/Graham*/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.i6t
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.html
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/IntroductionToIF.pdf
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/Templates/Standard.html
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/Templates/Standard-Source.html
-%{_datadir}/gnome-inform7/Library/Natural/*.h
-%{_datadir}/gnome-inform7/map_icons/*.png
-%{_datadir}/gnome-inform7/scene_icons/*.png
+%docdir %{pkgdocdir}
+%docdir %{pkgdatadir}/Documentation
+%{_datadir}/applications/%{name}.desktop
+%{_sysconfdir}/gconf/schemas/%{name}.schemas
+%{pkgdocdir}/AUTHORS 
+%{pkgdocdir}/ChangeLog 
+%{pkgdocdir}/COPYING 
+%{pkgdocdir}/NEWS 
+%{pkgdocdir}/README 
+%{pkgdocdir}/THANKS 
+%{pkgdocdir}/TODO
+%{pkgdatadir}/uninstall_manifest.txt
+%{pkgdatadir}/Documentation/*.html
+%{pkgdatadir}/Documentation/*.png
+%{pkgdatadir}/Documentation/*.gif
+%{pkgdatadir}/Documentation/manifest.txt
+%{pkgdatadir}/Documentation/doc_images/*.png
+%{pkgdatadir}/Documentation/doc_images/*.jpg
+%{pkgdatadir}/Documentation/doc_images/*.tif
+%{pkgdatadir}/Documentation/map_icons/*.png
+%{pkgdatadir}/Documentation/scene_icons/*.png
+%{pkgdatadir}/Documentation/Sections/*.html
+%{pkgdatadir}/Extensions/David*Fisher/English.i7x
+%{pkgdatadir}/Extensions/Emily*Short/*.i7x
+%{pkgdatadir}/Extensions/Graham*Nelson/*.i7x
+%{pkgdatadir}/Extensions/Reserved/*.i6t
+%{pkgdatadir}/Extensions/Reserved/*.jpg
+%{pkgdatadir}/Extensions/Reserved/*.html
+%{pkgdatadir}/Extensions/Reserved/IntroductionToIF.pdf
+%{pkgdatadir}/Extensions/Reserved/Templates/Classic/*.html
+%{pkgdatadir}/Extensions/Reserved/Templates/Standard/*.html
+%{pkgdatadir}/Extensions/Reserved/Templates/Standard/style.css
+%{pkgdatadir}/languages/*.lang
+%{pkgdatadir}/Documentation/licenses/*.html
+%{pkgdatadir}/styles/*.xml
 %{_datadir}/pixmaps/Inform.png
-%{_datadir}/pixmaps/gnome-inform7/*
-%{_sysconfdir}/gconf/schemas/*
-%{_datadir}/locale/es/LC_MESSAGES/gnome-inform7.mo
+%{_datadir}/pixmaps/%{name}/*.png
+%lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
+%{_bindir}/gnome-inform7
+%{pkglibexecdir}/cBlorb
+%{pkgdocdir}/cBlorb/Complete.pdf
+%{pkglibexecdir}/gtkterp-frotz
+%{pkgdocdir}/frotz/AUTHORS
+%{pkgdocdir}/frotz/COPYING
+%{pkgdocdir}/frotz/README
+%{pkgdocdir}/frotz/TODO
+%config %{_sysconfdir}/gtkterp.ini
+%{pkgdocdir}/garglk/*.txt
+%{pkgdocdir}/garglk/TODO
+%{pkglibexecdir}/gtkterp-git
+%{pkgdocdir}/git/README.txt
+%{pkglibexecdir}/gtkterp-glulxe
+%{pkgdocdir}/glulxe/README
+%{pkglibexecdir}/inform-6.31-biplatform
+%{pkgdocdir}/inform6/readme.txt
+%{pkglibexecdir}/ni
 
 %changelog
-* Mon Feb 23 2008 P.F. Chimento <philip.chimento@gmail.com>
+* Fri Apr 10 2009 P.F. Chimento <philip.chimento@gmail.com>
+- Overhauled build process.
+* Mon Feb 23 2009 P.F. Chimento <philip.chimento@gmail.com>
 - Added the gtkterp-git binary to the packing list.
 * Sat Dec 6 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Repackaged to release .1 of Public Beta Build 5U92.
