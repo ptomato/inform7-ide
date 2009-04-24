@@ -32,6 +32,7 @@
 #include "extwindow.h"
 #include "file.h"
 #include "findreplace.h"
+#include "history.h"
 #include "html.h"
 #include "searchwindow.h"
 #include "story.h"
@@ -125,6 +126,7 @@ on_search_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path,
         GtkHTML *html = GTK_HTML(lookup_widget(main_window,
           (panel == LEFT)? "docs_l" : "docs_r"));
         html_load_file(html, filename);
+		history_push_docpage(get_story(main_window), panel, filename);
         if(anchor)
             gtk_html_jump_to_anchor(html, anchor);
         /* Show the widget */
