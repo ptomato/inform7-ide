@@ -212,6 +212,9 @@ on_config_custom_font_changed(GConfClient *client, guint id, GConfEntry *entry,
 {
     const gchar *newvalue = 
       gconf_value_get_string(gconf_entry_get_value(entry));
+	if(!newvalue)
+		return; /* otherwise gconf_client_notify() causes segfault */
+	
     /* update application to reflect new value */
     if(strncmp(newvalue, 
       gtk_font_button_get_font_name(GTK_FONT_BUTTON(fontbutton)),

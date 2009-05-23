@@ -124,7 +124,7 @@
 /*                                                                           */
 /*   3. An estimate of the typical amount of memory likely to be free        */
 /*   should be given in DEFAULT_MEMORY_SIZE.                                 */
-/*   For most modern machines, LARGE_SIZE is the appropriate setting, but    */
+/*   For most modern machines, HUGE_SIZE is the appropriate setting, but     */
 /*   some older micros may benefit from SMALL_SIZE.                          */
 /* ------------------------------------------------------------------------- */
 
@@ -402,10 +402,11 @@ static int32 unique_task_id(void)
 /* 2 */
 #define USE_TEMPORARY_FILES
 /* 3 */
-#define DEFAULT_MEMORY_SIZE LARGE_SIZE
+#define DEFAULT_MEMORY_SIZE HUGE_SIZE
 /* 4 */
 #define FN_SEP '/'
 /* 5 */
+#define PATHLEN 512
 #define Temporary_Directory "/tmp"
 #define INCLUDE_TASK_ID
 #ifdef MAIN_INFORM_FILE
@@ -423,11 +424,12 @@ static int32 unique_task_id(void)
 /* 2 */
 #define USE_TEMPORARY_FILES
 /* 3 */
-#define DEFAULT_MEMORY_SIZE LARGE_SIZE
+#define DEFAULT_MEMORY_SIZE HUGE_SIZE
 /* 4 */
 #define FN_SEP '/'
 /* 5 */
 #define Temporary_Directory "/tmp"
+#define PATHLEN 512
 #define INCLUDE_TASK_ID
 #ifdef MAIN_INFORM_FILE
 static int32 unique_task_id(void)
