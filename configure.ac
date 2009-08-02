@@ -18,7 +18,7 @@ AM_INIT_AUTOMAKE([1.10 -Wall])
 AC_CHECK_FILE([src/ni/ni], [], [
 	AC_MSG_ERROR([ni not found in src/ni.
 	IMPORTANT NOTE! You must download the appropriate compiler package
-	from www.inform-fiction.org and put the file `ni' into the directory
+	from inform7.org and put the file `ni' into the directory
 	`$(pwd)/src/ni'.])
 ])
 
