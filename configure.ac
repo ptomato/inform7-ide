@@ -15,11 +15,24 @@ AM_INIT_AUTOMAKE([1.10 -Wall])
 
 ### CHECK FOR PROPER NI EXECUTABLE #############################################
 
+# Grep is required for these tests.
+AC_PROG_GREP
+AC_PROG_EGREP
+
 AC_CHECK_FILE([src/ni/ni], [], [
 	AC_MSG_ERROR([ni not found in src/ni.
-	IMPORTANT NOTE! You must download the appropriate compiler package
-	from inform7.org and put the file `ni' into the directory
-	`$(pwd)/src/ni'.])
+	IMPORTANT NOTE! You must download version $VERSION of the appropriate 
+	compiler package from inform7.org and put the file `ni' into the 
+	directory `$(pwd)/src/ni'.])
+])
+AC_MSG_CHECKING([the version of src/ni/ni])
+AS_IF([src/ni/ni | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
+	AC_MSG_ERROR([You have version 
+	[$(src/ni/ni | $EGREP -o '[0-9][A-Z][0-9]{2}')] of ni in src/ni. This version of Inform 7 will only work with
+	version $VERSION.
+	IMPORTANT NOTE! You must download version $VERSION of the appropriate 
+	compiler package from inform7.org and put the file `ni' into the 
+	directory `$(pwd)/src/ni'.])
 ])
 
 ### DECLARE OPTIONS ############################################################
@@ -95,7 +108,6 @@ AC_PATH_PROG([CHMOD], [chmod])    # chmod
 AC_PATH_PROG([CAT], [cat])        # cat
 AC_PATH_PROG([ECHO], [echo])      # echo
 AC_PATH_PROG([CP], [cp])          # cp
-AC_PATH_PROG([TEST], [test])      # test
 AC_PATH_PROG([DATE], [date])      # date
 # Other programs
 AM_GLIB_GNU_GETTEXT               # Use GLib gettext instead of standard
