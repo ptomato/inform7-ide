@@ -1092,15 +1092,16 @@ node_get_line_width(GNode *node, PangoLayout *layout)
 {
     NodeData *data = (NodeData *)node->data;
     if(data->width < 0.0) {
-        double size = text_pixel_width(layout, data->line);
-        data->width = size;
-        data->linewidth = size;
-        
-        if(data->label && strlen(data->label) > 0)
-            data->labelwidth = text_pixel_width(layout, data->label);
-        else
-            data->labelwidth = 0.0;
-        
+    	if(layout) {
+		    double size = text_pixel_width(layout, data->line);
+		    data->width = size;
+		    data->linewidth = size;
+		    
+		    if(data->label && strlen(data->label) > 0)
+		        data->labelwidth = text_pixel_width(layout, data->label);
+		    else
+		        data->labelwidth = 0.0;
+        }
         if(data->width < MIN_TEXT_WIDTH)
             data->width = MIN_TEXT_WIDTH;
         if(data->linewidth < MIN_TEXT_WIDTH)
