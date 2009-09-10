@@ -1,3 +1,25 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,12 +32,15 @@
 int gli_force_redraw = 1;
 
 /* Linked list of all windows */
-static window_t *gli_windowlist = NULL; 
+static window_t *gli_windowlist = NULL;
 
 window_t *gli_rootwin = NULL; /* The topmost window. */
 window_t *gli_focuswin = NULL; /* The window selected by the player */
 
 void (*gli_interrupt_handler)(void) = NULL;
+
+/* record whether we've returned a click event */
+int gli_forceclick = 0;
 
 /* Set up the window system. This is called from main(). */
 void gli_initialize_windows()
@@ -60,8 +85,11 @@ window_t *gli_new_window(glui32 type, glui32 rock)
     win->line_request_uni = FALSE;
     win->line_terminators = NULL;
     win->mouse_request = FALSE;
+    win->hyper_request = FALSE;
 
-    attrset(&win->attr, style_Normal);
+    attrclear(&win->attr);
+    memcpy(win->bgcolor, gli_window_color, 3);
+    memcpy(win->fgcolor, gli_more_color, 3);
 
     win->str = gli_stream_open_window(win);
     win->echostr = NULL;
@@ -740,6 +768,14 @@ void gli_windows_size_change()
 
 void gli_window_redraw(window_t *win)
 {
+    if (gli_force_redraw) {
+        char *color = gli_override_bg ? gli_window_color : win->bgcolor;
+        gli_draw_rect(win->bbox.x0, win->bbox.y0,
+                win->bbox.x1 - win->bbox.x0,
+                win->bbox.y1 - win->bbox.y0,
+                color);
+    }
+
     switch (win->type) {
         case wintype_Blank:
             win_blank_redraw(win);
@@ -761,6 +797,8 @@ void gli_window_redraw(window_t *win)
 
 void gli_windows_redraw()
 {
+    gli_claimselect = FALSE;
+
     if (gli_force_redraw)
     {
         winrepaint(0, 0, gli_image_w, gli_image_h);
@@ -771,6 +809,12 @@ void gli_windows_redraw()
         gli_window_redraw(gli_rootwin);
 
     gli_force_redraw = 0;
+}
+
+void gli_redraw_rect(int x0, int y0, int x1, int y1)
+{
+    gli_drawselect = TRUE;
+    winrepaint(x0, y0, x1, y1);
 }
 
 /*
@@ -934,6 +978,28 @@ void glk_request_mouse_event(window_t *win)
     return;
 }
 
+void glk_request_hyperlink_event(winid_t win)
+{
+    if (!win) {
+        gli_strict_warning("request_hyperlink_event: invalid ref");
+        return;
+    }
+
+    switch (win->type)
+    {
+        case wintype_TextBuffer:
+        case wintype_TextGrid:
+        case wintype_Graphics:
+            win->hyper_request = TRUE;
+            break;
+        default:
+            /* do nothing */
+            break;
+    }
+
+    return;
+}
+
 void glk_cancel_char_event(window_t *win)
 {
     if (!win) {
@@ -1004,6 +1070,28 @@ void glk_cancel_mouse_event(window_t *win)
     return;
 }
 
+void glk_cancel_hyperlink_event(winid_t win)
+{
+    if (!win) {
+        gli_strict_warning("cancel_hyperlink_event: invalid ref");
+        return;
+    }
+
+    switch (win->type)
+    {
+        case wintype_TextBuffer:
+        case wintype_TextGrid:
+        case wintype_Graphics:
+            win->hyper_request = FALSE;
+            break;
+        default:
+            /* do nothing */
+            break;
+    }
+
+    return;
+}
+
 void gli_window_click(window_t *win, int x, int y)
 {
     switch (win->type)
@@ -1061,8 +1149,13 @@ void glk_window_clear(window_t *win)
     }
 
     if (win->line_request || win->line_request_uni) {
-        gli_strict_warning("window_clear: window has pending line request");
-        return;
+        if (gli_conf_safeclicks && gli_forceclick) {
+            glk_cancel_line_event(win, NULL);
+            gli_forceclick = 0;
+        } else {
+            gli_strict_warning("window_clear: window has pending line request");
+            return;
+        }
     }
 
     switch (win->type)
@@ -1230,6 +1323,15 @@ void attrset(attr_t *attr, glui32 style)
     attr->style = style;
 }
 
+void attrclear(attr_t *attr)
+{
+    attr->fgcolor = 0;
+    attr->bgcolor = 0;
+    attr->reverse = FALSE;
+    attr->hyper = 0;
+    attr->style = 0;
+}
+
 int attrfont(style_t *styles, attr_t *attr)
 {
     return styles[attr->style].font;
@@ -1296,6 +1398,8 @@ int attrequal(attr_t *a1, attr_t *a2)
     if (a1->fgcolor != a2->fgcolor)
         return FALSE;
     if (a1->bgcolor != a2->bgcolor)
+        return FALSE;
+    if (a1->hyper != a2->hyper)
         return FALSE;
     return TRUE;
 }

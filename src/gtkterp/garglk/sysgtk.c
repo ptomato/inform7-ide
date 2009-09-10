@@ -1,3 +1,25 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 /* TODO: add mouse down event */
 
 #include <stdio.h>
@@ -15,10 +37,18 @@
 GtkWidget *frame;
 static GtkWidget *canvas;
 static GtkWidget *filedlog;
+static GdkCursor *gdk_hand;
+static GdkCursor *gdk_ibeam;
+static GtkIMContext *imcontext;
 static char *filename;
 
 static int timerid = -1;
 static int timeouts = 0;
+
+/* buffer for clipboard text */
+char cliptext[4 * (SCROLLBACK + TBLINELEN * SCROLLBACK) + 1];
+int cliplen = 0;
+enum clipsource { PRIMARY , CLIPBOARD };
 
 static int timeout(void *data)
 {
@@ -75,21 +105,21 @@ void winopenfile(char *prompt, char *buf, int len, char *filter)
     if(garglk_plug_get_protected(GARGLK_PLUG(frame)))
         return;
     
-	char realprompt[256];
-	sprintf(realprompt, "Open: %s", prompt);
-	filedlog = gtk_file_selection_new(realprompt);
-	if (strlen(buf))
-		gtk_file_selection_set_filename(GTK_FILE_SELECTION(filedlog), buf);
-	gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(filedlog));
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->ok_button),
-		"clicked", GTK_SIGNAL_FUNC(onokay), NULL);
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->cancel_button),
-		"clicked", GTK_SIGNAL_FUNC(oncancel), NULL);
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)),
-		"delete_event", GTK_SIGNAL_FUNC(oncancel), NULL);
-	filename = buf;
-	gtk_widget_show(filedlog);
-	gtk_main(); /* recurse... */
+    char realprompt[256];
+    sprintf(realprompt, "Open: %s", prompt);
+    filedlog = gtk_file_selection_new(realprompt);
+    if (strlen(buf))
+        gtk_file_selection_set_filename(GTK_FILE_SELECTION(filedlog), buf);
+    gtk_file_selection_hide_fileop_buttons(GTK_FILE_SELECTION(filedlog));
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->ok_button),
+        "clicked", GTK_SIGNAL_FUNC(onokay), NULL);
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->cancel_button),
+        "clicked", GTK_SIGNAL_FUNC(oncancel), NULL);
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)),
+        "delete_event", GTK_SIGNAL_FUNC(oncancel), NULL);
+    filename = buf;
+    gtk_widget_show(filedlog);
+    gtk_main(); /* recurse... */
 }
 
 void winsavefile(char *prompt, char *buf, int len, char *filter)
@@ -98,20 +128,130 @@ void winsavefile(char *prompt, char *buf, int len, char *filter)
     if(garglk_plug_get_protected(GARGLK_PLUG(frame)))
         return;
     
-	char realprompt[256];
-	sprintf(realprompt, "Save: %s", prompt);
-	filedlog = gtk_file_selection_new(realprompt);
-	if (strlen(buf))
-		gtk_file_selection_set_filename(GTK_FILE_SELECTION(filedlog), buf);
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->ok_button),
-		"clicked", GTK_SIGNAL_FUNC(onokay), NULL);
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->cancel_button),
-		"clicked", GTK_SIGNAL_FUNC(oncancel), NULL);
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)),
-		"delete_event", GTK_SIGNAL_FUNC(oncancel), NULL);
-	filename = buf;
-	gtk_widget_show(filedlog);
-	gtk_main(); /* recurse... */
+    char realprompt[256];
+    sprintf(realprompt, "Save: %s", prompt);
+    filedlog = gtk_file_selection_new(realprompt);
+    if (strlen(buf))
+        gtk_file_selection_set_filename(GTK_FILE_SELECTION(filedlog), buf);
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->ok_button),
+        "clicked", GTK_SIGNAL_FUNC(onokay), NULL);
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)->cancel_button),
+        "clicked", GTK_SIGNAL_FUNC(oncancel), NULL);
+    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filedlog)),
+        "delete_event", GTK_SIGNAL_FUNC(oncancel), NULL);
+    filename = buf;
+    gtk_widget_show(filedlog);
+    gtk_main(); /* recurse... */
+}
+
+void winclipstore(glui32 *text, int len)
+{
+    int i, k;
+
+    i = 0;
+    k = 0;
+
+    /*convert UTF-32 to UTF-8 */
+    while (i < len) {
+        if (text[i] < 0x80) {
+            cliptext[k] = text[i];
+            k++;
+        }
+        else if (text[i] < 0x800) {
+            cliptext[k  ] = (0xC0 | ((text[i] & 0x7C0) >> 6));
+            cliptext[k+1] = (0x80 |  (text[i] & 0x03F)      );
+            k = k + 2;
+        }
+        else if (text[i] < 0x10000) {
+            cliptext[k  ] = (0xE0 | ((text[i] & 0xF000) >> 12));
+            cliptext[k+1] = (0x80 | ((text[i] & 0x0FC0) >>  6));
+            cliptext[k+2] = (0x80 |  (text[i] & 0x003F)       );
+            k = k + 3;
+        }
+        else if (text[i] < 0x200000) {
+            cliptext[k  ] = (0xF0 | ((text[i] & 0x1C0000) >> 18));
+            cliptext[k+1] = (0x80 | ((text[i] & 0x03F000) >> 12));
+            cliptext[k+2] = (0x80 | ((text[i] & 0x000FC0) >>  6));
+            cliptext[k+3] = (0x80 |  (text[i] & 0x00003F)       );
+            k = k + 4;
+        }
+        else {
+            cliptext[k] = '?';
+            k++;
+        }
+        i++;
+    }
+
+    /* null-terminated string */
+    cliptext[k] = '\0';
+    cliplen = k + 1;
+}
+
+void winclipsend(int source)
+{
+    if (!cliplen)
+        return;
+
+    switch (source)
+    {
+    case PRIMARY:
+        gtk_clipboard_set_text(
+                gtk_clipboard_get(GDK_SELECTION_PRIMARY), cliptext, cliplen);
+        gtk_clipboard_store(gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+        break;
+    case CLIPBOARD:
+        gtk_clipboard_set_text(
+                gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), cliptext, cliplen);
+        gtk_clipboard_store(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+        break;
+     default:return;
+    }
+}
+
+void winclipreceive(int source)
+{
+    gchar *gptr;
+    int glen, i;
+    glui32 *rptr;
+    glui32 rlen;
+
+    switch(source)
+    {
+        case PRIMARY:
+            gptr = gtk_clipboard_wait_for_text(
+                    gtk_clipboard_get(GDK_SELECTION_PRIMARY));
+            break;
+        case CLIPBOARD:
+            gptr = gtk_clipboard_wait_for_text(
+                    gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+            break;
+        default: return;
+    }
+
+    if (!gptr)
+        return;
+
+    glen = strlen(gptr);
+    if (!glen)
+        return;
+
+    rptr = malloc(sizeof(glui32)*glen);
+    rlen = gli_parse_utf8(gptr, glen, rptr, glen);
+
+    for (i = 0; i < rlen; i++)
+    {
+        if (rptr[i] == '\0')
+            break;
+        else if (rptr[i] == '\r' || rptr[i] == '\n')
+            continue;
+        else if (rptr[i] == '\b' || rptr[i] == '\t')
+            continue;
+        else if (rptr[i] != 27)
+            gli_input_handle_key(rptr[i]);
+    }
+
+    free(rptr);
+    g_free(gptr);
 }
 
 static void onresize(GtkWidget *widget, GtkAllocation *event, void *data)
@@ -124,6 +264,8 @@ static void onresize(GtkWidget *widget, GtkAllocation *event, void *data)
 
     gli_image_w = newwid;
     gli_image_h = newhgt;
+
+    gli_resize_mask(gli_image_w, gli_image_h);
 
     gli_image_s = ((gli_image_w * 3 + 3) / 4) * 4;
     if (gli_image_rgb)
@@ -149,7 +291,10 @@ static void onexpose(GtkWidget *widget, GdkEventExpose *event, void *data)
     if (w < 0) return;
     if (h < 0) return;
 
-    gli_windows_redraw();
+    if (!gli_drawselect)
+        gli_windows_redraw();
+    else
+        gli_drawselect = FALSE;
 
     gdk_draw_rgb_image(canvas->window, canvas->style->black_gc,
         x0, y0, w, h,
@@ -158,20 +303,94 @@ static void onexpose(GtkWidget *widget, GdkEventExpose *event, void *data)
         gli_image_s);
 }
 
-static void onbutton(GtkWidget *widget, GdkEventButton *event, void *data)
+static void onbuttondown(GtkWidget *widget, GdkEventButton *event, void *data)
 {
     gtk_widget_grab_focus(gtk_bin_get_child(GTK_BIN(widget)));
-	gli_input_handle_click(event->x, event->y);
+    if (event->button == 1)
+        gli_input_handle_click(event->x, event->y);
+    else if (event->button == 2)
+        winclipreceive(PRIMARY);
 }
 
-static void onkeypress(GtkWidget *widget, GdkEventKey *event, void *data)
+static void onbuttonup(GtkWidget *widget, GdkEventButton *event, void *data)
+{
+    if (event->button == 1) {
+        gli_copyselect = FALSE;
+        gdk_window_set_cursor((GTK_WIDGET(widget)->window), NULL);
+        winclipsend(PRIMARY);
+    }
+}
+
+static void onmotion(GtkWidget *widget, GdkEventMotion *event, void *data)
+{
+    int x,y;
+
+    if (event->is_hint)
+	gtk_widget_get_pointer(widget, &x, &y);
+    else {
+        x = event->x;
+        y = event->y;
+    }
+
+    /* hyperlinks and selection */
+    if (gli_copyselect) {
+        gdk_window_set_cursor((GTK_WIDGET(widget)->window), gdk_ibeam);
+        gli_move_selection(x, y);
+    } else {
+        if (gli_get_hyperlink(x, y))
+            gdk_window_set_cursor((GTK_WIDGET(widget)->window), gdk_hand);
+        else
+            gdk_window_set_cursor((GTK_WIDGET(widget)->window), NULL);
+    }
+}
+
+static void oninput(GtkIMContext *context, gchar *input, void *data)
+{
+    glui32 inlen;
+    glui32 keybuf[1];
+
+    keybuf[0] = '?';
+
+    inlen = strlen(input);
+    if(inlen)
+        gli_parse_utf8(input, inlen, keybuf, 1);
+
+    gli_input_handle_key(keybuf[0]);
+}
+
+static void onkeydown(GtkWidget *widget, GdkEventKey *event, void *data)
 {
     int key = event->keyval;
+    switch(key)
+    {
+    case GDK_c:
+    case GDK_C:
+        if (event->state & GDK_CONTROL_MASK) {
+            winclipsend(CLIPBOARD);
+            return;
+        }
+    case GDK_x:
+    case GDK_X:
+        if (event->state & GDK_CONTROL_MASK) {
+            winclipsend(CLIPBOARD);
+            return;
+        }
+    case GDK_v:
+    case GDK_V:
+        if (event->state & GDK_CONTROL_MASK) {
+            winclipreceive(CLIPBOARD);
+            return;
+        }
+    default: break;
+    }
+
+    if (!gtk_im_context_filter_keypress(imcontext, event)) {
 
     switch (key)
     {
     case GDK_Return: gli_input_handle_key(keycode_Return); break;
     case GDK_BackSpace: gli_input_handle_key(keycode_Delete); break;
+    case GDK_Delete: gli_input_handle_key(keycode_Erase); break;
     case GDK_Tab: gli_input_handle_key(keycode_Tab); break;
     case GDK_Prior: gli_input_handle_key(keycode_PageUp); break;
     case GDK_Next: gli_input_handle_key(keycode_PageDown); break;
@@ -198,6 +417,27 @@ static void onkeypress(GtkWidget *widget, GdkEventKey *event, void *data)
         if (key >= 32 && key <= 255)
             gli_input_handle_key(key);
     }
+
+    }
+}
+
+static void onkeyup(GtkWidget *widget, GdkEventKey *event, void *data)
+{
+    int key = event->keyval;
+    switch(key)
+    {
+    case GDK_c:
+    case GDK_C:
+    case GDK_x:
+    case GDK_X:
+    case GDK_v:
+    case GDK_V:
+        if (event->state & GDK_CONTROL_MASK) {
+            return;
+        }
+    default: break;
+    }
+    gtk_im_context_filter_keypress(imcontext, event);
 }
 
 static void onquit(GtkWidget *widget, void *data)
@@ -211,25 +451,36 @@ void wininit(int *argc, char **argv)
     gtk_init(argc, &argv);
     gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
     gtk_widget_set_default_visual(gdk_rgb_get_visual());
+    gdk_hand = gdk_cursor_new(GDK_HAND2);
+    gdk_ibeam = gdk_cursor_new(GDK_XTERM);
 }
 
 void winopen(void)
 {
-	int defw;
-	int defh;
+    int defw;
+    int defh;
 
-	defw = gli_wmarginx * 2 + gli_cellw * gli_cols;
-	defh = gli_wmarginy * 2 + gli_cellh * gli_rows;
+    defw = gli_wmarginx * 2 + gli_cellw * gli_cols;
+    defh = gli_wmarginy * 2 + gli_cellh * gli_rows;
 
-	frame = garglk_plug_new(0);
-	GTK_WIDGET_SET_FLAGS(frame, GTK_CAN_FOCUS);
-	gtk_widget_set_events(frame, GDK_BUTTON_PRESS_MASK);
-	gtk_signal_connect(GTK_OBJECT(frame), "button_press_event", 
-		GTK_SIGNAL_FUNC(onbutton), NULL);
-	gtk_signal_connect(GTK_OBJECT(frame), "key_press_event", 
-		GTK_SIGNAL_FUNC(onkeypress), NULL);
-	gtk_signal_connect(GTK_OBJECT(frame), "destroy", 
-		GTK_SIGNAL_FUNC(onquit), "WM destroy");
+    frame = garglk_plug_new(0);
+    GTK_WIDGET_SET_FLAGS(frame, GTK_CAN_FOCUS);
+    gtk_widget_set_events(frame, GDK_BUTTON_PRESS_MASK
+                               | GDK_BUTTON_RELEASE_MASK
+                               | GDK_POINTER_MOTION_MASK
+                               | GDK_POINTER_MOTION_HINT_MASK);
+    gtk_signal_connect(GTK_OBJECT(frame), "button_press_event", 
+    	GTK_SIGNAL_FUNC(onbuttondown), NULL);
+    gtk_signal_connect(GTK_OBJECT(frame), "button_release_event", 
+    	GTK_SIGNAL_FUNC(onbuttonup), NULL);
+    gtk_signal_connect(GTK_OBJECT(frame), "key_press_event", 
+    	GTK_SIGNAL_FUNC(onkeydown), NULL);
+    gtk_signal_connect(GTK_OBJECT(frame), "key_release_event", 
+    	GTK_SIGNAL_FUNC(onkeyup), NULL);
+    gtk_signal_connect(GTK_OBJECT(frame), "destroy", 
+    	GTK_SIGNAL_FUNC(onquit), "WM destroy");
+    gtk_signal_connect(GTK_OBJECT(frame), "motion_notify_event",
+        GTK_SIGNAL_FUNC(onmotion), NULL);
 
     canvas = gtk_drawing_area_new();
     gtk_signal_connect(GTK_OBJECT(canvas), "size_allocate", 
@@ -238,15 +489,19 @@ void winopen(void)
     	GTK_SIGNAL_FUNC(onexpose), NULL);
     gtk_container_add(GTK_CONTAINER(frame), canvas);
 
+    imcontext = gtk_im_multicontext_new();
+    g_signal_connect(imcontext, "commit",
+        G_CALLBACK(oninput), NULL);
+
     wintitle();
 
-	gtk_widget_set_size_request(GTK_WIDGET(frame), defw, defh);
+    gtk_widget_set_size_request(GTK_WIDGET(frame), defw, defh);
 
-	gtk_widget_show(canvas);
-	gtk_widget_show(frame);
-    
+    gtk_widget_show(canvas);
+    gtk_widget_show(frame);
+
     GTK_WIDGET_SET_FLAGS(canvas, GTK_CAN_FOCUS);
-	gtk_widget_grab_focus(canvas);
+    gtk_widget_grab_focus(canvas);
 }
 
 void wintitle(void)
@@ -260,31 +515,35 @@ void winrepaint(int x0, int y0, int x1, int y1)
     gtk_widget_queue_draw_area(canvas, x0, y0, x1-x0, y1-y0);
 }
 
-void gli_select(event_t *event, int block)
+void gli_select(event_t *event, int polled)
 {
     gli_curevent = event;
     gli_event_clearevent(event);
 
     gli_input_guess_focus();
 
-    if (block)
+    if (!polled)
     {
-    while (gli_curevent->type == evtype_None && !timeouts)
-        gtk_main_iteration();
+        while (gli_curevent->type == evtype_None && !timeouts)
+        {
+            gtk_main_iteration();
+            gli_dispatch_event(gli_curevent, polled);
+        }
     }
 
     else
     {
-    while (gtk_events_pending() && !timeouts)
-        gtk_main_iteration();
+        while (gtk_events_pending() && !timeouts)
+            gtk_main_iteration();
+        gli_dispatch_event(gli_curevent, polled);
     }
 
     if (gli_curevent->type == evtype_None && timeouts)
     {
-    gli_event_store(evtype_Timer, NULL, 0, 0);
-    timeouts = 0;
+        gli_event_store(evtype_Timer, NULL, 0, 0);
+        gli_dispatch_event(gli_curevent, polled);
+        timeouts = 0;
     }
 
     gli_curevent = NULL;
 }
-

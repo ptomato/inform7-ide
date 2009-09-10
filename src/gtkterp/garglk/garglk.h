@@ -1,6 +1,28 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 /*
  * Private header file for the Kickass Implementation of the Glk API.
- * Glk API which this implements: version 0.6.1.
+ * Glk API which this implements: version 0.7.0.
  * Glk designed by Andrew Plotkin <erkyrath@eblong.com>
  * http://www.eblong.com/zarf/glk/index.html
  */
@@ -102,6 +124,7 @@ extern int gli_cellh;
 typedef struct rect_s rect_t;
 typedef struct picture_s picture_t;
 typedef struct style_s style_t;
+typedef struct mask_s mask_t;
 
 struct rect_s
 {
@@ -124,6 +147,14 @@ struct style_s
     int reverse;
 };
 
+struct mask_s
+{
+    int hor;
+    int ver;
+    glui32 **links;
+    rect_t select;
+};
+
 extern int gli_image_s;	/* stride */
 extern int gli_image_w;
 extern int gli_image_h;
@@ -141,15 +172,20 @@ extern style_t gli_gstyles[style_NUMSTYLES];
 extern unsigned char gli_window_color[3];
 extern unsigned char gli_border_color[3];
 extern unsigned char gli_caret_color[3];
+extern unsigned char gli_more_color[3];
+extern unsigned char gli_link_color[3];
 
 extern unsigned char gli_window_save[3];
 extern unsigned char gli_border_save[3];
 extern unsigned char gli_caret_save[3];
+extern unsigned char gli_more_save[3];
+extern unsigned char gli_link_save[3];
 
 extern int gli_override_fg;
 extern int gli_override_bg;
 extern int gli_override_reverse;
 
+extern int gli_link_style;
 extern int gli_caret_shape;
 extern int gli_wborderx;
 extern int gli_wbordery;
@@ -168,6 +204,7 @@ extern int gli_conf_sound;
 extern int gli_conf_speak;
 
 extern int gli_conf_stylehint;
+extern int gli_conf_safeclicks;
 
 extern int gli_conf_justify;
 extern int gli_conf_quotes;
@@ -201,11 +238,14 @@ extern float gli_conf_monosize;
 extern float gli_conf_propaspect;
 extern float gli_conf_monoaspect;
 
-extern unsigned char gli_more_color[3];
-extern unsigned char gli_more_save[3];
 extern char *gli_more_prompt;
 extern int gli_more_align;
 extern int gli_more_font;
+
+extern int gli_forceclick;
+extern int gli_copyselect;
+extern int gli_drawselect;
+extern int gli_claimselect;
 
 /*
  * Standard Glk I/O stuff
@@ -218,6 +258,25 @@ extern int gli_more_font;
     (evp)->win = NULL,    \
     (evp)->val1 = 0,   \
     (evp)->val2 = 0)
+
+typedef struct eventlog_s eventlog_t;
+typedef struct eventqueue_s eventqueue_t;
+
+struct eventlog_s
+{
+    event_t *event;
+    struct eventlog_s *next;
+};
+
+struct eventqueue_s
+{
+    eventlog_t *first;
+    eventlog_t *last;
+};
+
+eventqueue_t *gli_initialize_queue (void);
+void gli_queue_event(eventqueue_t *queue, event_t *event);
+event_t *gli_retrieve_event(eventqueue_t *queue);
 
 #define MAGIC_WINDOW_NUM (9876)
 #define MAGIC_STREAM_NUM (8769)
@@ -243,6 +302,7 @@ struct glk_stream_struct
 
     /* for strtype_File */
     FILE *file; 
+    int textfile;
 
     /* for strtype_Memory */
     void *buf;		/* unsigned char* for latin1, glui32* for unicode */
@@ -279,6 +339,7 @@ typedef struct attr_s
     unsigned fgcolor : 4;
     unsigned style   : 4;
     unsigned reverse : 1;
+    unsigned hyper   : 4;
     unsigned		 : 3;
 } attr_t;
 
@@ -301,8 +362,11 @@ struct glk_window_struct
     int char_request;
     int char_request_uni;
     int mouse_request;
+    int hyper_request;
 
     attr_t attr;
+    unsigned char bgcolor[3];
+    unsigned char fgcolor[3];
 
     gidispatch_rock_t disprock;
     window_t *next, *prev; /* in the big linked list of windows */
@@ -358,8 +422,9 @@ struct window_textgrid_s
 
 typedef struct tbline_s
 {
-    int len, newline, dirty;
+    int len, newline, dirty, repaint;
     picture_t *lpic, *rpic;
+    glui32 lhyper, rhyper;
     int lm, rm;
     glui32 chars[TBLINELEN];
     attr_t attrs[TBLINELEN];
@@ -405,6 +470,10 @@ struct window_textbuffer_s
 
     /* style hints and settings */
     style_t styles[style_NUMSTYLES];
+
+    /* for copy selection */
+    glui32 copybuf[SCROLLBACK + SCROLLBACK * TBLINELEN];
+    int copypos;
 };
 
 struct window_graphics_s
@@ -550,7 +619,7 @@ void gli_read_config(int argc, char **argv);
 
 rect_t gli_compute_content_box();
 
-extern void gli_select(event_t *event, int block);
+extern void gli_select(event_t *event, int polled);
 
 void wininit(int *argc, char **argv);
 void winopen(void);
@@ -605,6 +674,7 @@ glui32 gli_parse_utf8(unsigned char *buf, glui32 buflen, glui32 *out, glui32 out
 glui32 strlen_uni(glui32 *s);
 
 void attrset(attr_t *attr, glui32 style);
+void attrclear(attr_t *attr);
 int attrequal(attr_t *a1, attr_t *a2);
 unsigned char *attrfg(style_t *styles, attr_t *attr);
 unsigned char *attrbg(style_t *styles, attr_t *attr);

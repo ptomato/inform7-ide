@@ -1,3 +1,25 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 /* glkstuff.c -- non-screen related glk stuff */
 
 #include "glkfrotz.h"
@@ -303,7 +325,7 @@ zchar os_read_key (int timeout, bool show_cursor)
 {
 	event_t ev;
 	winid_t win = gos_curwin ? gos_curwin : gos_lower;
-	
+
 	if (gos_linepending)
 		gos_cancel_pending_line();
 
@@ -361,7 +383,7 @@ zchar os_read_line (int max, zchar *buf, int timeout, int width, int continued)
 
 	if (!continued || !gos_linepending)
 	{
-		glk_request_line_event(win, buf, max - 1, strlen(buf));
+		glk_request_line_event(win, buf, max, strlen(buf));
 		if (timeout != 0)
 			glk_request_timer_events(timeout * 100);
 	}

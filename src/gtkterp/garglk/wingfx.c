@@ -1,3 +1,25 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +30,7 @@
 
 static void
 drawpicture(picture_t *src, window_graphics_t *dst, 
-		int x0, int y0, int width, int height);
+		int x0, int y0, int width, int height, glui32 linkval);
 
 void win_graphics_touch(window_graphics_t *dest)
 {
@@ -32,9 +54,9 @@ window_graphics_t *win_graphics_create(window_t *win)
 		return NULL;
 
 	res->owner = win;
-	res->bgnd[0] = gli_window_color[0];
-	res->bgnd[1] = gli_window_color[1];
-	res->bgnd[2] = gli_window_color[2];
+	res->bgnd[0] = win->bgcolor[0];
+	res->bgnd[1] = win->bgcolor[1];
+	res->bgnd[2] = win->bgcolor[2];
 
 	res->w = 0;
 	res->h = 0;
@@ -150,9 +172,23 @@ void win_graphics_click(window_graphics_t *dwin, int sx, int sy)
 	window_t *win = dwin->owner;
 	int x = sx - win->bbox.x0;
 	int y = sy - win->bbox.y0;
-	if (win->mouse_request)
+
+	if (win->mouse_request) {
 		gli_event_store(evtype_MouseInput, win, x, y);
-	win->mouse_request = FALSE;
+		win->mouse_request = FALSE;
+		if (gli_conf_safeclicks)
+			gli_forceclick = 1;
+	}
+
+	if (win->hyper_request) {
+		glui32 linkval = gli_get_hyperlink(sx, sy);
+		if (linkval) {
+			gli_event_store(evtype_Hyperlink, win, linkval, 0);
+			win->hyper_request = FALSE;
+			if (gli_conf_safeclicks)
+				gli_forceclick = 1;
+		}
+	}
 }
 
 glui32 win_graphics_draw_picture(window_graphics_t *dwin,
@@ -161,6 +197,7 @@ glui32 win_graphics_draw_picture(window_graphics_t *dwin,
 		int scale, glui32 imagewidth, glui32 imageheight)
 {
 	picture_t *pic = gli_picture_load(image);
+	glui32 hyperlink = dwin->owner->attr.hyper;
 
 	if (!pic) {
 		return FALSE;
@@ -171,7 +208,7 @@ glui32 win_graphics_draw_picture(window_graphics_t *dwin,
 		imageheight = pic->h;
 	}
 
-	drawpicture(pic, dwin, xpos, ypos, imagewidth, imageheight);
+	drawpicture(pic, dwin, xpos, ypos, imagewidth, imageheight, hyperlink);
 
 	win_graphics_touch(dwin);
 
@@ -186,6 +223,7 @@ void win_graphics_erase_rect(window_graphics_t *dwin, int whole,
 	int x1 = x0 + width;
 	int y1 = y0 + height;
 	int x, y;
+	int hx0, hx1, hy0, hy1;
 
 	if (whole)
 	{
@@ -203,6 +241,14 @@ void win_graphics_erase_rect(window_graphics_t *dwin, int whole,
 	if (y0 >= dwin->h) y0 = dwin->h;
 	if (x1 >= dwin->w) x1 = dwin->w;
 	if (y1 >= dwin->h) y1 = dwin->h;
+
+	hx0 = dwin->owner->bbox.x0 + x0;
+	hx1 = dwin->owner->bbox.x0 + x1;
+	hy0 = dwin->owner->bbox.y0 + y0;
+	hy1 = dwin->owner->bbox.y0 + y1;
+
+	/* zero out hyperlinks for these coordinates */
+	gli_put_hyperlink(0, hx0, hy0, hx1, hy1);
 
 	for (y = y0; y < y1; y++)
 	{
@@ -225,6 +271,7 @@ void win_graphics_fill_rect(window_graphics_t *dwin, glui32 color,
 	int x1 = x0 + width;
 	int y1 = y0 + height;
 	int x, y;
+	int hx0, hx1, hy0, hy1;
 
 	col[0] = (color >> 16) & 0xff;
 	col[1] = (color >> 8) & 0xff;
@@ -238,6 +285,14 @@ void win_graphics_fill_rect(window_graphics_t *dwin, glui32 color,
 	if (y0 > dwin->h) y0 = dwin->h;
 	if (x1 > dwin->w) x1 = dwin->w;
 	if (y1 > dwin->h) y1 = dwin->h;
+
+	hx0 = dwin->owner->bbox.x0 + x0;
+	hx1 = dwin->owner->bbox.x0 + x1;
+	hy0 = dwin->owner->bbox.y0 + y0;
+	hy1 = dwin->owner->bbox.y0 + y1;
+
+	/* zero out hyperlinks for these coordinates */
+	gli_put_hyperlink(0, hx0, hy0, hx1, hy1);
 
 	for (y = y0; y < y1; y++)
 	{
@@ -261,12 +316,13 @@ void win_graphics_set_background_color(window_graphics_t *dwin, glui32 color)
 }
 
 static void drawpicture(picture_t *src, window_graphics_t *dst, 
-		int x0, int y0, int width, int height)
+		int x0, int y0, int width, int height, glui32 linkval)
 {
 	int freeafter = 0;
 	unsigned char *sp, *dp;
 	int dx1, dy1, x1, y1, sx0, sy0, sx1, sy1;
 	int x, y, w, h;
+	int hx0, hx1, hy0, hy1;
 
 	if (width != src->w || height != src->h)
 	{
@@ -292,6 +348,14 @@ static void drawpicture(picture_t *src, window_graphics_t *dst,
 	if (y0 < 0) { sy0 -= y0; y0 = 0; }
 	if (x1 > dx1) { sx1 += dx1 - x1; x1 = dx1; }
 	if (y1 > dy1) { sy1 += dy1 - y1; y1 = dy1; }
+
+	hx0 = dst->owner->bbox.x0 + x0;
+	hx1 = dst->owner->bbox.x0 + x1;
+	hy0 = dst->owner->bbox.y0 + y0;
+	hy1 = dst->owner->bbox.y0 + y1;
+
+	/* zero out or set hyperlink for these coordinates */
+	gli_put_hyperlink(linkval, hx0, hy0, hx1, hy1);
 
 	sp = src->rgba + (sy0 * src->w + sx0) * 4;
 	dp = dst->rgb + (y0 * dst->w + x0) * 3;

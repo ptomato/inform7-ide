@@ -1,4 +1,4 @@
-// $Id: memory.h,v 1.2 2009-04-23 21:19:48 pchimento Exp $
+// $Id: memory.h,v 1.3 2009-09-10 21:23:19 pchimento Exp $
 // Functions and macros for accessing game memory.
 
 #ifndef GIT_MEMORY_H

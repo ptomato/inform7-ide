@@ -1,4 +1,4 @@
-// $Id: git_unix.c,v 1.2 2009-04-23 21:19:48 pchimento Exp $
+// $Id: git_unix.c,v 1.3 2009-09-10 21:23:19 pchimento Exp $
 
 // unixstrt.c: Unix-specific code for Glulxe.
 // Designed by Andrew Plotkin <erkyrath@eblong.com>

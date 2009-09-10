@@ -1,23 +1,28 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 /* screen.c - Generic screen manipulation
  *
- *  Copyright (c) 2005 Tor Andersson -- Glk-ified and V6-disabled
- *		Copyright (c) 1995-1997 Stefan Jokisch
- *
- * This file is part of Frotz.
- *
- * Frotz is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * Frotz is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ *  Portions copyright (c) 1995-1997 Stefan Jokisch.
  */
 
 #include "glkfrotz.h"
@@ -29,6 +34,9 @@ static int upperstyle = 0;
 static int lowerstyle = 0;
 static int cury = 1;
 static int curx = 1;
+
+int curr_fg = 0;
+int curr_bg = 0;
 
 /* To make the common code happy */
 
@@ -175,7 +183,7 @@ void split_window (int lines)
 	if (h_version < V4)
 		lines++;
 
-	if (lines > curr_status_ht)
+	if (!lines || lines > curr_status_ht)
 	{
 		glui32 height;
 
@@ -194,7 +202,7 @@ void split_window (int lines)
 		curx = cury = 1;
 	}
 	gos_update_width();
-	
+
 	if (h_version == V3)
 		glk_window_clear(gos_upper);
 }
@@ -268,12 +276,14 @@ void smartstatusline (void)
 	roomlen = b - a;
 	scorelen = d - c;
 	scoreofs = h_screen_cols - scorelen - 2;
+	if (scoreofs <= roomlen)
+		scoreofs = roomlen + 2;
 
 	memset(buf, ' ', h_screen_cols);
 	memcpy(buf + 1 + scoreofs, c, scorelen);
 	memcpy(buf + 1, a, roomlen);
-	if (roomlen >= scoreofs)
-		buf[roomlen + 1] = '|';
+	//if (roomlen >= scoreofs)
+	//	buf[roomlen + 1] = '|';
 
 	glk_window_move_cursor(gos_upper, 0, 0);
 	glk_set_style(style_User1);
@@ -348,7 +358,7 @@ void screen_char (zchar c)
 	{
 		if (c == ZC_RETURN)
 			glk_put_char('\n');
-		glk_put_char(c);
+		else glk_put_char(c);
 	}
 }
 
@@ -433,16 +443,29 @@ void z_erase_window (void)
 	short w = zargs[0];
 	if (w == -2)
 	{
-		if (gos_upper)
+		if (gos_upper) {
+			glk_set_window(gos_upper);
+#ifdef GARGLK
+			garglk_set_zcolors(curr_fg, curr_bg);
+#endif /* GARGLK */
 			glk_window_clear(gos_upper);
+			glk_set_window(gos_curwin);
+		}
 		glk_window_clear(gos_lower);
 	}
 	if (w == -1)
 	{
-		if (gos_upper)
+		if (gos_upper) {
+			glk_set_window(gos_upper);
+#ifdef GARGLK
+			garglk_set_zcolors(curr_fg, curr_bg);
+#endif /* GARGLK */
 			glk_window_clear(gos_upper);
+		}
 		glk_window_clear(gos_lower);
 		split_window(0);
+		glk_set_window(gos_lower);
+		gos_curwin = gos_lower;
 	}
 	if (w == 0)
 		glk_window_clear(gos_lower);
@@ -524,9 +547,16 @@ void z_set_colour (void)
 {
 	int zfore = zargs[0];
 	int zback = zargs[1];
-	
-	if (!(zfore == 0 && zback == 0))
+
+
+	if (!(zfore == 0 && zback == 0)) {
+#ifdef GARGLK
 		garglk_set_zcolors(zfore, zback);
+#endif /* GARGLK */
+	}
+
+	curr_fg = zfore;
+	curr_bg = zback;
 }
 
 /*
@@ -586,7 +616,9 @@ void z_set_text_style (void)
 		if (gos_curwin == gos_upper && gos_upper) {
 			glk_set_style(style_User1);
 		}
+#ifdef GARGLK
 		garglk_set_reversevideo(TRUE);
+#endif /* GARGLK */
 	}
 	else if (style & FIXED_WIDTH_STYLE)
 		glk_set_style(style_Preformatted);
@@ -598,9 +630,11 @@ void z_set_text_style (void)
 		glk_set_style(style_Emphasized);
 	else
 		glk_set_style(style_Normal);
-	
+
 	if (curstyle == 0) {
+#ifdef GARGLK
 		garglk_set_reversevideo(FALSE);
+#endif /* GARGLK */
 	}
 }
 
@@ -666,7 +700,7 @@ void z_show_status (void)
 
 	if (!gos_upper)
 		return;
-	
+
 	/* One V5 game (Wishbringer Solid Gold) contains this opcode by
 	   accident, so just return if the version number does not fit */
 

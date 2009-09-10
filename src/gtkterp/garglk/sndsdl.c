@@ -1,3 +1,25 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 /* SDL support donated by Lorenzo Marcantonio */
 
 #include <stdio.h>
@@ -298,7 +320,7 @@ static glui32 load_sound_resource(glui32 snd, long *len, char **buf)
 	FILE *file;
 	char name[1024];
 
-	sprintf(name, "%s/SND%ld", gli_workdir, (long int)snd); 
+	sprintf(name, "%s/SND%ld", gli_workdir, (long) snd); 
 
 	file = fopen(name, "rb");
 	if (!file)
@@ -314,7 +336,7 @@ static glui32 load_sound_resource(glui32 snd, long *len, char **buf)
 	}
 
 	fseek(file, 0, 0);
-	fread(*buf, 1, *len, file);
+	if (fread(*buf, 1, *len, file) != *len && !feof(file)) return 0;
 	fclose(file);
 
 	/* AIFF */
@@ -358,6 +380,7 @@ static glui32 load_sound_resource(glui32 snd, long *len, char **buf)
 	FILE *file;
 	glui32 type;
 	long pos;
+
 	giblorb_get_resource(giblorb_ID_Snd, snd, &file, &pos, len, &type);
 	if (!file)
 	    return 0;
@@ -367,7 +390,7 @@ static glui32 load_sound_resource(glui32 snd, long *len, char **buf)
 	    return 0;
 
 	fseek(file, pos, 0);
-	fread(*buf, 1, *len, file);
+	if (fread(*buf, 1, *len, file) != *len && !feof(file)) return 0;
 	return type;
     }
 }

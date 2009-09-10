@@ -26,13 +26,13 @@ int glkunix_startup_code(glkunix_startup_t *data)
   garglk_set_program_name("Glulxe 0.4.4");
   garglk_set_program_info("Glulxe 0.4.4 by Andrew Plotkin");
 #endif
-	
+
   if (data->argc <= 1) {
     init_err = "You must supply the name of a game file.";
 #ifdef GARGLK
-    return TRUE; /* Hack! But I want error message in glk window */
+    return TRUE; /* Hack! but I want error message in glk window */
 #endif
-    return FALSE;
+	return FALSE;
   }
   cx = data->argv[1];
     

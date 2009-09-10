@@ -1,3 +1,38 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
+/* cgstream.c: Stream functions for Glk API, version 0.7.0.
+    Designed by Andrew Plotkin <erkyrath@eblong.com>
+    http://www.eblong.com/zarf/glk/index.html
+
+    Portions of this file are copyright 1998-2007 by Andrew Plotkin.
+    You may copy, distribute, and incorporate it into your own programs,
+    by any means and under any conditions, as long as you do not modify it.
+    You may also modify this file, incorporate it into your own programs,
+    and distribute the modified version, as long as you retain a notice
+    in your program or documentation which mentions my name and the URL
+    shown above.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,6 +77,7 @@ stream_t *gli_new_stream(glui32 type, int readable, int writable, glui32 rock, i
   str->buflen = 0;
   str->win = NULL;
   str->file = NULL;
+  str->textfile = FALSE;
 
   str->prev = NULL;
   str->next = gli_streamlist;
@@ -169,6 +205,7 @@ static stream_t *gli_stream_open_file(frefid_t fref, glui32 fmode,
   }
     
   str->file = fl;
+  str->textfile = fref->textmode;
     
   return str;
 }
@@ -206,6 +243,7 @@ stream_t *gli_stream_open_pathname(char *pathname, int textmode, glui32 rock)
   }
     
   str->file = fl;
+  str->textfile = textmode;
     
   return str;
 }
@@ -496,16 +534,24 @@ static void gli_put_char(stream_t *str, unsigned char ch)
     break;
   case strtype_Window:
     if (str->win->line_request || str->win->line_request_uni) {
-      gli_strict_warning("put_char: window has pending line request");
-      break;
+        if (gli_conf_safeclicks && gli_forceclick) {
+            glk_cancel_line_event(str->win, NULL);
+            gli_forceclick = 0;
+        } else {
+            gli_strict_warning("put_char: window has pending line request");
+            break;
+        }
     }
     gli_window_put_char_uni(str->win, ch);
     if (str->win->echostr)
       gli_put_char(str->win->echostr, ch);
     break;
   case strtype_File:
-    putc(ch, str->file);
-    break;
+      if (str->textfile)
+        gli_putchar_utf8((glui32)ch, str->file);
+      else
+        putc((unsigned char)ch, str->file);
+      break;
   }
 }
 
@@ -532,19 +578,24 @@ static void gli_put_char_uni(stream_t *str, glui32 ch)
     break;
   case strtype_Window:
     if (str->win->line_request || str->win->line_request_uni) {
-        gli_strict_warning("put_char: window has pending line request");
-        break;
+        if (gli_conf_safeclicks && gli_forceclick) {
+            glk_cancel_line_event(str->win, NULL);
+            gli_forceclick = 0;
+        } else {
+            gli_strict_warning("put_char: window has pending line request");
+            break;
+        }
     }
     gli_window_put_char_uni(str->win, ch);
     if (str->win->echostr)
         gli_put_char_uni(str->win->echostr, ch);
     break;
     case strtype_File:
-        if (ch > 0xFF)
-            putc('?', str->file);
-        else
-            putc(ch, str->file);
-        break;
+      if (str->textfile)
+        gli_putchar_utf8((glui32)ch, str->file);
+      else
+        putc((unsigned char)ch, str->file);
+      break;
   }
 }
 
@@ -601,8 +652,13 @@ static void gli_put_buffer(stream_t *str, char *buf, glui32 len)
             break;
         case strtype_Window:
             if (str->win->line_request || str->win->line_request_uni) {
-                gli_strict_warning("put_buffer: window has pending line request");
-                break;
+                if (gli_conf_safeclicks && gli_forceclick) {
+                    glk_cancel_line_event(str->win, NULL);
+                    gli_forceclick = 0;
+                } else {
+                    gli_strict_warning("put_buffer: window has pending line request");
+                    break;
+                }
             }
             for (lx=0, cx=buf; lx<len; lx++, cx++) {
                 gli_window_put_char_uni(str->win, *cx);
@@ -611,11 +667,11 @@ static void gli_put_buffer(stream_t *str, char *buf, glui32 len)
                 gli_put_buffer(str->win->echostr, buf, len);
             break;
         case strtype_File:
-            /* we should handle Unicode / UTF8 
-               but for now we only write ASCII */
             for (lx=0; lx<len; lx++) {
-                unsigned char ch = (unsigned char)(buf[lx]);
-                putc(ch, str->file);
+                if (str->textfile)
+                    gli_putchar_utf8((glui32)buf[lx], str->file);
+                else
+                    putc((unsigned char)(buf[lx]), str->file);
             }
             break;
     }
@@ -678,8 +734,13 @@ static void gli_put_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
             break;
         case strtype_Window:
             if (str->win->line_request || str->win->line_request_uni) {
-                gli_strict_warning("put_buffer: window has pending line request");
-                break;
+                if (gli_conf_safeclicks && gli_forceclick) {
+                    glk_cancel_line_event(str->win, NULL);
+                    gli_forceclick = 0;
+                } else {
+                    gli_strict_warning("put_buffer: window has pending line request");
+                    break;
+                }
             }
             for (lx=0, cx=buf; lx<len; lx++, cx++) {
                 gli_window_put_char_uni(str->win, *cx);
@@ -688,11 +749,11 @@ static void gli_put_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
                 gli_put_buffer_uni(str->win->echostr, buf, len);
             break;
         case strtype_File:
-            /* we should handle Unicode / UTF8 
-               but for now we only write ASCII */
             for (lx=0; lx<len; lx++) {
-                unsigned char ch = ((unsigned char)(buf[lx]));
-                putc(ch, str->file);
+                if (str->textfile)
+                    gli_putchar_utf8((glui32)buf[lx], str->file);
+                else
+                    putc((unsigned char)(buf[lx]), str->file);
             }
             break;
     }
@@ -709,8 +770,13 @@ static void gli_unput_buffer(stream_t *str, char *buf, glui32 len)
   if (str->type == strtype_Window)
   {
     if (str->win->line_request || str->win->line_request_uni) {
-      gli_strict_warning("put_buffer: window has pending line request");
-      return;
+        if (gli_conf_safeclicks && gli_forceclick) {
+            glk_cancel_line_event(str->win, NULL);
+            gli_forceclick = 0;
+        } else {
+            gli_strict_warning("unput_buffer: window has pending line request");
+            return;
+        }
     }
     for (lx=0, cx=buf+len-1; lx<len; lx++, cx--) {
       if (!gli_window_unput_char_uni(str->win, *cx))
@@ -733,8 +799,13 @@ static void gli_unput_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
   if (str->type == strtype_Window)
   {
     if (str->win->line_request || str->win->line_request_uni) {
-      gli_strict_warning("put_buffer: window has pending line request");
-      return;
+        if (gli_conf_safeclicks && gli_forceclick) {
+            glk_cancel_line_event(str->win, NULL);
+            gli_forceclick = 0;
+        } else {
+            gli_strict_warning("unput_buffer: window has pending line request");
+            return;
+        }
     }
     for (lx=0, cx=buf+len-1; lx<len; lx++, cx--) {
       if (!gli_window_unput_char_uni(str->win, *cx))
@@ -784,12 +855,14 @@ static void gli_set_zcolors(stream_t *str, glui32 fg, glui32 bg)
                 str->win->attr.fgcolor = 0;
                 memcpy(gli_more_color, gli_more_save, 3);
                 memcpy(gli_caret_color, gli_caret_save, 3);
+                memcpy(gli_link_color, gli_link_save, 3);
                 gli_override_fg = 0;
             }
             else if (fg != zcolor_Current) {
                 str->win->attr.fgcolor = fg;
                 memcpy(gli_more_color, zcolor_rgb[fg - zcolor_Black], 3);
                 memcpy(gli_caret_color, zcolor_rgb[fg - zcolor_Black], 3);
+                memcpy(gli_link_color, zcolor_rgb[fg - zcolor_Black], 3);
                 gli_override_fg = fg;
             }
 
@@ -834,6 +907,19 @@ static void gli_set_reversevideo(stream_t *str, glui32 reverse)
             break;
     }
     gli_force_redraw = 1;
+}
+
+static void gli_set_hyperlink(stream_t *str, glui32 linkval)
+{
+  if (!str || !str->writable)
+    return;
+
+  switch (str->type) {
+  case strtype_Window:
+    str->win->attr.hyper = linkval;
+    break;
+  }
+
 }
 
 void gli_stream_echo_line(stream_t *str, char *buf, glui32 len)
@@ -1385,7 +1471,7 @@ void glk_put_char_stream_uni(stream_t *str, glui32 ch)
         gli_strict_warning("put_char_stream_uni: invalid ref");
         return;
     }
-    gli_put_char_uni(gli_currentstr, ch);
+    gli_put_char_uni(str, ch);
 }
 
 void glk_put_string(char *s)
@@ -1483,6 +1569,21 @@ void garglk_set_zcolors(glui32 fg, glui32 bg)
 void garglk_set_reversevideo(glui32 reverse)
 {
     gli_set_reversevideo(gli_currentstr, reverse);
+}
+
+void glk_set_hyperlink(glui32 linkval)
+{
+    gli_set_hyperlink(gli_currentstr, linkval);
+}
+
+void glk_set_hyperlink_stream(strid_t str, glui32 linkval)
+{
+  if (!str) {
+    gli_strict_warning("set_hyperlink_stream: invalid ref");
+    return;
+  }
+
+  gli_set_hyperlink(str, linkval);
 }
 
 glsi32 glk_get_char_stream(stream_t *str)

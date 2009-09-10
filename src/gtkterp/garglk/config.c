@@ -1,3 +1,25 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ *                                                                            *
+ * This file is part of Gargoyle.                                             *
+ *                                                                            *
+ * Gargoyle is free software; you can redistribute it and/or modify           *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation; either version 2 of the License, or          *
+ * (at your option) any later version.                                        *
+ *                                                                            *
+ * Gargoyle is distributed in the hope that it will be useful,                *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with Gargoyle; if not, write to the Free Software                    *
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA *
+ *                                                                            *
+ *****************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,11 +93,13 @@ unsigned char gli_window_color[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_color[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_color[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_more_color[3] = { 0x00, 0x60, 0x00 };
+unsigned char gli_link_color[3] = { 0x00, 0x00, 0x60 };
 
 unsigned char gli_window_save[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_save[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_save[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_more_save[3] = { 0x00, 0x60, 0x00 };
+unsigned char gli_link_save[3] = { 0x00, 0x00, 0x60 };
 
 int gli_override_fg = 0;
 int gli_override_bg = 0;
@@ -90,6 +114,7 @@ unsigned char gli_scroll_fg[3] = { 0xc0, 0xc0, 0xb0 };
 int gli_scroll_width = 8;
 
 int gli_caret_shape = 2;
+int gli_link_style = 1;
 
 int gli_conf_lcd = 1;
 
@@ -122,6 +147,7 @@ int gli_conf_sound = 1;
 int gli_conf_speak = 0;
 
 int gli_conf_stylehint = 1;
+int gli_conf_safeclicks = 0;
 
 static void parsecolor(char *str, unsigned char *rgb)
 {
@@ -250,6 +276,11 @@ static void readoneconfig(char *fname)
 			parsecolor(arg, gli_caret_save);
 		}
 
+		if (!strcmp(cmd, "linkcolor")) {
+			parsecolor(arg, gli_link_color);
+			parsecolor(arg, gli_link_save);
+		}
+
 		if (!strcmp(cmd, "bordercolor")) {
 			parsecolor(arg, gli_border_color);
 			parsecolor(arg, gli_border_save);
@@ -265,6 +296,9 @@ static void readoneconfig(char *fname)
 
 		if (!strcmp(cmd, "caretshape"))
 			gli_caret_shape = atoi(arg);
+
+		if (!strcmp(cmd, "linkstyle"))
+			gli_link_style = atoi(arg) ? 1 : 0;
 
 		if (!strcmp(cmd, "scrollwidth"))
 			gli_scroll_width = atoi(arg);
@@ -289,6 +323,9 @@ static void readoneconfig(char *fname)
 
 		if (!strcmp(cmd, "stylehint"))
 			gli_conf_stylehint = atoi(arg);
+
+		if (!strcmp(cmd, "safeclicks"))
+			gli_conf_safeclicks = atoi(arg);
 
 		if (!strcmp(cmd, "tcolor") || !strcmp(cmd, "gcolor"))
 		{
