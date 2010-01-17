@@ -50,6 +50,8 @@ void on_check_spelling_activate(GtkMenuItem *menuitem, gpointer data);
 void on_preferences_activate(GtkMenuItem *menuitem, gpointer data);
 void on_shift_selection_right_activate(GtkMenuItem *menuitem, gpointer data);
 void on_shift_selection_left_activate(GtkMenuItem *menuitem, gpointer data);
+void on_comment_out_selection_activate(GtkMenuItem *menuitem, gpointer data);
+void on_uncomment_selection_activate(GtkMenuItem *menuitem, gpointer data);
 void on_renumber_all_sections_activate(GtkMenuItem *menuitem, gpointer data);
 void on_refresh_index_activate(GtkMenuItem *menuitem, gpointer data);
 void on_go_activate(GtkMenuItem *menuitem, gpointer data);

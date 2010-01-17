@@ -489,3 +489,71 @@ shift_selection_left(GtkTextBuffer *buffer)
     }
     gtk_text_buffer_end_user_action(buffer);
 }
+
+/* Place [] around the selected text */
+void
+comment_out_selection(GtkTextBuffer *buffer)
+{
+	GtkTextIter start, end;
+	if(!gtk_text_buffer_get_selection_bounds(buffer, &start, &end))
+		return;
+	gchar *text = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
+
+	gtk_text_buffer_begin_user_action(buffer);
+	gtk_text_buffer_delete(buffer, &start, &end);
+	gchar *newtext = g_strconcat("[", text, "]", NULL);
+	GtkTextMark *tempmark = gtk_text_buffer_create_mark(buffer, NULL, &end, TRUE);
+	gtk_text_buffer_insert(buffer, &end, newtext, -1);
+	gtk_text_buffer_end_user_action(buffer);
+
+	g_free(text);
+	g_free(newtext);
+
+	/* Select the text again, including [] */
+	gtk_text_buffer_get_iter_at_mark(buffer, &start, tempmark);
+	gtk_text_buffer_select_range(buffer, &start, &end);
+	gtk_text_buffer_delete_mark(buffer, tempmark);
+}
+
+/* GtkTextCharPredicate function */
+static gboolean
+char_equals(gunichar ch, gpointer data)
+{
+	return ch == (gunichar)GPOINTER_TO_UINT(data);
+}
+
+/* Remove outermost pair of [] from selection */
+void
+uncomment_selection(GtkTextBuffer *buffer)
+{
+	GtkTextIter start, end;
+	if(!gtk_text_buffer_get_selection_bounds(buffer, &start, &end))
+		return;
+
+	/* Find first [ from beginning, then last ] between there and end */
+	if(gtk_text_iter_get_char(&start) != '[' 
+	    && !gtk_text_iter_forward_find_char(&start, char_equals, GUINT_TO_POINTER('['), &end))
+		return;
+	gtk_text_iter_backward_char(&end);
+	if(gtk_text_iter_get_char(&end) != ']' 
+		&& !gtk_text_iter_backward_find_char(&end, char_equals, GUINT_TO_POINTER(']'), &start))
+		return;
+	gtk_text_iter_forward_char(&end);
+	
+	gchar *text = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
+
+	gtk_text_buffer_begin_user_action(buffer);
+	gtk_text_buffer_delete(buffer, &start, &end);
+	gchar *newtext = g_strndup(text + 1, strlen(text) - 2);
+	GtkTextMark *tempmark = gtk_text_buffer_create_mark(buffer, NULL, &end, TRUE);
+	gtk_text_buffer_insert(buffer, &end, newtext, -1);
+	gtk_text_buffer_end_user_action(buffer);
+
+	g_free(text);
+	g_free(newtext);
+
+	/* Select only the uncommented text again */
+	gtk_text_buffer_get_iter_at_mark(buffer, &start, tempmark);
+	gtk_text_buffer_select_range(buffer, &start, &end);
+	gtk_text_buffer_delete_mark(buffer, tempmark);
+}

@@ -402,6 +402,21 @@ on_shift_selection_left_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 void
+on_comment_out_selection_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+	comment_out_selection(GTK_TEXT_BUFFER(thestory->buffer));
+}
+
+
+void
+on_uncomment_selection_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+	uncomment_selection(GTK_TEXT_BUFFER(thestory->buffer));
+}
+
+void
 on_renumber_all_sections_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(menuitem));

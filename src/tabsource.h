@@ -31,4 +31,7 @@ void jump_to_line(GtkWidget *widget, guint line);
 void renumber_sections(GtkTextBuffer *buffer);
 void shift_selection_right(GtkTextBuffer *buffer);
 void shift_selection_left(GtkTextBuffer *buffer);
+void comment_out_selection(GtkTextBuffer *buffer);
+void uncomment_selection(GtkTextBuffer *buffer);
+
 #endif
