@@ -142,13 +142,6 @@ static GnomeUIInfo format_menu_uiinfo[] =
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
-  {
-    GNOME_APP_UI_TOGGLEITEM, N_("_Enable Elastic Tabs"),
-    NULL,
-    (gpointer) on_enable_elastic_tabs_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
-  },
   GNOMEUIINFO_END
 };
 
@@ -608,13 +601,21 @@ create_app_window (void)
   GtkWidget *frame1;
   GtkWidget *alignment4;
   GtkWidget *vbox5;
+  GtkWidget *label107;
   GtkWidget *z5_button_l;
   GSList *z5_button_l_group = NULL;
-  GtkWidget *z8_button_l;
   GtkWidget *z6_button_l;
+  GtkWidget *z8_button_l;
   GtkWidget *glulx_button_l;
+  GtkWidget *label109;
   GtkWidget *blorb_button_l;
   GtkWidget *label25;
+  GtkWidget *frame14;
+  GtkWidget *alignment26;
+  GtkWidget *vbox55;
+  GtkWidget *label111;
+  GtkWidget *random_button_l;
+  GtkWidget *label105;
   GtkWidget *label15;
   GtkWidget *notebook_r;
   GtkWidget *vbox38;
@@ -716,13 +717,21 @@ create_app_window (void)
   GtkWidget *frame2;
   GtkWidget *alignment5;
   GtkWidget *vbox8;
+  GtkWidget *label108;
   GtkWidget *z5_button_r;
   GSList *z5_button_r_group = NULL;
-  GtkWidget *z8_button_r;
   GtkWidget *z6_button_r;
+  GtkWidget *z8_button_r;
   GtkWidget *glulx_button_r;
+  GtkWidget *label110;
   GtkWidget *blorb_button_r;
   GtkWidget *label42;
+  GtkWidget *frame15;
+  GtkWidget *alignment27;
+  GtkWidget *vbox56;
+  GtkWidget *label112;
+  GtkWidget *random_button_r;
+  GtkWidget *label106;
   GtkWidget *label43;
   GtkWidget *main_appbar;
   GtkTooltips *tooltips;
@@ -1384,7 +1393,7 @@ create_app_window (void)
 
   frame1 = gtk_frame_new (NULL);
   gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (vbox4), frame1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox4), frame1, FALSE, FALSE, 0);
 
   alignment4 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment4);
@@ -1395,44 +1404,84 @@ create_app_window (void)
   gtk_widget_show (vbox5);
   gtk_container_add (GTK_CONTAINER (alignment4), vbox5);
 
-  z5_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 5 (up to 256k)"));
+  label107 = gtk_label_new (_("Inform translates the source text into a story file which can have any of four standard formats. You can change your mind about the format at any time."));
+  gtk_widget_show (label107);
+  gtk_box_pack_start (GTK_BOX (vbox5), label107, FALSE, FALSE, 6);
+  gtk_label_set_line_wrap (GTK_LABEL (label107), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label107), 0, 0.5);
+
+  z5_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-Code version 5 (small textual projects only)"));
   gtk_widget_show (z5_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), z5_button_l, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, z5_button_l, _("Z-code version 5 games run on Z-machine interpreters (such as frotz or Zoom), and have an upper limit of 256k for the size of the story file."), NULL);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (z5_button_l), z5_button_l_group);
   z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z5_button_l));
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (z5_button_l), TRUE);
 
-  z8_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 8 (up to 512k)"));
-  gtk_widget_show (z8_button_l);
-  gtk_box_pack_start (GTK_BOX (vbox5), z8_button_l, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, z8_button_l, _("Z-code version 8 games run on a Z-machine interpreter (such as frotz or Zoom), and have an upper limit of 512k for the size of the story file. Choose this if your story has become too large for the version 5 format."), NULL);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (z8_button_l), z5_button_l_group);
-  z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z8_button_l));
-
-  z6_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 6 (up to 512k, graphical)"));
+  z6_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-Code version 6 (not recommended for new projects)"));
   gtk_widget_show (z6_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), z6_button_l, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (z6_button_l), z5_button_l_group);
   z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z6_button_l));
 
-  glulx_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (up to 4Gb)"));
+  z8_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-Code version 8 (medium-sized textual projects: most portable)"));
+  gtk_widget_show (z8_button_l);
+  gtk_box_pack_start (GTK_BOX (vbox5), z8_button_l, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, z8_button_l, _("Z-code version 8 games run on a Z-machine interpreter (such as frotz or Zoom), and have an upper limit of 512k for the size of the story file. Choose this if your story has become too large for the version 5 format."), NULL);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (z8_button_l), z5_button_l_group);
+  z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z8_button_l));
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (z8_button_l), TRUE);
+
+  glulx_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (large and multimedia projects: most capable)"));
   gtk_widget_show (glulx_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), glulx_button_l, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, glulx_button_l, _("Glulx stories use a different interpreter to the Z-code versions, and do not suffer from any limitations in size. Your players will need to use an interpreter such as glulxe to run these stories. Glulx stories usually use the Glk library for display, which has a different feel to the Z-machine display."), NULL);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (glulx_button_l), z5_button_l_group);
   z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (glulx_button_l));
 
-  blorb_button_l = gtk_check_button_new_with_mnemonic (_("Create a Blorb archive for release"));
+  label109 = gtk_label_new (_("When released, the story file is usually bound up into a Blorb file along with bibliographic data, cover art and any other resources it needs. If you need the raw story file, uncheck this option."));
+  gtk_widget_show (label109);
+  gtk_box_pack_start (GTK_BOX (vbox5), label109, FALSE, FALSE, 6);
+  gtk_label_set_line_wrap (GTK_LABEL (label109), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label109), 0, 0.5);
+
+  blorb_button_l = gtk_check_button_new_with_mnemonic (_("Bind up into a Blorb file on release"));
   gtk_widget_show (blorb_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), blorb_button_l, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, blorb_button_l, _("If selected (the default), then Inform will collate your story file with a library card on release to create a runnable Blorb archive file."), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (blorb_button_l), TRUE);
 
-  label25 = gtk_label_new (_("<b>Format of compiled story file</b>"));
+  label25 = gtk_label_new (_("<b>Story File Format</b>"));
   gtk_widget_show (label25);
   gtk_frame_set_label_widget (GTK_FRAME (frame1), label25);
   gtk_label_set_use_markup (GTK_LABEL (label25), TRUE);
+
+  frame14 = gtk_frame_new (NULL);
+  gtk_widget_show (frame14);
+  gtk_box_pack_start (GTK_BOX (vbox4), frame14, FALSE, FALSE, 0);
+
+  alignment26 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment26);
+  gtk_container_add (GTK_CONTAINER (frame14), alignment26);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment26), 0, 0, 12, 0);
+
+  vbox55 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox55);
+  gtk_container_add (GTK_CONTAINER (alignment26), vbox55);
+
+  label111 = gtk_label_new (_("If the story involves randomised outcomes or events, it may be harder to check with the Replay options or with TEST commands, because the same input may produce different results every time. This option makes testing more predictable. (It has no effect on the final Release version, which will still be randomised.)"));
+  gtk_widget_show (label111);
+  gtk_box_pack_start (GTK_BOX (vbox55), label111, FALSE, FALSE, 6);
+  gtk_label_set_line_wrap (GTK_LABEL (label111), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label111), 0, 0.5);
+
+  random_button_l = gtk_check_button_new_with_mnemonic (_("Make random outcomes predictable when testing"));
+  gtk_widget_show (random_button_l);
+  gtk_box_pack_start (GTK_BOX (vbox55), random_button_l, FALSE, FALSE, 0);
+
+  label105 = gtk_label_new (_("<b>Randomness</b>"));
+  gtk_widget_show (label105);
+  gtk_frame_set_label_widget (GTK_FRAME (frame14), label105);
+  gtk_label_set_use_markup (GTK_LABEL (label105), TRUE);
 
   label15 = gtk_label_new (_("Settings"));
   gtk_widget_show (label15);
@@ -1994,7 +2043,7 @@ create_app_window (void)
 
   frame2 = gtk_frame_new (NULL);
   gtk_widget_show (frame2);
-  gtk_box_pack_start (GTK_BOX (vbox7), frame2, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox7), frame2, FALSE, FALSE, 0);
 
   alignment5 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment5);
@@ -2005,33 +2054,45 @@ create_app_window (void)
   gtk_widget_show (vbox8);
   gtk_container_add (GTK_CONTAINER (alignment5), vbox8);
 
-  z5_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 5 (up to 256k)"));
+  label108 = gtk_label_new (_("Inform translates the source text into a story file which can have any of four standard formats. You can change your mind about the format at any time."));
+  gtk_widget_show (label108);
+  gtk_box_pack_start (GTK_BOX (vbox8), label108, FALSE, FALSE, 6);
+  gtk_label_set_line_wrap (GTK_LABEL (label108), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label108), 0, 0.5);
+
+  z5_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-Code version 5 (small textual projects only)"));
   gtk_widget_show (z5_button_r);
   gtk_box_pack_start (GTK_BOX (vbox8), z5_button_r, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, z5_button_r, _("Z-code version 5 games run on Z-machine interpreters (such as frotz or Zoom), and have an upper limit of 256k for the size of the story file."), NULL);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (z5_button_r), z5_button_r_group);
   z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z5_button_r));
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (z5_button_r), TRUE);
 
-  z8_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 8 (up to 512k)"));
-  gtk_widget_show (z8_button_r);
-  gtk_box_pack_start (GTK_BOX (vbox8), z8_button_r, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, z8_button_r, _("Z-code version 8 games run on a Z-machine interpreter (such as frotz or Zoom), and have an upper limit of 512k for the size of the story file. Choose this if your story has become too large for the version 5 format."), NULL);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (z8_button_r), z5_button_r_group);
-  z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z8_button_r));
-
-  z6_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 6 (up to 512k, graphical)"));
+  z6_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-Code version 6 (not recommended for new projects)"));
   gtk_widget_show (z6_button_r);
   gtk_box_pack_start (GTK_BOX (vbox8), z6_button_r, FALSE, FALSE, 0);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (z6_button_r), z5_button_r_group);
   z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z6_button_r));
 
-  glulx_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (up to 4Gb)"));
+  z8_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-Code version 8 (medium-sized textual projects: most portable)"));
+  gtk_widget_show (z8_button_r);
+  gtk_box_pack_start (GTK_BOX (vbox8), z8_button_r, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, z8_button_r, _("Z-code version 8 games run on a Z-machine interpreter (such as frotz or Zoom), and have an upper limit of 512k for the size of the story file. Choose this if your story has become too large for the version 5 format."), NULL);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (z8_button_r), z5_button_r_group);
+  z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z8_button_r));
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (z8_button_r), TRUE);
+
+  glulx_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (large and multimedia projects: most capable)"));
   gtk_widget_show (glulx_button_r);
   gtk_box_pack_start (GTK_BOX (vbox8), glulx_button_r, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, glulx_button_r, _("Glulx stories use a different interpreter to the Z-code versions, and do not suffer from any limitations in size. Your players will need to use an interpreter such as glulxe to run these stories. Glulx stories usually use the Glk library for display, which has a different feel to the Z-machine display."), NULL);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (glulx_button_r), z5_button_r_group);
   z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (glulx_button_r));
+
+  label110 = gtk_label_new (_("When released, the story file is usually bound up into a Blorb file along with bibliographic data, cover art and any other resources it needs. If you need the raw story file, uncheck this option."));
+  gtk_widget_show (label110);
+  gtk_box_pack_start (GTK_BOX (vbox8), label110, FALSE, FALSE, 6);
+  gtk_label_set_line_wrap (GTK_LABEL (label110), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label110), 0, 0.5);
 
   blorb_button_r = gtk_check_button_new_with_mnemonic (_("Create a Blorb archive for release"));
   gtk_widget_show (blorb_button_r);
@@ -2039,10 +2100,38 @@ create_app_window (void)
   gtk_tooltips_set_tip (tooltips, blorb_button_r, _("If selected (the default), then Inform will collate your story file with a library card on release to create a runnable Blorb archive file."), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (blorb_button_r), TRUE);
 
-  label42 = gtk_label_new (_("<b>Format of compiled story file</b>"));
+  label42 = gtk_label_new (_("<b>Story File Format</b>"));
   gtk_widget_show (label42);
   gtk_frame_set_label_widget (GTK_FRAME (frame2), label42);
   gtk_label_set_use_markup (GTK_LABEL (label42), TRUE);
+
+  frame15 = gtk_frame_new (NULL);
+  gtk_widget_show (frame15);
+  gtk_box_pack_start (GTK_BOX (vbox7), frame15, FALSE, FALSE, 0);
+
+  alignment27 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment27);
+  gtk_container_add (GTK_CONTAINER (frame15), alignment27);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment27), 0, 0, 12, 0);
+
+  vbox56 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox56);
+  gtk_container_add (GTK_CONTAINER (alignment27), vbox56);
+
+  label112 = gtk_label_new (_("If the story involves randomised outcomes or events, it may be harder to check with the Replay options or with TEST commands, because the same input may produce different results every time. This option makes testing more predictable. (It has no effect on the final Release version, which will still be randomised.)"));
+  gtk_widget_show (label112);
+  gtk_box_pack_start (GTK_BOX (vbox56), label112, FALSE, FALSE, 6);
+  gtk_label_set_line_wrap (GTK_LABEL (label112), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label112), 0, 0.5);
+
+  random_button_r = gtk_check_button_new_with_mnemonic (_("Make random outcomes predictable when testing"));
+  gtk_widget_show (random_button_r);
+  gtk_box_pack_start (GTK_BOX (vbox56), random_button_r, FALSE, FALSE, 0);
+
+  label106 = gtk_label_new (_("<b>Randomness</b>"));
+  gtk_widget_show (label106);
+  gtk_frame_set_label_widget (GTK_FRAME (frame15), label106);
+  gtk_label_set_use_markup (GTK_LABEL (label106), TRUE);
 
   label43 = gtk_label_new (_("Settings"));
   gtk_widget_show (label43);
@@ -2168,17 +2257,20 @@ create_app_window (void)
   g_signal_connect ((gpointer) z5_button_l, "toggled",
                     G_CALLBACK (on_z5_button_toggled),
                     NULL);
-  g_signal_connect ((gpointer) z8_button_l, "toggled",
-                    G_CALLBACK (on_z8_button_toggled),
-                    NULL);
   g_signal_connect ((gpointer) z6_button_l, "toggled",
                     G_CALLBACK (on_z6_button_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) z8_button_l, "toggled",
+                    G_CALLBACK (on_z8_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) glulx_button_l, "toggled",
                     G_CALLBACK (on_glulx_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) blorb_button_l, "toggled",
                     G_CALLBACK (on_blorb_button_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) random_button_l, "toggled",
+                    G_CALLBACK (on_random_button_toggled),
                     NULL);
   g_signal_connect_after ((gpointer) notebook_r, "switch_page",
                           G_CALLBACK (after_notebook_r_switch_page),
@@ -2261,17 +2353,20 @@ create_app_window (void)
   g_signal_connect ((gpointer) z5_button_r, "toggled",
                     G_CALLBACK (on_z5_button_toggled),
                     NULL);
-  g_signal_connect ((gpointer) z8_button_r, "toggled",
-                    G_CALLBACK (on_z8_button_toggled),
-                    NULL);
   g_signal_connect ((gpointer) z6_button_r, "toggled",
                     G_CALLBACK (on_z6_button_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) z8_button_r, "toggled",
+                    G_CALLBACK (on_z8_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) glulx_button_r, "toggled",
                     G_CALLBACK (on_glulx_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) blorb_button_r, "toggled",
                     G_CALLBACK (on_blorb_button_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) random_button_r, "toggled",
+                    G_CALLBACK (on_random_button_toggled),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -2313,7 +2408,6 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[3].widget, "uncomment_selection");
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[4].widget, "separator31");
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[5].widget, "renumber_all_sections");
-  GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[6].widget, "enable_elastic_tabs");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[3].widget, "play");
   GLADE_HOOKUP_OBJECT (app_window, play_menu_uiinfo[0].widget, "go");
   GLADE_HOOKUP_OBJECT (app_window, play_menu_uiinfo[1].widget, "test_me");
@@ -2479,12 +2573,20 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, frame1, "frame1");
   GLADE_HOOKUP_OBJECT (app_window, alignment4, "alignment4");
   GLADE_HOOKUP_OBJECT (app_window, vbox5, "vbox5");
+  GLADE_HOOKUP_OBJECT (app_window, label107, "label107");
   GLADE_HOOKUP_OBJECT (app_window, z5_button_l, "z5_button_l");
-  GLADE_HOOKUP_OBJECT (app_window, z8_button_l, "z8_button_l");
   GLADE_HOOKUP_OBJECT (app_window, z6_button_l, "z6_button_l");
+  GLADE_HOOKUP_OBJECT (app_window, z8_button_l, "z8_button_l");
   GLADE_HOOKUP_OBJECT (app_window, glulx_button_l, "glulx_button_l");
+  GLADE_HOOKUP_OBJECT (app_window, label109, "label109");
   GLADE_HOOKUP_OBJECT (app_window, blorb_button_l, "blorb_button_l");
   GLADE_HOOKUP_OBJECT (app_window, label25, "label25");
+  GLADE_HOOKUP_OBJECT (app_window, frame14, "frame14");
+  GLADE_HOOKUP_OBJECT (app_window, alignment26, "alignment26");
+  GLADE_HOOKUP_OBJECT (app_window, vbox55, "vbox55");
+  GLADE_HOOKUP_OBJECT (app_window, label111, "label111");
+  GLADE_HOOKUP_OBJECT (app_window, random_button_l, "random_button_l");
+  GLADE_HOOKUP_OBJECT (app_window, label105, "label105");
   GLADE_HOOKUP_OBJECT (app_window, label15, "label15");
   GLADE_HOOKUP_OBJECT (app_window, notebook_r, "notebook_r");
   GLADE_HOOKUP_OBJECT (app_window, vbox38, "vbox38");
@@ -2586,12 +2688,20 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, frame2, "frame2");
   GLADE_HOOKUP_OBJECT (app_window, alignment5, "alignment5");
   GLADE_HOOKUP_OBJECT (app_window, vbox8, "vbox8");
+  GLADE_HOOKUP_OBJECT (app_window, label108, "label108");
   GLADE_HOOKUP_OBJECT (app_window, z5_button_r, "z5_button_r");
-  GLADE_HOOKUP_OBJECT (app_window, z8_button_r, "z8_button_r");
   GLADE_HOOKUP_OBJECT (app_window, z6_button_r, "z6_button_r");
+  GLADE_HOOKUP_OBJECT (app_window, z8_button_r, "z8_button_r");
   GLADE_HOOKUP_OBJECT (app_window, glulx_button_r, "glulx_button_r");
+  GLADE_HOOKUP_OBJECT (app_window, label110, "label110");
   GLADE_HOOKUP_OBJECT (app_window, blorb_button_r, "blorb_button_r");
   GLADE_HOOKUP_OBJECT (app_window, label42, "label42");
+  GLADE_HOOKUP_OBJECT (app_window, frame15, "frame15");
+  GLADE_HOOKUP_OBJECT (app_window, alignment27, "alignment27");
+  GLADE_HOOKUP_OBJECT (app_window, vbox56, "vbox56");
+  GLADE_HOOKUP_OBJECT (app_window, label112, "label112");
+  GLADE_HOOKUP_OBJECT (app_window, random_button_r, "random_button_r");
+  GLADE_HOOKUP_OBJECT (app_window, label106, "label106");
   GLADE_HOOKUP_OBJECT (app_window, label43, "label43");
   GLADE_HOOKUP_OBJECT (app_window, main_appbar, "main_appbar");
   GLADE_HOOKUP_OBJECT_NO_REF (app_window, tooltips, "tooltips");
@@ -3729,6 +3839,7 @@ create_prefs_dialog (void)
   GtkWidget *vbox27;
   GtkWidget *prefs_intelligent_inspector_toggle;
   GtkWidget *prefs_auto_number_toggle;
+  GtkWidget *prefs_elastic_tabstops_toggle;
   GtkWidget *label68;
   GtkWidget *vbox19;
   GtkWidget *frame3;
@@ -3910,6 +4021,11 @@ create_prefs_dialog (void)
   gtk_widget_show (prefs_auto_number_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_auto_number_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_auto_number_toggle, _("If you check this option, Inform will automatically renumber sections when you insert a new one. It will also automatically insert a section number as you type: if you type \"Part \", Inform will insert \"2 - \" and renumber the previous Part 2 to Part 3 and so on."), NULL);
+
+  prefs_elastic_tabstops_toggle = gtk_check_button_new_with_mnemonic (_("_Use elastic tabstops"));
+  gtk_widget_show (prefs_elastic_tabstops_toggle);
+  gtk_box_pack_start (GTK_BOX (vbox26), prefs_elastic_tabstops_toggle, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_elastic_tabstops_toggle, _("If this option is selected, tab stops will have variable width so that data in tables are lined up properly in columns. If you are working on a long story file on a slow computer, you may see a performance benefit by turning this off."), NULL);
 
   label68 = gtk_label_new (_("Editing"));
   gtk_widget_show (label68);
@@ -4441,6 +4557,9 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_auto_number_toggle, "toggled",
                     G_CALLBACK (on_prefs_auto_number_toggle_toggled),
                     NULL);
+  g_signal_connect ((gpointer) prefs_elastic_tabstops_toggle, "toggled",
+                    G_CALLBACK (on_prefs_elastic_tabstops_toggle_toggled),
+                    NULL);
   g_signal_connect ((gpointer) prefs_font_set, "changed",
                     G_CALLBACK (on_prefs_font_set_changed),
                     NULL);
@@ -4470,6 +4589,9 @@ create_prefs_dialog (void)
                     NULL);
   g_signal_connect ((gpointer) prefs_clean_index_toggle, "toggled",
                     G_CALLBACK (on_prefs_clean_index_toggle_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_glulx_combo, "changed",
+                    G_CALLBACK (on_prefs_glulx_combo_changed),
                     NULL);
   g_signal_connect ((gpointer) prefs_show_log_toggle, "toggled",
                     G_CALLBACK (on_prefs_show_log_toggle_toggled),
@@ -4529,6 +4651,7 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox27, "vbox27");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_intelligent_inspector_toggle, "prefs_intelligent_inspector_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_auto_number_toggle, "prefs_auto_number_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_elastic_tabstops_toggle, "prefs_elastic_tabstops_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label68, "label68");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox19, "vbox19");
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame3, "frame3");

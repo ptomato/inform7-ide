@@ -110,7 +110,11 @@ run_project(Story *thestory)
     g_free(path);
     
     /* Get a list of the commands that need to be fed in */
-    GSList *commands = skein_get_commands(thestory->theskein);
+	GSList *commands = NULL;
+	if(thestory->action == COMPILE_TEST_ME) {
+		commands = g_slist_prepend(commands, g_strdup("test me"));
+	} else
+    	commands = skein_get_commands(thestory->theskein);
     
     /* Set non-interactive if there are commands, because if we don't, the first
     screen might freeze on a "-- more --" prompt and ignore the first automatic

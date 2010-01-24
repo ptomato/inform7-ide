@@ -651,10 +651,10 @@ on_prefs_author_changed(GtkEditable *editable, gpointer data)
 }
 
 void
-on_prefs_git_button_toggled(GtkToggleButton *togglebutton, gpointer data)
+on_prefs_glulx_combo_changed(GtkComboBox *combobox, gpointer data)
 {
 	config_file_set_bool("IDESettings", "UseGit",
-	  gtk_toggle_button_get_active(togglebutton));
+	    gtk_combo_box_get_active(combobox) == 0);
 }
 
 void

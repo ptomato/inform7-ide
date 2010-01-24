@@ -44,6 +44,7 @@ enum {
     COMPILE_REFRESH_INDEX,
     COMPILE_SAVE_DEBUG_BUILD,
     COMPILE_RUN,
+	COMPILE_TEST_ME,
     COMPILE_RELEASE
 };
 
@@ -79,6 +80,7 @@ typedef struct {
     /* Various settings */
     int story_format;
     gboolean make_blorb;
+	gboolean random_predictable;
     
     /* Which interpreter is running it */
     gulong handler_finished;

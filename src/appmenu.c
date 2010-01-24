@@ -457,6 +457,21 @@ on_go_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 void
+on_test_me_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+	/* Stop the project if running */
+	stop_project(thestory);
+	/* Save the project */
+	on_save_activate(menuitem, data);
+	/* Compile and run "test me" */
+	thestory->action = COMPILE_TEST_ME;
+	/* Reset the skein to the beginning */
+	skein_reset(thestory->theskein, TRUE);
+	compile_project(thestory);
+}
+
+void
 on_replay_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(menuitem));
@@ -502,6 +517,49 @@ on_save_debug_build_activate(GtkMenuItem *menuitem, gpointer data)
     /* Compile, not for release, and save the output file */
     thestory->action = COMPILE_SAVE_DEBUG_BUILD;
     compile_project(thestory);
+}
+
+void
+on_open_materials_folder_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	GError *err = NULL;
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+	if(thestory->filename == NULL) {
+		error_dialog(GTK_WINDOW(thestory->window), NULL,
+		    _("The story has not been saved yet, so there is no Materials "
+			  "folder to open."));
+		return;
+	}
+
+	gchar *base = g_path_get_basename(thestory->filename);
+	gchar *path = g_path_get_dirname(thestory->filename);
+	g_assert(g_str_has_suffix(base, ".inform"));
+	gchar *title = g_strndup(base, strlen(base) - 7); /* lose extension */
+	g_free(base);
+
+	/* Create directory if it doesn't exist */
+	gchar *materialsname = g_strconcat(title, " Materials", NULL);
+	g_free(title);
+	gchar *materialspath = g_build_filename(path, materialsname, NULL);
+	if(g_mkdir_with_parents(materialspath, 0777) == -1) {
+		error_dialog(GTK_WINDOW(thestory->window), NULL,
+          _("Error creating Materials folder: %s"), g_strerror(errno));
+		g_free(materialsname);
+		g_free(materialspath);
+		g_free(path);
+		return;
+	}
+	g_free(materialspath);
+	
+	/* Open Materials folder */
+	/* Slashes are correct here, not directory separators */
+	gchar *url = g_strconcat("file://", path, "/", materialsname, NULL);
+    g_free(path);
+	g_free(materialsname);
+	if(!gnome_url_show(url, &err))
+		error_dialog(GTK_WINDOW(thestory->window), err, 
+		    _("Could not open Materials folder: "));
+	g_free(url);
 }
 
 void
@@ -759,8 +817,8 @@ on_report_a_bug_activate(GtkMenuItem *menuitem, gpointer data)
 	GError *err = NULL;
 	if(!gnome_url_show("http://inform7.com/contribute/report", &err))
 		error_dialog(NULL, err, 
-			_("The page \"http://inform7.com/contribute/report\" should have"
-			"opened in your browser:"));
+			_("The page \"%s\" should have opened in your browser:"),
+		    "http://inform7.com/contribute/report");
 }
 
 void
@@ -790,6 +848,16 @@ on_recipe_book_activate(GtkMenuItem *menuitem, gpointer data)
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
       TAB_DOCUMENTATION);
+}
+
+void
+on_visit_inform7com_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	GError *err = NULL;
+	if(!gnome_url_show("http://inform7.com/", &err))
+		error_dialog(NULL, err, 
+			_("The page \"%s\" should have opened in your browser:"),
+		    "http://inform7.com/");
 }
 
 void

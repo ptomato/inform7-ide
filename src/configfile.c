@@ -332,12 +332,9 @@ on_config_inspectors_changed(GConfClient *client, guint id, GConfEntry *entry,
 
 static void
 on_config_syntax_highlighting_changed(GConfClient *client, guint id,
-                                      GConfEntry *entry, GtkWidget *toggle)
+                                      GConfEntry *entry)
 {
-    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
     /* update application to reflect new value */
-    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle)) != newvalue)
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
     for_each_story_buffer(&update_source_highlight);
     for_each_extension_buffer(&update_source_highlight);
     for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
@@ -419,21 +416,11 @@ on_config_author_name_changed(GConfClient *client, guint id, GConfEntry *entry,
 
 static void
 on_config_use_git_changed(GConfClient *client, guint id, GConfEntry *entry,
-						  GtkWidget *gitbutton)
+						  GtkWidget *glulxcombo)
 {
 	gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
 	/* update application to reflect new value */
-	GSList *group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(gitbutton));
-	/* Find the first (i.e. only) button other than the Git button */
-	while(group->data == GTK_RADIO_BUTTON(gitbutton))
-		group = group->next;
-	GtkWidget *glulxbutton = GTK_WIDGET(group->data);
-	if(newvalue != gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gitbutton))) {
-		gtk_toggle_button_set_active(
-			GTK_TOGGLE_BUTTON(newvalue? gitbutton : glulxbutton), TRUE);
-		gtk_toggle_button_set_active(
-			GTK_TOGGLE_BUTTON(newvalue? glulxbutton : gitbutton), FALSE);
-	}
+	gtk_combo_box_set_active(GTK_COMBO_BOX(glulxcombo), newvalue? 0 : 1);
 	/* Don't bother restarting the terp, the change will take effect on the
 	 next invocation */
 }
@@ -525,8 +512,7 @@ static struct KeyToMonitor keys_to_monitor[] = {
       (GConfClientNotifyFunc)on_config_inspectors_changed,
       "prefs_search_toggle" },
     { "SyntaxSettings/SyntaxHighlighting", 
-      (GConfClientNotifyFunc)on_config_syntax_highlighting_changed,
-      "prefs_enable_highlighting_toggle" },
+      (GConfClientNotifyFunc)on_config_syntax_highlighting_changed, NULL },
     { "SyntaxSettings/Intelligence",
       (GConfClientNotifyFunc)on_config_intelligence_changed,
       "prefs_follow_symbols_toggle" },
@@ -547,7 +533,7 @@ static struct KeyToMonitor keys_to_monitor[] = {
     { "AppSettings/AuthorName",
       (GConfClientNotifyFunc)on_config_author_name_changed, "prefs_author" },
 	{ "IDESettings/UseGit", (GConfClientNotifyFunc)on_config_use_git_changed,
-	  "prefs_git_button" },
+	  "prefs_glulx_combo" },
     { "IDESettings/CleanBuildFiles",
       (GConfClientNotifyFunc)on_config_clean_build_files_changed,
       "prefs_clean_build_toggle" },

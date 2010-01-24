@@ -192,7 +192,11 @@ start_ni_compiler(Story *thestory)
         commandline = g_new(gchar *, 8);
         commandline[6] = g_strdup("-release");
         commandline[7] = NULL;
-    } else {
+    } else if(thestory->random_predictable) {
+		commandline = g_new(gchar *, 8);
+		commandline[6] = g_strdup("-rng");
+		commandline[7] = NULL;
+	} else {
         commandline = g_new(gchar *, 7);
         commandline[6] = NULL;
     }
@@ -304,6 +308,7 @@ finish_ni_compiler(GPid pid, gint status, Story *thestory)
         break;
     case COMPILE_SAVE_DEBUG_BUILD:
     case COMPILE_RUN:
+	case COMPILE_TEST_ME:
     case COMPILE_RELEASE:
         prepare_i6_compiler(thestory);
         start_i6_compiler(thestory);
@@ -482,6 +487,7 @@ finish_i6_compiler(GPid pid, gint status, Story *thestory)
         finish_save_debug_build(thestory);
         break;
     case COMPILE_RUN:
+	case COMPILE_TEST_ME:
         finish_run(thestory);
         break;
     case COMPILE_RELEASE:
@@ -495,7 +501,6 @@ finish_i6_compiler(GPid pid, gint status, Story *thestory)
         ;
     }
 }
-
 
 /* Get ready to run the CBlorb compiler */
 static void 

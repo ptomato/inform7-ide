@@ -133,7 +133,7 @@ void on_prefs_auto_number_toggle_toggled(GtkToggleButton *togglebutton,
 void on_prefs_elastic_tabstops_toggle_toggled(GtkToggleButton *togglebutton,
                                               gpointer data);
 void on_prefs_author_changed(GtkEditable *editable, gpointer data);
-void on_prefs_git_button_toggled(GtkToggleButton *togglebutton, gpointer data);
+void on_prefs_glulx_combo_changed(GtkComboBox *combobox, gpointer data);
 void on_prefs_clean_build_toggle_toggled(GtkToggleButton *togglebutton,
                                          gpointer data);
 void on_prefs_clean_index_toggle_toggled(GtkToggleButton *togglebutton,

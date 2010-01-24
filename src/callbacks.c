@@ -28,18 +28,6 @@
 /* This is where Glade puts newly-created callback functions. */
 
 void
-on_enable_elastic_tabs_activate(GtkMenuItem *menuitem, gpointer data)
-{
-
-}
-
-void
-on_test_me_activate(GtkMenuItem *menuitem, gpointer data)
-{
-
-}
-
-void
 on_show_last_command_activate(GtkMenuItem *menuitem, gpointer data)
 {
 
@@ -52,19 +40,7 @@ on_show_last_command_in_skein_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 void
-on_open_materials_folder_activate(GtkMenuItem *menuitem, gpointer data)
-{
-
-}
-
-void
 on_export_ifiction_record_activate(GtkMenuItem *menuitem, gpointer data)
-{
-
-}
-
-void
-on_visit_inform7com_activate(GtkMenuItem *menuitem, gpointer data)
 {
 
 }

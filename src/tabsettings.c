@@ -95,6 +95,21 @@ on_blorb_button_toggled(GtkToggleButton *togglebutton, gpointer data)
         GTK_WIDGET(togglebutton), "blorb_button_r")), thestory->make_blorb);
 }
 
+void
+on_random_button_toggled(GtkToggleButton *togglebutton, gpointer data)
+{
+	Story *thestory = get_story(GTK_WIDGET(togglebutton));
+	thestory->random_predictable = gtk_toggle_button_get_active(togglebutton);
+
+	/* When one changes, change the other */
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "random_button_l")), 
+	    thestory->random_predictable);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "random_button_r")), 
+	    thestory->random_predictable);
+}
+
 /* Select all the right buttons according to the story settings */
 void update_settings(Story *thestory) {
     switch(thestory->story_format) {

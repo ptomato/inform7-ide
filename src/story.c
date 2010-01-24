@@ -59,8 +59,9 @@ new_story()
       GTK_TEXT_BUFFER(newstory->buffer));
 
     /* Do the default settings */
-    newstory->story_format = FORMAT_Z5;
-    newstory->make_blorb = FALSE;
+    newstory->story_format = FORMAT_Z8;
+    newstory->make_blorb = TRUE;
+	newstory->random_predictable = FALSE;
     newstory->handler_finished = 0;
     newstory->handler_input = 0;
     newstory->action = COMPILE_NONE;
