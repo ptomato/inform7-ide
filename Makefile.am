@@ -1,4 +1,4 @@
-SUBDIRS = src po data pixmaps debian
+SUBDIRS = src po data pixmaps
 
 desktopdir = $(datadir)/applications
 dist_desktop_DATA = gnome-inform7.desktop
