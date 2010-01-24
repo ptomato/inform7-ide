@@ -26,14 +26,18 @@
 #include "glk.h"
 #include "garglk.h"
 
+/* GI7 EDIT */
 /* To access the global frame object */
 #include "sysgtk.h"
 #include "garglk-plug.h"
 
-#undef MIN
+/* GI7 EDIT */
+#ifndef MIN
 #define MIN(a,b) (a < b ? a : b)
-#undef MAX
+#endif
+#ifndef MAX
 #define MAX(a,b) (a > b ? a : b)
+#endif
 
 /* how many pixels we add to left/right margins */
 #define SLOP (2 * GLI_SUBPIX)
@@ -281,6 +285,7 @@ void win_textbuffer_rearrange(window_t *win, rect_t *box)
             dwin->scrollpos = dwin->scrollmax - dwin->height + 1;
         if (dwin->scrollpos < 0)
             dwin->scrollpos = 0;
+		/* GI7 EDIT */
 		/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
         if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
             dwin->scrollpos = 0;
@@ -317,7 +322,8 @@ void win_textbuffer_redraw(window_t *win)
 {
     window_textbuffer_t *dwin = win->data;
     int drawmore = win->line_request || win->char_request || win->line_request_uni || win->char_request_uni;
-    if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
+	/* GI7 EDIT */    
+	if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         drawmore = 0;
     tbline_t *ln;
     int linelen;
@@ -330,7 +336,7 @@ void win_textbuffer_redraw(window_t *win)
     char *color;
     int i;
     int hx0, hx1, hy0, hy1;
-    int selbuf, selrow, selchar, sx0, sx1;
+    int selbuf, selrow, selchar, sx0, sx1, selleft, selright;
     int tx, tsc, tsw, lsc, rsc;
 
     dwin->lines[0].len = dwin->numchars;
@@ -349,7 +355,8 @@ void win_textbuffer_redraw(window_t *win)
 //    if (dwin->scrollmax && dwin->scrollmax < dwin->height)
 //        y0 -= (dwin->height - dwin->scrollmax) * gli_leading;
 
-    /* Scroll right to the bottom if GarglkPlug is not in interactive mode */
+	/* GI7 EDIT */    
+	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
 
@@ -362,12 +369,15 @@ void win_textbuffer_redraw(window_t *win)
         y = y0 + (dwin->height - (i - dwin->scrollpos) - 1) * gli_leading;
 
         /* check if part of line is selected */
-        if (selbuf)
+        if (selbuf) {
             selrow = gli_get_selection(x0/GLI_SUBPIX, y,
                     x1/GLI_SUBPIX, y + gli_leading,
                     &sx0, &sx1);
-        else
+            selleft = (sx0 == x0/GLI_SUBPIX);
+            selright = (sx1 == x1/GLI_SUBPIX);
+        } else {
             selrow = FALSE;
+        }
 
         /* mark selected line dirty */
         if (selrow)
@@ -429,36 +439,60 @@ void win_textbuffer_redraw(window_t *win)
 
         /* find and highlight selected characters */
         if (selrow && !gli_claimselect) {
-            tx = (x0 + SLOP + ln->lm)/GLI_SUBPIX;
             lsc = 0;
             rsc = 0;
             selchar = FALSE;
-            for (tsc = 0; tsc < linelen; tsc++) {
-                tsw = calcwidth(dwin, ln->chars, ln->attrs, 0, tsc, spw)/GLI_SUBPIX;
-                if (tsw + tx >= sx0) {
-                    lsc = tsc;
-                    selchar = TRUE;
-                    break;
-                }
-            }
-            if (selchar) {
-                for (tsc = lsc; tsc < linelen; tsc++) {
-                    tsw = calcwidth(dwin, ln->chars, ln->attrs, lsc, tsc, spw)/GLI_SUBPIX;
-                    if (tsw + sx0 < sx1) {
-                        rsc = tsc;
+            /* optimized case for all chars selected */
+            if (selleft && selright) {
+                rsc = linelen > 0 ? linelen - 1 : 0;
+                selchar = calcwidth(dwin, ln->chars, ln->attrs, lsc, rsc, spw)/GLI_SUBPIX;
+            } else {
+                /* optimized case for leftmost char selected */
+                if (selleft) {
+                    tsc = linelen > 0 ? linelen - 1 : 0;
+                    selchar = calcwidth(dwin, ln->chars, ln->attrs, lsc, tsc, spw)/GLI_SUBPIX;
+                } else {
+                    /* find the substring contained by the selection */
+                    tx = (x0 + SLOP + ln->lm)/GLI_SUBPIX;
+                    /* measure string widths until we find left char */
+                    for (tsc = 0; tsc < linelen; tsc++) {
+                        tsw = calcwidth(dwin, ln->chars, ln->attrs, 0, tsc, spw)/GLI_SUBPIX;
+                        if (tsw + tx >= sx0 ||
+                                tsw + tx + GLI_SUBPIX >= sx0 && ln->chars[tsc] != ' ') {
+                            lsc = tsc;
+                            selchar = TRUE;
+                            break;
+                        }
                     }
                 }
+                if (selchar) {
+                    /* optimized case for rightmost char selected */
+                    if (selright) {
+                        rsc = linelen > 0 ? linelen - 1 : 0;
+                    } else {
+                    /* measure string widths until we find right char */
+                        for (tsc = lsc; tsc < linelen; tsc++) {
+                            tsw = calcwidth(dwin, ln->chars, ln->attrs, lsc, tsc, spw)/GLI_SUBPIX;
+                            if (tsw + sx0 < sx1) {
+                                rsc = tsc;
+                            }
+                        }
+                        if (lsc && !rsc)
+                            rsc = lsc;
+                    }
+                }
+            }
+            /* reverse colors for selected chars */
+            if (selchar) {
                 for (tsc = lsc; tsc <= rsc; tsc++) {
                     ln->attrs[tsc].reverse = !ln->attrs[tsc].reverse;
                     dwin->copybuf[dwin->copypos] = ln->chars[tsc];
                     dwin->copypos++;
                 }
-                dwin->copybuf[dwin->copypos] = '\n';
-                dwin->copypos++;
-            } else {
-                dwin->copybuf[dwin->copypos] = '\n';
-                dwin->copypos++;
             }
+            /* add newline to copy buffer */
+            dwin->copybuf[dwin->copypos] = '\n';
+            dwin->copypos++;
         }
 
         /* clear any stored hyperlink coordinates */
@@ -700,6 +734,7 @@ static void scrolloneline(window_textbuffer_t *dwin, int forced)
     if (dwin->scrollpos < 0)
         dwin->scrollpos = 0;
 
+	/* GI7 EDIT */
 	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
@@ -1190,8 +1225,10 @@ void win_textbuffer_cancel_line(window_t *win, event_t *ev)
 static void gcmd_accept_scroll(window_t *win, glui32 arg)
 {
     window_textbuffer_t *dwin = win->data;
+/* GI7 EDIT */
 /*    int oldpos = dwin->scrollpos;*/
     int pageht = dwin->height - 2;        /* 1 for prompt, 1 for overlap */
+/* GI7 EDIT */
 /*    int i;*/
 
     switch (arg)
@@ -1219,6 +1256,7 @@ static void gcmd_accept_scroll(window_t *win, glui32 arg)
         dwin->scrollpos = dwin->scrollmax - dwin->height + 1;
     if (dwin->scrollpos < 0)
         dwin->scrollpos = 0;
+	/* GI7 EDIT */
 	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
@@ -1290,6 +1328,7 @@ static void acceptline(window_t *win, glui32 keycode)
         memcpy(s, dwin->chars + dwin->infence, len * 4);
         s[len] = 0;
 
+		/* GI7 EDIT */
 		/* Send "command-received" message through GtkTerp */
 		gchar *utf8 = g_ucs4_to_utf8(s, len, NULL, NULL, NULL);
 		if(utf8) {

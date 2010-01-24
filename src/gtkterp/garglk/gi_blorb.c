@@ -227,6 +227,7 @@ static giblorb_err_t giblorb_initialize_map(giblorb_map_t *map)
     giblorb_err_t err;
     char *ptr;
     glui32 len;
+/* GI7 EDIT */
 /*    glui32 val;*/
     glui32 numres;
     int gotindex = FALSE; 
@@ -396,6 +397,7 @@ giblorb_err_t giblorb_load_chunk_by_number(giblorb_map_t *map,
             
         case giblorb_method_Memory:
             if (!chu->ptr) {
+/* GI7 EDIT */
 /*                giblorb_err_t err;*/
                 glui32 readlen;
                 void *dat = giblorb_malloc(chu->len);
@@ -515,6 +517,7 @@ static int sortsplot(giblorb_resdesc_t *v1, giblorb_resdesc_t *v2)
 
 static void giblorb_qsort(giblorb_resdesc_t **list, int len)
 {
+/* GI7 EDIT */
     int ix, jx, res/*, val*/;
     giblorb_resdesc_t *tmpptr, *pivot;
     

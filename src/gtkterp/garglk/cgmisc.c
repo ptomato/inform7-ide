@@ -38,6 +38,7 @@
 #include <string.h>
 #include "glk.h"
 #include "garglk.h"
+/* GI7 EDIT */
 #include "sysgtk.h"
 #include "garglk-plug.h"
 
@@ -54,6 +55,7 @@ void garglk_set_program_name(const char *name)
 {
 	strncpy(gli_program_name, name, sizeof gli_program_name);
 	gli_program_name[sizeof gli_program_name-1] = 0;
+	/* GI7 EDIT */
 	/*wintitle();*/
 }
 
@@ -112,6 +114,7 @@ void gli_initialize_misc()
 
 void glk_exit()
 {
+	/* GI7 EDIT */
 	/*event_t event;*/
 
     /* Somehow write in the window: "[The game has finished.]" */
@@ -119,6 +122,7 @@ void glk_exit()
 
 	gli_terminated = 1;
 
+	/* GI7 EDIT */
     /* Send the stopped signal */
     garglk_plug_send_stopped(GARGLK_PLUG(frame));
     
@@ -126,6 +130,7 @@ void glk_exit()
     while(1)
         gtk_main_iteration();
 	/* wait for gli_handle_input_key to exit() */
+	/* GI7 EDIT */
 	/*while (1)
 		glk_select(&event);*/
 }

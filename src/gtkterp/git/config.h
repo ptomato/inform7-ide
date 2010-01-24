@@ -1,4 +1,4 @@
-// $Id: config.h,v 1.3 2009-09-10 21:23:19 pchimento Exp $
+// $Id: config.h,v 1.4 2003/10/18 23:19:52 iain Exp $
 // Platform-dependent configuration for Git
 
 #ifndef GIT_CONFIG_H

@@ -25,7 +25,9 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#ifndef _WIN32
 #include <unistd.h> /* for getcwd() */
+#endif
 
 #include "glk.h"
 #include "glkstart.h"
@@ -54,6 +56,7 @@ style_t gli_tstyles[style_NUMSTYLES] =
 	{PROPZ, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* Alert */
 	{PROPR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* Note */
 	{PROPR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* BlockQuote */
+	/* GI7 EDIT */
 	{PROPB, {0xff,0xff,0xff}, {0x00,0x60,0x00}, 0}, /* Input */
 	{MONOR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* User1 */
 	{MONOR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* User2 */
@@ -92,12 +95,14 @@ float gli_conf_gamma = 1.0;
 unsigned char gli_window_color[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_color[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_color[3] = { 0x00, 0x00, 0x00 };
+/* GI7 EDIT */
 unsigned char gli_more_color[3] = { 0x00, 0x60, 0x00 };
 unsigned char gli_link_color[3] = { 0x00, 0x00, 0x60 };
 
 unsigned char gli_window_save[3] = { 0xff, 0xff, 0xff };
 unsigned char gli_caret_save[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_border_save[3] = { 0x00, 0x00, 0x00 };
+/* GI7 EDIT */
 unsigned char gli_more_save[3] = { 0x00, 0x60, 0x00 };
 unsigned char gli_link_save[3] = { 0x00, 0x00, 0x60 };
 
@@ -109,6 +114,7 @@ char *gli_more_prompt = "\207 more \207";
 int gli_more_align = 0;
 int gli_more_font = PROPB;
 
+/* GI7 EDIT */
 unsigned char gli_scroll_bg[3] = { 0xe0, 0xe0, 0xd0 };
 unsigned char gli_scroll_fg[3] = { 0xc0, 0xc0, 0xb0 };
 int gli_scroll_width = 8;
@@ -139,6 +145,7 @@ int gli_baseline = 15;
 int gli_leading = 20;
 
 int gli_conf_justify = 0;
+/* GI7 EDIT */
 int gli_conf_quotes = 2;
 int gli_conf_spaces = 2;
 
@@ -146,6 +153,7 @@ int gli_conf_graphics = 1;
 int gli_conf_sound = 1;
 int gli_conf_speak = 0;
 
+/* GI7 EDIT */
 int gli_conf_stylehint = 1;
 int gli_conf_safeclicks = 0;
 
@@ -167,12 +175,14 @@ static void parsecolor(char *str, unsigned char *rgb)
 	rgb[2] = strtol(b, NULL, 16);
 }
 
+/* GI7 EDIT */
 static void readoneconfig(char *fname)
 {
 	FILE *f;
 	char buf[1024];
 	char *s;
 	char *cmd, *arg;
+	/* GI7 EDIT */
 
 	f = fopen(fname, "r");
 	if (!f)
@@ -184,11 +194,14 @@ static void readoneconfig(char *fname)
 		if (!s)
 			break;
 
-		buf[strlen(buf)-1] = 0;	/* kill newline */
+		/* kill newline */
+		if (strlen(buf) && buf[strlen(buf)-1] == '\n')
+			buf[strlen(buf)-1] = 0;
 
-		if (buf[0] == '#')
+		if (!strlen(buf) || buf[0] == '#')
 			continue;
 
+		/* GI7 EDIT */
 		if (buf[0] == '[')
 			continue;
 		/* Unlike real Gargoyle, we don't care about what interpreter we're
@@ -368,28 +381,61 @@ static void readoneconfig(char *fname)
 
 void gli_read_config(int argc, char **argv)
 {
+	/* GI7 EDIT */
 	char buf[1024];
+	/* GI7 EDIT */
+	char *tmp;
 
 	/* try all the usual config places */
 
+#ifdef WIN32
+	{
+		char *s;
+		strcpy(buf, argv[0]);
+		s = strrchr(buf, '\\');
+		if (s) *s = 0;
+		strcat(buf, "/garglk.ini");
+		readoneconfig(buf, argv0, gamefile);
+	}
+#else
+	/* GI7 EDIT */
 	strcpy(buf, "/etc/gtkterp.ini");
 	readoneconfig(buf);
 	strcpy(buf, "/usr/local/etc/gtkterp.ini");
 	readoneconfig(buf);
+#endif
 
 	if (getenv("HOME"))
 	{
 		strcpy(buf, getenv("HOME"));
+		/* GI7 EDIT */
 		strcat(buf, "/.gtkterprc");
 		readoneconfig(buf);
 		strcpy(buf, getenv("HOME"));
+		/* GI7 EDIT */
 		strcat(buf, "/gtkterp.ini");
 		readoneconfig(buf);
 	}
 
-	getcwd(buf, sizeof buf);
-	strcat(buf, "/gtkterp.ini");
-	readoneconfig(buf);
+	if (getenv("XDG_CONFIG_HOME"))
+	{
+		strcpy(buf, getenv("XDG_CONFIG_HOME"));
+		/* GI7 EDIT */
+		strcat(buf, "/.gtkterprc");
+		readoneconfig(buf);
+		strcpy(buf, getenv("XDG_CONFIG_HOME"));
+		/* GI7 EDIT */
+		strcat(buf, "/gtkterp.ini");
+		readoneconfig(buf);
+	}
+
+	tmp = (char *) getcwd(buf, sizeof buf);
+	if (tmp) {
+		/* GI7 EDIT */
+		strcat(buf, "/gtkterp.ini");
+		readoneconfig(buf);
+	}
+	/* GI7 EDIT */
 }
 
 strid_t glkunix_stream_open_pathname(char *pathname, glui32 textmode, glui32 rock)

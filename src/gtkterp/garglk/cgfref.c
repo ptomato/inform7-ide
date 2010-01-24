@@ -36,7 +36,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef _WIN32
 #include <unistd.h> /* for unlink() */
+#endif
 #include <sys/stat.h> /* for stat() */
 #include "glk.h"
 #include "garglk.h"

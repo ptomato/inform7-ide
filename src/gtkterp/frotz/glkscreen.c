@@ -27,7 +27,7 @@
 
 #include "glkfrotz.h"
 
-static unsigned char statusline[256];
+static zchar statusline[256];
 static int oldstyle = 0;
 static int curstyle = 0;
 static int upperstyle = 0;
@@ -55,6 +55,13 @@ int os_string_width (const zchar *s)
 		else
 			width += os_char_width(c);
 	return width;
+}
+
+int os_string_length (zchar *s)
+{
+	int length = 0;
+	while (*s++) length++;
+	return length;
 }
 
 void os_prepare_sample (int a)
@@ -162,7 +169,7 @@ void reset_status_ht(void)
 	}
 }
 
-void erase_window (int w)
+void erase_window (zword w)
 {
 	if (w == 0)
 		glk_window_clear(gos_lower);
@@ -175,7 +182,7 @@ void erase_window (int w)
 	}
 }
 
-void split_window (int lines)
+void split_window (zword lines)
 {
 	if (!gos_upper)
 		return;
@@ -219,11 +226,13 @@ void restart_screen (void)
  * so ... split status text into regions, reformat and print anew.
  */
 
-void packspaces(unsigned char *src, unsigned char *dst)
+void packspaces(zchar *src, zchar *dst)
 {
 	int killing = 0;
 	while (*src)
 	{
+		if (*src == 0x20202020)
+			*src = ' ';
 		if (*src == ' ')
 			killing++;
 		else
@@ -238,17 +247,17 @@ void packspaces(unsigned char *src, unsigned char *dst)
 
 void smartstatusline (void)
 {
-	unsigned char packed[256];
-	unsigned char buf[256];
-	unsigned char *a, *b, *c, *d;
+	zchar packed[256];
+	zchar buf[256];
+	zchar *a, *b, *c, *d;
 	int roomlen, scorelen, scoreofs;
-	int len;
+	int len, tmp;
 
 	statusline[curx - 1] = 0; /* terminate! */
 
 	packspaces(statusline, packed);
 	//strcpy(packed, statusline);
-	len = strlen(packed);
+	len = os_string_length(packed);
 
 	a = packed;
 	while (a[0] == ' ')
@@ -279,15 +288,17 @@ void smartstatusline (void)
 	if (scoreofs <= roomlen)
 		scoreofs = roomlen + 2;
 
-	memset(buf, ' ', h_screen_cols);
-	memcpy(buf + 1 + scoreofs, c, scorelen);
-	memcpy(buf + 1, a, roomlen);
+	for (tmp = 0; tmp < h_screen_cols; tmp++)
+		buf[tmp] = ' ';
+
+	memcpy(buf + 1 + scoreofs, c, scorelen * sizeof(zchar));
+	memcpy(buf + 1, a, roomlen * sizeof(zchar));
 	//if (roomlen >= scoreofs)
 	//	buf[roomlen + 1] = '|';
 
 	glk_window_move_cursor(gos_upper, 0, 0);
 	glk_set_style(style_User1);
-	glk_put_buffer(buf, h_screen_cols);
+	glk_put_buffer_uni(buf, h_screen_cols);
 	glk_window_move_cursor(gos_upper, cury - 1, curx - 1);
 }
 
@@ -303,13 +314,6 @@ void screen_char (zchar c)
 		}
 		if (c == '\n')
 			return;
-	}
-
-	if (gos_upper && gos_curwin == gos_upper) {
-		if (cury > mach_status_ht) {
-			mach_status_ht = cury;
-			reset_status_ht();
-		}
 	}
 
 	/* check fixed flag in header, game can change it at whim */
@@ -339,13 +343,13 @@ void screen_char (zchar c)
 					statusline[curx - 1] = c;
 				curx++;
 				if (curx <= h_screen_cols)
-					glk_put_char(c);
+					glk_put_char_uni(c);
 				else
 					smartstatusline();
 			}
 			else
 			{
-				glk_put_char(c);
+				glk_put_char_uni(c);
 				curx++;
 				if (curx > h_screen_cols) {
 					curx = 1;
@@ -358,7 +362,7 @@ void screen_char (zchar c)
 	{
 		if (c == ZC_RETURN)
 			glk_put_char('\n');
-		else glk_put_char(c);
+		else glk_put_char_uni(c);
 	}
 }
 
@@ -568,6 +572,15 @@ void z_set_colour (void)
 
 void z_set_font (void)
 {
+    zword font = zargs[0];
+
+    switch (font) {
+        case 1:  store (0); break; /* normal font */
+        case 2:  store (0); break; /* picture font, undefined per 1.1 */
+        case 3:  store (0); break; /* character graphics font */
+        case 4:  store (0); break; /* fixed-pitch font*/
+        default: store (0); break; /* unavailable */
+    }
 }
 
 /*
@@ -583,8 +596,15 @@ void z_set_cursor (void)
 {
 	cury = zargs[0];
 	curx = zargs[1];
-	if (gos_upper)
+
+	if (gos_upper) {
+		if (cury > mach_status_ht) {
+			mach_status_ht = cury;
+			reset_status_ht();
+		}
+
 		glk_window_move_cursor(gos_upper, curx - 1, cury - 1);
+	}
 }
 
 /*

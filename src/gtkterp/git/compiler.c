@@ -1,4 +1,4 @@
-// $Id: compiler.c,v 1.3 2009-09-10 21:23:19 pchimento Exp $
+// $Id: compiler.c,v 1.27 2004/12/10 00:37:00 iain Exp $
 
 #include "git.h"
 #include <assert.h>

@@ -1,4 +1,4 @@
-// $Id: glkop.c,v 1.3 2009-09-10 21:23:19 pchimento Exp $
+// $Id: glkop.c,v 1.4 2004/12/22 14:33:40 iain Exp $
 
 // glkop.c: Glulxe code for Glk API dispatching.
 //  Designed by Andrew Plotkin <erkyrath@eblong.com>

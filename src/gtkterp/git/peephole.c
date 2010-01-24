@@ -1,4 +1,4 @@
-// $Id: peephole.c,v 1.3 2009-09-10 21:23:19 pchimento Exp $
+// $Id: peephole.c,v 1.6 2003/10/13 22:53:04 iain Exp $
 // Peephole optimiser for git
 
 #include "git.h"

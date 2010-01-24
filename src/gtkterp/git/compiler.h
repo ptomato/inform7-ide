@@ -1,5 +1,5 @@
 // Header for compiler.c
-// $Id: compiler.h,v 1.3 2009-09-10 21:23:19 pchimento Exp $
+// $Id: compiler.h,v 1.11 2004/02/02 00:13:46 iain Exp $
 
 #ifndef GIT_COMPILER_H
 #define GIT_COMPILER_H

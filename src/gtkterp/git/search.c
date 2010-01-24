@@ -1,4 +1,4 @@
-// $Id: search.c,v 1.3 2009-09-10 21:23:19 pchimento Exp $
+// $Id: search.c,v 1.1 2003/10/18 20:06:41 iain Exp $
 
 // search.c: Glulxe code for built-in search opcodes
 // Designed by Andrew Plotkin <erkyrath@eblong.com>

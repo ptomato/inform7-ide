@@ -13,8 +13,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <memory.h>
+
 #include "glk.h"
 #include "garglk.h"
 
@@ -45,6 +45,7 @@ void gli_putchar_utf8(glui32 val, FILE *fl)
 
 glui32 gli_getchar_utf8(FILE *fl)
 {
+/* GI7 EDIT */
 /*    glui32 pos = 0;*/
 /*    glui32 outpos = 0;*/
     glui32 res;
@@ -246,6 +247,7 @@ static glui32 gli_buffer_change_case(glui32 *buf, glui32 len,
     glui32 *newoutbuf;
     glui32 outcount;
     int dest_block_rest, dest_block_first;
+/* GI7 EDIT */
     int dest_spec_rest = 0, dest_spec_first = 0;
 /*    glui32 lastch = ' ';*/
 
