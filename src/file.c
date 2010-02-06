@@ -321,6 +321,11 @@ open_project(gchar *path)
                     break;
                 if(strstr(*ptr, "<true/>"))
                     thestory->make_blorb = TRUE;
+			} else if(strstr(*ptr, "<key>IFSettingNobbleRng</key>")) {
+				if(++ptr == NULL)
+					break;
+				if(strstr(*ptr, "<true/>"))
+					thestory->nobble_rng = TRUE;
             } else if(strstr(*ptr, "<key>IFSettingZCodeVersion</key>")) {
                 if(++ptr == NULL)
                     break;
@@ -483,6 +488,8 @@ save_project(GtkWidget *thiswidget, gchar *directory)
       "\t\t<", thestory->make_blorb ? "true" : "false", "/>\n"
       "\t\t<key>IFSettingZCodeVersion</key>\n"
       "\t\t<integer>", format_string, "</integer>\n"
+	  "\t\t<key>IFSettingNobbleRng</key>\n"
+	  "\t\t<", thestory->nobble_rng ? "true" : "false", "/>\n"
       "\t</dict>\n"
       "</dict>\n"
       "</plist>\n", NULL);
