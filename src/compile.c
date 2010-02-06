@@ -192,7 +192,7 @@ start_ni_compiler(Story *thestory)
         commandline = g_new(gchar *, 8);
         commandline[6] = g_strdup("-release");
         commandline[7] = NULL;
-    } else if(thestory->random_predictable) {
+    } else if(thestory->nobble_rng) {
 		commandline = g_new(gchar *, 8);
 		commandline[6] = g_strdup("-rng");
 		commandline[7] = NULL;

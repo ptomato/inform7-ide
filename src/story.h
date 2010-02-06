@@ -80,7 +80,7 @@ typedef struct {
     /* Various settings */
     int story_format;
     gboolean make_blorb;
-	gboolean random_predictable;
+	gboolean nobble_rng;
     
     /* Which interpreter is running it */
     gulong handler_finished;
