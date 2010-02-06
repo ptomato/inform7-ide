@@ -61,6 +61,7 @@ void on_stop_activate(GtkMenuItem *menuitem, gpointer data);
 void on_release_activate(GtkMenuItem *menuitem, gpointer data);
 void on_save_debug_build_activate(GtkMenuItem *menuitem, gpointer data);
 void on_open_materials_folder_activate(GtkMenuItem *menuitem, gpointer data);
+void on_export_ifiction_record_activate(GtkMenuItem *menuitem, gpointer data);
 void on_show_inspectors_activate(GtkMenuItem *menuitem, gpointer data);
 void on_show_source_activate(GtkMenuItem *menuitem, gpointer data);
 void on_show_errors_activate(GtkMenuItem *menuitem, gpointer data);

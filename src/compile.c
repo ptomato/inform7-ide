@@ -63,6 +63,7 @@ static void prepare_cblorb_compiler(Story *thestory);
 static void start_cblorb_compiler(Story *thestory);
 static void finish_cblorb_compiler(GPid pid, gint status, Story *thestory);
 static void finish_refresh_index(Story *thestory);
+static void finish_save_ifiction(Story *thestory);
 static void finish_save_debug_build(Story *thestory);
 static void finish_run(Story *thestory);
 static void finish_release(Story *thestory);
@@ -306,6 +307,9 @@ finish_ni_compiler(GPid pid, gint status, Story *thestory)
     case COMPILE_REFRESH_INDEX:
         finish_refresh_index(thestory);
         break;
+	case COMPILE_SAVE_IFICTION:
+		finish_save_ifiction(thestory);
+		break;
     case COMPILE_SAVE_DEBUG_BUILD:
     case COMPILE_RUN:
 	case COMPILE_TEST_ME:
@@ -626,6 +630,78 @@ finish_refresh_index(Story *thestory)
     /* Display the index */
     gtk_notebook_set_current_page(get_notebook(thestory->window,
       choose_notebook(thestory->window, TAB_INDEX)), TAB_INDEX);
+}
+
+/* Finish up the user's Export iFiction Record command */
+static void
+finish_save_ifiction(Story *thestory)
+{
+	finish_common(thestory);
+
+	/* Work out where the file should be */
+	gchar *ifiction_path = g_build_filename(thestory->filename, "Metadata.iFiction", NULL);
+
+	/* Prompt user to save iFiction file if it exists */
+	if(g_file_test(ifiction_path, G_FILE_TEST_EXISTS))
+	{
+		/* Make a file filter */
+		GtkFileFilter *filter = gtk_file_filter_new();
+		gtk_file_filter_set_name(filter, _("iFiction records (.iFiction)"));
+		gtk_file_filter_add_pattern(filter, "*.iFiction");
+
+		/* Make up a default file name */        
+		gchar *name = g_path_get_basename(thestory->filename);
+		gchar *pos = strchr(name, '.');
+		*pos = '\0';
+		gchar *filename = g_strconcat(name, ".iFiction", NULL);    
+		g_free(name);
+
+		/* Create a file chooser */
+		GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save iFiction record"),
+		  GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+		  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		  GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+		  NULL);
+		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
+		  TRUE);
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
+		g_free(filename);
+		gchar *path = g_path_get_dirname(thestory->filename);
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
+		g_free(path);
+		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+		/* Copy the finished file to the chosen location */
+		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		    filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+
+			/* Poor man's copy */
+			gchar *text;
+			GError *error = NULL;
+		    if(!g_file_get_contents(ifiction_path, &text, NULL, &error) 
+			  || !g_file_set_contents(filename, text, -1, &error)) {
+		        error_dialog(GTK_WINDOW(thestory->window), error, 
+				  _("Error copying iFiction record to '%s': "), filename);
+		        g_free(filename);
+		        gtk_widget_destroy(dialog);
+		        return;
+		    }
+		    g_free(filename);
+		}
+
+		gtk_widget_destroy(dialog);
+	}
+	else
+		error_dialog(GTK_WINDOW(thestory->window), NULL, 
+		    _("The compiler failed to create an iFiction record; check the "
+			"errors page to see why."));
+
+	g_free(ifiction_path);
+    
+	/* Refresh the index and documentation tabs */
+	reload_index_tabs(thestory, FALSE);
+	html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));
+	html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
 }
 
 /* Finish up the user's Save Debug Build command */

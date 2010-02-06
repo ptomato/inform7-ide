@@ -563,6 +563,19 @@ on_open_materials_folder_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 void
+on_export_ifiction_record_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+    /* Stop the project if running */
+    stop_project(thestory);
+    /* Save the project */
+    on_save_activate(menuitem, data);
+    /* Compile, and save the iFiction metadata instead of running */
+    thestory->action = COMPILE_SAVE_IFICTION;
+    compile_project(thestory);
+}
+
+void
 on_show_inspectors_activate(GtkMenuItem *menuitem, gpointer data)
 {
     extern GtkWidget *inspector_window;
