@@ -26,9 +26,3 @@
 #include "support.h"
 
 /* This is where Glade puts newly-created callback functions. */
-
-void
-on_show_last_command_activate(GtkMenuItem *menuitem, gpointer data)
-{
-
-}
