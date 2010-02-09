@@ -36,6 +36,7 @@
 #include "skein.h"
 #include "story.h"
 #include "tabgame.h"
+#include "tabskein.h"
 #include "tabsource.h"
 #include "windowlist.h"
 
@@ -484,6 +485,21 @@ on_replay_activate(GtkMenuItem *menuitem, gpointer data)
     /* Reset the play pointer to the beginning of the skein */
     skein_reset(thestory->theskein, FALSE);
     compile_project(thestory);
+}
+
+void
+on_show_last_command_in_skein_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+	int right = choose_notebook(thestory->window, TAB_SKEIN);
+    gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+      TAB_SKEIN);
+	/* Make sure the skein is rendered up to date */
+	while(gtk_events_pending())
+		gtk_main_iteration();
+	/* Jump to the node */
+	show_node(thestory->theskein, GOT_USER_ACTION, 
+	    skein_get_current_node(thestory->theskein), thestory);
 }
 
 void

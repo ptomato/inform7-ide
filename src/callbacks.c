@@ -32,9 +32,3 @@ on_show_last_command_activate(GtkMenuItem *menuitem, gpointer data)
 {
 
 }
-
-void
-on_show_last_command_in_skein_activate(GtkMenuItem *menuitem, gpointer data)
-{
-
-}

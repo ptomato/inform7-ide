@@ -57,6 +57,7 @@ void on_refresh_index_activate(GtkMenuItem *menuitem, gpointer data);
 void on_go_activate(GtkMenuItem *menuitem, gpointer data);
 void on_test_me_activate(GtkMenuItem *menuitem, gpointer data);
 void on_replay_activate(GtkMenuItem *menuitem, gpointer data);
+void on_show_last_command_in_skein_activate(GtkMenuItem *menuitem, gpointer data);
 void on_stop_activate(GtkMenuItem *menuitem, gpointer data);
 void on_release_activate(GtkMenuItem *menuitem, gpointer data);
 void on_save_debug_build_activate(GtkMenuItem *menuitem, gpointer data);
