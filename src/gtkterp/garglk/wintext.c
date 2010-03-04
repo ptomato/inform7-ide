@@ -141,7 +141,7 @@ void win_textbuffer_destroy(window_textbuffer_t *dwin)
     free(dwin);
 }
 
-/* temporary work space for reflow() */
+/* define variables for text buffer reflow() */
 attr_t attrbuf[TBLINELEN*SCROLLBACK];
 glui32 charbuf[TBLINELEN*SCROLLBACK];
 int alignbuf[SCROLLBACK];
