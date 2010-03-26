@@ -36,5 +36,6 @@ void save_extension(GtkWidget *thiswidget);
 void install_extension(const gchar *filename);
 void delete_extension(gchar *author, gchar *extname);
 void delete_build_files(Story *thestory);
+gchar *get_case_insensitive_extension(const gchar *ci_path);
 
 #endif

@@ -1037,3 +1037,104 @@ delete_build_files(Story *thestory)
         }
     }
 }
+
+/* Helper function: return the first match within directory @d */
+static gchar *
+get_match_within_directory(GDir *d, const gchar *name)
+{
+	const gchar *dirp;
+	while((dirp = g_dir_read_name(d)) != NULL) {
+		if(strcasecmp(name, dirp) == 0)
+			return g_strdup(dirp);
+	}
+	return NULL;
+}
+
+/* Helper function: find the on-disk filename of @path, whose last two
+ components may have incorrect casing. Adapted from Sec. 2/cifn of Inform
+ source, which was written by Adam Thornton. Returns a newly-allocated string
+ containing the on-disk filename, or NULL on failure. */
+gchar *
+get_case_insensitive_extension(const gchar *path)
+{
+	gchar *cistring, *retval;
+	
+	/* For efficiency's sake, though it's logically equivalent, we try... */
+	if(g_file_test(path, G_FILE_TEST_EXISTS))
+		return g_strdup(path);
+
+	/* Find the length of the path, giving an error if it is empty or NULL */
+	size_t length = 0;
+	if(path)
+		length = strlen(path);
+	if(length < 1)
+		return NULL;
+
+	/* Parse the path to break it into topdirpath, extension directory and
+	 leafname */
+	gchar *p = strrchr(path, G_DIR_SEPARATOR);
+	size_t extindex = (size_t)(p - path);
+	size_t namelen = length - extindex - 1;
+	gchar *ciextname = g_strndup(path + extindex + 1, namelen);
+	gchar *workstring = g_strndup(path, extindex - 1);
+	
+	p = strrchr(workstring, G_DIR_SEPARATOR);
+	size_t extdirindex = (size_t)(p - workstring);
+	gchar *topdirpath = g_strndup(path, extdirindex);
+
+	size_t dirlen = extindex - extdirindex - 1;
+	gchar *ciextdirpath = g_strndup(path + extdirindex + 1, dirlen);
+
+	GDir *topdir = g_dir_open(topdirpath, 0, NULL); 
+	/* pathname is assumed case-correct */
+	if(!topdir)
+		goto fail; /* ... so that failure is fatal */
+
+	g_free(workstring);
+	workstring = g_build_filename(topdirpath, ciextdirpath, NULL);
+	GDir *extdir = g_dir_open(workstring, 0, NULL);
+	if(!extdir) {
+		/* Try to find a unique insensitively matching directory name in topdir */
+		g_free(workstring);
+		if((workstring = get_match_within_directory(topdir, ciextdirpath))) {
+			cistring = g_build_filename(topdirpath, workstring, NULL);
+			extdir = g_dir_open(cistring, 0, NULL);
+			if(!extdir)
+				goto fail1;
+		} else
+			goto fail1;
+	} else
+		cistring = g_strdup(workstring);
+
+	retval = g_build_filename(cistring, ciextname, NULL);
+	if(g_file_test(retval, G_FILE_TEST_EXISTS))
+		goto success;
+	g_free(retval);
+
+	/* Try to find a unique insensitively matching entry in extdir */
+	g_free(workstring);
+	if((workstring = get_match_within_directory(extdir, ciextname))) {
+		retval = g_build_filename(cistring, workstring, NULL);
+		if(g_file_test(retval, G_FILE_TEST_EXISTS))
+			goto success;
+		g_free(retval);
+	}
+
+	g_dir_close(extdir);
+fail1:
+	g_dir_close(topdir);
+fail:
+	g_free(topdirpath);
+	g_free(ciextdirpath);
+	g_free(ciextname);
+	g_free(workstring);
+	return NULL;
+success:
+	g_dir_close(topdir);
+	g_dir_close(extdir);
+	g_free(topdirpath);
+	g_free(ciextdirpath);
+	g_free(ciextname);
+	g_free(workstring);
+	return retval;
+}

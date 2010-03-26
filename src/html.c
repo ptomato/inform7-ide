@@ -25,6 +25,8 @@
 #include "appwindow.h"
 #include "datafile.h"
 #include "error.h"
+#include "extwindow.h"
+#include "file.h"
 #include "history.h"
 #include "html.h"
 #include "prefs.h"
@@ -418,13 +420,29 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
         g_free(function_call);
         g_free(url);
         return;
-    /* source: protocol, a link to somewhere in the source file */
+    /* source: protocol, a link to somewhere in the source file or an 
+    extension */
     } else if(g_str_has_prefix(url, "source:")) {
-        gint line;
-        if(sscanf(anchor, "line%d", &line))
-            jump_to_line(GTK_WIDGET(html), line);
-        g_free(url);
-        return;
+		/* If it links to the source file, just jump to the line */
+		if(strcmp(url + 7, "story.ni") == 0) {
+		    gint line;
+		    if(sscanf(anchor, "line%d", &line))
+		        jump_to_line(GTK_WIDGET(html), line);
+		    g_free(url);
+		    return;
+		}
+		/* Otherwise it's a link to an extension */
+		gchar *filename = get_case_insensitive_extension(g_strdup(url + 7));
+		Extension *ext = open_extension(filename);
+		if(ext != NULL) {
+			gtk_widget_show(ext->window);
+			gint line;
+		    if(sscanf(anchor, "line%d", &line))
+		        jump_to_line_ext(ext->window, line);
+		}
+		g_free(filename);
+		g_free(url);
+		return;
     } else {
         g_warning(_("Unrecognized protocol: %s\n"), url);
         g_free(url);
