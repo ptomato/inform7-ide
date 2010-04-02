@@ -23,11 +23,8 @@
 typedef void IOHookFunc(gpointer, gchar *);
 
 GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output);
-void set_up_io_channel(gint fd, GtkTextBuffer *output);
 GPid run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
                       IOHookFunc *callback, gpointer data, gboolean get_out, 
                       gboolean get_err);
-void set_up_io_channel_hook(gint fd, GtkTextBuffer *output,
-                            IOHookFunc *callback, gpointer data);
 
 #endif /* _SPAWN_H */

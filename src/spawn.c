@@ -28,7 +28,6 @@ typedef struct {
     gpointer *data;
 } IOHookData;
 
-
 /* The callback for writing data from the IO channel to the buffer */
 static gboolean 
 write_channel_to_buffer(GIOChannel *ioc, GIOCondition cond, 
@@ -90,11 +89,25 @@ write_channel_hook(GIOChannel *ioc, GIOCondition cond, IOHookData *data)
 }
 
 /*
- * The following three functions are adapted from Tim-Philipp Mueller's example
+ * The following functions are adapted from Tim-Philipp Mueller's example
  * From http://scentric.net/tmp/spawn-async-with-pipes-gtk.c
  *
  * Copyright 2004 Tim-Philip Mueller and subject to GPLv2
  */
+
+/* Set up an IO channel from a file descriptor to a GtkTextBuffer */
+static void
+set_up_io_channel(gint fd, GtkTextBuffer *output)
+{
+    GIOChannel *ioc = g_io_channel_unix_new(fd);
+    g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
+    g_io_channel_set_buffered(ioc, FALSE);
+    g_io_channel_set_close_on_unref(ioc, TRUE);
+    g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
+      G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
+      (GIOFunc)write_channel_to_buffer, (gpointer)output, NULL);
+	g_io_channel_unref(ioc);
+}
 
 /* Runs a command (in argv[0]) with working directory wd, and pipes the output
 to a GtkTextBuffer */
@@ -132,16 +145,23 @@ run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output)
 }
 
 /* Set up an IO channel from a file descriptor to a GtkTextBuffer */
-void
-set_up_io_channel(gint fd, GtkTextBuffer *output)
+static void 
+set_up_io_channel_hook(gint fd, GtkTextBuffer *output, IOHookFunc *callback,
+                       gpointer data)
 {
     GIOChannel *ioc = g_io_channel_unix_new(fd);
     g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
     g_io_channel_set_buffered(ioc, FALSE);
     g_io_channel_set_close_on_unref(ioc, TRUE);
+    
+    IOHookData *hook_data = g_new(IOHookData, 1);
+    hook_data->output = output;
+    hook_data->callback = callback;
+    hook_data->data = data;
+    
     g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
       G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-      (GIOFunc)write_channel_to_buffer, (gpointer)output, NULL);
+      (GIOFunc)write_channel_hook, (gpointer)hook_data, g_free);
 	g_io_channel_unref(ioc);
 }
 
@@ -187,25 +207,3 @@ run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
     
     return child_pid;
 }
-
-/* Set up an IO channel from a file descriptor to a GtkTextBuffer */
-void 
-set_up_io_channel_hook(gint fd, GtkTextBuffer *output, IOHookFunc *callback,
-                       gpointer data)
-{
-    GIOChannel *ioc = g_io_channel_unix_new(fd);
-    g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
-    g_io_channel_set_buffered(ioc, FALSE);
-    g_io_channel_set_close_on_unref(ioc, TRUE);
-    
-    IOHookData *hook_data = g_new(IOHookData, 1);
-    hook_data->output = output;
-    hook_data->callback = callback;
-    hook_data->data = data;
-    
-    g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
-      G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-      (GIOFunc)write_channel_hook, (gpointer)hook_data, g_free);
-	g_io_channel_unref(ioc);
-}
-
