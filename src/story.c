@@ -241,7 +241,7 @@ for_each_story_buffer(void (*func)(GtkSourceBuffer *))
 }
 
 /* Return the extension of the output file of this story */
-gchar *
+const gchar *
 get_story_extension(Story *thestory) 
 {
     switch(thestory->story_format) {
