@@ -650,6 +650,7 @@ search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
             
             GtkSourceBuffer *buffer = gtk_source_buffer_new(NULL);
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), contents, -1);
+            g_free(contents);
             
             GtkTextIter search_from;
             gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(buffer), 
