@@ -240,12 +240,8 @@ open_project(gchar *path)
         g_free(text);
         text = g_strjoinv("\n", lines);
         g_strfreev(lines);
-    } else if(strstr(text, "\r")) {
-        gchar **lines = g_strsplit(text, "\r", 0);
-        g_free(text);
-        text = g_strjoinv("\n", lines);
-        g_strfreev(lines);
-    }
+    } 
+    text = g_strdelimit(text, "\r", '\n');
     
     /* Update the list of recently used files */
 #ifndef SUCKY_GNOME
@@ -663,12 +659,8 @@ open_extension(gchar *filename)
         g_free(text);
         text = g_strjoinv("\n", lines);
         g_strfreev(lines);
-    } else if(strstr(text, "\r")) {
-        gchar **lines = g_strsplit(text, "\r", 0);
-        g_free(text);
-        text = g_strjoinv("\n", lines);
-        g_strfreev(lines);
-    }
+    } 
+    text = g_strdelimit(text, "\r", '\n');
 
     /* Put the text in the source buffer, clearing the undo history */
     gtk_source_buffer_begin_not_undoable_action(ext->buffer);
