@@ -6,7 +6,7 @@ libgarglk_a_SOURCES = gi_blorb.c gi_dispa.c cggestal.c cgblorb.c cgfref.c \
 	wingrid.c wintext.c wingfx.c event.c draw.c config.c imgload.c imgscale.c \
 	fontdata.c sndsdl.c sysgtk.c main.c garglk.h garversion.h gi_blorb.h \
 	gi_dispa.h glk.h glkstart.h garglk-plug.h garglk-plug.c sysgtk.h winmask.c
-libgarglk_a_CPPFLAGS = \
+libgarglk_a_CPPFLAGS = -DBUNDLED_FONTS \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
