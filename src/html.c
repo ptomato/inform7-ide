@@ -375,11 +375,37 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
             g_free(url);
             return;
         }
-        /* Handle other functions */
-        g_printerr("Unknown javascript function: %s\n", function_call);
-        g_free(function_call);
-        g_free(url);
-        return;
+        /* Handle the function openFile("...") which opens its argument with
+		the default program, usually the file browser. For some reason cBlorb
+		puts double quotes in this one instead of single quotes. */
+		else if(g_str_has_prefix(function_call, "window.Project.openFile(\"")) {
+			*(strrchr(function_call, '"')) = '\0';
+			gchar *showurl = g_strconcat("file://", function_call + 25, NULL);
+			g_free(function_call);
+			if(!gnome_url_show(showurl, &err))
+				error_dialog(GTK_WINDOW(thestory->window), err, 
+		    		_("Could not open %s: "), showurl);
+			g_free(showurl);
+			g_free(url);
+			return;
+		}
+		/* Handle the function openUrl('...') which opens its argument within
+		a browser. It's actually the same as the previous function only we don't
+		have to add a URL scheme to the argument. */
+		else if(g_str_has_prefix(function_call, "window.Project.openUrl('")) {
+			*(strrchr(function_call, '\'')) = '\0';
+			if(!gnome_url_show(function_call + 24, &err))
+				error_dialog(GTK_WINDOW(thestory->window), err,
+				    _("Could not open %s: "), function_call + 24);
+			g_free(function_call);
+			g_free(url);
+			return;
+	    }
+		/* Handle other functions */
+		g_printerr("Unknown javascript function: %s\n", function_call);
+	    g_free(function_call);
+	    g_free(url);
+	    return;
     /* source: protocol, a link to somewhere in the source file or an 
     extension */
     } else if(g_str_has_prefix(url, "source:")) {
