@@ -162,46 +162,6 @@ unescape_unicode(const gchar *source)
     return dest;
 }
 
-/* Find the code to be pasted within one of the pasteCode134, etc. javascript
-functions */
-static gchar *
-javascript_find_paste_code(const gchar *source, const gchar *function_call) 
-{
-    g_return_val_if_fail(source != NULL, NULL);
-    g_return_val_if_fail(function_call != NULL, NULL);
-    
-    gchar *retval;
-    gchar *function_name = g_strdup(function_call);
-    
-    /* erase everything after the first parenthesis as arguments */
-    gchar *args;
-    if((args = strchr(function_name, '(')))
-        *args = '\0';
-
-    gchar *buf = g_strdup(source);
-    gchar *beginptr = strstr(buf, "<script language=\"JavaScript\">");
-    if(beginptr == NULL)
-        return NULL;
-    beginptr += strlen("<script language=\"JavaScript\">");
-    gchar *endptr = strstr(beginptr, "</script>");
-    ptrdiff_t length = endptr - beginptr;
-    gchar *result = g_strndup(beginptr, length);
-    
-    if(strstr(result, function_name)) {
-        gchar *temp = g_strdup(strstr(result, "pasteCode('")
-          + strlen("pasteCode('"));
-        *(strstr(temp, "');")) = '\0';
-        retval = unescape_unicode(temp);
-        g_free(temp);
-    } else
-        retval = javascript_find_paste_code(endptr, function_call);
-    
-    g_free(result);
-    g_free(function_name);
-    g_free(buf);
-    return retval;
-}
-
 /* This is the function responsible for getting the data from the URLs. There is
 already a stream opened at this point, so we do not handle anything that does
 not involve data being written to the GtkHTML widget. That should already have
@@ -405,18 +365,18 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
         directly into the source */
         if(g_str_has_prefix(function_call, "pasteCode('")) {
             *(strrchr(function_call, '\'')) = '\0';
-            paste_code(get_story(GTK_WIDGET(html))->buffer, function_call + 11);
-            g_free(function_call);
+			/* This is needed to remove the final backslash+n tacked onto the code */
+			gchar *jsstring = g_strcompress(function_call + 11); 
+			g_free(function_call);
+			gchar *code = unescape_unicode(jsstring);
+			g_free(jsstring);
+            paste_code(get_story(GTK_WIDGET(html))->buffer, code);
+            g_free(code);
             g_free(url);
             return;
         }
-        /* Now the name of the function is something else, like "pasteCode134()"
-        and we need to look the function body up in the source cache in order to
-        find what text to paste */
-        gchar *source = source_table_get(html);
-        gchar *code = javascript_find_paste_code(source, function_call);
-        paste_code(get_story(GTK_WIDGET(html))->buffer, code);
-        g_free(code);
+        /* Handle other functions */
+        g_printerr("Unknown javascript function: %s\n", function_call);
         g_free(function_call);
         g_free(url);
         return;
