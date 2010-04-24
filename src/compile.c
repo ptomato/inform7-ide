@@ -568,19 +568,15 @@ finish_cblorb_compiler(GPid pid, gint status, Story *thestory)
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
     
     /* Display the appropriate HTML page */
-    gchar *trash = get_datafile_path_va("Documentation", "Sections",
-      (exit_code == 0)? "GoodCblorb.html" : "ErrorCblorb.html", NULL);
-    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")),
-      trash);
-    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")),
-      trash);
+    gchar *trash = g_build_filename(thestory->filename, "Build", "StatusCblorb.html", NULL);
+    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")), trash);
+    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")), trash);
     g_free(trash);
 
     /* Stop here and show the Errors/Problems tab if there was an error */
     if(exit_code != 0) {
         int right = choose_notebook(thestory->window, TAB_ERRORS);
-        gtk_notebook_set_current_page(get_notebook(thestory->window, right),
-          TAB_ERRORS);
+        gtk_notebook_set_current_page(get_notebook(thestory->window, right), TAB_ERRORS);
         gtk_notebook_set_current_page(
           GTK_NOTEBOOK(lookup_widget(thestory->window,
           right? "errors_notebook_r" : "errors_notebook_l")),
