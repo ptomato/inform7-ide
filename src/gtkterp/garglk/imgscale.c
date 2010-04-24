@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
  * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2010 by Ben Cressey.                                         *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -52,6 +53,11 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
 
     picture_t *dst;
 
+    dst = gli_picture_retrieve(src->id, 1);
+
+    if (dst && dst->w == newcols && dst->h == newrows)
+        return dst;
+
     unsigned char *xelrow;
     unsigned char *tempxelrow;
     unsigned char *newxelrow;
@@ -76,12 +82,12 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
     /* Allocate destination image and scratch space */
 
     dst = malloc(sizeof(picture_t));
-	dst->refcount = 1;
+    dst->refcount = 1;
     dst->w = newcols;
     dst->h = newrows;
     dst->rgba = malloc(newcols * newrows * 4);
-
-//printf("alloc scale %p\n", dst);
+    dst->id = src->id;
+    dst->scaled = TRUE;
 
     xelrow = src->rgba;
     newxelrow = dst->rgba;
@@ -123,9 +129,9 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
 
                 for ( col = 0, xP = xelrow; col < cols; ++col, xP += 4 )
                 {
-                    rs[col] += fracrowleft * xP[0];
-                    gs[col] += fracrowleft * xP[1];
-                    bs[col] += fracrowleft * xP[2];
+                    rs[col] += fracrowleft * xP[0] * xP[3];
+                    gs[col] += fracrowleft * xP[1] * xP[3];
+                    bs[col] += fracrowleft * xP[2] * xP[3];
                     as[col] += fracrowleft * xP[3];
                 }
 
@@ -147,18 +153,27 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
                     col < cols; ++col, xP += 4, nxP += 4)
             {
                 register long r, g, b, a;
-                r = rs[col] + fracrowtofill * xP[0];
-                g = gs[col] + fracrowtofill * xP[1];
-                b = bs[col] + fracrowtofill * xP[2];
+                r = rs[col] + fracrowtofill * xP[0] * xP[3];
+                g = gs[col] + fracrowtofill * xP[1] * xP[3];
+                b = bs[col] + fracrowtofill * xP[2] * xP[3];
                 a = as[col] + fracrowtofill * xP[3];
-                r /= SCALE;
-                if ( r > maxval ) r = maxval;
-                g /= SCALE;
-                if ( g > maxval ) g = maxval;
-                b /= SCALE;
-                if ( b > maxval ) b = maxval;
-                a /= SCALE;
-                if ( a > maxval ) a = maxval;
+
+                if (!a)
+                {
+                    r = g = b = a;
+                }
+                else
+                {
+                    r /= a;
+                    if ( r > maxval ) r = maxval;
+                    g /= a;
+                    if ( g > maxval ) g = maxval;
+                    b /= a;
+                    if ( b > maxval ) b = maxval;
+                    a /= SCALE;
+                    if ( a > maxval ) a = maxval;
+                }
+
                 nxP[0] = r;
                 nxP[1] = g;
                 nxP[2] = b;
@@ -197,18 +212,27 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
                         r = g = b = a = HALFSCALE;
                     }
 
-                    r += fraccoltofill * xP[0];
-                    g += fraccoltofill * xP[1];
-                    b += fraccoltofill * xP[2];
+                    r += fraccoltofill * xP[0] * xP[3];
+                    g += fraccoltofill * xP[1] * xP[3];
+                    b += fraccoltofill * xP[2] * xP[3];
                     a += fraccoltofill * xP[3];
-                    r /= SCALE;
-                    if ( r > maxval ) r = maxval;
-                    g /= SCALE;
-                    if ( g > maxval ) g = maxval;
-                    b /= SCALE;
-                    if ( b > maxval ) b = maxval;
-                    a /= SCALE;
-                    if ( a > maxval ) a = maxval;
+
+                    if (!a)
+                    {
+                        r = g = b = a;
+                    }
+                    else
+                    {
+                        r /= a;
+                        if ( r > maxval ) r = maxval;
+                        g /= a;
+                        if ( g > maxval ) g = maxval;
+                        b /= a;
+                        if ( b > maxval ) b = maxval;
+                        a /= SCALE;
+                        if ( a > maxval ) a = maxval;
+                    }
+
                     nxP[0] = r;
                     nxP[1] = g;
                     nxP[2] = b;
@@ -228,9 +252,9 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
                         needcol = 0;
                     }
 
-                    r += fraccolleft * xP[0];
-                    g += fraccolleft * xP[1];
-                    b += fraccolleft * xP[2];
+                    r += fraccolleft * xP[0] * xP[3];
+                    g += fraccolleft * xP[1] * xP[3];
+                    b += fraccolleft * xP[2] * xP[3];
                     a += fraccolleft * xP[3];
 
                     fraccoltofill -= fraccolleft;
@@ -240,22 +264,30 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
             if ( fraccoltofill > 0 )
             {
                 xP -= 4;
-                r += fraccoltofill * xP[0];
-                g += fraccoltofill * xP[1];
-                b += fraccoltofill * xP[2];
+                r += fraccoltofill * xP[0] * xP[3];
+                g += fraccoltofill * xP[1] * xP[3];
+                b += fraccoltofill * xP[2] * xP[3];
                 a += fraccoltofill * xP[3];
             }
 
             if ( ! needcol )
             {
-                r /= SCALE;
-                if ( r > maxval ) r = maxval;
-                g /= SCALE;
-                if ( g > maxval ) g = maxval;
-                b /= SCALE;
-                if ( b > maxval ) b = maxval;
-                a /= SCALE;
-                if ( a > maxval ) a = maxval;
+                if (!a)
+                {
+                    r = g = b = a;
+                }
+                else
+                {
+                    r /= a;
+                    if ( r > maxval ) r = maxval;
+                    g /= a;
+                    if ( g > maxval ) g = maxval;
+                    b /= a;
+                    if ( b > maxval ) b = maxval;
+                    a /= SCALE;
+                    if ( a > maxval ) a = maxval;
+                }
+
                 nxP[0] = r;
                 nxP[1] = g;
                 nxP[2] = b;
@@ -271,6 +303,8 @@ gli_picture_scale(picture_t *src, int newcols, int newrows)
     free(gs);
     free(rs);
     free(tempxelrow);
+
+    gli_picture_store(dst);
 
     return dst;
 }

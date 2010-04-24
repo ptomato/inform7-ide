@@ -1256,8 +1256,6 @@ glui32 glk_image_get_info(glui32 image, glui32 *width, glui32 *height)
     if (height)
         *height = pic->h;
 
-    gli_picture_drop(pic);
-
     return TRUE;
 }
 

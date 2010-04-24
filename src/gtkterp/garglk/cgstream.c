@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
  * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2010 by Ben Cressey and Jörg Walter.                         *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -159,12 +160,28 @@ static stream_t *gli_stream_open_file(frefid_t fref, glui32 fmode,
   glui32 rock, int unicode)
 {
   char modestr[16];
+  char msg[256];
   stream_t *str;
   FILE *fl;
 
   if (!fref) {
     gli_strict_warning("stream_open_file: invalid fileref id");
     return 0;
+  }
+
+  /* The spec says that Write, ReadWrite, and WriteAppend create the
+  file if necessary. However, fopen(filename, "r+") doesn't create
+  a file. So we have to pre-create it in the ReadWrite and
+  WriteAppend cases. (We use "a" so as not to truncate, and "b" 
+  because we're going to close it immediately, so it doesn't matter.) */
+
+  if (fmode == filemode_ReadWrite || fmode == filemode_WriteAppend) {
+    fl = fopen(fref->filename, "ab");
+    if (!fl) {
+      sprintf(msg, "stream_open_file: unable to open file (%s): %s", modestr, fref->filename);
+      gli_strict_warning(msg);
+    }
+    fclose(fl);
   }
 
   switch (fmode) {
@@ -175,40 +192,27 @@ static stream_t *gli_stream_open_file(frefid_t fref, glui32 fmode,
     strcpy(modestr, "r");
     break;
   case filemode_ReadWrite:
-    strcpy(modestr, "w+");
+    strcpy(modestr, "r+");
     break;
   case filemode_WriteAppend:
-    strcpy(modestr, "a");
+    /* Can't use "a" here, because then fseek wouldn't work.
+    Instead we use "r+" and then fseek to the end. */
+    strcpy(modestr, "r+");
     break;
   }
-    
+
   if (!fref->textmode)
     strcat(modestr, "b");
 
   fl = fopen(fref->filename, modestr);
   if (!fl) {
-    char msg[256];
     sprintf(msg, "stream_open_file: unable to open file (%s): %s", modestr, fref->filename);
     gli_strict_warning(msg);
     return 0;
   }
 
   if (fmode == filemode_WriteAppend) {
-    fclose(fl);
-
-    strcpy(modestr, "r+");
-
-    if (!fref->textmode)
-      strcat(modestr, "b");
-
-    fl = fopen(fref->filename, modestr);
-    if (!fl) {
-        char msg[256];
-        sprintf(msg, "stream_open_file: unable to open file (%s): %s", modestr, fref->filename);
-        return 0;
-    }
-
-    fseek(fl, 0, 2);
+    fseek(fl, 0, 2); /* ...to the end. */
   }
 
   str = gli_new_stream(strtype_File, 
@@ -569,6 +573,7 @@ static void gli_put_char(stream_t *str, unsigned char ch)
         gli_putchar_utf8((glui32)ch, str->file);
       else
         putc((unsigned char)ch, str->file);
+      fflush(str->file);
       break;
   }
 }
@@ -613,6 +618,7 @@ static void gli_put_char_uni(stream_t *str, glui32 ch)
         gli_putchar_utf8((glui32)ch, str->file);
       else
         putc((unsigned char)ch, str->file);
+      fflush(str->file);
       break;
   }
 }
@@ -648,6 +654,7 @@ static void gli_put_buffer(stream_t *str, char *buf, glui32 len)
                         if (bp > (unsigned char *)str->bufeof)
                             str->bufeof = bp;
                     }
+                    str->bufptr = bp;
                 } else {
                     glui32 *bp = str->bufptr;
                     if (bp + len > (glui32 *)str->bufend) {
@@ -665,6 +672,7 @@ static void gli_put_buffer(stream_t *str, char *buf, glui32 len)
                         if (bp > (glui32 *)str->bufeof)
                             str->bufeof = bp;
                     }
+                    str->bufptr = bp;
                 }
             }
             break;
@@ -691,6 +699,7 @@ static void gli_put_buffer(stream_t *str, char *buf, glui32 len)
                 else
                     putc((unsigned char)(buf[lx]), str->file);
             }
+            fflush(str->file);
             break;
     }
 }
@@ -732,6 +741,7 @@ static void gli_put_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
                         if (bp > (unsigned char *)str->bufeof)
                             str->bufeof = bp;
                     }
+                    str->bufptr = bp;
                 } else {
                     glui32 *bp = str->bufptr;
                     if (bp + len > (glui32 *)str->bufend) {
@@ -747,6 +757,7 @@ static void gli_put_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
                         if (bp > (glui32 *)str->bufeof)
                             str->bufeof = bp;
                     }
+                    str->bufptr = bp;
                 }
             }
             break;
@@ -773,6 +784,7 @@ static void gli_put_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
                 else
                     putc((unsigned char)(buf[lx]), str->file);
             }
+            fflush(str->file);
             break;
     }
 }
@@ -1074,6 +1086,7 @@ static glui32 gli_get_buffer(stream_t *str, char *buf, glui32 len)
                     str->bufeof = bp;
             }
             str->readcount += len;
+            str->bufptr = bp;
         } else {
             glui32 *bp = str->bufptr;
             if (bp + len > (glui32 *)str->bufend) {
@@ -1096,6 +1109,7 @@ static glui32 gli_get_buffer(stream_t *str, char *buf, glui32 len)
                     str->bufeof = bp;
             }
             str->readcount += len;
+            str->bufptr = bp;
         }
     }
     return len;
@@ -1171,6 +1185,7 @@ static glui32 gli_get_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
                     str->bufeof = bp;
             }
             str->readcount += len;
+            str->bufptr = bp;
         } else {
             glui32 *bp = str->bufptr;
             if (bp + len > (glui32 *)str->bufend) {
@@ -1188,6 +1203,7 @@ static glui32 gli_get_buffer_uni(stream_t *str, glui32 *buf, glui32 len)
                     str->bufeof = bp;
             }
             str->readcount += len;
+            str->bufptr = bp;
         }
     }
     return len;
