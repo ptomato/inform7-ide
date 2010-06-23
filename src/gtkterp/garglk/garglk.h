@@ -97,6 +97,7 @@ extern window_t *gli_focuswin;
 extern event_t *gli_curevent;
 
 extern int gli_force_redraw;
+extern int gli_more_focus;
 extern int gli_cellw;
 extern int gli_cellh;
 
@@ -230,13 +231,17 @@ extern int gli_scroll_width;
 extern int gli_baseline;
 extern int gli_leading;
 
-enum { MONOR, MONOB, MONOI, MONOZ, PROPR, PROPB, PROPI, PROPZ };
+enum FACES { MONOR, MONOB, MONOI, MONOZ, PROPR, PROPB, PROPI, PROPZ };
+enum TYPES { MONOF, PROPF };
+enum STYLES { FONTR, FONTB, FONTI, FONTZ };
 
+extern char *gli_conf_propfont;
 extern char *gli_conf_propr;
 extern char *gli_conf_propb;
 extern char *gli_conf_propi;
 extern char *gli_conf_propz;
 
+extern char *gli_conf_monofont;
 extern char *gli_conf_monor;
 extern char *gli_conf_monob;
 extern char *gli_conf_monoi;
@@ -373,6 +378,8 @@ struct glk_window_struct
     int char_request_uni;
     int mouse_request;
     int hyper_request;
+    int more_request;
+    int scroll_request;
 
     attr_t attr;
     unsigned char bgcolor[3];
@@ -571,6 +578,7 @@ extern void win_textbuffer_cancel_line(window_t *win, event_t *ev);
 extern void win_textbuffer_click(window_textbuffer_t *dwin, int x, int y);
 extern void gcmd_buffer_accept_readchar(window_t *win, glui32 arg);
 extern void gcmd_buffer_accept_readline(window_t *win, glui32 arg);
+extern void gcmd_accept_scroll(window_t *win, glui32 arg);
 
 /* Declarations of library internal functions. */
 
@@ -591,8 +599,10 @@ extern void gli_windows_size_change(void);
 
 extern void gli_window_click(window_t *win, int x, int y);
 
-void gli_input_next_focus();
 void gli_input_guess_focus();
+void gli_input_more_focus();
+void gli_input_next_focus();
+void gli_input_scroll_focus();
 void gli_input_handle_key(glui32 key);
 void gli_input_handle_click(int x, int y);
 void gli_event_store(glui32 type, window_t *win, glui32 val1, glui32 val2);
@@ -639,6 +649,7 @@ void winrepaint(int x0, int y0, int x1, int y1);
 void winabort(const char *fmt, ...);
 void winopenfile(char *prompt, char *buf, int buflen, char *filter);
 void winsavefile(char *prompt, char *buf, int buflen, char *filter);
+void winfont(char *font, int type);
 
 int giblorb_is_resource_map();
 void giblorb_get_resource(glui32 usage, glui32 resnum, FILE **file, long *pos, long *len, glui32 *type);

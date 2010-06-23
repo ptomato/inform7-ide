@@ -46,6 +46,14 @@ char *gli_conf_monob = "LuxiMonoBold";
 char *gli_conf_monoi = "LuxiMonoOblique";
 char *gli_conf_monoz = "LuxiMonoBoldOblique";
 
+#ifdef BUNDLED_FONTS
+char *gli_conf_monofont = "";
+char *gli_conf_propfont = "";
+#else
+char *gli_conf_monofont = "Luxi Mono";
+char *gli_conf_propfont = "Bitstream Charter";
+#endif
+
 style_t gli_tstyles[style_NUMSTYLES] =
 {
 	{PROPR, {0xff,0xff,0xff}, {0x00,0x00,0x00}, 0}, /* Normal */
@@ -175,6 +183,17 @@ static void parsecolor(char *str, unsigned char *rgb)
 	rgb[2] = strtol(b, NULL, 16);
 }
 
+char* trim(char* src)
+{
+    while(src[strlen(src)-1] == ' ' || src[strlen(src)-1] == '\t')
+        src[strlen(src)-1] = 0;
+
+    while(src[0] == ' ' || src[0] == '\t')
+        src++;
+
+    return src;
+}
+
 /* GI7 EDIT */
 static void readoneconfig(char *fname)
 {
@@ -215,6 +234,10 @@ static void readoneconfig(char *fname)
 			arg = strtok(NULL, "\r\n#");
 		else if (!strcmp(cmd, "tfont") || !strcmp(cmd, "gfont"))
 			arg = strtok(NULL, "\r\n#");
+		else if ((!strcmp(cmd, "monofont") || !strcmp(cmd, "propfont")))
+			arg = strtok(NULL, "\r\n#");
+		else if ((!strncmp(cmd, "mono", 4) || !strncmp(cmd, "prop", 4)) && strlen(cmd) == 5)
+			arg = strtok(NULL, "\r\n#");
 		else if (!strcmp(cmd, "moreprompt"))
 			arg = strtok(NULL, "\r\n");
 		else
@@ -243,24 +266,28 @@ static void readoneconfig(char *fname)
 		if (!strcmp(cmd, "monosize"))
 			gli_conf_monosize = atof(arg);
 		if (!strcmp(cmd, "monor"))
-			gli_conf_monor = strdup(arg);
+			gli_conf_monor = trim(strdup(arg));
 		if (!strcmp(cmd, "monob"))
-			gli_conf_monob = strdup(arg);
+			gli_conf_monob = trim(strdup(arg));
 		if (!strcmp(cmd, "monoi"))
-			gli_conf_monoi = strdup(arg);
+			gli_conf_monoi = trim(strdup(arg));
 		if (!strcmp(cmd, "monoz"))
-			gli_conf_monoz = strdup(arg);
+			gli_conf_monoz = trim(strdup(arg));
+		if (!strcmp(cmd, "monofont"))
+			gli_conf_monofont = trim(strdup(arg));
 
 		if (!strcmp(cmd, "propsize"))
 			gli_conf_propsize = atof(arg);
 		if (!strcmp(cmd, "propr"))
-			gli_conf_propr = strdup(arg);
+			gli_conf_propr = trim(strdup(arg));
 		if (!strcmp(cmd, "propb"))
-			gli_conf_propb = strdup(arg);
+			gli_conf_propb = trim(strdup(arg));
 		if (!strcmp(cmd, "propi"))
-			gli_conf_propi = strdup(arg);
+			gli_conf_propi = trim(strdup(arg));
 		if (!strcmp(cmd, "propz"))
-			gli_conf_propz = strdup(arg);
+			gli_conf_propz = trim(strdup(arg));
+		if (!strcmp(cmd, "propfont"))
+			gli_conf_propfont = trim(strdup(arg));
 
 		if (!strcmp(cmd, "leading"))
 			gli_leading = atof(arg) + 0.5;
@@ -386,6 +413,8 @@ void gli_read_config(int argc, char **argv)
 	/* GI7 EDIT */
 	char *tmp;
 
+	/* GI7 EDIT */
+
 	/* try all the usual config places */
 
 #ifdef WIN32
@@ -401,9 +430,16 @@ void gli_read_config(int argc, char **argv)
 	/* GI7 EDIT */
 	strcpy(buf, "/etc/gtkterp.ini");
 	readoneconfig(buf);
-	strcpy(buf, "/usr/local/etc/gtkterp.ini");
-	readoneconfig(buf);
 #endif
+
+	/* GI7 EDIT */
+	if (getenv("GTKTERP_INI"))
+	{
+		/* GI7 EDIT */
+		strcpy(buf, getenv("GTKTERP_INI"));
+		strcat(buf, "/gtkterp.ini");
+		readoneconfig(buf);
+	}
 
 	if (getenv("HOME"))
 	{

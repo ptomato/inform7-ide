@@ -399,7 +399,7 @@ void win_textbuffer_redraw(window_t *win)
         }
 
         /* leave bottom line blank for [more] prompt */
-        if (drawmore && i == dwin->scrollpos && i > 0)
+        if (i == dwin->scrollpos && i > 0)
             continue;
 
         linelen = ln->len;
@@ -591,7 +591,7 @@ void win_textbuffer_redraw(window_t *win)
     /*
      * draw more prompt
      */
-    if (drawmore && dwin->scrollpos && dwin->height > 1)
+    if (dwin->scrollpos && dwin->height > 1)
     {
         x = x0 + SLOP;
         y = y0 + (dwin->height - 1) * gli_leading;
@@ -617,9 +617,16 @@ void win_textbuffer_redraw(window_t *win)
                 gli_more_font, color,
                 gli_more_prompt, strlen(gli_more_prompt), -1);
         y1 = y; /* don't want pictures overdrawing "[more]" */
+
+        /* try to claim the focus */
+        dwin->owner->more_request = TRUE;
+        gli_more_focus = TRUE;
     }
     else
+    {
+        dwin->owner->more_request = FALSE;
         y1 = y0 + dwin->height * gli_leading;
+    }
 
     /*
      * draw the images
@@ -668,7 +675,11 @@ void win_textbuffer_redraw(window_t *win)
     /*
      * Draw the scrollbar
      */
-    if (gli_scroll_width)
+
+    /* try to claim scroll keys */
+    dwin->owner->scroll_request = dwin->scrollmax > dwin->height;
+
+    if (dwin->owner->scroll_request && gli_scroll_width)
     {
         int t0, t1;
         x0 = win->bbox.x1 - gli_scroll_width;
@@ -713,6 +724,10 @@ void win_textbuffer_redraw(window_t *win)
             dwin->copybuf[i] = 0;
         dwin->copypos = 0;
     }
+
+    /* no more prompt means all text has been seen */
+    if (!dwin->owner->more_request)
+        dwin->lastseen = 0;
 
     free(ln);
 }
@@ -1084,7 +1099,7 @@ void win_textbuffer_init_line(window_t *win, char *buf, int maxlen, int initlen)
     if (calcwidth(dwin, dwin->chars, dwin->attrs, 0, dwin->numchars, -1) >= pw * 3 / 4)
         win_textbuffer_putchar_uni(win, '\n');
 
-    dwin->lastseen = 0;
+    //dwin->lastseen = 0;
 
     dwin->inbuf = buf;
     dwin->inmax = maxlen;
@@ -1126,7 +1141,7 @@ void win_textbuffer_init_line_uni(window_t *win, glui32 *buf, int maxlen, int in
     if (calcwidth(dwin, dwin->chars, dwin->attrs, 0, dwin->numchars, -1) >= pw * 3 / 4)
         win_textbuffer_putchar_uni(win, '\n');
 
-    dwin->lastseen = 0;
+    //dwin->lastseen = 0;
 
     dwin->inbuf = buf;
     dwin->inmax = maxlen;
@@ -1210,7 +1225,7 @@ void win_textbuffer_cancel_line(window_t *win, event_t *ev)
 /* Keybinding functions. */
 
 /* Any key, when text buffer is scrolled. */
-static void gcmd_accept_scroll(window_t *win, glui32 arg)
+void gcmd_accept_scroll(window_t *win, glui32 arg)
 {
     window_textbuffer_t *dwin = win->data;
 /* GI7 EDIT */
@@ -1224,10 +1239,6 @@ static void gcmd_accept_scroll(window_t *win, glui32 arg)
         case keycode_PageUp:
             dwin->scrollpos += pageht;
             break;
-        case ' ':
-        case keycode_PageDown:
-            dwin->scrollpos -= pageht;
-            break;
         case keycode_End:
             dwin->scrollpos = 0;
             break;
@@ -1237,6 +1248,17 @@ static void gcmd_accept_scroll(window_t *win, glui32 arg)
         case keycode_Down:
         case keycode_Return:
             dwin->scrollpos --;
+            break;
+        case ' ':
+        case keycode_PageDown:
+        //default:
+            dwin->scrollpos -= pageht;
+            break;
+        case keycode_MouseWheelUp:
+            dwin->scrollpos += 3;
+            break;
+        case keycode_MouseWheelDown:
+            dwin->scrollpos -= 3;
             break;
     }
 
@@ -1266,7 +1288,9 @@ void gcmd_buffer_accept_readchar(window_t *win, glui32 arg)
     if (dwin->height < 2)
         dwin->scrollpos = 0;
 
-    if (dwin->scrollpos || key == keycode_PageUp)
+    if (dwin->scrollpos
+        || key == keycode_PageUp
+        || key == keycode_MouseWheelUp)
     {
         gcmd_accept_scroll(win, key);
         return;
@@ -1276,7 +1300,7 @@ void gcmd_buffer_accept_readchar(window_t *win, glui32 arg)
     gli_speak_tts("", 0, 1);
 #endif
 
-    dwin->lastseen = 0;
+    //dwin->lastseen = 0;
     win->char_request = FALSE; 
     win->char_request_uni = FALSE;
     gli_event_store(evtype_CharInput, win, key, 0);
@@ -1416,7 +1440,9 @@ void gcmd_buffer_accept_readline(window_t *win, glui32 arg)
     if (dwin->height < 2)
         dwin->scrollpos = 0;
 
-    if (dwin->scrollpos || arg == keycode_PageUp)
+    if (dwin->scrollpos
+        || arg == keycode_PageUp
+        || arg == keycode_MouseWheelUp)
     {
         gcmd_accept_scroll(win, arg);
         return;
@@ -1611,7 +1637,9 @@ void win_textbuffer_click(window_textbuffer_t *dwin, int sx, int sy)
     int gh = FALSE;
     int gs = FALSE;
 
-    if (win->line_request || win->char_request || win->line_request_uni || win->char_request_uni)
+    if (win->line_request || win->char_request
+        || win->line_request_uni || win->char_request_uni
+        || win->more_request || win->scroll_request)
         gli_focuswin = win;
 
     if (win->hyper_request) {

@@ -33,6 +33,7 @@ void gli_get_builtin_font(int idx, unsigned char **ptr, unsigned int *len);
 #include FT_FREETYPE_H
 
 #include <math.h> /* for pow() */
+#include "uthash.h" /* for kerning cache */
 
 #define mul255(a,b) (((a) * ((b) + 1)) >> 8)
 
@@ -43,6 +44,7 @@ void gli_get_builtin_font(int idx, unsigned char **ptr, unsigned int *len);
 typedef struct font_s font_t;
 typedef struct bitmap_s bitmap_t;
 typedef struct fentry_s fentry_t;
+typedef struct kcache_s kcache_t;
 
 struct bitmap_s
 {
@@ -57,6 +59,13 @@ struct fentry_s
     bitmap_t glyph[GLI_SUBPIX];
 };
 
+struct kcache_s
+{
+    glui32 pair[2];
+    int value;
+    UT_hash_handle hh;
+};
+
 struct font_s
 {
     FT_Face face;
@@ -65,6 +74,10 @@ struct font_s
     unsigned char lowloaded[256/8];
     fentry_t *highentries;
     int num_highentries, alloced_highentries;
+    int make_bold;
+    int make_oblique;
+    int kerned;
+    kcache_t *kerncache;
 };
 
 /*
@@ -83,7 +96,14 @@ int gli_image_w = 0;
 int gli_image_h = 0;
 unsigned char *gli_image_rgb = NULL;
 
+#ifdef __APPLE__
+static const int gli_bpp = 4;
+#else
+static const int gli_bpp = 3;
+#endif
+
 static FT_Library ftlib;
+static FT_Matrix ftmat;
 
 /*
  * Font loading
@@ -182,10 +202,16 @@ static void loadglyph(font_t *f, glui32 cid)
         if (err)
             winabort("FT_Load_Glyph");
 
-                if (gli_conf_lcd)
-                    err = FT_Render_Glyph(f->face->glyph, FT_RENDER_MODE_LCD);
-                else
-                    err = FT_Render_Glyph(f->face->glyph, FT_RENDER_MODE_LIGHT);
+        if (f->make_bold)
+            FT_Outline_Embolden(&f->face->glyph->outline, FT_MulFix(f->face->units_per_EM, f->face->size->metrics.y_scale) / 24);
+
+        if (f->make_oblique)
+            FT_Outline_Transform(&f->face->glyph->outline, &ftmat);
+
+        if (gli_conf_lcd)
+            err = FT_Render_Glyph(f->face->glyph, FT_RENDER_MODE_LCD);
+        else
+            err = FT_Render_Glyph(f->face->glyph, FT_RENDER_MODE_LIGHT);
         if (err)
             winabort("FT_Render_Glyph");
 
@@ -244,7 +270,7 @@ static void loadglyph(font_t *f, glui32 cid)
     }
 }
 
-static void loadfont(font_t *f, char *name, float size, float aspect)
+static void loadfont(font_t *f, char *name, float size, float aspect, int style)
 {
     static char *map[8] =
     {
@@ -266,6 +292,7 @@ static void loadfont(font_t *f, char *name, float size, float aspect)
 
     memset(f, 0, sizeof (font_t));
 
+#ifdef BUNDLED_FONTS
     for (i = 0; i < 8; i++)
     {
         if (!strcmp(name, map[i]))
@@ -277,27 +304,24 @@ static void loadfont(font_t *f, char *name, float size, float aspect)
             break;
         }
     }
+#else
+    i = 8;
+#endif /* BUNDLED_FONTS */
+
     if (i == 8)
     {
         err = FT_New_Face(ftlib, name, 0, &f->face);
-        if (err) {
-            /* try getting a system font by the same name */
-            gli_get_system_font(name, &mem, &len);
-            err = FT_New_Memory_Face(ftlib, mem, len, 0, &f->face);
-            if (err) {
-                winabort("FT_New_Face: %s: 0x%x", name, err);
-            }
-        } else {
-            if (strstr(name, ".PFB") || strstr(name, ".PFA") ||
-                    strstr(name, ".pfb") || strstr(name, ".pfa"))
-            {
-                strcpy(afmbuf, name);
-                strcpy(strrchr(afmbuf, '.'), ".afm");
-                FT_Attach_File(f->face, afmbuf);
-                strcpy(afmbuf, name);
-                strcpy(strrchr(afmbuf, '.'), ".AFM");
-                FT_Attach_File(f->face, afmbuf);
-            }
+        if (err)
+            winabort("FT_New_Face: %s: 0x%x", name, err);
+        if (strstr(name, ".PFB") || strstr(name, ".PFA") ||
+                strstr(name, ".pfb") || strstr(name, ".pfa"))
+        {
+            strcpy(afmbuf, name);
+            strcpy(strrchr(afmbuf, '.'), ".afm");
+            FT_Attach_File(f->face, afmbuf);
+            strcpy(afmbuf, name);
+            strcpy(strrchr(afmbuf, '.'), ".AFM");
+            FT_Attach_File(f->face, afmbuf);
         }
     }
 
@@ -313,22 +337,32 @@ static void loadfont(font_t *f, char *name, float size, float aspect)
     f->alloced_highentries = 0;
     f->num_highentries = 0;
     f->highentries = NULL;
-}
+    f->kerned = FT_HAS_KERNING(f->face);
+    f->kerncache = NULL;
 
-#if 0
-    for (i = 32; i < 128; i++)
-        loadglyph(f, i, i);
-    for (i = 160; i < 256; i++)
-        loadglyph(f, i, i);
-    loadglyph(f, LIG_FI, touni(LIG_FI));
-    loadglyph(f, LIG_FL, touni(LIG_FL));
-    loadglyph(f, UNI_LSQUO, touni(UNI_LSQUO));
-    loadglyph(f, UNI_RSQUO, touni(UNI_RSQUO));
-    loadglyph(f, UNI_LDQUO, touni(UNI_LDQUO));
-    loadglyph(f, UNI_RDQUO, touni(UNI_RDQUO));
-    loadglyph(f, UNI_NDASH, touni(UNI_NDASH));
-    loadglyph(f, UNI_MDASH, touni(UNI_MDASH));
-#endif
+    switch (style)
+    {
+    case FONTR:
+        f->make_bold = FALSE;
+        f->make_oblique = FALSE;
+        break;
+
+    case FONTB:
+        f->make_bold = !(f->face->style_flags & FT_STYLE_FLAG_BOLD);
+        f->make_oblique = FALSE;
+        break;
+
+    case FONTI:
+        f->make_bold = FALSE;
+        f->make_oblique = !(f->face->style_flags & FT_STYLE_FLAG_ITALIC);
+        break;
+
+    case FONTZ:
+        f->make_bold = !(f->face->style_flags & FT_STYLE_FLAG_BOLD);
+        f->make_oblique = !(f->face->style_flags & FT_STYLE_FLAG_ITALIC);
+        break;
+    }
+}
 
 void gli_initialize_fonts(void)
 {
@@ -346,15 +380,25 @@ void gli_initialize_fonts(void)
     if (err)
         winabort("FT_Init_FreeType");
 
-    loadfont(&gfont_table[0], gli_conf_monor, monosize, monoaspect);
-    loadfont(&gfont_table[1], gli_conf_monob, monosize, monoaspect);
-    loadfont(&gfont_table[2], gli_conf_monoi, monosize, monoaspect);
-    loadfont(&gfont_table[3], gli_conf_monoz, monosize, monoaspect);
+    /* replace built-in fonts with configured system font */
+    winfont(gli_conf_monofont, MONOF);
+    winfont(gli_conf_propfont, PROPF);
 
-    loadfont(&gfont_table[4], gli_conf_propr, propsize, propaspect);
-    loadfont(&gfont_table[5], gli_conf_propb, propsize, propaspect);
-    loadfont(&gfont_table[6], gli_conf_propi, propsize, propaspect);
-    loadfont(&gfont_table[7], gli_conf_propz, propsize, propaspect);
+    /* create oblique transform matrix */
+    ftmat.xx = 0x10000L;
+    ftmat.yx = 0x00000L;
+    ftmat.xy = 0x03000L;
+    ftmat.yy = 0x10000L;
+
+    loadfont(&gfont_table[0], gli_conf_monor, monosize, monoaspect, FONTR);
+    loadfont(&gfont_table[1], gli_conf_monob, monosize, monoaspect, FONTB);
+    loadfont(&gfont_table[2], gli_conf_monoi, monosize, monoaspect, FONTI);
+    loadfont(&gfont_table[3], gli_conf_monoz, monosize, monoaspect, FONTZ);
+
+    loadfont(&gfont_table[4], gli_conf_propr, propsize, propaspect, FONTR);
+    loadfont(&gfont_table[5], gli_conf_propb, propsize, propaspect, FONTB);
+    loadfont(&gfont_table[6], gli_conf_propi, propsize, propaspect, FONTI);
+    loadfont(&gfont_table[7], gli_conf_propz, propsize, propaspect, FONTZ);
 
     loadglyph(&gfont_table[0], '0');
 
@@ -368,7 +412,7 @@ void gli_initialize_fonts(void)
 
 void gli_draw_pixel(int x, int y, unsigned char alpha, unsigned char *rgb)
 {
-    unsigned char *p = gli_image_rgb + y * gli_image_s + x * 3;
+    unsigned char *p = gli_image_rgb + y * gli_image_s + x * gli_bpp;
     unsigned char invalf = 255 - alpha;
     if (x < 0 || x >= gli_image_w)
         return;
@@ -379,15 +423,22 @@ void gli_draw_pixel(int x, int y, unsigned char alpha, unsigned char *rgb)
     p[1] = rgb[1] + mul255((short)p[1] - rgb[1], invalf);
     p[2] = rgb[0] + mul255((short)p[2] - rgb[0], invalf);
 #else
+#ifdef __APPLE__
+    p[0] = rgb[2] + mul255((short)p[0] - rgb[2], invalf);
+    p[1] = rgb[1] + mul255((short)p[1] - rgb[1], invalf);
+    p[2] = rgb[0] + mul255((short)p[2] - rgb[0], invalf);
+    p[3] = 0xFF;
+#else
     p[0] = rgb[0] + mul255((short)p[0] - rgb[0], invalf);
     p[1] = rgb[1] + mul255((short)p[1] - rgb[1], invalf);
     p[2] = rgb[2] + mul255((short)p[2] - rgb[2], invalf);
+#endif
 #endif
 }
 
 void gli_draw_pixel_lcd(int x, int y, unsigned char *alpha, unsigned char *rgb)
 {
-    unsigned char *p = gli_image_rgb + y * gli_image_s + x * 3;
+    unsigned char *p = gli_image_rgb + y * gli_image_s + x * gli_bpp;
     unsigned char invalf[3];
         invalf[0] = 255 - alpha[0];
         invalf[1] = 255 - alpha[1];
@@ -401,9 +452,16 @@ void gli_draw_pixel_lcd(int x, int y, unsigned char *alpha, unsigned char *rgb)
     p[1] = rgb[1] + mul255((short)p[1] - rgb[1], invalf[1]);
     p[2] = rgb[0] + mul255((short)p[2] - rgb[0], invalf[0]);
 #else
+#ifdef __APPLE__
+    p[0] = rgb[2] + mul255((short)p[0] - rgb[2], invalf[2]);
+    p[1] = rgb[1] + mul255((short)p[1] - rgb[1], invalf[1]);
+    p[2] = rgb[0] + mul255((short)p[2] - rgb[0], invalf[0]);
+    p[3] = 0xFF;
+#else
     p[0] = rgb[0] + mul255((short)p[0] - rgb[0], invalf[0]);
     p[1] = rgb[1] + mul255((short)p[1] - rgb[1], invalf[1]);
     p[2] = rgb[2] + mul255((short)p[2] - rgb[2], invalf[2]);
+#endif
 #endif
 }
 
@@ -448,9 +506,16 @@ void gli_draw_clear(unsigned char *rgb)
             *p++ = rgb[1];
             *p++ = rgb[0];
 #else
+#ifdef __APPLE__
+            *p++ = rgb[2];
+            *p++ = rgb[1];
+            *p++ = rgb[0];
+            *p++ = 0xFF;
+#else
             *p++ = rgb[0];
             *p++ = rgb[1];
             *p++ = rgb[2];
+#endif
 #endif
         }
     }
@@ -473,7 +538,7 @@ void gli_draw_rect(int x0, int y0, int w, int h, unsigned char *rgb)
     if (x1 > gli_image_w) x1 = gli_image_w;
     if (y1 > gli_image_h) y1 = gli_image_h;
 
-    p0 = gli_image_rgb + y0 * gli_image_s + x0 * 3;
+    p0 = gli_image_rgb + y0 * gli_image_s + x0 * gli_bpp;
 
     for (y = y0; y < y1; y++)
     {
@@ -485,9 +550,16 @@ void gli_draw_rect(int x0, int y0, int w, int h, unsigned char *rgb)
             *p++ = rgb[1];
             *p++ = rgb[0];
 #else
+#ifdef __APPLE__
+            *p++ = rgb[2];
+            *p++ = rgb[1];
+            *p++ = rgb[0];
+            *p++ = 0xFF;
+#else
             *p++ = rgb[0];
             *p++ = rgb[1];
             *p++ = rgb[2];
+#endif
 #endif
         }
         p0 += gli_image_s;
@@ -500,6 +572,23 @@ static int charkern(font_t *f, int c0, int c1)
     int err;
     int g0, g1;
 
+    if (!f->kerned)
+        return 0;
+
+    kcache_t *item = malloc(sizeof(kcache_t));
+    memset(item, 0, sizeof(kcache_t));
+    item->pair[0] = c0;
+    item->pair[1] = c1;
+
+    kcache_t *match = NULL;
+    HASH_FIND(hh, f->kerncache, item->pair, 2 * sizeof(glui32), match);
+
+    if (match)
+    {
+        free(item);
+        return match->value;
+    }
+
     g0 = FT_Get_Char_Index(f->face, touni(c0));
     g1 = FT_Get_Char_Index(f->face, touni(c1));
 
@@ -510,7 +599,10 @@ static int charkern(font_t *f, int c0, int c1)
     if (err)
         winabort("FT_Get_Kerning");
 
-    return (v.x * GLI_SUBPIX) / 64.0;
+    item->value = (v.x * GLI_SUBPIX) / 64.0;
+    HASH_ADD_KEYPTR(hh, f->kerncache, item->pair, 2 * sizeof(glui32), item);
+
+    return item->value;
 }
 
 static void getglyph(font_t *f, glui32 cid, int *adv, bitmap_t **glyphs)
@@ -747,7 +839,7 @@ void gli_draw_picture(picture_t *src, int x0, int y0, int dx0, int dy0, int dx1,
     if (y1 > dy1) { sy1 += dy1 - y1; y1 = dy1; }
 
     sp = src->rgba + (sy0 * src->w + sx0) * 4;
-    dp = gli_image_rgb + y0 * gli_image_s + x0 * 3;
+    dp = gli_image_rgb + y0 * gli_image_s + x0 * gli_bpp;
 
     w = sx1 - sx0;
     h = sy1 - sy0;
@@ -766,9 +858,16 @@ void gli_draw_picture(picture_t *src, int x0, int y0, int dx0, int dy0, int dx1,
             dp[x*3+1] = sg + mul255(dp[x*3+1], na);
             dp[x*3+2] = sr + mul255(dp[x*3+2], na);
 #else
+#ifdef __APPLE__
+            dp[x*4+0] = sb + mul255(dp[x*3+0], na);
+            dp[x*4+1] = sg + mul255(dp[x*3+1], na);
+            dp[x*4+2] = sr + mul255(dp[x*3+2], na);
+            dp[x*4+3] = 0xFF;
+#else    
             dp[x*3+0] = sr + mul255(dp[x*3+0], na);
             dp[x*3+1] = sg + mul255(dp[x*3+1], na);
             dp[x*3+2] = sb + mul255(dp[x*3+2], na);
+#endif
 #endif
         }
         sp += src->w * 4;
