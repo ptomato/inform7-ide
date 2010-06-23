@@ -51,6 +51,9 @@ gnome_inform7_CPPFLAGS = \
 	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
 gnome_inform7_CFLAGS = @GNOMEINFORM7_CFLAGS@ $(AM_CFLAGS)
-gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) gtkterp/libgtkterp.a
+gnome_inform7_LDADD = \
+	@GNOMEINFORM7_LIBS@ \
+	$(INTLLIBS) \
+	@GTKTERP_LIBS@ gtkterp/libgtkterp.a
 gnome_inform7_LDFLAGS = -L.
 

@@ -166,11 +166,13 @@ PKG_CHECK_MODULES([GTKTERP], [
 	gtk+-2.0 >= 2.8.0
 	freetype2 
 	sdl 
+	SDL_mixer
 	libpng 
 	dbus-glib-1
 ])
-# SDL mixer, SDL sound, and libjpeg don't use pkg-config
-GTKTERP_LIBS="$GTKTERP_LIBS -lSDL_mixer -lSDL_sound -ljpeg"
+# SDL sound and libjpeg don't use pkg-config
+# Also, -lm needs to be added here for some reason
+GTKTERP_LIBS="$GTKTERP_LIBS -lSDL_sound -ljpeg -lm"
 AC_SUBST(GTKTERP_LIBS)
 
 # Get current year for updating copyrights
