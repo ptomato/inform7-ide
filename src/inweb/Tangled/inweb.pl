@@ -112,6 +112,7 @@ $tangle_to = ""; # This is set either by the command line or from the Contents
 #line 14 "Chapter 1/Command Line and Errors.w"
 $analyse_structure_setting = ""; # |-analyse-structure|: name of typedef struct to show usage of
 $catalogue_switch = 0; # |-catalogue|: print catalogue of sections
+$functions_switch = 0; # |-functions|: print catalogue of functions within sections
 $convert_graphs_switch = 0; # |-convert-graphs|: run |-make-graphs| output through 'dot'
 $make_graphs_switch = 0; # |-make-graphs|: compile code to generate graphs
 $open_pdf_switch = -1; # |-open-pdf|: open any woven PDF in the OS once it is made
@@ -124,14 +125,14 @@ $create_setting = ""; # set by |-create|: name of a new project to create
 $only_setting = ""; # set by |-only|: restrict a swarm to this chapter
 $complete_PDF_leafname = "Complete.pdf"; # overridden when |-only| is used
 
-#line 34 "Chapter 1/Command Line and Errors.w"
+#line 35 "Chapter 1/Command Line and Errors.w"
 $path_to_inweb_setting = "";
 
-#line 39 "Chapter 1/Command Line and Errors.w"
+#line 40 "Chapter 1/Command Line and Errors.w"
 $pdftex_configuration = 'pdftex';
 $dot_utility_configuration = 'dot';
 
-#line 45 "Chapter 1/Command Line and Errors.w"
+#line 46 "Chapter 1/Command Line and Errors.w"
 $no_inweb_errors = 0;
 
 #line 26 "Chapter 2/Reading Sections.w"
@@ -140,7 +141,7 @@ $no_sections = 0; # Again, excluding contents: it will eventually be at least 1
 $no_chapters = 0; # Similarly, this will be at least 1
 $no_tangle_targets = 0; # And again
 
-#line 64 "Chapter 2/The Parser.w"
+#line 65 "Chapter 2/The Parser.w"
 $no_paragraphs = 0;
 
 #line 146 "Chapter 2/Identifiers.w"
@@ -175,7 +176,7 @@ $tangled_extension = ".c";
 
 	if ($create_setting ne "") 
  { 
-#line 265 "Chapter 1/Program Control.w"
+#line 266 "Chapter 1/Program Control.w"
 	system("mkdir -pv '".$create_setting."'");
 	system("mkdir -pv '".$create_setting."/Figures'");
 	system("mkdir -pv '".$create_setting."/Materials'");
@@ -229,7 +230,8 @@ $tangled_extension = ".c";
 	if ($swarm_mode != $SWARM_OFF) {
 		inweb_fatal_error("only specific parts of the web can be analysed");
 	}
-	if ($catalogue_switch == 1) { catalogue_the_sections($sigil_of_target); }
+	if ($catalogue_switch == 1) { catalogue_the_sections($sigil_of_target, 0); }
+	if ($functions_switch == 1) { catalogue_the_sections($sigil_of_target, 1); }
 	if ($voids_switch == 1) { catalogue_void_pointers($sigil_of_target); }
 	if ($make_graphs_switch == 1) { compile_graphs($sigil_of_target); }
 	if ($scan_switch == 1) { scan_line_categories($sigil_of_target); }
@@ -239,12 +241,12 @@ $tangled_extension = ".c";
 ;
 		if ($web_mode == $TANGLE_MODE) 
  { 
-#line 196 "Chapter 1/Program Control.w"
+#line 197 "Chapter 1/Program Control.w"
 	my $tn = 0;
 	if ($sigil_of_target eq "0") {
 		
  { 
-#line 214 "Chapter 1/Program Control.w"
+#line 215 "Chapter 1/Program Control.w"
 	$tn = 0;
 	if (exists $bibliographic_data{"Short Title"}) {
 		$tangle_to = $bibliographic_data{"Short Title"};
@@ -255,23 +257,23 @@ $tangled_extension = ".c";
 	$tangle_to .= language_file_extension();
 
  } 
-#line 198 "Chapter 1/Program Control.w"
+#line 199 "Chapter 1/Program Control.w"
 ;
 	} elsif (exists($sigil_section{$sigil_of_target})) {
 		
  { 
-#line 226 "Chapter 1/Program Control.w"
+#line 227 "Chapter 1/Program Control.w"
 	$tn = $section_tangle_target[$sigil_section{$sigil_of_target}];
 	if ($tn == 0) { inweb_fatal_error("section cannot be independently tangled"); }
 	$tangle_to = $section_leafname[$sigil_section{$sigil_of_target}];
 
  } 
-#line 200 "Chapter 1/Program Control.w"
+#line 201 "Chapter 1/Program Control.w"
 ;
 	} else {
 		
  { 
-#line 233 "Chapter 1/Program Control.w"
+#line 234 "Chapter 1/Program Control.w"
 	my $cn;
 	for ($cn=0; $cn<$no_chapters; $cn++) {
 		if ($chapter_tangle_target[$cn] > 0) {
@@ -289,7 +291,7 @@ $tangled_extension = ".c";
 	}
 
  } 
-#line 202 "Chapter 1/Program Control.w"
+#line 203 "Chapter 1/Program Control.w"
 ;
 	}
 	if ($tangle_to eq "") { inweb_fatal_error("no tangle destination known"); }
@@ -303,7 +305,7 @@ $tangled_extension = ".c";
 ;
 		if ($web_mode == $WEAVE_MODE) 
  { 
-#line 252 "Chapter 1/Program Control.w"
+#line 253 "Chapter 1/Program Control.w"
 	if ($swarm_mode == $SWARM_OFF) {
 		my $shall_we_open = $open_pdf_switch;
 		if ($shall_we_open == -1) { # i.e., if it wasn't set at the command line
@@ -320,9 +322,9 @@ $tangled_extension = ".c";
 
 	if ($no_inweb_errors == 0) { exit(0); } else { exit(1); }
 
-#line 48 "Chapter 1/Command Line and Errors.w"
+#line 49 "Chapter 1/Command Line and Errors.w"
 
-#line 52 "Chapter 1/Command Line and Errors.w"
+#line 53 "Chapter 1/Command Line and Errors.w"
 sub make_command_line_settings {
 	my $i;
 	my $targets = 0;
@@ -332,7 +334,7 @@ sub make_command_line_settings {
 		if (($i < $#ARGV) && (not($ARGV[$i+1] =~ m/^-/))) { $non_switch_follows = 1; }
 		if ($opt =~ m/^-/) 
  { 
-#line 70 "Chapter 1/Command Line and Errors.w"
+#line 71 "Chapter 1/Command Line and Errors.w"
 	$opt =~ s/^\-\-/\-/; # allow a doubled-dash as equivalent to one
 	if ($opt eq "-test-extensions") {
 		print "(Test inweb's implementation of Inform's C extensions)\n";
@@ -350,7 +352,7 @@ sub make_command_line_settings {
 	}
 	
  { 
-#line 94 "Chapter 1/Command Line and Errors.w"
+#line 95 "Chapter 1/Command Line and Errors.w"
 	if ($opt eq "-analyse-structure") {
 		if ($non_switch_follows) {
 			$analyse_structure_setting = $ARGV[$i+1]; $i++;
@@ -361,6 +363,9 @@ sub make_command_line_settings {
 	}
 	if ($opt eq "-catalogue") {
 		$catalogue_switch = 1; enter_main_mode($ANALYSE_MODE); next ARGUMENT;
+	}
+	if ($opt eq "-functions") {
+		$functions_switch = 1; enter_main_mode($ANALYSE_MODE); next ARGUMENT;
 	}
 	if ($opt eq "-voids") {
 		$voids_switch = 1; enter_main_mode($ANALYSE_MODE); next ARGUMENT;
@@ -377,11 +382,11 @@ sub make_command_line_settings {
 	}
 
  } 
-#line 85 "Chapter 1/Command Line and Errors.w"
+#line 86 "Chapter 1/Command Line and Errors.w"
 ;
 	
  { 
-#line 122 "Chapter 1/Command Line and Errors.w"
+#line 126 "Chapter 1/Command Line and Errors.w"
 	if ($opt eq "-weave") {
 		enter_main_mode($WEAVE_MODE); next ARGUMENT;
 	}
@@ -401,11 +406,11 @@ sub make_command_line_settings {
 	}
 
  } 
-#line 86 "Chapter 1/Command Line and Errors.w"
+#line 87 "Chapter 1/Command Line and Errors.w"
 ;
 	
  { 
-#line 143 "Chapter 1/Command Line and Errors.w"
+#line 147 "Chapter 1/Command Line and Errors.w"
 	if ($opt eq "-tangle") {
 		enter_main_mode($TANGLE_MODE); next ARGUMENT;
 	}
@@ -418,11 +423,11 @@ sub make_command_line_settings {
 	}
 
  } 
-#line 87 "Chapter 1/Command Line and Errors.w"
+#line 88 "Chapter 1/Command Line and Errors.w"
 ;
 	
  { 
-#line 158 "Chapter 1/Command Line and Errors.w"
+#line 162 "Chapter 1/Command Line and Errors.w"
 	if ($opt eq "-create") {
 		if ($non_switch_follows == 1) {
 			$create_setting = $ARGV[$i+1]; $web_setting = $create_setting; $i++;
@@ -433,17 +438,17 @@ sub make_command_line_settings {
 	}
 
  } 
-#line 88 "Chapter 1/Command Line and Errors.w"
+#line 89 "Chapter 1/Command Line and Errors.w"
 ;
 	inweb_fatal_error("unknown command line switch: $opt");
 
  } 
-#line 60 "Chapter 1/Command Line and Errors.w"
+#line 61 "Chapter 1/Command Line and Errors.w"
 		else {
 			if ($web_setting eq "") { $web_setting = $opt.'/'; }
 			else 
  { 
-#line 173 "Chapter 1/Command Line and Errors.w"
+#line 177 "Chapter 1/Command Line and Errors.w"
 	$targets++;
 	if ($targets > 1) { inweb_fatal_error("at most one target may be given"); }
 	$swarm_mode = $NO_SWARM;
@@ -478,13 +483,13 @@ sub make_command_line_settings {
 	}
 
  } 
-#line 62 "Chapter 1/Command Line and Errors.w"
+#line 63 "Chapter 1/Command Line and Errors.w"
 ;
 		}
 	}
 }
 
-#line 209 "Chapter 1/Command Line and Errors.w"
+#line 213 "Chapter 1/Command Line and Errors.w"
 sub enter_main_mode {
 	my $new_mode = $_[0];
 	if ($web_mode == $NO_MODE) { $web_mode = $new_mode; }
@@ -493,7 +498,7 @@ sub enter_main_mode {
 	}
 }
 
-#line 223 "Chapter 1/Command Line and Errors.w"
+#line 227 "Chapter 1/Command Line and Errors.w"
 sub read_configuration_file {
 	my $cl;
 	open(CONFIG, $path_to_inweb_setting.'inweb/Materials/inweb-configuration.txt')
@@ -507,21 +512,21 @@ sub read_configuration_file {
 			my $value = $2;
 			
  { 
-#line 243 "Chapter 1/Command Line and Errors.w"
+#line 247 "Chapter 1/Command Line and Errors.w"
 	if ($setting eq "pdftex") { $pdftex_configuration = $value; next; }
 	if ($setting eq "dot") { $dot_utility_configuration = $value; next; }
 	if ($setting eq "open-command") { $open_command_configuration = $value; next; }
 	inweb_error("inweb: bad configuration setting ($setting)");
 
  } 
-#line 234 "Chapter 1/Command Line and Errors.w"
+#line 238 "Chapter 1/Command Line and Errors.w"
 ;
 		}
 	}
 	close CONFIG;
 }
 
-#line 252 "Chapter 1/Command Line and Errors.w"
+#line 256 "Chapter 1/Command Line and Errors.w"
 sub inweb_fatal_error {
 	my $message = $_[0];
 	print STDERR "inweb: $message\n";
@@ -585,10 +590,11 @@ sub read_contents_page {
 			($key eq "Purpose") || ($key eq "Licence") ||
 			($key eq "Build Number") || ($key eq "Language") ||
 			($key eq "Index Extras") || ($key eq "Index Template") ||
-			($key eq "Cover Sheet") ||
+			($key eq "Cover Sheet") || ($key eq "Namespaces") ||
 			($key eq "Strict Usage Rules") || ($key eq "Declare Section Usage")) {
 			$bibliographic_data{$key} = $value;
-			if ((($key eq "Strict Usage Rules") || ($key eq "Declare Section Usage")) &&
+			if ((($key eq "Strict Usage Rules") || ($key eq "Declare Section Usage") ||
+				($key eq "Namespaces")) &&
 				($value ne "On") && ($value ne "Off")) {
 				inweb_error_at("This setting must be 'On' or 'Off'", "Contents.w", $clc);
 			}
@@ -601,14 +607,14 @@ sub read_contents_page {
 ;
 		
  { 
-#line 199 "Chapter 2/Reading Sections.w"
+#line 200 "Chapter 2/Reading Sections.w"
 	$cline =~ m/^(\s*)(.*?)$/; # A pattern which cannot fail to match
 	my $whitespace = $1; local $title = $2;
 	if ($whitespace eq "") {
 		if ($cline =~ m/^\"(.*)$/) { $scanning_chapter_purpose = 1; $cline = $1; }
 		if ($scanning_chapter_purpose == 1) 
  { 
-#line 213 "Chapter 2/Reading Sections.w"
+#line 214 "Chapter 2/Reading Sections.w"
 	if ($cline =~ m/^(.*)\"\s*$/) { $cline = $1; $scanning_chapter_purpose = 0; }
 	if ($chapter_rubric[$no_chapters-1] ne "") {
 		$chapter_rubric[$no_chapters-1] .= " ";
@@ -617,10 +623,10 @@ sub read_contents_page {
 	next;
 
  } 
-#line 204 "Chapter 2/Reading Sections.w"
+#line 205 "Chapter 2/Reading Sections.w"
 		else 
  { 
-#line 223 "Chapter 2/Reading Sections.w"
+#line 224 "Chapter 2/Reading Sections.w"
 	my $new_chapter_sigil = ""; # e.g., P, 1, 2, 3, A, B, ...
 	my $pdf_leafname = "";
 	my $ind_target = 0;
@@ -628,7 +634,7 @@ sub read_contents_page {
 	if ($title =~ m/^(.*?)\s*\(\s*Independent\s*(.*?)\s*\)\s*$/)
 		
  { 
-#line 262 "Chapter 2/Reading Sections.w"
+#line 263 "Chapter 2/Reading Sections.w"
 	$title = $1; $lang = $2;
 	$current_tangle_target = ++$no_tangle_targets;
 	$ind_target = $current_tangle_target;
@@ -636,7 +642,7 @@ sub read_contents_page {
 	if ($lang ne "") { $tangle_target_language[$no_tangle_targets] = $lang; }
 
  } 
-#line 228 "Chapter 2/Reading Sections.w"
+#line 229 "Chapter 2/Reading Sections.w"
 ;
 
 	if ($title eq "Sections") {
@@ -667,7 +673,7 @@ sub read_contents_page {
 
 	
  { 
-#line 271 "Chapter 2/Reading Sections.w"
+#line 272 "Chapter 2/Reading Sections.w"
 	$chapter_sigil[$no_chapters] = $new_chapter_sigil;
 	$chapter_title[$no_chapters] = $title;
 	$chapter_rubric[$no_chapters] = "";
@@ -677,20 +683,20 @@ sub read_contents_page {
 	$no_chapters++;
 
  } 
-#line 256 "Chapter 2/Reading Sections.w"
+#line 257 "Chapter 2/Reading Sections.w"
 ;
 
  } 
-#line 204 "Chapter 2/Reading Sections.w"
+#line 205 "Chapter 2/Reading Sections.w"
 ;
 	} else 
  { 
-#line 284 "Chapter 2/Reading Sections.w"
+#line 285 "Chapter 2/Reading Sections.w"
 	my $source_file_extension = ".w";
 	if ($title =~ m/^(.*?)\s*\(\s*Independent\s*(.*?)\s*\)\s*$/) {
 		
  { 
-#line 310 "Chapter 2/Reading Sections.w"
+#line 311 "Chapter 2/Reading Sections.w"
 	$title = $1; $lang = $2;
 	$section_tangle_target[$no_sections] = ++$no_tangle_targets;
 	$tangle_target_language[$no_tangle_targets] = $bibliographic_data{"Language"};
@@ -700,7 +706,7 @@ sub read_contents_page {
 	}
 
  } 
-#line 286 "Chapter 2/Reading Sections.w"
+#line 287 "Chapter 2/Reading Sections.w"
 ;
 	} else {
 		$section_tangle_target[$no_sections] = $current_tangle_target;
@@ -719,7 +725,7 @@ sub read_contents_page {
 	$no_sections++;
 
  } 
-#line 205 "Chapter 2/Reading Sections.w"
+#line 206 "Chapter 2/Reading Sections.w"
 ;
 	next;
 
@@ -734,7 +740,7 @@ sub read_contents_page {
 
 	
  { 
-#line 172 "Chapter 2/Reading Sections.w"
+#line 173 "Chapter 2/Reading Sections.w"
 	ensure_setting_of("Title"); ensure_setting_of("Author");
 	ensure_setting_of("Purpose"); ensure_setting_of("Language");
 	$bibliographic_data{"Inweb Build"} = $INWEB_BUILD;
@@ -745,7 +751,7 @@ sub read_contents_page {
 ;
 	
  { 
-#line 192 "Chapter 2/Reading Sections.w"
+#line 193 "Chapter 2/Reading Sections.w"
 	$tangle_target_language[0] = $bibliographic_data{"Language"};
 	$no_tangle_targets++;
 
@@ -754,7 +760,7 @@ sub read_contents_page {
 ;
 }
 
-#line 180 "Chapter 2/Reading Sections.w"
+#line 181 "Chapter 2/Reading Sections.w"
 sub ensure_setting_of {
 	my $setting = $_[0];
 	if (not (exists ($bibliographic_data{$setting}))) {
@@ -762,7 +768,7 @@ sub ensure_setting_of {
 	}
 }
 
-#line 323 "Chapter 2/Reading Sections.w"
+#line 324 "Chapter 2/Reading Sections.w"
 sub read_file {
 	my $path_relative_to_web = $_[0];
 	my $titling_line_for_this_chapter = $_[1];
@@ -777,7 +783,7 @@ sub read_file {
 		$nl = '@*** '.$titling_of_current_chapter;
 		
  { 
-#line 354 "Chapter 2/Reading Sections.w"
+#line 355 "Chapter 2/Reading Sections.w"
 	# The text, with a spare copy protected from the parser's meddling:
 	$line_text[$no_lines] = $nl;
 	$line_text_raw[$no_lines] = $nl;
@@ -791,7 +797,7 @@ sub read_file {
 	$section_extent[$section_number]++; # Not the same as the file line count!
 
  } 
-#line 335 "Chapter 2/Reading Sections.w"
+#line 336 "Chapter 2/Reading Sections.w"
 ;
 	}
 
@@ -802,7 +808,7 @@ sub read_file {
 		$nl =~ s/\s+$//; # remove trailing whitespace and the line break
 		
  { 
-#line 354 "Chapter 2/Reading Sections.w"
+#line 355 "Chapter 2/Reading Sections.w"
 	# The text, with a spare copy protected from the parser's meddling:
 	$line_text[$no_lines] = $nl;
 	$line_text_raw[$no_lines] = $nl;
@@ -816,7 +822,7 @@ sub read_file {
 	$section_extent[$section_number]++; # Not the same as the file line count!
 
  } 
-#line 343 "Chapter 2/Reading Sections.w"
+#line 344 "Chapter 2/Reading Sections.w"
 ;
 	}
 	close SECTIONF;
@@ -825,7 +831,7 @@ sub read_file {
 	}
 }
 
-#line 372 "Chapter 2/Reading Sections.w"
+#line 373 "Chapter 2/Reading Sections.w"
 sub line_is_in_heading_position {
 	my $i = $_[0];
 	if (($line_source_file_line[$i] == 0) ||
@@ -874,11 +880,11 @@ sub category_name {
 	elsif ($cat == $CONT_DEFINITION_LCAT) { return "CONT_DEFINITION"; }
 	else { return "? cat $cat"; }
 }
-#line 105 "Chapter 2/The Parser.w"
+#line 106 "Chapter 2/The Parser.w"
 sub parse_literate_source {
 	
  { 
-#line 115 "Chapter 2/The Parser.w"
+#line 116 "Chapter 2/The Parser.w"
 	my $i;
 	for ($i=0; $i<$no_lines; $i++) {
 		$line_is_comment[$i] = 0;
@@ -896,13 +902,13 @@ sub parse_literate_source {
 	}
 
  } 
-#line 106 "Chapter 2/The Parser.w"
+#line 107 "Chapter 2/The Parser.w"
 ;
 	determine_line_categories(); # Pass 1
 	establish_canonical_section_names(); # Pass 2
 	
  { 
-#line 134 "Chapter 2/The Parser.w"
+#line 135 "Chapter 2/The Parser.w"
 	my $i;
 	$no_paragraphs = 0;
 	for ($i=0; $i<$no_lines; $i++) {
@@ -912,11 +918,11 @@ sub parse_literate_source {
 	}
 
  } 
-#line 109 "Chapter 2/The Parser.w"
+#line 110 "Chapter 2/The Parser.w"
 ;
 }
 
-#line 147 "Chapter 2/The Parser.w"
+#line 148 "Chapter 2/The Parser.w"
 sub determine_line_categories {
 	$comment_mode = 1;
 	$grammar_mode = 0;
@@ -930,11 +936,13 @@ sub determine_line_categories {
 			language_set($tangle_target_language[$section_tangle_target[$line_sec[$i]]]);
 			
  { 
-#line 196 "Chapter 2/The Parser.w"
-	if ($l =~ m/^(\S+\/[a-z][a-z0-9]+)\:\s+(.*)\s*$/) {
-		$section_sigil[$line_sec[$i]] = $1;
+#line 197 "Chapter 2/The Parser.w"
+	if ($l =~ m/^(([A-Za-z0-9_]+::\s*)*)(\S+\/[a-z][a-z0-9]+)\:\s+(.*)\s*$/) {
+		$section_namespace[$line_sec[$i]] = $1;
+		$section_sigil[$line_sec[$i]] = $3;
 		$sigil_section{$1} = $line_sec[$i];
-		$l = '@* '.$2;
+		$l = '@* '.$4;
+		$section_namespace[$line_sec[$i]] =~ s/\s*//g;
 	} else {
 		if (($l =~ m/^Chapter /) || ($l =~ m/^Appendix /)) {
 			$l = '@** '.$l;
@@ -942,14 +950,14 @@ sub determine_line_categories {
 	}
 
  } 
-#line 158 "Chapter 2/The Parser.w"
+#line 159 "Chapter 2/The Parser.w"
 ;
 		}
 
 		if ($l =~ m/^\[\[\s*(.*?)\s*\]\]\s*$/)
 			
  { 
-#line 210 "Chapter 2/The Parser.w"
+#line 213 "Chapter 2/The Parser.w"
 	my $comm = $1;
 	$line_category[$i] = $COMMAND_LCAT;
 	if ($comm =~ m/^(.*?)\s*\:\s*(.*)\s*$/) {
@@ -969,7 +977,7 @@ sub determine_line_categories {
 	$line_is_comment[$i] = 1;
 
  } 
-#line 162 "Chapter 2/The Parser.w"
+#line 163 "Chapter 2/The Parser.w"
 ;
 
 		if (language_pagebreak_comment($l)) {
@@ -981,7 +989,7 @@ sub determine_line_categories {
 		if ($l =~ m/^\s*\@\<\s*(.*?)\s*\@\>\s*\=\s*(.*?)$/)
 			
  { 
-#line 232 "Chapter 2/The Parser.w"
+#line 235 "Chapter 2/The Parser.w"
 	$line_category[$i] = $MACRO_DEFINITION_LCAT;
 	$line_operand[$i] = $1; # The name of the macro
 	$line_operand_2[$i] = $2; # Any beginning of its content on the same line
@@ -991,7 +999,7 @@ sub determine_line_categories {
 	next CATEGORISATION;
 
  } 
-#line 171 "Chapter 2/The Parser.w"
+#line 172 "Chapter 2/The Parser.w"
 ;
 
 		if ($l =~ m/^\@(\S*)(.*?)$/) {
@@ -1000,11 +1008,11 @@ sub determine_line_categories {
 			my $succeeded = 0;
 			
  { 
-#line 255 "Chapter 2/The Parser.w"
+#line 258 "Chapter 2/The Parser.w"
 	if ($line_category[$i] == $MACRO_DEFINITION_LCAT) { $succeeded = 1; }
 	
  { 
-#line 272 "Chapter 2/The Parser.w"
+#line 275 "Chapter 2/The Parser.w"
 	if ($command eq "Purpose:") {
 		$line_category[$i] = $PURPOSE_LCAT;
 		$line_operand[$i] = $remainder;
@@ -1044,11 +1052,11 @@ sub determine_line_categories {
 	}
 
  } 
-#line 256 "Chapter 2/The Parser.w"
+#line 259 "Chapter 2/The Parser.w"
 ;
 	
  { 
-#line 314 "Chapter 2/The Parser.w"
+#line 317 "Chapter 2/The Parser.w"
 	if (($command eq "c") || ($command eq "x")) {
 		$line_category[$i] = $BEGIN_VERBATIM_LCAT;
 		if ($command eq "x") { $code_lcat_for_body = $TEXT_EXTRACT_LCAT; }
@@ -1059,11 +1067,11 @@ sub determine_line_categories {
 	}
 
  } 
-#line 257 "Chapter 2/The Parser.w"
+#line 260 "Chapter 2/The Parser.w"
 ;
 	
  { 
-#line 327 "Chapter 2/The Parser.w"
+#line 330 "Chapter 2/The Parser.w"
 	if ($command eq "d") {
 		$line_category[$i] = $BEGIN_DEFINITION_LCAT;
 		$code_lcat_for_body = $CONT_DEFINITION_LCAT;
@@ -1080,7 +1088,7 @@ sub determine_line_categories {
 	}
 
  } 
-#line 258 "Chapter 2/The Parser.w"
+#line 261 "Chapter 2/The Parser.w"
 ;
 	my $weight = -1;
 	if ($command eq "") { $weight = 0; }
@@ -1092,7 +1100,7 @@ sub determine_line_categories {
 	if ($command =~ m/\*(\d)/) { $weight = eval($1)-1; }
 	if ($weight >= 0) 
  { 
-#line 359 "Chapter 2/The Parser.w"
+#line 362 "Chapter 2/The Parser.w"
 	$grammar_mode = 0;
 	$comment_mode = 1;
 	$line_is_comment[$i] = 1;
@@ -1109,11 +1117,11 @@ sub determine_line_categories {
 	$succeeded = 1;
 
  } 
-#line 267 "Chapter 2/The Parser.w"
+#line 270 "Chapter 2/The Parser.w"
 ;
 
  } 
-#line 177 "Chapter 2/The Parser.w"
+#line 178 "Chapter 2/The Parser.w"
 ;
 			if ($succeeded == 0) {
 				inweb_error_at_program_line("don't understand @".$command." at:", $i);
@@ -1122,7 +1130,7 @@ sub determine_line_categories {
 
 		if ($grammar_mode == 1) 
  { 
-#line 422 "Chapter 2/The Parser.w"
+#line 425 "Chapter 2/The Parser.w"
 	$line_category[$i] = $GRAMMAR_BODY_LCAT;
 	$bnf_grammar[$bnf_grammar_lines] = $l;
 	$bnf_grammar_source[$bnf_grammar_lines] = $i;
@@ -1130,11 +1138,11 @@ sub determine_line_categories {
 	next CATEGORISATION;
 
  } 
-#line 183 "Chapter 2/The Parser.w"
+#line 184 "Chapter 2/The Parser.w"
 ;
 		if ($comment_mode == 1) 
  { 
-#line 380 "Chapter 2/The Parser.w"
+#line 383 "Chapter 2/The Parser.w"
 	if ($line_text[$i] =~ m/^\>\>\s+(.*?)\s*$/) {
 		$line_category[$i] = $SOURCE_DISPLAY_LCAT;
 		$line_operand[$i] = $1;
@@ -1146,11 +1154,11 @@ sub determine_line_categories {
 	}
 
  } 
-#line 184 "Chapter 2/The Parser.w"
+#line 185 "Chapter 2/The Parser.w"
 ;
 		if ($comment_mode == 0) 
  { 
-#line 395 "Chapter 2/The Parser.w"
+#line 398 "Chapter 2/The Parser.w"
 	if (($web_language == $C_LANGUAGE) || ($web_language == $C_FOR_INFORM_LANGUAGE)) {
 		scan_line_for_interface($i);
 	}
@@ -1173,7 +1181,7 @@ sub determine_line_categories {
 	if ($web_language == $C_FOR_INFORM_LANGUAGE)
 		
  { 
-#line 433 "Chapter 2/The Parser.w"
+#line 436 "Chapter 2/The Parser.w"
 	if ($l =~ m/the_debugging_aspects\[\] =/) {
 		$bnf_grammar_source[$bnf_grammar_lines] = $i;
 		$bnf_grammar[$bnf_grammar_lines++] = "<debugging-aspect>";
@@ -1188,16 +1196,16 @@ sub determine_line_categories {
 	}
 
  } 
-#line 415 "Chapter 2/The Parser.w"
+#line 418 "Chapter 2/The Parser.w"
 ;
 
  } 
-#line 185 "Chapter 2/The Parser.w"
+#line 186 "Chapter 2/The Parser.w"
 ;
 	}
 }
 
-#line 452 "Chapter 2/The Parser.w"
+#line 455 "Chapter 2/The Parser.w"
 sub establish_canonical_section_names {
 	my $par_number_counter = 0;
 	my $pnum = 0;
@@ -1210,11 +1218,11 @@ sub establish_canonical_section_names {
 
 	
  { 
-#line 523 "Chapter 2/The Parser.w"
+#line 526 "Chapter 2/The Parser.w"
 	$toc = ""; $toc_range_start = 0;
 
  } 
-#line 462 "Chapter 2/The Parser.w"
+#line 465 "Chapter 2/The Parser.w"
 ;
 	for ($i=0; $i<$no_lines; $i++) {
 		if (($line_category[$i] == $DEFINITIONS_LCAT) ||
@@ -1227,12 +1235,12 @@ sub establish_canonical_section_names {
 			$par_number_counter = 0; # Start counting paras from 1 again
 			
  { 
-#line 537 "Chapter 2/The Parser.w"
+#line 540 "Chapter 2/The Parser.w"
 	$toc = complete_toc_chunk($toc, $toc_range_start, $par_number_counter, $toc_name);
 	$toc_range_start = 0;
 
  } 
-#line 472 "Chapter 2/The Parser.w"
+#line 475 "Chapter 2/The Parser.w"
 ;
 		}
 		if ($line_category[$i] == $PARAGRAPH_START_LCAT) {
@@ -1241,27 +1249,27 @@ sub establish_canonical_section_names {
 				if ($line_sec[$i] > 0) # i.e., if this isn't the first section
 					
  { 
-#line 543 "Chapter 2/The Parser.w"
+#line 546 "Chapter 2/The Parser.w"
 	$toc = complete_toc_chunk($toc, $toc_range_start, $par_number_counter-1, $toc_name);
 	set_toc_for_section($line_sec[$i]-1, $toc);
 
  } 
-#line 478 "Chapter 2/The Parser.w"
+#line 481 "Chapter 2/The Parser.w"
 ;
 				
  { 
-#line 523 "Chapter 2/The Parser.w"
+#line 526 "Chapter 2/The Parser.w"
 	$toc = ""; $toc_range_start = 0;
 
  } 
-#line 479 "Chapter 2/The Parser.w"
+#line 482 "Chapter 2/The Parser.w"
 ;
 			}
 			$section_no_pars[$line_sec[$i]]++;
 			if ($line_operand[$i] == 1) # weight 1: a named |@p| or |@pp| paragraph
 				
  { 
-#line 528 "Chapter 2/The Parser.w"
+#line 531 "Chapter 2/The Parser.w"
 	$toc = complete_toc_chunk($toc, $toc_range_start, $par_number_counter-1, $toc_name);
 	$toc_range_start = $par_number_counter; $toc_name = $line_operand_2[$i];
 	if ($toc eq "") { $toc = $section_sigil[$line_sec[$i]]."."; }
@@ -1269,7 +1277,7 @@ sub establish_canonical_section_names {
 	$toc .= '$'.$ornament.'$'.$par_number_counter;
 
  } 
-#line 483 "Chapter 2/The Parser.w"
+#line 486 "Chapter 2/The Parser.w"
 ;
 		}
 
@@ -1278,7 +1286,7 @@ sub establish_canonical_section_names {
 		if ($line_category[$i] == $MACRO_DEFINITION_LCAT)
 			
  { 
-#line 501 "Chapter 2/The Parser.w"
+#line 504 "Chapter 2/The Parser.w"
 	my $j = $i;
 	my $name = $line_operand[$i];
 	$cweb_macros_paragraph_number{$name} = $par_number_counter;
@@ -1292,7 +1300,7 @@ sub establish_canonical_section_names {
 	$cweb_macros_end{$name} = $j;
 
  } 
-#line 489 "Chapter 2/The Parser.w"
+#line 492 "Chapter 2/The Parser.w"
 ;
 
 		$line_csn[$i] = $section_sigil[$line_sec[$i]].
@@ -1301,16 +1309,16 @@ sub establish_canonical_section_names {
 	}
 	
  { 
-#line 549 "Chapter 2/The Parser.w"
+#line 552 "Chapter 2/The Parser.w"
 	$toc = complete_toc_chunk($toc, $toc_range_start, $par_number_counter, $toc_name);
 	set_toc_for_section($line_sec[$no_lines-1], $toc);
 
  } 
-#line 495 "Chapter 2/The Parser.w"
+#line 498 "Chapter 2/The Parser.w"
 ;
 }
 
-#line 557 "Chapter 2/The Parser.w"
+#line 560 "Chapter 2/The Parser.w"
 sub complete_toc_chunk {
 	my $toc = $_[0];
 	my $toc_range_start = $_[1];
@@ -1323,7 +1331,7 @@ sub complete_toc_chunk {
 	return $toc;
 }
 
-#line 573 "Chapter 2/The Parser.w"
+#line 576 "Chapter 2/The Parser.w"
 sub set_toc_for_section {
 	my $sect_no = $_[0];
 	my $toc = $_[1];
@@ -1378,15 +1386,18 @@ sub scan_line_for_interface {
  { 
 #line 307 "Chapter 2/Identifiers.w"
 	if ($l =~ m/^\-\-\s+Defines \{-callv*\:(.*?)\}\s*$/) {
-		$section_I6_template_identifiers[$line_sec[$i]] .= $1.':';
+		$id = $1; $id =~ s/::/__/g;
+		$section_I6_template_identifiers[$line_sec[$i]] .= $id.':';
 		return 1;
 	}
 	if ($l =~ m/^\-\-\s+Defines \{-array\:(.*?)\}\s*$/) {
-		$section_I6_template_identifiers[$line_sec[$i]] .= 'compile_'.$1.'_array:';
+		$id = $1; $id =~ s/::/__/g;
+		$section_I6_template_identifiers[$line_sec[$i]] .= $id.'_array:';
 		return 1;
 	}
 	if ($l =~ m/^\-\-\s+Defines \{-routine\:(.*?)\}\s*$/) {
-		$section_I6_template_identifiers[$line_sec[$i]] .= 'compile_'.$1.'_routine:';
+		$id = $1; $id =~ s/::/__/g;
+		$section_I6_template_identifiers[$line_sec[$i]] .= $id.'_routine:';
 		return 1;
 	}
 
@@ -1462,7 +1473,7 @@ sub scan_line_for_interface {
 	return 0;
 }
 
-#line 334 "Chapter 2/Identifiers.w"
+#line 337 "Chapter 2/Identifiers.w"
 sub member_detected {
 	my $structure = $_[0];
 	my $return_type = $_[1];
@@ -1472,7 +1483,7 @@ sub member_detected {
 
 	
  { 
-#line 359 "Chapter 2/Identifiers.w"
+#line 362 "Chapter 2/Identifiers.w"
 	if ($member_name =~ m/^\s*(.*?)\,\s*(.*?)\s*$/) {
 		my $left_chunk = $1;
 		my $right_chunk = $2;
@@ -1484,7 +1495,7 @@ sub member_detected {
 	}
 
  } 
-#line 341 "Chapter 2/Identifiers.w"
+#line 344 "Chapter 2/Identifiers.w"
 ;
 
 	$member_name =~ s/\[.*$//;
@@ -1500,38 +1511,38 @@ sub member_detected {
 	}
 }
 
-#line 377 "Chapter 2/Identifiers.w"
+#line 380 "Chapter 2/Identifiers.w"
 sub parse_C_like_sections {
 	my $i;
 	for ($i=0; $i<$no_sections; $i++) { $section_errors[$no_sections] = ""; }
 
 	
  { 
-#line 390 "Chapter 2/Identifiers.w"
+#line 393 "Chapter 2/Identifiers.w"
 	find_function_definitions();
 	scan_identifiers_in_source();
 	find_actual_section_usage();
 	check_interface_declarations_for_uses_and_used_by();
 
  } 
-#line 381 "Chapter 2/Identifiers.w"
+#line 384 "Chapter 2/Identifiers.w"
 ;
 	
  { 
-#line 398 "Chapter 2/Identifiers.w"
+#line 401 "Chapter 2/Identifiers.w"
 	find_structure_ownership();
 	establish_structure_usage();
 	check_interface_declarations_for_structures();
 	if ($web_language == $C_FOR_INFORM_LANGUAGE) { check_uniqueness_of_structure_members(); }
 
  } 
-#line 382 "Chapter 2/Identifiers.w"
+#line 385 "Chapter 2/Identifiers.w"
 ;
 
 	report_any_interface_errors_found();
 }
 
-#line 407 "Chapter 2/Identifiers.w"
+#line 410 "Chapter 2/Identifiers.w"
 sub find_function_definitions {
 	my $i;
 	for ($i=0; $i<$no_lines; $i++) {
@@ -1540,7 +1551,7 @@ sub find_function_definitions {
 			|| ($line_category[$i] == $CONT_DEFINITION_LCAT))
 			
  { 
-#line 423 "Chapter 2/Identifiers.w"
+#line 426 "Chapter 2/Identifiers.w"
 	my $look_for_identifiers = $line_text[$i];
 	my $stars_in_comment = "";
 	my $type_qualifiers = "";
@@ -1551,16 +1562,26 @@ sub find_function_definitions {
 		$type_qualifiers = $1; $look_for_identifiers = $2;
 	}
 	if ($look_for_identifiers =~
-		m/^\s*([A-Za-z_][A-Za-z0-9_]*)\s+(\**)([A-Za-z_][A-Za-z0-9_]*)\s*\((.*)$/) {
+		m/^\s*([A-Za-z_][A-Za-z0-9_]*)\s+(\**)(([A-Za-z_][A-Za-z0-9_]*|\:\:)+)\s*\((.*)$/) {
 		my $return_type = $1;
 		my $return_type_pointer_stars = $2;
 		my $fname = $3;
-		my $arguments = $4;
+		my $arguments = $5;
+		if ((not(exists $blacklisted_functions{$fname})) &&
+			($bibliographic_data{"Namespaces"} eq "On")) {
+			if ($stars_in_comment ne "") {
+				inweb_error("with Namespaces on, $fname should not be marked /*...*/");
+			}
+			if (($fname =~ m/::/) && ($stars_in_comment eq "")) {
+				$stars_in_comment = "***";
+			}
+		}
+		$fname =~ s/::/__/g;
 		if ((exists $base_types{$return_type}) &&
 			(not(exists $blacklisted_functions{$fname}))) {
 			
  { 
-#line 448 "Chapter 2/Identifiers.w"
+#line 461 "Chapter 2/Identifiers.w"
 	if ($return_type_pointer_stars ne "") {
 		$return_type .= " ".$return_type_pointer_stars;
 	}
@@ -1569,11 +1590,11 @@ sub find_function_definitions {
 	}
 
  } 
-#line 440 "Chapter 2/Identifiers.w"
+#line 453 "Chapter 2/Identifiers.w"
 ;
 			
  { 
-#line 461 "Chapter 2/Identifiers.w"
+#line 474 "Chapter 2/Identifiers.w"
 	$functions_line{$fname} = $i;
 	$functions_return_type{$fname} = $return_type;
 	$functions_declared_scope{$fname} = $stars_in_comment;
@@ -1591,18 +1612,18 @@ sub find_function_definitions {
 	}
 
  } 
-#line 441 "Chapter 2/Identifiers.w"
+#line 454 "Chapter 2/Identifiers.w"
 ;
 		}
 	}
 
  } 
-#line 413 "Chapter 2/Identifiers.w"
+#line 416 "Chapter 2/Identifiers.w"
 ;
 	}
 }
 
-#line 483 "Chapter 2/Identifiers.w"
+#line 496 "Chapter 2/Identifiers.w"
 sub scan_identifiers_in_source {
 	my $i;
 	for ($i=0; $i<$no_lines; $i++) {
@@ -1617,17 +1638,17 @@ sub scan_identifiers_in_source {
 
 			
  { 
-#line 519 "Chapter 2/Identifiers.w"
+#line 533 "Chapter 2/Identifiers.w"
 	$look_for_identifiers =~ s/\/\*(.*?)\*\///g;
 
  } 
-#line 495 "Chapter 2/Identifiers.w"
+#line 508 "Chapter 2/Identifiers.w"
 ;
 
 			if ($web_language == $C_FOR_INFORM_LANGUAGE)
 				
  { 
-#line 585 "Chapter 2/Identifiers.w"
+#line 599 "Chapter 2/Identifiers.w"
 	if ($look_for_identifiers =~ m/CREATE\((.*?)\)/) {
 		if ($1 ne "type_name") {
 			if ((exists ($structure_CREATE_in_section{$1})) &&
@@ -1638,55 +1659,57 @@ sub scan_identifiers_in_source {
 			$structure_CREATE_in_section{$1} = $section_leafname[$line_sec[$i]];
 		}
 	}
-	while ($look_for_identifiers =~ m/^(.*?)ALLOW_([A-Z]+)\(([A-Za-z_][A-Za-z0-9_]*)\)(.*)$/) {
+	while ($look_for_identifiers =~ m/^(.*?)ALLOW_([A-Z]+)\(([A-Za-z_0-9:_]*)\)(.*)$/) {
 		$identifier = $3;
 		$metalanguage_type = $2;
 		$look_for_identifiers = $1.$4;
+		$identifier =~ s/::/__/g;
 		if (($metalanguage_type eq "CALL") ||
 			($metalanguage_type eq "CALLV")) {
 			$dot_i6_identifiers{$identifier} = 1;
 		}
 		if ($metalanguage_type eq "ARRAY") {
-			$dot_i6_identifiers{"compile_".$identifier."_array"} = 1;
+			$dot_i6_identifiers{$identifier."_array"} = 1;
 		}
 		if ($metalanguage_type eq "ROUTINE") {
-			$dot_i6_identifiers{"compile_".$identifier."_routine"} = 1;
+			$dot_i6_identifiers{$identifier."_routine"} = 1;
 		}
 	}
 
  } 
-#line 498 "Chapter 2/Identifiers.w"
+#line 511 "Chapter 2/Identifiers.w"
 ;
 
 			
  { 
-#line 524 "Chapter 2/Identifiers.w"
+#line 538 "Chapter 2/Identifiers.w"
 	while ($look_for_identifiers =~ m/^(.*?)\.([A-Za-z_][A-Za-z0-9_]*)(.*?)$/) {
 		$look_for_identifiers = $1.$3;
 		note_usage_of_structure_member($2, $i);
 	}
 
  } 
-#line 500 "Chapter 2/Identifiers.w"
+#line 513 "Chapter 2/Identifiers.w"
 ;
 			
  { 
-#line 532 "Chapter 2/Identifiers.w"
+#line 546 "Chapter 2/Identifiers.w"
 	while ($look_for_identifiers =~ m/^(.*?)\-\>([A-Za-z_][A-Za-z0-9_]*)(.*?)$/) {
 		$look_for_identifiers = $1.$3;
 		note_usage_of_structure_member($2, $i);
 	}
 
  } 
-#line 501 "Chapter 2/Identifiers.w"
+#line 514 "Chapter 2/Identifiers.w"
 ;
 
-			while ($look_for_identifiers =~ m/^.*?([A-Za-z_][A-Za-z0-9_]*)(.*)$/) {
+			while ($look_for_identifiers =~ m/^.*?([A-Za-z_]([A-Za-z0-9_]|::)*)(.*?)$/) {
 				$identifier = $1;
-				$look_for_identifiers = $2;
+				$look_for_identifiers = $3;
+				$identifier =~ s/::/__/g;
 				
  { 
-#line 542 "Chapter 2/Identifiers.w"
+#line 556 "Chapter 2/Identifiers.w"
 	if (exists $functions_line{$identifier}) {
 		if ($debug_identifier_detection == 1) { print STDERR "ID: ", $identifier, "\n"; }
 		if ($identifier eq "main") { next; } # which of course isn't called in the web
@@ -1710,14 +1733,14 @@ sub scan_identifiers_in_source {
 	}
 
  } 
-#line 506 "Chapter 2/Identifiers.w"
+#line 520 "Chapter 2/Identifiers.w"
 ;
 			}
 		}
 	}
 }
 
-#line 615 "Chapter 2/Identifiers.w"
+#line 630 "Chapter 2/Identifiers.w"
 sub note_usage_of_structure_member {
 	my $member_name = $_[0];
 	my $line_number = $_[1];
@@ -1726,14 +1749,14 @@ sub note_usage_of_structure_member {
 	$member_usage_section_list{$member_name} .= $found_in;
 }
 
-#line 630 "Chapter 2/Identifiers.w"
+#line 645 "Chapter 2/Identifiers.w"
 sub find_actual_section_usage {
 	my $sn;
 	for ($sn=0; $sn<$no_sections; $sn++) {
 		my %usages = ();
 		
  { 
-#line 721 "Chapter 2/Identifiers.w"
+#line 736 "Chapter 2/Identifiers.w"
 	my $a = $section_I6_template_identifiers[$sn];
 	while ($a =~ m/^(.*?)\:(.*)$/) {
 		$a = $2;
@@ -1746,13 +1769,13 @@ sub find_actual_section_usage {
 	}
 
  } 
-#line 634 "Chapter 2/Identifiers.w"
+#line 649 "Chapter 2/Identifiers.w"
 ;
 		foreach $f (sort keys %functions_line) {
 			if ($section_leafname[$line_sec[$functions_line{$f}]] eq $section_leafname[$sn]) {
 				
  { 
-#line 657 "Chapter 2/Identifiers.w"
+#line 672 "Chapter 2/Identifiers.w"
 	my $owning_chapter = $section_chap[$line_sec[$functions_line{$f}]];
 	my $cp = $functions_usage_section_list{$f};
 	$cp =~ s/\:$owning_chapter\-//g;
@@ -1773,14 +1796,14 @@ sub find_actual_section_usage {
 	}
 
  } 
-#line 637 "Chapter 2/Identifiers.w"
+#line 652 "Chapter 2/Identifiers.w"
 ;
 			}
 		}
 		if ($section_declared_a_service[$sn] == 1) { %usages = (); }
 		
  { 
-#line 682 "Chapter 2/Identifiers.w"
+#line 697 "Chapter 2/Identifiers.w"
 	$section_correct_used_by_block[$sn] = "";
 	foreach $u (sort keys %usages) {
 		$section_correct_used_by_block[$sn] .= $u;
@@ -1788,14 +1811,14 @@ sub find_actual_section_usage {
 	$section_correct_used_by_block[$sn] .= ":";
 
  } 
-#line 641 "Chapter 2/Identifiers.w"
+#line 656 "Chapter 2/Identifiers.w"
 ;
 	}
 
 	for ($sn=0; $sn<$no_sections; $sn++)
 		
  { 
-#line 696 "Chapter 2/Identifiers.w"
+#line 711 "Chapter 2/Identifiers.w"
 	$section_correct_uses_block[$sn] = "";
 	my $j;
 	for ($j=0; $j<$no_sections; $j++) {
@@ -1808,13 +1831,13 @@ sub find_actual_section_usage {
 	}
 
  } 
-#line 645 "Chapter 2/Identifiers.w"
+#line 660 "Chapter 2/Identifiers.w"
 ;
 
 	for ($sn=0; $sn<$no_sections; $sn++)
 		
  { 
-#line 710 "Chapter 2/Identifiers.w"
+#line 725 "Chapter 2/Identifiers.w"
 	$section_correct_used_by_block[$sn] =~ s/\:$//;
 	$section_correct_used_by_block[$sn] =
 		section_list_sort($section_correct_used_by_block[$sn]);
@@ -1822,11 +1845,11 @@ sub find_actual_section_usage {
 		section_list_sort($section_correct_uses_block[$sn]);
 
  } 
-#line 648 "Chapter 2/Identifiers.w"
+#line 663 "Chapter 2/Identifiers.w"
 ;
 }
 
-#line 748 "Chapter 2/Identifiers.w"
+#line 763 "Chapter 2/Identifiers.w"
 sub find_structure_ownership {
 	my $struc;
 	foreach $struc (keys %structures) {
@@ -1842,12 +1865,12 @@ sub find_structure_ownership {
 	}
 }
 
-#line 767 "Chapter 2/Identifiers.w"
+#line 782 "Chapter 2/Identifiers.w"
 sub establish_structure_usage {
 	my $member;
 	
  { 
-#line 796 "Chapter 2/Identifiers.w"
+#line 811 "Chapter 2/Identifiers.w"
 	if ($analyse_structure_setting ne "") {
 		if (not(exists($structures{$analyse_structure_setting}))) {
 			inweb_fatal_error("no such structure: ".$analyse_structure_setting);
@@ -1858,7 +1881,7 @@ sub establish_structure_usage {
 	}
 
  } 
-#line 769 "Chapter 2/Identifiers.w"
+#line 784 "Chapter 2/Identifiers.w"
 ;
 	foreach $member (sort keys %member_structures) {
 		if (exists $member_usage_section_list{$member}) {
@@ -1871,7 +1894,7 @@ sub establish_structure_usage {
 					my $susl_chunk = "-".$observed_in.":";
 					
  { 
-#line 809 "Chapter 2/Identifiers.w"
+#line 824 "Chapter 2/Identifiers.w"
 	if (($analyse_structure_setting ne "") &&
 		($analyse_structure_setting eq $owner)) {
 		if ($observed_in ne $structure_owner{$owner}) {
@@ -1882,7 +1905,7 @@ sub establish_structure_usage {
 	}
 
  } 
-#line 779 "Chapter 2/Identifiers.w"
+#line 794 "Chapter 2/Identifiers.w"
 ;
 					if (not ($structure_usage_section_list{$owner} =~ m/$susl_chunk/)) {
 						$structure_usage_section_list{$owner} .= $susl_chunk;
@@ -1895,7 +1918,7 @@ sub establish_structure_usage {
 	}
 	
  { 
-#line 822 "Chapter 2/Identifiers.w"
+#line 837 "Chapter 2/Identifiers.w"
 	my $sec_number;
 	for ($sec_number=0; $sec_number<$no_sections; $sec_number++) {
 		my $declaration = "";
@@ -1905,7 +1928,7 @@ sub establish_structure_usage {
 				my $structure_billing = "";
 				
  { 
-#line 842 "Chapter 2/Identifiers.w"
+#line 857 "Chapter 2/Identifiers.w"
 	my %usage_list = ();
 	my %shorter_usage_list = ();
 	my $structure_used_externally = 0;
@@ -1918,7 +1941,7 @@ sub establish_structure_usage {
 
 	
  { 
-#line 868 "Chapter 2/Identifiers.w"
+#line 883 "Chapter 2/Identifiers.w"
 	my $susl = $structure_usage_section_list{$struc};
 	while ($susl =~ m/^\-(.*?)\:(.*)$/) {
 		my $client_section = $1; $susl = $2;
@@ -1935,7 +1958,7 @@ sub establish_structure_usage {
 	}
 
  } 
-#line 852 "Chapter 2/Identifiers.w"
+#line 867 "Chapter 2/Identifiers.w"
 ;
 	if ($structure_used_externally == 0) {
 		$structure_billing = "-- Owns struct $struc (private$deviant_ownership_note)\n";
@@ -1950,7 +1973,7 @@ sub establish_structure_usage {
 	}
 
  } 
-#line 829 "Chapter 2/Identifiers.w"
+#line 844 "Chapter 2/Identifiers.w"
 ;
 				$declaration .= $structure_billing;
 			}
@@ -1959,11 +1982,11 @@ sub establish_structure_usage {
 	}
 
  } 
-#line 789 "Chapter 2/Identifiers.w"
+#line 804 "Chapter 2/Identifiers.w"
 ;
 }
 
-#line 888 "Chapter 2/Identifiers.w"
+#line 903 "Chapter 2/Identifiers.w"
 sub section_list_sort {
 	my $list = $_[0];
 	my %lines_unpacked = ();
@@ -1980,7 +2003,7 @@ sub section_list_sort {
 	return $account;
 }
 
-#line 908 "Chapter 2/Identifiers.w"
+#line 923 "Chapter 2/Identifiers.w"
 sub section_list_unpack {
 	my $prefix = $_[0];
 	my $list = $_[1];
@@ -1998,7 +2021,7 @@ sub section_list_unpack {
 	return $account;
 }
 
-#line 928 "Chapter 2/Identifiers.w"
+#line 943 "Chapter 2/Identifiers.w"
 sub check_interface_declarations_for_uses_and_used_by {
 	my $sn;
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
@@ -2025,7 +2048,7 @@ sub check_interface_declarations_for_uses_and_used_by {
 	}
 }
 
-#line 957 "Chapter 2/Identifiers.w"
+#line 972 "Chapter 2/Identifiers.w"
 sub check_interface_declarations_for_structures {
 	my $sn;
 	for ($sn=0; $sn<$no_sections; $sn++) {
@@ -2040,31 +2063,68 @@ sub check_interface_declarations_for_structures {
 	}
 }
 
-#line 975 "Chapter 2/Identifiers.w"
+#line 990 "Chapter 2/Identifiers.w"
 sub check_function_declared_correct_scope {
 	my $sn = $_[0];
 	my $f = $_[1];
 	my $actual_scope = $_[2];
+	if ($bibliographic_data{"Namespaces"} eq "On") {
+		if ($f ne "main") {
+			if (($actual_scope ne "") && ($functions_declared_scope{$f} eq "")) {
+				add_error_to_section($sn,
+					"Begin externally called, function $f should belong to a :: namespace");
+				return;
+			}
+			if (($actual_scope eq "") && ($functions_declared_scope{$f} ne "")) {
+				add_error_to_section($sn,
+					"Begin internally called, function $f must not belong to a :: namespace");
+				return;
+			}
+		}
+		$functions_declared_scope{$f} = $actual_scope;
+		return;
+	}
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
 	if ($actual_scope ne $functions_declared_scope{$f}) {
 		add_error_to_section($sn,
 			"Bad scope: $f should be /".$actual_scope."/ not /".
 				$functions_declared_scope{$f}."/");
 	}
+	if ($f =~ m/^([A-Z].*__)(.*?)$/) {
+		my $declared = $1;
+		my $within = $section_namespace[$sn];
+		$within =~ s/::/__/g;
+		if ($within eq "") {
+			$fcc = restore_quadpoint($f);
+			add_error_to_section($sn,
+				"Bad scope: $fcc declared outside of any namespace");
+		} elsif (not ($declared =~ m/^$within/)) {
+			$fcc = restore_quadpoint($f); $wcc = restore_quadpoint($within);
+			add_error_to_section($sn,
+				"Bad scope: $fcc not allowed inside the section's namespace $wcc");
+		}
+	}
 }
 
-#line 991 "Chapter 2/Identifiers.w"
+sub restore_quadpoint {
+	my $f = $_[0];
+	$f =~ s/__/::/g;
+	return $f;
+}
+
+#line 1042 "Chapter 2/Identifiers.w"
 sub check_section_declares_template_I6 {
 	my $sn = $_[0];
 	my $f = $_[1];
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
+	# $f =~ s/__/::/g;
 	if (not ($section_I6_template_identifiers[$sn] =~ m/$f/)) {
 		add_error_to_section($sn,
 			"Bad scope: $f isn't declared:\n-- Defines {-callv:".$f."}\n");
 	}
 }
 
-#line 1007 "Chapter 2/Identifiers.w"
+#line 1059 "Chapter 2/Identifiers.w"
 sub member_declared_but_not_used {
 	my $member = $_[0];
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
@@ -2073,7 +2133,7 @@ sub member_declared_but_not_used {
 		$member."' declared but not used");
 }
 
-#line 1021 "Chapter 2/Identifiers.w"
+#line 1073 "Chapter 2/Identifiers.w"
 sub check_uniqueness_of_structure_members {
 	my $member;
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
@@ -2088,7 +2148,7 @@ sub check_uniqueness_of_structure_members {
 	}
 }
 
-#line 1039 "Chapter 2/Identifiers.w"
+#line 1091 "Chapter 2/Identifiers.w"
 sub add_error_to_section {
 	my $section_number = $_[0];
 	my $error_text = $_[1];
@@ -2096,7 +2156,7 @@ sub add_error_to_section {
 	$section_errors[$section_number] .= $error_text."\n";
 }
 
-#line 1049 "Chapter 2/Identifiers.w"
+#line 1101 "Chapter 2/Identifiers.w"
 sub report_any_interface_errors_found {
 	my $infractions = 0;
 	my $sn;
@@ -2291,6 +2351,7 @@ sub compile_chapter_graph {
 #line 210 "Chapter 3/The Analyser.w"
 sub catalogue_the_sections {
 	my $sigil = $_[0];
+	my $functions_too = $_[1];
 	my $only = -1;
 	my $cn = -1;
 
@@ -2302,18 +2363,18 @@ sub catalogue_the_sections {
 		if (($only != -1) && ($only != $section_chap[$i])) { next; }
 		
  { 
-#line 230 "Chapter 3/The Analyser.w"
+#line 232 "Chapter 3/The Analyser.w"
 	if ($cn != $section_chap[$i]) {
 		if ($cn >= 0) { print sprintf("      %-9s  %-50s  \n", "--------", "--------"); }
 		$cn = $section_chap[$i];
 	}
 
  } 
-#line 221 "Chapter 3/The Analyser.w"
+#line 222 "Chapter 3/The Analyser.w"
 ;
 		
  { 
-#line 238 "Chapter 3/The Analyser.w"
+#line 240 "Chapter 3/The Analyser.w"
 	if ($cn != 0) { $main_title = "Chapter ".$cn."/"; }
 	else { $main_title = ""; }
 	$main_title .= $section_leafname[$i];
@@ -2321,27 +2382,43 @@ sub catalogue_the_sections {
 	print sprintf("%4d  %-9s  %-50s  ",
 		$section_extent[$i], $section_sigil[$i], $main_title);
 
-	if ($section_declared_a_service[$i] == 1) {
-		print "SERVICE ";
-	}
+	if ($functions_too == 1) {
+		print $section_namespace[$i];
+	} else {
+		print $section_namespace[$i], " ";
 
-	if ($functions_usage_count{"compare_word"} > 0) {
-		print sprintf("CW:%3d   ", $functions_usage_count{"compare_word"});
-	}
+		if ($functions_usage_count{"compare_word"} > 0) {
+			print sprintf("CW:%3d   ", $functions_usage_count{"compare_word"});
+		}
 
-	foreach $struc (sort keys %structures) {
-		if ($structure_owner{$struc} eq $section_leafname[$i]) {
-			print $struc, "  ";
+		foreach $struc (sort keys %structures) {
+			if ($structure_owner{$struc} eq $section_leafname[$i]) {
+				print $struc, "  ";
+			}
 		}
 	}
 	print "\n";
 
  } 
-#line 222 "Chapter 3/The Analyser.w"
+#line 223 "Chapter 3/The Analyser.w"
 ;
-		
+		if ($functions_too == 1) 
  { 
-#line 263 "Chapter 3/The Analyser.w"
+#line 279 "Chapter 3/The Analyser.w"
+	foreach $f (sort keys %functions_line) {
+		if ($f =~ m/__/) {
+			if ($section_leafname[$line_sec[$functions_line{$f}]] eq $section_leafname[$i]) {
+				$f =~ s/__/::/g;
+				print sprintf("      %-9s  %-50s -> \n", "", $f);
+			}
+		}
+	}
+
+ } 
+#line 225 "Chapter 3/The Analyser.w"
+		else 
+ { 
+#line 267 "Chapter 3/The Analyser.w"
 	foreach $struc (sort keys %structures) {
 		if ($structure_owner{$struc} eq $section_leafname[$i]) {
 			if ($structure_ownership_summary{$struc} ne "") {
@@ -2352,12 +2429,12 @@ sub catalogue_the_sections {
 	}
 
  } 
-#line 223 "Chapter 3/The Analyser.w"
+#line 225 "Chapter 3/The Analyser.w"
 ;
 	}
 }
 
-#line 279 "Chapter 3/The Analyser.w"
+#line 295 "Chapter 3/The Analyser.w"
 sub catalogue_void_pointers {
 	my $sigil = $_[0];
 	if ($sigil ne "0") { inweb_fatal_error("can't catalogue voids for target $sigil"); }
@@ -3182,7 +3259,7 @@ sub weave_source {
 	if ($line_category[$i] == $BAR_LCAT) {
 		
  { 
-#line 607 "Chapter 3/The Weaver.w"
+#line 621 "Chapter 3/The Weaver.w"
 	if ($within_TeX_beginlines > 0) {
 		print WEAVEOUT '\endlines', "\n"; $within_TeX_beginlines = 0;
 	}
@@ -3210,11 +3287,11 @@ sub weave_source {
 		# The crucial junction point between modes...
 		
  { 
-#line 492 "Chapter 3/The Weaver.w"
+#line 506 "Chapter 3/The Weaver.w"
 	if ($line_category[$i] == $PARAGRAPH_START_LCAT) {
 		
  { 
-#line 607 "Chapter 3/The Weaver.w"
+#line 621 "Chapter 3/The Weaver.w"
 	if ($within_TeX_beginlines > 0) {
 		print WEAVEOUT '\endlines', "\n"; $within_TeX_beginlines = 0;
 	}
@@ -3222,17 +3299,17 @@ sub weave_source {
 		$current_macro_definition);
 
  } 
-#line 493 "Chapter 3/The Weaver.w"
+#line 507 "Chapter 3/The Weaver.w"
 ;
 		
  { 
-#line 542 "Chapter 3/The Weaver.w"
+#line 556 "Chapter 3/The Weaver.w"
 	if ($line_starts_paragraph_on_new_page[$i]) {
 		print WEAVEOUT "\\vfill\\eject\n";
 	}
 
  } 
-#line 494 "Chapter 3/The Weaver.w"
+#line 508 "Chapter 3/The Weaver.w"
 ;
 
 		my $weight = $line_operand[$i];
@@ -3245,7 +3322,7 @@ sub weave_source {
 		my $mark = "";
 		
  { 
-#line 559 "Chapter 3/The Weaver.w"
+#line 573 "Chapter 3/The Weaver.w"
 	if ($weight == 3) { $chaptermark = $para_title; $sectionmark = ""; }
 	if ($weight == 2) {
 		$sectionmark = $para_title;
@@ -3261,7 +3338,7 @@ sub weave_source {
 	}
 
  } 
-#line 504 "Chapter 3/The Weaver.w"
+#line 518 "Chapter 3/The Weaver.w"
 ;
 
 		$functions_in_par = "";
@@ -3271,7 +3348,7 @@ sub weave_source {
 		my $TeX_macro = "";
 		
  { 
-#line 589 "Chapter 3/The Weaver.w"
+#line 603 "Chapter 3/The Weaver.w"
 	my $j;
 	$TeX_macro = "weavesection";
 	for ($j=0; $j<$weight; $j++) { $TeX_macro = $TeX_macro."s"; }
@@ -3287,7 +3364,7 @@ sub weave_source {
 	}
 
  } 
-#line 511 "Chapter 3/The Weaver.w"
+#line 525 "Chapter 3/The Weaver.w"
 ;
 		print WEAVEOUT "\\".$TeX_macro, "{", $parnum, "}{", $para_title, "}{",
 			$mark, "}{", $ornament, "}{", $section_sigil[$secnum], "}%\n";
@@ -3429,8 +3506,9 @@ sub weave_source {
 	
  { 
 #line 373 "Chapter 3/The Weaver.w"
-	while ($tab_stops_of_indentation > 0) {
-		print WEAVEOUT "\\qquad"; $tab_stops_of_indentation--;
+	my $i;
+	for ($i=0; $i<$tab_stops_of_indentation; $i++) {
+		print WEAVEOUT "\\qquad";
 	}
 
  } 
@@ -3440,7 +3518,7 @@ sub weave_source {
 	my $concluding_comment = "";
 	
  { 
-#line 382 "Chapter 3/The Weaver.w"
+#line 383 "Chapter 3/The Weaver.w"
 	if (line_ends_with_comment($matter)) {
 		if ($part_before_comment eq "") {
 			$matter = $part_before_comment; my $commentary = $part_within_comment;
@@ -3460,7 +3538,7 @@ sub weave_source {
 
 	
  { 
-#line 401 "Chapter 3/The Weaver.w"
+#line 402 "Chapter 3/The Weaver.w"
 	$matter =~ s/\|/\|\\\|\|/g;
 	$matter = '|'.$matter.'|';
 
@@ -3469,7 +3547,7 @@ sub weave_source {
 ;
 	
  { 
-#line 408 "Chapter 3/The Weaver.w"
+#line 409 "Chapter 3/The Weaver.w"
 	$matter =~ s/^\|\@d /{\\ninebf define}| /;
 
  } 
@@ -3478,7 +3556,7 @@ sub weave_source {
 
 	
  { 
-#line 415 "Chapter 3/The Weaver.w"
+#line 416 "Chapter 3/The Weaver.w"
 	if ($matter =~ m/^\|\s*typedef\s+struct\s+(.*?)\s+\{/) {
 		$structs_in_par .= $1.",";
 	}
@@ -3491,6 +3569,19 @@ sub weave_source {
 			'('.$frest;
 		$functions_in_par .= $fname.",";
 	}
+	if (($tab_stops_of_indentation == 0) &&
+		($matter =~ m/^\|(\S.*?\**)(\S+?)\((.*)$/)) {
+		my $ftype = $1;
+		my $fname = $2;
+		my $frest = $3;
+		my $unamended = $fname;
+		$fname =~ s/::/__/g;
+		if (exists($functions_line{$fname})) {
+			$matter = '|'.$ftype.'|\pdfliteral direct{0 1 1 0 k}|'.$unamended.
+				'|\special{PDF:0 g}|'.'('.$frest;
+			$functions_in_par .= $fname.",";
+		}
+	}
 
  } 
 #line 325 "Chapter 3/The Weaver.w"
@@ -3498,7 +3589,7 @@ sub weave_source {
 
 	
  { 
-#line 433 "Chapter 3/The Weaver.w"
+#line 447 "Chapter 3/The Weaver.w"
 	while ($matter =~ m/^(.*?)\@\<(.*?)\@\>(.*)$/) {
 		my $left = $1;
 		my $right = $3;
@@ -3509,17 +3600,17 @@ sub weave_source {
 		my $tweaked = '$\langle${\xreffont'.$xrefcol.$href.'}'.$blackcol.'$\rangle$';
 		if ($right =~ m/^\s*\=(.*)$/) 
  { 
-#line 472 "Chapter 3/The Weaver.w"
+#line 486 "Chapter 3/The Weaver.w"
 	$right = $1;
 	$tweaked = '\pdfdest num '.link_for_par_name($angled_sname).' fit '.$tweaked;
 	$tweaked = $tweaked.' $\equiv$ ';
 	$current_macro_definition = $angled_sname;
 
  } 
-#line 442 "Chapter 3/The Weaver.w"
+#line 456 "Chapter 3/The Weaver.w"
 		else 
  { 
-#line 480 "Chapter 3/The Weaver.w"
+#line 494 "Chapter 3/The Weaver.w"
 	my $new_p = $line_paragraph_number[$i];
 	if (not($angled_paragraph_usage{$angled_sname} =~ m/$new_p,$/)) {
 		$angled_paragraph_usage{$angled_sname} .= $new_p.',';
@@ -3530,7 +3621,7 @@ sub weave_source {
 		$tweaked.'\pdfendlink';
 
  } 
-#line 442 "Chapter 3/The Weaver.w"
+#line 456 "Chapter 3/The Weaver.w"
 ;
 		$matter = $left.'|'.$tweaked.'|'.$right;
 	}
@@ -3540,7 +3631,7 @@ sub weave_source {
 ;
 	
  { 
-#line 450 "Chapter 3/The Weaver.w"
+#line 464 "Chapter 3/The Weaver.w"
 	my $count = 0;
 	my $code_matter = 0;
 	my $done = "";
@@ -3573,7 +3664,7 @@ sub weave_source {
 	}
 	
  { 
-#line 607 "Chapter 3/The Weaver.w"
+#line 621 "Chapter 3/The Weaver.w"
 	if ($within_TeX_beginlines > 0) {
 		print WEAVEOUT '\endlines', "\n"; $within_TeX_beginlines = 0;
 	}
@@ -3588,7 +3679,7 @@ sub weave_source {
 	close(WEAVEOUT);
 }
 
-#line 617 "Chapter 3/The Weaver.w"
+#line 631 "Chapter 3/The Weaver.w"
 sub show_endnotes_on_previous_paragraph {
 	my $functions_in_par = $_[0];
 	my $structs_in_par = $_[1];
@@ -3597,7 +3688,7 @@ sub show_endnotes_on_previous_paragraph {
 	if ($current_macro_definition ne "")
 		
  { 
-#line 661 "Chapter 3/The Weaver.w"
+#line 675 "Chapter 3/The Weaver.w"
 	my $used_in = $angled_paragraph_usage{$current_macro_definition};
 	$used_in =~ s/\,$//;
 	print WEAVEOUT "\\penalty1000\n";
@@ -3605,7 +3696,7 @@ sub show_endnotes_on_previous_paragraph {
 		$used_in, ".}\\smallskip\n";
 
  } 
-#line 624 "Chapter 3/The Weaver.w"
+#line 638 "Chapter 3/The Weaver.w"
 	else {
 		my %fnames_done = ();
 		while ($functions_in_par =~ m/^(\S+?)\,(.*)$/) {
@@ -3615,14 +3706,14 @@ sub show_endnotes_on_previous_paragraph {
 			if ($fname eq "isdigit") { next; }
 			
  { 
-#line 670 "Chapter 3/The Weaver.w"
+#line 684 "Chapter 3/The Weaver.w"
 	my $scope = $functions_declared_scope{$fname};
 
 	my @usages;
 	my $no_sections_using = 0;
 	
  { 
-#line 708 "Chapter 3/The Weaver.w"
+#line 723 "Chapter 3/The Weaver.w"
 	my $x;
 	for ($x=0; $x<$no_sections; $x++) { $usages[$x] = 0; }
 	my $cp = $functions_usage_concisely_described{$fname};
@@ -3630,10 +3721,11 @@ sub show_endnotes_on_previous_paragraph {
 	for ($x=0; $x<$no_sections; $x++) { if ($usages[$x] == 1) { $no_sections_using++; } }
 
  } 
-#line 674 "Chapter 3/The Weaver.w"
+#line 688 "Chapter 3/The Weaver.w"
 ;
 
 	my $fname_with_underscores_escaped = $fname;
+	$fname_with_underscores_escaped =~ s/__/::/g;
 	$fname_with_underscores_escaped =~ s/_/\\_/g;
 	print WEAVEOUT "\\par\\noindent";
 	print WEAVEOUT "\\penalty10000\n";
@@ -3663,7 +3755,7 @@ sub show_endnotes_on_previous_paragraph {
 	print WEAVEOUT ".}\n";
 
  } 
-#line 631 "Chapter 3/The Weaver.w"
+#line 645 "Chapter 3/The Weaver.w"
 ;
 		}
 		while ($structs_in_par =~ m/^(\S+?)\,(.*)$/) {
@@ -3690,7 +3782,7 @@ sub show_endnotes_on_previous_paragraph {
 	}
 }
 
-#line 720 "Chapter 3/The Weaver.w"
+#line 735 "Chapter 3/The Weaver.w"
 sub weave_cover_sheet {
 	my $cover_sheet = $path_to_inweb_setting.'inweb/Materials/cover-sheet.tex';
 	if (exists ($bibliographic_data{"Cover Sheet"})) {
@@ -3704,7 +3796,7 @@ sub weave_cover_sheet {
 	weave_cover_from($cover_sheet);
 }
 
-#line 737 "Chapter 3/The Weaver.w"
+#line 752 "Chapter 3/The Weaver.w"
 sub weave_cover_from {
 	my $cs_filename = $_[0];
 	local *COVER;
@@ -3732,7 +3824,7 @@ sub weave_cover_from {
 	close (COVER);
 }
 
-#line 769 "Chapter 3/The Weaver.w"
+#line 784 "Chapter 3/The Weaver.w"
 sub weave_interface_table_for_section {
 	my $sect_no = $_[0];
 	my $j;
@@ -3766,8 +3858,9 @@ sub weave_interface_table_for_section {
 		$spc =~ s/\,\s*/\,\n\t\t/g;
 		$access = 'callv';
 		if ($spc =~ m/FILE \*/) { $access = 'call'; }
-		if ($fname =~ m/^compile_(.*)_array$/) { $fname = $1; $access = 'array'; }
-		if ($fname =~ m/^compile_(.*)_routine$/) { $fname = $1; $access = 'routine'; }
+		if ($fname =~ m/^(.*)_array$/) { $fname = $1; $access = 'array'; }
+		if ($fname =~ m/^(.*)_routine$/) { $fname = $1; $access = 'routine'; }
+		$fname =~ s/__/::/g;
 		print WEAVEOUT '|{-', $access, ':', $blue_text, $fname, $black_text, "}|\n";
 	}
 	if ($heading_made == 1) {
@@ -3775,7 +3868,7 @@ sub weave_interface_table_for_section {
 	}
 }
 
-#line 816 "Chapter 3/The Weaver.w"
+#line 832 "Chapter 3/The Weaver.w"
 sub weave_thematic_index {
 	my $wanted= $_[0];
 	foreach $subject (sort keys %thematic_indices) {
@@ -3797,7 +3890,7 @@ sub weave_thematic_index {
 	}
 }
 
-#line 844 "Chapter 3/The Weaver.w"
+#line 860 "Chapter 3/The Weaver.w"
 sub begin_making_pdf_links {
 	%link_number_for_par_name = ();
 	$no_par_name_links = 1;
@@ -4428,7 +4521,7 @@ sub tangle_code {
 		if ($line_text_raw[$tline] =~ m/^(.*?)\@\<(.*?)\@\>\s*(.*?)$/)
 			
  { 
-#line 310 "Chapter 3/The Tangler.w"
+#line 311 "Chapter 3/The Tangler.w"
 	my $prologue = $1; local $name = $2; local $residue = $3;
 	if ($residue =~ m/^(.*?)\@\<(.*?)\@\>(.*)$/) {
 		inweb_error_at_program_line("only one <...> macro can be used on any single line",
@@ -4436,27 +4529,27 @@ sub tangle_code {
 	}
 	
  { 
-#line 275 "Chapter 3/The Tangler.w"
+#line 276 "Chapter 3/The Tangler.w"
 	if (($contiguous == 0) &&
 		(($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
 			($web_language == $PERL_LANGUAGE))) {
 		$contiguous = 1;
-		print TANGLEOUT "#line ", $line_source_file_line[$tline],
-			" \"", $section_pathname_relative_to_web[$line_sec[$tline]], "\"\n";
+		tangle_out("#line ".$line_source_file_line[$tline].
+			" \"".$section_pathname_relative_to_web[$line_sec[$tline]]."\"");
 	}
 
  } 
-#line 315 "Chapter 3/The Tangler.w"
+#line 316 "Chapter 3/The Tangler.w"
 ;
-	print TANGLEOUT expand_double_squares($prologue, 1), "\n";
+	tangle_out(expand_double_squares($prologue, 1));
 	if (not(exists $cweb_macros_start{$name})) {
 		inweb_error_at_program_line("no such <...> macro as '".$name."'", $tline);
 	} else {
 		if (($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
 			($web_language == $PERL_LANGUAGE)) { print TANGLEOUT " { "; }
-		print TANGLEOUT expand_double_squares($cweb_macros_surplus_bit{$name}, 1), "\n";
+		tangle_out(expand_double_squares($cweb_macros_surplus_bit{$name}, 1));
 		tangle_code($cweb_macros_start{$name}, $cweb_macros_end{$name}, 1);
 		if (($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
@@ -4467,20 +4560,20 @@ sub tangle_code {
 	if ($residue ne "") {
 		
  { 
-#line 275 "Chapter 3/The Tangler.w"
+#line 276 "Chapter 3/The Tangler.w"
 	if (($contiguous == 0) &&
 		(($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
 			($web_language == $PERL_LANGUAGE))) {
 		$contiguous = 1;
-		print TANGLEOUT "#line ", $line_source_file_line[$tline],
-			" \"", $section_pathname_relative_to_web[$line_sec[$tline]], "\"\n";
+		tangle_out("#line ".$line_source_file_line[$tline].
+			" \"".$section_pathname_relative_to_web[$line_sec[$tline]]."\"");
 	}
 
  } 
-#line 332 "Chapter 3/The Tangler.w"
+#line 333 "Chapter 3/The Tangler.w"
 ;
-		print TANGLEOUT expand_double_squares($residue, 1), "\n";
+		tangle_out(expand_double_squares($residue, 1));
 	}
 	next;
 
@@ -4490,14 +4583,14 @@ sub tangle_code {
 
 		
  { 
-#line 275 "Chapter 3/The Tangler.w"
+#line 276 "Chapter 3/The Tangler.w"
 	if (($contiguous == 0) &&
 		(($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
 			($web_language == $PERL_LANGUAGE))) {
 		$contiguous = 1;
-		print TANGLEOUT "#line ", $line_source_file_line[$tline],
-			" \"", $section_pathname_relative_to_web[$line_sec[$tline]], "\"\n";
+		tangle_out("#line ".$line_source_file_line[$tline].
+			" \"".$section_pathname_relative_to_web[$line_sec[$tline]]."\"");
 	}
 
  } 
@@ -4507,11 +4600,21 @@ sub tangle_code {
 		if ($expanded =~ m/^\?\:\s*(.*)$/) {
 			inweb_error_at_program_line("C-for-Inform error ($1)", $tline);
 		}
-		print TANGLEOUT $expanded, "\n";
+
+		tangle_out($expanded);
 	}
 }
 
-#line 347 "Chapter 3/The Tangler.w"
+#line 341 "Chapter 3/The Tangler.w"
+sub tangle_out {
+	my $line_of_code = $_[0];
+	if ($web_language == $C_FOR_INFORM_LANGUAGE) {
+		$line_of_code =~ s/\:\:/__/g;
+	}
+	print TANGLEOUT $line_of_code, "\n";
+}
+
+#line 359 "Chapter 3/The Tangler.w"
 sub expand_double_squares {
 	my $line = $_[0];
 	my $with_extensions = $_[1];
@@ -4659,6 +4762,7 @@ sub language_start_definition {
 	my $term = $_[0];
 	my $startval = $_[1];
 	if (($web_language == $C_LANGUAGE) || ($web_language == $C_FOR_INFORM_LANGUAGE)) {
+		if ($web_language == $C_FOR_INFORM_LANGUAGE) { $startval =~ s/::/__/g; }
 		print TANGLEOUT "#define ", $term, " ", $startval;
 		return;
 	}
@@ -4671,6 +4775,7 @@ sub language_start_definition {
 sub language_prolong_definition {
 	my $more = $_[0];
 	if (($web_language == $C_LANGUAGE) || ($web_language == $C_FOR_INFORM_LANGUAGE)) {
+		if ($web_language == $C_FOR_INFORM_LANGUAGE) { $more =~ s/::/__/g; }
 		print TANGLEOUT "\\\n    ", $more;
 		return;
 	}
@@ -4985,7 +5090,7 @@ sub expand_double_squared_command {
 			}
 			if ($write_var eq "") { $cond.= "("; }
 			$cond .=
-				"is_word_intermediate(".$words[$range_from[$i]]."_V,"
+				"Text__is_word_intermediate(".$words[$range_from[$i]]."_V,"
 				. var_offset($left_var, $left_inset)
 				. ","
 				. var_offset($right_var, 0-$right_inset)."))";

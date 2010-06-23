@@ -305,15 +305,18 @@ compilation.
 
 @<Try an Inform template interpreter part of the interface@> =
 	if ($l =~ m/^\-\-\s+Defines \{-callv*\:(.*?)\}\s*$/) {
-		$section_I6_template_identifiers[$line_sec[$i]] .= $1.':';
+		$id = $1; $id =~ s/::/__/g;
+		$section_I6_template_identifiers[$line_sec[$i]] .= $id.':';
 		return 1;
 	}
 	if ($l =~ m/^\-\-\s+Defines \{-array\:(.*?)\}\s*$/) {
-		$section_I6_template_identifiers[$line_sec[$i]] .= 'compile_'.$1.'_array:';
+		$id = $1; $id =~ s/::/__/g;
+		$section_I6_template_identifiers[$line_sec[$i]] .= $id.'_array:';
 		return 1;
 	}
 	if ($l =~ m/^\-\-\s+Defines \{-routine\:(.*?)\}\s*$/) {
-		$section_I6_template_identifiers[$line_sec[$i]] .= 'compile_'.$1.'_routine:';
+		$id = $1; $id =~ s/::/__/g;
+		$section_I6_template_identifiers[$line_sec[$i]] .= $id.'_routine:';
 		return 1;
 	}
 
@@ -430,11 +433,21 @@ of the base types found already or else a pointer to a type.
 		$type_qualifiers = $1; $look_for_identifiers = $2;
 	}
 	if ($look_for_identifiers =~
-		m/^\s*([A-Za-z_][A-Za-z0-9_]*)\s+(\**)([A-Za-z_][A-Za-z0-9_]*)\s*\((.*)$/) {
+		m/^\s*([A-Za-z_][A-Za-z0-9_]*)\s+(\**)(([A-Za-z_][A-Za-z0-9_]*|\:\:)+)\s*\((.*)$/) {
 		my $return_type = $1;
 		my $return_type_pointer_stars = $2;
 		my $fname = $3;
-		my $arguments = $4;
+		my $arguments = $5;
+		if ((not(exists $blacklisted_functions{$fname})) &&
+			($bibliographic_data{"Namespaces"} eq "On")) {
+			if ($stars_in_comment ne "") {
+				inweb_error("with Namespaces on, $fname should not be marked /*...*/");
+			}
+			if (($fname =~ m/::/) && ($stars_in_comment eq "")) {
+				$stars_in_comment = "***";
+			}
+		}
+		$fname =~ s/::/__/g;
 		if ((exists $base_types{$return_type}) &&
 			(not(exists $blacklisted_functions{$fname}))) {
 			@<Deal with type qualifiers and constructors@>;
@@ -500,9 +513,10 @@ sub scan_identifiers_in_source {
 			@<Detect use of C's dot operator for structure member access@>;
 			@<Detect use of C's arrow operator for structure member access@>;
 		
-			while ($look_for_identifiers =~ m/^.*?([A-Za-z_][A-Za-z0-9_]*)(.*)$/) {
+			while ($look_for_identifiers =~ m/^.*?([A-Za-z_]([A-Za-z0-9_]|::)*)(.*?)$/) {
 				$identifier = $1;
-				$look_for_identifiers = $2;
+				$look_for_identifiers = $3;
+				$identifier =~ s/::/__/g;
 				@<Is this identifier a function whose name we recognise?@>;
 			}
 		}
@@ -592,19 +606,20 @@ being made.)
 			$structure_CREATE_in_section{$1} = $section_leafname[$line_sec[$i]];
 		}
 	}		
-	while ($look_for_identifiers =~ m/^(.*?)ALLOW_([A-Z]+)\(([A-Za-z_][A-Za-z0-9_]*)\)(.*)$/) {
+	while ($look_for_identifiers =~ m/^(.*?)ALLOW_([A-Z]+)\(([A-Za-z_0-9:_]*)\)(.*)$/) {
 		$identifier = $3;
 		$metalanguage_type = $2;
 		$look_for_identifiers = $1.$4;
+		$identifier =~ s/::/__/g;
 		if (($metalanguage_type eq "CALL") ||
 			($metalanguage_type eq "CALLV")) {
 			$dot_i6_identifiers{$identifier} = 1;
 		}
 		if ($metalanguage_type eq "ARRAY") {
-			$dot_i6_identifiers{"compile_".$identifier."_array"} = 1;
+			$dot_i6_identifiers{$identifier."_array"} = 1;
 		}
 		if ($metalanguage_type eq "ROUTINE") {
-			$dot_i6_identifiers{"compile_".$identifier."_routine"} = 1;
+			$dot_i6_identifiers{$identifier."_routine"} = 1;
 		}
 	}
 
@@ -976,12 +991,48 @@ sub check_function_declared_correct_scope {
 	my $sn = $_[0];
 	my $f = $_[1];
 	my $actual_scope = $_[2];
+	if ($bibliographic_data{"Namespaces"} eq "On") {
+		if ($f ne "main") {
+			if (($actual_scope ne "") && ($functions_declared_scope{$f} eq "")) {
+				add_error_to_section($sn,
+					"Begin externally called, function $f should belong to a :: namespace");
+				return;
+			}
+			if (($actual_scope eq "") && ($functions_declared_scope{$f} ne "")) {
+				add_error_to_section($sn,
+					"Begin internally called, function $f must not belong to a :: namespace");
+				return;
+			}
+		}
+		$functions_declared_scope{$f} = $actual_scope;
+		return;
+	}
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
 	if ($actual_scope ne $functions_declared_scope{$f}) {
 		add_error_to_section($sn,
 			"Bad scope: $f should be /".$actual_scope."/ not /".
 				$functions_declared_scope{$f}."/");
 	}
+	if ($f =~ m/^([A-Z].*__)(.*?)$/) {
+		my $declared = $1;
+		my $within = $section_namespace[$sn];
+		$within =~ s/::/__/g;
+		if ($within eq "") {
+			$fcc = restore_quadpoint($f);
+			add_error_to_section($sn,
+				"Bad scope: $fcc declared outside of any namespace");
+		} elsif (not ($declared =~ m/^$within/)) {
+			$fcc = restore_quadpoint($f); $wcc = restore_quadpoint($within);
+			add_error_to_section($sn,
+				"Bad scope: $fcc not allowed inside the section's namespace $wcc");
+		}
+	}
+}
+
+sub restore_quadpoint {
+	my $f = $_[0];
+	$f =~ s/__/::/g;
+	return $f;
 }
 
 @ The following is applied only in C-for-Inform mode; in ordinary C, no
@@ -992,6 +1043,7 @@ sub check_section_declares_template_I6 {
 	my $sn = $_[0];
 	my $f = $_[1];
 	if ($bibliographic_data{"Strict Usage Rules"} eq "Off") { return; }
+	# $f =~ s/__/::/g;
 	if (not ($section_I6_template_identifiers[$sn] =~ m/$f/)) {
 		add_error_to_section($sn,
 			"Bad scope: $f isn't declared:\n-- Defines {-callv:".$f."}\n");

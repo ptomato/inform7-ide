@@ -176,6 +176,7 @@ int NUM_ATTR_BYTES;
 int32 MAX_NUM_STATIC_STRINGS;
 int32 MAX_UNICODE_CHARS;
 int32 MAX_STACK_SIZE;
+int32 MEMORY_MAP_EXTENSION;
 int ALLOC_CHUNK_SIZE;
 
 /* The way memory sizes are set causes great nuisance for those parameters
@@ -219,6 +220,9 @@ static void list_memory_sizes(void)
     if (glulx_mode)
       printf("|  %25s = %-7d |\n","MAX_LOCAL_VARIABLES",MAX_LOCAL_VARIABLES);
     printf("|  %25s = %-7d |\n","MAX_LOW_STRINGS",MAX_LOW_STRINGS);
+    if (glulx_mode)
+      printf("|  %25s = %-7d |\n","MEMORY_MAP_EXTENSION",
+        MEMORY_MAP_EXTENSION);
     if (glulx_mode)
       printf("|  %25s = %-7d |\n","MAX_NUM_STATIC_STRINGS",
         MAX_NUM_STATIC_STRINGS);
@@ -418,6 +422,7 @@ extern void set_memory_sizes(int size_flag)
     NUM_ATTR_BYTES_z = 6;
     NUM_ATTR_BYTES_g = 7;
     MAX_UNICODE_CHARS = 64;
+    MEMORY_MAP_EXTENSION = 0;
     /* We estimate the default Glulx stack size at 4096. That's about
        enough for 90 nested function calls with 8 locals each -- the
        same capacity as the Z-Spec's suggestion for Z-machine stack
@@ -700,6 +705,13 @@ static void explain_parameter(char *command)
   during gameplay. (Glulx only)\n");
         return;
     }
+    if (strcmp(command,"MEMORY_MAP_EXTENSION")==0)
+    {
+        printf(
+"  MEMORY_MAP_EXTENSION is the number of bytes (all zeroes) to map into \n\
+  memory after the game file. (Glulx only)\n");
+        return;
+    }
 
     printf("No such memory setting as \"%s\"\n",command);
 
@@ -844,6 +856,12 @@ extern void memory_command(char *command)
                 MAX_STACK_SIZE=j, flag=1;
                 /* Adjust up to a 256-byte boundary. */
                 MAX_STACK_SIZE = (MAX_STACK_SIZE + 0xFF) & (~0xFF);
+            }
+            if (strcmp(command,"MEMORY_MAP_EXTENSION")==0)
+            {
+                MEMORY_MAP_EXTENSION=j, flag=1;
+                /* Adjust up to a 256-byte boundary. */
+                MEMORY_MAP_EXTENSION = (MEMORY_MAP_EXTENSION + 0xFF) & (~0xFF);
             }
 
             if (flag==0)

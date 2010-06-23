@@ -28,6 +28,7 @@ typedef struct placeholder {
 	char pl_name[MAX_VAR_NAME_LENGTH];
 	char pl_contents[MAX_FILENAME_LENGTH]; /* current value */
 	int reservation; /* one of the |*_RPL| values above, or 0 for unreserved */
+	int locked; /* currently being expanded: locked to prevent mise-en-abyme */
 	MEMORY_MANAGEMENT
 } placeholder;
 
@@ -47,9 +48,15 @@ file which we are acting on.
 	set_placeholder_to("AUXILIARY", "", AUXILIARY_RPL);
 	set_placeholder_to("PAGENUMBER", "", PAGENUMBER_RPL);
 	set_placeholder_to("PAGEEXTENT", "", PAGEEXTENT_RPL);
+	set_placeholder_to("CBLORBERRORS", "", 0);
+	set_placeholder_to("INBROWSERPLAY", "", 0);
 	set_placeholder_to("BLURB", "", 0);
 	set_placeholder_to("TEMPLATE", "Standard", 0);
 	set_placeholder_to("GENERATOR", VERSION, 0);
+	set_placeholder_to("BASE64_TOP", "", 0);
+	set_placeholder_to("BASE64_TAIL", "", 0);
+	set_placeholder_to("JAVASCRIPTPRELUDE", JAVASCRIPT_PRELUDE, 0);
+	set_placeholder_to("FONTTAG", FONT_TAG, 0);
 
 	initialise_time_variables();
 }
@@ -90,23 +97,36 @@ blurb file.
 
 @c
 /**/ void set_placeholder_to(char *var, char *text, int reservation) {
-	if (strlen(text) >= MAX_FILENAME_LENGTH - 1) { error("value too long"); return; }
+	set_placeholder_to_inner(var, text, reservation, FALSE);
+}
+/**/ void append_to_placeholder(char *var, char *text) {
+	set_placeholder_to_inner(var, text, 0, TRUE);
+}
+
+@ Where:
+
+@c
+void set_placeholder_to_inner(char *var, char *text, int reservation, int extend) {
 	if (strlen(var) >= MAX_VAR_NAME_LENGTH-1) { error("variable name too long"); return; }
 
 	if (trace_mode) printf("! [%s] <-- \"%s\"\n", var, (text)?text:"");
 	
 	placeholder *wv = find_placeholder(var);
-	if (wv) {
-		if (reservation > 0) { error("tried to set reserved variable"); return; }
-		strcpy(wv->pl_contents, text);
-		return;
+	if ((wv) && (reservation > 0)) { error("tried to set reserved variable"); return; }
+	if (wv == NULL) {
+		wv = CREATE(placeholder);
+		if (trace_mode) printf("! Creating [%s]\n", var);
+		strcpy(wv->pl_name, var);
+		(wv->pl_contents)[0] = 0;
+		wv->reservation = reservation;
 	}
+	
+	int L = strlen(text) + 1;
+	if (extend) L += strlen(wv->pl_contents);
+	if (L >= MAX_FILENAME_LENGTH) { error("placeholder text too long"); return; }
 
-	wv = CREATE(placeholder);
-	if (trace_mode) printf("! Creating [%s]\n", var);
-	strcpy(wv->pl_name, var);
-	strcpy(wv->pl_contents, text);
-	wv->reservation = reservation;
+	if (extend) strcat(wv->pl_contents, text);
+	else strcpy(wv->pl_contents, text);
 }
 
 @ And that just leaves writing the output of these placeholders. The scenario
@@ -125,7 +145,8 @@ uses of square brackets which aren't for placeholding.)
 	int multiparagraph_mode = FALSE;
 	if (strcmp(var, "BLURB") == 0) multiparagraph_mode = TRUE;
 	placeholder *wv = find_placeholder(var);
-	if (wv == NULL) { fprintf(COPYTO, "[%s]", var); return; }
+	if ((wv == NULL) || (wv->locked)) { fprintf(COPYTO, "[%s]", var); return; }
+	wv->locked = TRUE;
 	if (multiparagraph_mode) fprintf(COPYTO, "<p>");
 	switch (wv->reservation) {
 		case 0: @<Copy an ordinary unreserved placeholder@>; break;
@@ -139,6 +160,7 @@ uses of square brackets which aren't for placeholding.)
 		case PAGEEXTENT_RPL: expand_PAGEEXTENT_variable(COPYTO); break;
 	}
 	if (multiparagraph_mode) fprintf(COPYTO, "</p>");
+	wv->locked = FALSE;
 }
 
 @ Note that the [BLURB] placeholder -- which holds the story description, and is
@@ -157,7 +179,25 @@ within an HTML paragraph.
 			(p[i+3] == '/') && (p[i+4] == '>') && (multiparagraph_mode)) {
 			fprintf(COPYTO, "</p><p>"); i += 4; continue;
 		}
-		if ((p[i] == '\x0a') || (p[i] == '\x0d') || (p[i] == '\x7f'))
-			fprintf(COPYTO, "<p>");
-		else fprintf(COPYTO, "%c", p[i]);
+		if (p[i] == '[') {
+			char inner_name[MAX_VAR_NAME_LENGTH+1];
+			int j = i+1, k = 0, expanded = FALSE; inner_name[0] = 0;
+			for (; p[j]; j++) {
+				if ((p[j] == '[') || (p[j] == ' ')) break;
+				if (p[j] == ']') {
+					i = j;
+					copy_placeholder_to(inner_name, COPYTO);
+					expanded = TRUE;
+					break;
+				}
+				inner_name[k++] = p[j]; inner_name[k] = 0;
+				if (k >= MAX_VAR_NAME_LENGTH) break;
+			}
+			if (expanded) continue;
+		}
+		if (((p[i] == '\x0a') || (p[i] == '\x0d') || (p[i] == '\x7f')) &&
+			(multiparagraph_mode)) {
+			fprintf(COPYTO, "<p>"); continue;
+		}
+		fprintf(COPYTO, "%c", p[i]);
 	}

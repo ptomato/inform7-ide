@@ -14,6 +14,7 @@ sections we add:
 (S5) |$section_sigil[]|, which is the sigil such as |4/fish| identifying
 the section briefly, and is found on the titling line before the colon.
 (The hash |$sigil_section{}| provides a convenient inverse to this.)
+Similarly, |$section_namespace[]| is the optional namespace quoted.
 (S6) |$section_toc[]|, which is the text of the brief table of contents
 of the section, in \TeX\ marked-up form. (The weaver adds this as a headnote
 when setting the section.)
@@ -193,10 +194,12 @@ or |@**| which is even more so). This code is a residue of the time when
 |inweb| was essentially a reimplementation of |CWEB|.
 
 @<Rewrite the heading in CWEB-style paragraph notation but continue@> =
-	if ($l =~ m/^(\S+\/[a-z][a-z0-9]+)\:\s+(.*)\s*$/) {
-		$section_sigil[$line_sec[$i]] = $1;
+	if ($l =~ m/^(([A-Za-z0-9_]+::\s*)*)(\S+\/[a-z][a-z0-9]+)\:\s+(.*)\s*$/) {
+		$section_namespace[$line_sec[$i]] = $1;
+		$section_sigil[$line_sec[$i]] = $3;
 		$sigil_section{$1} = $line_sec[$i];
-		$l = '@* '.$2;
+		$l = '@* '.$4;
+		$section_namespace[$line_sec[$i]] =~ s/\s*//g;
 	} else {
 		if (($l =~ m/^Chapter /) || ($l =~ m/^Appendix /)) {
 			$l = '@** '.$l;

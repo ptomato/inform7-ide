@@ -1045,8 +1045,7 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
                  @copy sp len;\
                }\
                else {\
-                 @copy sp m;\
-                 len = $7FFFFFFF;\
+                 RT__Err(37); rfalse;\
                }\
                s2 = glk($0048);\
                s = glk($0043, m+4, len-4, 1, 0);",
@@ -1393,7 +1392,9 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
          if (crime == 35) \"tried to print (string) on something not a \",\
          \"string **]\";\
          if (crime == 36) \"tried to print (object) on something not an \",\
-         \"object or class **]\";",
+         \"object or class **]\";\
+         if (crime == 37) \"tried to call Glulx print_to_array with only \",\
+         \"one argument **]\";",
         "if (crime < 32) { print \"tried to \";\
          if (crime >= 28) { if (crime==28 or 29) print \"read from \";\
          else print \"write to \";\

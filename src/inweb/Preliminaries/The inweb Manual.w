@@ -641,6 +641,11 @@ languages.)
 section and its C structures, together with a note of any other sections
 sharing these data structures.
 
+|-functions|
+
+(...) prints a much longer catalogue, including names of all functions defined
+in the sections.
+
 |-make-graphs|
 
 (...) outputs a set of |.dot| files called |chapter2.dot|, |chapter3.dot| and so

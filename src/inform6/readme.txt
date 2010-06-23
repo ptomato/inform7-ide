@@ -1,5 +1,5 @@
 This is version 6.31N of the Inform compiler,
-copyright (c) Graham Nelson 1993 - 2009
+copyright (c) Graham Nelson 1993 - 2010
 Full release notes and instructions are available at
 http://www.inform-fiction.org/
 and
@@ -46,6 +46,12 @@ Allow more than 255 verbs in Glulx. Note that this is only a compiler
 change, and requires the library to use both bytes of the verb number
 for it to work.
 http://freespace.virgin.net/davidk.kinder/inform6/verbnum.patch
+
+Remove one argument form of Glulx print_to_array() veneer method
+http://mailman-new.greennet.org.uk/pipermail/inform-maintenance/2009-November/001709.html
+
+Glulx memory extension
+http://mailman-new.greennet.org.uk/pipermail/inform-maintenance/2010-April/001735.html
 
 Increased PATHLEN and set the HUGE memory model as the default for
 OSX, Linux, Unix and Unix64.

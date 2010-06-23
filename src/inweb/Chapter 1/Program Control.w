@@ -172,7 +172,8 @@ Inform extension of C.
 	if ($swarm_mode != $SWARM_OFF) {
 		inweb_fatal_error("only specific parts of the web can be analysed");
 	}
-	if ($catalogue_switch == 1) { catalogue_the_sections($sigil_of_target); }
+	if ($catalogue_switch == 1) { catalogue_the_sections($sigil_of_target, 0); }
+	if ($functions_switch == 1) { catalogue_the_sections($sigil_of_target, 1); }
 	if ($voids_switch == 1) { catalogue_void_pointers($sigil_of_target); }
 	if ($make_graphs_switch == 1) { compile_graphs($sigil_of_target); }
 	if ($scan_switch == 1) { scan_line_categories($sigil_of_target); }

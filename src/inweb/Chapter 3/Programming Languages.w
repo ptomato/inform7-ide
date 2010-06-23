@@ -171,6 +171,7 @@ sub language_start_definition {
 	my $term = $_[0];
 	my $startval = $_[1];
 	if (($web_language == $C_LANGUAGE) || ($web_language == $C_FOR_INFORM_LANGUAGE)) {
+		if ($web_language == $C_FOR_INFORM_LANGUAGE) { $startval =~ s/::/__/g; }
 		print TANGLEOUT "#define ", $term, " ", $startval;
 		return;
 	}
@@ -183,6 +184,7 @@ sub language_start_definition {
 sub language_prolong_definition {
 	my $more = $_[0];
 	if (($web_language == $C_LANGUAGE) || ($web_language == $C_FOR_INFORM_LANGUAGE)) {
+		if ($web_language == $C_FOR_INFORM_LANGUAGE) { $more =~ s/::/__/g; }
 		print TANGLEOUT "\\\n    ", $more;
 		return;
 	}

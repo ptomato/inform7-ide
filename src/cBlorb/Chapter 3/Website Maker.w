@@ -14,7 +14,7 @@
 the source text into it, if that's been requested. We will need to do that by
 scanning the source text for typographically significant structures:
 
-@d ABBREVIATED_HEADING_LENGTH 100
+@d ABBREVIATED_HEADING_LENGTH 1000
 
 @c
 typedef struct table {
@@ -236,6 +236,7 @@ FILE *COPYTO = NULL;
 /**/ void web_copy(char *from, char *to) {
 	if ((from == NULL) || (to == NULL) || (strcmp(from, to) == 0))
 		fatal("files confused in website maker");
+	HTML_pages_created++;
 	COPYTO = fopen(to, "w");
 	if (COPYTO == NULL) { error_1("unable to open file to be written for web site", to); return; }
 	file_read(from, "can't open template file", FALSE, copy_html_line, 0);
@@ -535,6 +536,7 @@ pages |doc_0.html| and so on up.
 
 @<Generate the prefatory page, which isn't a segment@> =
 	segment_being_written = NULL;
+	source_HTML_pages_created++;
 	web_copy(template, contents_page);
 
 @
@@ -545,6 +547,7 @@ pages |doc_0.html| and so on up.
 		char segment_page[MAX_FILENAME_LENGTH];
 		sprintf(segment_page, "%s%c%s", website_pathname, SEP_CHAR, seg->segment_url);
 		segment_being_written = seg;
+		source_HTML_pages_created++;
 		web_copy(template, segment_page);
 		segment_being_written = NULL;
 	}

@@ -30,7 +30,7 @@
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-#define RELEASE_DATE "29th March 2009"
+#define RELEASE_DATE "22nd April 2010"
 #define RELEASE_NUMBER 1631
 #define GLULX_RELEASE_NUMBER 38
 #define MODULE_VERSION_NUMBER 1
@@ -2409,7 +2409,7 @@ extern int MAX_QTEXT_SIZE,  MAX_SYMBOLS,    HASH_TAB_SIZE,   MAX_DICT_ENTRIES,
 extern int32 MAX_STATIC_STRINGS, MAX_ZCODE_SIZE, MAX_LINK_DATA_SIZE,
            MAX_TRANSCRIPT_SIZE,  MAX_INDIV_PROP_TABLE_SIZE,
            MAX_NUM_STATIC_STRINGS, MAX_UNICODE_CHARS,
-           MAX_STACK_SIZE;
+           MAX_STACK_SIZE, MEMORY_MAP_EXTENSION;
 
 extern int32 MAX_OBJ_PROP_COUNT, MAX_OBJ_PROP_TABLE_SIZE;
 extern int MAX_LOCAL_VARIABLES, MAX_GLOBAL_VARIABLES;

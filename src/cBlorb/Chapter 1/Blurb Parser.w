@@ -22,42 +22,47 @@ indexes into the syntaxes table below.
 
 @d author_COMMAND 0
 @d auxiliary_COMMAND 1
-@d copyright_COMMAND 2
-@d cover_COMMAND 3
-@d css_COMMAND 4
-@d ifiction_COMMAND 5
-@d ifiction_public_COMMAND 6
-@d ifiction_file_COMMAND 7
-@d palette_COMMAND 8
-@d palette_16_bit_COMMAND 9
-@d palette_32_bit_COMMAND 10
-@d picture_scaled_COMMAND 11
-@d picture_COMMAND 12
-@d placeholder_COMMAND 13
-@d project_folder_COMMAND 14
-@d release_COMMAND 15
-@d release_file_COMMAND 16
-@d release_file_from_COMMAND 17
-@d release_source_COMMAND 18
-@d release_to_COMMAND 19
-@d resolution_max_COMMAND 20
-@d resolution_min_max_COMMAND 21
-@d resolution_min_COMMAND 22
-@d resolution_COMMAND 23
-@d solution_COMMAND 24
-@d solution_public_COMMAND 25
-@d sound_music_COMMAND 26
-@d sound_repeat_COMMAND 27
-@d sound_forever_COMMAND 28
-@d sound_song_COMMAND 29
-@d sound_COMMAND 30
-@d source_COMMAND 31
-@d source_public_COMMAND 32
-@d storyfile_include_COMMAND 33
-@d storyfile_COMMAND 34
-@d storyfile_leafname_COMMAND 35
-@d template_path_COMMAND 36
-@d website_COMMAND 37
+@d base64_COMMAND 2
+@d copyright_COMMAND 3
+@d cover_COMMAND 4
+@d css_COMMAND 5
+@d ifiction_COMMAND 6
+@d ifiction_public_COMMAND 7
+@d ifiction_file_COMMAND 8
+@d interpreter_COMMAND 9
+@d palette_COMMAND 10
+@d palette_16_bit_COMMAND 11
+@d palette_32_bit_COMMAND 12
+@d picture_scaled_COMMAND 13
+@d picture_COMMAND 14
+@d placeholder_COMMAND 15
+@d project_folder_COMMAND 16
+@d release_COMMAND 17
+@d release_file_COMMAND 18
+@d release_file_from_COMMAND 19
+@d release_source_COMMAND 20
+@d release_to_COMMAND 21
+@d resolution_max_COMMAND 22
+@d resolution_min_max_COMMAND 23
+@d resolution_min_COMMAND 24
+@d resolution_COMMAND 25
+@d solution_COMMAND 26
+@d solution_public_COMMAND 27
+@d sound_music_COMMAND 28
+@d sound_repeat_COMMAND 29
+@d sound_forever_COMMAND 30
+@d sound_song_COMMAND 31
+@d sound_COMMAND 32
+@d source_COMMAND 33
+@d source_public_COMMAND 34
+@d status_COMMAND 35
+@d status_alternative_COMMAND 36
+@d status_instruction_COMMAND 37
+@d storyfile_include_COMMAND 38
+@d storyfile_COMMAND 39
+@d storyfile_leafname_COMMAND 40
+@d template_path_COMMAND 41
+@d website_COMMAND 42
 
 @ A single number specifying various possible combinations of operands:
 
@@ -113,12 +118,16 @@ blurb_command syntaxes[] = {
 	{ "author \"name\"", "author \"%[^\"]\" %n", OPS_1TEXT, FALSE },
 	{ "auxiliary \"filename\" \"description\"",
 			"auxiliary \"%[^\"]\" \"%[^\"]\" %n", OPS_2TEXT, FALSE },
+	{ "base64 \"filename\" to \"filename\"",
+			"base64 \"%[^\"]\" to \"%[^\"]\" %n", OPS_2TEXT, FALSE },
 	{ "copyright \"message\"", "copyright \"%[^\"]\" %n", OPS_1TEXT, FALSE },
 	{ "cover \"filename\"", "cover \"%[^\"]\" %n", OPS_1TEXT, FALSE },
 	{ "css", "css %n", OPS_NO, FALSE },
 	{ "ifiction", "ifiction %n", OPS_NO, FALSE },
 	{ "ifiction public", "ifiction public %n", OPS_NO, FALSE },
 	{ "ifiction \"filename\" include", "ifiction \"%[^\"]\" include %n", OPS_1TEXT, FALSE },
+	{ "interpreter \"interpreter-name\" \"vm-letter\"",
+		"interpreter \"%[^\"]\" \"%[gz]\" %n", OPS_2TEXT, FALSE },
 	{ "palette { details }", "palette {%[^}]} %n", OPS_1TEXT, TRUE },
 	{ "palette 16 bit", "palette 16 bit %n", OPS_NO, TRUE },
 	{ "palette 32 bit", "palette 32 bit %n", OPS_NO, TRUE },
@@ -149,6 +158,11 @@ blurb_command syntaxes[] = {
 	{ "sound N \"filename\"", "sound %d \"%[^\"]\" %n", OPS_1NUMBER_1TEXT, FALSE },
 	{ "source", "source %n", OPS_NO, FALSE },
 	{ "source public", "source public %n", OPS_NO, FALSE },
+	{ "status \"template\" \"filename\"", "status \"%[^\"]\" \"%[^\"]\" %n", OPS_2TEXT, FALSE },
+	{ "status alternative ||link to Inform documentation||",
+		"status alternative ||%[^|]|| %n", OPS_1TEXT, FALSE },
+	{ "status instruction ||link to Inform source text||",
+		"status instruction ||%[^|]|| %n", OPS_1TEXT, FALSE },
 	{ "storyfile \"filename\" include", "storyfile \"%[^\"]\" include %n", OPS_1TEXT, FALSE },
 	{ "storyfile \"filename\"", "storyfile \"%[^\"]\" %n", OPS_1TEXT, TRUE },
 	{ "storyfile leafname \"leafname\"", "storyfile leafname \"%[^\"]\" %n", OPS_1TEXT, FALSE },
@@ -246,12 +260,17 @@ copied in |text1|, |num1|, ..., accordingly.
 			author_chunk(text1);
 			break;
 		case auxiliary_COMMAND: create_auxiliary_file(text1, text2); break;
+		case base64_COMMAND:
+			request_2(BASE64_REQ, text1, text2, FALSE); break;
 		case copyright_COMMAND: copyright_chunk(text1); break;
 		case cover_COMMAND: @<Declare which file is the cover art@>; break;
 		case css_COMMAND: use_css_code_styles = TRUE; break;
 		case ifiction_file_COMMAND: metadata_chunk(text1); break;
 		case ifiction_COMMAND: request_1(IFICTION_REQ, "", TRUE); break;
 		case ifiction_public_COMMAND: request_1(IFICTION_REQ, "", FALSE); break;
+		case interpreter_COMMAND:
+			set_placeholder_to("INTERPRETERVMIS", text2, 0);
+			request_1(INTERPRETER_REQ, text1, FALSE); break;
 		case picture_COMMAND: picture_chunk(num1, text1); break;
 		case placeholder_COMMAND: set_placeholder_to(text1, text2, 0); break;
 		case project_folder_COMMAND: strcpy(project_folder, text1); break;
@@ -263,7 +282,10 @@ copied in |text1|, |num1|, ..., accordingly.
 			request_2(COPY_REQ, text1, get_filename_leafname(text1), FALSE); break;
 		case release_file_from_COMMAND:
 			request_2(RELEASE_FILE_REQ, text1, text2, FALSE); break;
-		case release_to_COMMAND: strcpy(release_folder, text1); break;
+		case release_to_COMMAND:
+			strcpy(release_folder, text1);
+			@<Make pathname placeholders in three different formats@>;
+			break;
 		case release_source_COMMAND:
 			request_3(RELEASE_SOURCE_REQ, text1, text2, text3, FALSE); break;
 		case solution_COMMAND: request_1(SOLUTION_REQ, "", TRUE); break;
@@ -271,10 +293,11 @@ copied in |text1|, |num1|, ..., accordingly.
 		case sound_COMMAND: sound_chunk(num1, text1); break;
 		case source_COMMAND: request_1(SOURCE_REQ, "", TRUE); break;
 		case source_public_COMMAND: request_1(SOURCE_REQ, "", FALSE); break;
+		case status_COMMAND: strcpy(status_template, text1); strcpy(status_file, text2); break;
+		case status_alternative_COMMAND: request_1(ALTERNATIVE_REQ, text1, FALSE); break;
+		case status_instruction_COMMAND: request_1(INSTRUCTION_REQ, text1, FALSE); break;
 		case storyfile_include_COMMAND: executable_chunk(text1); break;
-		case storyfile_leafname_COMMAND:
-			set_placeholder_to("STORYFILE", text1, 0);
-			break;
+		case storyfile_leafname_COMMAND: set_placeholder_to("STORYFILE", text1, 0); break;
 		case template_path_COMMAND: new_template_path(text1); break;
 		case website_COMMAND: request_1(WEBSITE_REQ, text1, FALSE); break;
 		
@@ -292,6 +315,57 @@ has the assumption that the cover art is image number 1 built in.
 		cover_is_in_JPEG_format = FALSE;
 	frontispiece_chunk(1);
 	char *leaf = get_filename_leafname(text1);
+	if (strcmp(leaf, "DefaultCover.jpg") == 0) default_cover_used = TRUE;
 	if (cover_is_in_JPEG_format) strcpy(leaf, "Small Cover.jpg");
 	else strcpy(leaf, "Small Cover.png");
 	set_placeholder_to("SMALLCOVER", text1, 0);
+
+@ Here, |text1| is the pathname of the Release folder. If we suppose that
+|cblorb| is being run from Inform, then this folder is a subfolder of the
+Materials folder for an I7 project. It follows that we can obtain the
+pathname to the Materials folder by trimming the leaf and the final separator.
+That makes the |MATERIALSFOLDERPATH| placeholder. We then set |MATERIALSFOLDER|
+to the name of the Materials folder, e.g., ``Spaceman Spiff Materials''.
+
+However, we also need two variants on the pathname, one to be supplied to the
+Javascript function |openUrl| and one to |fileUrl|. For platform dependency
+reasons these need to be manipulated to deal with awkward characters.
+
+@<Make pathname placeholders in three different formats@> =
+	set_placeholder_to("MATERIALSFOLDERPATH", text1, 0);
+	int k = strlen(text1);
+	while ((k>=0) && (text1[k] != SEP_CHAR)) k--;
+	if (k>0) { *(read_placeholder("MATERIALSFOLDERPATH")+k)=0; k--; }
+	while ((k>=0) && (text1[k] != SEP_CHAR)) k--; k++;
+	set_placeholder_to("MATERIALSFOLDER", text1 + k, 0);
+	char *L = read_placeholder("MATERIALSFOLDER");
+	while (*L) { if (*L == SEP_CHAR) *L = 0; L++; }
+	qualify_placeholder("MATERIALSFOLDERPATHOPEN", "MATERIALSFOLDERPATHFILE",
+		"MATERIALSFOLDERPATH");
+
+@ And here that very ``qualification'' routine. The placeholder |original| contains
+the pathname to a folder, a pathname which might contain spaces or backslashes,
+and which needs to be quoted as a literal Javascript string supplied to
+either the function |openUrl| or the function |fileUrl|. Depending on the
+platform in use, this may entail escaping spaces or reversing slashes in the
+pathname in order to make versions for these two functions to use.
+
+@c
+/**/ void qualify_placeholder(char *openUrl_path, char *fileUrl_path, char *original) {
+	int i;
+	char *p = read_placeholder(original);
+	for (i=0; p[i]; i++) {
+		char oU_glyph[8], fU_glyph[8];
+		sprintf(oU_glyph, "%c", p[i]); sprintf(fU_glyph, "%c", p[i]);
+		if (p[i] == ' ') {
+			if (escape_openUrl) sprintf(oU_glyph, "%%2520");
+			if (escape_fileUrl) sprintf(fU_glyph, "%%2520");
+		}
+		if (p[i] == '\\') {
+			if (reverse_slash_openUrl) sprintf(oU_glyph, "/");
+			if (reverse_slash_fileUrl) sprintf(fU_glyph, "/");
+		}
+		append_to_placeholder(openUrl_path, oU_glyph);
+		append_to_placeholder(fileUrl_path, fU_glyph);
+	}
+}

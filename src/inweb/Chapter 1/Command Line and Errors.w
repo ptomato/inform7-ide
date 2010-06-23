@@ -13,6 +13,7 @@ Control.)
 @c
 $analyse_structure_setting = ""; # |-analyse-structure|: name of typedef struct to show usage of
 $catalogue_switch = 0; # |-catalogue|: print catalogue of sections
+$functions_switch = 0; # |-functions|: print catalogue of functions within sections
 $convert_graphs_switch = 0; # |-convert-graphs|: run |-make-graphs| output through 'dot'
 $make_graphs_switch = 0; # |-make-graphs|: compile code to generate graphs
 $open_pdf_switch = -1; # |-open-pdf|: open any woven PDF in the OS once it is made
@@ -101,6 +102,9 @@ sub make_command_line_settings {
 	}
 	if ($opt eq "-catalogue") {
 		$catalogue_switch = 1; enter_main_mode($ANALYSE_MODE); next ARGUMENT;
+	}
+	if ($opt eq "-functions") {
+		$functions_switch = 1; enter_main_mode($ANALYSE_MODE); next ARGUMENT;
 	}
 	if ($opt eq "-voids") {
 		$voids_switch = 1; enter_main_mode($ANALYSE_MODE); next ARGUMENT;

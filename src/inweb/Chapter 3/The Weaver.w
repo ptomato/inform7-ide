@@ -370,8 +370,9 @@ number of tab steps of indentation, rating 1 tab = 4 spaces:
 messy alignment system:
 
 @<Weave a suitable horizontal advance for that many tab stops@> =
-	while ($tab_stops_of_indentation > 0) {
-		print WEAVEOUT "\\qquad"; $tab_stops_of_indentation--;
+	my $i;
+	for ($i=0; $i<$tab_stops_of_indentation; $i++) {
+		print WEAVEOUT "\\qquad";
 	}
 
 @ Comments which run to the end of a line are set in italic type. If the
@@ -423,6 +424,19 @@ the endnotes can be added at the foot of the paragraph.)
 		$matter = '|'.$ftype.'|\pdfliteral direct{0 1 1 0 k}|'.$fname.'|\special{PDF:0 g}|'.
 			'('.$frest;
 		$functions_in_par .= $fname.",";
+	}
+	if (($tab_stops_of_indentation == 0) &&
+		($matter =~ m/^\|(\S.*?\**)(\S+?)\((.*)$/)) {
+		my $ftype = $1;
+		my $fname = $2;
+		my $frest = $3;
+		my $unamended = $fname;
+		$fname =~ s/::/__/g;
+		if (exists($functions_line{$fname})) {
+			$matter = '|'.$ftype.'|\pdfliteral direct{0 1 1 0 k}|'.$unamended.
+				'|\special{PDF:0 g}|'.'('.$frest;
+			$functions_in_par .= $fname.",";
+		}
 	}
 
 @ Any usage of angle-macros is highlighted in several cute ways: first,
@@ -674,6 +688,7 @@ the high |\penalty| value). Sometimes this succeeds.
 	@<Work out which sections to mention calls from@>;
 
 	my $fname_with_underscores_escaped = $fname;
+	$fname_with_underscores_escaped =~ s/__/::/g;
 	$fname_with_underscores_escaped =~ s/_/\\_/g;
 	print WEAVEOUT "\\par\\noindent";
 	print WEAVEOUT "\\penalty10000\n";
@@ -799,8 +814,9 @@ sub weave_interface_table_for_section {
 		$spc =~ s/\,\s*/\,\n\t\t/g;
 		$access = 'callv';
 		if ($spc =~ m/FILE \*/) { $access = 'call'; }
-		if ($fname =~ m/^compile_(.*)_array$/) { $fname = $1; $access = 'array'; }
-		if ($fname =~ m/^compile_(.*)_routine$/) { $fname = $1; $access = 'routine'; }
+		if ($fname =~ m/^(.*)_array$/) { $fname = $1; $access = 'array'; }
+		if ($fname =~ m/^(.*)_routine$/) { $fname = $1; $access = 'routine'; }
+		$fname =~ s/__/::/g;
 		print WEAVEOUT '|{-', $access, ':', $blue_text, $fname, $black_text, "}|\n";
 	}
 	if ($heading_made == 1) {

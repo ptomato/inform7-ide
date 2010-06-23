@@ -95,11 +95,13 @@ file which it should write. Note that the interface should give this the
 extension ``.gblorb'' if the Glulx setting is in force, and ``.zblorb'' if
 the Z-machine.
 
-(6) Like its predecessors, |cblorb| can produce error messages, so the interface
-must again look at the return code. The interface should display the Errors
-panel and, on the Problems tab, render:
-(-a) |GoodCblorb.html|, with picture of wrapped parcel, if |cblorb| returned 0, or
-(-b) |ErrorCblorb.html|, with picture of broken packaging, if not.
+(6) Like its predecessors, |cblorb| can produce error messages, and it returns
+0 (success) or 1 (failure). But the interface doesn't actually need to look
+at that, because |cblorb| also produces a much fuller report in the form of
+an HTML page to be displayed on the Problems tab. This is |StatusCblorb.html|,
+in the project's |Build| folder. (This is a change made in 2010: in the past,
+the interface simply chose between a generic success and failure page on the
+basis of the return code.)
 
 (7) There are no more tools to call, but the interface has one last duty (if
 |cblorb| succeeded) -- to move the blorb somewhere sensible on disc, where the
@@ -460,8 +462,8 @@ can be any number of template paths set, and |cblorb| checks them in order
 of declaration (i.e., most important first).
 
 @ Next we come to commands for specifying what |cblorb| should release.
-At present it has six forms of output: Blorb file, solution file, source
-text, iFiction record, miscellaneous file and website.
+At present it has seven forms of output: Blorb file, solution file, source
+text, iFiction record, miscellaneous file, website and interpreter.
 
 No explicit single command causes a Blorb file to be generated; it will be
 made automatically if one of the above commands to include the story file,
@@ -534,3 +536,52 @@ the source of the project is run through |release source| using ``source.html''
 from the template (assuming |source public| is used), and any extra files
 specified in the template's ``(extras.txt)'' are released as well. See
 {\it Writing with Inform} for more.
+
+@ An optional addition for a website is to incorporate a playable-in-browser
+form of the story, by base64-encoding the story file within a Javascript
+wrapper, then calling an interpreter such as Parchment.
+
+The encoding part is taken care of by:
+
+	|base64| \bltoken{filename} |to| \bltoken{filename}
+
+This performs an RFC 1113-standard encoding on the binary file in (almost
+always our story file) into a textual base-64 file out. The file is topped
+and tailed with the text in placeholders |[BASESIXTYFOURTOP]| and |[BASESIXTYFOURTAIL]|,
+allowing Javascript wrapper code to surround the encoded data.
+
+The interpreter itself is copied into place in the Release folder in a
+process rather like the construction of a website from a template. The
+necessary blurb command is:
+
+	|interpreter| \bltoken{interpreter-name} \bltoken{vm-letter}
+
+Interpreter names are like template names; Inform often uses ``Parchment''.
+The VM letter should be ``g'' if we need this to handle a Glulx story file
+(blorbed up), or ``z'' if we need it to handle a Z-machine story file.
+(This needs to be said because Inform doesn't have a way of knowing which
+formats a given interpreter can handle; so it has to leave checking to
+|cblorb| to do. Thus, if an Inform user tries to release a Z-machine-only
+interpreter with a Glulx story file, it's |cblorb| which issues the error,
+not Inform itself.)
+
+@ Finally (really finally this time), three commands to do with the
+``status'' page, an HTML page written by |cblorb| to report back on
+what it has done. If requested, this is constructed for reading within
+the Inform application -- it is not a valid HTML page in other
+contexts, and expects to have access to Javascript functions provided
+by Inform, and so on.
+
+	|status| \bltoken{template} \bltoken{filename}
+	|status alternative| \bltoken{link to Inform documentation}
+	|status instruction| \bltoken{link to Inform source text}
+
+The first simply requests the page to be made. It's made from a single
+template file, but in exactly the same way that website pages are generated
+from website templates -- that is, placeholders are expanded. The second
+filename is where to write the result.
+
+The other two commands allow Inform to insert information which |cblorb|
+otherwise has no access to: options for fancy release tricks not currently
+being used (with links to the documentation on them), and links to source
+text ``Release along with...'' sentences.

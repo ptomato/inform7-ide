@@ -366,7 +366,7 @@ store the word position of ``seeded'' in |i|, and of ``sliced'' in |j|.
 			}
 			if ($write_var eq "") { $cond.= "("; }
 			$cond .=
-				"is_word_intermediate(".$words[$range_from[$i]]."_V,"
+				"Text__is_word_intermediate(".$words[$range_from[$i]]."_V,"
 				. var_offset($left_var, $left_inset)
 				. ","
 				. var_offset($right_var, 0-$right_inset)."))";

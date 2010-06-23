@@ -260,7 +260,8 @@ sub tangle_code {
 		if ($expanded =~ m/^\?\:\s*(.*)$/) {
 			inweb_error_at_program_line("C-for-Inform error ($1)", $tline);
 		}
-		print TANGLEOUT $expanded, "\n";
+
+		tangle_out($expanded);
 	}
 }
 
@@ -277,8 +278,8 @@ comment notation |#|.)
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
 			($web_language == $PERL_LANGUAGE))) {
 		$contiguous = 1;
-		print TANGLEOUT "#line ", $line_source_file_line[$tline],
-			" \"", $section_pathname_relative_to_web[$line_sec[$tline]], "\"\n";
+		tangle_out("#line ".$line_source_file_line[$tline].
+			" \"".$section_pathname_relative_to_web[$line_sec[$tline]]."\"");
 	}
 
 @ The tricky point here is that |CWEB| is stream-of-characters rather than
@@ -313,14 +314,14 @@ was forced into this by the deficiencies of Pascal as it then stood).
 			$tline);
 	}
 	@<Place a comment indicating original source file position if necessary@>;
-	print TANGLEOUT expand_double_squares($prologue, 1), "\n";
+	tangle_out(expand_double_squares($prologue, 1));
 	if (not(exists $cweb_macros_start{$name})) {
 		inweb_error_at_program_line("no such <...> macro as '".$name."'", $tline);
 	} else {
 		if (($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
 			($web_language == $PERL_LANGUAGE)) { print TANGLEOUT " { "; }
-		print TANGLEOUT expand_double_squares($cweb_macros_surplus_bit{$name}, 1), "\n";
+		tangle_out(expand_double_squares($cweb_macros_surplus_bit{$name}, 1));
 		tangle_code($cweb_macros_start{$name}, $cweb_macros_end{$name}, 1);
 		if (($web_language == $C_LANGUAGE) ||
 			($web_language == $C_FOR_INFORM_LANGUAGE) ||
@@ -330,9 +331,20 @@ was forced into this by the deficiencies of Pascal as it then stood).
 	print TANGLEOUT "\n";
 	if ($residue ne "") {
 		@<Place a comment indicating original source file position if necessary@>;
-		print TANGLEOUT expand_double_squares($residue, 1), "\n";
+		tangle_out(expand_double_squares($residue, 1));
 	}
 	next;
+
+@
+
+@c
+sub tangle_out {
+	my $line_of_code = $_[0];
+	if ($web_language == $C_FOR_INFORM_LANGUAGE) {
+		$line_of_code =~ s/\:\:/__/g;
+	}
+	print TANGLEOUT $line_of_code, "\n";
+}
 
 @p Substituting bibliographic data.
 We expand material in double square brackets if either

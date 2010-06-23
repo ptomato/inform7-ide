@@ -25,9 +25,10 @@ typedef struct text_file_position {
 This is useful for error messages:
 
 @c
-/**/ void describe_file_position(text_file_position *tfp) {
+/**/ void describe_file_position(char *t, text_file_position *tfp) {
+	*t = 0;
 	if (tfp == NULL) return;
-	fprintf(stderr, "%s, line %d: ", tfp->text_file_filename, tfp->line_count);
+	sprintf(t, "%s, line %d: ", tfp->text_file_filename, tfp->line_count);
 }
 
 @
@@ -59,28 +60,66 @@ text_file_position *error_position = NULL;
 }
 
 /**/ void error(char *erm) {
- 	describe_file_position(error_position);
-   fprintf(stderr, "Error: %s\n", erm);
-    error_count++;
+	char err[MAX_FILENAME_LENGTH];
+ 	describe_file_position(err, error_position);
+	sprintf(err+strlen(err), "Error: %s\n", erm);
+	spool_error(err);
 }
 
 /**/ void error_1(char *erm, char *s) {
-	describe_file_position(error_position);
-    fprintf(stderr, "Error: %s: '%s'\n", erm, s);
-    error_count++;
+	char err[MAX_FILENAME_LENGTH];
+ 	describe_file_position(err, error_position);
+	sprintf(err+strlen(err), "Error: %s: '%s'\n", erm, s);
+	spool_error(err);
+}
+
+/**/ void errorf_1s(char *erm, char *s1) {
+	char err[MAX_FILENAME_LENGTH];
+ 	sprintf(err, erm, s1);
+	spool_error(err);
+}
+
+/**/ void errorf_2s(char *erm, char *s1, char *s2) {
+	char err[MAX_FILENAME_LENGTH];
+ 	sprintf(err, erm, s1, s2);
+	spool_error(err);
 }
 
 /**/ void fatal(char *erm) {
-	describe_file_position(error_position);
-    fprintf(stderr, "Fatal error: %s\n", erm);
+	char err[MAX_FILENAME_LENGTH];
+ 	describe_file_position(err, error_position);
+	sprintf(err+strlen(err), "Fatal error: %s\n", erm);
+	spool_error(err);
+    print_report();
     exit(1);
 }
 
 /**/ void fatal_fs(char *erm, char *fn) {
-	describe_file_position(error_position);
-    fprintf(stderr, "Fatal error: %s: filename '%s'\n", erm, fn);
+	char err[MAX_FILENAME_LENGTH];
+ 	describe_file_position(err, error_position);
+	sprintf(err+strlen(err), "Fatal error: %s: filename '%s'\n", erm, fn);
+	spool_error(err);
+    print_report();
     exit(1);
 }
+
+/**/ void warning_fs(char *erm, char *fn) {
+	char err[MAX_FILENAME_LENGTH];
+ 	describe_file_position(err, error_position);
+    fprintf(stderr, "%sWarning: %s: filename '%s'\n", err, erm, fn);
+}
+
+@ Errors are spooled to a placeholder, for the benefit of the report:
+
+@c
+void spool_error(char *err) {
+	append_to_placeholder("CBLORBERRORS", "<li>");
+	append_to_placeholder("CBLORBERRORS", err);
+	append_to_placeholder("CBLORBERRORS", "</li>");
+	fprintf(stderr, "%s", err);
+	error_count++;
+}
+
 
 @p File handling.
 We read lines in, delimited by any of the standard line-ending characters,
@@ -139,6 +178,7 @@ values returned by |ftell| into this field.
 @<Read in lines and send them one by one to the iterator@> =
 	char line[MAX_TEXT_FILE_LINE_LENGTH+1];
 	int i = 0, c = ' ';
+	int warned = FALSE;
 	while ((c != EOF) && (tfp.actively_scanning)) {
 		c = fgetc(HANDLE);
 		if ((c == EOF) || (c == '\x0a') || (c == '\x0d')) {
@@ -154,12 +194,16 @@ values returned by |ftell| into this field.
 			if (i < MAX_TEXT_FILE_LINE_LENGTH) line[i++] = (char) c;
 			else {
 				if (serious) fatal_fs("line too long", filename);
-				error_1("line too long (truncating it)", filename);
+				if (warned == FALSE) {
+					warning_fs("line too long (truncating it)", filename);
+					warned = TRUE;
+				}
 			}
 		}
 	}
 	if ((i > 0) && (tfp.actively_scanning))
 		@<Feed the completed line to the iterator routine@>;
+
 
 @ We update the line counter only when a line is actually sent:
 
@@ -251,6 +295,7 @@ general-purpose file utilities:
 		if (fseek(TEST_FILE, 0, SEEK_END) == 0) {
 			long int file_size = ftell(TEST_FILE);
 			if (file_size == -1L) fatal_fs("ftell failed on linked file", filename);
+			fclose(TEST_FILE);
 			return file_size;
 		} else fatal_fs("fseek failed on linked file", filename);
 		fclose(TEST_FILE);
@@ -258,18 +303,29 @@ general-purpose file utilities:
 	return -1L;
 }
 
-/**/ void copy_file(char *from, char *to) {
+/**/ int copy_file(char *from, char *to, int suppress_error) {
 	if ((from == NULL) || (to == NULL) || (strcmp(from, to) == 0))
 		fatal("files confused in copier");
 
-	FILE *FROM = fopen(from, "rb"); if (FROM == NULL) fatal_fs("unable to read file", from);
-	FILE *TO = fopen(to, "wb"); if (TO == NULL) fatal_fs("unable to write to file", to);
+	FILE *FROM = fopen(from, "rb");
+	if (FROM == NULL) {
+		if (suppress_error == FALSE) fatal_fs("unable to read file", from);
+		return -1;
+	}
+	FILE *TO = fopen(to, "wb");
+	if (TO == NULL) {
+		fatal_fs("unable to write to file", to);
+		return -1;
+	}
 
+	int size = 0;
 	while (TRUE) {
 		int c = fgetc(FROM);
 		if (c == EOF) break;
+		size++;
 		putc(c, TO);
 	}
 
 	fclose(FROM); fclose(TO);
+	return size;
 }

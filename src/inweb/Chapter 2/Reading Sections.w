@@ -154,10 +154,11 @@ variables with fixed names; a blank line ends the block.
 			($key eq "Purpose") || ($key eq "Licence") ||
 			($key eq "Build Number") || ($key eq "Language") ||
 			($key eq "Index Extras") || ($key eq "Index Template") ||
-			($key eq "Cover Sheet") ||
+			($key eq "Cover Sheet") || ($key eq "Namespaces") ||
 			($key eq "Strict Usage Rules") || ($key eq "Declare Section Usage")) {
 			$bibliographic_data{$key} = $value;
-			if ((($key eq "Strict Usage Rules") || ($key eq "Declare Section Usage")) &&
+			if ((($key eq "Strict Usage Rules") || ($key eq "Declare Section Usage") ||
+				($key eq "Namespaces")) &&
 				($value ne "On") && ($value ne "Off")) {
 				inweb_error_at("This setting must be 'On' or 'Off'", "Contents.w", $clc);
 			}

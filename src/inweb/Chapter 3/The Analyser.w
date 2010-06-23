@@ -209,6 +209,7 @@ used in a big C-like project.
 @c
 sub catalogue_the_sections {
 	my $sigil = $_[0];
+	my $functions_too = $_[1];
 	my $only = -1;
 	my $cn = -1;
 
@@ -220,7 +221,8 @@ sub catalogue_the_sections {
 		if (($only != -1) && ($only != $section_chap[$i])) { next; }
 		@<Produce dividing bars between chapters@>;
 		@<Produce catalogue line for this section@>;
-		@<Produce list of data structures owned by this section@>;
+		if ($functions_too == 1) @<Produce list of functions owned by this section@>
+		else @<Produce list of data structures owned by this section@>;
 	}
 }
 
@@ -242,17 +244,19 @@ sub catalogue_the_sections {
 	print sprintf("%4d  %-9s  %-50s  ",
 		$section_extent[$i], $section_sigil[$i], $main_title);
 
-	if ($section_declared_a_service[$i] == 1) {
-		print "SERVICE ";
-	}
-
-	if ($functions_usage_count{"compare_word"} > 0) {
-		print sprintf("CW:%3d   ", $functions_usage_count{"compare_word"});
-	}
-
-	foreach $struc (sort keys %structures) {
-		if ($structure_owner{$struc} eq $section_leafname[$i]) {
-			print $struc, "  ";
+	if ($functions_too == 1) {
+		print $section_namespace[$i];
+	} else {
+		print $section_namespace[$i], " ";
+	
+		if ($functions_usage_count{"compare_word"} > 0) {
+			print sprintf("CW:%3d   ", $functions_usage_count{"compare_word"});
+		}
+	
+		foreach $struc (sort keys %structures) {
+			if ($structure_owner{$struc} eq $section_leafname[$i]) {
+				print $struc, "  ";
+			}
 		}
 	}
 	print "\n";
@@ -265,6 +269,18 @@ sub catalogue_the_sections {
 			if ($structure_ownership_summary{$struc} ne "") {
 				print sprintf("      %-9s  %-50s  ", "", "");
 				print $struc, ": ", $structure_ownership_summary{$struc}, "\n";
+			}
+		}
+	}
+	
+@ And here we have the function catalogue:
+
+@<Produce list of functions owned by this section@> =
+	foreach $f (sort keys %functions_line) {
+		if ($f =~ m/__/) {
+			if ($section_leafname[$line_sec[$functions_line{$f}]] eq $section_leafname[$i]) {
+				$f =~ s/__/::/g;
+				print sprintf("      %-9s  %-50s -> \n", "", $f);
 			}
 		}
 	}

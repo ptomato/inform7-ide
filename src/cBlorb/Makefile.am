@@ -9,6 +9,7 @@ cblorbsrc = \
 	Chapter\ 1/Memory.w \
 	Chapter\ 1/Text\ Files.w \
 	Chapter\ 2/Blorb\ Writer.w \
+	Chapter\ 3/Base64.w \
 	Chapter\ 3/Links\ and\ Auxiliary\ Files.w \
 	Chapter\ 3/Placeholders.w \
 	Chapter\ 3/Releaser.w \

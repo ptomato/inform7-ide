@@ -63,7 +63,9 @@ template_path *seek_file_in_template_paths(char *name, char *leafname) {
 ``Molybdenum''. We ought to do this by looking for a directory of that name
 among the template paths, but searching for directories is a little tricky
 to do in ANSI C in a way which will work on all platforms. So instead we
-look for any of the four files which compulsorily ought to exist.
+look for any of the four files which compulsorily ought to exist (or the
+one which does in the case of an interpreter; those look rather like
+website templates).
 
 @c
 template *find_template(char *name) {
@@ -72,7 +74,8 @@ template *find_template(char *name) {
 	template_path *tp = seek_file_in_template_paths(name, "index.html");
 	if (tp == NULL) tp = seek_file_in_template_paths(name, "source.html");
 	if (tp == NULL) tp = seek_file_in_template_paths(name, "style.css");
-	if (tp == NULL) tp = seek_file_in_template_paths(name, "(extras.txt)");
+	if (tp == NULL) tp = seek_file_in_template_paths(name, "(extras).txt");
+	if (tp == NULL) tp = seek_file_in_template_paths(name, "(manifest).txt");
 	if (tp) {
 		t = CREATE(template);
 		strcpy(t->template_name, name);
@@ -94,9 +97,21 @@ If we can't find the file |name| in the template specified, we try looking
 inside ``Standard'' instead (if we can find a template of that name).
 
 @c
+int template_doesnt_exist = FALSE;
 /**/ char *find_file_in_named_template(char *name, char *needed) {
 	template *t = find_template(name), *Standard = find_template("Standard");
-	if (t == NULL) { error_1("template seems not to exist", name); return NULL; }
+	if (t == NULL) {
+		if (template_doesnt_exist == FALSE) {
+			errorf_1s(
+				"Websites and play-in-browser interpreter web pages are created "
+				"using named templates. (Basic examples are built into the Inform "
+				"application. You can also create your own, putting them in the "
+				"'Templates' subfolder of the project's Materials folder.) Each "
+				"template has a name. On this Release, I tried to use the "
+				"'%s' template, but couldn't find a copy of it anywhere.", name);
+		}
+		template_doesnt_exist = TRUE;
+	}
 	char *path = try_single_template(t, needed);
 	if ((path == NULL) && (Standard))
 		path = try_single_template(Standard, needed);
