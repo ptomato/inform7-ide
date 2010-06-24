@@ -204,7 +204,6 @@ data/licenses/Makefile
 data/languages/Makefile
 data/styles/Makefile
 pixmaps/Makefile
-debian/Makefile
 ])
 # Do it
 AC_OUTPUT
