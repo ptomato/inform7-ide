@@ -83,6 +83,7 @@ void on_show_world_activate(GtkMenuItem *menuitem, gpointer data);
 void on_next_sub_panel_activate(GtkMenuItem *menuitem, gpointer data);
 void on_inform_help_activate(GtkMenuItem *menuitem, gpointer data);
 void on_license_activate(GtkMenuItem *menuitem, gpointer data);
+void on_suggest_a_feature_activate(GtkMenuItem *menuitem, gpointer data);
 void on_report_a_bug_activate(GtkMenuItem *menuitem, gpointer data);
 void on_help_extensions_activate(GtkMenuItem *menuitem, gpointer data);
 void on_recipe_book_activate(GtkMenuItem *menuitem, gpointer data);

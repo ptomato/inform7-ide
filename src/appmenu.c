@@ -841,13 +841,23 @@ on_license_activate(GtkMenuItem *menuitem, gpointer data)
 }
 
 void
+on_suggest_a_feature_activate(GtkMenuItem *menuitem, gpointer data)
+{
+	GError *err = NULL;
+	if(!gnome_url_show("http://inform7.uservoice.com/", &err))
+		error_dialog(NULL, err,
+			_("The page \"%s\" should have opened in your browser:"),
+			"http://inform7.uservoice.com/");
+}
+
+void
 on_report_a_bug_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	GError *err = NULL;
-	if(!gnome_url_show("http://inform7.com/contribute/report", &err))
+	if(!gnome_url_show("http://inform7.com/mantis", &err))
 		error_dialog(NULL, err, 
 			_("The page \"%s\" should have opened in your browser:"),
-		    "http://inform7.com/contribute/report");
+		    "http://inform7.com/mantis");
 }
 
 void
