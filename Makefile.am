@@ -39,17 +39,18 @@ DISTCLEANFILES = \
 if BUILDING_RPM
 RPMDIR=`$(RPM) --eval %_rpmdir`
 SRCRPMDIR=`$(RPM) --eval %_srcrpmdir`
-RPMARCH=`$(RPM) --eval %_arch`
+RPMARCH=`$(RPM) --eval %_target_cpu`
 BINRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
 DEBUGRPM = $(PACKAGE)-debuginfo-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
 SRCRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).src.rpm
 rpm: dist
 	$(ECHO) "Building RPM package..."; \
 	$(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.gz && \
-	$(CP) $(RPMDIR)/$(BINRPM) $(srcdir) && \
-	$(CP) $(SRCRPMDIR)/$(SRCRPM) $(srcdir) && \
-	$(TEST) -e $(RPMDIR)/$(DEBUGRPM) && \
-	$(CP) $(RPMDIR)/$(DEBUGRPM) $(srcdir)
+	$(CP) $(RPMDIR)/$(RPMARCH)/$(BINRPM) $(srcdir) && \
+	$(CP) $(SRCRPMDIR)/$(SRCRPM) $(srcdir); \
+	$(TEST) -e $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) && \
+	$(CP) $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) $(srcdir) || \
+	$(ECHO) "No debug package; install redhat-rpm-config if you want one."
 else
 rpm:
 	@$(ECHO) \
