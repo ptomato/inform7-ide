@@ -68,11 +68,12 @@ enum {
 
 /* The tabs in the preferences window */
 enum {
-    TAB_STYLES,
+    TAB_AUTHOR,
+    TAB_EDITING,
+    TAB_FORMATTING,
+    TAB_ADVANCED,
     TAB_INSPECTORS,
-    TAB_EXTENSIONS,
-    TAB_INTELLIGENCE,
-    TAB_ADVANCED
+    TAB_EXTENSIONS
 };
 
 gboolean update_ext_window_fonts(GtkWidget *extwindow);
