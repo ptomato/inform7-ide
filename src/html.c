@@ -178,7 +178,7 @@ on_url_requested(GtkHTML *html, const gchar *url, GtkHTMLStream *handle,
     gchar *buf;
     gchar *anchor;
     gsize length;
-    gchar *file = g_strdup(url);
+    gchar *file = g_uri_unescape_string(url, "");
     
     /* Get the anchor if there is a # in the URL, and remove it from the URL */
     if((anchor = strchr(file, '#')))
@@ -274,7 +274,8 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
     GError *err = NULL;
     gchar *anchor;
     gchar *real_url = NULL;
-    gchar *url = g_strdup(requested_url); /* make a copy so we can mess w/ it */
+    gchar *url = g_uri_unescape_string(requested_url, ""); 
+    /* we make a copy so we can mess with it */
     
     /* Check if there is an anchor we have to jump to later and remove it from
     the regular URL */
