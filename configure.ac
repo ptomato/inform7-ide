@@ -165,14 +165,13 @@ PKG_CHECK_MODULES([GTKTERP], [
 	gdk-2.0
 	gtk+-2.0 >= 2.8.0
 	freetype2 
-	sdl 
-	SDL_mixer
+	sdl
 	libpng 
 	dbus-glib-1
 ])
-# SDL sound and libjpeg don't use pkg-config
-# Also, -lm needs to be added here for some reason
-GTKTERP_LIBS="$GTKTERP_LIBS -lSDL_sound -ljpeg -lm"
+# SDL mixer, SDL sound and libjpeg don't use pkg-config
+# Also, -lm needs to be added here to work around Fedora bug FIXME
+GTKTERP_LIBS="$GTKTERP_LIBS -lSDL_mixer -lSDL_sound -ljpeg -lm"
 AC_SUBST(GTKTERP_LIBS)
 
 # Get current year for updating copyrights
