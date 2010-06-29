@@ -8,7 +8,7 @@ gtkterp_frotz_SOURCES = buffer.c err.c fastmem.c files.c input.c main.c \
 	glkfrotz.h glkio.h
 gtkterp_frotz_CFLAGS = @GTKTERP_CFLAGS@ -I../garglk
 gtkterp_frotz_LDFLAGS = -L/usr/lib -L/usr/local/lib
-gtkterp_frotz_LDADD = @GTKTERP_LIBS@ ../garglk/libgarglk.a
+gtkterp_frotz_LDADD = ../garglk/libgarglk.a @GTKTERP_LIBS@
 
 frotzdocdir = $(datadir)/doc/$(PACKAGE)/frotz
 dist_frotzdoc_DATA = AUTHORS COPYING README TODO

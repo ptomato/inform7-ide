@@ -7,7 +7,7 @@ gtkterp_glulxe_SOURCES = main.c files.c vm.c exec.c funcs.c operand.c \
 	heap.c gestalt.h glulxe.h opcodes.h accel.c profile.c 
 gtkterp_glulxe_CFLAGS = @GTKTERP_CFLAGS@ -I../garglk -DOS_UNIX
 gtkterp_glulxe_LDFLAGS = -L/usr/lib -L/usr/local/lib
-gtkterp_glulxe_LDADD = @GTKTERP_LIBS@ ../garglk/libgarglk.a
+gtkterp_glulxe_LDADD = ../garglk/libgarglk.a @GTKTERP_LIBS@
 
 glulxedocdir = $(datadir)/doc/$(PACKAGE)/glulxe
 dist_glulxedoc_DATA = README

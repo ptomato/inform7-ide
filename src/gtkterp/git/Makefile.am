@@ -7,7 +7,7 @@ gtkterp_git_SOURCES = accel.c compiler.c compiler.h config.h gestalt.c git.c \
 	operands.c peephole.c savefile.c saveundo.c search.c terp.c version.h
 gtkterp_git_CFLAGS = @GTKTERP_CFLAGS@ -I../garglk -DUSE_INLINE -DUSE_DIRECT_THREADING
 gtkterp_git_LDFLAGS = -L/usr/lib -L/usr/local/lib
-gtkterp_git_LDADD = @GTKTERP_LIBS@ ../garglk/libgarglk.a
+gtkterp_git_LDADD = ../garglk/libgarglk.a @GTKTERP_LIBS@
 
 gitdocdir = $(datadir)/doc/$(PACKAGE)/git
 dist_gitdoc_DATA = README.txt
