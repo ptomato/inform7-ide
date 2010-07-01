@@ -44,6 +44,7 @@ AC_PATH_PROG([PDFTEX], [pdftex], [notfound])
 AC_PATH_PROG([DOT], [dot], [notfound])
 AC_PATH_PROG([RPMBUILD], [rpmbuild], [notfound])
 AC_PATH_PROG([RPM], [rpm], [notfound])
+AC_PATH_PROG([DEBUILD], [debuild], [notfound])
 
 # --enable-rpm copies the ni executable and the spec file to the dist package,
 # for use in building RPM packages. Requires rpm and rpmbuild.
@@ -62,6 +63,24 @@ AC_ARG_ENABLE([rpm],
 	[rpm=false]
 )
 AM_CONDITIONAL([BUILDING_RPM], [$TEST "x$rpm" = xtrue])
+
+# --enable-deb copies only the ni executable to the dist package, for use in
+# building DEB packages.
+AC_ARG_ENABLE([deb],
+	[AS_HELP_STRING([--enable-deb],[Configure for building DEB package [no]])],
+	[AS_CASE([${enableval}],
+		[yes], [AS_IF(
+			[$TEST "x$DEBUILD" = xnotfound],
+				[AC_MSG_ERROR([debuild is required for --enable-deb])],
+			[$TEST "x$rpm" = xtrue],
+				[AC_MSG_ERROR([--enable-rpm and --enable-deb are mutually exclusive])],
+			[deb=true])],
+		[no],  [deb=false],
+		[AC_MSG_ERROR([bad value ${enableval} for --enable-deb])]
+	)],
+	[deb=false]
+)
+AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$deb" = xtrue])
 
 # --enable-manuals builds the inweb and cBlorb manuals. Requires pdftex and dot.
 AC_ARG_ENABLE([manuals],
@@ -109,6 +128,7 @@ AC_PATH_PROG([CAT], [cat])        # cat
 AC_PATH_PROG([ECHO], [echo])      # echo
 AC_PATH_PROG([CP], [cp])          # cp
 AC_PATH_PROG([DATE], [date])      # date
+AC_PATH_PROG([MV], [mv])          # mv
 # Other programs
 AM_GLIB_GNU_GETTEXT               # Use GLib gettext instead of standard
 IT_PROG_INTLTOOL([0.35.0])        # Intltool

@@ -6,8 +6,10 @@ pkglibexecdir = $(libexecdir)/$(PACKAGE)
 pkglibexec_SCRIPTS = ni
 
 # We leave it out of the regular source distribution produced by "make dist",
-# but leave it in when we're feeding the dist tarball to rpmbuild
+# but leave it in when we're feeding the dist tarball to rpmbuild or debuild
 if BUILDING_RPM
 EXTRA_DIST = ni
 endif
-
+if BUILDING_DEB
+EXTRA_DIST = ni
+endif

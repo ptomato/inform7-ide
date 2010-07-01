@@ -57,3 +57,32 @@ rpm:
 	"To build an RPM package, you must run configure with --enable-rpm."; \
 	exit 1
 endif
+
+if BUILDING_DEB
+DEBSOURCEPKG=$(PACKAGE)_$(VERSION).orig.tar.gz
+DEBSOURCEDIR=$(PACKAGE)-$(VERSION)
+deb: dist
+	$(ECHO) "Building Debian package..."; \
+	$(MV) $(PACKAGE)-$(VERSION).tar.gz $(DEBSOURCEPKG) && \
+	$(TAR) --extract --gunzip --file $(DEBSOURCEPKG) && \
+	$(MKDIR_P) $(DEBSOURCEDIR)/debian && \
+	$(CP) \
+		debian/changelog \
+		debian/compat \
+		debian/control \
+		debian/copyright \
+		debian/docs \
+		debian/menu \
+		debian/rules \
+		$(DEBSOURCEDIR)/debian && \
+	cd $(DEBSOURCEDIR) && \
+	$(DEBUILD); \
+	cd $(srcdir); \
+	rm --force $(DEBSOURCEPKG); \
+	rm --recursive --force $(DEBSOURCEDIR)
+else
+deb:
+	@$(ECHO) \
+	"To build a Debian package, you must run configure with --enable-deb."; \
+	exit 1
+endif
