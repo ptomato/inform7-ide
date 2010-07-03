@@ -5,7 +5,7 @@
 # Initialize autoconf
 # Args: (human-readable package name, package version, bug report address, 
 # tarballname)
-AC_INIT([GNOME Inform 7], [6E59], [http://inform7.com/contribute/report], [gnome-inform7])
+AC_INIT([GNOME Inform 7], [6E72], [http://inform7.com/contribute/report], [gnome-inform7])
 # Require Autoconf 2.60; I think the newest feature is AC_PROG_MKDIR_P...
 AC_PREREQ([2.60])
 # Sanity check to make sure we are running Autoconf from the right directory

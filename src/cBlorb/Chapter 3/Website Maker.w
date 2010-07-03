@@ -565,10 +565,10 @@ pages |doc_0.html| and so on up.
 
 @c
 /**/ void expand_PAGEEXTENT_variable(FILE *COPYTO) {
-	int doc = FALSE;
+	int doc = FALSE, n = 0;
 	if ((segment_being_written) && (segment_being_written->documentation)) doc = TRUE;
-	if (doc) fprintf(COPYTO, "%d", no_doc_files);
-	else fprintf(COPYTO, "%d", no_src_files);
+	if (doc) n = no_doc_files; else n = no_src_files;
+	if (n > 0) fprintf(COPYTO, "%d", n); else fprintf(COPYTO, "1");
 }
 
 @ And this is what ``[SOURCELINKS]'' in the template becomes:
