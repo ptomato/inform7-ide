@@ -76,7 +76,7 @@ deb: dist
 		debian/rules \
 		$(DEBSOURCEDIR)/debian && \
 	cd $(DEBSOURCEDIR) && \
-	$(DEBUILD); \
+	$(DEBUILD) -rfakeroot -D -us -uc; \
 	cd $(srcdir); \
 	rm --force $(DEBSOURCEPKG); \
 	rm --recursive --force $(DEBSOURCEDIR)

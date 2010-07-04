@@ -44,7 +44,7 @@ AC_PATH_PROG([PDFTEX], [pdftex], [notfound])
 AC_PATH_PROG([DOT], [dot], [notfound])
 AC_PATH_PROG([RPMBUILD], [rpmbuild], [notfound])
 AC_PATH_PROG([RPM], [rpm], [notfound])
-AC_PATH_PROG([DEBUILD], [debuild], [notfound])
+AC_PATH_PROG([DEBUILD], [dpkg-buildpackage], [notfound])
 
 # --enable-rpm copies the ni executable and the spec file to the dist package,
 # for use in building RPM packages. Requires rpm and rpmbuild.
