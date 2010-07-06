@@ -71,7 +71,7 @@ AC_ARG_ENABLE([deb],
 	[AS_CASE([${enableval}],
 		[yes], [AS_IF(
 			[$TEST "x$DEBUILD" = xnotfound],
-				[AC_MSG_ERROR([debuild is required for --enable-deb])],
+				[AC_MSG_ERROR([dpkg-buildpackage is required for --enable-deb])],
 			[$TEST "x$rpm" = xtrue],
 				[AC_MSG_ERROR([--enable-rpm and --enable-deb are mutually exclusive])],
 			[deb=true])],
