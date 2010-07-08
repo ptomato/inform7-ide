@@ -73,6 +73,8 @@ static void touchscroll(window_textbuffer_t *dwin)
 window_textbuffer_t *win_textbuffer_create(window_t *win)
 {
     window_textbuffer_t *dwin = malloc(sizeof(window_textbuffer_t));
+    dwin->lines = malloc(sizeof(tbline_t) * SCROLLBACK);
+
     int i;
 
     dwin->owner = win;
@@ -86,6 +88,7 @@ window_textbuffer_t *win_textbuffer_create(window_t *win)
     dwin->lastseen = 0;
     dwin->scrollpos = 0;
     dwin->scrollmax = 0;
+    dwin->scrollback = SCROLLBACK;
 
     dwin->width = -1;
     dwin->height = -1;
@@ -102,7 +105,7 @@ window_textbuffer_t *win_textbuffer_create(window_t *win)
     dwin->spaced = 0;
     dwin->dashed = 0;
 
-    for (i = 0; i < SCROLLBACK; i++)
+    for (i = 0; i < dwin->scrollback; i++)
     {
         dwin->lines[i].dirty = 0;
         dwin->lines[i].repaint = 0;
@@ -120,8 +123,7 @@ window_textbuffer_t *win_textbuffer_create(window_t *win)
 
     memcpy(dwin->styles, gli_tstyles, sizeof gli_tstyles);
 
-    for (i = 0; i < (SCROLLBACK + SCROLLBACK * TBLINELEN); i++)
-        dwin->copybuf[i] = 0;
+    dwin->copybuf = 0;
     dwin->copypos = 0;
 
     return dwin;
@@ -138,16 +140,12 @@ void win_textbuffer_destroy(window_textbuffer_t *dwin)
 
     dwin->owner = NULL;
 
+    if (dwin->copybuf)
+        free(dwin->copybuf);
+
+    free(dwin->lines);
     free(dwin);
 }
-
-/* define variables for text buffer reflow() */
-attr_t attrbuf[TBLINELEN*SCROLLBACK];
-glui32 charbuf[TBLINELEN*SCROLLBACK];
-int alignbuf[SCROLLBACK];
-picture_t *pictbuf[SCROLLBACK];
-glui32 hyperbuf[SCROLLBACK];
-int offsetbuf[SCROLLBACK];
 
 static void reflow(window_t *win)
 {
@@ -162,6 +160,17 @@ static void reflow(window_t *win)
         return;
 
     dwin->lines[0].len = dwin->numchars;
+
+    /* allocate temp buffers */
+    attr_t *attrbuf = malloc(sizeof(attr_t) * dwin->scrollback * TBLINELEN);
+    glui32 *charbuf = malloc(sizeof(glui32) * dwin->scrollback * TBLINELEN);
+    int *alignbuf = malloc(sizeof(int) * dwin->scrollback);
+    picture_t **pictbuf = malloc(sizeof(size_t) * dwin->scrollback);
+    glui32 *hyperbuf = malloc(sizeof(glui32) * dwin->scrollback);
+    int *offsetbuf = malloc(sizeof(int) * dwin->scrollback);
+
+    if (!attrbuf || !charbuf || !alignbuf || !pictbuf || !hyperbuf || !offsetbuf)
+        return;
 
     /* copy text to temp buffers */
 
@@ -243,6 +252,14 @@ static void reflow(window_t *win)
         dwin->incurs = dwin->numchars;
     }
 
+    /* free temp buffers */
+    free(attrbuf);
+    free(charbuf);
+    free(alignbuf);
+    free(pictbuf);
+    free(hyperbuf);
+    free(offsetbuf);
+
     win->attr = oldattr;
 
     touchscroll(dwin);
@@ -253,6 +270,7 @@ void win_textbuffer_rearrange(window_t *win, rect_t *box)
     window_textbuffer_t *dwin = win->data;
     int newwid, newhgt;
     int rnd;
+    int i;
 
     dwin->owner->bbox = *box;
 
@@ -288,6 +306,17 @@ void win_textbuffer_rearrange(window_t *win, rect_t *box)
             dwin->scrollpos = 0;
         
         touchscroll(dwin);
+
+        /* allocate copy buffer */
+        if (dwin->copybuf)
+            free(dwin->copybuf);
+
+        dwin->copybuf = malloc(sizeof(glui32) * dwin->height * TBLINELEN);
+
+        for (i = 0; i < (dwin->height * TBLINELEN); i++)
+            dwin->copybuf[i] = 0;
+
+        dwin->copypos = 0;
     }
 }
 
@@ -318,10 +347,6 @@ static int calcwidth(window_textbuffer_t *dwin,
 void win_textbuffer_redraw(window_t *win)
 {
     window_textbuffer_t *dwin = win->data;
-    int drawmore = win->line_request || win->char_request || win->line_request_uni || win->char_request_uni;
-	/* GI7 EDIT */    
-	if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
-        drawmore = 0;
     tbline_t *ln;
     int linelen;
     int nsp, spw, pw;
@@ -631,7 +656,7 @@ void win_textbuffer_redraw(window_t *win)
     /*
      * draw the images
      */
-    for (i = 0; i < SCROLLBACK; i++)
+    for (i = 0; i < dwin->scrollback; i++)
     {
         memcpy(ln, dwin->lines + i, sizeof(tbline_t));
 
@@ -732,14 +757,51 @@ void win_textbuffer_redraw(window_t *win)
     free(ln);
 }
 
+static void scrollresize(window_textbuffer_t *dwin)
+{
+    int i;
+
+    tbline_t *newlines = realloc(dwin->lines, sizeof(tbline_t) * (dwin->scrollback + SCROLLBACK));
+
+    if (!newlines)
+        return;
+
+    dwin->lines = newlines;
+    dwin->chars = dwin->lines[0].chars;
+    dwin->attrs = dwin->lines[0].attrs;
+
+    for (i = dwin->scrollback; i < (dwin->scrollback + SCROLLBACK); i++)
+    {
+        dwin->lines[i].dirty = 0;
+        dwin->lines[i].repaint = 0;
+        dwin->lines[i].lm = 0;
+        dwin->lines[i].rm = 0;
+        dwin->lines[i].lpic = 0;
+        dwin->lines[i].rpic = 0;
+        dwin->lines[i].lhyper = 0;
+        dwin->lines[i].rhyper = 0;
+        dwin->lines[i].len = 0;
+        dwin->lines[i].newline = 0;
+        memset(dwin->lines[i].chars, ' ', sizeof dwin->lines[i].chars);
+        memset(dwin->lines[i].attrs,   0, sizeof dwin->lines[i].attrs);
+    }
+
+    dwin->scrollback += SCROLLBACK;
+}
+
 static void scrolloneline(window_textbuffer_t *dwin, int forced)
 {
     int i;
 
-    if (dwin->lastseen >= dwin->height - 1)
-        dwin->scrollpos ++;
     dwin->lastseen ++;
     dwin->scrollmax ++;
+
+    if (dwin->scrollmax > dwin->scrollback - 1
+            || dwin->lastseen > dwin->scrollback - 1)
+        scrollresize(dwin);
+
+    if (dwin->lastseen >= dwin->height)
+        dwin->scrollpos ++;
 
     if (dwin->scrollpos > dwin->scrollmax - dwin->height + 1)
         dwin->scrollpos = dwin->scrollmax - dwin->height + 1;
@@ -750,9 +812,6 @@ static void scrolloneline(window_textbuffer_t *dwin, int forced)
 	/* Scroll right to the bottom if GarglkPlug is not in interactive mode */
     if(!garglk_plug_get_interactive(GARGLK_PLUG(frame)))
         dwin->scrollpos = 0;
-    	
-    dwin->scrollmax = MIN(dwin->scrollmax, SCROLLBACK-1);
-    dwin->lastseen = MIN(dwin->lastseen, SCROLLBACK-1);
 
     if (forced)
         dwin->dashed = 0;
@@ -761,7 +820,7 @@ static void scrolloneline(window_textbuffer_t *dwin, int forced)
     dwin->lines[0].len = dwin->numchars;
     dwin->lines[0].newline = forced;
 
-    for (i = SCROLLBACK - 2; i > 0; i--)
+    for (i = dwin->scrollback - 1; i > 0; i--)
     {
         memcpy(dwin->lines+i, dwin->lines+i-1, sizeof(tbline_t));
         if (i < dwin->height)
@@ -1048,7 +1107,7 @@ void win_textbuffer_clear(window_t *win)
 
     dwin->numchars = 0;
 
-    for (i = 0; i < SCROLLBACK; i++)
+    for (i = 0; i < dwin->scrollback; i++)
     {
         dwin->lines[i].len = 0;
         dwin->lines[i].lpic = 0;
