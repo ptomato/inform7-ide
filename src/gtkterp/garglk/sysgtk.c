@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
  * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2010 by Ben Cressey, Chris Spiegel.                          *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -38,7 +39,6 @@
 /* GI7 EDIT */
 GtkWidget *frame;
 static GtkWidget *canvas;
-static GtkWidget *filedlog;
 static GdkCursor *gdk_hand;
 static GdkCursor *gdk_ibeam;
 static GtkIMContext *imcontext;
@@ -46,7 +46,6 @@ static GtkIMContext *imcontext;
 #define MaxBuffer 1024
 static int fileselect = 0;
 static char filepath[MaxBuffer];
-static char *filename;
 
 static int timerid = -1;
 static int timeouts = 0;
@@ -55,6 +54,21 @@ static int timeouts = 0;
 static char *cliptext = NULL;
 static int cliplen = 0;
 enum clipsource { PRIMARY , CLIPBOARD };
+
+/* filters for file dialogs */
+static char *winfilternames[] =
+{
+    "Saved game files",
+    "Text files",
+    "All files",
+};
+
+static char *winfilterpatterns[] =
+{
+    "*.sav",
+    "*.txt",
+    "*",
+};
 
 static int timeout(void *data)
 {
@@ -94,41 +108,59 @@ void winexit(void)
     exit(0);
 }
 
-void winchoosefile(char *prompt, char *buf, int len, char *filter, GtkFileChooserAction action)
+void winchoosefile(char *prompt, char *buf, int len, int filter, GtkFileChooserAction action, const char *button)
 {
-    filedlog = gtk_file_chooser_dialog_new(prompt, NULL, action,
-                                    GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                                    GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-                                    NULL);
+    GtkWidget *filedlog = gtk_file_chooser_dialog_new(prompt, NULL, action,
+                                                      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                                                      button, GTK_RESPONSE_ACCEPT,
+                                                      NULL);
+
+    if (filter != FILTER_ALL)
+    {
+        /* first filter added becomes the default */
+        GtkFileFilter *filefilter = gtk_file_filter_new();
+        gtk_file_filter_set_name(filefilter, winfilternames[filter]);
+        gtk_file_filter_add_pattern(filefilter, winfilterpatterns[filter]);
+        gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filedlog), filefilter);
+
+        /* need a second filter or the UI widget gets weird */
+        GtkFileFilter *allfilter = gtk_file_filter_new();
+        gtk_file_filter_set_name(allfilter, winfilternames[FILTER_ALL]);
+        gtk_file_filter_add_pattern(allfilter, winfilterpatterns[FILTER_ALL]);
+        gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(filedlog), allfilter);
+    }
+
+    if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
+    {
+        gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(filedlog), TRUE);
+        char savename[32];
+        sprintf(savename, "Untitled%s", winfilterpatterns[filter]+1);
+        gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(filedlog), savename);
+    }
+
     if (strlen(buf))
-        gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(filedlog), buf);
-    
-    if (fileselect) {
+        gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(filedlog), buf);
+
+    if (fileselect)
         gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filedlog), filepath);
-    } else if (getenv("HOME")) {
+    else if (getenv("HOME"))
         gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(filedlog), getenv("HOME"));
-    }
-    
-    filename = buf;
-    
+
     gint result = gtk_dialog_run(GTK_DIALOG(filedlog));
-    
-    if (result == GTK_RESPONSE_ACCEPT) {
-        strcpy(filename, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filedlog)));
-        strcpy(filepath, gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(filedlog)));
-        fileselect = TRUE;
-    }
-    
-    if (result == GTK_RESPONSE_CANCEL) {
-        strcpy(filename, "");
-    }
-    
+
+    if (result == GTK_RESPONSE_ACCEPT)
+        strcpy(buf, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filedlog)));
+    else
+        strcpy(buf, "");
+
+    strcpy(filepath, gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(filedlog)));
+    fileselect = TRUE;
+
     gtk_widget_destroy(filedlog);
     filedlog = NULL;
 }
 
-
-void winopenfile(char *prompt, char *buf, int len, char *filter)
+void winopenfile(char *prompt, char *buf, int len, int filter)
 {
 	/* GI7 EDIT */
     /* Return if in protected mode */
@@ -137,10 +169,10 @@ void winopenfile(char *prompt, char *buf, int len, char *filter)
     
     char realprompt[256];
     sprintf(realprompt, "Open: %s", prompt);
-    winchoosefile(realprompt, buf, len, filter, GTK_FILE_CHOOSER_ACTION_OPEN);
+    winchoosefile(realprompt, buf, len, filter, GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_OPEN);
 }
 
-void winsavefile(char *prompt, char *buf, int len, char *filter)
+void winsavefile(char *prompt, char *buf, int len, int filter)
 {
 	/* GI7 EDIT */
     /* Return if in protected mode */
@@ -149,7 +181,7 @@ void winsavefile(char *prompt, char *buf, int len, char *filter)
     
     char realprompt[256];
     sprintf(realprompt, "Save: %s", prompt);
-    winchoosefile(realprompt, buf, len, filter, GTK_FILE_CHOOSER_ACTION_SAVE);
+    winchoosefile(realprompt, buf, len, filter, GTK_FILE_CHOOSER_ACTION_SAVE, GTK_STOCK_SAVE);
 }
 
 void winclipstore(glui32 *text, int len)
@@ -248,7 +280,7 @@ void winclipreceive(int source)
     if (!glen)
         return;
 
-    rptr = malloc(sizeof(glui32)*glen);
+    rptr = malloc(sizeof(glui32)*(glen+1));
     rlen = gli_parse_utf8(gptr, glen, rptr, glen);
 
     for (i = 0; i < rlen; i++)
@@ -335,6 +367,14 @@ static void onbuttonup(GtkWidget *widget, GdkEventButton *event, void *data)
     }
 }
 
+static void onscroll(GtkWidget *widget, GdkEventScroll *event, void *data)
+{
+    if (event->direction == GDK_SCROLL_UP)
+        gli_input_handle_key(keycode_MouseWheelUp);
+    else if (event->direction == GDK_SCROLL_DOWN)
+        gli_input_handle_key(keycode_MouseWheelDown);
+}
+
 static void onmotion(GtkWidget *widget, GdkEventMotion *event, void *data)
 {
     int x,y;
@@ -375,27 +415,20 @@ static void oninput(GtkIMContext *context, gchar *input, void *data)
 static void onkeydown(GtkWidget *widget, GdkEventKey *event, void *data)
 {
     int key = event->keyval;
+
+    if (event->state & GDK_CONTROL_MASK) {
+
     switch(key)
     {
-    case GDK_c:
-    case GDK_C:
-        if (event->state & GDK_CONTROL_MASK) {
-            winclipsend(CLIPBOARD);
-            return;
-        }
-    case GDK_x:
-    case GDK_X:
-        if (event->state & GDK_CONTROL_MASK) {
-            winclipsend(CLIPBOARD);
-            return;
-        }
-    case GDK_v:
-    case GDK_V:
-        if (event->state & GDK_CONTROL_MASK) {
-            winclipreceive(CLIPBOARD);
-            return;
-        }
-    default: break;
+    case GDK_a: case GDK_A: gli_input_handle_key(keycode_Home); break;
+    case GDK_c: case GDK_C: winclipsend(CLIPBOARD); break;
+    case GDK_e: case GDK_E: gli_input_handle_key(keycode_End); break;
+    case GDK_u: case GDK_U: gli_input_handle_key(keycode_Escape); break;
+    case GDK_v: case GDK_V: winclipreceive(CLIPBOARD); break;
+    case GDK_x: case GDK_X: winclipsend(CLIPBOARD); break;
+    }
+
+    return;
     }
 
     if (!gtk_im_context_filter_keypress(imcontext, event)) {
@@ -485,11 +518,14 @@ void winopen(void)
     gtk_widget_set_events(frame, GDK_BUTTON_PRESS_MASK
                                | GDK_BUTTON_RELEASE_MASK
                                | GDK_POINTER_MOTION_MASK
-                               | GDK_POINTER_MOTION_HINT_MASK);
+                               | GDK_POINTER_MOTION_HINT_MASK
+                               | GDK_SCROLL_MASK);
     gtk_signal_connect(GTK_OBJECT(frame), "button_press_event", 
     	GTK_SIGNAL_FUNC(onbuttondown), NULL);
     gtk_signal_connect(GTK_OBJECT(frame), "button_release_event", 
     	GTK_SIGNAL_FUNC(onbuttonup), NULL);
+    gtk_signal_connect(GTK_OBJECT(frame), "scroll_event", 
+    	GTK_SIGNAL_FUNC(onscroll), NULL);
     gtk_signal_connect(GTK_OBJECT(frame), "key_press_event", 
     	GTK_SIGNAL_FUNC(onkeydown), NULL);
     gtk_signal_connect(GTK_OBJECT(frame), "key_release_event", 

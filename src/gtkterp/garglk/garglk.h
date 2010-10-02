@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
- * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2006-2009 by Tor Andersson, Jesse McGrew.                    *
+ * Copyright (C) 2010 by Ben Cressey, Chris Spiegel.                          *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -192,8 +193,10 @@ extern unsigned char gli_caret_save[3];
 extern unsigned char gli_more_save[3];
 extern unsigned char gli_link_save[3];
 
-extern int gli_override_fg;
-extern int gli_override_bg;
+extern int gli_override_fg_set;
+extern int gli_override_bg_set;
+extern int gli_override_fg_val;
+extern int gli_override_bg_val;
 extern int gli_override_reverse;
 
 extern int gli_link_style;
@@ -292,6 +295,7 @@ struct eventqueue_s
 eventqueue_t *gli_initialize_queue (void);
 void gli_queue_event(eventqueue_t *queue, event_t *event);
 event_t *gli_retrieve_event(eventqueue_t *queue);
+void gli_dispatch_event(event_t *event, int polled);
 
 #define MAGIC_WINDOW_NUM (9876)
 #define MAGIC_STREAM_NUM (8769)
@@ -350,12 +354,14 @@ struct glk_fileref_struct
 
 typedef struct attr_s
 {
-    unsigned bgcolor : 4;
-    unsigned fgcolor : 4;
+    unsigned fgset   : 1;
+    unsigned bgset   : 1;
+    unsigned fgcolor : 24;
+    unsigned bgcolor : 24;
     unsigned style   : 4;
     unsigned reverse : 1;
     unsigned hyper   : 4;
-    unsigned		 : 3;
+    unsigned         : 5;
 } attr_t;
 
 struct glk_window_struct
@@ -366,6 +372,7 @@ struct glk_window_struct
 
     window_t *parent; /* pair window which contains this one */
     rect_t bbox;
+    int yadj;
     void *data; /* one of the window_*_t structures */
 
     stream_t *str; /* the window stream. */
@@ -380,6 +387,7 @@ struct glk_window_struct
     int hyper_request;
     int more_request;
     int scroll_request;
+    int image_loaded;
 
     attr_t attr;
     unsigned char bgcolor[3];
@@ -600,6 +608,8 @@ extern void gli_windows_size_change(void);
 
 extern void gli_window_click(window_t *win, int x, int y);
 
+void gli_redraw_rect(int x0, int y0, int x1, int y1);
+
 void gli_input_guess_focus();
 void gli_input_more_focus();
 void gli_input_next_focus();
@@ -642,15 +652,22 @@ rect_t gli_compute_content_box();
 
 extern void gli_select(event_t *event, int polled);
 
+enum FILEFILTERS { FILTER_SAVE, FILTER_TEXT, FILTER_ALL };
+
 void wininit(int *argc, char **argv);
 void winopen(void);
 void wintitle(void);
 void winmore(void);
 void winrepaint(int x0, int y0, int x1, int y1);
 void winabort(const char *fmt, ...);
-void winopenfile(char *prompt, char *buf, int buflen, char *filter);
-void winsavefile(char *prompt, char *buf, int buflen, char *filter);
-void winfont(char *font, int type);
+void winopenfile(char *prompt, char *buf, int buflen, int filter);
+void winsavefile(char *prompt, char *buf, int buflen, int filter);
+void winexit(void);
+void winclipstore(glui32 *text, int len);
+
+void fontreplace(char *font, int type);
+void fontload(void);
+void fontunload(void);
 
 int giblorb_is_resource_map();
 void giblorb_get_resource(glui32 usage, glui32 resnum, FILE **file, long *pos, long *len, glui32 *type);
@@ -659,7 +676,8 @@ picture_t *gli_picture_load(unsigned long id);
 void gli_picture_store(picture_t *pic);
 picture_t *gli_picture_retrieve(unsigned long id, int scaled);
 picture_t *gli_picture_scale(picture_t *src, int destwidth, int destheight);
-void gli_piclist_clear(void);
+void gli_piclist_increment(void);
+void gli_piclist_decrement(void);
 
 window_graphics_t *win_graphics_create(window_t *win);
 void win_graphics_destroy(window_graphics_t *cutwin);
@@ -696,37 +714,19 @@ glui32 gli_parse_utf8(unsigned char *buf, glui32 buflen, glui32 *out, glui32 out
 
 glui32 strlen_uni(glui32 *s);
 
+void gli_put_hyperlink(glui32 linkval, unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
+glui32 gli_get_hyperlink(unsigned int x, unsigned int y);
+void gli_clear_selection(void);
+int gli_check_selection(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1);
+int gli_get_selection(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, unsigned int *rx0, unsigned int *rx1);
+void gli_clipboard_copy(glui32 *buf, int len);
+void gli_start_selection(int x, int y);
+void gli_resize_mask(unsigned int x, unsigned int y);
+void gli_move_selection(int x, int y);
+
 void attrset(attr_t *attr, glui32 style);
 void attrclear(attr_t *attr);
 int attrequal(attr_t *a1, attr_t *a2);
 unsigned char *attrfg(style_t *styles, attr_t *attr);
 unsigned char *attrbg(style_t *styles, attr_t *attr);
 int attrfont(style_t *styles, attr_t *attr);
-
-/* RGB color values for garglk_set_zcolors(), from Z-machine standard 1.1 draft 9 */
-static unsigned char zcolor_rgb[][3] = {
-    { 0, 0, 0 },        /* zcolor_Black */
-    { 239, 0, 0 },      /* zcolor_Red */
-    { 0, 214, 0 },      /* zcolor_Green */
-    { 239, 239, 0 },    /* zcolor_Yellow */
-    { 0, 107, 181 },    /* zcolor_Blue */
-    { 255, 0, 255 },    /* zcolor_Magenta */
-    { 0, 239, 239 },    /* zcolor_Cyan */
-    { 255, 255, 255 },  /* zcolor_White */
-    { 181, 181, 181 },  /* zcolor_LightGrey */
-    { 140, 140, 140 },  /* zcolor_MediumGrey */
-    { 90, 90, 90 },     /* zcolor_DarkGrey */
-};
-static unsigned char zbright_rgb[][3] = {
-    { 48, 48, 48 },        /* zbright_Black */
-    { 255, 48, 48 },      /* zbright_Red */
-    { 48, 255, 48 },      /* zbright_Green */
-    { 255, 255, 48 },    /* zbright_Yellow */
-    { 0, 155, 229 },    /* zbright_Blue */
-    { 255, 48, 255 },    /* zbright_Magenta */
-    { 48, 255, 255 },    /* zbright_Cyan */
-    { 255, 255, 255 },  /* zbright_White */
-    { 229, 229, 229 },  /* zbright_LightGrey */
-    { 188, 188, 188 },  /* zbright_MediumGrey */
-    { 138, 138, 138 },     /* zbright_DarkGrey */
-};

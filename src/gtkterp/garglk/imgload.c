@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
  * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2010 by Ben Cressey, Chris Spiegel.                          *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -38,6 +39,7 @@ static void load_image_png(FILE *fl, picture_t *pic);
 static void load_image_jpeg(FILE *fl, picture_t *pic);
 
 static piclist_t *picstore = NULL;	/* cache all loaded pictures */
+static gli_piclist_refcount = 0;	/* count references to loaded pictures */
 
 static void gli_picture_discard(picture_t *pic);
 
@@ -79,6 +81,17 @@ void gli_piclist_clear(void)
     }
 
     picstore = NULL;
+}
+
+void gli_piclist_increment(void)
+{
+    gli_piclist_refcount++;
+}
+
+void gli_piclist_decrement(void)
+{
+    if (gli_piclist_refcount > 0 && --gli_piclist_refcount == 0)
+        gli_piclist_clear();
 }
 
 void gli_picture_store_original(picture_t *pic)
@@ -297,7 +310,7 @@ static void load_image_jpeg(FILE *fl, picture_t *pic)
 static void load_image_png(FILE *fl, picture_t *pic)
 {
     int ix, x, y;
-    int color_type, channels, srcdepth, srcrowbytes;
+    int srcrowbytes;
     png_structp png_ptr = NULL;
     png_infop info_ptr = NULL;
 
@@ -321,7 +334,7 @@ static void load_image_png(FILE *fl, picture_t *pic)
         return;
     }
 
-    if (setjmp(png_ptr->jmpbuf)) {
+    if (setjmp(png_jmpbuf(png_ptr))) {
         /* If we jump here, we had a problem reading the file */
         png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
         if (rowarray)
@@ -338,10 +351,6 @@ static void load_image_png(FILE *fl, picture_t *pic)
     pic->w = png_get_image_width(png_ptr, info_ptr);
     pic->h = png_get_image_height(png_ptr, info_ptr);
 
-    srcdepth = png_get_bit_depth(png_ptr, info_ptr);
-    color_type = png_get_color_type(png_ptr, info_ptr);
-    channels = png_get_channels(png_ptr, info_ptr);
-
     png_set_strip_16(png_ptr);
     png_set_packing(png_ptr);
     png_set_expand(png_ptr);
@@ -349,7 +358,6 @@ static void load_image_png(FILE *fl, picture_t *pic)
 
     png_read_update_info(png_ptr, info_ptr);
 
-    channels = png_get_channels(png_ptr, info_ptr);
     srcrowbytes = png_get_rowbytes(png_ptr, info_ptr);
 
     assert(srcrowbytes == pic->w * 4 || srcrowbytes == pic->w * 3);

@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
  * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2010 by Ben Cressey, Chris Spiegel.                          *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -30,13 +31,15 @@
 static zchar statusline[256];
 static int oldstyle = 0;
 static int curstyle = 0;
-static int upperstyle = 0;
-static int lowerstyle = 0;
 static int cury = 1;
 static int curx = 1;
+static int fixforced = 0;
 
-int curr_fg = 0;
-int curr_bg = 0;
+static int curr_fg = -2;
+static int curr_bg = -2;
+static int curr_font = 1;
+static int prev_font = 1;
+static int temp_font = 0;
 
 /* To make the common code happy */
 
@@ -162,10 +165,12 @@ void reset_status_ht(void)
 	{
 		glk_window_get_size(gos_upper, NULL, &height);
 		if (mach_status_ht != height)
+		{
 			glk_window_set_arrangement(
 				glk_window_get_parent(gos_upper),
 				winmethod_Above | winmethod_Fixed,
 				mach_status_ht, NULL);
+		}
 	}
 }
 
@@ -175,6 +180,11 @@ void erase_window (zword w)
 		glk_window_clear(gos_lower);
 	else if (gos_upper)
 	{
+#ifdef GARGLK
+			garglk_set_reversevideo_stream(
+				glk_window_get_stream(gos_upper),
+				TRUE);
+#endif /* GARGLK */
 		memset(statusline, ' ', sizeof statusline);
 		glk_window_clear(gos_upper);
 		reset_status_ht();
@@ -297,7 +307,6 @@ void smartstatusline (void)
 	//	buf[roomlen + 1] = '|';
 
 	glk_window_move_cursor(gos_upper, 0, 0);
-	glk_set_style(style_User1);
 	glk_put_buffer_uni(buf, h_screen_cols);
 	glk_window_move_cursor(gos_upper, cury - 1, curx - 1);
 }
@@ -319,13 +328,19 @@ void screen_char (zchar c)
 	/* check fixed flag in header, game can change it at whim */
 	if (gos_curwin == gos_lower)
 	{
-		static int forcefix = -1;
-		int curfix = h_flags & FIXED_FONT_FLAG;
-		if (forcefix != curfix)
+		int forcefix = ((h_flags & FIXED_FONT_FLAG) != 0);
+		int curfix = ((curstyle & FIXED_WIDTH_STYLE) != 0);
+		if (forcefix && !curfix)
 		{
-			forcefix = curfix;
 			zargs[0] = 0xf000;	/* tickle tickle! */
 			z_set_text_style();
+			fixforced = TRUE;
+		}
+		else if (!forcefix && fixforced)
+		{
+			zargs[0] = 0xf000;	/* tickle tickle! */
+			z_set_text_style();
+			fixforced = FALSE;
 		}
 	}
 
@@ -414,6 +429,18 @@ void screen_mssg_off (void)
 
 void z_buffer_mode (void)
 {
+}
+
+/*
+ * z_buffer_screen, set the screen buffering mode.
+ *
+ *	zargs[0] = mode
+ *
+ */
+
+void z_buffer_screen (void)
+{
+	store (0);
 }
 
 /*
@@ -538,6 +565,59 @@ void z_print_table (void)
 	}
 }
 
+#define zB(i) ((((i >> 10) & 0x1F) << 3) | (((i >> 10) & 0x1F) >> 2))
+#define zG(i) ((((i >>  5) & 0x1F) << 3) | (((i >>  5) & 0x1F) >> 2))
+#define zR(i) ((((i      ) & 0x1F) << 3) | (((i      ) & 0x1F) >> 2))
+
+#define zRGB(i) (zR(i) << 16 | zG(i) << 8 | zB(i))
+
+/*
+ * z_set_true_colour, set the foreground and background colours
+ * to specific RGB colour values.
+ *
+ *	zargs[0] = foreground colour
+ *	zargs[1] = background colour
+ *	zargs[2] = window (-3 is the current one, optional)
+ *
+ */
+
+void z_set_true_colour (void)
+{
+	int zfore = zargs[0];
+	int zback = zargs[1];
+
+	if (!(zfore < 0))
+		zfore = zRGB(zargs[0]);
+
+	if (!(zback < 0))
+		zback = zRGB(zargs[1]);
+
+#ifdef GARGLK
+	garglk_set_zcolors(zfore, zback);
+#endif /* GARGLK */
+
+	curr_fg = zfore;
+	curr_bg = zback;
+}
+
+static int zcolor_map[] = {
+	-2,						/*  0 = current */
+	-1,						/*  1 = default */
+	0x0000,					/*  2 = black */
+	0x001D,					/*  3 = red */
+	0x0340,					/*  4 = green */
+	0x03BD,					/*  5 = yellow */
+	0x59A0,					/*  6 = blue */
+	0x7C1F,					/*  7 = magenta */
+	0x77A0,					/*  8 = cyan */
+	0x7FFF,					/*  9 = white */
+	0x5AD6,					/* 10 = light grey */
+	0x4631,					/* 11 = medium grey */
+	0x2D6B,					/* 12 = dark grey */
+};
+
+#define zcolor_NUMCOLORS    (13)
+
 /*
  * z_set_colour, set the foreground and background colours.
  *
@@ -552,12 +632,41 @@ void z_set_colour (void)
 	int zfore = zargs[0];
 	int zback = zargs[1];
 
+	switch (zfore)
+	{
+	case -1:
+		zfore = -3;
 
-	if (!(zfore == 0 && zback == 0)) {
-#ifdef GARGLK
-		garglk_set_zcolors(zfore, zback);
-#endif /* GARGLK */
+	case 0:
+	case 1:
+		zfore = zcolor_map[zfore];
+		break;
+
+	default:
+		if (zfore < zcolor_NUMCOLORS)
+			zfore = zRGB(zcolor_map[zfore]);
+		break;
 	}
+
+	switch (zback)
+	{
+	case -1:
+		zback = -3;
+
+	case 0:
+	case 1:
+		zback = zcolor_map[zback];
+		break;
+
+	default:
+		if (zback < zcolor_NUMCOLORS)
+			zback = zRGB(zcolor_map[zback]);
+		break;
+	}
+
+#ifdef GARGLK
+	garglk_set_zcolors(zfore, zback);
+#endif /* GARGLK */
 
 	curr_fg = zfore;
 	curr_bg = zback;
@@ -572,15 +681,41 @@ void z_set_colour (void)
 
 void z_set_font (void)
 {
-    zword font = zargs[0];
+	zword font = zargs[0];
 
-    switch (font) {
-        case 1:  store (0); break; /* normal font */
-        case 2:  store (0); break; /* picture font, undefined per 1.1 */
-        case 3:  store (0); break; /* character graphics font */
-        case 4:  store (0); break; /* fixed-pitch font*/
-        default: store (0); break; /* unavailable */
-    }
+	switch (font)
+	{
+		case 0: /* previous font */
+			temp_font = curr_font;
+			curr_font = prev_font;
+			prev_font = temp_font;
+			zargs[0] = 0xf000;	/* tickle tickle! */
+			z_set_text_style();
+			store (curr_font);
+			break;
+
+		case 1: /* normal font */
+			prev_font = curr_font;
+			curr_font = 1;
+			zargs[0] = 0xf000;	/* tickle tickle! */
+			z_set_text_style();
+			store (prev_font);
+			break; 
+
+		case 4: /* fixed-pitch font*/
+			prev_font = curr_font;
+			curr_font = 4;
+			zargs[0] = 0xf000;	/* tickle tickle! */
+			z_set_text_style();
+			store (prev_font);
+			break;
+
+		case 2: /* picture font, undefined per 1.1 */
+		case 3: /* character graphics font */
+		default: /* unavailable */
+			store (0);
+			break;
+	}
 }
 
 /*
@@ -623,7 +758,7 @@ void z_set_text_style (void)
 	else if (zargs[0] != 0xf000) /* not tickle time */
 		curstyle |= zargs[0];
 
-	if (h_flags & FIXED_FONT_FLAG)
+	if (h_flags & FIXED_FONT_FLAG || curr_font == 4)
 		style = curstyle | FIXED_WIDTH_STYLE;
 	else
 		style = curstyle;
@@ -633,29 +768,41 @@ void z_set_text_style (void)
 
 	if (style & REVERSE_STYLE)
 	{
-		if (gos_curwin == gos_upper && gos_upper) {
-			glk_set_style(style_User1);
-		}
 #ifdef GARGLK
 		garglk_set_reversevideo(TRUE);
 #endif /* GARGLK */
 	}
-	else if (style & FIXED_WIDTH_STYLE)
-		glk_set_style(style_Preformatted);
-	else if (style & BOLDFACE_STYLE && style & EMPHASIS_STYLE)
-		glk_set_style(style_Alert);
-	else if (style & BOLDFACE_STYLE)
-		glk_set_style(style_Subheader);
-	else if (style & EMPHASIS_STYLE)
-		glk_set_style(style_Emphasized);
-	else
-		glk_set_style(style_Normal);
 
-	if (curstyle == 0) {
+	if (style & FIXED_WIDTH_STYLE)
+	{
+		if (style & BOLDFACE_STYLE && style & EMPHASIS_STYLE)
+			glk_set_style(style_BlockQuote);	/* monoz */
+		else if (style & EMPHASIS_STYLE)
+			glk_set_style(style_Alert);			/* monoi */
+		else if (style & BOLDFACE_STYLE)
+			glk_set_style(style_Subheader);		/* monob */
+		else
+			glk_set_style(style_Preformatted);	/* monor */
+	}
+	else
+	{
+		if (style & BOLDFACE_STYLE && style & EMPHASIS_STYLE)
+			glk_set_style(style_Note);			/* propz */
+		else if (style & EMPHASIS_STYLE)
+			glk_set_style(style_Emphasized);	/* propi */
+		else if (style & BOLDFACE_STYLE)
+			glk_set_style(style_Header);		/* propb */
+		else
+			glk_set_style(style_Normal);		/* propr */
+	}
+
+	if (curstyle == 0)
+	{
 #ifdef GARGLK
 		garglk_set_reversevideo(FALSE);
 #endif /* GARGLK */
 	}
+
 }
 
 /*
@@ -669,29 +816,25 @@ void z_set_window (void)
 {
 	int win = zargs[0];
 
-	if (gos_curwin == gos_lower)
-		lowerstyle = curstyle;
-	else
-		upperstyle = curstyle;
-
 	if (win == 0)
 	{
 		glk_set_window(gos_lower);
 		gos_curwin = gos_lower;
-		curstyle = lowerstyle;
 	}
 	else
 	{
 		if (gos_upper)
 			glk_set_window(gos_upper);
 		gos_curwin = gos_upper;
-		curstyle = upperstyle;
 	}
 
-        if (win == 0)
-            enable_scripting = TRUE;
-        else
-            enable_scripting = FALSE;
+	if (win == 0)
+		enable_scripting = TRUE;
+	else
+		enable_scripting = FALSE;
+
+	zargs[0] = 0xf000;	/* tickle tickle! */
+	z_set_text_style();
 }
 
 /*
@@ -744,7 +887,6 @@ void z_show_status (void)
 
 	curx = cury = 1;
 	glk_window_move_cursor(gos_upper, 0, 0);
-	glk_set_style(style_User1);
 
 	/* If the screen width is below 55 characters then we have to use
 	   the brief status line format */

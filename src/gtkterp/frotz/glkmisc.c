@@ -24,7 +24,7 @@
 
 #include "glkfrotz.h"
 
-#define VERSION "2.43"
+#define VERSION "2.50"
 
 int curr_status_ht = 0;
 int mach_status_ht = 0;
@@ -185,8 +185,57 @@ void os_init_screen(void)
 	 * Init glk stuff
 	 */
 
-	glk_stylehint_set(wintype_TextGrid, style_User1, stylehint_ReverseColor, 1);
+	/* monor */
+	glk_stylehint_set(wintype_AllTypes,   style_Preformatted, stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Preformatted, stylehint_Weight, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Preformatted, stylehint_Oblique, 0);
+	glk_stylehint_set(wintype_TextGrid,   style_Preformatted, stylehint_ReverseColor, 1);
 
+	/* monob */
+	glk_stylehint_set(wintype_AllTypes,   style_Subheader,    stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Subheader,    stylehint_Weight, 1);
+	glk_stylehint_set(wintype_AllTypes,   style_Subheader,    stylehint_Oblique, 0);
+	glk_stylehint_set(wintype_TextGrid,   style_Subheader,    stylehint_ReverseColor, 1);
+
+	/* monoi */
+	glk_stylehint_set(wintype_AllTypes,   style_Alert,        stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Alert,        stylehint_Weight, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Alert,        stylehint_Oblique, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Alert,        stylehint_ReverseColor, 1);
+
+	/* monoz */
+	glk_stylehint_set(wintype_AllTypes,   style_BlockQuote,   stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_BlockQuote,   stylehint_Weight, 1);
+	glk_stylehint_set(wintype_AllTypes,   style_BlockQuote,   stylehint_Oblique, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_BlockQuote,   stylehint_ReverseColor, 1);
+
+	/* propr */
+	glk_stylehint_set(wintype_TextBuffer, style_Normal,       stylehint_Proportional, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Normal,       stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Normal,       stylehint_Weight, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Normal,       stylehint_Oblique, 0);
+	glk_stylehint_set(wintype_TextGrid,   style_Normal,       stylehint_ReverseColor, 1);
+
+	/* propb */
+	glk_stylehint_set(wintype_TextBuffer, style_Header,       stylehint_Proportional, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Header,       stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Header,       stylehint_Weight, 1);
+	glk_stylehint_set(wintype_AllTypes,   style_Header,       stylehint_Oblique, 0);
+	glk_stylehint_set(wintype_TextGrid,   style_Header,       stylehint_ReverseColor, 1);
+
+	/* propi */
+	glk_stylehint_set(wintype_TextBuffer, style_Emphasized,   stylehint_Proportional, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Emphasized,   stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Emphasized,   stylehint_Weight, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Emphasized,   stylehint_Oblique, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Emphasized,   stylehint_ReverseColor, 1);
+
+	/* propi */
+	glk_stylehint_set(wintype_TextBuffer, style_Note,         stylehint_Proportional, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Note,         stylehint_Proportional, 0);
+	glk_stylehint_set(wintype_AllTypes,   style_Note,         stylehint_Weight, 1);
+	glk_stylehint_set(wintype_AllTypes,   style_Note,         stylehint_Oblique, 1);
+	glk_stylehint_set(wintype_TextGrid,   style_Note,         stylehint_ReverseColor, 1);
 
 	gos_lower = glk_window_open(0, 0, 0, wintype_TextGrid, 0);
 	if (!gos_lower)
@@ -474,6 +523,9 @@ static glui32 flag2mode(int flag)
 	return filemode_ReadWrite;
 }
 
+frefid_t script_fref = NULL;
+int script_exists = 0;
+
 strid_t frotzopenprompt(int flag)
 {
 	frefid_t fref;
@@ -487,7 +539,33 @@ strid_t frotzopenprompt(int flag)
 
 	stm = glk_stream_open_file(fref, gmode, 0);
 
+	if (flag == FILE_SCRIPT)
+	{
+		if (script_fref)
+			glk_fileref_destroy(script_fref);
+		script_fref = glk_fileref_create_from_fileref(gusage, fref, 0);
+		script_exists = (script_fref != NULL);
+	}
+
 	glk_fileref_destroy(fref);
+
+	return stm;
+}
+
+strid_t frotzreopen(int flag)
+{
+	frefid_t fref;
+
+	if (flag == FILE_SCRIPT && script_exists)
+		fref = script_fref;
+	else
+		return NULL;
+
+	strid_t stm;
+	glui32 gusage = flag2usage(flag);
+	glui32 gmode = flag2mode(flag);
+
+	stm = glk_stream_open_file(fref, gmode, 0);
 
 	return stm;
 }

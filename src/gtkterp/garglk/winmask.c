@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- * Copyright (C) 2009 by Ben Cressey.                                         *
+ * Copyright (C) 2010 by Ben Cressey, Chris Spiegel.                          *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -99,7 +99,6 @@ void gli_put_hyperlink(glui32 linkval, unsigned int x0, unsigned int y0, unsigne
     int tx1 = x0 < x1 ? x1 : x0;
     int ty0 = y0 < y1 ? y0 : y1;
     int ty1 = y0 < y1 ? y1 : y0;
-    glui32* m;
 
     if (!gli_mask || !gli_mask->hor || !gli_mask->ver)
     {
@@ -130,7 +129,7 @@ glui32 gli_get_hyperlink(unsigned int x, unsigned int y)
     if (!gli_mask || !gli_mask->hor || !gli_mask->ver)
     {
         gli_strict_warning("get_hyperlink: struct not initialized");
-        return;
+        return 0;
     }
 
     if (x >= gli_mask->hor
@@ -138,7 +137,7 @@ glui32 gli_get_hyperlink(unsigned int x, unsigned int y)
             || !gli_mask->links[x])
     {
         gli_strict_warning("get_hyperlink: invalid range given");
-        return;
+        return 0;
     }
 
     return gli_mask->links[x][y];

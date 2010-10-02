@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- * Copyright (C) 2010 by Ben Cressey, Sylvain Beucler.                        *
+ * Copyright (C) 2010 by Ben Cressey, Sylvain Beucler, Chris Spiegel.         *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -28,7 +28,7 @@
 #include "glk.h"
 #include "garglk.h"
 
-void findfont(char *fontname, char *fontpath)
+static void findfont(char *fontname, char *fontpath)
 {
     FcPattern *p = NULL;
     FcChar8 *strval = NULL;
@@ -61,7 +61,7 @@ void findfont(char *fontname, char *fontpath)
     return;
 }
 
-void winfont(char *font, int type)
+void fontreplace(char *font, int type)
 {
     if (!strlen(font))
         return;
@@ -87,9 +87,16 @@ void winfont(char *font, int type)
                 findfont(fontname, fontpath);
             }
 
+            if (!strlen(fontpath))
+            {
+                strcpy(fontname, font);
+                strcat(fontname, ":style=Book");
+                findfont(fontname, fontpath);
+            }
+
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_monor = sysfont;
                 gli_conf_monob = sysfont;
@@ -105,7 +112,7 @@ void winfont(char *font, int type)
 
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_monob = sysfont;
                 gli_conf_monoz = sysfont;
@@ -127,7 +134,7 @@ void winfont(char *font, int type)
 
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_monoi = sysfont;
                 gli_conf_monoz = sysfont;
@@ -162,7 +169,7 @@ void winfont(char *font, int type)
 
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_monoz = sysfont;
             }
@@ -185,9 +192,16 @@ void winfont(char *font, int type)
                 findfont(fontname, fontpath);
             }
 
+            if (!strlen(fontpath))
+            {
+                strcpy(fontname, font);
+                strcat(fontname, ":style=Book");
+                findfont(fontname, fontpath);
+            }
+
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_propr = sysfont;
                 gli_conf_propb = sysfont;
@@ -203,7 +217,7 @@ void winfont(char *font, int type)
 
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_propb = sysfont;
                 gli_conf_propz = sysfont;
@@ -225,7 +239,7 @@ void winfont(char *font, int type)
 
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_propi = sysfont;
                 gli_conf_propz = sysfont;
@@ -260,7 +274,7 @@ void winfont(char *font, int type)
 
             if (strlen(fontpath))
             {
-                sysfont = malloc(strlen(fontpath));
+                sysfont = malloc(strlen(fontpath)+1);
                 strcpy(sysfont, fontpath);
                 gli_conf_propz = sysfont;
             }
@@ -268,4 +282,12 @@ void winfont(char *font, int type)
             return;
         }
     }
+}
+
+void fontload(void)
+{
+}
+
+void fontunload(void)
+{
 }

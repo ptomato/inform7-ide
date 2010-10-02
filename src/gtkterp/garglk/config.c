@@ -1,6 +1,7 @@
 /******************************************************************************
  *                                                                            *
  * Copyright (C) 2006-2009 by Tor Andersson.                                  *
+ * Copyright (C) 2010 by Ben Cressey.                                         *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -49,9 +50,13 @@ char *gli_conf_monoz = "LuxiMonoBoldOblique";
 #ifdef BUNDLED_FONTS
 char *gli_conf_monofont = "";
 char *gli_conf_propfont = "";
+float gli_conf_monosize = 12.6;	/* good size for LuxiMono */
+float gli_conf_propsize = 14.7;	/* good size for CharterBT */
 #else
-char *gli_conf_monofont = "Luxi Mono";
-char *gli_conf_propfont = "Bitstream Charter";
+char *gli_conf_monofont = "Liberation Mono";
+char *gli_conf_propfont = "Linux Libertine O";
+float gli_conf_monosize = 12.5;	/* good size for LiberationMono */
+float gli_conf_propsize = 15.5;	/* good size for Libertine */
 #endif
 
 style_t gli_tstyles[style_NUMSTYLES] =
@@ -114,8 +119,10 @@ unsigned char gli_border_save[3] = { 0x00, 0x00, 0x00 };
 unsigned char gli_more_save[3] = { 0x00, 0x60, 0x00 };
 unsigned char gli_link_save[3] = { 0x00, 0x00, 0x60 };
 
-int gli_override_fg = 0;
-int gli_override_bg = 0;
+int gli_override_fg_set = 0;
+int gli_override_bg_set = 0;
+int gli_override_fg_val = 0;
+int gli_override_bg_val = 0;
 int gli_override_reverse = 0;
 
 char *gli_more_prompt = "\207 more \207";
@@ -147,8 +154,6 @@ int gli_rows = 25;
 float gli_conf_propaspect = 1.0;
 float gli_conf_monoaspect = 1.0;
 
-float gli_conf_propsize = 14.7;	/* good size for CharterBT */
-float gli_conf_monosize = 12.6;	/* good size for LuxiMono */
 int gli_baseline = 15;
 int gli_leading = 20;
 
@@ -484,6 +489,9 @@ void gli_startup(int argc, char *argv[])
 	gli_baseline = 0;
 
 	wininit(&argc, argv);
+
+	if (argc > 1)
+		glkunix_set_base_file(argv[argc-1]);
 
 	gli_read_config(argc, argv);
 

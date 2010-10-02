@@ -1,7 +1,7 @@
 /******************************************************************************
  *                                                                            *
- * Copyright (C) 2006-2009 by Tor Andersson.                                  *
- * Copyright (C) 2010 by Ben Cressey and Jörg Walter.                         *
+ * Copyright (C) 2006-2009 by Tor Andersson, Jesse McGrew.                    *
+ * Copyright (C) 2010 by Ben Cressey, Andrew Plotkin, Jörg Walter.            *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -874,39 +874,57 @@ static void gli_set_zcolors(stream_t *str, glui32 fg, glui32 bg)
     if (!gli_conf_stylehint)
         return;
 
-    if (fg >= zcolor_NUMCOLORS)
-        fg = 0;
-    if (bg >= zcolor_NUMCOLORS)
-        bg = 0;
+    unsigned char fore[3];
+    fore[0] = (fg >> 16) & 0xff;
+    fore[1] = (fg >> 8) & 0xff;
+    fore[2] = (fg) & 0xff;
+
+    unsigned char back[3];
+    back[0] = (bg >> 16) & 0xff;
+    back[1] = (bg >> 8) & 0xff;
+    back[2] = (bg) & 0xff;
 
     switch (str->type) {
         case strtype_Window:
-            if (fg == zcolor_Default) {
-                str->win->attr.fgcolor = 0;
-                memcpy(gli_more_color, gli_more_save, 3);
-                memcpy(gli_caret_color, gli_caret_save, 3);
-                memcpy(gli_link_color, gli_link_save, 3);
-                gli_override_fg = 0;
-            }
-            else if (fg != zcolor_Current) {
-                str->win->attr.fgcolor = fg;
-                memcpy(gli_more_color, zcolor_rgb[fg - zcolor_Black], 3);
-                memcpy(gli_caret_color, zcolor_rgb[fg - zcolor_Black], 3);
-                memcpy(gli_link_color, zcolor_rgb[fg - zcolor_Black], 3);
-                gli_override_fg = fg;
+            if (fg != zcolor_Transparent && fg != zcolor_Cursor) {
+                if (fg == zcolor_Default) {
+                    str->win->attr.fgset = 0;
+                    str->win->attr.fgcolor = 0;
+                    gli_override_fg_set = 0;
+                    gli_override_fg_val = 0;
+                    memcpy(gli_more_color, gli_more_save, 3);
+                    memcpy(gli_caret_color, gli_caret_save, 3);
+                    memcpy(gli_link_color, gli_link_save, 3);
+                }
+                else if (fg != zcolor_Current) {
+                    str->win->attr.fgset = 1;
+                    str->win->attr.fgcolor = fg;
+                    gli_override_fg_set = 1;
+                    gli_override_fg_val = fg;
+                    memcpy(gli_more_color, fore, 3);
+                    memcpy(gli_caret_color, fore, 3);
+                    memcpy(gli_link_color, fore, 3);
+                }
             }
 
-            if (bg == zcolor_Default) {
-                str->win->attr.bgcolor = 0;
-                memcpy(gli_window_color, gli_window_save, 3);
-                memcpy(gli_border_color, gli_border_save, 3);
-                gli_override_bg = 0;
-            }
-            else if (bg != zcolor_Current) {
-                str->win->attr.bgcolor = bg;
-                memcpy(gli_window_color, zcolor_rgb[bg - zcolor_Black], 3);
-                memcpy(gli_border_color, zcolor_rgb[bg - zcolor_Black], 3);
-                gli_override_bg = bg;
+            if (bg != zcolor_Transparent && bg != zcolor_Cursor)
+            {
+                if (bg == zcolor_Default) {
+                    str->win->attr.bgset = 0;
+                    str->win->attr.bgcolor = 0;
+                    gli_override_bg_set = 0;
+                    gli_override_bg_val = 0;
+                    memcpy(gli_window_color, gli_window_save, 3);
+                    memcpy(gli_border_color, gli_border_save, 3);
+                }
+                else if (bg != zcolor_Current) {
+                    str->win->attr.bgset = 1;
+                    str->win->attr.bgcolor = bg;
+                    gli_override_bg_set = 1;
+                    gli_override_bg_val = bg;
+                    memcpy(gli_window_color, back, 3);
+                    memcpy(gli_border_color, back, 3);
+                }
             }
 
             if (fg == zcolor_Default && bg == zcolor_Default)
@@ -918,6 +936,7 @@ static void gli_set_zcolors(stream_t *str, glui32 fg, glui32 bg)
                 gli_set_zcolors(str->win->echostr, fg, bg);
             break;
     }
+
     gli_force_redraw = 1;
 }
 
@@ -1597,12 +1616,30 @@ void glk_set_style_stream(stream_t *str, glui32 val)
 
 void garglk_set_zcolors(glui32 fg, glui32 bg)
 {
-    gli_set_zcolors(gli_currentstr, fg, bg);
+  gli_set_zcolors(gli_currentstr, fg, bg);
+}
+
+void garglk_set_zcolors_stream(stream_t *str, glui32 fg, glui32 bg)
+{
+  if (!str) {
+    gli_strict_warning("set_style_stream: invalid ref");
+    return;
+  }
+  gli_set_zcolors(str, fg, bg);
 }
 
 void garglk_set_reversevideo(glui32 reverse)
 {
-    gli_set_reversevideo(gli_currentstr, reverse);
+  gli_set_reversevideo(gli_currentstr, reverse);
+}
+
+void garglk_set_reversevideo_stream(stream_t *str, glui32 reverse)
+{
+  if (!str) {
+    gli_strict_warning("set_style_stream: invalid ref");
+    return;
+  }
+  gli_set_reversevideo(str, reverse);
 }
 
 void glk_set_hyperlink(glui32 linkval)
@@ -1610,13 +1647,12 @@ void glk_set_hyperlink(glui32 linkval)
     gli_set_hyperlink(gli_currentstr, linkval);
 }
 
-void glk_set_hyperlink_stream(strid_t str, glui32 linkval)
+void glk_set_hyperlink_stream(stream_t *str, glui32 linkval)
 {
   if (!str) {
     gli_strict_warning("set_hyperlink_stream: invalid ref");
     return;
   }
-
   gli_set_hyperlink(str, linkval);
 }
 
@@ -1667,9 +1703,9 @@ glui32 glk_get_buffer_stream(stream_t *str, char *buf, glui32 len)
 
 glui32 glk_get_buffer_stream_uni(stream_t *str, glui32 *buf, glui32 len)
 {
-    if (!str) {
-        gli_strict_warning("get_buffer_stream_uni: invalid ref");
-        return -1;
-    }
-    return gli_get_buffer_uni(str, buf, len);
+  if (!str) {
+    gli_strict_warning("get_buffer_stream_uni: invalid ref");
+    return -1;
+  }
+  return gli_get_buffer_uni(str, buf, len);
 }

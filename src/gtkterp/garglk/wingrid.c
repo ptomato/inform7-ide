@@ -1,7 +1,7 @@
 /******************************************************************************
  *                                                                            *
- * Copyright (C) 2006-2009 by Tor Andersson.                                  *
- * Copyright (C) 2010 by Ben Cressey and Jörg Walter.                         *
+ * Copyright (C) 2006-2009 by Tor Andersson, Jesse McGrew.                    *
+ * Copyright (C) 2010 by Ben Cressey, Chris Spiegel, Jörg Walter.             *
  *                                                                            *
  * This file is part of Gargoyle.                                             *
  *                                                                            *
@@ -111,17 +111,15 @@ void win_textgrid_redraw(window_t *win)
 {
     window_textgrid_t *dwin = win->data;
     tgline_t *ln;
-    int x0, y0, x1, y1;
+    int x0, y0;
     int x, y, w;
     int i, a, b, k, o;
     glui32 link;
     int font;
-    char *fgcolor, *bgcolor;
+    unsigned char *fgcolor, *bgcolor;
 
     x0 = win->bbox.x0;
-    x1 = win->bbox.x1;
     y0 = win->bbox.y0;
-    y1 = win->bbox.y1;
 
     for (i = 0; i < dwin->height; i++)
     {
@@ -271,8 +269,10 @@ void win_textgrid_clear(window_t *win)
     window_textgrid_t *dwin = win->data;
     int k, j;
 
-    win->attr.fgcolor = gli_override_fg;
-    win->attr.bgcolor = gli_override_bg;
+    win->attr.fgset = gli_override_fg_set;
+    win->attr.bgset = gli_override_bg_set;
+    win->attr.fgcolor = gli_override_fg_set ? gli_override_fg_val : 0;
+    win->attr.bgcolor = gli_override_bg_set ? gli_override_bg_val : 0;
     win->attr.reverse = FALSE;
 
     for (k = 0; k < dwin->height; k++)
