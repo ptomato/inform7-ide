@@ -40,6 +40,7 @@ void set_ext_filename(Extension *ext, gchar *filename);
 void for_each_extension_window(void (*func)(GtkWidget *));
 void for_each_extension_window_idle(GSourceFunc func);
 void for_each_extension_buffer(void (*func)(GtkSourceBuffer *));
+void for_each_extension(void (*func)(Extension *));
 Extension *get_extension_if_open(gchar *filename);
 
 #endif

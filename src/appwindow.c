@@ -353,8 +353,8 @@ after_app_window_realize(GtkWidget *widget, gpointer data)
     history_unblock_handlers(thestory, RIGHT);
     
 	/* Set up the signal handlers for elastic tab stops */
-	elastic_setup(GTK_TEXT_BUFFER(thestory->buffer), 
-				  GTK_TEXT_VIEW(lookup_widget(widget, "source_l")));
+	if(config_file_get_bool("EditorSettings", "ElasticTabstops"))
+		add_elastic_tabstops_to_story(thestory);
 	
     /* Create empty menus for the Headings and Skein Labels buttons so they 
     become active */

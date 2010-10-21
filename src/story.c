@@ -240,6 +240,15 @@ for_each_story_buffer(void (*func)(GtkSourceBuffer *))
         func(((Story *)iter->data)->buffer);
 }
 
+/* Carry out func for each story */
+void
+for_each_story(void (*func)(Story *))
+{
+	GSList *iter;
+	for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
+		func((Story *)iter->data);
+}
+
 /* Return the extension of the output file of this story */
 const gchar *
 get_story_extension(Story *thestory) 

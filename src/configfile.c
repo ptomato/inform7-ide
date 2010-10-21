@@ -380,11 +380,11 @@ on_config_elastic_tabstops_changed(GConfClient *client, guint id,
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle)) != newvalue)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
 	if(newvalue) {
-		for_each_story_window_idle((GSourceFunc)update_app_window_elastic);
-		for_each_extension_window_idle((GSourceFunc)update_ext_window_elastic);
+		for_each_story(add_elastic_tabstops_to_story);
+		for_each_extension(add_elastic_tabstops_to_extension);
 	} else {
-		for_each_story_buffer(elastic_remove);
-		for_each_extension_buffer(elastic_remove);
+		for_each_story(remove_elastic_tabstops_from_story);
+		for_each_extension(remove_elastic_tabstops_from_extension);
 	}
 }
 

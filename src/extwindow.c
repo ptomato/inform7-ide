@@ -47,8 +47,8 @@ after_ext_window_realize(GtkWidget *widget, gpointer data)
       config_file_get_int("WindowSettings", "ExtWindowHeight"));
     
 	/* Set up the signal handlers for elastic tab stops */
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(widget, "ext_code"));
-	elastic_setup(gtk_text_view_get_buffer(view), view);
+	if(config_file_get_bool("EditorSettings", "ElasticTabstops"))
+		add_elastic_tabstops_to_extension(get_ext(widget));
 	
     /* Create some submenus and attach them */
     GtkWidget *menu;

@@ -172,8 +172,7 @@ gboolean
 update_app_window_elastic(GtkWidget *window)
 {
 	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(window, "source_l"));
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
-	elastic_refresh(buffer, view);
+	elastic_recalculate_view(view);
 	return FALSE; /* One-shot idle function */
 }
 
@@ -182,8 +181,7 @@ gboolean
 update_ext_window_elastic(GtkWidget *extwindow)
 {
 	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(extwindow, "ext_code"));
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
-	elastic_refresh(buffer, view);
+	elastic_recalculate_view(view);
 	return FALSE; /* One-shot idle function */
 }
 

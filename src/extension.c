@@ -123,6 +123,15 @@ for_each_extension_buffer(void (*func)(GtkSourceBuffer *))
         func(((Extension *)iter->data)->buffer);
 }
 
+/* Carry out func for each extension */
+void
+for_each_extension(void (*func)(Extension *))
+{
+	GSList *iter;
+	for(iter = extlist; iter != NULL; iter = g_slist_next(iter))
+		func((Extension *)iter->data);
+}
+
 /* Check whether extension 'filename' is open and return a pointer to its
 extension structure, otherwise return NULL */
 Extension *

@@ -117,6 +117,7 @@ void set_story_filename(Story *thestory, gchar *filename);
 void for_each_story_window(void (*func)(GtkWidget *));
 void for_each_story_window_idle(GSourceFunc func);
 void for_each_story_buffer(void (*func)(GtkSourceBuffer *));
+void for_each_story(void (*func)(Story *));
 const gchar *get_story_extension(Story *thestory);
 
 #endif
