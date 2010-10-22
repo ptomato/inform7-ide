@@ -113,7 +113,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 static guint 
 forward_to_block_boundary(GtkTextBuffer *textbuffer, GtkTextIter *location)
 {
-	int max_tabs = 0;
+	int max_tabs = 0, tabs_on_previous_line = 0;
 
 	gtk_text_iter_set_line_offset(location, 0);
 	do {
@@ -128,10 +128,12 @@ forward_to_block_boundary(GtkTextBuffer *textbuffer, GtkTextIter *location)
 		while (gtk_text_iter_forward_find_char(&current_pos, (GtkTextCharPredicate)find_tab, NULL, &line_end))
 			tabs_on_line++;
 
-		if(tabs_on_line > max_tabs)
-			max_tabs = tabs_on_line;
-		else if (tabs_on_line < max_tabs)
+		if (tabs_on_previous_line < max_tabs && tabs_on_line > tabs_on_previous_line)
 			break;
+		if (tabs_on_line > max_tabs)
+			max_tabs = tabs_on_line;
+		
+		tabs_on_previous_line = tabs_on_line;
 	} while (gtk_text_iter_forward_line(location));
 	return max_tabs;
 }
