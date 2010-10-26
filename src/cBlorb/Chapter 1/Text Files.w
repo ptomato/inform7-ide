@@ -144,7 +144,7 @@ and send them one at a time to a function called |iterator|.
 		error_1("filename too long", filename);
 		return;
 	}
-	HANDLE = fopen(filename, "r");
+	HANDLE = fopen(filename, "rb");
 	if (HANDLE == NULL) {
 		if (message == NULL) return;
 		if (serious) fatal_fs(message, filename);

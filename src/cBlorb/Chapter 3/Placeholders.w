@@ -141,26 +141,33 @@ original material will be unchanged. (This is in case the original contains
 uses of square brackets which aren't for placeholding.)
 
 @c
+int escape_quotes_mode = 0;
 /**/ void copy_placeholder_to(char *var, FILE *COPYTO) {
-	int multiparagraph_mode = FALSE;
+	int multiparagraph_mode = FALSE, eqm = escape_quotes_mode;
+	if (var[0] == '*') { var++; escape_quotes_mode = 1; }
+	if (var[0] == '*') { var++; escape_quotes_mode = 2; }
 	if (strcmp(var, "BLURB") == 0) multiparagraph_mode = TRUE;
 	placeholder *wv = find_placeholder(var);
-	if ((wv == NULL) || (wv->locked)) { fprintf(COPYTO, "[%s]", var); return; }
-	wv->locked = TRUE;
-	if (multiparagraph_mode) fprintf(COPYTO, "<p>");
-	switch (wv->reservation) {
-		case 0: @<Copy an ordinary unreserved placeholder@>; break;
-		case SOURCE_RPL: expand_SOURCE_or_SOURCENOTES_variable(COPYTO, FALSE); break;
-		case SOURCENOTES_RPL: expand_SOURCE_or_SOURCENOTES_variable(COPYTO, TRUE); break;
-		case SOURCELINKS_RPL: expand_SOURCELINKS_variable(COPYTO); break;
-		case COVER_RPL: expand_COVER_variable(COPYTO); break;
-		case DOWNLOAD_RPL: expand_DOWNLOAD_variable(COPYTO); break;
-		case AUXILIARY_RPL: expand_AUXILIARY_variable(COPYTO); break;
-		case PAGENUMBER_RPL: expand_PAGENUMBER_variable(COPYTO); break;
-		case PAGEEXTENT_RPL: expand_PAGEEXTENT_variable(COPYTO); break;
+	if ((wv == NULL) || (wv->locked)) {
+		fprintf(COPYTO, "[%s]", var);
+	} else {
+		wv->locked = TRUE;
+		if (multiparagraph_mode) fprintf(COPYTO, "<p>");
+		switch (wv->reservation) {
+			case 0: @<Copy an ordinary unreserved placeholder@>; break;
+			case SOURCE_RPL: expand_SOURCE_or_SOURCENOTES_variable(COPYTO, FALSE); break;
+			case SOURCENOTES_RPL: expand_SOURCE_or_SOURCENOTES_variable(COPYTO, TRUE); break;
+			case SOURCELINKS_RPL: expand_SOURCELINKS_variable(COPYTO); break;
+			case COVER_RPL: expand_COVER_variable(COPYTO); break;
+			case DOWNLOAD_RPL: expand_DOWNLOAD_variable(COPYTO); break;
+			case AUXILIARY_RPL: expand_AUXILIARY_variable(COPYTO); break;
+			case PAGENUMBER_RPL: expand_PAGENUMBER_variable(COPYTO); break;
+			case PAGEEXTENT_RPL: expand_PAGEEXTENT_variable(COPYTO); break;
+		}
+		if (multiparagraph_mode) fprintf(COPYTO, "</p>");
+		wv->locked = FALSE;
+		escape_quotes_mode = eqm;
 	}
-	if (multiparagraph_mode) fprintf(COPYTO, "</p>");
-	wv->locked = FALSE;
 }
 
 @ Note that the [BLURB] placeholder -- which holds the story description, and is
@@ -199,5 +206,7 @@ within an HTML paragraph.
 			(multiparagraph_mode)) {
 			fprintf(COPYTO, "<p>"); continue;
 		}
-		fprintf(COPYTO, "%c", p[i]);
+		if ((escape_quotes_mode == 1) && (p[i] == '\'')) fprintf(COPYTO, "&#39;");
+		else if ((escape_quotes_mode == 2) && (p[i] == '\'')) fprintf(COPYTO, "%%2527");
+		else fprintf(COPYTO, "%c", p[i]);
 	}

@@ -591,7 +591,7 @@ application, called |openUrl|.
 	if (launch_website) {
 		append_to_placeholder(ph,
 			"<a href=\"[JAVASCRIPTPRELUDE]"
-			"openUrl('file://[MATERIALSFOLDERPATHOPEN]/Release/index.html')\">"
+			"openUrl('file://[**MATERIALSFOLDERPATHOPEN]/Release/index.html')\">"
 			"<img src='inform:/launch.png' border=0></a> home page");
 	}
 	if ((launch_website) && (launch_play))
@@ -599,7 +599,7 @@ application, called |openUrl|.
 	if (launch_play) {
 		append_to_placeholder(ph, 
 			"<a href=\"[JAVASCRIPTPRELUDE]"
-			"openUrl('file://[MATERIALSFOLDERPATHOPEN]/Release/play.html')\">"
+			"openUrl('file://[**MATERIALSFOLDERPATHOPEN]/Release/play.html')\">"
 			"<img src='inform:/launch.png' border=0></a> play-in-browser page");
 	}
 	append_to_placeholder(ph, "</center></p>");

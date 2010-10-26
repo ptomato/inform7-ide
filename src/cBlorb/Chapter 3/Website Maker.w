@@ -402,7 +402,8 @@ unfairly called ``dull''). We set |lv| accordingly.
 	for (i=0; line[i]; i++) {
 		if (line[i] == '[') scan_comment_nesting++;
 		if (line[i] == ']') scan_comment_nesting--;
-		if (line[i] == '\"') scan_quoted_matter = (scan_quoted_matter)?FALSE:TRUE;
+		if ((scan_comment_nesting == 0) && (line[i] == '\"'))
+			scan_quoted_matter = (scan_quoted_matter)?FALSE:TRUE;
 	}
 
 @
@@ -557,7 +558,10 @@ pages |doc_0.html| and so on up.
 @c
 /**/ void expand_PAGENUMBER_variable(FILE *COPYTO) {
 	int p = 1;
-	if (segment_being_written) p = segment_being_written->page_number;
+	if (segment_being_written) {
+		p = segment_being_written->page_number;
+		if (segment_being_written->documentation == FALSE) p++; /* allow for header page */
+	}
 	fprintf(COPYTO, "%d", p);
 }
 
@@ -565,10 +569,11 @@ pages |doc_0.html| and so on up.
 
 @c
 /**/ void expand_PAGEEXTENT_variable(FILE *COPYTO) {
-	int doc = FALSE, n = 0;
-	if ((segment_being_written) && (segment_being_written->documentation)) doc = TRUE;
-	if (doc) n = no_doc_files; else n = no_src_files;
-	if (n > 0) fprintf(COPYTO, "%d", n); else fprintf(COPYTO, "1");
+	int n = no_src_files + 1;
+	if ((segment_being_written) && (segment_being_written->documentation))
+		n = no_doc_files;
+	if (n == 0) n = 1;
+	fprintf(COPYTO, "%d", n);
 }
 
 @ And this is what ``[SOURCELINKS]'' in the template becomes:
@@ -603,6 +608,7 @@ int SOURCENOTES_mode = FALSE; /* |TRUE| for ``[SOURCENOTES]'', |FALSE| for ``[SO
 int quoted_matter = FALSE; /* are we inside double-quoted matter in the source text? */
 int i6_matter = FALSE; /* are we inside verbatim I6 code in the source text? */
 int comment_nesting = 0; /* nesting level of comments in source text being read: 0 for not in a comment */
+int carry_over_indentation = -1; /* indentation carried over for para breaks in quoted text */
 int next_footnote_number = 1; /* number to assign to the next footnote which comes up */
 heading *latest_heading = NULL; /* a heading which is always behind the current position */
 table *latest_table = NULL; /* a table which is always behind the current position */
@@ -628,6 +634,7 @@ table *latest_table = NULL; /* a table which is always behind the current positi
 	quoted_matter = FALSE;
 	i6_matter = FALSE;
 	comment_nesting = 0;
+	carry_over_indentation = -1;
 	current_style = NULL;
 	latest_heading = FIRST_OBJECT(heading);
 	latest_table = FIRST_OBJECT(table);
@@ -719,7 +726,7 @@ source text further, so we return |TRUE|.
 		return FALSE; /* don't bother to typeset a blank line just before the first segment is reached */
 	
 	if ((first_segment) && (line_count == first_segment->begins_at)) {
-		typeset_contents_listing(TRUE);
+		if (SOURCENOTES_mode == FALSE) typeset_contents_listing(TRUE);
 		return TRUE;
 	}
 
@@ -741,12 +748,17 @@ number, and typeset. All other material is ignored.
 	int i;
 	for (i=0; line[i]; i++) {
 		if ((line[i] == '[') && (line[i+1] == '*')) {
+			int comment_level = 1;
 			fprintf(SPAGE, "<p><a name=\"note%d\"></a>", next_footnote_number);
 			open_style(SPAGE, "notetext");
-			fprintf(SPAGE, "[%d]. ", next_footnote_number);
+			fprintf(SPAGE, "<a href=\"#note%dref\">[%d]</a>. ",
+				next_footnote_number, next_footnote_number);
 			next_footnote_number++;
 			i+=2;
-			while ((line[i]) && (line[i] != ']')) {
+			while (line[i]) {
+				if (line[i] == '[') comment_level++;
+				if (line[i] == ']') comment_level--;
+				if (comment_level == 0) break;
 				fprintf(SPAGE, "%c", line[i++]);
 			}
 			close_style(SPAGE, "notetext");
@@ -763,12 +775,13 @@ the line, then indent it suitably, then typeset it character by character.
 	@<The top line of the preface or any segment is in bold@>;
 	@<Any heading line is in bold@>;
 
-	if (tabulate) { fprintf(SPAGE, "<tr>"); open_table_cell(SPAGE); }
+	if ((tabulate) && (quoted_matter == FALSE)) { fprintf(SPAGE, "<tr>"); open_table_cell(SPAGE); }
 
 	int start = 0;
 	if (tabulate == FALSE) {
 		for (; line[start] == '\t'; start++) ;
-		open_code_paragraph(SPAGE, start);
+		if (carry_over_indentation < 0) carry_over_indentation = start;
+		open_code_paragraph(SPAGE, carry_over_indentation);
 	}
 
 	@<Begin typographic embellishments@>;
@@ -777,8 +790,9 @@ the line, then indent it suitably, then typeset it character by character.
 	int i; for (i=start; line[i]; i++) @<Typeset a single character of the source text@>;
 
 	@<End typographic embellishments@>;
-	if (tabulate) { close_table_cell(SPAGE); fprintf(SPAGE, "</tr>\n"); }
+	if ((tabulate) && (quoted_matter == FALSE)) { close_table_cell(SPAGE); fprintf(SPAGE, "</tr>\n"); }
 	else close_code_paragraph(SPAGE);
+	if (quoted_matter == FALSE) carry_over_indentation = -1;
 
 @ The type styles are easily applied, so let's do that now. The innermost one
 must be colour, since that may change in the course of the line.
@@ -914,8 +928,9 @@ space and we turn it into a single space.
 the quotation marks are not coloured -- only the material inside them.
 
 Our code in handling quoted and comment matter is greatly simplified by the
-fact that a valid Inform text cannot contain mismatched square brackets, and
-nor can a valid comment contain mismatched quotation marks.
+fact that a valid Inform text cannot contain mismatched square brackets;
+however, as Dave Chapeskie points out, a valid comment can contain mismatched
+quotation marks, and this section of code benefits from his careful amendments.
 
 @<Typeset a double quotation mark outside of a comment@> =
 	if (quoted_matter) change_style(SPAGE, NULL);
@@ -925,12 +940,17 @@ nor can a valid comment contain mismatched quotation marks.
 
 @ On the other hand, the squares around a comment {\it do} pick up the colour
 of the commentary within them. Asterisked comments must end in the same paragraph
-as they begin, and must not contain nested further comments.
+as they begin.
 
 @<Typeset an open square bracket outside of a string@> =
 	if (line[i+1] == '*') {
 		/* advance past the end of the asterisked comment */
-		while ((line[i]) && (line[i+1] != ']')) i++; if (line[i]) i++;
+		int comment_level = 1;
+		for (i+=2; line[i]; ++i) {
+			if (line[i] == '[') comment_level++;
+			if (line[i] == ']') comment_level--;
+			if (comment_level == 0) break;
+		}
 		@<Typeset a footnote cue@>;
 	} else {
 		comment_nesting++;
@@ -962,13 +982,14 @@ as they begin, and must not contain nested further comments.
 
 @ The ``cue'' of a footnote is the reference in the body of the text, which
 is conventionally printed as a superscript number. We leave that to the
-span |linknotes| if we have CSS, and otherwise render in grey superscript.
+span |notecue| if we have CSS, and otherwise render in grey superscript.
 
 @<Typeset a footnote cue@> =
-	open_style(SPAGE, "linknotes");
+	fprintf(SPAGE, "<a name=\"note%dref\"></a>", next_footnote_number);
+	open_style(SPAGE, "notecue");
 	fprintf(SPAGE, "<a href=\"#note%d\">[%d]</a>",
 		next_footnote_number, next_footnote_number);
-	close_style(SPAGE, "linknotes");
+	close_style(SPAGE, "notecue");
 	next_footnote_number++;
 
 @ That just leaves the little contents listings -- one for the source, and
