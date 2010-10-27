@@ -504,9 +504,14 @@ node_layout(GNode *node, PangoLayout *layout, double x, double spacing)
     /* Store the centre x coordinate for this node */
     ((NodeData *)node->data)->x = x;
     
+    if(g_node_n_children(node) == 1) {
+    	node_layout(g_node_nth_child(node, 0), layout, x, spacing);
+    	return;
+    }
+    
     /* Find the total width of all descendant nodes */
-    int i;
     double total = node_get_tree_width(node, layout, spacing);
+    int i;
     /* Lay out each child node */
     double child_x = 0.0;
     for(i = 0; i < g_node_n_children(node); i++) {
