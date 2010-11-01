@@ -3,19 +3,40 @@
 #
 
 Name: gnome-inform7
-Version: 6E72
+Version: 6F95
 Release: 1
 
 URL: http://inform7.com/
 License: GPLv3
 
 Group: Development/Languages
-Source: gnome-inform7-6E72.tar.gz
+Source: I7_%{version}_GNOME_Source.tar.gz
 # Packager: P. F. Chimento <philip.chimento@gmail.com>
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires(pre): gconf2
-Requires(post): gconf2
-Requires(preun): gconf2
+
+# Build requirements
+# For building manuals
+BuildRequires: texlive, texlive-bin
+BuildRequires: graphviz
+# Extra build tools
+BuildRequires: intltool
+BuildRequires: pkg-config
+BuildRequires: lzma
+# Library devel packages
+BuildRequires: libuuid-devel
+BuildRequires: glib2-devel
+BuildRequires: gtk2-devel
+BuildRequires: gtksourceview-devel
+BuildRequires: gtkspell-devel
+BuildRequires: gtkhtml2-devel
+BuildRequires: dbus-1-glib-devel
+%if 0%{?suse_version} >= 1120
+BuildRequires: libSDL_sound-devel, libSDL_mixer-devel
+%else
+BuildRequires: SDL_sound-devel, SDL_mixer-devel
+%endif
+BuildRoot: %{_tmppath}/%{name}-%{version}-build
+
+%gconf_schemas_prereq
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
 
@@ -29,45 +50,31 @@ language for writing interactive fiction (also known as text adventures.)
 
 %build
 %configure --enable-manuals
-make
+make %{?_smp_mflags}
 
-%pre
-if [ "$1" -gt 1 ] ; then
-  GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` \
-    gconftool-2 --makefile-uninstall-rule \
-    %{_sysconfdir}/gconf/schemas/[NAME] .schemas >/dev/null || :
-fi
+%pre -f %{name}.schemas_pre
 
 %install
-rm -rf %{buildroot}
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 %makeinstall
-unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
+%find_gconf_schemas
 
-%post
-GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` \
-  gconftool-2 --makefile-install-rule \
-  %{_sysconfdir}/gconf/schemas/%{name}.schemas &>/dev/null || :
+%preun -f %{name}.schemas_preun
 
-%preun
-if [ "$1" -eq 0 ] ; then
-  GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source` \
-    gconftool-2 --makefile-uninstall-rule \
-    %{_sysconfdir}/gconf/schemas/%{name}.schemas &>/dev/null || :
-fi
+%posttrans -f %{name}.schemas_posttrans
 
 %clean
 rm -rf %{buildroot}
 
+%files -f %{name}.schemas_list
+
 %files
-%defattr(-, root, root)
+%defattr(-,root,root,-)
 %define pkgdatadir %{_datadir}/%{name}
 %define pkgdocdir %{_datadir}/doc/%{name}
 %define pkglibexecdir %{_libexecdir}/%{name}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
 %{_datadir}/applications/%{name}.desktop
-%{_sysconfdir}/gconf/schemas/%{name}.schemas
 %{pkgdocdir}/AUTHORS 
 %{pkgdocdir}/ChangeLog 
 %{pkgdocdir}/COPYING 
@@ -88,6 +95,7 @@ rm -rf %{buildroot}
 %{pkgdatadir}/Documentation/Sections/*.html
 %{pkgdatadir}/Extensions/David*Fisher/English.i7x
 %{pkgdatadir}/Extensions/Emily*Short/*.i7x
+%{pkgdatadir}/Extensions/Eric*Eve/Epistemology.i7x
 %{pkgdatadir}/Extensions/Graham*Nelson/*.i7x
 %{pkgdatadir}/Extensions/Reserved/*.i6t
 %{pkgdatadir}/Extensions/Reserved/*.jpg
@@ -99,6 +107,10 @@ rm -rf %{buildroot}
 %{pkgdatadir}/Extensions/Reserved/Templates/Parchment/*.js
 %{pkgdatadir}/Extensions/Reserved/Templates/Parchment/parchment.css
 %{pkgdatadir}/Extensions/Reserved/Templates/Parchment/(manifest).txt
+%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.js
+%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.css
+%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/waiting.gif
+%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/(manifest).txt
 %{pkgdatadir}/languages/*.lang
 %{pkgdatadir}/Documentation/licenses/*.html
 %{pkgdatadir}/styles/*.xml
@@ -125,6 +137,10 @@ rm -rf %{buildroot}
 %{pkglibexecdir}/ni
 
 %changelog
+* Mon Nov 1 2010 P.F. Chimento <philip.chimento@gmail.com>
+- Updated OpenSUSE version of spec file.
+* Tue Oct 26 2010 P.F. Chimento <philip.chimento@gmail.com>
+- Added Quixe and Eric Eve directories to packing list.
 * Sat Jul 3 2010 P.F. Chimento <philip.chimento@gmail.com>
 - Fixed rpmlint warnings.
 * Thu Jun 24 2010 P.F. Chimento <philip.chimento@gmail.com>
