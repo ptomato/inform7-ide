@@ -28,16 +28,21 @@
     </metadata>
     
     <styles>
+    	<style id="plain" _name="Plain"/>
         <style id="comment" _name="Comment" map-to="def:comment"/>
         <style id="string" _name="String" map-to="def:string"/>
         <style id="markup" _name="String Markup" map-to="def:special-char"/>
-        <style id="heading" _name="Heading" map-to="def:string"/>
+        <style id="heading" _name="Heading" map-to="def:statement"/>
         <style id="i6code" _name="Inform 6 Code" map-to="def:preprocessor"/>
     </styles>
     
     <default-regex-options case-sensitive="false"/>
     
     <definitions>
+    	<!-- Don't use a character class here, apparently the regex engine is
+    	not unicode-aware, and so the left and right quotes are more than one
+    	character-->
+    	<define-regex id="quote">&quot;|\x{201c}|\x{201d}</define-regex>
         <context id="inform7">
             <include>
                 
@@ -52,7 +57,7 @@
                 
                 <context id="title-heading" style-ref="heading" 
                 first-line-only="true" once-only="true">
-                    <start>"</start>
+                    <start>\%{quote}</start>
                     <end>$</end>
                     <include>
                         <context ref="block-comment"/>
@@ -68,8 +73,8 @@
                 </context>
                                 
                 <context id="string" style-ref="string">
-                    <start>(?&lt;=\s|^)"</start>
-                    <end>"</end>
+                    <start>(?&lt;=\s|^)\%{quote}</start>
+                    <end>\%{quote}</end>
                     <include>
                         <context id="string-markup" style-ref="markup">
                             <start>\[</start>
@@ -83,6 +88,13 @@
                     <end>-\)</end>
                     <include>
                         <context ref="inform:inform:*"/>
+                        <context id="i7code" style-ref="plain">
+							<start>\(\+</start>
+							<end>\+\)</end>
+							<include>
+								<context ref="inform7"/>
+							</include>
+						</context>
                     </include>
                 </context>
             

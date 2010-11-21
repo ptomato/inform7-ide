@@ -36,6 +36,10 @@ _section="Sources">
     <default-regex-options case-sensitive="false"/>
     
     <definitions>
+    	<!-- Don't use a character class here, apparently the regex engine is
+    	not unicode-aware, and so the left and right quotes are more than one
+    	character-->
+    	<define-regex id="quote">&quot;|\x{201c}|\x{201d}</define-regex>
         <context id="inform7x">
             <include>
             
@@ -51,7 +55,7 @@ _section="Sources">
                 
                 <context id="documentation" style-ref="comment" 
                 once-only="true">
-                    <start>^---- documentation ----$</start>
+                    <start>^----</start>
                 </context>
                 
                 <context ref="inform7:string"/>
