@@ -309,7 +309,7 @@ static void
 update_skein_spacing(I7Document *document)
 {
     if(!I7_IS_STORY(document))
-    return;
+        return;
 
     gdouble horizontal = (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING);
     gdouble vertical = (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING);

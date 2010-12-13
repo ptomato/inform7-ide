@@ -48,7 +48,7 @@ get_user_styles_dir(void)
 static GtkSourceStyleSchemeManager *
 get_style_scheme_manager(void)
 {
-    if (!scheme_manager) {
+    if(!scheme_manager) {
 		scheme_manager = gtk_source_style_scheme_manager_new();
 		/* Add the built-in styles directory */
 		gchar *dir = i7_app_get_datafile_path_va(i7_app_get(), "styles", NULL);

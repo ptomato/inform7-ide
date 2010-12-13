@@ -26,8 +26,8 @@
 void 
 html_load_file(WebKitWebView *html, const gchar *filename) 
 {
-    g_return_if_fail(html != NULL);
-    g_return_if_fail(filename != NULL || strlen(filename));
+    g_return_if_fail(html);
+    g_return_if_fail(filename || strlen(filename));
     
     GError *error = NULL;
 	gchar *uri = g_filename_to_uri(filename, NULL, &error);

@@ -551,8 +551,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
         
         GDir *docdir;
         if((docdir = g_dir_open(docpath, 0, &err)) == NULL) {
-            error_dialog(GTK_WINDOW(self), err, 
-              _("Could not open documentation directory: "));
+            error_dialog(GTK_WINDOW(self), err, _("Could not open documentation directory: "));
             g_free(docpath);
             return;
         }
@@ -649,7 +648,6 @@ i7_search_window_search_project(I7SearchWindow *self)
 	stop_spinner(self);
 }
 
-
 /* Search the user-installed extensions for the string 'text' */
 void
 i7_search_window_search_extensions(I7SearchWindow *self)
@@ -681,8 +679,7 @@ i7_search_window_search_extensions(I7SearchWindow *self)
             if(!g_file_get_contents(filename, &contents, NULL, &err)) {
                 error_dialog(GTK_WINDOW(self), err, 
                   /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
-                  _("Error opening extension '%s' by '%s':"),
-                  author_entry, dir_entry);
+                  _("Error opening extension '%s' by '%s':"), author_entry, dir_entry);
                 g_free(filename);
                 return;
             }
@@ -693,8 +690,7 @@ i7_search_window_search_extensions(I7SearchWindow *self)
             
 			GtkTreeIter result;
             GtkTextIter search_from, match_start, match_end;
-            gtk_text_buffer_get_start_iter(buffer, 
-              &search_from);
+            gtk_text_buffer_get_start_iter(buffer, &search_from);
 
 			start_spinner(self);
 		

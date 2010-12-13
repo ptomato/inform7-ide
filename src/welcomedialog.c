@@ -65,10 +65,9 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
         GtkRecentInfo *info = gtk_recent_info_ref(
           (GtkRecentInfo *)iter->data);
         if(gtk_recent_info_has_application(info, "GNOME Inform 7")
-          && gtk_recent_info_get_application_info(info, "GNOME Inform 7", NULL,
-          NULL, &timestamp)
-          && gtk_recent_info_has_group(info, "inform7_project")
-          && (latest == 0 || difftime(timestamp, latest) > 0)) 
+            && gtk_recent_info_get_application_info(info, "GNOME Inform 7", NULL, NULL, &timestamp)
+            && gtk_recent_info_has_group(info, "inform7_project")
+            && (latest == 0 || difftime(timestamp, latest) > 0)) 
         {
             latest = timestamp;
             lastproject = iter;
