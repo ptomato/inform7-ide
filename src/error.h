@@ -19,7 +19,15 @@
 #define ERROR_H
 
 #include <stdarg.h>
-#include <gnome.h>
+#include <glib.h>
+#include <gtk/gtk.h>
+
+#define WARN(msg,err) g_warning("%s: %s: %s", __func__, (msg), (err)->message)
+#define WARN_S(msg,str,err) g_warning("%s: (%s) %s: %s", __func__, (str), \
+	(msg), (err)->message)
+#define ERROR(msg,err) g_error("%s: %s: %s", __func__, (msg), (err)->message)
+#define ERROR_S(msg,str,err) g_error("%s: (%s) %s: %s", __func__, (str), \
+	(msg), (err)->message)
 
 void error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...);
 

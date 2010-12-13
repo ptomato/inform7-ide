@@ -1,0 +1,763 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires gtksourceview 0.0 -->
+  <!-- interface-naming-policy project-wide -->
+  <!-- interface-local-resource-path ../pixmaps -->
+  <object class="GtkVBox" id="box">
+    <property name="visible">True</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkHBox" id="statusline">
+        <property name="visible">True</property>
+        <property name="no_show_all">True</property>
+        <child>
+          <object class="GtkProgressBar" id="progressbar">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="padding">6</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar">
+            <property name="visible">True</property>
+            <property name="spacing">2</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="pack_type">end</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkActionGroup" id="document_actions"/>
+  <object class="GtkActionGroup" id="selection_actions">
+    <property name="sensitive">False</property>
+  </object>
+  <object class="GtkAction" id="save">
+    <property name="label">_Save</property>
+    <property name="tooltip">Save the current story</property>
+    <property name="stock_id">gtk-save</property>
+    <signal name="activate" handler="action_save"/>
+  </object>
+  <object class="GtkAction" id="save_as">
+    <property name="label">Save _As...</property>
+    <property name="tooltip">Save the current story with a different name</property>
+    <property name="stock_id">gtk-save-as</property>
+    <signal name="activate" handler="action_save_as"/>
+  </object>
+  <object class="GtkAction" id="save_copy">
+    <property name="label">Sa_ve a Copy...</property>
+    <property name="tooltip">Save a copy of the current story under a different name</property>
+    <signal name="activate" handler="action_save_copy"/>
+  </object>
+  <object class="GtkAction" id="revert">
+    <property name="label">_Revert</property>
+    <property name="tooltip">Revert to the last saved version of the story, discarding all subsequent changes</property>
+    <property name="stock_id">gtk-revert-to-saved</property>
+    <signal name="activate" handler="action_revert"/>
+  </object>
+  <object class="GtkAction" id="page_setup">
+    <property name="label">Page Set_up...</property>
+    <property name="tooltip">Setup the page settings</property>
+    <signal name="activate" handler="action_page_setup"/>
+  </object>
+  <object class="GtkAction" id="print_preview">
+    <property name="label">Print Previe_w...</property>
+    <property name="tooltip">Print preview</property>
+    <property name="stock_id">gtk-print-preview</property>
+    <signal name="activate" handler="action_print_preview"/>
+  </object>
+  <object class="GtkAction" id="print">
+    <property name="label">_Print...</property>
+    <property name="tooltip">Print the story's Source</property>
+    <property name="stock_id">gtk-print</property>
+    <signal name="activate" handler="action_print"/>
+  </object>
+  <object class="GtkAction" id="close">
+    <property name="label">_Close</property>
+    <property name="tooltip">Close the current story</property>
+    <property name="stock_id">gtk-close</property>
+    <signal name="activate" handler="action_close"/>
+  </object>
+  <object class="GtkAction" id="undo">
+    <property name="label">_Undo</property>
+    <property name="tooltip">Undo the last action</property>
+    <property name="stock_id">gtk-undo</property>
+    <signal name="activate" handler="action_undo"/>
+  </object>
+  <object class="GtkAction" id="redo">
+    <property name="label">_Redo</property>
+    <property name="tooltip">Redo the last undone action</property>
+    <property name="stock_id">gtk-redo</property>
+    <signal name="activate" handler="action_redo"/>
+  </object>
+  <object class="GtkAction" id="paste">
+    <property name="label">_Paste</property>
+    <property name="tooltip">Paste the clipboard</property>
+    <property name="stock_id">gtk-paste</property>
+    <signal name="activate" handler="action_paste"/>
+  </object>
+  <object class="GtkAction" id="select_all">
+    <property name="label">Select _All</property>
+    <property name="tooltip">Select the entire document</property>
+    <property name="stock_id">gtk-select-all</property>
+    <signal name="activate" handler="action_select_all"/>
+  </object>
+  <object class="GtkAction" id="find">
+    <property name="label">_Find</property>
+    <property name="tooltip">Search for text</property>
+    <property name="stock_id">gtk-find</property>
+    <signal name="activate" handler="action_find"/>
+  </object>
+  <object class="GtkAction" id="find_next">
+    <property name="label">Find Ne_xt</property>
+    <property name="tooltip">Search forwards for the find text</property>
+    <property name="stock_id">gtk-go-forward</property>
+    <signal name="activate" handler="action_find_next"/>
+  </object>
+  <object class="GtkAction" id="find_previous">
+    <property name="label">Find Pre_vious</property>
+    <property name="tooltip">Search backwards for the find text</property>
+    <property name="stock_id">gtk-go-back</property>
+    <signal name="activate" handler="action_find_previous"/>
+  </object>
+  <object class="GtkAction" id="show_headings">
+    <property name="label">Show _Headings</property>
+    <property name="tooltip">Show the table of contents</property>
+    <property name="stock_id">gtk-index</property>
+    <signal name="activate" handler="action_show_headings"/>
+  </object>
+  <object class="GtkAction" id="current_section_only">
+    <property name="label">_Current Section Only</property>
+    <property name="short_label">Current</property>
+    <property name="tooltip">Show only the current section in the Source</property>
+    <property name="stock_id">gtk-goto-last</property>
+    <signal name="activate" handler="action_current_section_only"/>
+  </object>
+  <object class="GtkAction" id="increase_restriction">
+    <property name="label">Incre_ase Restriction</property>
+    <property name="short_label">Increase</property>
+    <property name="tooltip">Restrict the Source to one level deeper in the hierarchy</property>
+    <property name="stock_id">gtk-go-forward</property>
+    <signal name="activate" handler="action_increase_restriction"/>
+  </object>
+  <object class="GtkAction" id="decrease_restriction">
+    <property name="label">Re_duce Restriction</property>
+    <property name="short_label">Reduce</property>
+    <property name="tooltip">Show the surrounding hierarchical level in the Source</property>
+    <property name="stock_id">gtk-go-back</property>
+    <property name="sensitive">False</property>
+    <signal name="activate" handler="action_decrease_restriction"/>
+  </object>
+  <object class="GtkAction" id="entire_source">
+    <property name="label">_Entire Source</property>
+    <property name="tooltip">Show the entire story in the Source</property>
+    <property name="stock_id">gtk-goto-first</property>
+    <property name="sensitive">False</property>
+    <signal name="activate" handler="action_entire_source"/>
+  </object>
+  <object class="GtkAction" id="previous_section">
+    <property name="label">_Previous Section</property>
+    <property name="tooltip">Jump to the previous section</property>
+    <property name="stock_id">gtk-go-up</property>
+    <signal name="activate" handler="action_previous_section"/>
+  </object>
+  <object class="GtkAction" id="next_section">
+    <property name="label">_Next Section</property>
+    <property name="tooltip">Jump to the next section</property>
+    <property name="stock_id">gtk-go-down</property>
+    <signal name="activate" handler="action_next_section"/>
+  </object>
+  <object class="GtkAction" id="indent">
+    <property name="label">_Indent</property>
+    <property name="tooltip">Insert a tab before each line of the selection</property>
+    <property name="stock_id">gtk-indent</property>
+    <signal name="activate" handler="action_indent"/>
+  </object>
+  <object class="GtkAction" id="unindent">
+    <property name="label">_Unindent</property>
+    <property name="tooltip">Remove a tab from the beginning of each line of the selection</property>
+    <property name="stock_id">gtk-unindent</property>
+    <signal name="activate" handler="action_unindent"/>
+  </object>
+  <object class="GtkAction" id="renumber_all_sections">
+    <property name="label">_Renumber All Sections</property>
+    <property name="tooltip">Automatically number all the sections in the story</property>
+    <signal name="activate" handler="action_renumber_all_sections"/>
+  </object>
+  <object class="GtkAction" id="view_menu">
+    <property name="label">_View</property>
+  </object>
+  <object class="GtkActionGroup" id="copy_actions"/>
+  <object class="GtkAction" id="format_menu">
+    <property name="label">_Format</property>
+  </object>
+  <object class="GtkAction" id="scroll_selection">
+    <property name="label">Sc_roll to Selection</property>
+    <property name="tooltip">Go to the selection</property>
+    <property name="stock_id">gtk-jump-to</property>
+    <signal name="activate" handler="action_scroll_selection"/>
+  </object>
+  <object class="GtkAction" id="comment_out_selection">
+    <property name="label">_Comment Out Selection</property>
+    <property name="tooltip">Put the selected text between comment brackets</property>
+    <signal name="activate" handler="action_comment_out_selection"/>
+  </object>
+  <object class="GtkAction" id="cut">
+    <property name="label">Cu_t</property>
+    <property name="tooltip">Cut the selected text</property>
+    <property name="stock_id">gtk-cut</property>
+    <signal name="activate" handler="action_cut"/>
+  </object>
+  <object class="GtkAction" id="copy">
+    <property name="label">_Copy</property>
+    <property name="tooltip">Copy the selected text to the clipboard</property>
+    <property name="stock_id">gtk-copy</property>
+    <signal name="activate" handler="action_copy"/>
+  </object>
+  <object class="GtkTextTag" id="invisible_tag">
+    <property name="name">invisible</property>
+    <property name="editable">False</property>
+    <property name="invisible">True</property>
+    <property name="editable_set">True</property>
+    <property name="invisible_set">True</property>
+  </object>
+  <object class="GtkTreeStore" id="headings_store">
+    <columns>
+      <!-- column-name Heading -->
+      <column type="gchararray"/>
+      <!-- column-name Line -->
+      <column type="guint"/>
+      <!-- column-name Heading1 -->
+      <column type="gint"/>
+      <!-- column-name Section -->
+      <column type="gchararray"/>
+      <!-- column-name Section1 -->
+      <column type="gchararray"/>
+      <!-- column-name Pango -->
+      <column type="gint"/>
+    </columns>
+  </object>
+  <object class="GtkEntry" id="findbar_entry">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <signal name="changed" handler="on_findbar_entry_changed"/>
+  </object>
+  <object class="GtkSourceBuffer" id="buffer">
+    <property name="highlight_matching_brackets">False</property>
+    <property name="max_undo_levels">-1</property>
+    <signal name="changed" handler="on_buffer_changed"/>
+    <signal name="insert_text" handler="after_source_buffer_insert_text" after="yes"/>
+    <signal name="mark_set" handler="on_buffer_mark_set"/>
+    <signal name="delete_range" handler="after_source_buffer_delete_range" after="yes"/>
+    <signal name="modified_changed" handler="on_buffer_modified_changed"/>
+  </object>
+  <object class="GtkDialog" id="find_dialog">
+    <property name="border_width">12</property>
+    <property name="title" translatable="yes">Find and Replace</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="icon_name">inform7</property>
+    <property name="type_hint">dialog</property>
+    <signal name="close" handler="gtk_widget_hide"/>
+    <signal name="delete_event" handler="gtk_widget_hide_on_delete"/>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox3">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
+        <child>
+          <object class="GtkTable" id="table2">
+            <property name="visible">True</property>
+            <property name="n_rows">2</property>
+            <property name="n_columns">3</property>
+            <property name="column_spacing">6</property>
+            <property name="row_spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="label48">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">R_eplace with:</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label47">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">_Search for:</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="find_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="activates_default">True</property>
+                <signal name="changed" handler="on_find_entry_changed"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="replace_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="activates_default">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="search_type">
+                <property name="visible">True</property>
+                <property name="model">search_type_model</property>
+                <property name="active">0</property>
+                <child>
+                  <object class="GtkCellRendererText" id="search_type_renderer"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="ignore_case">
+            <property name="label" translatable="yes">_Ignore case</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_underline">True</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="reverse">
+            <property name="label" translatable="yes">Search _backwards</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_underline">True</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="restrict_search">
+            <property name="label" translatable="yes">Restric_t search to currently shown section</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_underline">True</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area3">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="find_close_button">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="gtk_widget_hide" object="find_dialog"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="replace_all_button">
+                <property name="label" translatable="yes">Replace _all</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <signal name="clicked" handler="on_replace_all_button_clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="replace_button">
+                <property name="label" translatable="yes">_Replace</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">replace_icon</property>
+                <property name="use_underline">True</property>
+                <signal name="clicked" handler="on_replace_button_clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="find_button">
+                <property name="label">gtk-find</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_find_button_clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">find_close_button</action-widget>
+      <action-widget response="0">replace_all_button</action-widget>
+      <action-widget response="0">replace_button</action-widget>
+      <action-widget response="0">find_button</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkAction" id="replace">
+    <property name="label">Find and _Replace...</property>
+    <property name="short_label">Find and _Replace...</property>
+    <property name="tooltip">Search for text and replace each occurrence with different text</property>
+    <property name="stock_id">gtk-find-and-replace</property>
+    <signal name="activate" handler="action_replace"/>
+  </object>
+  <object class="GtkListStore" id="search_type_model">
+    <columns>
+      <!-- column-name item -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Words containing</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Words starting with</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">The whole word(s)</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkToggleAction" id="view_toolbar">
+    <property name="label">Tool_bar</property>
+    <property name="tooltip">Show or hide the toolbar in the current window</property>
+    <property name="active">True</property>
+    <signal name="toggled" handler="action_view_toolbar_toggled"/>
+  </object>
+  <object class="GtkToggleAction" id="view_statusbar">
+    <property name="label">_Status Bar</property>
+    <property name="tooltip">Show or hide the status bar in the current window</property>
+    <property name="active">True</property>
+    <signal name="toggled" handler="action_view_statusbar_toggled"/>
+  </object>
+  <object class="GtkImage" id="replace_icon">
+    <property name="visible">True</property>
+    <property name="stock">gtk-find-and-replace</property>
+  </object>
+  <object class="GtkAction" id="uncomment_selection">
+    <property name="label">_Uncomment Selection</property>
+    <property name="tooltip">Remove comment brackets from selected text</property>
+    <signal name="activate" handler="action_uncomment_selection"/>
+  </object>
+  <object class="GtkToggleAction" id="enable_elastic_tabs">
+    <property name="label">_Enable Elastic Tabs</property>
+    <property name="tooltip">Make tabs line up in the Story pane</property>
+    <signal name="toggled" handler="action_enable_elastic_tabs_toggled"/>
+  </object>
+  <object class="GtkAction" id="check_spelling">
+    <property name="label">Rec_heck Document</property>
+    <property name="short_label">Rec_heck Document</property>
+    <property name="tooltip">Recheck the current story for incorrect spelling</property>
+    <property name="stock_id">gtk-spell-check</property>
+    <signal name="activate" handler="action_check_spelling"/>
+  </object>
+  <object class="GtkActionGroup" id="spelling_actions"/>
+  <object class="GtkToggleAction" id="autocheck_spelling">
+    <property name="label">Aut_ocheck Spelling</property>
+    <property name="short_label">Aut_ocheck Spelling</property>
+    <property name="tooltip">Automatically underline misspelled words in the story</property>
+    <property name="active">True</property>
+    <signal name="toggled" handler="action_autocheck_spelling_toggle"/>
+  </object>
+  <object class="GtkDialog" id="search_files_dialog">
+    <property name="border_width">12</property>
+    <property name="title" translatable="yes">Find and Replace</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="icon_name">inform7</property>
+    <property name="type_hint">dialog</property>
+    <signal name="close" handler="gtk_widget_hide"/>
+    <signal name="delete_event" handler="gtk_widget_hide_on_delete"/>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox4">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
+        <child>
+          <object class="GtkTable" id="table1">
+            <property name="visible">True</property>
+            <property name="n_rows">4</property>
+            <property name="n_columns">3</property>
+            <property name="column_spacing">6</property>
+            <property name="row_spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label2">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">_Search for:</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="search_files_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x2022;</property>
+                <property name="activates_default">True</property>
+                <signal name="changed" handler="on_search_files_entry_changed"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="search_files_type">
+                <property name="visible">True</property>
+                <property name="model">search_type_model</property>
+                <property name="active">0</property>
+                <child>
+                  <object class="GtkCellRendererText" id="search_files_type_renderer"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+                <property name="label" translatable="yes">In:</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="search_files_project">
+                <property name="label" translatable="yes">_Project files</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_underline">True</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="y_options">GTK_FILL</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="search_files_extensions">
+                <property name="label" translatable="yes">_Extensions</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_underline">True</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="search_files_documentation">
+                <property name="label" translatable="yes">_Documentation</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_underline">True</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="search_files_ignore_case">
+            <property name="label" translatable="yes">_Ignore case</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_underline">True</property>
+            <property name="active">True</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area4">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="search_files_close">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="gtk_widget_hide" object="search_files_dialog"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="search_files_find">
+                <property name="label">gtk-find</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_search_files_find_clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">search_files_close</action-widget>
+      <action-widget response="0">search_files_find</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkAction" id="search">
+    <property name="label">_Search Files...</property>
+    <property name="short_label">_Search Files...</property>
+    <property name="tooltip">Search through the entire project, including the documentation</property>
+    <signal name="activate" handler="action_search"/>
+  </object>
+  <object class="GtkTreeModelFilter" id="headings_filtermodel">
+    <property name="child_model">headings_store</property>
+  </object>
+</interface>

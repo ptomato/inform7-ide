@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy project-wide -->
+  <!-- interface-local-resource-path ../pixmaps -->
+  <object class="GtkTreeStore" id="project_type_model">
+    <columns>
+      <!-- column-name type -->
+      <column type="gint"/>
+      <!-- column-name typename -->
+      <column type="gchararray"/>
+      <!-- column-name description -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkAssistant" id="newdialog">
+    <property name="border_width">12</property>
+    <property name="title" translatable="yes">Create New Project</property>
+    <property name="window_position">center</property>
+    <property name="icon_name">inform7</property>
+    <signal name="prepare" handler="on_newdialog_prepare"/>
+    <signal name="cancel" handler="on_newdialog_cancel"/>
+    <signal name="close" handler="on_newdialog_close"/>
+    <signal name="delete_event" handler="on_newdialog_delete_event"/>
+    <child>
+      <object class="GtkVBox" id="vbox3">
+        <property name="visible">True</property>
+        <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkTreeView" id="project_type">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="model">project_type_model</property>
+            <property name="headers_visible">False</property>
+            <property name="headers_clickable">False</property>
+            <property name="search_column">0</property>
+            <property name="tooltip_column">2</property>
+            <child>
+              <object class="GtkTreeViewColumn" id="project_type_column">
+                <property name="sizing">fixed</property>
+                <child>
+                  <object class="GtkCellRendererText" id="project_type_renderer"/>
+                  <attributes>
+                    <attribute name="markup">1</attribute>
+                  </attributes>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator1">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="project_type_description">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Please choose a project type.</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="title">New Project Type</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkVBox" id="vbox4">
+        <property name="visible">True</property>
+        <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="label25">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">The _directory in which the project will be created</property>
+            <property name="use_markup">True</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">new_directory</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFileChooserButton" id="new_directory">
+            <property name="visible">True</property>
+            <property name="preview_widget_active">False</property>
+            <property name="action">select-folder</property>
+            <property name="title" translatable="yes">Choose the directory to create the new project in</property>
+            <signal name="current_folder_changed" handler="on_new_directory_current_folder_changed"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label24">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">The _name of the new project</property>
+            <property name="use_markup">True</property>
+            <property name="use_underline">True</property>
+            <property name="mnemonic_widget">new_name</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="new_name">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+            <property name="activates_default">True</property>
+            <property name="truncate_multiline">True</property>
+            <signal name="changed" handler="on_new_name_changed"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label27">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">The a_uthor's name</property>
+            <property name="use_markup">True</property>
+            <property name="use_underline">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="new_author">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+            <property name="activates_default">True</property>
+            <property name="truncate_multiline">True</property>
+            <signal name="changed" handler="on_new_author_changed"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="title">Inform 7 Project</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="new_project_confirm">
+        <property name="visible">True</property>
+        <property name="xalign">0</property>
+        <property name="xpad">12</property>
+        <property name="ypad">12</property>
+        <property name="label" translatable="yes">(placeholder)</property>
+        <property name="use_markup">True</property>
+        <property name="wrap">True</property>
+      </object>
+      <packing>
+        <property name="page_type">confirm</property>
+        <property name="title">Create a New Project</property>
+      </packing>
+    </child>
+  </object>
+</interface>

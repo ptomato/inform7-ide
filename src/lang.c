@@ -15,17 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <gnome.h>
+#include <stdlib.h>
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagemanager.h>
-
 #include "lang.h"
-#include "datafile.h"
+#include "app.h"
 #include "error.h"
 
 void 
@@ -48,13 +46,17 @@ set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
     paths = gtk_source_language_manager_get_search_path(lmanager);
     for (dirs = 0; paths[dirs]; dirs++);
 
-    mypaths = calloc(dirs + 2, sizeof(gchar *));
+    mypaths = g_new0(gchar *, dirs + 2);
 
     for (i = 0; i < dirs; i++)
     	mypaths[i] = g_strdup(paths[i]);
 
-    mypaths[i++] = get_datafile_path("languages"); /* Get data dir */
+    /* Get data dir */
+    mypaths[i++] = i7_app_get_datafile_path(i7_app_get(), "languages");
+    mypaths[i] = NULL;
     gtk_source_language_manager_set_search_path(lmanager, mypaths);
+
+    g_strfreev(mypaths);
 
     language = gtk_source_language_manager_get_language(lmanager, lang);
     if(language != NULL) {

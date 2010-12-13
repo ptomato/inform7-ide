@@ -1,0 +1,1 @@
+SUBDIRS = frotz glulxe git 

@@ -15,207 +15,120 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-#include <gnome.h>
-
-#include "interface.h"
-#include "support.h"
-
-#include "configfile.h"
-#include "datafile.h"
-#include "file.h"
-#include "story.h"
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
 #include "welcomedialog.h"
+#include "app.h"
+#include "builder.h"
+#include "error.h"
+#include "newdialog.h"
+#include "story.h"
 
-/* Returns the label widget from a GtkButton or NULL if not found */
-static GtkWidget *
-gtk_button_get_label_widget(GtkWidget *button) 
+void
+on_welcome_new_button_clicked(GtkButton *button, I7App *app)
 {
-    GtkBin *alignment = GTK_BIN(gtk_bin_get_child(GTK_BIN(button)));
-    GtkContainer *hbox = GTK_CONTAINER(gtk_bin_get_child(alignment));
-    GList *boxchildren = gtk_container_get_children(hbox);
-    GList *iter = boxchildren;
-    GtkWidget *label = NULL;
-    for( ; iter != NULL; iter = g_list_next(iter))
-        if(GTK_IS_LABEL(iter->data)) {
-            label = iter->data;
-            break;
-        }
-    g_list_free(boxchildren);
-    return label;
+	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+	GtkWidget *newdialog = create_new_dialog();
+	gtk_widget_destroy(welcomedialog);
+    gtk_widget_show(newdialog);
 }
 
 void
-after_welcome_dialog_realize(GtkWidget *widget, gpointer data)
+on_welcome_open_button_clicked(GtkButton *button, I7App *app)
 {
-    /* Set the background pixmap for this window */
-    GtkRcStyle *newstyle = gtk_widget_get_modifier_style(widget);
-    newstyle->bg_pixmap_name[GTK_STATE_NORMAL] =
-		get_datafile_path_va("Documentation", "Welcome Background.png", NULL);
-    gtk_widget_modify_style(widget, newstyle);
-    
-    /* Set the font size to 12 pixels for the widgets in this window */
-    PangoFontDescription *font = pango_font_description_new();
-    pango_font_description_set_absolute_size(font, 12 * PANGO_SCALE);
-    gtk_widget_modify_font(lookup_widget(widget, "welcome_label"), font);
-    gtk_widget_modify_font(
-      gtk_button_get_label_widget(lookup_widget(widget, "welcome_new_button")),
-      font);
-    gtk_widget_modify_font(
-      gtk_button_get_label_widget(
-      lookup_widget(widget, "welcome_reopen_button")),
-      font);
-    gtk_widget_modify_font(
-      gtk_button_get_label_widget(lookup_widget(widget, "welcome_open_button")),
-      font);
-    pango_font_description_free(font);
-    
-    /* If there is no "last project", make the reopen button inactive */
-#ifndef SUCKY_GNOME
-    GtkRecentManager *manager = gtk_recent_manager_get_default();
-    GList *recent = gtk_recent_manager_get_items(manager);
-    GList *iter;
-    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
-        if(gtk_recent_info_has_application((GtkRecentInfo *)(iter->data),
-          "GNOME Inform 7") 
-          && gtk_recent_info_has_group((GtkRecentInfo *)(iter->data),
-          "inform7_project")) {
-            gtk_widget_set_sensitive(
-              lookup_widget(widget, "welcome_reopen_button"), TRUE);
-            break;
-        }
-    }
-    /* free the list */
-    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
-        gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
-    }
-    g_list_free(recent);
-#else
-    filename = config_file_get_string("AppSettings", "LastProject");
-    if(filename)
-        gtk_widget_set_sensitive(
-              lookup_widget(widget, "welcome_reopen_button"), TRUE);
-    g_free(filename);
-#endif /* SUCKY_GNOME */
-}
+	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
+	gtk_widget_hide(welcomedialog);
 
-void
-on_welcome_new_button_clicked(GtkButton *button, gpointer data)
-{
-    GtkWidget *new_dialog = create_new_dialog();
-    gtk_widget_show(new_dialog);
-    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-}
+	I7Story *story = i7_story_new_from_dialog(app);
 
-void
-on_welcome_open_button_clicked(GtkButton *button, gpointer data)
-{
-    Story *thestory;
-
-    gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-
-    /* Create a file chooser for *.inform */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Open Project"),
-      GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-
-    GtkFileFilter *filter = gtk_file_filter_new();
-    gtk_file_filter_add_pattern(filter, "*.inform");
-    gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
-
-    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-        char *filename = gtk_file_chooser_get_filename(
-          GTK_FILE_CHOOSER(dialog));
-        thestory = open_project(filename);
-        g_free(filename);
-        gtk_widget_destroy(dialog);
-    } else {
-        gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    if(thestory == NULL) {
+    if(!story) {
         /* Take us back to the welcome dialog */
-        gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+        gtk_widget_show(welcomedialog);
         return;
     }
-    gtk_widget_show(thestory->window);
-    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+
+	gtk_widget_destroy(welcomedialog);
 }
 
 void
-on_welcome_reopen_button_clicked(GtkButton *button, gpointer data)
+on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 {
-#ifndef SUCKY_GNOME
+    GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     GList *recent = gtk_recent_manager_get_items(manager);
     GList *iter;
     time_t timestamp, latest = 0;
-    gchar *projectname = NULL;
-    GError *err;
+    GList *lastproject = NULL;
     
     for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
         GtkRecentInfo *info = gtk_recent_info_ref(
-          (GtkRecentInfo *)(iter->data));
+          (GtkRecentInfo *)iter->data);
         if(gtk_recent_info_has_application(info, "GNOME Inform 7")
           && gtk_recent_info_get_application_info(info, "GNOME Inform 7", NULL,
-          NULL, &timestamp)) {
-            if(gtk_recent_info_has_group(info, "inform7_project")) {
-                if(latest == 0 || difftime(timestamp, latest) > 0) {
-                    latest = timestamp;
-                    if(projectname)
-                        g_free(projectname);
-                    if((projectname = g_filename_from_uri(
-                      gtk_recent_info_get_uri(info), NULL, &err)) == NULL) {
-                        g_warning(_("Cannot get filename from URI: %s"),
-                          err->message);
-                        g_error_free(err);
-                    }
-                }
-            }
+          NULL, &timestamp)
+          && gtk_recent_info_has_group(info, "inform7_project")
+          && (latest == 0 || difftime(timestamp, latest) > 0)) 
+        {
+            latest = timestamp;
+            lastproject = iter;
         }
         gtk_recent_info_unref(info);
     }
+
+	g_assert(lastproject); /* Button not sensitive if no last project */
+	gchar *uri = g_strdup(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
+	/* Do not free the string from gtk_recent_info_get_uri */
+	
     /* free the list */
-    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
-        gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
-    }
+    g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
     g_list_free(recent);
 
-    g_return_if_fail(projectname); /* Button not sensitive if no last project */
-    
-    gchar *trash = g_path_get_dirname(projectname); /* Remove "story.ni" */
-    gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
-    g_free(trash);
-    g_free(projectname);
-    /* Do not free the string from gtk_recent_info_get_uri */
-#else
-    gchar *projectdir = config_file_get_string("AppSettings", "LastProject");
-    g_return_if_fail(projectdir);
-#endif /* SUCKY_GNOME */
-    
-    /* Hide the welcome dialog when opening the new story */
-    gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-    
-    Story *thestory;
-    thestory = open_project(projectdir);
-    g_free(projectdir);
-    
-    if(thestory == NULL) {
-        /* Take us back to the welcome dialog */
-        gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-        return;
-    }
-    gtk_widget_show(thestory->window);
-    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+	I7Story *story = i7_story_new_from_uri(app, uri);
+	g_free(uri);
+	
+	if(story)
+		gtk_widget_destroy(welcomedialog);
 }
 
-gboolean
-on_welcome_dialog_delete_event(GtkWidget *widget, GdkEvent *event, 
-                               gpointer data)
+GtkWidget *
+create_welcome_dialog(void)
 {
-    gtk_main_quit();
-    return FALSE;
+	I7App *theapp = i7_app_get();
+	gchar *filename = i7_app_get_datafile_path(theapp, "ui/welcomedialog.ui");
+	GtkBuilder *builder = create_new_builder(filename, theapp);
+	g_free(filename);
+	GtkWidget *retval = GTK_WIDGET(load_object(builder, "welcomedialog"));
+	
+	/* Set the background pixmap for this window */
+	GtkRcStyle *newstyle = gtk_widget_get_modifier_style(retval);
+    filename = i7_app_get_datafile_path_va(theapp, "Documentation", "Welcome Background.png", NULL);
+    newstyle->bg_pixmap_name[GTK_STATE_NORMAL] = filename; /* take ownership */
+    gtk_widget_modify_style(retval, newstyle);
+	
+    /* Set the font size to 12 pixels for the widgets in this window */
+	PangoFontDescription *font = pango_font_description_new();
+	pango_font_description_set_absolute_size(font, 12.0 * PANGO_SCALE);
+	gtk_widget_modify_font(GTK_WIDGET(load_object(builder, "welcome_label")), font);
+	pango_font_description_free(font);
+	
+	/* If there is no "last project", make the reopen button inactive */
+	GtkRecentManager *manager = gtk_recent_manager_get_default();
+	GList *recent = gtk_recent_manager_get_items(manager);
+	GList *iter;
+	for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
+		if(gtk_recent_info_has_application((GtkRecentInfo *)(iter->data), "GNOME Inform 7") 
+			&& gtk_recent_info_has_group((GtkRecentInfo *)(iter->data), "inform7_project")) 
+		{
+			gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
+			break;
+		}
+	}
+	/* free the list */
+	g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
+	g_list_free(recent);
+
+	g_object_unref(builder);
+	
+	return retval;
 }

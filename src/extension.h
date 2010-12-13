@@ -14,33 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#ifndef EXTENSION_H
-#define EXTENSION_H
 
-#include <gnome.h>
-#include <gtksourceview/gtksourcebuffer.h>
-#include <libgnomevfs/gnome-vfs.h>
+#ifndef _EXTENSION_H_
+#define _EXTENSION_H_
+
+#include <glib-object.h>
+#include <glib.h>
+#include "app.h"
+#include "document.h"
+#include "source-view.h"
+
+#define I7_TYPE_EXTENSION            (i7_extension_get_type())
+#define I7_EXTENSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_EXTENSION, I7Extension))
+#define I7_EXTENSION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), I7_TYPE_EXTENSION, I7ExtensionClass))
+#define I7_IS_EXTENSION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), I7_TYPE_EXTENSION))
+#define I7_IS_EXTENSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), I7_TYPE_EXTENSION))
+#define I7_EXTENSION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), I7_TYPE_EXTENSION, I7ExtensionClass))
 
 typedef struct {
-    /* The toplevel window in which this extension is being edited */
-    GtkWidget *window;
-    /* This extension's filename */
-    gchar *filename;
-    /* File monitor */
-    GnomeVFSMonitorHandle *monitor;
-    /* The program code */
-    GtkSourceBuffer *buffer;
-} Extension;
+	I7DocumentClass parent_class;
+} I7ExtensionClass;
 
-Extension *new_ext();
-void delete_ext(Extension *oldext);
-Extension *get_ext(GtkWidget *widget);
-void set_ext_filename(Extension *ext, gchar *filename);
-void for_each_extension_window(void (*func)(GtkWidget *));
-void for_each_extension_window_idle(GSourceFunc func);
-void for_each_extension_buffer(void (*func)(GtkSourceBuffer *));
-void for_each_extension(void (*func)(Extension *));
-Extension *get_extension_if_open(gchar *filename);
+typedef struct {
+	I7Document parent_instance;
 
-#endif
+	I7SourceView *sourceview;
+} I7Extension;
+
+GType i7_extension_get_type(void) G_GNUC_CONST;
+I7Extension *i7_extension_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author);
+I7Extension *i7_extension_new_from_file(I7App *app, const gchar *filename, gboolean readonly);
+I7Extension *i7_extension_new_from_uri(I7App *app, const gchar *uri, gboolean readonly);
+gboolean i7_extension_open(I7Extension *extension, const gchar *filename, gboolean readonly);
+void i7_extension_set_read_only(I7Extension *extension, gboolean readonly);
+
+#endif /* _EXTENSION_H_ */

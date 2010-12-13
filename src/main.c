@@ -18,125 +18,80 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
-
-#include <gnome.h>
-
-#if !GLIB_CHECK_VERSION(2,8,0)
-# error You need at least GLib 2.8.0 to run this code.
-#endif
-
-#if !GTK_CHECK_VERSION(2,8,0)
-# error You need at least GTK+ 2.8.0 to run this code.
-#endif
-
-#include "interface.h"
-#include "support.h"
-
+#include <stdlib.h>
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include "app.h"
 #include "configfile.h"
-#include "compile.h"
-#include "datafile.h"
-#include "inspector.h"
-#include "file.h"
-#include "windowlist.h"
-
-#ifdef ENABLE_NLS
-#  include <libintl.h>
-#  undef _
-#  define _(String) dgettext (PACKAGE, String)
-#  ifdef gettext_noop
-#    define N_(String) gettext_noop (String)
-#  else
-#    define N_(String) (String)
-#  endif
-#else
-#  define textdomain(String) (String)
-#  define gettext(String) (String)
-#  define dgettext(Domain,Message) (Message)
-#  define dcgettext(Domain,Message,Type) (Message)
-#  define bindtextdomain(Domain,Directory) (Domain)
-#  define _(String) (String)
-#  define N_(String) (String)
-#endif
+#include "error.h"
+#include "welcomedialog.h"
 
 int
 main(int argc, char *argv[])
 {
-    GtkWidget *welcome_dialog;
-    extern GtkWidget *inspector_window;
-    extern GtkWidget *prefs_dialog;
-    const char *datadir, *pixmapdir;
-
 #ifdef ENABLE_NLS
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
 #endif
 
+/*    g_mem_set_vtable(glib_mem_profiler_table);
+    g_atexit(g_mem_profile);*/
+
+    GError *error = NULL;
+
     /* Set up the command-line options */
     gchar **remaining_args = NULL;
     GOptionEntry option_entries[] = {
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY,
-		  &remaining_args,
-		  "Special option that collects any remaining arguments for us" },
+		  &remaining_args, "",
+			/* TRANSLATORS: This string occurs in the --help message's usage
+			 string, to indicate that the user can specify project files on the
+			 command line in order to have them opened at startup */
+			N_("[FILE1 FILE2 ...]") },
 		{ NULL }
 	};
     GOptionContext *option_context = g_option_context_new(
     /* TRANSLATORS: This is the usage string for the --help message */
-      _("[FILES...] - Interactive fiction IDE"));
-    g_option_context_add_main_entries(option_context, option_entries, NULL);
-    
-    /* Retrieve data directory if set externally */
-    datadir = getenv("GNOME_INFORM_DATA_DIR");
-	pixmapdir = getenv("GNOME_INFORM_PIXMAP_DIR");
+      _("- Interactive fiction IDE"));
+    g_option_context_add_main_entries(option_context, option_entries, GETTEXT_PACKAGE);
+	g_option_context_add_group(option_context, gtk_get_option_group(TRUE));
+	if(!g_option_context_parse(option_context, &argc, &argv, &error))
+		ERROR(_("Failed to parse commandline options."), error);
+	g_option_context_free(option_context);
 
-    gnome_program_init(PACKAGE, VERSION, LIBGNOMEUI_MODULE,
-      argc, argv,
-      GNOME_PARAM_GOPTION_CONTEXT, option_context,
-      GNOME_PARAM_APP_DATADIR, datadir == NULL ? PACKAGE_DATA_DIR : datadir,
-      GNOME_PARAM_NONE);
-    
-    /* Create the Gnome Inform7 dir if it doesn't already exist */
-    gchar *extensions_dir = get_extension_path(NULL, NULL);
-    g_mkdir_with_parents(extensions_dir, 0777);
-    g_free(extensions_dir);
-    
-    /* Index the extensions in the background */
-    run_census(FALSE);
-    
-    /* Create the global inspector window and preferences dialog, but keep them 
-    hidden */
-    inspector_window = create_inspector_window();
-    prefs_dialog = create_prefs_dialog();
-
-    /* Check the application settings and, if they don't exist, set them to the
-    defaults */
-    init_config_file();
-
-    /* Do stuff with the remaining command line arguments (files) */
+	if(!g_thread_supported())
+	    g_thread_init(NULL);
+	gdk_threads_init();
+	
+	gtk_init(&argc, &argv);
+	
+	/* Initialize the Inform 7 application */
+	/* TRANSLATORS: this is the human-readable application name */
+	g_set_application_name(_("Inform 7"));
+	I7App *theapp = i7_app_get();
+	trigger_config_file();
+	
+	/* Open any project files specified on the command line */
     if(remaining_args != NULL) {
-	    gint i, num_args;
-
-		num_args = g_strv_length(remaining_args);
-		for (i = 0; i < num_args; ++i) {
-			Story *thestory = open_project(remaining_args[i]);
-            if(thestory != NULL)
-                gtk_widget_show(thestory->window);
-		}
+		gchar **file;
+		for(file = remaining_args; *file; file++)
+			i7_app_open(theapp, *file);
 		g_strfreev (remaining_args);
-		remaining_args = NULL;
 	} 
     
     /* If no windows were opened from command line arguments */
-    if(get_num_app_windows() == 0) {
+    if(i7_app_get_num_open_documents(theapp) == 0) {
         /* Create the splash window */
-        welcome_dialog = create_welcome_dialog();
-        gtk_widget_show(welcome_dialog);
+        GtkWidget *welcomedialog = create_welcome_dialog();
+        gtk_widget_show_all(welcomedialog);
     }
 
+    gdk_threads_enter();
     gtk_main();
-    
-    /* Save the position of the inspector window */
-    save_inspector_window_position();
-    
+    gdk_threads_leave();
+
+    g_object_unref(theapp);
     return 0;
 }

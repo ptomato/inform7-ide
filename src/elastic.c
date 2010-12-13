@@ -21,9 +21,6 @@
 #include "elastic.h"
 
 #include "configfile.h"
-#include "extension.h"
-#include "story.h"
-#include "support.h"
 
 /* calculate the width of the text between @start and @end */
 static int 
@@ -58,7 +55,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 
 	/* initialize tab widths to minimum */
 	for(current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++)
-		max_widths[current_tab_num] = config_file_get_int("EditorSettings", "TabWidth");
+		max_widths[current_tab_num] = config_file_get_int(PREFS_TAB_WIDTH);
 
 	/* get width of text in cells */
 	g_assert(gtk_text_iter_starts_line(block_start));
@@ -98,7 +95,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 	int acc_tabstop = 0;
 	PangoTabArray *tab_array = pango_tab_array_new(max_tabs, TRUE);
 	for (current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++) {
-		acc_tabstop += max_widths[current_tab_num] + config_file_get_int("EditorSettings", "ElasticTabPadding");;
+		acc_tabstop += max_widths[current_tab_num] + config_file_get_int(PREFS_ELASTIC_TABS_PADDING);
 		pango_tab_array_set_tab(tab_array, current_tab_num, PANGO_TAB_LEFT, acc_tabstop);
 	}
 	g_object_set(tag, 
@@ -229,11 +226,11 @@ delete_range_cb(GtkTextBuffer *textbuffer, GtkTextIter *start, GtkTextIter *end,
 }
 
 void 
-add_elastic_tabstops_to_story(Story *thestory)
+add_elastic_tabstops_to_view(GtkTextView *view)
 {
 	GtkTextIter start, end;
-	GtkTextBuffer *textbuffer = GTK_TEXT_BUFFER(thestory->buffer);
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l"));
+	GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(view);
+
 	gtk_text_buffer_get_bounds(textbuffer, &start, &end);
 	divide_into_blocks(view, textbuffer, &start, &end);
 	
@@ -242,35 +239,9 @@ add_elastic_tabstops_to_story(Story *thestory)
 }
 
 void 
-remove_elastic_tabstops_from_story(Story *thestory)
+remove_elastic_tabstops_from_view(GtkTextView *view)
 {
-	GtkTextBuffer *textbuffer = GTK_TEXT_BUFFER(thestory->buffer);
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l"));
-	
-	g_signal_handlers_disconnect_by_func(textbuffer, insert_text_cb, view);
-	g_signal_handlers_disconnect_by_func(textbuffer, delete_range_cb, view);
-	
-	remove_all_elastic_tabstops_tags(textbuffer);
-}
-
-void 
-add_elastic_tabstops_to_extension(Extension *ext)
-{
-	GtkTextIter start, end;
-	GtkTextBuffer *textbuffer = GTK_TEXT_BUFFER(ext->buffer);
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(ext->window, "source"));
-	gtk_text_buffer_get_bounds(textbuffer, &start, &end);
-	divide_into_blocks(view, textbuffer, &start, &end);
-	
-	g_signal_connect_after(textbuffer, "insert-text", G_CALLBACK(insert_text_cb), view);
-	g_signal_connect_after(textbuffer, "delete-range", G_CALLBACK(delete_range_cb), view);
-}
-
-void 
-remove_elastic_tabstops_from_extension(Extension *ext)
-{
-	GtkTextBuffer *textbuffer = GTK_TEXT_BUFFER(ext->buffer);
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(ext->window, "source"));
+	GtkTextBuffer *textbuffer = gtk_text_view_get_buffer(view);
 	
 	g_signal_handlers_disconnect_by_func(textbuffer, insert_text_cb, view);
 	g_signal_handlers_disconnect_by_func(textbuffer, delete_range_cb, view);

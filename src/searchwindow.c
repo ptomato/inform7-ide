@@ -15,36 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gnome.h>
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <gtkhtml/gtkhtml.h>
+#include <stdarg.h>
+#include <libxml/HTMLparser.h>
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
 #include <gtksourceview/gtksourceiter.h>
-
-#include "interface.h"
-#include "support.h"
-
-#include "appwindow.h"
-#include "datafile.h"
+#include <webkit/webkit.h>
+#include "searchwindow.h"
+#include "app.h"
+#include "builder.h"
+#include "document.h"
 #include "error.h"
 #include "extension.h"
-#include "extwindow.h"
-#include "file.h"
-#include "findreplace.h"
-#include "history.h"
-#include "html.h"
-#include "searchwindow.h"
 #include "story.h"
-#include "tabsource.h"
+
+/* These functions are stubs if the GTK version is less than 2.20. See the end
+ of the file. */
+static GtkWidget *pack_spinner_in_box(GtkWidget *box);
+static void start_spinner(I7SearchWindow *self);
+static void stop_spinner(I7SearchWindow *self);
 
 /* An index of the text of the documentation and example pages. Only built
 the first time someone does a documentation search, and freed atexit. */
 static GList *doc_index = NULL;
 
 typedef struct {
-	gboolean example;
-    gboolean recipebook;
+	gboolean is_example;
+    gboolean is_recipebook;
 	gchar *section;
 	gchar *title;
 	gchar *sort;
@@ -54,49 +52,50 @@ typedef struct {
 
 
 /* Columns for the search results tree view */
-enum {
-    SEARCH_WINDOW_CONTEXT_COLUMN,
-    SEARCH_WINDOW_LOCATION_COLUMN,
-    SEARCH_WINDOW_FILE_COLUMN,
-    SEARCH_WINDOW_RESULT_TYPE_COLUMN,
-    SEARCH_WINDOW_LINE_NUMBER_COLUMN,
-    SEARCH_WINDOW_NUM_COLUMNS
-};
+typedef enum {
+    I7_RESULT_CONTEXT_COLUMN,
+    I7_RESULT_FILE_COLUMN,
+    I7_RESULT_RESULT_TYPE_COLUMN,
+    I7_RESULT_LINE_NUMBER_COLUMN,
+	I7_RESULT_SORT_STRING_COLUMN,
+	I7_RESULT_LOCATION_COLUMN
+} I7ResultColumns;
 
-enum {
-    RESULT_TYPE_PROJECT,
-    RESULT_TYPE_EXTENSION,
-    RESULT_TYPE_DOCUMENTATION,
-    RESULT_TYPE_RECIPE_BOOK
-};
+typedef enum {
+    I7_RESULT_TYPE_PROJECT,
+    I7_RESULT_TYPE_EXTENSION,
+    I7_RESULT_TYPE_DOCUMENTATION,
+    I7_RESULT_TYPE_RECIPE_BOOK
+} I7ResultType;
 
 typedef struct {
-    gchar *context;
-    gchar *source_sort;
-    gchar *source_location;
-    gchar *source_file;
-    int result_type;
-    int lineno;
-} Result;
+	GString *chars;
+	int ignore;
+	gboolean in_example;
+	/* Metadata */
+	DocText *doctext;
+} Ctxt;
 
-
-/* Free the data in a Result structure */
-static void
-result_free(Result *foo)
+typedef struct _I7SearchWindowPrivate I7SearchWindowPrivate;
+struct _I7SearchWindowPrivate
 {
-    g_free(foo->context);
-    g_free(foo->source_sort);
-    g_free(foo->source_location);
-    g_free(foo->source_file);
-    g_free(foo);
-}
+	GtkListStore *results;
+	I7Document *document; /* Associated document window */
+	gchar *text; /* Search string */
+	gboolean ignore_case;
+	I7SearchType algorithm;
+};
+
+#define I7_SEARCH_WINDOW_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SEARCH_WINDOW, I7SearchWindowPrivate))
+#define I7_SEARCH_WINDOW_USE_PRIVATE(o,n) I7SearchWindowPrivate *n = I7_SEARCH_WINDOW_PRIVATE(o)
+
+/* CALLBACKS */
 
 /* Callback for double-clicking on one of the search results */
 void
-on_search_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path,
-                                     GtkTreeViewColumn *column, 
-                                     GtkWidget *main_window)
+on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, I7SearchWindow *self)
 {
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
     GtkTreeIter iter;
     GtkTreeModel *model = gtk_tree_view_get_model(treeview);
     g_return_if_fail(model);
@@ -106,42 +105,54 @@ on_search_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path,
     gchar *filename;
     int result_type, lineno;
     gtk_tree_model_get(model, &iter,
-      SEARCH_WINDOW_FILE_COLUMN, &filename,
-      SEARCH_WINDOW_RESULT_TYPE_COLUMN, &result_type,
-      SEARCH_WINDOW_LINE_NUMBER_COLUMN, &lineno,
-      -1);
+	    I7_RESULT_FILE_COLUMN, &filename,
+	    I7_RESULT_RESULT_TYPE_COLUMN, &result_type,
+	    I7_RESULT_LINE_NUMBER_COLUMN, &lineno,
+	    -1);
     
-    gchar *anchor;
-    Extension *ext;
     switch(result_type) {
-    case RESULT_TYPE_DOCUMENTATION:
-    case RESULT_TYPE_RECIPE_BOOK:
-        /* Check if there is an anchor we need to jump to */
-        
-        if((anchor = strchr(filename, '#')))
-            *(anchor++) = '\0';
-        
-        /* Display the documentation page in the appropriate widget */
-        int panel = choose_notebook(main_window, TAB_DOCUMENTATION);
-        GtkHTML *html = GTK_HTML(lookup_widget(main_window,
-          (panel == LEFT)? "docs_l" : "docs_r"));
-        html_load_file(html, filename);
-		history_push_docpage(get_story(main_window), panel, filename);
-        if(anchor)
-            gtk_html_jump_to_anchor(html, anchor);
-        /* Show the widget */
-        gtk_notebook_set_current_page(get_notebook(main_window, panel),
-          TAB_DOCUMENTATION);
+    case I7_RESULT_TYPE_DOCUMENTATION:
+    case I7_RESULT_TYPE_RECIPE_BOOK:
+	{
+		/* Display the documentation page in the appropriate widget if this
+		 is a story with facing pages. Otherwise, open the documentation in
+		 the web browser. */
+		if(I7_IS_STORY(priv->document)) {
+			GMatchInfo *match;
+			I7App *theapp = i7_app_get();
+			/* Jump to the proper example */
+			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXTENSION_FILE_NAME], filename, 0, &match)) {
+				gchar *number = g_match_info_fetch_named(match, "number");
+				gchar *anchor = g_strconcat("e", number, NULL);
+				g_free(number);
+				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), filename, anchor);
+				g_free(anchor);
+			} else
+				i7_story_show_docpage(I7_STORY(priv->document), filename);
+			g_match_info_free(match);
+		} else {
+			GError *err = NULL;
+			gchar *uri = g_filename_to_uri(filename, NULL, &err);
+			if(!uri) {
+				WARN_S(_("Could not convert filename to URI"), filename, err);
+				break;
+			}
+			/* SUCKY DEBIAN replace with gtk_show_uri() */
+			if(!g_app_info_launch_default_for_uri(uri, NULL, &err))
+				error_dialog(GTK_WINDOW(self), err, _("The page \"%s\" should have opened in your browser:"), uri);
+		}
+	}
         break;
-    case RESULT_TYPE_PROJECT:
-        jump_to_line(main_window, lineno);
+    case I7_RESULT_TYPE_PROJECT:
+        i7_document_jump_to_line(priv->document, lineno);
         break;
-    case RESULT_TYPE_EXTENSION:
-        ext = get_extension_if_open(filename);
+    case I7_RESULT_TYPE_EXTENSION:
+	{
+        I7Document *ext = i7_app_get_already_open(i7_app_get(), filename);
         if(ext == NULL)
-            ext = open_extension(filename);
-        jump_to_line_ext(ext->window, lineno);
-        gtk_widget_show(ext->window);
+            ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), filename, FALSE));
+		i7_document_jump_to_line(ext, lineno);
+    }
         break;
     default:
         g_assert_not_reached();
@@ -149,60 +160,155 @@ on_search_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path,
     g_free(filename);
 }
 
-
-/* Create a new search results window with the results listed.
-Frees the results */
-GtkWidget *
-new_search_window(GtkWidget *main_window, const gchar *text, GList *results)
+static gboolean
+on_search_window_delete_event(I7SearchWindow *self, GdkEvent *event)
 {
-    GtkWidget *search_window = create_search_window();
-    
-    gtk_label_set_text(
-      GTK_LABEL(lookup_widget(search_window, "search_text_label")), text);
-    
-    GtkTreeView *view = GTK_TREE_VIEW(lookup_widget(search_window,
-      "search_results_view"));
-    
-    /* Construct the model */
-    GtkListStore *store = gtk_list_store_new(SEARCH_WINDOW_NUM_COLUMNS,
-      G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT, G_TYPE_INT);
-    GtkTreeIter tree_iter;
-    
-    GList *iter;
-    for(iter = results; iter != NULL; iter = g_list_next(iter)) {
-        Result *foo = (Result *)(iter->data);
-        gtk_list_store_append(store, &tree_iter);
-        gtk_list_store_set(store, &tree_iter,
-          SEARCH_WINDOW_CONTEXT_COLUMN, foo->context,
-          SEARCH_WINDOW_LOCATION_COLUMN, foo->source_location,
-          SEARCH_WINDOW_FILE_COLUMN, foo->source_file,
-          SEARCH_WINDOW_RESULT_TYPE_COLUMN, foo->result_type,
-          SEARCH_WINDOW_LINE_NUMBER_COLUMN, foo->lineno,
-          -1);
-        result_free(foo);
-    }
-    g_list_free(results);
-    
-    gtk_tree_view_set_model(view, GTK_TREE_MODEL(store));
-    
-    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
-      _("Context"), renderer, 
-      "text", SEARCH_WINDOW_CONTEXT_COLUMN,
-      NULL);
-    gtk_tree_view_append_column(view, column);
-    renderer = gtk_cell_renderer_text_new();
-    column = gtk_tree_view_column_new_with_attributes(
-      _("Location"), renderer, 
-      "text", SEARCH_WINDOW_LOCATION_COLUMN,
-      NULL);
-    gtk_tree_view_append_column(view, column);
-    
-    g_signal_connect(G_OBJECT(view), "row-activated",
-      G_CALLBACK(on_search_results_view_row_activated),
-      (gpointer)main_window);
-    
-    return search_window;
+	return TRUE; /* block deletion */
+}
+
+static void
+location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
+{
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	
+	I7ResultType type;
+	guint lineno;
+	gchar *text = NULL, *path, *filename, *location;
+	
+	gtk_tree_model_get(model, iter, 
+	    I7_RESULT_RESULT_TYPE_COLUMN, &type, 
+	    I7_RESULT_LINE_NUMBER_COLUMN, &lineno,
+	    I7_RESULT_FILE_COLUMN, &path,
+	    I7_RESULT_LOCATION_COLUMN, &location,
+	    -1);
+
+	switch(type) {
+		case I7_RESULT_TYPE_PROJECT:
+			if(I7_IS_STORY(priv->document))
+				text = g_strdup_printf(_("Story, line %d"), lineno);
+			else {
+				gchar *displayname = i7_document_get_display_name(priv->document);
+				text = g_strdup_printf(_("%s, line %d"), displayname, lineno);
+				g_free(displayname);
+			}
+			break;
+		case I7_RESULT_TYPE_EXTENSION:
+			filename = g_filename_display_basename(path);
+			text = g_strdup_printf(
+                  /* TRANSLATORS: EXTENSION_NAME, line NUMBER */
+                  _("%s, line %d"), filename, lineno);
+			g_free(filename);
+			break;
+		case I7_RESULT_TYPE_DOCUMENTATION:
+		case I7_RESULT_TYPE_RECIPE_BOOK:
+			text = g_strdup(location);
+		default:
+			;
+	}
+
+	g_object_set(cell, "text", text, NULL);
+	g_free(path);
+	g_free(text);
+}
+
+static void
+type_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter)
+{
+	I7ResultType type;
+	gtk_tree_model_get(model, iter, I7_RESULT_RESULT_TYPE_COLUMN, &type, -1);
+	switch(type) {
+		case I7_RESULT_TYPE_DOCUMENTATION:
+			g_object_set(cell, "text", _("Documentation"), NULL);
+			break;
+		case I7_RESULT_TYPE_EXTENSION:
+			g_object_set(cell, "text", _("Extension"), NULL);
+			break;
+		case I7_RESULT_TYPE_PROJECT:
+			g_object_set(cell, "text", _("Project File"), NULL);
+			break;
+		case I7_RESULT_TYPE_RECIPE_BOOK:
+			g_object_set(cell, "text", _("Recipe Book"), NULL);
+			break;
+		default:
+			g_object_set(cell, "text", _("unknown"), NULL);
+	}
+}
+
+/* TYPE SYSTEM */
+
+G_DEFINE_TYPE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
+
+static void
+i7_search_window_init(I7SearchWindow *self)
+{
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+
+	priv->document = NULL;
+	priv->text = NULL;
+	priv->ignore_case = FALSE;
+	priv->algorithm = I7_SEARCH_CONTAINS;
+
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(self), TRUE);
+	gtk_window_set_icon_name(GTK_WINDOW(self), "inform7");
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(self), TRUE);
+	gtk_window_set_title(GTK_WINDOW(self), _("Search Results"));
+	gtk_window_set_type_hint(GTK_WINDOW(self), GDK_WINDOW_TYPE_HINT_UTILITY);
+	gtk_container_set_border_width(GTK_CONTAINER(self), 12);
+	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
+	
+	/* Build the interface from the builder file */
+	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/searchwindow.ui");
+	GtkBuilder *builder = create_new_builder(filename, self);
+	g_free(filename);
+
+	/* Build the rest of the interface */
+	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
+	GtkWidget *box = GTK_WIDGET(load_object(builder, "search_text_box"));
+	self->spinner = pack_spinner_in_box(box);
+	priv->results = GTK_LIST_STORE(load_object(builder, "results"));
+	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "file_column")),
+	    GTK_CELL_RENDERER(load_object(builder, "file_renderer")),
+	    (GtkTreeCellDataFunc)location_data_func, self, NULL);
+	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "type_column")),
+	    GTK_CELL_RENDERER(load_object(builder, "type_renderer")),
+	    (GtkTreeCellDataFunc)type_data_func, NULL, NULL);
+	g_signal_connect(self, "delete-event", G_CALLBACK(on_search_window_delete_event), NULL);
+
+	/* Save public pointers to other widgets */
+	LOAD_WIDGET(search_text);
+	LOAD_WIDGET(results_view);
+
+	/* Builder object not needed anymore */
+	g_object_unref(builder);
+}
+
+static void
+i7_search_window_finalize(GObject *self)
+{
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	g_free(priv->text);
+	
+	G_OBJECT_CLASS(i7_search_window_parent_class)->finalize(self);
+}
+
+static void
+i7_search_window_class_init(I7SearchWindowClass *klass)
+{
+	g_type_class_add_private(klass, sizeof(I7SearchWindowPrivate));
+
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	object_class->finalize = i7_search_window_finalize;
+}
+
+/* INTERNAL FUNCTIONS */
+
+static void
+update_label(I7SearchWindow *self)
+{
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	gchar *label = g_strdup_printf(_("Search results for: \"%s\""), priv->text);
+	gtk_label_set_text(GTK_LABEL(self->search_text), label);
+	g_free(label);
 }
 
 /* Free the internal private documentation index. No need to call this function;
@@ -218,473 +324,459 @@ free_doc_index()
         g_free(text->sort);
         g_free(text->body);
         g_free(text->file);
-        g_free(text);
+        g_slice_free(DocText, text);
     }
     g_list_free(doc_index);
     doc_index = NULL;
 }
 
-/* Relevant tags and stuff for the HTML decoder */
-struct tag {
-	const gchar *name;
-	int len;
-	gboolean remove;
-	gboolean cr;
-};
+/* Expand only the standard entities (gt, lt, amp, apos, quot) */
+static xmlEntityPtr
+entity_callback(Ctxt *ctxt, const xmlChar *name)
+{
+	return xmlGetPredefinedEntity(name);
+}
 
-static struct tag tags[] = {
-	{"a",           1, FALSE, FALSE},
-	{"B>",          2, FALSE, FALSE},
-	{"b>",          2, FALSE, FALSE},
-	{"blockquote", 10, FALSE, FALSE},
-	{"br",          2, FALSE, TRUE },
-	{"font",        4, FALSE, FALSE},
-	{"h",           1, FALSE, FALSE},
-	{"i>",          2, FALSE, FALSE},
-	{"img",         3, FALSE, FALSE},
-	{"p>",          2, FALSE, TRUE },
-	{"p ",          2, FALSE, TRUE },
-    {"pre>",        4, FALSE, FALSE},
-	{"script",      6, TRUE,  FALSE},
-	{"table",       5, FALSE, FALSE},
-	{"TABLE",       5, FALSE, FALSE},
-	{"td",          2, FALSE, FALSE},
-	{"TD",          2, FALSE, FALSE},
-	{"tr",          2, FALSE, FALSE},
-	{"TR",          2, FALSE, FALSE},
-	{"div",         3, FALSE, FALSE}
-};
-
-#define NUM_TAGS (sizeof(tags) / sizeof(tags[0]))
-
-struct literal {
-	const gchar *name;
-	int len;
-	gchar replace;
-};
-
-static struct literal literals[] = {
-	{"quot;", 5, '\"'},
-	{"nbsp;", 5, ' '},
-	{"lt;",   3, '<'},
-	{"gt;",   3, '>'}
-};
-
-#define NUM_LITERALS (sizeof(literals) / sizeof(literals[0]))
-
-/* Read the specified HTML file and convert it to plain text. Store the text and
-the metadata in the comments in the DocText structure. Returns TRUE on success,
-FALSE on failure. */
 static gboolean
-html_decode(const gchar *filename, DocText **doc_text)
+is_ignore_element(const xmlChar *name)
 {
-	g_return_val_if_fail(filename != NULL, FALSE);
-	
-	GError *err;
-	gchar *html;
-	GString *text;
-	
-	(*doc_text)->title = NULL;
-	(*doc_text)->section = NULL;
-	(*doc_text)->sort = NULL;
-	
-	/* Open the file */
-	if(!g_file_get_contents(filename, &html, NULL, &err)) {
-		g_critical(_("Error opening file: %s\n"), err->message);
-		g_error_free(err);
-		return FALSE;
-	}
-	
-	/* Get the body text */
-	gchar *body1 = strstr(html, "<body"); /* <body bgcolor="blabla"> */
-	gchar *body2 = strstr(html, "</body>");
-	if(body1 == NULL || body2 == NULL || body2 <= body1)
-		return FALSE;
-    gchar *end_of_body_tag = strchr(body1 + 6, '>');
-	gchar *body_html = g_strndup(end_of_body_tag + 1,
-                                 body2 - end_of_body_tag - 1);
-	g_free(html);
-	
-	/* Reserve space for the main text */
-	int len = strlen(body_html);
-	text = g_string_sized_new(len);
-
-	/* Scan the text, removing markup */
-	gboolean example = FALSE;
-	gboolean white = FALSE;
-	const gchar *p1 = body_html;
-	const gchar *p2 = p1 + len;
-	while(p1 < p2) {
-		/* Look for a markup element */
-		if(*p1 == '<' && (isalpha(*(p1 + 1)) || *(p1 + 1) == '/')) {
-			
-			/* Check for a closing markup element */
-			gboolean closing = FALSE;
-			if(*(p1 + 1) == '/') {
-				closing = TRUE;
-				p1++;
-			}
-			
-			/* Scan for a known markup element */
-			gboolean found = FALSE;
-			int i = 0;
-			while(!found && i < NUM_TAGS) {
-				if(strncmp(p1 + 1, tags[i].name, tags[i].len) == 0)
-					found = TRUE;
-				if(!found)
-					i++;
-			}
-			g_assert(found);
-			
-			/* Remove the markup */
-			if(found && tags[i].remove) {
-				g_assert(!closing);
-				
-				/* Remove everything until the closing element */
-				gchar *search = g_strconcat("</", tags[i].name, ">", NULL);
-				p1 = strstr(p1, search);
-				if(p1 != NULL)
-					p1 += strlen(search) - 1;
-				else
-					p1 = p2;
-				g_free(search);
-			} else {
-				/* Remove just the element */
-				while(p1 < p2 && *p1 != '>')
-					p1++;
-			}
-			g_assert(*p1 == '>');
-			
-			/* Add a carriage return for appropriate markup */
-			if(found && !closing && tags[i].cr)
-				if(!((*doc_text)->example) || example)
-					g_string_append_c(text, '\n');
-      		white = FALSE;
-			
-		} else if(*p1 == '<' && *(p1 + 1) == '!') {
-			/* Extract metadata from comments */
-			gchar *meta = (gchar *)g_malloc(p2 - p1);
-			if(sscanf(p1, "<!-- SEARCH TITLE \"%[^\"]", meta) == 1)
-				(*doc_text)->title = g_strdup(meta);
-			else if(sscanf(p1, "<!-- SEARCH SECTION \"%[^\"]", meta) == 1)
-				(*doc_text)->section = ((*doc_text)->recipebook)?
-                  g_strconcat(_("Recipe Book, "), meta, NULL) : g_strdup(meta);
-			else if(sscanf(p1, "<!-- SEARCH SORT \"%[^\"]", meta) == 1)
-				(*doc_text)->sort = g_strdup(meta);
-			else if(strncmp(p1, "<!-- EXAMPLE START -->", 22) == 0)
-				example = TRUE;
-			else if(strncmp(p2, "<!-- EXAMPLE END -->", 20) == 0)
-				example = FALSE;
-			g_free(meta);
-			
-			p1 = strstr(p1, "-->");
-			if(p1 != NULL)
-				p1 += 2;
-			else
-				p1 = p2;
-			
-		} else if(*p1 == '&') {
-			/* Scan for a known literal */
-			gboolean found = FALSE;
-			int i = 0;
-			while(!found && i < NUM_LITERALS) {
-				if(strncmp(p1 + 1, literals[i].name, literals[i].len) == 0)
-					found = TRUE;
-				if(!found)
-					i++;
-			}
-			
-			/* Replace the literal */
-			if(found) {
-				g_string_append_c(text, literals[i].replace);
-				p1 += literals[i].len;
-			} else
-				if(!((*doc_text)->example) || example)
-					g_string_append_c(text, *p1);
-			white = FALSE;
-		
-		} else if(isspace(*p1)) {
-			if(!white)
-				if(!((*doc_text)->example) || example)
-					g_string_append_c(text, ' ');
-			white = TRUE;
-			
-		} else {
-			if(!((*doc_text)->example) || example)
-				g_string_append_c(text, *p1);
-      		white = FALSE;
-		}
-		
-		p1++;
-	}
-	
-	g_free(body_html);
-	(*doc_text)->body = g_strdup(text->str);
-	g_string_free(text, TRUE);
-	return TRUE;
+	return xmlStrcasecmp(name, (xmlChar *)"style") == 0
+		|| xmlStrcasecmp(name, (xmlChar *)"script") == 0;
 }
 
-/* Comparison function to sort the results by source string, placing recipe book
-after regular documentation entries */
-static int
-sort_by_source(gconstpointer a, gconstpointer b)
-{
-    if(((Result *)a)->result_type == ((Result *)b)->result_type)
-        return strcmp(((Result *)a)->source_sort, ((Result *)b)->source_sort);
-    if(((Result *)a)->result_type == RESULT_TYPE_RECIPE_BOOK &&
-       ((Result *)b)->result_type == RESULT_TYPE_DOCUMENTATION)
-        return 1;
-    return -1;
-}
-
-/* Function to search through a GtkSourceBuffer, putting context, line number
-and new search point into the pointers indicated. Returns whether there was a
-match. */
 static gboolean
-search_buffer(const gchar *search_text, gboolean ignore_case, int algorithm,
-              GtkSourceBuffer *buffer, GtkTextIter *search_from,
-              gchar **context, gint *lineno)
+is_newline_element(const xmlChar *name)
 {
-    /* Run the main loop, because this function will probably be called many
-      times in succession */
-    while(gtk_events_pending())
-        gtk_main_iteration();  
-      
-    GtkTextIter match_start, match_end;
-    gboolean retval, do_it_again;
-    
-    do {
-        do_it_again = FALSE;
-        retval = gtk_source_iter_forward_search(search_from, search_text,
-          GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
-          (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-          &match_start, &match_end, NULL);
-        if(retval) {
-            if(algorithm == FIND_STARTS_WITH) {
-                if(!gtk_text_iter_starts_word(&match_start))
-                    do_it_again = TRUE;
-            } else if(algorithm == FIND_FULL_WORD) {
-                if(!gtk_text_iter_starts_word(&match_start)
-                  || !gtk_text_iter_ends_word(&match_end))
-                    do_it_again = TRUE;
-            }      
-        }
-        *search_from = match_end; /* Whether we do it again or not */
-    } while(do_it_again);
-        
-    if(!retval)
-        return FALSE;        
-        
-    /* Get the line number (counted from 0) */
-    *lineno = gtk_text_iter_get_line(&match_start) + 1;  
-    
-    /* Create a larger range to extract the context */
-    gtk_text_iter_backward_chars(&match_start, 8);
-    gtk_text_iter_forward_chars(&match_end, 32);
-      
-    /* Get the surrounding text as context */
-    *context = gtk_text_buffer_get_text(
-      GTK_TEXT_BUFFER(buffer), &match_start, &match_end, FALSE);
-    g_strdelimit(*context, "\n\r\t", ' ');
-      
-    return TRUE;
+	return xmlStrcasecmp(name, (xmlChar *)"br") == 0
+		|| xmlStrcasecmp(name, (xmlChar *)"p") == 0;
 }
 
-/* Search the documentation pages for the string 'text' */
-GList *
-search_doc(const gchar *text, gboolean ignore_case, int algorithm)
+static void
+start_element_callback(Ctxt *ctxt, const xmlChar *name, const xmlChar **atts)
+{
+	if(is_ignore_element(name))
+		ctxt->ignore++;
+	else if(is_newline_element(name) && ctxt->ignore == 0)
+		g_string_append_c(ctxt->chars, ' '); /* Add spaces instead of newlines */
+}
+
+static void
+end_element_callback(Ctxt *ctxt, const xmlChar *name)
+{
+	if(is_ignore_element(name))
+		ctxt->ignore--;
+}
+
+static void
+character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
+{
+	if((!ctxt->doctext->is_example || ctxt->in_example) && ctxt->ignore == 0)
+		g_string_append_len(ctxt->chars, (gchar *)ch, len);
+}
+
+static gchar *
+get_quoted_contents(const xmlChar *string)
+{
+	const xmlChar *q1 = xmlStrchr(string, '"') + 1;
+	const xmlChar *q2 = xmlStrchr(q1, '"');
+	return (gchar *)xmlStrndup(q1, q2 - q1);
+}
+
+static void
+comment_callback(Ctxt *ctxt, const xmlChar *value)
+{
+	/* Extract metadata from comments */
+	if(g_str_has_prefix((gchar *)value, " SEARCH TITLE "))
+		ctxt->doctext->title = get_quoted_contents(value + 14);
+	else if(g_str_has_prefix((gchar *)value, " SEARCH SECTION ")) {
+		gchar *meta = get_quoted_contents(value + 16);
+		ctxt->doctext->section = ctxt->doctext->is_recipebook? 
+			g_strconcat(_("Recipe Book, "), meta, NULL) : g_strdup(meta);
+		g_free(meta);
+	} else if(g_str_has_prefix((gchar *)value, " SEARCH SORT "))
+		ctxt->doctext->sort = get_quoted_contents(value + 13);
+	else if(g_str_has_prefix((gchar *)value, " EXAMPLE START "))
+		ctxt->in_example = TRUE;
+	else if(g_str_has_prefix((gchar *)value, " EXAMPLE END "))
+		ctxt->in_example = FALSE;
+}
+
+xmlSAXHandler i7_html_sax = {
+    NULL, /*internalSubset*/
+    NULL, /*isStandalone*/
+    NULL, /*hasInternalSubset*/
+    NULL, /*hasExternalSubset*/
+    NULL, /*resolveEntity*/
+    (getEntitySAXFunc)entity_callback, /*getEntity*/
+    NULL, /*entityDecl*/
+    NULL, /*notationDecl*/
+    NULL, /*attributeDecl*/
+    NULL, /*elementDecl*/
+    NULL, /*unparsedEntityDecl*/
+    NULL, /*setDocumentLocator*/
+    NULL, /*startDocument*/
+    NULL, /*endDocument*/
+    (startElementSAXFunc)start_element_callback, /*startElement*/
+    (endElementSAXFunc)end_element_callback, /*endElement*/
+    NULL, /*reference*/
+    (charactersSAXFunc)character_callback, /*characters*/
+    NULL, /*ignorableWhitespace*/
+    NULL, /*processingInstruction*/
+    (commentSAXFunc)comment_callback, /*comment*/
+    NULL, /*warning*/
+    NULL, /*error*/
+    NULL /*fatalError: unused*/
+};
+
+static DocText *
+html_to_ascii(const gchar *filename, gboolean is_example, gboolean is_recipebook)
+{
+	Ctxt *ctxt = g_slice_new0(Ctxt);
+	ctxt->chars = g_string_new("");
+	DocText *doctext = g_slice_new0(DocText);
+	doctext->is_example = is_example;
+	doctext->is_recipebook = is_recipebook;
+	ctxt->doctext = doctext;
+	
+	htmlSAXParseFile(filename, NULL, &i7_html_sax, ctxt);
+
+	doctext->file = g_strdup(filename);
+	doctext->body = g_string_free(ctxt->chars, FALSE);
+	g_slice_free(Ctxt, ctxt);
+	return doctext;
+}
+
+/* Borrow from document-search.c */
+extern gboolean find_no_wrap(const GtkTextIter *, const gchar *, gboolean, GtkSourceSearchFlags, I7SearchType, GtkTextIter *, GtkTextIter *);
+
+/* Helper function: extract some characters of context around the match, with
+ the match itself highlighted in bold. String must be freed. */
+static gchar *
+extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *match_end)
+{
+	GtkTextIter context_start = *match_start, context_end = *match_end;
+	
+	/* Create a larger range to extract the context */
+	gtk_text_iter_backward_chars(&context_start, 8);
+	gtk_text_iter_forward_chars(&context_end, 32);
+	  
+	/* Get the surrounding text as context */
+	gchar *before = gtk_text_buffer_get_text(buffer, &context_start, match_start, TRUE);
+	gchar *term = gtk_text_buffer_get_text(buffer, match_start, match_end, TRUE);
+	gchar *after = gtk_text_buffer_get_text(buffer, match_end, &context_end, TRUE);
+	gchar *context = g_strconcat(before, "<b>", term, "</b>", after, NULL);
+	g_strdelimit(context, "\n\r\t", ' ');
+	g_free(before);
+	g_free(term);
+	g_free(after);
+
+	return context;
+}
+
+/* Helper function: search one documentation page */
+static void
+search_documentation(DocText *doctext, I7SearchWindow *self)
+{
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	GtkTreeIter result;
+	GtkTextIter search_from, match_start, match_end;
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
+    gtk_text_buffer_set_text(buffer, doctext->body, -1);
+    gtk_text_buffer_get_start_iter(buffer, &search_from);
+		
+    while(find_no_wrap(&search_from, priv->text, TRUE,
+	    GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+	    priv->algorithm, &match_start, &match_end))
+	{
+		while(gtk_events_pending())
+			gtk_main_iteration();
+
+		search_from = match_end;
+
+		gchar *context = extract_context(buffer, &match_start, &match_end);
+		gchar *location = g_strconcat(doctext->section, ": ", doctext->title, NULL);
+
+		gtk_list_store_append(priv->results, &result);
+		gtk_list_store_set(priv->results, &result,
+		    I7_RESULT_CONTEXT_COLUMN, context,
+		    I7_RESULT_SORT_STRING_COLUMN, doctext->sort,
+		    I7_RESULT_FILE_COLUMN, doctext->file,
+		    I7_RESULT_RESULT_TYPE_COLUMN, doctext->is_recipebook? 
+		    	I7_RESULT_TYPE_RECIPE_BOOK : I7_RESULT_TYPE_DOCUMENTATION,
+		    I7_RESULT_LOCATION_COLUMN, location,
+		    -1);
+		g_free(context);
+		g_free(location);
+    }
+
+	g_object_unref(buffer);
+}
+
+/* PUBLIC FUNCTIONS */
+
+/* Create a new search results window */
+GtkWidget *
+i7_search_window_new(I7Document *document, const gchar *text, gboolean ignore_case, I7SearchType algorithm)
+{
+    I7SearchWindow *self = I7_SEARCH_WINDOW(g_object_new(I7_TYPE_SEARCH_WINDOW, NULL));
+    I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+
+	priv->document = document;
+	priv->text = g_strdup(text);
+	priv->ignore_case = ignore_case;
+	priv->algorithm = algorithm;
+
+	/* Keep on top of the document window and close when document is closed */
+	gtk_window_set_transient_for(GTK_WINDOW(self), GTK_WINDOW(document));
+
+	update_label(self);
+	
+	/* Bring window to front */
+	gtk_widget_show_all(GTK_WIDGET(self));
+	gtk_window_present(GTK_WINDOW(self));
+	
+    return GTK_WIDGET(self);
+}
+
+/* Search the documentation pages for the string 'text', building the index
+  if necessary */
+void
+i7_search_window_search_documentation(I7SearchWindow *self)
 {
     GError *err;
-    GList *results = NULL;
 	
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
 		gboolean example = FALSE;
-        gchar *docpath = get_datafile_path_va("Documentation", "Sections",NULL);
+        gchar *docpath = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "Sections", NULL);
         
         GDir *docdir;
         if((docdir = g_dir_open(docpath, 0, &err)) == NULL) {
-            error_dialog(NULL, err, 
+            error_dialog(GTK_WINDOW(self), err, 
               _("Could not open documentation directory: "));
             g_free(docpath);
-            return NULL;
+            return;
         }
+
+		start_spinner(self);
+		
         const gchar *filename;
         while((filename = g_dir_read_name(docdir)) != NULL) {
-            if((g_str_has_prefix(filename, "doc")
-                || g_str_has_prefix(filename, "Rdoc"))
-               && g_str_has_suffix(filename, ".html"))
+			if(!g_str_has_suffix(filename, ".html"))
+				continue;
+			
+            if(g_str_has_prefix(filename, "doc") || g_str_has_prefix(filename, "Rdoc"))
                 example = FALSE;
-            else if((g_str_has_prefix(filename, "ex")
-                     || g_str_has_prefix(filename, "Rex"))
-                    && g_str_has_suffix(filename, ".html"))
+            else if(g_str_has_prefix(filename, "ex") || g_str_has_prefix(filename, "Rex"))
                 example = TRUE;
             else
                 continue;
 
-            DocText *doc_text = g_new0(DocText, 1);
-            doc_text->example = example;
-            doc_text->recipebook = g_str_has_prefix(filename, "R");
-            doc_text->file = g_build_filename(docpath, filename, NULL);
-            if(html_decode(doc_text->file, &doc_text))
-                doc_index = g_list_prepend(doc_index, (gpointer)doc_text);
+			gchar *label = g_strdup_printf(_("Indexing %s, please be patient..."), filename);
+			gtk_label_set_text(GTK_LABEL(self->search_text), label);
+			g_free(label);
+
+			while(gtk_events_pending())
+				gtk_main_iteration();
+
+			gchar *path = g_build_filename(docpath, filename, NULL);
+			DocText *doctext = html_to_ascii(path, example, g_str_has_prefix(filename, "R"));
+			g_free(path);
+			if(doctext) {
+				/* Append the entry to the documentation index and
+				 search it right now while we're at it */
+                doc_index = g_list_prepend(doc_index, doctext);
+				search_documentation(doctext, self);
+			}
         }
         g_free(docpath);
+
+		stop_spinner(self);
+		update_label(self);
         
         g_atexit(free_doc_index);
-    } /* doc_index == NULL */
-    
-    GList *iter;
-    for(iter = doc_index; iter != NULL; iter = g_list_next(iter)) {
-        DocText *doc_text = (DocText *)iter->data;
-        
-        GtkSourceBuffer *buffer = gtk_source_buffer_new(NULL);
-        gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), doc_text->body, -1);
-        
-        GtkTextIter search_from;
-        gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(buffer), 
-          &search_from);
-        
-        gchar *context;
-        gint lineno;
-        while(search_buffer(text, ignore_case, algorithm, buffer,
-          &search_from, &context, &lineno)) {
-            Result *result = g_new0(Result, 1);
-            result->context = context;
-            result->source_location = g_strconcat(doc_text->section, ": ",
-              doc_text->title, NULL);
-            result->source_sort = g_strdup(doc_text->sort);
-            result->source_file = g_strdup(doc_text->file);
-            result->result_type = doc_text->recipebook?
-                  RESULT_TYPE_RECIPE_BOOK : RESULT_TYPE_DOCUMENTATION;
-            /* For examples, add a reference to the example section */
-            if(doc_text->example) {
-                gchar *name = g_path_get_basename(doc_text->file);
-                int number = 0;
-                if(sscanf(name, "ex%d.html", &number) == 1) {
-                    gchar *section = g_strdup_printf("%s#e%d",
-                      result->source_file, number);
-                    g_free(result->source_file);
-                    result->source_file = section;
-                }
-                g_free(name);
-            }
-            
-            results = g_list_prepend(results, (gpointer)result);
-        }
-        
-        g_object_unref(buffer);
-    }
-    
-    results = g_list_sort(results, sort_by_source);
-    return results;
+    } else {
+		start_spinner(self);
+		g_list_foreach(doc_index, (GFunc)search_documentation, self);
+		stop_spinner(self);
+	}
+    return;
 }
 
-
 /* Search the project file for the string 'text' */
-GList *
-search_project(const gchar *text, Story *thestory, gboolean ignore_case,
-                      int algorithm)
+void
+i7_search_window_search_project(I7SearchWindow *self)
 {
-    GList *results = NULL;
-	
-	GtkTextIter search_from;
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(thestory->buffer),
-      &search_from);
-    
-    gchar *context;
-    gint lineno;
-    while(search_buffer(text, ignore_case, algorithm, thestory->buffer,
-      &search_from, &context, &lineno)) {
-        Result *result = g_new0(Result, 1);
-        result->context = context;
-        result->source_location = g_strdup_printf(_("Story, line %d"), lineno);
-        result->source_sort = g_strdup_printf("%04i", lineno);
-        result->source_file = g_strdup("");
-        result->result_type = RESULT_TYPE_PROJECT;
-        result->lineno = lineno;
-          
-        results = g_list_prepend(results, (gpointer)result);
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	GtkTreeIter result;
+	GtkTextIter search_from, match_start, match_end;
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(priv->document));
+    gtk_text_buffer_get_start_iter(buffer, &search_from);
+
+	start_spinner(self);
+		
+    while(find_no_wrap(&search_from, priv->text, TRUE,
+	    GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+	    priv->algorithm, &match_start, &match_end))
+	{
+		while(gtk_events_pending())
+			gtk_main_iteration();
+		
+		search_from = match_end;
+
+		/* Get the line number (counted from 0) */
+		guint lineno = gtk_text_iter_get_line(&match_start) + 1;
+        
+		gchar *context = extract_context(buffer, &match_start, &match_end);
+
+		/* Make a sort string */
+		gchar *sort = g_strdup_printf("%04i", lineno);
+		/* Put the full path to the project in */
+		gchar *filename = i7_document_get_path(priv->document);
+
+		gtk_list_store_append(priv->results, &result);
+		gtk_list_store_set(priv->results, &result,
+		    I7_RESULT_CONTEXT_COLUMN, context,
+		    I7_RESULT_SORT_STRING_COLUMN, sort,
+		    I7_RESULT_FILE_COLUMN, filename,
+		    I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_PROJECT,
+		    I7_RESULT_LINE_NUMBER_COLUMN, lineno,
+		    -1);
+		g_free(context);
+		g_free(sort);
+		g_free(filename);
     }
     
-    results = g_list_reverse(results);
-    return results;
+	stop_spinner(self);
 }
 
 
 /* Search the user-installed extensions for the string 'text' */
-GList *
-search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
+void
+i7_search_window_search_extensions(I7SearchWindow *self)
 {
-    GList *results = NULL;
+	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
 	GError *err = NULL;
-    gchar *extension_dir = get_extension_path(NULL, NULL);
+    gchar *extension_dir = i7_app_get_extension_path(i7_app_get(), NULL, NULL);
     GDir *extensions = g_dir_open(extension_dir, 0, &err);
     g_free(extension_dir);
     if(err) {
-        error_dialog(NULL, err, _("Error opening extensions directory: "));
-        return NULL;
+        error_dialog(GTK_WINDOW(self), err, _("Error opening extensions directory: "));
+        return;
     }
     
     const gchar *dir_entry;
-    while((dir_entry = g_dir_read_name(extensions)) != NULL
-      && strcmp(dir_entry, "Reserved")) {
+    while((dir_entry = g_dir_read_name(extensions)) != NULL && strcmp(dir_entry, "Reserved") != 0) {
         /* Read each extension dir, but skip "Reserved" */
-        gchar *author_dir = get_extension_path(dir_entry, NULL);
+        gchar *author_dir = i7_app_get_extension_path(i7_app_get(), dir_entry, NULL);
         GDir *author = g_dir_open(author_dir, 0, &err);
         g_free(author_dir);
         if(err) {
-            error_dialog(NULL, err, _("Error opening extensions directory: "));
-            return NULL;
+            error_dialog(GTK_WINDOW(self), err, _("Error opening extensions directory: "));
+            return;
         }
         const gchar *author_entry;
         while((author_entry = g_dir_read_name(author)) != NULL) {
-            gchar *filename = get_extension_path(dir_entry, author_entry);
+            gchar *filename = i7_app_get_extension_path(i7_app_get(), dir_entry, author_entry);
             gchar *contents;
             if(!g_file_get_contents(filename, &contents, NULL, &err)) {
-                error_dialog(NULL, err, 
+                error_dialog(GTK_WINDOW(self), err, 
                   /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
                   _("Error opening extension '%s' by '%s':"),
                   author_entry, dir_entry);
                 g_free(filename);
-                return NULL;
+                return;
             }
             
-            GtkSourceBuffer *buffer = gtk_source_buffer_new(NULL);
-            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), contents, -1);
+            GtkTextBuffer *buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
+            gtk_text_buffer_set_text(buffer, contents, -1);
             g_free(contents);
             
-            GtkTextIter search_from;
-            gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(buffer), 
+			GtkTreeIter result;
+            GtkTextIter search_from, match_start, match_end;
+            gtk_text_buffer_get_start_iter(buffer, 
               &search_from);
-            
-            gchar *context;
-            gint lineno;
-            while(search_buffer(text, ignore_case, algorithm, buffer,
-              &search_from, &context, &lineno)) {
-                Result *result = g_new0(Result, 1);
-                result->context = context;
-                result->source_location = g_strdup_printf(
-                  /* TRANSLATORS: EXTENSION_NAME by AUTHOR_NAME, line NUMBER */
-                  _("%s by %s, line %d"),
-                  author_entry, dir_entry, lineno);
-                result->source_sort = g_strdup_printf(
-                  /* TRANSLATORS: EXTENSION_NAME LINE_NUMBER */
-                  _("%s %04i"), author_entry,
-                  lineno);
-                result->source_file = g_strdup(filename);
-                result->result_type = RESULT_TYPE_EXTENSION;
-                result->lineno = lineno;
-                
-                results = g_list_prepend(results, (gpointer)result);
+
+			start_spinner(self);
+		
+			while(find_no_wrap(&search_from, priv->text, TRUE,
+				GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+				priv->algorithm, &match_start, &match_end))
+			{
+				while(gtk_events_pending())
+					gtk_main_iteration();
+				
+				search_from = match_end;
+
+				/* Get the line number (counted from 0) */
+				guint lineno = gtk_text_iter_get_line(&match_start) + 1;
+				
+				gchar *context = extract_context(buffer, &match_start, &match_end);
+
+				/* Make a sort string */
+				gchar *sort = g_strdup_printf("%s %04i", author_entry, lineno);
+
+				gtk_list_store_append(priv->results, &result);
+				gtk_list_store_set(priv->results, &result,
+					I7_RESULT_CONTEXT_COLUMN, context,
+					I7_RESULT_SORT_STRING_COLUMN, sort,
+					I7_RESULT_FILE_COLUMN, filename,
+					I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_EXTENSION,
+					I7_RESULT_LINE_NUMBER_COLUMN, lineno,
+					-1);
+				g_free(context);
+				g_free(sort);
             }
             
+			stop_spinner(self);
             g_object_unref(buffer);
             g_free(filename);
         }
         g_dir_close(author);
     }
     g_dir_close(extensions);    
-    
-    results = g_list_sort(results, sort_by_source);
-    return results;
 }
+
+/* Notify the window that no more searches will be done, so it is allowed to
+ close itself if asked to */
+void
+i7_search_window_done_searching(I7SearchWindow *self)
+{
+	g_signal_handlers_disconnect_by_func(self, on_search_window_delete_event, NULL);
+}
+
+/* These functions are related to the GtkSpinner which is only available in
+ 2.20 and above. If the version is not recent enough, then the functions are
+ stubs. SUCKY DEBIAN */
+#if GTK_CHECK_VERSION(2,20,0)
+
+static GtkWidget *
+pack_spinner_in_box(GtkWidget *box)
+{
+	if(gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
+		return NULL;
+	GtkWidget *spinner = gtk_spinner_new();
+	gtk_box_pack_end(GTK_BOX(box), spinner, FALSE, FALSE, 0);
+	return spinner;
+}
+
+static void
+start_spinner(I7SearchWindow *self)
+{
+	if(!gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
+		gtk_spinner_start(GTK_SPINNER(self->spinner));
+}
+
+static void
+stop_spinner(I7SearchWindow *self)
+{
+	if(!gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
+		gtk_spinner_stop(GTK_SPINNER(self->spinner));
+}
+
+#else /* not GTK_CHECK_VERSION(2,20,0) */
+
+static GtkWidget *pack_spinner_in_box(GtkWidget *box) { return NULL; }
+static void start_spinner(I7SearchWindow *self) {}
+static void stop_spinner(I7SearchWindow *self) {}
+
+#endif /* GTK_CHECK_VERSION(2,20,0) */

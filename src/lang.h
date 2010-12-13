@@ -18,7 +18,7 @@
 #ifndef LANG_H
 #define LANG_H
 
-#include <gnome.h>
+#include <glib.h>
 #include <gtksourceview/gtksourcebuffer.h>
 
 void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang);

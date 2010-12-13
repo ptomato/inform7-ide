@@ -18,24 +18,15 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <gnome.h>
-
-#if !GTK_CHECK_VERSION(2,10,0)
-# define SUCKY_GNOME 1
-#endif
-
+#include <glib.h>
+#include <gtksourceview/gtksourcebuffer.h>
 #include "story.h"
-#include "extension.h"
 
-gboolean verify_save(GtkWidget *thiswidget);
-void save_project(GtkWidget *thiswidget, gchar *directory);
-Story *open_project(gchar *path);
-gboolean verify_save_ext(GtkWidget *thiswidget);
-Extension *open_extension(gchar *filename);
-void save_extension(GtkWidget *thiswidget);
-void install_extension(const gchar *filename);
-void delete_extension(gchar *author, gchar *extname);
-void delete_build_files(Story *thestory);
-gchar *get_case_insensitive_extension(const gchar *ci_path);
+gchar *expand_initial_tilde(const gchar *path);
+gchar *read_source_file(const gchar *filename);
+void set_source_text(GtkSourceBuffer *buffer, gchar *text);
+gchar *get_filename_from_save_dialog(const gchar *default_filename);
+void delete_build_files(I7Story *story);
+gchar *get_case_insensitive_extension(const gchar *path);
 
 #endif

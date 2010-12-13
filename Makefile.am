@@ -1,5 +1,7 @@
 SUBDIRS = src po data pixmaps
 
+ACLOCAL_AMFLAGS = -I m4
+
 desktopdir = $(datadir)/applications
 dist_desktop_DATA = gnome-inform7.desktop
 
@@ -7,7 +9,7 @@ schemadir = @GCONF_SCHEMA_FILE_DIR@
 dist_schema_DATA = gnome-inform7.schemas
 
 docdir = $(datadir)/doc/$(PACKAGE)
-doc_DATA = AUTHORS ChangeLog COPYING NEWS README THANKS TODO
+dist_doc_DATA = AUTHORS ChangeLog COPYING INSTALL NEWS README THANKS TODO
 
 install-data-local:
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
@@ -46,8 +48,8 @@ SRCRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).src.rpm
 rpm: dist
 	$(ECHO) "Building RPM package..."; \
 	$(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.gz && \
-	$(CP) $(RPMDIR)/$(RPMARCH)/$(BINRPM) $(srcdir) && \
-	$(CP) $(SRCRPMDIR)/$(SRCRPM) $(srcdir); \
+	$(CP) $(RPMDIR)/$(RPMARCH)/$(BINRPM) $(srcdir); \
+	$(CP) $(SRCRPMDIR)/$(SRCRPM) $(srcdir) && \
 	$(TEST) -e $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) && \
 	$(CP) $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) $(srcdir) || \
 	$(ECHO) "No debug package; install redhat-rpm-config if you want one."

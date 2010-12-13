@@ -19,14 +19,10 @@
 #define __ELASTIC_H__
 
 #include <gtk/gtk.h>
-#include "extension.h"
-#include "story.h"
 
 gboolean elastic_recalculate_view(GtkTextView *view);
-void add_elastic_tabstops_to_story(Story *thestory);
-void remove_elastic_tabstops_from_story(Story *thestory);
-void add_elastic_tabstops_to_extension(Extension *ext);
-void remove_elastic_tabstops_from_extension(Extension *ext);
+void add_elastic_tabstops_to_view(GtkTextView *view);
+void remove_elastic_tabstops_from_view(GtkTextView *view);
 
 #endif /* __ELASTIC_H__ */
 

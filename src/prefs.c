@@ -14,300 +14,215 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-#include <ctype.h>
-#include <gnome.h>
-#include <glib/gstdio.h>
-#include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcestyle.h>
-#include <pango/pango-font.h>
-#include <gconf/gconf-client.h>
 
-#include "support.h"
-
-#include "appwindow.h"
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <gtksourceview/gtksourceview.h>
+#include "prefs.h"
+#include "app.h"
+#include "builder.h"
 #include "colorscheme.h"
 #include "configfile.h"
-#include "datafile.h"
-#include "elastic.h"
 #include "error.h"
-#include "extension.h"
-#include "file.h"
-#include "prefs.h"
-#include "story.h"
-#include "tabsource.h"
 
-/* Global pointer to preferences window */
-GtkWidget *prefs_dialog;
+enum SchemesListColumns {
+	ID_COLUMN = 0,
+	NAME_COLUMN,
+	DESC_COLUMN,
+	NUM_SCHEMES_LIST_COLUMNS
+};
 
-/* Look in the user's extensions directory and list all the extensions there in
-the treeview widget */
-static void 
-populate_extension_lists(GtkWidget *thiswidget) 
+void
+populate_schemes_list(GtkListStore *list)
 {
-    GError *err = NULL;
-    gchar *extension_dir = get_extension_path(NULL, NULL);
-    GDir *extensions = g_dir_open(extension_dir, 0, &err);
-    g_free(extension_dir);
-    if(err) {
-        error_dialog(GTK_WINDOW(thiswidget), err, 
-          _("Error opening extensions directory: "));
-        return;
-    }
-    
-    GtkTreeView *view = GTK_TREE_VIEW(lookup_widget(thiswidget,
-      "prefs_i7_extensions_view"));
-    GtkTreeStore *store = gtk_tree_store_new(1, G_TYPE_STRING);
-    GtkTreeIter parent_iter, child_iter;
-    
-    const gchar *dir_entry;
-    while((dir_entry = g_dir_read_name(extensions)) != NULL) {
-        if(!strcmp(dir_entry, "Reserved"))
-            continue;
-        gchar *dirname = get_extension_path(dir_entry, NULL);
-        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)
-          || !g_file_test(dirname, G_FILE_TEST_IS_DIR)) {
-            g_free(dirname);
-            continue;
-        }
-        g_free(dirname);
-        /* Read each extension dir, but skip "Reserved", symlinks and nondirs*/
-        gtk_tree_store_append(store, &parent_iter, NULL);
-        gtk_tree_store_set(store, &parent_iter, 0, dir_entry, -1);
-        gchar *author_dir = get_extension_path(dir_entry, NULL);
-        GDir *author = g_dir_open(author_dir, 0, &err);
-        g_free(author_dir);
-        if(err) {
-            error_dialog(GTK_WINDOW(thiswidget), err, 
-              _("Error opening extensions directory: "));
-            return;
-        }
-        const gchar *author_entry;
-        while((author_entry = g_dir_read_name(author)) != NULL) {
-            gchar *extname = get_extension_path(dir_entry, author_entry);
-            if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
-                g_free(extname);
-                continue;
-            }
-            g_free(extname);         
-            /* Read each file, but skip symlinks */
-            /* Remove .i7x from the filename, if it is there */
-            gchar *displayname;
-            if(g_str_has_suffix(author_entry, ".i7x"))
-                displayname = g_strndup(author_entry, strlen(author_entry) - 4);
-            else
-                displayname = g_strdup(author_entry);
-            gtk_tree_store_append(store, &child_iter, &parent_iter);
-            gtk_tree_store_set(store, &child_iter, 0, displayname, -1);
-            g_free(displayname);
-        }
-        g_dir_close(author);
-    }
-    g_dir_close(extensions);    
-    
-    gtk_tree_view_set_model(view, GTK_TREE_MODEL(store));
+	gtk_list_store_clear(list);
+	GSList *schemes = get_style_schemes_sorted();
+	GSList *l = schemes;
+	for(l = schemes; l != NULL; l = g_slist_next(l)) {
+		GtkSourceStyleScheme *scheme = GTK_SOURCE_STYLE_SCHEME(l->data);
+		const gchar *id = gtk_source_style_scheme_get_id(scheme);
+		const gchar *name = gtk_source_style_scheme_get_name(scheme);
+		const gchar *description = gtk_source_style_scheme_get_description(scheme);
+
+		GtkTreeIter iter;
+		gtk_list_store_append(list, &iter);
+		gtk_list_store_set(list, &iter,
+			ID_COLUMN, id,
+			NAME_COLUMN, name,
+			DESC_COLUMN, description,
+			-1);
+	}
+	g_slist_free(schemes);
 }
 
-/*
- * Here are the for_each_bla bla bla functions for changing settings in
- * each window
- */
-
-/* Only update the tabs in an extension editing window */
-gboolean 
-update_ext_window_tabs(GtkWidget *widget) 
+I7PrefsWidgets *
+create_prefs_window(GtkBuilder *builder)
 {
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "ext_code")));
-	update_ext_window_elastic(widget);
-    return FALSE; /* One-shot idle function */
-}
+	I7PrefsWidgets *self = g_slice_new0(I7PrefsWidgets);
+	
+	self->window = GTK_WIDGET(load_object(builder, "prefs_dialog"));
+	self->prefs_notebook = GTK_WIDGET(load_object(builder, "prefs_notebook"));
+	self->schemes_view = GTK_TREE_VIEW(load_object(builder, "schemes_view"));
+	self->style_remove = GTK_WIDGET(load_object(builder, "style_remove"));
+	self->tab_example = GTK_SOURCE_VIEW(load_object(builder, "tab_example"));
+	self->source_example = GTK_SOURCE_VIEW(load_object(builder, "source_example"));
+	self->extensions_view = GTK_TREE_VIEW(load_object(builder, "extensions_view"));
+	self->extensions_add = GTK_WIDGET(load_object(builder, "extensions_add"));
+	self->extensions_remove = GTK_WIDGET(load_object(builder, "extensions_remove"));
+	self->auto_number = GTK_WIDGET(load_object(builder, "auto_number"));
+	self->clean_index_files = GTK_WIDGET(load_object(builder, "clean_index_files"));
+	self->schemes_list = GTK_LIST_STORE(load_object(builder, "schemes_list"));
+	
+	/* Only select one extension at a time */
+	GtkTreeSelection *select = gtk_tree_view_get_selection(self->extensions_view);
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 
-/* Only update the tabs in this main window */
-gboolean 
-update_app_window_tabs(GtkWidget *widget) 
-{
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "source_l")));
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "source_r")));
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "inform6_l")));
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget(widget, "inform6_r")));
-	update_app_window_elastic(widget);
-    return FALSE; /* One-shot idle function */
-}
+	/* Connect the drag'n'drop stuff */
+	gtk_drag_dest_set(GTK_WIDGET(self->extensions_view),
+		GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT,
+		NULL, 0, GDK_ACTION_COPY);
+	/* For some reason GTK_DEST_DEFAULT_DROP causes two copies of every file to
+	be sent to the widget when dropped, so we omit that. Also,
+	GTK_DEST_DEFAULT_HIGHLIGHT seems to be broken. Including it anyway. */
+	gtk_drag_dest_add_uri_targets(GTK_WIDGET(self->extensions_view));
+	
+	/* Do the style scheme list */
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
+	select = gtk_tree_view_get_selection(self->schemes_view);
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_BROWSE);
 
-/* Update the fonts and highlighting colors in this extension editing window */
-gboolean 
-update_ext_window_fonts(GtkWidget *extwindow) 
-{
-    GtkWidget *widget = lookup_widget(extwindow, "ext_code");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    update_style(GTK_SOURCE_VIEW(widget));
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the fonts and highlighting colors in this main window, but not the
-widgets that only need their font size updated */
-gboolean 
-update_app_window_fonts(GtkWidget *window) 
-{
-    GtkWidget *widget = lookup_widget(window, "source_l");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    update_style(GTK_SOURCE_VIEW(widget));
-    widget = lookup_widget(window, "source_r");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    update_style(GTK_SOURCE_VIEW(widget));
-    widget = lookup_widget(window, "inform6_l");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    widget = lookup_widget(window, "inform6_r");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the elastic tabstops in this main window */
-gboolean
-update_app_window_elastic(GtkWidget *window)
-{
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(window, "source_l"));
-	elastic_recalculate_view(view);
-	return FALSE; /* One-shot idle function */
-}
-
-/* Update the elastic tabstops in this extension window */
-gboolean
-update_ext_window_elastic(GtkWidget *extwindow)
-{
-	GtkTextView *view = GTK_TEXT_VIEW(lookup_widget(extwindow, "ext_code"));
-	elastic_recalculate_view(view);
-	return FALSE; /* One-shot idle function */
-}
-
-/* Update the font sizes of widgets in this main window that don't have
-styles */
-gboolean 
-update_app_window_font_sizes(GtkWidget *window) 
-{
-    GtkWidget *widget;
-    
-    gchar *widget_names[] = {
-        "problems_l",   "problems_r",
-        "actions_l",    "actions_r",
-        "contents_l",   "contents_r",
-        "kinds_l",      "kinds_r",
-        "phrasebook_l", "phrasebook_r",
-        "rules_l",      "rules_r",
-        "scenes_l",     "scenes_r",
-        "world_l",      "world_r",
-        "game_l",       "game_r",
-        "docs_l",       "docs_r",
-        "debugging_l",  "debugging_r"
-    };
-#define NUM_WIDGET_NAMES (sizeof(widget_names) / sizeof(widget_names[0]))
-    
-    int foo;
-    for(foo = 0; foo < NUM_WIDGET_NAMES; foo++) {
-        widget = lookup_widget(window, widget_names[foo]);
-        update_font_size(widget);
-        while(gtk_events_pending())
-            gtk_main_iteration();
-    }
-    return FALSE; /* One-shot idle function */
-}
-
-/* Turn source highlighting on or off in this source buffer */
-void 
-update_source_highlight(GtkSourceBuffer *buffer) 
-{
-    gtk_source_buffer_set_highlight_syntax(buffer, 
-      config_file_get_bool("SyntaxSettings", "SyntaxHighlighting"));
-}
-
-/* Update the "Open Extensions" menu in this main window */
-static gboolean 
-update_app_window_extensions_menu(GtkWidget *widget) 
-{
-    GtkWidget *menu;
-    if((menu = create_open_extension_submenu()))
-        gtk_menu_item_set_submenu(
-          GTK_MENU_ITEM(lookup_widget(widget, "open_extension")), menu);
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the "Open Extensions" menu in this main window */
-static gboolean 
-update_ext_window_extensions_menu(GtkWidget *widget) 
-{
-    GtkWidget *menu;
-    if((menu = create_open_extension_submenu()))
-        gtk_menu_item_set_submenu(
-          GTK_MENU_ITEM(lookup_widget(widget, "xopen_extension")), menu);
-    return FALSE; /* One-shot idle function */
+	return self;
 }
 
 /*
  * CALLBACKS
  */
 
-/* Check whether the user has selected something (not an author name) that can
-be removed, and if so, enable the remove button */
-static void 
-extension_browser_selection_changed(GtkTreeSelection *selection,
-                                    GtkWidget *widget) 
+void
+on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 {
-    GtkTreeIter iter;
-    GtkTreeModel *model;
-    if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
-        GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
-        gtk_widget_set_sensitive(
-          lookup_widget(widget, "prefs_i7_extension_remove"),
-          (gtk_tree_path_get_depth(path) == 2));
-          /* Only enable the "Remove" button if the selection is 2 deep */
-        gtk_tree_path_free(path);
-    } else
-        gtk_widget_set_sensitive(
-          lookup_widget(widget, "prefs_i7_extension_remove"), FALSE);
-          /* if there is no selection */
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
+		gchar *id;
+		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
+		config_file_set_string(PREFS_STYLE_SCHEME, id);
+		gtk_widget_set_sensitive(app->prefs->style_remove, id && is_user_scheme(id));
+		g_free(id);
+	} else
+		; /* Do nothing; no selection */
 }
 
 void
-on_prefs_dialog_realize(GtkWidget *widget, gpointer data)
+on_style_add_clicked(GtkButton *button, I7App *app)
 {
-    /* Set all the controls to their current values according to GConf */
-    trigger_config_keys();
+	/* From gedit/dialogs/gedit-preferences-dialog.c */
+	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Add Color Scheme"),
+		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		GTK_STOCK_ADD, GTK_RESPONSE_ACCEPT,
+		NULL);
+	gtk_window_set_destroy_with_parent(GTK_WINDOW(chooser), TRUE);
+		
+	/* Filters */
+	GtkFileFilter *filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter, _("Color Scheme Files"));
+	gtk_file_filter_add_pattern(filter, "*.xml");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
+	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), filter);
+	
+	filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter, _("All Files"));
+	gtk_file_filter_add_pattern(filter, "*");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
 
-    /* List all the installed extensions in the extension widgets */
-    populate_extension_lists(widget);
-    GtkWidget *view = lookup_widget(widget, "prefs_i7_extensions_view");
-    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
-      "", renderer, "text", 0, NULL); /* No title, text
-      renderer, get the property "text" from column 0 */
-    gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
-    gtk_tree_view_append_column(GTK_TREE_VIEW(view), column);
-    
-    GtkTreeSelection *select = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-    gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE); /* Only select
-    one at a time */
-    g_signal_connect(G_OBJECT(select), "changed",
-      G_CALLBACK(extension_browser_selection_changed), (gpointer)widget);
-      
-    /* Connect the drag'n'drop stuff */
-    gtk_drag_dest_set(view,
-      GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT,
-      NULL, 0, GDK_ACTION_COPY);
-    /* For some reason GTK_DEST_DEFAULT_DROP causes two copies of every file to
-    be sent to the widget when dropped, so we omit that. Also,
-    GTK_DEST_DEFAULT_HIGHLIGHT seems to be broken. Including it anyway. */
-    gtk_drag_dest_add_uri_targets(view);
+	gtk_dialog_set_default_response(GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT);
+	
+	if(gtk_dialog_run(GTK_DIALOG(chooser)) != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy(chooser);
+		return;
+	}
+	
+	gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
+	if(!filename)
+		return;
+	
+	gtk_widget_destroy(chooser);
+	
+	const gchar *scheme_id = install_scheme(filename);
+	g_free(filename);
+
+	if(!scheme_id) {
+		error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("The selected color scheme cannot be installed."));
+		return;
+	}
+
+	populate_schemes_list(app->prefs->schemes_list);
+	config_file_set_string(PREFS_STYLE_SCHEME, scheme_id);
+}
+
+void
+on_style_remove_clicked(GtkButton *button, I7App *app)
+{
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(app->prefs->schemes_view);
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
+		gchar *id;
+		gchar *name;
+		gtk_tree_model_get(model, &iter,
+			ID_COLUMN, &id,
+			NAME_COLUMN, &name,
+			-1);
+	
+		if(!uninstall_scheme(id))
+			error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("Could not remove color scheme \"%s\"."), name);
+		else {	
+			gchar *new_id = NULL;
+			GtkTreeIter new_iter;
+			gboolean new_iter_set = FALSE;
+
+			/* If the removed style scheme is the last of the list, set as new 
+			 default style scheme the previous one, otherwise set the next one.
+			 To make this possible, we need to get the id of the new default 
+			 style scheme before re-populating the list. */
+			GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+			/* Try to move to the next path */
+			gtk_tree_path_next(path);
+			if(!gtk_tree_model_get_iter(model, &new_iter, path)) {
+				/* It seems the removed style scheme was the last of the list. 
+				 Try to move to the previous one */
+				gtk_tree_path_free(path);
+				path = gtk_tree_model_get_path(model, &iter);
+				gtk_tree_path_prev(path);
+				if(gtk_tree_model_get_iter(model, &new_iter, path))
+					new_iter_set = TRUE;
+			}
+			else
+				new_iter_set = TRUE;
+			gtk_tree_path_free(path);
+						
+			if(new_iter_set)
+				gtk_tree_model_get(model, &new_iter,
+					ID_COLUMN, &new_id,
+					-1);
+			
+			if(!new_id)
+				new_id = g_strdup("inform");
+			
+			populate_schemes_list(app->prefs->schemes_list);
+			config_file_set_string(PREFS_STYLE_SCHEME, new_id);
+			g_free(new_id);
+		}
+		g_free(id);
+		g_free(name);
+	}
 }
 
 gboolean
-on_prefs_i7_extensions_view_drag_drop(GtkWidget *widget, 
-                                      GdkDragContext *drag_context, gint x,
-                                      gint y, guint time, gpointer data)
+on_extensions_view_drag_drop(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time)
 {
     /* Iterate through the list of target types provided by the source */
     GdkAtom target_type = NULL;
@@ -337,12 +252,7 @@ on_prefs_i7_extensions_view_drag_drop(GtkWidget *widget,
 
 
 void
-on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
-                                               GdkDragContext *drag_context,
-                                               gint x, gint y,
-                                               GtkSelectionData *selectiondata,
-                                               guint info, guint time,
-                                               gpointer data)
+on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *selectiondata, guint info, guint time)
 {
     gboolean dnd_success = TRUE;
     gchar *type_name = NULL;
@@ -367,13 +277,13 @@ on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
             gchar *filename = g_filename_from_uri(
               extension_files[foo], NULL, &err);
             if(!filename) {
-                g_warning(_("Invalid URI: %s"), err->message);
+                WARN(_("Invalid URI"), err);
                 g_error_free(err);
                 continue;
             }
             
             /* Check whether a directory was dropped. if so, install contents */
-            /* NOTE: not recursive (that would be kind of silly anyway */
+            /* NOTE: not recursive (that would be kind of silly anyway) */
             if(g_file_test(filename, G_FILE_TEST_IS_DIR)) {
                 GDir *dir = g_dir_open(filename, 0, &err);
                 if(err) {
@@ -387,19 +297,18 @@ on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
                     if(!g_file_test(dir_entry, G_FILE_TEST_IS_DIR)) {
                         gchar *entry_with_path = g_build_filename(
                           filename, dir_entry, NULL);
-                        install_extension(entry_with_path);
+                        i7_app_install_extension(i7_app_get(), entry_with_path);
                         g_free(entry_with_path);
                     }
                 g_dir_close(dir);
         
             } else
                 /* just install it */
-                install_extension(filename);
+                i7_app_install_extension(i7_app_get(), filename);
             
             g_free(filename);
         }
         g_strfreev(extension_files);
-        populate_extension_lists(widget);
     }
     
     if(type_name)
@@ -409,165 +318,128 @@ on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
 
 
 void
-on_prefs_font_set_changed(GtkComboBox *combobox, gpointer data)
+on_font_set_changed(GtkComboBox *combobox, I7App *app)
 {
-    config_file_set_enum("EditorSettings", "FontSet", 
+    config_file_set_enum(PREFS_FONT_SET, 
       gtk_combo_box_get_active(combobox), font_set_lookup_table);
 }
 
 void
-on_prefs_custom_font_font_set(GtkFontButton *fontbutton, gpointer data)
+on_custom_font_font_set(GtkFontButton *button, I7App *app)
 {
-    /* Try to extract a font name from the string that we get from the button */
-    gchar *fontname = g_strdup(gtk_font_button_get_font_name(fontbutton));
-    /* do not free the original string */
-    gchar *ptr = fontname;
-    g_strreverse(ptr);
-    while(isdigit(*ptr))   /* Remove the point size from the end */
-        ptr++;
-    while(isspace(*ptr))   /* Then the white space */
-        ptr++;
-    if(g_str_has_prefix(ptr, "cilatI ")) /* " Italic" */
-        ptr += 7;
-    if(g_str_has_prefix(ptr, "euqilbO ")) /* " Oblique" */
-        ptr += 8;
-    if(g_str_has_prefix(ptr, "dloB ")) /* " Bold" */
-        ptr += 5;
-    g_strreverse(ptr);
-    
-    config_file_set_string("EditorSettings", "CustomFont", ptr);
-    g_free(fontname);
+	config_file_set_string(PREFS_CUSTOM_FONT, gtk_font_button_get_font_name(button));
 }
 
 void
-on_prefs_font_styling_changed(GtkComboBox *combobox, gpointer data)
+on_font_size_changed(GtkComboBox *combobox, I7App *app)
 {
-    config_file_set_enum("EditorSettings", "FontStyling", 
-      gtk_combo_box_get_active(combobox), font_styling_lookup_table);
-}
-
-void
-on_prefs_font_size_changed(GtkComboBox *combobox, gpointer data)
-{
-    config_file_set_enum("EditorSettings", "FontSize", 
+    config_file_set_enum(PREFS_FONT_SIZE, 
       gtk_combo_box_get_active(combobox), font_size_lookup_table);
 }
 
 void
-on_prefs_change_colors_changed(GtkComboBox *combobox, gpointer data)
+on_tab_ruler_value_changed(GtkRange *range, I7App *app)
 {
-    config_file_set_enum("EditorSettings", "ChangeColors", 
-      gtk_combo_box_get_active(combobox), change_colors_lookup_table);
-}
-
-void
-on_prefs_color_set_changed(GtkComboBox *combobox, gpointer data)
-{
-    config_file_set_enum("EditorSettings", "ColorSet", 
-      gtk_combo_box_get_active(combobox), color_set_lookup_table);
-}
-
-void
-on_tab_ruler_value_changed(GtkRange *range, gpointer data)
-{
-    config_file_set_int("EditorSettings", "TabWidth", 
+    config_file_set_int(PREFS_TAB_WIDTH, 
       (int)gtk_range_get_value(range));
 }
 
 gchar*
-on_tab_ruler_format_value(GtkScale *scale, gdouble value, gpointer data)
+on_tab_ruler_format_value(GtkScale *scale, gdouble value, I7App *app)
 {
     if(value)
-        return g_strdup_printf("%.*f spaces", gtk_scale_get_digits(scale),
+        return g_strdup_printf(ngettext("1 space", "%.*f spaces", value), gtk_scale_get_digits(scale), 
           value);
     return g_strdup("default");
 }
 
+/* Check whether the user has selected something (not an author name) that can
+be removed, and if so, enable the remove button */
 void
-on_prefs_notes_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
+on_extensions_view_cursor_changed(GtkTreeView *view, I7App *app)
 {
-    config_file_set_bool("InspectorSettings", "NotesVisible",
-      gtk_toggle_button_get_active(togglebutton));
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
+		gboolean readonly;
+		gtk_tree_model_get(model, &iter, 
+			I7_APP_EXTENSION_READ_ONLY, &readonly, 
+			-1);
+		gtk_widget_set_sensitive(app->prefs->extensions_remove, !readonly);
+		/* Only enable the "Remove" button if the selection is not read only */
+	} else
+		gtk_widget_set_sensitive(app->prefs->extensions_remove, FALSE);
+		/* if there is no selection */
+}
+
+/* Convenience function */
+static void
+install_extensions(const gchar *filename, I7App *app)
+{
+	i7_app_install_extension(app, filename);
 }
 
 void
-on_prefs_headings_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
-{
-    config_file_set_bool("InspectorSettings", "HeadingsVisible",
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_prefs_skein_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
-{
-    config_file_set_bool("InspectorSettings", "SkeinVisible",
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_prefs_search_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
-{
-    config_file_set_bool("InspectorSettings", "SearchVisible",
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_prefs_i7_extension_add_clicked(GtkButton *button, gpointer data)
+on_extensions_add_clicked(GtkButton *button, I7App *app)
 {
     GtkWidget *dialog = gtk_file_chooser_dialog_new(
       _("Select the extensions to install"),
-      GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+      GTK_WINDOW(app->prefs->window), 
       GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+    /* Create appropriate file filters */
+	GtkFileFilter *filter1 = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter1, "Inform 7 Extensions");
+	gtk_file_filter_add_pattern(filter1, "*.i7x");
+	GtkFileFilter *filter2 = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter2, "All Files");
+	gtk_file_filter_add_pattern(filter2, "*");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
     
     if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
         gtk_widget_destroy(dialog);
         return;
     }
+
+    /* Install each selected extension */
     GSList *extlist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
-    GSList *iter;
-    
-    for(iter = extlist; iter != NULL; iter = g_slist_next(iter)) {
-        install_extension((gchar *)iter->data);
-        g_free(iter->data);
-    }
-    
+    g_slist_foreach(extlist, (GFunc)install_extensions, app);
+
+    /* Free stuff */
+    g_slist_foreach(extlist, (GFunc)g_free, NULL);
     g_slist_free(extlist);
     gtk_widget_destroy(dialog);
-    
-    /* Refresh all lists of extensions */
-    populate_extension_lists(GTK_WIDGET(button));
-    for_each_story_window_idle((GSourceFunc)update_app_window_extensions_menu);
-    for_each_extension_window_idle(
-      (GSourceFunc)update_ext_window_extensions_menu);
 }
 
 void
-on_prefs_i7_extension_remove_clicked(GtkButton *button, gpointer data)
+on_extensions_remove_clicked(GtkButton *button, I7App *app)
 {
-    GtkTreeView *view = GTK_TREE_VIEW(lookup_widget(GTK_WIDGET(button),
-      "prefs_i7_extensions_view"));
     GtkTreeIter iter;
     GtkTreeModel *model;
-    GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
+    GtkTreeSelection *selection = gtk_tree_view_get_selection(app->prefs->extensions_view);
     if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
-        GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+        gchar *extname;
+        gchar *author;
+        gboolean readonly;
+        GtkTreeIter parent;
+        gtk_tree_model_get(model, &iter, 
+            I7_APP_EXTENSION_TEXT, &extname,
+            I7_APP_EXTENSION_READ_ONLY, &readonly, 
+            -1);
         
-        if(gtk_tree_path_get_depth(path) != 2) {
-            gtk_tree_path_free(path);
+        /* Bail out if this is a built-in extension or it doesn't have an author in the tree */
+        if(readonly || !gtk_tree_model_iter_parent(model, &parent, &iter)) {
+            g_free(extname);
             return;
         }
-        
-        gchar *extname;
-        gtk_tree_model_get(model, &iter, 0, &extname, -1);
-        gchar *author;
-        gtk_tree_path_up(path);
-        gtk_tree_model_get_iter(model, &iter, path);
-        gtk_tree_model_get(model, &iter, 0, &author, -1);
-        
+
+        gtk_tree_model_get(model, &parent, I7_APP_EXTENSION_TEXT, &author, -1);
+
         GtkWidget *dialog = gtk_message_dialog_new(
-          GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+          GTK_WINDOW(app->prefs->window),
           GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
           GTK_BUTTONS_YES_NO, 
           /* TRANSLATORS: Are you sure you want to remove EXTENSION_NAME by 
@@ -579,200 +451,127 @@ on_prefs_i7_extension_remove_clicked(GtkButton *button, gpointer data)
         
         /* Delete the extension and remove its directory if empty */
         if(result == GTK_RESPONSE_YES)
-            delete_extension(author, extname);
+            i7_app_delete_extension(app, author, extname);
         
         g_free(extname);
         g_free(author);
-        gtk_tree_path_free(path);
     }
-    
-    /* Refresh all lists of extensions */
-    populate_extension_lists(GTK_WIDGET(button));
-    for_each_story_window_idle((GSourceFunc)update_app_window_extensions_menu);
-    for_each_extension_window_idle(
-      (GSourceFunc)update_ext_window_extensions_menu);
 }
 
 void
-on_prefs_enable_highlighting_toggle_toggled(GtkToggleButton *togglebutton,
-                                            gpointer data)
+on_enable_highlighting_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("SyntaxSettings", "SyntaxHighlighting", 
+    config_file_set_bool(PREFS_SYNTAX_HIGHLIGHTING, 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_follow_symbols_toggle_toggled(GtkToggleButton *togglebutton,
-                                       gpointer data)
+on_follow_symbols_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("SyntaxSettings", "Intelligence", 
+    config_file_set_bool(PREFS_INTELLIGENCE, 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_intelligent_inspector_toggle_toggled(GtkToggleButton *togglebutton,
-                                              gpointer data)
+on_auto_indent_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("SyntaxSettings", "IntelligentHeadingsInspector",
+    config_file_set_bool(PREFS_AUTO_INDENT, 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_auto_indent_toggle_toggled(GtkToggleButton *togglebutton,
-                                    gpointer data)
+on_auto_number_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("SyntaxSettings", "AutoIndent",
+	config_file_set_bool(PREFS_AUTO_NUMBER_SECTIONS, 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_auto_number_toggle_toggled(GtkToggleButton *togglebutton,
-                                    gpointer data)
+on_author_name_changed(GtkEditable *editable, I7App *app)
 {
-    config_file_set_bool("SyntaxSettings", "AutoNumberSections",
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_prefs_elastic_tabstops_toggle_toggled(GtkToggleButton *togglebutton,
-                                         gpointer data)
-{
-	config_file_set_bool("EditorSettings", "ElasticTabstops",
-	  gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_prefs_author_changed(GtkEditable *editable, gpointer data)
-{
-    config_file_set_string("AppSettings", "AuthorName",
+    config_file_set_string(PREFS_AUTHOR_NAME, 
       gtk_entry_get_text(GTK_ENTRY(editable)));
 }
 
 void
-on_prefs_glulx_combo_changed(GtkComboBox *combobox, gpointer data)
+on_glulx_combo_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_file_set_bool("IDESettings", "UseGit",
-	    gtk_combo_box_get_active(combobox) == 0);
+	config_file_set_bool(PREFS_USE_GIT, 
+	    gtk_combo_box_get_active(combobox) == 1);
 }
 
 void
-on_prefs_clean_build_toggle_toggled(GtkToggleButton *togglebutton,
-                                    gpointer data)
+on_clean_build_files_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("IDESettings", "CleanBuildFiles", 
+    config_file_set_bool(PREFS_CLEAN_BUILD_FILES, 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_clean_index_toggle_toggled(GtkToggleButton *togglebutton,
-                                    gpointer data)
+on_clean_index_files_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("IDESettings", "CleanIndexFiles",
+    config_file_set_bool(PREFS_CLEAN_INDEX_FILES, 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_show_log_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
+on_show_debug_tabs_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool("IDESettings", "DebugLogVisible", 
+    config_file_set_bool(PREFS_DEBUG_LOG_VISIBLE, 
         gtk_toggle_button_get_active(togglebutton));
 }
 
-/* Get the language associated with this sourceview and update the highlighting
-styles */
-void 
-update_style(GtkSourceView *thiswidget) 
+
+/* Update the highlighting styles for this buffer */
+gboolean 
+update_style(GtkSourceBuffer *buffer) 
 {
-    GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(
-      GTK_TEXT_VIEW(thiswidget)));
     set_highlight_styles(buffer);
+	return FALSE; /* one-shot idle function */
 }
 
 /* Change the font that this widget uses */
-void 
+gboolean 
 update_font(GtkWidget *thiswidget) 
 {
     PangoFontDescription *font = get_font_description();
     gtk_widget_modify_font(thiswidget, font);
     pango_font_description_free(font);
-}
-
-/* Change only the font size but not the face that this widget uses */
-void 
-update_font_size(GtkWidget *thiswidget) 
-{
-    PangoFontDescription *font = pango_font_description_new();
-    pango_font_description_set_size(font, get_font_size() * PANGO_SCALE);
-    gtk_widget_modify_font(thiswidget, font);
-    pango_font_description_free(font);
+	
+	return FALSE; /* one-shot idle function */
 }
 
 /* Update the tab stops for a GtkSourceView */
-void 
+gboolean 
 update_tabs(GtkSourceView *thiswidget) 
 {
-    gint spaces = config_file_get_int("EditorSettings", "TabWidth");
+    gint spaces = config_file_get_int(PREFS_TAB_WIDTH);
     if(spaces == 0)
-        spaces = 8; /* default is 8 */
+        spaces = DEFAULT_TAB_WIDTH;
     gtk_source_view_set_tab_width(thiswidget, spaces);
+	
+	return FALSE; /* one-shot idle function */
 }
 
-/* Return a string of font families for the font setting. String must be freed*/
-gchar *
-get_font_family(void)
+void
+select_style_scheme(GtkTreeView *view, const gchar *id)
 {
-    gchar *customfont;
-    switch(config_file_get_enum("EditorSettings", "FontSet", 
-           font_set_lookup_table)) {
-        case FONT_SET_PROGRAMMER:
-            return g_strdup(
-              /* TRANSLATORS: This string is a list of monospace fonts in order
-              of preference. Only change it if you need other fonts to display
-              your language. */
-              _("DejaVu Sans Mono,DejaVu Sans LGC Mono,"
-              "Bitstream Vera Sans Mono,Courier New,Luxi Mono,Monospace"));
-        case FONT_SET_CUSTOM:
-            customfont = config_file_get_string("EditorSettings", "CustomFont");
-            if(customfont)
-                return customfont;
-            /* else fall through */
-        default:
-            ;
-    }
-    return g_strdup(
-     /* TRANSLATORS: This string is a list of sans-serif proportional fonts in
-     order of preference. Only change it if you need other fonts to display your
-     language. */
-     _("DejaVu Sans,DejaVu LGC Sans,Bitstream Vera Sans,Arial,Luxi Sans,Sans"));
-}
-
-/* Return the font size in points for the font size setting */
-int
-get_font_size(void)
-{
-    switch(config_file_get_enum("EditorSettings", "FontSize", 
-      font_size_lookup_table)) {
-        case FONT_SIZE_MEDIUM:
-            return SIZE_MEDIUM;
-        case FONT_SIZE_LARGE:
-            return SIZE_LARGE;
-        case FONT_SIZE_HUGE:
-            return SIZE_HUGE;
-        default:
-            ;
-    }
-    return SIZE_STANDARD;
-}
-
-/* Get the current font as a PangoFontDescription.
-Must be freed with pango_font_description_free. */
-PangoFontDescription *
-get_font_description(void)
-{
-    PangoFontDescription *font = pango_font_description_new();
-    gchar *fontfamily = get_font_family();
-    pango_font_description_set_family(font, fontfamily);
-    g_free(fontfamily);
-    pango_font_description_set_size(font, get_font_size() * PANGO_SCALE);
-    return font;
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeIter iter;
+	if(!gtk_tree_model_get_iter_first(model, &iter))
+		return;
+	gchar *style;
+	while(TRUE) {
+		gtk_tree_model_get(model, &iter, ID_COLUMN, &style, -1);
+		if(strcmp(style, id) == 0) {
+			g_free(style);
+			break;
+		}
+		g_free(style);
+		if(!gtk_tree_model_iter_next(model, &iter))
+			return;
+	}
+	
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
+	gtk_tree_selection_select_iter(selection, &iter);
 }

@@ -1,0 +1,47 @@
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(revision 100)
++++ Makefile.am	(working copy)
+@@ -1,19 +1,13 @@
+ AM_CFLAGS = -Wall
+ 
+-lib_LTLIBRARIES = libosxcart.la
++noinst_LIBRARIES = libosxcart.a
+ 
+-if GLIB_218
+-PLIST_PARSER_SOURCE = plist-parser.c
+-else
+-PLIST_PARSER_SOURCE = plist-parser-oldglib.c
+-endif
+-
+-libosxcart_la_SOURCES = \
++libosxcart_a_SOURCES = \
+ 	init.c init.h \
+ 	plist.c plist.h \
+ 	plist-common.c plist-common.h \
+ 	plist-write.c \
+-	$(PLIST_PARSER_SOURCE) \
++	plist-parser.c \
+ 	rtf.c rtf.h \
+ 	rtf-serialize.c rtf-serialize.h \
+ 	rtf-deserialize.c rtf-deserialize.h \
+@@ -28,14 +22,9 @@
+ 	rtf-langcode.c rtf-langcode.h \
+ 	rtf-state.c rtf-state.h
+ 	
+-libosxcart_la_CPPFLAGS = \
+-	-DG_LOG_DOMAIN=\"@PACKAGE_NAME@\" \
++libosxcart_a_CPPFLAGS = \
++	-DG_LOG_DOMAIN=\"Osxcart\" \
+ 	-DLOCALEDIR=\""$(datadir)/locale"\" \
+-	-I$(top_srcdir)
+-libosxcart_la_CFLAGS = @OSXCART_CFLAGS@ $(AM_CFLAGS)
+-libosxcart_la_LIBADD = @OSXCART_LIBS@
+-libosxcart_la_LDFLAGS = -version-info $(LT_VERSION_INFO) \
+-						-no-undefined \
+-						-export-symbols-regex "^(plist|rtf)_"
+-libosxcart_includedir = $(includedir)/osxcart/osxcart
+-libosxcart_include_HEADERS = plist.h rtf.h
++	-I..
++libosxcart_a_CFLAGS = @OSXCART_CFLAGS@ $(AM_CFLAGS)
++
