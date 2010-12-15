@@ -1,5 +1,5 @@
-/* This file is part of GNOME Inform 7.
- * Copyright (c) 2006-2009 P. F. Chimento <philip.chimento@gmail.com>
+/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+ * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
