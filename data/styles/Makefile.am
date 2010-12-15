@@ -6,4 +6,3 @@ dist_styles_DATA = \
 	psychedelic.xml \
 	subdued.xml \
 	subtle.xml
-	

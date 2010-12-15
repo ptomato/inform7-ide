@@ -10,4 +10,3 @@ inform_6_31_biplatform_CFLAGS = -ansi -DLINUX
 
 inform6docdir = $(datadir)/doc/$(PACKAGE)/inform6
 dist_inform6doc_DATA = readme.txt
-

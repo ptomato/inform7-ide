@@ -13,17 +13,17 @@ typedef struct {
 	GtkActionGroup *copy_action_group;
 	GtkAccelGroup *accels;
 	/* This document's filename */
-    gchar *filename;
+	gchar *filename;
 	/* Whether it was modified since the last save*/
 	gboolean modified;
-    /* File monitor */
-    GFileMonitor *monitor;
-    /* The program code */
-    GtkSourceBuffer *buffer;
+	/* File monitor */
+	GFileMonitor *monitor;
+	/* The program code */
+	GtkSourceBuffer *buffer;
 	GtkTextTag *invisible_tag;
 	/* The tree of section headings */
 	I7Heading heading_depth;
-    GtkTreeStore *headings;
+	GtkTreeStore *headings;
 	GtkTreeModel *filter;
 	GtkTreePath *current_heading;
 	/* The view with a search match currently being highlighted */

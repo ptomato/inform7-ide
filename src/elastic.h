@@ -25,4 +25,3 @@ void add_elastic_tabstops_to_view(GtkTextView *view);
 void remove_elastic_tabstops_from_view(GtkTextView *view);
 
 #endif /* __ELASTIC_H__ */
-

@@ -37,17 +37,17 @@ on_node_activate(I7Skein *skein, I7Node *newnode, I7Story *story)
 	I7Node *oldnode = i7_skein_get_played_node(skein);
 	if(oldnode == newnode)
 		return;
-	
-    /* Check if the new node is reachable from the old played node */
-    gboolean reachable = g_node_is_ancestor(oldnode->gnode, newnode->gnode);
-	
-    /* Build and run if the game isn't running, or the new node is unreachable*/
-    if(!reachable || !i7_story_get_game_running(story)) {
+
+	/* Check if the new node is reachable from the old played node */
+	gboolean reachable = g_node_is_ancestor(oldnode->gnode, newnode->gnode);
+
+	/* Build and run if the game isn't running, or the new node is unreachable*/
+	if(!reachable || !i7_story_get_game_running(story)) {
 		i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_play_to_node, newnode);
 		i7_story_compile(story, FALSE, FALSE);
 	} else {
 		i7_story_run_commands_from_node(story, newnode);
-    }
+	}
 }
 
 void
@@ -129,35 +129,35 @@ can_remove(I7Skein *skein, I7Node *node/*, I7Story *story */)
 	if(/*game_is_running(story) &&*/ i7_skein_is_node_in_current_thread(skein, node)) {
 		GtkWidget *dialog = gtk_message_dialog_new_with_markup(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
 			_("<b>Unable to delete the active branch in the skein</b>"));
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), 
-		    _("It is not possible to delete the branch of the skein that leads "
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+			_("It is not possible to delete the branch of the skein that leads "
 			"to the current position in the game. To delete this branch, either"
 			" stop or restart the game."));
 		/* GTK bug #632511 */
 		gtk_widget_show(dialog);
 		gtk_window_present(GTK_WINDOW(dialog));
 		gtk_dialog_run(GTK_DIALOG(dialog));
-    	gtk_widget_destroy(dialog);
+		gtk_widget_destroy(dialog);
 		return FALSE;
 	}
-	
-    if(!i7_node_get_locked(node))
-        return TRUE;
-	
-    GtkWidget *dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
-         _("This knot has been locked to preserve it. Do you really want to "
+
+	if(!i7_node_get_locked(node))
+		return TRUE;
+
+	GtkWidget *dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
+		 _("This knot has been locked to preserve it. Do you really want to "
 		 "delete it? (This cannot be undone.)"));
 	gtk_widget_show(dialog);
 	gtk_window_present(GTK_WINDOW(dialog));
-    int response = gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-    return (response == GTK_RESPONSE_YES);
-}        
+	int response = gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+	return (response == GTK_RESPONSE_YES);
+}
 
 static void
 on_popup_menu_delete(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 {
-    if(can_remove(data->skein, data->node))
+	if(can_remove(data->skein, data->node))
 		i7_skein_remove_single(data->skein, data->node);
 	g_slice_free(I7PopupMenuCallbackData, data);
 }
@@ -165,17 +165,17 @@ on_popup_menu_delete(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 static void
 on_popup_menu_delete_below(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 {
-    if(can_remove(data->skein, data->node))
-        i7_skein_remove_all(data->skein, data->node);
+	if(can_remove(data->skein, data->node))
+		i7_skein_remove_all(data->skein, data->node);
 	g_slice_free(I7PopupMenuCallbackData, data);
 }
 
 static void
 on_popup_menu_delete_thread(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 {
-    I7Node *topnode = i7_skein_get_thread_top(data->skein, data->node);
-    if(can_remove(data->skein, topnode))
-        i7_skein_remove_all(data->skein, topnode);
+	I7Node *topnode = i7_skein_get_thread_top(data->skein, data->node);
+	if(can_remove(data->skein, topnode))
+		i7_skein_remove_all(data->skein, topnode);
 	g_slice_free(I7PopupMenuCallbackData, data);
 }
 
@@ -214,31 +214,31 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 	/* Construct menu by hand, since there are too many customizations each time
 	 to use a GtkBuilder file */
 	ADD_MENU_ITEM(_("_Play to Here"), on_popup_menu_play_to_here);
-    ADD_SEPARATOR;
+	ADD_SEPARATOR;
 	if(!i7_node_is_root(node)) {
 		ADD_MENU_ITEM(_("_Edit"), on_popup_menu_edit);
 		ADD_IMAGE_MENU_ITEM(i7_node_has_label(node)? _("Edit _Label") : _("Add _Label"), GTK_STOCK_EDIT, on_popup_menu_edit_label);
-    }
+	}
 	ADD_IMAGE_MENU_ITEM(_("Show in _Transcript"), GTK_STOCK_GO_FORWARD, on_popup_menu_show_in_transcript);
-    gtk_widget_set_sensitive(menuitem, FALSE);
-    if(!i7_node_is_root(node)) {
+	gtk_widget_set_sensitive(menuitem, FALSE);
+	if(!i7_node_is_root(node)) {
 		ADD_MENU_ITEM(i7_node_get_locked(node)? _("Un_lock") : _("_Lock"), on_popup_menu_lock);
-        ADD_MENU_ITEM(i7_node_get_locked(node)? _("Unloc_k This Thread") : _("Loc_k This Thread"), on_popup_menu_lock_thread);
-    }
+		ADD_MENU_ITEM(i7_node_get_locked(node)? _("Unloc_k This Thread") : _("Loc_k This Thread"), on_popup_menu_lock_thread);
+	}
 	ADD_SEPARATOR;
 	ADD_MENU_ITEM(_("_New Thread"), on_popup_menu_new_thread);
-    if(!i7_node_is_root(node)) {
+	if(!i7_node_is_root(node)) {
 		ADD_IMAGE_MENU_ITEM(_("_Insert Knot"), GTK_STOCK_ADD, on_popup_menu_insert_knot);
-        ADD_IMAGE_MENU_ITEM(_("_Delete"), GTK_STOCK_DELETE, on_popup_menu_delete);
-        ADD_MENU_ITEM(_("Delete all _Below"), on_popup_menu_delete_below);
+		ADD_IMAGE_MENU_ITEM(_("_Delete"), GTK_STOCK_DELETE, on_popup_menu_delete);
+		ADD_MENU_ITEM(_("Delete all _Below"), on_popup_menu_delete_below);
 		ADD_MENU_ITEM(_("Delete _all in Thread"), on_popup_menu_delete_thread);
-    }
+	}
 	ADD_SEPARATOR;
 	ADD_MENU_ITEM(_("_Save Transcript to here..."), on_popup_menu_save_transcript);
 	gtk_widget_set_sensitive(menuitem, FALSE);
 
 	gtk_widget_show_all(menu);
-    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 3, gtk_get_current_event_time());
+	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 3, gtk_get_current_event_time());
 }
 
 #undef ADD_MENU_ITEM
@@ -266,7 +266,7 @@ create_labels_menu(I7SkeinNodeLabel *nodelabel, I7Panel *panel)
 	I7LabelsMenuCallbackData *data = g_new0(I7LabelsMenuCallbackData, 1);
 	data->skein_view = I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]);
 	data->node = nodelabel->node;
-	
+
 	g_signal_connect_data(item, "activate", G_CALLBACK(jump_to_node), data, (GClosureNotify)g_free, 0);
 	gtk_menu_shell_append(GTK_MENU_SHELL(panel->labels_menu), item);
 }
@@ -275,14 +275,14 @@ void
 on_labels_changed(I7Skein *skein, I7Panel *panel)
 {
 	GSList *labels = i7_skein_get_labels(skein);
-	
+
 	/* Empty the menu */
 	gtk_container_foreach(GTK_CONTAINER(panel->labels_menu), (GtkCallback)gtk_widget_destroy, NULL);
-	
+
 	/* Set insensitive if empty */
 	gtk_widget_set_sensitive(GTK_WIDGET(panel->labels), (labels != NULL));
 	gtk_action_set_sensitive(panel->labels_action, (labels != NULL));
-	
+
 	/* Create a new menu */
 	g_slist_foreach(labels, (GFunc)create_labels_menu, panel);
 	i7_skein_free_node_label_list(labels);

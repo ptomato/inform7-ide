@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include <sys/types.h>
 #include <pwd.h>
 #include <glib.h>
@@ -39,7 +39,7 @@ expand_initial_tilde(const gchar *path)
 
 	if(path[0] != '~')
 		return g_strdup(path);
-	
+
 	if(path[1] == '/' || path[1] == '\0')
 		return g_strconcat(g_get_home_dir(), &path[1], NULL);
 
@@ -64,22 +64,22 @@ read_source_file(const gchar *filename)
 {
 	GError *error = NULL;
 	gchar *text;
-	
+
 	gsize num_bytes;
 	if(!g_file_get_contents(filename, &text, &num_bytes, &error)) {
 		error_dialog(NULL, error, _("Could not open the file '%s'.\n\n"
 			"Make sure that this file has not been deleted or renamed."), filename);
 		return NULL;
 	}
-	
+
 	/* Make sure the file wasn't binary or something */
 	if(!g_utf8_validate(text, num_bytes, NULL)) {
-		error_dialog(NULL, NULL, 
+		error_dialog(NULL, NULL,
 		_("The file '%s' could not be read because it contained invalid UTF-8 text."), filename);
 		g_free(text);
 		return NULL;
 	}
-	
+
 	/* Change newline separators to \n */
 	if(strstr(text, "\r\n")) {
 		gchar **lines = g_strsplit(text, "\r\n", 0);
@@ -88,7 +88,7 @@ read_source_file(const gchar *filename)
 		g_strfreev(lines);
 	}
 	text = g_strdelimit(text, "\r", '\n');
-	
+
 	return text;
 }
 
@@ -102,7 +102,7 @@ get_filename_from_save_dialog(const gchar *default_filename)
 	/* Create a file chooser */
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), NULL, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT, 
+		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	if(default_filename) {
@@ -115,25 +115,25 @@ get_filename_from_save_dialog(const gchar *default_filename)
 	} else {
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), _("Untitled document"));
 	}
-	
+
 	GtkFileFilter *filter = gtk_file_filter_new();
 	gtk_file_filter_add_pattern(filter, "*.inform");
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
-	
+
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		gchar *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 		gchar *filename = g_str_has_suffix(path, ".inform")? g_strdup(path) : g_strconcat(path, ".inform", NULL);
 		g_free(path);
 		gtk_widget_destroy(dialog);
-		
+
 		/* For "Select folder" mode, we must do our own confirmation */
 		/* Adapted from gtkfilechooserdefault.c */
 		/* Sourcefile is a workaround: if you type a new folder into the file
 		selection dialog, GTK will create that folder automatically and it
 		will then already exist */
 		gchar *sourcefile = g_build_filename(filename, "Source", NULL);
-		if(g_file_test(filename, G_FILE_TEST_EXISTS) 
-			&& g_file_test(sourcefile, G_FILE_TEST_EXISTS)) 
+		if(g_file_test(filename, G_FILE_TEST_EXISTS)
+			&& g_file_test(sourcefile, G_FILE_TEST_EXISTS))
 		{
 			dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
@@ -147,7 +147,7 @@ get_filename_from_save_dialog(const gchar *default_filename)
 			gtk_widget_show(button);
 			gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
 			gtk_dialog_set_alternative_button_order(GTK_DIALOG(dialog),
-				GTK_RESPONSE_ACCEPT, GTK_RESPONSE_CANCEL, 
+				GTK_RESPONSE_ACCEPT, GTK_RESPONSE_CANCEL,
 				-1);
 			gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
@@ -169,59 +169,59 @@ get_filename_from_save_dialog(const gchar *default_filename)
 
 /* Helper function to delete a file relative to the project path; does nothing
 if file does not exist */
-static void 
-delete_from_project_dir(I7Story *story, gchar *storyname, gchar *subdir, gchar *filename) 
+static void
+delete_from_project_dir(I7Story *story, gchar *storyname, gchar *subdir, gchar *filename)
 {
-    gchar *pathname;
-    
-    if(subdir)
-        pathname = g_build_filename(storyname, subdir, filename, NULL);
-    else
-        pathname = g_build_filename(storyname, filename, NULL);
-    
-    g_remove(pathname);
-    g_free(pathname);
+	gchar *pathname;
+
+	if(subdir)
+		pathname = g_build_filename(storyname, subdir, filename, NULL);
+	else
+		pathname = g_build_filename(storyname, filename, NULL);
+
+	g_remove(pathname);
+	g_free(pathname);
 	i7_document_display_progress_busy(I7_DOCUMENT(story));
 }
 
 /* If the "delete build files" option is checked, delete all the build files
 from the project directory */
-void 
-delete_build_files(I7Story *story) 
+void
+delete_build_files(I7Story *story)
 {
-    if(config_file_get_bool(PREFS_CLEAN_BUILD_FILES)) {
+	if(config_file_get_bool(PREFS_CLEAN_BUILD_FILES)) {
 		i7_document_display_status_message(I7_DOCUMENT(story), _("Cleaning out build files..."), FILE_OPERATIONS);
-		
+
 		gchar *storyname = i7_document_get_path(I7_DOCUMENT(story));
-		
-        delete_from_project_dir(story, storyname, NULL, "Metadata.iFiction");
-        delete_from_project_dir(story, storyname, NULL, "Release.blurb");
-        delete_from_project_dir(story, storyname, "Build", "auto.inf");
-        delete_from_project_dir(story, storyname, "Build", "Debug log.txt");
-        delete_from_project_dir(story, storyname, "Build", "Map.eps");
-        delete_from_project_dir(story, storyname, "Build", "output.z5");
-        delete_from_project_dir(story, storyname, "Build", "output.z6");
-        delete_from_project_dir(story, storyname, "Build", "output.z8");
-        delete_from_project_dir(story, storyname, "Build", "output.ulx");
-        delete_from_project_dir(story, storyname, "Build", "Problems.html");
-        delete_from_project_dir(story, storyname, "Build", "gameinfo.dbg");
-        delete_from_project_dir(story, storyname, "Build", "temporary file.inf");
-        delete_from_project_dir(story, storyname, "Build", "temporary file 2.inf");
-        delete_from_project_dir(story, storyname, "Build", "StatusCblorb.html");
-        
-        if(config_file_get_bool(PREFS_CLEAN_INDEX_FILES)) {
-            delete_from_project_dir(story, storyname, "Index", "Actions.html");
-            delete_from_project_dir(story, storyname, "Index", "Contents.html");
-            delete_from_project_dir(story, storyname, "Index", "Headings.xml");
-            delete_from_project_dir(story, storyname, "Index", "Kinds.html");
-            delete_from_project_dir(story, storyname, "Index", "Phrasebook.html");
-            delete_from_project_dir(story, storyname, "Index", "Rules.html");
-            delete_from_project_dir(story, storyname, "Index", "Scenes.html");
-            delete_from_project_dir(story, storyname, "Index", "World.html");
-            /* Delete the "Details" subdirectory */
-            gchar *details_dir = g_build_filename(storyname, "Index", "Details", NULL);
-            GDir *details = g_dir_open(details_dir, 0, NULL);
-            if(details) {
+
+		delete_from_project_dir(story, storyname, NULL, "Metadata.iFiction");
+		delete_from_project_dir(story, storyname, NULL, "Release.blurb");
+		delete_from_project_dir(story, storyname, "Build", "auto.inf");
+		delete_from_project_dir(story, storyname, "Build", "Debug log.txt");
+		delete_from_project_dir(story, storyname, "Build", "Map.eps");
+		delete_from_project_dir(story, storyname, "Build", "output.z5");
+		delete_from_project_dir(story, storyname, "Build", "output.z6");
+		delete_from_project_dir(story, storyname, "Build", "output.z8");
+		delete_from_project_dir(story, storyname, "Build", "output.ulx");
+		delete_from_project_dir(story, storyname, "Build", "Problems.html");
+		delete_from_project_dir(story, storyname, "Build", "gameinfo.dbg");
+		delete_from_project_dir(story, storyname, "Build", "temporary file.inf");
+		delete_from_project_dir(story, storyname, "Build", "temporary file 2.inf");
+		delete_from_project_dir(story, storyname, "Build", "StatusCblorb.html");
+
+		if(config_file_get_bool(PREFS_CLEAN_INDEX_FILES)) {
+			delete_from_project_dir(story, storyname, "Index", "Actions.html");
+			delete_from_project_dir(story, storyname, "Index", "Contents.html");
+			delete_from_project_dir(story, storyname, "Index", "Headings.xml");
+			delete_from_project_dir(story, storyname, "Index", "Kinds.html");
+			delete_from_project_dir(story, storyname, "Index", "Phrasebook.html");
+			delete_from_project_dir(story, storyname, "Index", "Rules.html");
+			delete_from_project_dir(story, storyname, "Index", "Scenes.html");
+			delete_from_project_dir(story, storyname, "Index", "World.html");
+			/* Delete the "Details" subdirectory */
+			gchar *details_dir = g_build_filename(storyname, "Index", "Details", NULL);
+			GDir *details = g_dir_open(details_dir, 0, NULL);
+			if(details) {
 				const gchar *dir_entry;
 				while((dir_entry = g_dir_read_name(details)) != NULL) {
 					gchar *filename = g_build_filename(storyname, "Index", "Details", dir_entry, NULL);
@@ -231,11 +231,11 @@ delete_build_files(I7Story *story)
 				g_dir_close(details);
 				g_remove(details_dir);
 			}
-            g_free(details_dir);
-        }
-		
+			g_free(details_dir);
+		}
+
 		g_free(storyname);
-    }
+	}
 	i7_document_remove_status_message(I7_DOCUMENT(story), FILE_OPERATIONS);
 	i7_document_display_progress_percentage(I7_DOCUMENT(story), 0.0);
 }
@@ -260,7 +260,7 @@ gchar *
 get_case_insensitive_extension(const gchar *path)
 {
 	gchar *cistring, *retval;
-	
+
 	/* For efficiency's sake, though it's logically equivalent, we try... */
 	if(g_file_test(path, G_FILE_TEST_EXISTS))
 		return g_strdup(path);
@@ -279,7 +279,7 @@ get_case_insensitive_extension(const gchar *path)
 	size_t namelen = length - extindex - 1;
 	gchar *ciextname = g_strndup(path + extindex + 1, namelen);
 	gchar *workstring = g_strndup(path, extindex - 1);
-	
+
 	p = strrchr(workstring, G_DIR_SEPARATOR);
 	size_t extdirindex = (size_t)(p - workstring);
 	gchar *topdirpath = g_strndup(path, extdirindex);
@@ -287,7 +287,7 @@ get_case_insensitive_extension(const gchar *path)
 	size_t dirlen = extindex - extdirindex - 1;
 	gchar *ciextdirpath = g_strndup(path + extdirindex + 1, dirlen);
 
-	GDir *topdir = g_dir_open(topdirpath, 0, NULL); 
+	GDir *topdir = g_dir_open(topdirpath, 0, NULL);
 	/* pathname is assumed case-correct */
 	if(!topdir)
 		goto fail; /* ... so that failure is fatal */

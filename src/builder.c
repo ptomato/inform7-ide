@@ -18,12 +18,12 @@ create_new_builder(const gchar *filename, gpointer data)
 {
 	GError *error = NULL;
 	GtkBuilder *builder;
-	
+
 	builder = gtk_builder_new();
 	if(!gtk_builder_add_from_file(builder, filename, &error))
 		ERROR(_("Error while building interface"), error);
 	gtk_builder_connect_signals(builder, data);
-		
+
 	return builder;
 }
 
@@ -31,10 +31,10 @@ create_new_builder(const gchar *filename, gpointer data)
 GObject *
 load_object(GtkBuilder *builder, const gchar *name)
 {
-    GObject *retval;
-    if(G_UNLIKELY((retval = gtk_builder_get_object(builder, name)) == NULL))
-        g_error(_("Error while getting object '%s' during interface building"), name);
-    return retval;
+	GObject *retval;
+	if(G_UNLIKELY((retval = gtk_builder_get_object(builder, name)) == NULL))
+		g_error(_("Error while getting object '%s' during interface building"), name);
+	return retval;
 }
 
 /* Add actions constructed by @builder to an empty action group also constructed

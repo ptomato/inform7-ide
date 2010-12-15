@@ -1,6 +1,6 @@
 /*  Copyright 2006 P.F. Chimento
  *  This file is part of GNOME Inform 7.
- * 
+ *
  *  GNOME Inform 7 is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -78,7 +78,7 @@ on_z5_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_Z5);
-	
+
 	/* When the one changes, change the other */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z5), value);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->z5), value);
@@ -90,7 +90,7 @@ on_z6_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_Z6);
-	
+
 	/* When the one changes, change the other */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z6), value);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->z6), value);
@@ -102,7 +102,7 @@ on_z8_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_Z8);
-	
+
 	/* When the one changes, change the other */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z8), value);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->z8), value);
@@ -114,7 +114,7 @@ on_glulx_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_GLULX);
-	
+
 	/* When the one changes, change the other */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->glulx), value);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->glulx), value);
@@ -125,7 +125,7 @@ on_blorb_button_toggled(GtkToggleButton *button, I7Story *story)
 {
 	gboolean value = gtk_toggle_button_get_active(button);
 	i7_story_set_create_blorb(story, value);
-	
+
 	/* When the one changes, change the other */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->blorb), value);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->blorb), value);
@@ -136,15 +136,15 @@ on_nobble_rng_button_toggled(GtkToggleButton *button, I7Story *story)
 {
 	gboolean value = gtk_toggle_button_get_active(button);
 	i7_story_set_nobble_rng(story, value);
-	
+
 	/* When the one changes, change the other */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->nobble_rng), value);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->nobble_rng), value);
 }
 
 /* Select all the right buttons according to the story settings */
-void 
-on_notify_story_format(I7Story *story) 
+void
+on_notify_story_format(I7Story *story)
 {
 	switch(i7_story_get_story_format(story)) {
 		case I7_STORY_FORMAT_Z5:
@@ -189,7 +189,7 @@ on_notify_elastic_tabs(I7Story *story)
 /* These 'get' functions provide for a default value even though we initialize a
  dictionary with all the required keys; it may be that another port of Inform 7
  doesn't write all the keys */
-I7StoryFormat 
+I7StoryFormat
 i7_story_get_story_format(I7Story *story)
 {
 	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
@@ -201,7 +201,7 @@ i7_story_get_story_format(I7Story *story)
 	return obj->integer.val;
 }
 
-void 
+void
 i7_story_set_story_format(I7Story *story, I7StoryFormat format)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
@@ -215,14 +215,14 @@ i7_story_set_story_format(I7Story *story, I7StoryFormat format)
 		insert_setting(settings, "IFOutputSettings", "IFSettingZCodeVersion", obj);
 		g_object_notify(G_OBJECT(story), "story-format");
 		return;
-	} 
+	}
 	if(obj->integer.val != format) {
 		obj->integer.val = format;
 		g_object_notify(G_OBJECT(story), "story-format");
 	}
 }
 
-gboolean 
+gboolean
 i7_story_get_create_blorb(I7Story *story)
 {
 	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
@@ -234,7 +234,7 @@ i7_story_get_create_blorb(I7Story *story)
 	return obj->boolean.val;
 }
 
-void 
+void
 i7_story_set_create_blorb(I7Story *story, gboolean create_blorb)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
@@ -247,14 +247,14 @@ i7_story_set_create_blorb(I7Story *story, gboolean create_blorb)
 		insert_setting(settings, "IFOutputSettings", "IFSettingCreateBlorb", obj);
 		g_object_notify(G_OBJECT(story), "create-blorb");
 		return;
-	} 
+	}
 	if(obj->boolean.val != create_blorb) {
 		obj->boolean.val = create_blorb;
 		g_object_notify(G_OBJECT(story), "create-blorb");
 	}
 }
 
-gboolean 
+gboolean
 i7_story_get_nobble_rng(I7Story *story)
 {
 	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
@@ -266,7 +266,7 @@ i7_story_get_nobble_rng(I7Story *story)
 	return obj->boolean.val;
 }
 
-void 
+void
 i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
@@ -279,14 +279,14 @@ i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng)
 		insert_setting(settings, "IFOutputSettings", "IFSettingNobbleRng", obj);
 		g_object_notify(G_OBJECT(story), "nobble-rng");
 		return;
-	} 
+	}
 	if(obj->boolean.val != nobble_rng) {
 		obj->boolean.val = nobble_rng;
 		g_object_notify(G_OBJECT(story), "nobble-rng");
 	}
 }
 
-gboolean 
+gboolean
 i7_story_get_elastic_tabs(I7Story *story)
 {
 	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
@@ -298,7 +298,7 @@ i7_story_get_elastic_tabs(I7Story *story)
 	return obj->boolean.val;
 }
 
-void 
+void
 i7_story_set_elastic_tabs(I7Story *story, gboolean elastic_tabs)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
@@ -311,7 +311,7 @@ i7_story_set_elastic_tabs(I7Story *story, gboolean elastic_tabs)
 		insert_setting(settings, "IFMiscSettings", "IFSettingElasticTabs", obj);
 		g_object_notify(G_OBJECT(story), "elastic-tabs");
 		return;
-	} 
+	}
 	if(obj->boolean.val != elastic_tabs) {
 		obj->boolean.val = elastic_tabs;
 		g_object_notify(G_OBJECT(story), "elastic-tabs");

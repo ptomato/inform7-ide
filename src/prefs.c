@@ -60,7 +60,7 @@ I7PrefsWidgets *
 create_prefs_window(GtkBuilder *builder)
 {
 	I7PrefsWidgets *self = g_slice_new0(I7PrefsWidgets);
-	
+
 	self->window = GTK_WIDGET(load_object(builder, "prefs_dialog"));
 	self->prefs_notebook = GTK_WIDGET(load_object(builder, "prefs_notebook"));
 	self->schemes_view = GTK_TREE_VIEW(load_object(builder, "schemes_view"));
@@ -73,7 +73,7 @@ create_prefs_window(GtkBuilder *builder)
 	self->auto_number = GTK_WIDGET(load_object(builder, "auto_number"));
 	self->clean_index_files = GTK_WIDGET(load_object(builder, "clean_index_files"));
 	self->schemes_list = GTK_LIST_STORE(load_object(builder, "schemes_list"));
-	
+
 	/* Only select one extension at a time */
 	GtkTreeSelection *select = gtk_tree_view_get_selection(self->extensions_view);
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
@@ -86,7 +86,7 @@ create_prefs_window(GtkBuilder *builder)
 	be sent to the widget when dropped, so we omit that. Also,
 	GTK_DEST_DEFAULT_HIGHLIGHT seems to be broken. Including it anyway. */
 	gtk_drag_dest_add_uri_targets(GTK_WIDGET(self->extensions_view));
-	
+
 	/* Do the style scheme list */
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
 	select = gtk_tree_view_get_selection(self->schemes_view);
@@ -125,32 +125,32 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 		GTK_STOCK_ADD, GTK_RESPONSE_ACCEPT,
 		NULL);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(chooser), TRUE);
-		
+
 	/* Filters */
 	GtkFileFilter *filter = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter, _("Color Scheme Files"));
 	gtk_file_filter_add_pattern(filter, "*.xml");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), filter);
-	
+
 	filter = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter, _("All Files"));
 	gtk_file_filter_add_pattern(filter, "*");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
 
 	gtk_dialog_set_default_response(GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT);
-	
+
 	if(gtk_dialog_run(GTK_DIALOG(chooser)) != GTK_RESPONSE_ACCEPT) {
 		gtk_widget_destroy(chooser);
 		return;
 	}
-	
+
 	gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
 	if(!filename)
 		return;
-	
+
 	gtk_widget_destroy(chooser);
-	
+
 	const gchar *scheme_id = install_scheme(filename);
 	g_free(filename);
 
@@ -176,23 +176,23 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 			ID_COLUMN, &id,
 			NAME_COLUMN, &name,
 			-1);
-	
+
 		if(!uninstall_scheme(id))
 			error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("Could not remove color scheme \"%s\"."), name);
-		else {	
+		else {
 			gchar *new_id = NULL;
 			GtkTreeIter new_iter;
 			gboolean new_iter_set = FALSE;
 
-			/* If the removed style scheme is the last of the list, set as new 
+			/* If the removed style scheme is the last of the list, set as new
 			 default style scheme the previous one, otherwise set the next one.
-			 To make this possible, we need to get the id of the new default 
+			 To make this possible, we need to get the id of the new default
 			 style scheme before re-populating the list. */
 			GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
 			/* Try to move to the next path */
 			gtk_tree_path_next(path);
 			if(!gtk_tree_model_get_iter(model, &new_iter, path)) {
-				/* It seems the removed style scheme was the last of the list. 
+				/* It seems the removed style scheme was the last of the list.
 				 Try to move to the previous one */
 				gtk_tree_path_free(path);
 				path = gtk_tree_model_get_path(model, &iter);
@@ -203,15 +203,15 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 			else
 				new_iter_set = TRUE;
 			gtk_tree_path_free(path);
-						
+
 			if(new_iter_set)
 				gtk_tree_model_get(model, &new_iter,
 					ID_COLUMN, &new_id,
 					-1);
-			
+
 			if(!new_id)
 				new_id = g_strdup("inform");
-			
+
 			populate_schemes_list(app->prefs->schemes_list);
 			config_file_set_string(PREFS_STYLE_SCHEME, new_id);
 			g_free(new_id);
@@ -224,98 +224,98 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 gboolean
 on_extensions_view_drag_drop(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time)
 {
-    /* Iterate through the list of target types provided by the source */
-    GdkAtom target_type = NULL;
-    GList *iter;
-    for(iter = drag_context->targets; iter != NULL; iter = g_list_next(iter)) {
-        gchar *type_name = gdk_atom_name(GDK_POINTER_TO_ATOM(iter->data));
-        /* Select 'text/uri-list' from the list of available targets */
-        if(!strcmp(type_name, "text/uri-list")) {
-            g_free(type_name);
-            target_type = GDK_POINTER_TO_ATOM(iter->data);
-            break;
-        }
-        g_free(type_name);
-    }
-    /* If URI list not supported, then cancel */
-    if(!target_type)
-        return FALSE;
-                
-    /* Request the data from the source. */
-    gtk_drag_get_data(
-      widget,         /* this widget, which will get 'drag-data-received' */
-      drag_context,   /* represents the current state of the DnD */
-      target_type,    /* the target type we want */
-      time);            /* time stamp */
-    return TRUE;
+	/* Iterate through the list of target types provided by the source */
+	GdkAtom target_type = NULL;
+	GList *iter;
+	for(iter = drag_context->targets; iter != NULL; iter = g_list_next(iter)) {
+		gchar *type_name = gdk_atom_name(GDK_POINTER_TO_ATOM(iter->data));
+		/* Select 'text/uri-list' from the list of available targets */
+		if(!strcmp(type_name, "text/uri-list")) {
+			g_free(type_name);
+			target_type = GDK_POINTER_TO_ATOM(iter->data);
+			break;
+		}
+		g_free(type_name);
+	}
+	/* If URI list not supported, then cancel */
+	if(!target_type)
+		return FALSE;
+
+	/* Request the data from the source. */
+	gtk_drag_get_data(
+	  widget,         /* this widget, which will get 'drag-data-received' */
+	  drag_context,   /* represents the current state of the DnD */
+	  target_type,    /* the target type we want */
+	  time);            /* time stamp */
+	return TRUE;
 }
 
 
 void
 on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *selectiondata, guint info, guint time)
 {
-    gboolean dnd_success = TRUE;
-    gchar *type_name = NULL;
-    
-    /* Check that we got data from source */
-    if((selectiondata == NULL) || (selectiondata->length < 0))
-        dnd_success = FALSE;
-    
-    /* Check that we got the format we can use */
-    else if(strcmp((type_name = gdk_atom_name(selectiondata->type)), "text/uri-list"))
-        dnd_success = FALSE;
-    
-    else {  
-        /* Do stuff with the data */
-        gchar **extension_files = g_uri_list_extract_uris((gchar *)selectiondata->data);
-        int foo;
-        /* Get a list of URIs to the dropped files */
-        for(foo = 0; extension_files[foo] != NULL; foo++) {
-            GError *err = NULL;
-            gchar *filename = g_filename_from_uri(extension_files[foo], NULL, &err);
-            if(!filename) {
-                WARN(_("Invalid URI"), err);
-                g_error_free(err);
-                continue;
-            }
-            
-            /* Check whether a directory was dropped. if so, install contents */
-            /* NOTE: not recursive (that would be kind of silly anyway) */
-            if(g_file_test(filename, G_FILE_TEST_IS_DIR)) {
-                GDir *dir = g_dir_open(filename, 0, &err);
-                if(err) {
-                    error_dialog(NULL, err, _("Error opening directory %s: "), filename);
-                    g_free(filename);
-                    return;
-                }
-                const gchar *dir_entry;
-                while((dir_entry = g_dir_read_name(dir)) != NULL)
-                    if(!g_file_test(dir_entry, G_FILE_TEST_IS_DIR)) {
-                        gchar *entry_with_path = g_build_filename(filename, dir_entry, NULL);
-                        i7_app_install_extension(i7_app_get(), entry_with_path);
-                        g_free(entry_with_path);
-                    }
-                g_dir_close(dir);
-        
-            } else
-                /* just install it */
-                i7_app_install_extension(i7_app_get(), filename);
-            
-            g_free(filename);
-        }
-        g_strfreev(extension_files);
-    }
-    
-    if(type_name)
-        g_free(type_name);
-    gtk_drag_finish(drag_context, dnd_success, FALSE, time);
+	gboolean dnd_success = TRUE;
+	gchar *type_name = NULL;
+
+	/* Check that we got data from source */
+	if((selectiondata == NULL) || (selectiondata->length < 0))
+		dnd_success = FALSE;
+
+	/* Check that we got the format we can use */
+	else if(strcmp((type_name = gdk_atom_name(selectiondata->type)), "text/uri-list"))
+		dnd_success = FALSE;
+
+	else {
+		/* Do stuff with the data */
+		gchar **extension_files = g_uri_list_extract_uris((gchar *)selectiondata->data);
+		int foo;
+		/* Get a list of URIs to the dropped files */
+		for(foo = 0; extension_files[foo] != NULL; foo++) {
+			GError *err = NULL;
+			gchar *filename = g_filename_from_uri(extension_files[foo], NULL, &err);
+			if(!filename) {
+				WARN(_("Invalid URI"), err);
+				g_error_free(err);
+				continue;
+			}
+
+			/* Check whether a directory was dropped. if so, install contents */
+			/* NOTE: not recursive (that would be kind of silly anyway) */
+			if(g_file_test(filename, G_FILE_TEST_IS_DIR)) {
+				GDir *dir = g_dir_open(filename, 0, &err);
+				if(err) {
+					error_dialog(NULL, err, _("Error opening directory %s: "), filename);
+					g_free(filename);
+					return;
+				}
+				const gchar *dir_entry;
+				while((dir_entry = g_dir_read_name(dir)) != NULL)
+					if(!g_file_test(dir_entry, G_FILE_TEST_IS_DIR)) {
+						gchar *entry_with_path = g_build_filename(filename, dir_entry, NULL);
+						i7_app_install_extension(i7_app_get(), entry_with_path);
+						g_free(entry_with_path);
+					}
+				g_dir_close(dir);
+
+			} else
+				/* just install it */
+				i7_app_install_extension(i7_app_get(), filename);
+
+			g_free(filename);
+		}
+		g_strfreev(extension_files);
+	}
+
+	if(type_name)
+		g_free(type_name);
+	gtk_drag_finish(drag_context, dnd_success, FALSE, time);
 }
 
 
 void
 on_font_set_changed(GtkComboBox *combobox, I7App *app)
 {
-    config_file_set_enum(PREFS_FONT_SET, gtk_combo_box_get_active(combobox), font_set_lookup_table);
+	config_file_set_enum(PREFS_FONT_SET, gtk_combo_box_get_active(combobox), font_set_lookup_table);
 }
 
 void
@@ -327,21 +327,21 @@ on_custom_font_font_set(GtkFontButton *button, I7App *app)
 void
 on_font_size_changed(GtkComboBox *combobox, I7App *app)
 {
-    config_file_set_enum(PREFS_FONT_SIZE, gtk_combo_box_get_active(combobox), font_size_lookup_table);
+	config_file_set_enum(PREFS_FONT_SIZE, gtk_combo_box_get_active(combobox), font_size_lookup_table);
 }
 
 void
 on_tab_ruler_value_changed(GtkRange *range, I7App *app)
 {
-    config_file_set_int(PREFS_TAB_WIDTH, (int)gtk_range_get_value(range));
+	config_file_set_int(PREFS_TAB_WIDTH, (int)gtk_range_get_value(range));
 }
 
 gchar*
 on_tab_ruler_format_value(GtkScale *scale, gdouble value, I7App *app)
 {
-    if(value)
-        return g_strdup_printf(ngettext("1 space", "%.*f spaces", value), gtk_scale_get_digits(scale), value);
-    return g_strdup("default");
+	if(value)
+		return g_strdup_printf(ngettext("1 space", "%.*f spaces", value), gtk_scale_get_digits(scale), value);
+	return g_strdup("default");
 }
 
 /* Check whether the user has selected something (not an author name) that can
@@ -354,8 +354,8 @@ on_extensions_view_cursor_changed(GtkTreeView *view, I7App *app)
 	GtkTreeModel *model;
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		gboolean readonly;
-		gtk_tree_model_get(model, &iter, 
-			I7_APP_EXTENSION_READ_ONLY, &readonly, 
+		gtk_tree_model_get(model, &iter,
+			I7_APP_EXTENSION_READ_ONLY, &readonly,
 			-1);
 		gtk_widget_set_sensitive(app->prefs->extensions_remove, !readonly);
 		/* Only enable the "Remove" button if the selection is not read only */
@@ -374,13 +374,13 @@ install_extensions(const gchar *filename, I7App *app)
 void
 on_extensions_add_clicked(GtkButton *button, I7App *app)
 {
-    GtkWidget *dialog = gtk_file_chooser_dialog_new(
-      _("Select the extensions to install"),
-      GTK_WINDOW(app->prefs->window), 
-      GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-    gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-    /* Create appropriate file filters */
+	GtkWidget *dialog = gtk_file_chooser_dialog_new(
+	  _("Select the extensions to install"),
+	  GTK_WINDOW(app->prefs->window),
+	  GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	  GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter1, "Inform 7 Extensions");
 	gtk_file_filter_add_pattern(filter1, "*.i7x");
@@ -389,20 +389,20 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	gtk_file_filter_add_pattern(filter2, "*");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
-    
-    if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-        gtk_widget_destroy(dialog);
-        return;
-    }
 
-    /* Install each selected extension */
-    GSList *extlist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
-    g_slist_foreach(extlist, (GFunc)install_extensions, app);
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy(dialog);
+		return;
+	}
 
-    /* Free stuff */
-    g_slist_foreach(extlist, (GFunc)g_free, NULL);
-    g_slist_free(extlist);
-    gtk_widget_destroy(dialog);
+	/* Install each selected extension */
+	GSList *extlist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
+	g_slist_foreach(extlist, (GFunc)install_extensions, app);
+
+	/* Free stuff */
+	g_slist_foreach(extlist, (GFunc)g_free, NULL);
+	g_slist_free(extlist);
+	gtk_widget_destroy(dialog);
 }
 
 void
@@ -413,34 +413,34 @@ on_extensions_remove_clicked(GtkButton *button, I7App *app)
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(app->prefs->extensions_view);
 	if(!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return;
-	
+
 	gchar *extname, *author;
 	gboolean readonly;
 	GtkTreeIter parent;
-	gtk_tree_model_get(model, &iter, 
+	gtk_tree_model_get(model, &iter,
 		I7_APP_EXTENSION_TEXT, &extname,
-		I7_APP_EXTENSION_READ_ONLY, &readonly, 
+		I7_APP_EXTENSION_READ_ONLY, &readonly,
 		-1);
-	
+
 	/* Bail out if this is a built-in extension or it doesn't have an author in the tree */
 	if(readonly || !gtk_tree_model_iter_parent(model, &parent, &iter)) {
 		g_free(extname);
 		return;
 	}
-	
+
 	gtk_tree_model_get(model, &parent, I7_APP_EXTENSION_TEXT, &author, -1);
-	
+
 	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->prefs->window),
-		GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, 
+		GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
 		/* TRANSLATORS: Are you sure you want to remove EXTENSION_NAME by AUTHOR_NAME?*/
 		_("Are you sure you want to remove %s by %s?"), extname, author);
 	gint result = gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
-	
+
 	/* Delete the extension and remove its directory if empty */
 	if(result == GTK_RESPONSE_YES)
 		i7_app_delete_extension(app, author, extname);
-	
+
 	g_free(extname);
 	g_free(author);
 }
@@ -448,19 +448,19 @@ on_extensions_remove_clicked(GtkButton *button, I7App *app)
 void
 on_enable_highlighting_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool(PREFS_SYNTAX_HIGHLIGHTING, gtk_toggle_button_get_active(togglebutton));
+	config_file_set_bool(PREFS_SYNTAX_HIGHLIGHTING, gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_follow_symbols_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool(PREFS_INTELLIGENCE, gtk_toggle_button_get_active(togglebutton));
+	config_file_set_bool(PREFS_INTELLIGENCE, gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_auto_indent_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool(PREFS_AUTO_INDENT, gtk_toggle_button_get_active(togglebutton));
+	config_file_set_bool(PREFS_AUTO_INDENT, gtk_toggle_button_get_active(togglebutton));
 }
 
 void
@@ -472,7 +472,7 @@ on_auto_number_toggled(GtkToggleButton *togglebutton, I7App *app)
 void
 on_author_name_changed(GtkEditable *editable, I7App *app)
 {
-    config_file_set_string(PREFS_AUTHOR_NAME, gtk_entry_get_text(GTK_ENTRY(editable)));
+	config_file_set_string(PREFS_AUTHOR_NAME, gtk_entry_get_text(GTK_ENTRY(editable)));
 }
 
 void
@@ -484,50 +484,50 @@ on_glulx_combo_changed(GtkComboBox *combobox, I7App *app)
 void
 on_clean_build_files_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool(PREFS_CLEAN_BUILD_FILES, gtk_toggle_button_get_active(togglebutton));
+	config_file_set_bool(PREFS_CLEAN_BUILD_FILES, gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_clean_index_files_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool(PREFS_CLEAN_INDEX_FILES, gtk_toggle_button_get_active(togglebutton));
+	config_file_set_bool(PREFS_CLEAN_INDEX_FILES, gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_show_debug_tabs_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-    config_file_set_bool(PREFS_DEBUG_LOG_VISIBLE, gtk_toggle_button_get_active(togglebutton));
+	config_file_set_bool(PREFS_DEBUG_LOG_VISIBLE, gtk_toggle_button_get_active(togglebutton));
 }
 
 
 /* Update the highlighting styles for this buffer */
-gboolean 
-update_style(GtkSourceBuffer *buffer) 
+gboolean
+update_style(GtkSourceBuffer *buffer)
 {
-    set_highlight_styles(buffer);
+	set_highlight_styles(buffer);
 	return FALSE; /* one-shot idle function */
 }
 
 /* Change the font that this widget uses */
-gboolean 
-update_font(GtkWidget *widget) 
+gboolean
+update_font(GtkWidget *widget)
 {
-    PangoFontDescription *font = get_font_description();
-    gtk_widget_modify_font(widget, font);
-    pango_font_description_free(font);
-	
+	PangoFontDescription *font = get_font_description();
+	gtk_widget_modify_font(widget, font);
+	pango_font_description_free(font);
+
 	return FALSE; /* one-shot idle function */
 }
 
 /* Update the tab stops for a GtkSourceView */
-gboolean 
-update_tabs(GtkSourceView *view) 
+gboolean
+update_tabs(GtkSourceView *view)
 {
-    gint spaces = config_file_get_int(PREFS_TAB_WIDTH);
-    if(spaces == 0)
-        spaces = DEFAULT_TAB_WIDTH;
-    gtk_source_view_set_tab_width(view, spaces);
-	
+	gint spaces = config_file_get_int(PREFS_TAB_WIDTH);
+	if(spaces == 0)
+		spaces = DEFAULT_TAB_WIDTH;
+	gtk_source_view_set_tab_width(view, spaces);
+
 	return FALSE; /* one-shot idle function */
 }
 
@@ -549,7 +549,7 @@ select_style_scheme(GtkTreeView *view, const gchar *id)
 		if(!gtk_tree_model_iter_next(model, &iter))
 			return;
 	}
-	
+
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
 	gtk_tree_selection_select_iter(selection, &iter);
 }

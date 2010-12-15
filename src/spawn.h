@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef _SPAWN_H
 #define _SPAWN_H
 
@@ -24,7 +24,7 @@ typedef void IOHookFunc(gpointer, gchar *);
 
 GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output);
 GPid run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
-                      IOHookFunc *callback, gpointer data, gboolean get_out, 
-                      gboolean get_err);
+					  IOHookFunc *callback, gpointer data, gboolean get_out,
+					  gboolean get_err);
 
 #endif /* _SPAWN_H */

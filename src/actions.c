@@ -11,12 +11,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
@@ -60,7 +60,7 @@ get_toplevel_for_action(GtkAction *action)
 			break;
 		}
 	}
-	
+
 	return GTK_WINDOW(parent);
 }
 
@@ -79,16 +79,16 @@ action_open(GtkAction *action, I7App *app)
 	i7_story_new_from_dialog(app);
 }
 
-/* Callback for when of the items from the File->Open Recent submenu 
+/* Callback for when of the items from the File->Open Recent submenu
  is selected */
 void
 action_open_recent(GtkAction *action, I7App *app)
 {
 	GtkRecentInfo *item = gtk_recent_chooser_get_current_item(GTK_RECENT_CHOOSER(action));
 	g_assert(gtk_recent_info_has_application(item, "GNOME Inform 7"));
-	
-	if(gtk_recent_info_has_group(item, "inform7_project")) 
-		i7_story_new_from_uri(app, gtk_recent_info_get_uri(item));		
+
+	if(gtk_recent_info_has_group(item, "inform7_project"))
+		i7_story_new_from_uri(app, gtk_recent_info_get_uri(item));
 	else if(gtk_recent_info_has_group(item, "inform7_extension"))
 		i7_extension_new_from_uri(app, gtk_recent_info_get_uri(item), FALSE);
 	else if(gtk_recent_info_has_group(item, "inform7_builtin"))
@@ -102,14 +102,14 @@ action_open_recent(GtkAction *action, I7App *app)
 void
 action_install_extension(GtkAction *action, I7App *app)
 {
-    /* Select the Extensions tab */
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(app->prefs->prefs_notebook), I7_PREFS_EXTENSIONS);
-    
+	/* Select the Extensions tab */
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(app->prefs->prefs_notebook), I7_PREFS_EXTENSIONS);
+
 	/* Show the preferences dialog */
 	i7_app_present_prefs_window(app);
-	
-    /* Pretend the user clicked the Add button */
-    g_signal_emit_by_name(app->prefs->extensions_add, "clicked");
+
+	/* Pretend the user clicked the Add button */
+	g_signal_emit_by_name(app->prefs->extensions_add, "clicked");
 }
 
 /* Callback for when one of the items from the File->Open Extension submenu
@@ -132,7 +132,7 @@ on_open_extension_activate(GtkMenuItem *menuitem, gchar *path)
 void
 action_import_into_skein(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* File->Save */
@@ -176,12 +176,12 @@ action_revert(GtkAction *action, I7Document *document)
 	gchar *filename = i7_document_get_path(document);
 	if(!(filename && g_file_test(filename, G_FILE_TEST_EXISTS)
 		&& g_file_test(filename, G_FILE_TEST_IS_DIR)))
-		return; /* No saved version to revert to */        
+		return; /* No saved version to revert to */
 	if(!i7_document_get_modified(document))
 		return; /* Not changed since last save */
-	
+
 	/* Ask if the user is sure */
-	GtkWidget *revert_dialog = gtk_message_dialog_new(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT, 
+	GtkWidget *revert_dialog = gtk_message_dialog_new(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
 		_("Are you sure you want to revert to the last saved version?"));
 	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(revert_dialog),
@@ -194,7 +194,7 @@ action_revert(GtkAction *action, I7Document *document)
 	gtk_widget_destroy(revert_dialog);
 	if(result != GTK_RESPONSE_OK)
 		return; /* Only go on if the user clicked revert */
-	
+
 	/* Close the window and reopen it */
 	g_object_unref(document);
 	document = I7_DOCUMENT(i7_story_new_from_file(i7_app_get(), filename));
@@ -234,13 +234,13 @@ on_end_print(GtkPrintOperation *print, GtkPrintContext *context, GtkSourcePrintC
 /* Callback for beginning the print operation, we give the printed pages our
  tab width from the preferences, and the margins from the page setup dialog. */
 static void
-on_begin_print(GtkPrintOperation *print, GtkPrintContext *context, 
+on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	I7Document *document)
 {
 	GtkSourcePrintCompositor *compositor = gtk_source_print_compositor_new(i7_document_get_buffer(document));
 	g_signal_connect(print, "draw-page", G_CALLBACK(on_draw_page), compositor);
 	g_signal_connect(print, "end-print", G_CALLBACK(on_end_print), compositor);
-	
+
 	/* Design our printed page */
 	guint tabwidth = (guint)config_file_get_int(PREFS_TAB_WIDTH);
 	if(tabwidth == 0)
@@ -267,7 +267,7 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	}
 	i7_document_display_progress_percentage(document, 0.0);
 	i7_document_remove_status_message(document, PRINT_OPERATIONS);
-	
+
 	gtk_print_operation_set_n_pages(print, gtk_source_print_compositor_get_n_pages(compositor));
 }
 
@@ -279,12 +279,12 @@ action_print_preview(GtkAction *action, I7Document *document)
 	I7App *theapp = i7_app_get();
 	GtkPrintOperation *print = gtk_print_operation_new();
 	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
-	
+
 	if(settings)
 		gtk_print_operation_set_print_settings(print, settings);
-	
+
 	g_signal_connect(print, "begin-print", G_CALLBACK(on_begin_print), document);
-	
+
 	GtkPrintOperationResult result = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PREVIEW, GTK_WINDOW(document), &error);
 	if(result == GTK_PRINT_OPERATION_RESULT_APPLY)
 		i7_app_set_print_settings(theapp, g_object_ref(gtk_print_operation_get_print_settings(print)));
@@ -301,12 +301,12 @@ action_print(GtkAction *action, I7Document *document)
 	I7App *theapp = i7_app_get();
 	GtkPrintOperation *print = gtk_print_operation_new();
 	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
-	
+
 	if(settings)
 		gtk_print_operation_set_print_settings(print, settings);
-	
+
 	g_signal_connect(print, "begin-print", G_CALLBACK(on_begin_print), document);
-	
+
 	GtkPrintOperationResult result = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, GTK_WINDOW(document), &error);
 	if(result == GTK_PRINT_OPERATION_RESULT_APPLY)
 		i7_app_set_print_settings(theapp, g_object_ref(gtk_print_operation_get_print_settings(print)));
@@ -320,10 +320,10 @@ void
 action_close(GtkAction *action, I7Document *document)
 {
 	if(i7_document_verify_save(document)) {
-        g_object_unref(document);
-        if(i7_app_get_num_open_documents(i7_app_get()) == 0)
-            gtk_main_quit();
-    }
+		g_object_unref(document);
+		if(i7_app_get_num_open_documents(i7_app_get()) == 0)
+			gtk_main_quit();
+	}
 }
 
 /* File->Quit */
@@ -399,10 +399,10 @@ action_paste(GtkAction *action, I7Document *document)
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
 	/* What actually happens depends on the type of widget that is focused */
-    if(GTK_IS_ENTRY(widget) || GTK_IS_TEXT_VIEW(widget))
-        g_signal_emit_by_name(widget, "paste-clipboard", NULL);
-    else /* If we don't know how to paste to it, just paste to the source */
-        g_signal_emit_by_name(i7_document_get_default_view(document), "paste-clipboard", NULL);
+	if(GTK_IS_ENTRY(widget) || GTK_IS_TEXT_VIEW(widget))
+		g_signal_emit_by_name(widget, "paste-clipboard", NULL);
+	else /* If we don't know how to paste to it, just paste to the source */
+		g_signal_emit_by_name(i7_document_get_default_view(document), "paste-clipboard", NULL);
 }
 
 /* Edit->Select All */
@@ -412,16 +412,16 @@ action_select_all(GtkAction *action, I7Document *document)
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
 	/* What actually happens depends on the type of widget that is focused */
-    if(WEBKIT_IS_WEB_VIEW(widget)) 
+	if(WEBKIT_IS_WEB_VIEW(widget))
 		webkit_web_view_select_all(WEBKIT_WEB_VIEW(widget));
 	else if(GTK_IS_LABEL(widget) && gtk_label_get_selectable(GTK_LABEL(widget)))
 		gtk_label_select_region(GTK_LABEL(widget), 0, -1);
 	else if(GTK_IS_EDITABLE(widget))
 		gtk_editable_select_region(GTK_EDITABLE(widget), 0, -1);
 	else if(GTK_IS_TEXT_VIEW(widget))
-        g_signal_emit_by_name(widget, "select-all", TRUE, NULL);
-    else /* If we don't know how to select it, just select all in the source */
-        g_signal_emit_by_name(i7_document_get_default_view(document), "select-all", TRUE, NULL);
+		g_signal_emit_by_name(widget, "select-all", TRUE, NULL);
+	else /* If we don't know how to select it, just select all in the source */
+		g_signal_emit_by_name(i7_document_get_default_view(document), "select-all", TRUE, NULL);
 }
 
 /* Edit->Find - Unhide the find bar at the bottom */
@@ -467,7 +467,7 @@ action_scroll_selection(GtkAction *action, I7Document *document)
 	i7_document_scroll_to_selection(document);
 }
 
-/* Edit->Search Files... - This is another dialog that searches any combination 
+/* Edit->Search Files... - This is another dialog that searches any combination
  of the story, the installed extensions, and the documentation. */
 void
 action_search(GtkAction *action, I7Document *document)
@@ -735,7 +735,7 @@ void
 action_unindent(GtkAction *action, I7Document *document)
 {
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
-	
+
 	/* Shift the selected lines in the buffer one tab to the left */
 	/* Adapted from gtksourceview.c */
 	GtkTextIter start, end;
@@ -772,7 +772,7 @@ action_comment_out_selection(GtkAction *action, I7Document *document)
 {
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 	GtkTextIter start, end;
-	
+
 	if(!gtk_text_buffer_get_selection_bounds(buffer, &start, &end))
 		return;
 	gchar *text = gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
@@ -815,12 +815,12 @@ action_uncomment_selection(GtkAction *action, I7Document *document)
 
 	/* Find first [ from the beginning of the selection, then the last ] between
 	 there and the end of the selection */
-	if(gtk_text_iter_get_char(&start) != '[' 
-	    && !gtk_text_iter_forward_find_char(&start, char_equals, GUINT_TO_POINTER('['), &end))
+	if(gtk_text_iter_get_char(&start) != '['
+		&& !gtk_text_iter_forward_find_char(&start, char_equals, GUINT_TO_POINTER('['), &end))
 		return;
 	gtk_text_iter_backward_char(&end);
-	if(gtk_text_iter_get_char(&end) != ']' 
-	    && !gtk_text_iter_backward_find_char(&end, char_equals, GUINT_TO_POINTER(']'), &start))
+	if(gtk_text_iter_get_char(&end) != ']'
+		&& !gtk_text_iter_backward_find_char(&end, char_equals, GUINT_TO_POINTER(']'), &start))
 		return;
 	gtk_text_iter_forward_char(&end);
 
@@ -851,12 +851,12 @@ action_renumber_all_sections(GtkAction *action, I7Document *document)
 	GtkTextIter pos, end;
 	int volume = 1, book = 1, part = 1, chapter = 1, section = 1;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
-	
+
 	gtk_text_buffer_get_start_iter(buffer, &pos);
-	
+
 	/* Renumbering sections counts as one action for Undo */
-    gtk_text_buffer_begin_user_action(buffer);
-    	
+	gtk_text_buffer_begin_user_action(buffer);
+
 	while(gtk_text_iter_get_char(&pos) != 0) {
 		if(gtk_text_iter_get_char(&pos) != '\n') {
 			gtk_text_iter_forward_line(&pos);
@@ -875,7 +875,7 @@ action_renumber_all_sections(GtkAction *action, I7Document *document)
 			if(title && g_str_has_suffix(title, "\n"))
 				*(strrchr(title, '\n')) = '\0'; /* remove trailing \n */
 			gchar *newtitle;
-			
+
 			if(g_str_has_prefix(lcase, "volume")) {
 				newtitle = g_strdup_printf("Volume %d %s\n", volume++, title);
 				gtk_text_buffer_delete(buffer, &pos, &end);
@@ -910,7 +910,7 @@ action_renumber_all_sections(GtkAction *action, I7Document *document)
 			g_free(lcase);
 		}
 	}
-	
+
 	gtk_text_buffer_end_user_action(buffer);
 }
 
@@ -983,7 +983,7 @@ action_play_all_blessed(GtkAction *action, I7Story *story)
 void
 action_show_last_command(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* Replay->Show Last Command in Skein */
@@ -999,35 +999,35 @@ action_show_last_command_skein(GtkAction *action, I7Story *story)
 void
 action_previous_changed_command(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* Replay->Find Next Changed Command */
 void
 action_next_changed_command(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* Replay->Find Previous Difference */
 void
 action_previous_difference(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* Replay->Find Next Difference */
 void
 action_next_difference(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* Replay->Show Next Difference in Skein */
 void
 action_next_difference_skein(GtkAction *action, I7Story *story)
 {
-	
+
 }
 
 /* Release->Release... (which was a 1978 song by Yes) */
@@ -1057,10 +1057,10 @@ action_open_materials_folder(GtkAction *action, I7Story *story)
 	/* Prompt the user to create the folder if it doesn't exist */
 	if(!g_file_test(materialspath, G_FILE_TEST_EXISTS)) {
 		GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story),
-		    GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
-		    GTK_BUTTONS_OK_CANCEL, _("Could not find Materials folder"));
+			GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
+			GTK_BUTTONS_OK_CANCEL, _("Could not find Materials folder"));
 		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-		    _("At the moment, this project has no Materials folder - a "
+			_("At the moment, this project has no Materials folder - a "
 			"convenient place to put figures, sounds, manuals, hints or other "
 			"matter to be packaged up with a release.\n\nWould you like to "
 			"create one?"));

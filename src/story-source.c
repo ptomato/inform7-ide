@@ -1,6 +1,6 @@
 /*  Copyright 2006 P.F. Chimento
  *  This file is part of GNOME Inform 7.
- * 
+ *
  *  GNOME Inform 7 is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -15,7 +15,7 @@
  *  along with GNOME Inform 7; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #include <string.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
@@ -27,8 +27,8 @@
 #include "document.h"
 #include "panel.h"
 
-void 
-after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document) 
+void
+after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
 {
 	if(!config_file_get_bool(PREFS_INTELLIGENCE))
 		return;
@@ -38,7 +38,7 @@ after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkT
 	/* TODO: do this in idle time and remove the old idle function */
 }
 
-void 
+void
 after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gchar *text, gint len, I7Document *document)
 {
 	/* If the inserted text ended in a newline, then do auto-indenting */
@@ -59,16 +59,16 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 		gtk_text_buffer_get_iter_at_mark(buffer, location, bookmark);
 		gtk_text_buffer_delete_mark(buffer, bookmark);
 	}
-	
-	/* Return after that if we are not doing intelligent symbol following */    
+
+	/* Return after that if we are not doing intelligent symbol following */
 	if(!config_file_get_bool(PREFS_INTELLIGENCE))
 		return;
-	
+
 	/* For any text, a section heading might have been entered or changed, so
 	reindex the section headings */
 	i7_document_reindex_headings(document);
 	/* TODO: do this in idle time and remove the old idle function */
-	
+
 	/* If the text ends with a space, check whether it is a section heading that
 	needs auto-numbering */
 #if 0
@@ -81,7 +81,7 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 			gtk_text_iter_backward_line(&prev_line);
 			gchar *line_text = gtk_text_iter_get_text(&line_start, location);
 			gchar *lcase = g_utf8_strdown(line_text, -1);
-			
+
 			if(gtk_text_iter_get_char(&prev_line) == '\n' /*blank line before*/
 			  && !(strcmp(lcase, "volume ") && strcmp(lcase, "book ")
 			  && strcmp(lcase, "part ") && strcmp(lcase, "chapter ")
@@ -92,7 +92,7 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 				renumber_sections(buffer);
 				gtk_text_buffer_end_user_action(buffer);
 			}
-			
+
 			g_free(line_text);
 			g_free(lcase);
 
@@ -130,9 +130,9 @@ on_panel_jump_to_line(I7Panel *panel, guint line, I7Story *story)
 }
 
 /* Reindex the section headings */
-gboolean 
-reindex_headings(GtkTextBuffer *buffer, I7Document *document) 
+gboolean
+reindex_headings(GtkTextBuffer *buffer, I7Document *document)
 {
 	i7_document_reindex_headings(document);
-    return FALSE; /* One-shot idle function */
+	return FALSE; /* One-shot idle function */
 }

@@ -59,7 +59,7 @@ if MANUALS_CHAPTERS
 cblorbweavefiles = $(cblorbwebsite) $(cblorbchapters)
 inwebcommand = chapters
 else
-cblorbweavefiles = 
+cblorbweavefiles =
 inwebcommand = all # Slightly paradoxical, that...
 endif
 endif
@@ -79,4 +79,3 @@ EXTRA_DIST = $(cblorbmaterials)
 dist-hook:
 	cp --preserve=mode,ownership,timestamps --parents $(cblorbsrc) $(distdir)
 	$(MKDIR_P) $(distdir)/Woven $(distdir)/Tangled
-

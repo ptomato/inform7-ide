@@ -66,7 +66,7 @@ if MANUALS_CHAPTERS
 inwebweavefiles = $(inwebsite) $(inwebchapters)
 inwebcommand = chapters
 else
-inwebweavefiles = 
+inwebweavefiles =
 inwebcommand = all # Slightly paradoxical, that...
 endif
 endif
@@ -92,4 +92,3 @@ EXTRA_DIST = $(inwebmaterials)
 dist-hook:
 	cp --preserve=mode,ownership,timestamps --parents $(inwebsrc) $(distdir)
 	$(MKDIR_P) $(distdir)/Woven
-

@@ -26,16 +26,16 @@ struct _I7Node {
 	GooCanvasItemModel *tree_item; /* The tree line associated with the node */
 };
 
-/* Clickable parts of the node */ 
+/* Clickable parts of the node */
 typedef enum {
 	I7_NODE_PART_NONE,
 	I7_NODE_PART_DIFFERS_BADGE
 } I7NodePart;
 
 GType i7_node_get_type(void) G_GNUC_CONST;
-I7Node *i7_node_new(const gchar *line, const gchar *label, const gchar *transcript, 
-    const gchar *expected, gboolean played, gboolean locked, int score,
-    GooCanvasItemModel *skein);
+I7Node *i7_node_new(const gchar *line, const gchar *label, const gchar *transcript,
+	const gchar *expected, gboolean played, gboolean locked, int score,
+	GooCanvasItemModel *skein);
 
 /* Properties */
 gchar *i7_node_get_command(I7Node *self);

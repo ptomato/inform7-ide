@@ -22,7 +22,7 @@ rm -f \
 	src/interpreters/git/Makefile \
 	src/interpreters/git/Makefile.win \
 	src/interpreters/git/git_mac.c \
-	src/interpreters/git/git_windows.c 
+	src/interpreters/git/git_windows.c
 rm -rf \
 	src/interpreters/git/test \
 	src/interpreters/git/win

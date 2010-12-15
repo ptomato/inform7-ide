@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include <string.h>
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -28,90 +28,90 @@
 
 /* Enum-to-string lookup tables */
 GConfEnumStringPair font_set_lookup_table[] = {
-    { FONT_STANDARD, "Standard" },
-    { FONT_MONOSPACE, "Monospace" },
-    { FONT_CUSTOM, "Custom" }
+	{ FONT_STANDARD, "Standard" },
+	{ FONT_MONOSPACE, "Monospace" },
+	{ FONT_CUSTOM, "Custom" }
 };
 
 GConfEnumStringPair font_size_lookup_table[] = {
-    { FONT_SIZE_STANDARD, "Standard" },
-    { FONT_SIZE_MEDIUM, "Medium" },
-    { FONT_SIZE_LARGE, "Large" },
-    { FONT_SIZE_HUGE, "Huge" }
+	{ FONT_SIZE_STANDARD, "Standard" },
+	{ FONT_SIZE_MEDIUM, "Medium" },
+	{ FONT_SIZE_LARGE, "Large" },
+	{ FONT_SIZE_HUGE, "Huge" }
 };
 
 /* These functions are wrappers for GConf setting and getting functions,
-that give us a nice error dialog if they fail. Don't use these functions if 
+that give us a nice error dialog if they fail. Don't use these functions if
 setting more than one key at the same time */
 
 void
 config_file_set_string(const gchar *key, const gchar *value)
 {
-    GConfClient *client = gconf_client_get_default();
-    gconf_client_set_string(client, key, value, NULL);
-    g_object_unref(client);
+	GConfClient *client = gconf_client_get_default();
+	gconf_client_set_string(client, key, value, NULL);
+	g_object_unref(client);
 }
 
 void
 config_file_set_int(const gchar *key, const gint value)
 {
-    GConfClient *client = gconf_client_get_default();
-    gconf_client_set_int(client, key, value, NULL);
-    g_object_unref(client);
+	GConfClient *client = gconf_client_get_default();
+	gconf_client_set_int(client, key, value, NULL);
+	g_object_unref(client);
 }
 
 void
 config_file_set_bool(const gchar *key, const gboolean value)
 {
-    GConfClient *client = gconf_client_get_default();
-    gconf_client_set_bool(client, key, value, NULL);
-    g_object_unref(client);
+	GConfClient *client = gconf_client_get_default();
+	gconf_client_set_bool(client, key, value, NULL);
+	g_object_unref(client);
 }
 
-void 
+void
 config_file_set_enum(const gchar *key, const gint value, GConfEnumStringPair lookup_table[])
 {
-    GConfClient *client = gconf_client_get_default();
-    gconf_client_set_string(client, key, gconf_enum_to_string(lookup_table, value), NULL);
-    g_object_unref(client);
+	GConfClient *client = gconf_client_get_default();
+	gconf_client_set_string(client, key, gconf_enum_to_string(lookup_table, value), NULL);
+	g_object_unref(client);
 }
 
 /* The string must be freed afterward. */
 gchar *
 config_file_get_string(const gchar *key)
 {
-    GConfClient *client = gconf_client_get_default();
-    gchar *retval = gconf_client_get_string(client, key, NULL);
-    g_object_unref(client);
-    return retval;
+	GConfClient *client = gconf_client_get_default();
+	gchar *retval = gconf_client_get_string(client, key, NULL);
+	g_object_unref(client);
+	return retval;
 }
 
 gint
 config_file_get_int(const gchar *key)
 {
-    GConfClient *client = gconf_client_get_default();
-    gint retval = gconf_client_get_int(client, key, NULL);
-    g_object_unref(client);
-    return retval;
+	GConfClient *client = gconf_client_get_default();
+	gint retval = gconf_client_get_int(client, key, NULL);
+	g_object_unref(client);
+	return retval;
 }
 
 gboolean
 config_file_get_bool(const gchar *key)
 {
-    GConfClient *client = gconf_client_get_default();
-    gboolean retval = gconf_client_get_bool(client, key, NULL);
-    g_object_unref(client);
-    return retval;
+	GConfClient *client = gconf_client_get_default();
+	gboolean retval = gconf_client_get_bool(client, key, NULL);
+	g_object_unref(client);
+	return retval;
 }
 
-gint 
+gint
 config_file_get_enum(const gchar *key, GConfEnumStringPair lookup_table[])
 {
-    gchar *string = config_file_get_string(key);
-    gint retval = -1;
-    gconf_string_to_enum(lookup_table, string, &retval);
-    g_free(string);
-    return retval;
+	gchar *string = config_file_get_string(key);
+	gint retval = -1;
+	gconf_string_to_enum(lookup_table, string, &retval);
+	g_free(string);
+	return retval;
 }
 
 void
@@ -126,13 +126,13 @@ config_file_set_to_default(const gchar *key)
 static int
 get_enum_from_entry(GConfEntry *entry, GConfEnumStringPair lookup_table[])
 {
-    GConfValue *value = gconf_entry_get_value(entry);
-    if(!value || value->type != GCONF_VALUE_STRING)
-        return -1;
-    int enumvalue = -1;
-    if(!gconf_string_to_enum(lookup_table, gconf_value_get_string(value), &enumvalue))
-        return -1;
-    return enumvalue;
+	GConfValue *value = gconf_entry_get_value(entry);
+	if(!value || value->type != GCONF_VALUE_STRING)
+		return -1;
+	int enumvalue = -1;
+	if(!gconf_string_to_enum(lookup_table, gconf_value_get_string(value), &enumvalue))
+		return -1;
+	return enumvalue;
 }
 
 /* Does the same thing as config_file_set_to_default() only with an already-
@@ -140,133 +140,133 @@ gotten client and entry */
 static void
 set_key_to_default(GConfClient *client, GConfEntry *entry)
 {
-    gconf_client_set(client, gconf_entry_get_key(entry), gconf_client_get_default_from_schema(client, gconf_entry_get_key(entry), NULL), NULL);
+	gconf_client_set(client, gconf_entry_get_key(entry), gconf_client_get_default_from_schema(client, gconf_entry_get_key(entry), NULL), NULL);
 }
 
 static void
 on_config_font_set_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *combobox)
 {
-    int newvalue = get_enum_from_entry(entry, font_set_lookup_table);
-    /* validate new value */
-    if(newvalue == -1) {
-        set_key_to_default(client, entry);
-        return;
-    }
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), newvalue);
-    update_font(GTK_WIDGET(theapp->prefs->source_example));
-    update_font(GTK_WIDGET(theapp->prefs->tab_example));
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	int newvalue = get_enum_from_entry(entry, font_set_lookup_table);
+	/* validate new value */
+	if(newvalue == -1) {
+		set_key_to_default(client, entry);
+		return;
+	}
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), newvalue);
+	update_font(GTK_WIDGET(theapp->prefs->source_example));
+	update_font(GTK_WIDGET(theapp->prefs->tab_example));
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 }
 
 static void
 on_config_custom_font_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *fontbutton)
 {
-    const gchar *newvalue = gconf_value_get_string(gconf_entry_get_value(entry));
-    /* TODO: validate new value? */
-	
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gtk_font_button_set_font_name(GTK_FONT_BUTTON(fontbutton), newvalue);
-    if(config_file_get_enum(PREFS_FONT_SET, font_set_lookup_table) == FONT_CUSTOM) {
-        update_font(GTK_WIDGET(theapp->prefs->source_example));
-        update_font(GTK_WIDGET(theapp->prefs->tab_example));
-        i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-    }
+	const gchar *newvalue = gconf_value_get_string(gconf_entry_get_value(entry));
+	/* TODO: validate new value? */
+
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gtk_font_button_set_font_name(GTK_FONT_BUTTON(fontbutton), newvalue);
+	if(config_file_get_enum(PREFS_FONT_SET, font_set_lookup_table) == FONT_CUSTOM) {
+		update_font(GTK_WIDGET(theapp->prefs->source_example));
+		update_font(GTK_WIDGET(theapp->prefs->tab_example));
+		i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	}
 }
 
 static void
 on_config_font_size_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *combobox)
 {
-    int newvalue = get_enum_from_entry(entry, font_size_lookup_table);
-    /* validate new value */
-    if(newvalue == -1) {
-        set_key_to_default(client, entry);
-        return;
-    }
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), newvalue);
-    update_font(GTK_WIDGET(theapp->prefs->source_example));
-    update_font(GTK_WIDGET(theapp->prefs->tab_example));
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_sizes, NULL);
+	int newvalue = get_enum_from_entry(entry, font_size_lookup_table);
+	/* validate new value */
+	if(newvalue == -1) {
+		set_key_to_default(client, entry);
+		return;
+	}
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), newvalue);
+	update_font(GTK_WIDGET(theapp->prefs->source_example));
+	update_font(GTK_WIDGET(theapp->prefs->tab_example));
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_sizes, NULL);
 }
 
 static void
 on_config_style_scheme_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *list)
 {
-    I7App *theapp = i7_app_get();
-    
-    const gchar *newvalue = gconf_value_get_string(gconf_entry_get_value(entry));
-    /* TODO: validate new value? */
-    
-    /* update application to reflect new value */
-    select_style_scheme(GTK_TREE_VIEW(list), newvalue);
-    update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_styles, NULL);
+	I7App *theapp = i7_app_get();
+
+	const gchar *newvalue = gconf_value_get_string(gconf_entry_get_value(entry));
+	/* TODO: validate new value? */
+
+	/* update application to reflect new value */
+	select_style_scheme(GTK_TREE_VIEW(list), newvalue);
+	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_styles, NULL);
 }
 
 static void
 on_config_tab_width_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *range)
 {
-    int newvalue = gconf_value_get_int(gconf_entry_get_value(entry));
-    /* validate new value */
-    if(newvalue < 0) {
-        set_key_to_default(client, entry);
-        return;
-    }
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gtk_range_set_value(GTK_RANGE(range), (gdouble)newvalue);
-    update_tabs(theapp->prefs->tab_example);
-    update_tabs(theapp->prefs->source_example);
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
+	int newvalue = gconf_value_get_int(gconf_entry_get_value(entry));
+	/* validate new value */
+	if(newvalue < 0) {
+		set_key_to_default(client, entry);
+		return;
+	}
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gtk_range_set_value(GTK_RANGE(range), (gdouble)newvalue);
+	update_tabs(theapp->prefs->tab_example);
+	update_tabs(theapp->prefs->source_example);
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
 }
 
 static void
 on_config_syntax_highlighting_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *toggle)
 {
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_source_highlight, NULL);
-    i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_source_highlight, NULL);
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 }
 
 static void
 on_config_intelligence_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *toggle)
 {
-    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
-    /* make the other checkboxes dependent on this checkbox active or inactive*/
-    gtk_widget_set_sensitive(theapp->prefs->auto_number, newvalue);
+	gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+	/* make the other checkboxes dependent on this checkbox active or inactive*/
+	gtk_widget_set_sensitive(theapp->prefs->auto_number, newvalue);
 }
 
 static void
 on_config_elastic_tabs_padding_changed(GConfClient *client, guint id, GConfEntry *entry)
 {
-    int newvalue = gconf_value_get_int(gconf_entry_get_value(entry));
-    /* validate new value */
-    if(newvalue < 0) {
-        set_key_to_default(client, entry);
-        return;
-    }
-    /* update application to reflect new value */
-    i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)i7_document_refresh_elastic_tabs, NULL);
+	int newvalue = gconf_value_get_int(gconf_entry_get_value(entry));
+	/* validate new value */
+	if(newvalue < 0) {
+		set_key_to_default(client, entry);
+		return;
+	}
+	/* update application to reflect new value */
+	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)i7_document_refresh_elastic_tabs, NULL);
 }
 
 static void
 on_config_author_name_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *editable)
 {
-    const gchar *newvalue = gconf_value_get_string(gconf_entry_get_value(entry));
-    /* update application to reflect new value */
-    gtk_entry_set_text(GTK_ENTRY(editable), newvalue);
+	const gchar *newvalue = gconf_value_get_string(gconf_entry_get_value(entry));
+	/* update application to reflect new value */
+	gtk_entry_set_text(GTK_ENTRY(editable), newvalue);
 }
 
 static void
@@ -288,56 +288,56 @@ on_config_use_git_changed(GConfClient *client, guint id, GConfEntry *entry, GtkC
 static void
 on_config_clean_build_files_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *toggle)
 {
-    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
-    /* update application to reflect new value */
-    I7App *theapp = i7_app_get();
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
-    /* make the other checkboxes dependent on this checkbox active or inactive*/
-    gtk_widget_set_sensitive(theapp->prefs->clean_index_files, newvalue);
+	gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+	/* update application to reflect new value */
+	I7App *theapp = i7_app_get();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+	/* make the other checkboxes dependent on this checkbox active or inactive*/
+	gtk_widget_set_sensitive(theapp->prefs->clean_index_files, newvalue);
 }
 
 static void
 on_config_debug_log_visible_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *toggle)
 {
-    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
-    /* update application to reflect new value */
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
-    i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)(newvalue? i7_story_add_debug_tabs : i7_story_remove_debug_tabs), NULL);
+	gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+	/* update application to reflect new value */
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)(newvalue? i7_story_add_debug_tabs : i7_story_remove_debug_tabs), NULL);
 }
 
 static void
 update_skein_spacing(I7Document *document)
 {
-    if(!I7_IS_STORY(document))
-        return;
+	if(!I7_IS_STORY(document))
+		return;
 
-    gdouble horizontal = (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING);
-    gdouble vertical = (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING);
+	gdouble horizontal = (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING);
+	gdouble vertical = (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING);
 
-    I7Story *story = I7_STORY(document);
-    g_object_set(i7_story_get_skein(story),
-        "horizontal-spacing", horizontal,
-        "vertical-spacing", vertical,
-        NULL);
-    gtk_range_set_value(GTK_RANGE(story->skein_spacing_horizontal), horizontal);
-    gtk_range_set_value(GTK_RANGE(story->skein_spacing_vertical), vertical);
+	I7Story *story = I7_STORY(document);
+	g_object_set(i7_story_get_skein(story),
+		"horizontal-spacing", horizontal,
+		"vertical-spacing", vertical,
+		NULL);
+	gtk_range_set_value(GTK_RANGE(story->skein_spacing_horizontal), horizontal);
+	gtk_range_set_value(GTK_RANGE(story->skein_spacing_vertical), vertical);
 }
 
 static void
 on_config_skein_spacing_changed(GConfClient *client, guint id, GConfEntry *entry)
 {
-    i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)update_skein_spacing, NULL);
+	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)update_skein_spacing, NULL);
 }
 
 static void
 on_config_generic_bool_changed(GConfClient *client, guint id, GConfEntry *entry, GtkWidget *toggle)
 {
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), gconf_value_get_bool(gconf_entry_get_value(entry)));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), gconf_value_get_bool(gconf_entry_get_value(entry)));
 }
 
 struct KeyToMonitor {
-    const gchar *name, *widgetname;
-    void (*callback)();
+	const gchar *name, *widgetname;
+	void (*callback)();
 };
 
 static struct KeyToMonitor keys_to_monitor[] = {
@@ -364,55 +364,55 @@ static struct KeyToMonitor keys_to_monitor[] = {
 void
 init_config_file(GtkBuilder *builder)
 {
-    /* Initialize the GConf client */
-    GConfClient *client = gconf_client_get_default();
-    gconf_client_set_error_handling(client, GCONF_CLIENT_HANDLE_ALL);
+	/* Initialize the GConf client */
+	GConfClient *client = gconf_client_get_default();
+	gconf_client_set_error_handling(client, GCONF_CLIENT_HANDLE_ALL);
 
-    /* Start monitoring the directories */
-    gconf_client_add_dir(client, PREFS_BASE_PATH, GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
+	/* Start monitoring the directories */
+	gconf_client_add_dir(client, PREFS_BASE_PATH, GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
 
-    /* Add listeners to specific keys and pass them their associated widgets as data */
-    int i;
-    for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
-        gconf_client_notify_add(client, keys_to_monitor[i].name, 
-            (GConfClientNotifyFunc)keys_to_monitor[i].callback,
-            (keys_to_monitor[i].widgetname)? GTK_WIDGET(load_object(builder, keys_to_monitor[i].widgetname)) : NULL,
-            NULL, NULL);
+	/* Add listeners to specific keys and pass them their associated widgets as data */
+	int i;
+	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
+		gconf_client_notify_add(client, keys_to_monitor[i].name,
+			(GConfClientNotifyFunc)keys_to_monitor[i].callback,
+			(keys_to_monitor[i].widgetname)? GTK_WIDGET(load_object(builder, keys_to_monitor[i].widgetname)) : NULL,
+			NULL, NULL);
 
-    g_object_unref(client);
+	g_object_unref(client);
 }
 
 /* Notify every config key so that the preferences dialog picks it up */
 void
 trigger_config_file(void)
 {
-    /* Initialize the GConf client */
-    GConfClient *client = gconf_client_get_default();
-    /* Trigger all the keys for which we have listeners */
-    int i;
-    for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
-        gconf_client_notify(client, keys_to_monitor[i].name);
+	/* Initialize the GConf client */
+	GConfClient *client = gconf_client_get_default();
+	/* Trigger all the keys for which we have listeners */
+	int i;
+	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
+		gconf_client_notify(client, keys_to_monitor[i].name);
 
-    g_object_unref(client);
+	g_object_unref(client);
 }
 
 /* Return a string of font families for the font setting. String must be freed*/
 gchar *
 get_font_family(void)
 {
-    gchar *customfont;
-    switch(config_file_get_enum(PREFS_FONT_SET, font_set_lookup_table)) {
-        case FONT_MONOSPACE:
-            return config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
-        case FONT_CUSTOM:
-            customfont = config_file_get_string(PREFS_CUSTOM_FONT);
-            if(customfont)
-                return customfont;
-            /* else fall through */
-        default:
-            ;
-    }
-    return config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
+	gchar *customfont;
+	switch(config_file_get_enum(PREFS_FONT_SET, font_set_lookup_table)) {
+		case FONT_MONOSPACE:
+			return config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
+		case FONT_CUSTOM:
+			customfont = config_file_get_string(PREFS_CUSTOM_FONT);
+			if(customfont)
+				return customfont;
+			/* else fall through */
+		default:
+			;
+	}
+	return config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
 }
 
 /* Return the font size in Pango units for the font size setting */
@@ -424,21 +424,21 @@ get_font_size(PangoFontDescription *font)
 		size *= 96.0 / 72.0; /* a guess; not likely to be absolute anyway */
 	if(size == 0.0)
 		size = DEFAULT_SIZE_STANDARD * PANGO_SCALE;
-	
-    switch(config_file_get_enum(PREFS_FONT_SIZE, font_size_lookup_table)) {
-        case FONT_SIZE_MEDIUM:
-            size *= RELATIVE_SIZE_MEDIUM;
+
+	switch(config_file_get_enum(PREFS_FONT_SIZE, font_size_lookup_table)) {
+		case FONT_SIZE_MEDIUM:
+			size *= RELATIVE_SIZE_MEDIUM;
 			break;
-        case FONT_SIZE_LARGE:
-            size *= RELATIVE_SIZE_LARGE;
+		case FONT_SIZE_LARGE:
+			size *= RELATIVE_SIZE_LARGE;
 			break;
-        case FONT_SIZE_HUGE:
-            size *= RELATIVE_SIZE_HUGE;
+		case FONT_SIZE_HUGE:
+			size *= RELATIVE_SIZE_HUGE;
 			break;
-        default:
-            size *= RELATIVE_SIZE_STANDARD;
-    }
-    return size;
+		default:
+			size *= RELATIVE_SIZE_STANDARD;
+	}
+	return size;
 }
 
 /* Get the current font as a PangoFontDescription.
@@ -446,9 +446,9 @@ Must be freed with pango_font_description_free. */
 PangoFontDescription *
 get_font_description(void)
 {
-    gchar *fontfamily = get_font_family();
-    PangoFontDescription *font = pango_font_description_from_string(fontfamily);
-    g_free(fontfamily);
-    pango_font_description_set_size(font, get_font_size(font));
-    return font;
+	gchar *fontfamily = get_font_family();
+	PangoFontDescription *font = pango_font_description_from_string(fontfamily);
+	g_free(fontfamily);
+	pango_font_description_set_size(font, get_font_size(font));
+	return font;
 }

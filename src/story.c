@@ -81,11 +81,11 @@ on_heading_depth_value_changed(GtkRange *range, I7Story *story)
 static void
 save_storywindow_size(I7Story *story)
 {
-    gint w, h, x, y;
-    gtk_window_get_size(GTK_WINDOW(story), &w, &h);
-    config_file_set_int(PREFS_APP_WINDOW_WIDTH, w);
-    config_file_set_int(PREFS_APP_WINDOW_HEIGHT, h);
-    config_file_set_int(PREFS_SLIDER_POSITION, gtk_paned_get_position(GTK_PANED(story->facing_pages)));
+	gint w, h, x, y;
+	gtk_window_get_size(GTK_WINDOW(story), &w, &h);
+	config_file_set_int(PREFS_APP_WINDOW_WIDTH, w);
+	config_file_set_int(PREFS_APP_WINDOW_HEIGHT, h);
+	config_file_set_int(PREFS_SLIDER_POSITION, gtk_paned_get_position(GTK_PANED(story->facing_pages)));
 	/* Also save the notepad window */
 	gtk_window_get_size(GTK_WINDOW(story->notes_window), &w, &h);
 	gtk_window_get_position(GTK_WINDOW(story->notes_window), &x, &y);
@@ -98,15 +98,15 @@ save_storywindow_size(I7Story *story)
 static gboolean
 on_storywindow_delete_event(GtkWidget *window, GdkEvent *event)
 {
-    if(!i7_document_verify_save(I7_DOCUMENT(window)))
+	if(!i7_document_verify_save(I7_DOCUMENT(window)))
 		return TRUE; /* Interrupt the signal if the user cancelled */
-	
+
 	save_storywindow_size(I7_STORY(window));
 
 	gtk_widget_destroy(I7_STORY(window)->notes_window);
 	i7_story_stop_running_game(I7_STORY(window));
 	if(i7_document_get_path(I7_DOCUMENT(window)))
-	    delete_build_files(I7_STORY(window));
+		delete_build_files(I7_STORY(window));
 
 	return FALSE;
 }
@@ -143,7 +143,7 @@ on_headings_row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColum
 }
 
 static void
-on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Story *story) 
+on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Story *story)
 {
 	gboolean sensitive;
 	g_object_get(action, "sensitive", &sensitive, NULL);
@@ -157,7 +157,7 @@ on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7St
 }
 
 static void
-on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Story *story) 
+on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Story *story)
 {
 	gboolean sensitive;
 	g_object_get(action, "sensitive", &sensitive, NULL);
@@ -183,7 +183,7 @@ void
 on_search_entry_activate(GtkEntry *entry, I7Story *story)
 {
 	const gchar *text = gtk_entry_get_text(entry);
-	
+
 	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(story), text, TRUE, I7_SEARCH_CONTAINS);
 	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
 	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
@@ -200,10 +200,10 @@ on_search_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEv
 static void
 i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-    I7Story *story = I7_STORY(object);
-   
-    switch(prop_id) 
-    {
+	I7Story *story = I7_STORY(object);
+
+	switch(prop_id)
+	{
 		case PROP_STORY_FORMAT:
 			i7_story_set_story_format(story, (I7StoryFormat)g_value_get_uint(value));
 			break;
@@ -216,18 +216,18 @@ i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GPara
 		case PROP_ELASTIC_TABS:
 			i7_document_set_elastic_tabs(I7_DOCUMENT(story), g_value_get_boolean(value));
 			break;
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-    }
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
 }
 
 static void
 i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
 	I7Story *story = I7_STORY(object);
-	
-    switch(prop_id)
-    {
+
+	switch(prop_id)
+	{
 		case PROP_STORY_FORMAT:
 			g_value_set_uint(value, i7_story_get_story_format(story));
 			break;
@@ -240,9 +240,9 @@ i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec 
 		case PROP_ELASTIC_TABS:
 			g_value_set_boolean(value, i7_story_get_elastic_tabs(story));
 			break;
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
-    }
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
 }
 
 /* IMPLEMENTATIONS OF VIRTUAL FUNCTIONS */
@@ -255,7 +255,7 @@ i7_story_extract_title(I7Document *document, gchar *text)
 		gchar *found = strstr(text, "\" by ");
 		if(found)
 			return g_strndup(text, (gsize)(++found - text));
-		
+
 		/* Look for the title on its own */
 		found = strrchr(text, '\"');
 		if(found)
@@ -301,7 +301,7 @@ update_recent_story_file(I7Story *story, gchar *filename, const gchar *directory
 		g_error_free(err);
 		err = NULL; /* clear error */
 	} else {
-		/* We use the groups "inform7_project", "inform7_extension", and 
+		/* We use the groups "inform7_project", "inform7_extension", and
 		 "inform7_builtin" to determine how to open a file from the recent manager */
 		gchar *groups[] = { "inform7_project", NULL };
 		GtkRecentData recent_data = {
@@ -317,18 +317,18 @@ update_recent_story_file(I7Story *story, gchar *filename, const gchar *directory
 		gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
 		gtk_text_iter_forward_to_line_end(&end);
 		recent_data.description = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-		
+
 		recent_data.groups = groups;
 		gtk_recent_manager_add_full(manager, file_uri, &recent_data);
 		g_free(recent_data.display_name);
 		g_free(recent_data.description);
 	}
-	g_free(file_uri);	
+	g_free(file_uri);
 }
 
 /* Save story in the given directory  */
-static void 
-i7_story_save_as(I7Document *document, gchar *directory) 
+static void
+i7_story_save_as(I7Document *document, gchar *directory)
 {
 	I7StoryPrivate *priv = I7_STORY_PRIVATE(document);
 	GError *err = NULL;
@@ -336,15 +336,15 @@ i7_story_save_as(I7Document *document, gchar *directory)
 	i7_document_display_status_message(document, _("Saving project..."), FILE_OPERATIONS);
 
 	i7_document_stop_file_monitor(document);
-	
+
 	/* Create the project directory if it does not already exist */
 	gchar *build_dir = g_build_filename(directory, "Build", NULL);
 	gchar *index_dir = g_build_filename(directory, "Index", NULL);
 	gchar *source_dir = g_build_filename(directory, "Source", NULL);
-	if(g_mkdir_with_parents(directory, 0777) 
+	if(g_mkdir_with_parents(directory, 0777)
 		|| g_mkdir_with_parents(build_dir, 0777)
 		|| g_mkdir_with_parents(index_dir, 0777)
-		|| g_mkdir_with_parents(source_dir, 0777)) 
+		|| g_mkdir_with_parents(source_dir, 0777))
 	{
 		error_dialog(GTK_WINDOW(document), NULL, _("Error creating project directory: %s"), g_strerror(errno));
 		g_free(build_dir);
@@ -354,7 +354,7 @@ i7_story_save_as(I7Document *document, gchar *directory)
 	}
 	g_free(build_dir);
 	g_free(index_dir);
-	
+
 	/* Save the source */
 	gchar *text = i7_document_get_source_text(document);
 	/* Write text to file */
@@ -370,11 +370,11 @@ i7_story_save_as(I7Document *document, gchar *directory)
 	g_free(text);
 
 	update_recent_story_file(I7_STORY(document), filename, directory);
-	
+
 	/* Start file monitoring again */
 	i7_document_monitor_file(document, filename);
 	g_free(filename);
-	
+
 	/* Save the skein */
 	filename = g_build_filename(directory, "Skein.skein", NULL);
 	if(!i7_skein_save(priv->skein, filename, &err)) {
@@ -392,7 +392,7 @@ i7_story_save_as(I7Document *document, gchar *directory)
 	}
 	gtk_text_buffer_set_modified(priv->notes, FALSE);
 	g_free(filename);
-	
+
 	/* Save the project settings */
 	filename = g_build_filename(directory, "Settings.plist", NULL);
 	if(!plist_write(priv->settings, filename, &err)) {
@@ -403,9 +403,9 @@ i7_story_save_as(I7Document *document, gchar *directory)
 
 	/* Delete the build files from the project directory */
 	delete_build_files(I7_STORY(document));
-	
+
 	i7_document_set_modified(document, FALSE);
-	
+
 	i7_document_remove_status_message(document, FILE_OPERATIONS);
 }
 
@@ -427,8 +427,8 @@ i7_story_scroll_to_selection(I7Document *document)
 }
 
 /* Only update the tabs in this main window */
-static void 
-i7_story_update_tabs(I7Document *document) 
+static void
+i7_story_update_tabs(I7Document *document)
 {
 	if(!I7_IS_STORY(document))
 		return;
@@ -439,8 +439,8 @@ i7_story_update_tabs(I7Document *document)
 
 /* Update the fonts in this main window, but not the
 widgets that only need their font size updated */
-static void 
-i7_story_update_fonts(I7Document *document) 
+static void
+i7_story_update_fonts(I7Document *document)
 {
 	if(!I7_IS_STORY(document))
 		return;
@@ -536,11 +536,11 @@ i7_story_highlight_search(I7Document *document, const gchar *text, gboolean forw
 		i7_document_unhighlight_quicksearch(document);
 		return TRUE;
 	}
-	
+
 	GtkWidget *focus = get_focus_view(I7_STORY(document));
 	if(!focus)
 		return TRUE;
-	
+
 	if(GTK_IS_TREE_VIEW(focus)) {
 		/* Headings view is visible, switch back to source code view */
 		I7Panel *panel = I7_PANEL(I7_STORY_PRIVATE(document)->last_focused);
@@ -548,9 +548,9 @@ i7_story_highlight_search(I7Document *document, const gchar *text, gboolean forw
 		focus = panel->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE];
 		gtk_widget_grab_focus(document->findbar_entry);
 	}
-	
+
 	i7_document_set_highlighted_view(document, focus);
-	
+
 	if(GTK_IS_TEXT_VIEW(focus)) {
 		/* Source view and text view */
 		GtkTextIter iter, start, end;
@@ -599,9 +599,9 @@ static void
 story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 {
 	I7_STORY_USE_PRIVATE(self, priv);
-	
+
 	gtk_widget_show(GTK_WIDGET(panel));
-	
+
 	/* Connect other signals */
 	g_signal_connect(panel->sourceview->heading_depth, "value-changed", G_CALLBACK(on_heading_depth_value_changed), self);
 	g_signal_connect(panel->z5, "toggled", G_CALLBACK(on_z5_button_toggled), self);
@@ -633,7 +633,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 
 	/* Set the Errors/Progress to a monospace font */
 	gtk_widget_modify_font(GTK_WIDGET(panel->errors_tabs[I7_ERRORS_TAB_PROGRESS]), font);
-	
+
 	/* Connect the Previous Section and Next Section actions to the up and down buttons */
 	gtk_action_connect_proxy(I7_DOCUMENT(self)->previous_section, panel->sourceview->previous);
 	gtk_action_connect_proxy(I7_DOCUMENT(self)->next_section, panel->sourceview->next);
@@ -657,7 +657,7 @@ i7_story_init(I7Story *self)
 	/* Make the action groups. This for-loop is a temporary fix
 	and can be removed once Glade supports adding actions and accelerators to an
 	action group. */
-	const gchar *actions[] = { 
+	const gchar *actions[] = {
 		"play_menu", "",
 		"replay_menu", "",
 		"release_menu", "",
@@ -689,7 +689,7 @@ i7_story_init(I7Story *self)
 		"show_scenes", "<ctrl>8",
 		"show_world", "<ctrl>9",
 		"open_materials_folder", "<alt><ctrl>M",
-		"help_contents", "F1", 
+		"help_contents", "F1",
 		"help_license", "",
 		"help_extensions", "",
 		"help_recipe_book", "<shift><ctrl>F1",
@@ -726,7 +726,7 @@ i7_story_init(I7Story *self)
 	I7_DOCUMENT(self)->toolbar = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/MainToolbar");
 	gtk_widget_set_no_show_all(I7_DOCUMENT(self)->toolbar, TRUE);
 	i7_document_add_menus_and_findbar(I7_DOCUMENT(self));
-	
+
 	/* Build the rest of the interface */
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), menu, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
@@ -747,7 +747,7 @@ i7_story_init(I7Story *self)
 		g_signal_connect(search_entry, "icon-press", G_CALLBACK(on_search_entry_icon_press), NULL);
 	}
 #endif /* GTK_CHECK_VERSION(2,16,0) */
-	
+
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(facing_pages);
 	LOAD_WIDGET(notes_window);
@@ -758,13 +758,13 @@ i7_story_init(I7Story *self)
 	LOAD_WIDGET(skein_spacing_use_defaults);
 	LOAD_WIDGET(skein_trim_dialog);
 	LOAD_WIDGET(skein_trim_slider);
-	
+
 	/* Set up the signals to do the menu hints in the statusbar */
 	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
 
 	/* Build the Open Extensions menu */
 	i7_app_update_extensions_menu(theapp);
-	
+
 	/* Build the two panels */
 	self->panel[LEFT] = I7_PANEL(i7_panel_new());
 	self->panel[RIGHT] = I7_PANEL(i7_panel_new());
@@ -780,9 +780,9 @@ i7_story_init(I7Story *self)
 	g_object_unref(builder);
 
 	/* Set the last saved window size and slider position */
-    gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_APP_WINDOW_WIDTH), config_file_get_int(PREFS_APP_WINDOW_HEIGHT));
-    gtk_paned_set_position(GTK_PANED(self->facing_pages), config_file_get_int(PREFS_SLIDER_POSITION));
-	
+	gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_APP_WINDOW_WIDTH), config_file_get_int(PREFS_APP_WINDOW_HEIGHT));
+	gtk_paned_set_position(GTK_PANED(self->facing_pages), config_file_get_int(PREFS_SLIDER_POSITION));
+
 	/* Create the private properties */
 	priv->notes = gtk_text_buffer_new(NULL);
 	priv->last_focused = GTK_WIDGET(self->panel[LEFT]);
@@ -795,8 +795,8 @@ i7_story_init(I7Story *self)
 
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
-	g_object_set(priv->skein, 
-		"vertical-spacing", 75.0, 
+	g_object_set(priv->skein,
+		"vertical-spacing", 75.0,
 		"unlocked-color", "#6865FF",
 		NULL);
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
@@ -804,7 +804,7 @@ i7_story_init(I7Story *self)
 	g_signal_connect(priv->skein, "modified", G_CALLBACK(on_skein_modified), self);
 	gtk_range_set_value(GTK_RANGE(self->skein_spacing_horizontal), (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING));
 	gtk_range_set_value(GTK_RANGE(self->skein_spacing_vertical), (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING));
-	
+
 	/* Set up the Notes window */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(self->notes_view), priv->notes);
 	gtk_window_set_keep_above(GTK_WINDOW(self->notes_window), TRUE);
@@ -812,7 +812,7 @@ i7_story_init(I7Story *self)
 	gtk_window_move(GTK_WINDOW(self->notes_window), config_file_get_int(PREFS_NOTEPAD_X), config_file_get_int(PREFS_NOTEPAD_Y));
 	/* Toggling the action will show the window if appropriate */
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), config_file_get_bool(PREFS_NOTEPAD_VISIBLE));
-	
+
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
 	set_buffer_language(buffer, "inform7");
@@ -832,7 +832,7 @@ i7_story_init(I7Story *self)
 	/* Do panel-specific stuff to the left and then the right panel */
 	i7_story_foreach_panel(self, (I7PanelForeachFunc)story_init_panel, font);
 	pango_font_description_free(font);
-	
+
 	/* Now the buffers and models are owned by the views, so dereference them */
 	g_object_unref(buffer);
 	g_object_unref(i7_document_get_headings(I7_DOCUMENT(self)));
@@ -840,7 +840,7 @@ i7_story_init(I7Story *self)
 	g_object_unref(priv->progress);
 	g_object_unref(priv->debug_log);
 	g_object_unref(priv->i6_source);
-	
+
 	/* Set up the Previous Section and Next Section actions to synch with the buttons */
 	g_signal_connect(I7_DOCUMENT(self)->previous_section, "notify::sensitive", G_CALLBACK(on_previous_action_notify_sensitive), self);
 	g_signal_connect(I7_DOCUMENT(self)->next_section, "notify::sensitive", G_CALLBACK(on_next_action_notify_sensitive), self);
@@ -859,14 +859,14 @@ i7_story_init(I7Story *self)
 	g_signal_connect(self, "notify::create-blorb", G_CALLBACK(on_notify_create_blorb), NULL);
 	g_signal_connect(self, "notify::nobble-rng", G_CALLBACK(on_notify_nobble_rng), NULL);
 	g_signal_connect(self, "notify::elastic-tabs", G_CALLBACK(on_notify_elastic_tabs), NULL);
-	
+
 	/* Set font sizes, etc. */
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
 	/* Set spell checking */
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
 	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	
+
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_storywindow_delete_event), NULL);
 }
@@ -899,7 +899,7 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->set_spellcheck = i7_story_set_spellcheck;
 	document_class->check_spelling = i7_story_check_spelling;
 	document_class->set_elastic_tabs = i7_story_set_elastic_tabs;
-	
+
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->set_property = i7_story_set_property;
 	object_class->get_property = i7_story_get_property;
@@ -907,21 +907,21 @@ i7_story_class_init(I7StoryClass *klass)
 
 	/* Properties */
 	g_object_class_install_property(object_class, PROP_STORY_FORMAT,
-	    g_param_spec_uint("story-format", "Story Format",
-		    "IFOutputSettings->IFSettingZCodeVersion", 5, 256, 8,
-		    G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+		g_param_spec_uint("story-format", "Story Format",
+			"IFOutputSettings->IFSettingZCodeVersion", 5, 256, 8,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property(object_class, PROP_MAKE_BLORB,
-	    g_param_spec_boolean("create-blorb", "Create Blorb file on release",
-		    "IFOutputSettings->IFSettingCreateBlorb", TRUE,
-		    G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+		g_param_spec_boolean("create-blorb", "Create Blorb file on release",
+			"IFOutputSettings->IFSettingCreateBlorb", TRUE,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property(object_class, PROP_NOBBLE_RNG,
-	    g_param_spec_boolean("nobble-rng", "Nobble RNG",
-		    "IFOutputSettings->IFSettingNobbleRNG", FALSE,
-		    G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+		g_param_spec_boolean("nobble-rng", "Nobble RNG",
+			"IFOutputSettings->IFSettingNobbleRNG", FALSE,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property(object_class, PROP_ELASTIC_TABS,
-	    g_param_spec_boolean("elastic-tabs", "Elastic Tabs",
-		    "IFMiscSettings->IFSettingElasticTabs", FALSE,
-		    G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+		g_param_spec_boolean("elastic-tabs", "Elastic Tabs",
+			"IFMiscSettings->IFSettingElasticTabs", FALSE,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
 	/* Private data */
 	g_type_class_add_private(klass, sizeof(I7StoryPrivate));
@@ -938,14 +938,14 @@ i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar 
 	i7_app_set_busy(app, FALSE);
 
 	i7_document_set_path(I7_DOCUMENT(story), filename);
-	
-    gchar *text = g_strconcat("\"", title, "\" by \"", author, "\"\n", NULL);
+
+	gchar *text = g_strconcat("\"", title, "\" by \"", author, "\"\n", NULL);
 	i7_document_set_source_text(I7_DOCUMENT(story), text);
-    i7_document_set_modified(I7_DOCUMENT(story), TRUE);
-	
-	/* Add document to global list */	
+	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+
+	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
-	
+
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
 	gtk_window_present(GTK_WINDOW(story));
@@ -957,13 +957,13 @@ i7_story_new_from_file(I7App *app, const gchar *filename)
 {
 	gchar *fullpath = expand_initial_tilde(filename);
 	I7Document *dupl = i7_app_get_already_open(app, fullpath);
-	
+
 	if(dupl && I7_IS_STORY(dupl)) {
 		gtk_window_present(GTK_WINDOW(dupl));
 		g_free(fullpath);
 		return NULL;
 	}
-	
+
 	/* Building all the WebkitWebViews can take more than a second */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
@@ -975,13 +975,13 @@ i7_story_new_from_file(I7App *app, const gchar *filename)
 	}
 	g_free(fullpath);
 
-	/* Add document to global list */	
+	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
 	gtk_window_present(GTK_WINDOW(story));
-	
+
 	return story;
 }
 
@@ -989,12 +989,12 @@ I7Story *
 i7_story_new_from_dialog(I7App *app)
 {
 	I7Story *story = NULL;
-	
+
 	/* Create a file chooser for *.inform. It actually selects folders, because
 	that's what Inform projects are. */
 	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Open Project"), NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, 
+		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	GtkFileFilter *filter = gtk_file_filter_new();
@@ -1004,9 +1004,9 @@ i7_story_new_from_dialog(I7App *app)
 	if(gtk_dialog_run(GTK_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) {
 		gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
 		story = i7_story_new_from_file(app, filename);
-        g_free(filename);
-    }
-	
+		g_free(filename);
+	}
+
 	gtk_widget_destroy(chooser);
 	return story;
 }
@@ -1016,31 +1016,31 @@ i7_story_new_from_uri(I7App *app, const gchar *uri)
 {
 	GError *error = NULL;
 	I7Story *story = NULL;
-	
+
 	gchar *filename;
 	if((filename = g_filename_from_uri(uri, NULL, &error)) == NULL) {
 		WARN_S(_("Cannot get filename from URI"), uri, error);
 		g_error_free(error);
 		return NULL;
 	}
-	
+
 	gchar *trash = g_path_get_dirname(filename); /* Remove "story.ni" */
 	gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
 	g_free(trash);
-	story = i7_story_new_from_file(app, projectdir);		
+	story = i7_story_new_from_file(app, projectdir);
 	g_free(projectdir);
 	return story;
 }
 
-/* Read a project directory, loading all the appropriate files into story and 
+/* Read a project directory, loading all the appropriate files into story and
 returning success */
 gboolean
-i7_story_open(I7Story *story, const gchar *directory) 
+i7_story_open(I7Story *story, const gchar *directory)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
 	GError *err = NULL;
 
-	gchar *source_dir = g_build_filename(directory, "Source", NULL);    
+	gchar *source_dir = g_build_filename(directory, "Source", NULL);
 
 	i7_document_set_path(I7_DOCUMENT(story), directory);
 
@@ -1052,15 +1052,15 @@ i7_story_open(I7Story *story, const gchar *directory)
 		return FALSE;
 
 	update_recent_story_file(story, filename, directory);
-	
+
 	/* Watch for changes to the source file */
 	i7_document_monitor_file(I7_DOCUMENT(story), filename);
 	g_free(filename);
-	
+
 	/* Write the source to the source buffer, clearing the undo history */
 	i7_document_set_source_text(I7_DOCUMENT(story), text);
 	g_free(text);
-	
+
 	/* Read the skein */
 	filename = g_build_filename(directory, "Skein.skein", NULL);
 	if(!i7_skein_load(priv->skein, filename, &err)) {
@@ -1081,14 +1081,14 @@ i7_story_open(I7Story *story, const gchar *directory)
 	gtk_text_buffer_get_bounds(priv->notes, &start, &end);
 	gtk_text_buffer_remove_all_tags(priv->notes, &start, &end);
 	gtk_text_buffer_set_modified(priv->notes, FALSE);
-	
+
 	/* Read the settings */
 	filename = g_build_filename(directory, "Settings.plist", NULL);
 	plist_object_free(priv->settings);
 	priv->settings = plist_read(filename, &err);
 	if(!priv->settings) {
 		priv->settings = create_default_settings();
-		error_dialog(GTK_WINDOW(story), err, 
+		error_dialog(GTK_WINDOW(story), err,
 			_("Could not open the project's settings file, '%s'. "
 			"Using default settings."), filename);
 	}
@@ -1098,7 +1098,7 @@ i7_story_open(I7Story *story, const gchar *directory)
 	on_notify_create_blorb(story);
 	on_notify_nobble_rng(story);
 	on_notify_elastic_tabs(story);
-	
+
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(story, FALSE);
 
@@ -1107,20 +1107,20 @@ i7_story_open(I7Story *story, const gchar *directory)
 	gtk_text_buffer_place_cursor(buffer, &start);
 
 	i7_document_set_modified(I7_DOCUMENT(story), FALSE);
-	
+
 	return TRUE;
 }
 
 /* Chooses an appropriate pane to display tab number newtab in. (From the
 Windows source.) */
-I7StoryPanel 
+I7StoryPanel
 i7_story_choose_panel(I7Story *story, I7PanelPane newpane)
 {
 	/* If either panel is showing the same as the new, use that */
-    int right = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[RIGHT]->notebook));
+	int right = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[RIGHT]->notebook));
 	if(right == newpane)
 		return RIGHT;
-    int left = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[LEFT]->notebook));
+	int left = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[LEFT]->notebook));
 	if(left == newpane)
 		return LEFT;
 	/* Always try to use the left panel for source */
@@ -1187,27 +1187,27 @@ i7_story_get_materials_path(I7Story *story)
 	return materialspath;
 }
 
-/* Return the extension of the output file of this story. 
+/* Return the extension of the output file of this story.
  Do not free return value. */
 const gchar *
 i7_story_get_extension(I7Story *story)
 {
-    switch(i7_story_get_story_format(story)) {
-        case I7_STORY_FORMAT_Z5:
-            return "z5";
-        case I7_STORY_FORMAT_Z6:
-            return "z6";
-        case I7_STORY_FORMAT_Z8:
-            return "z8";
-        case I7_STORY_FORMAT_GLULX:
-            return "ulx";
-    }
+	switch(i7_story_get_story_format(story)) {
+		case I7_STORY_FORMAT_Z5:
+			return "z5";
+		case I7_STORY_FORMAT_Z6:
+			return "z6";
+		case I7_STORY_FORMAT_Z8:
+			return "z8";
+		case I7_STORY_FORMAT_GLULX:
+			return "ulx";
+	}
 	g_assert_not_reached();
-    return "error";
+	return "error";
 }
 
 /* Execute @func for both panels */
-void 
+void
 i7_story_foreach_panel(I7Story *story, I7PanelForeachFunc func, gpointer data)
 {
 	int side;

@@ -3,7 +3,7 @@
 ### INITIALIZATION #############################################################
 
 # Initialize autoconf
-# Args: (human-readable package name, package version, bug report address, 
+# Args: (human-readable package name, package version, bug report address,
 # tarballname)
 AC_INIT([Inform 7], [6F95], [http://inform7.com/mantis], [gnome-inform7])
 # Require Autoconf 2.60; I think the newest feature is AC_PROG_MKDIR_P...
@@ -26,17 +26,17 @@ AC_PROG_EGREP
 
 AC_CHECK_FILE([src/ni/ni], [], [
 	AC_MSG_ERROR([ni not found in src/ni.
-	IMPORTANT NOTE! You must download version $VERSION of the appropriate 
-	compiler package from inform7.org and put the file `ni' into the 
+	IMPORTANT NOTE! You must download version $VERSION of the appropriate
+	compiler package from inform7.org and put the file `ni' into the
 	directory `$(pwd)/src/ni'.])
 ])
 AC_MSG_CHECKING([the version of src/ni/ni])
 AS_IF([src/ni/ni | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
-	AC_MSG_ERROR([You have version 
+	AC_MSG_ERROR([You have version
 	[$(src/ni/ni | $EGREP -o '[0-9][A-Z][0-9]{2}')] of ni in src/ni. This version of Inform 7 will only work with
 	version $VERSION.
-	IMPORTANT NOTE! You must download version $VERSION of the appropriate 
-	compiler package from inform7.org and put the file `ni' into the 
+	IMPORTANT NOTE! You must download version $VERSION of the appropriate
+	compiler package from inform7.org and put the file `ni' into the
 	directory `$(pwd)/src/ni'.])
 ])
 
@@ -238,4 +238,3 @@ pixmaps/Makefile
 ])
 # Do it
 AC_OUTPUT
-

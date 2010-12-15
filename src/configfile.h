@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef CONFIG_FILE_H
 #define CONFIG_FILE_H
 
@@ -73,17 +73,17 @@
 
 /* Three options for editor font */
 typedef enum {
-    FONT_STANDARD,
-    FONT_MONOSPACE,
-    FONT_CUSTOM
+	FONT_STANDARD,
+	FONT_MONOSPACE,
+	FONT_CUSTOM
 } I7PrefsFont;
 
 /* Four different text size options */
 typedef enum {
-    FONT_SIZE_STANDARD,
-    FONT_SIZE_MEDIUM,
-    FONT_SIZE_LARGE,
-    FONT_SIZE_HUGE
+	FONT_SIZE_STANDARD,
+	FONT_SIZE_MEDIUM,
+	FONT_SIZE_LARGE,
+	FONT_SIZE_HUGE
 } I7PrefsFontSize;
 
 /* Pango point sizes of text size options */

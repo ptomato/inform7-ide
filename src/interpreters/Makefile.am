@@ -1,1 +1,1 @@
-SUBDIRS = frotz glulxe git 
+SUBDIRS = frotz glulxe git

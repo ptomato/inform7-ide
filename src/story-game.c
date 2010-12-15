@@ -34,17 +34,17 @@ i7_story_run_compiler_output(I7Story *story)
 	/* Rewind the Skein to the beginning */
 	i7_skein_reset(priv->skein, TRUE);
 
-    I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
 	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
-	    
-    /* Load and start the interpreter */
+
+	/* Load and start the interpreter */
 	if(!chimara_if_run_game(glk, priv->compiler_output, &err)) {
 		error_dialog(GTK_WINDOW(story), err, _("Could not load interpreter: "));
-    }
-	
+	}
+
 	/* Display and set the focus to the interpreter */
 	i7_story_show_pane(story, I7_PANE_GAME);
-    gtk_widget_grab_focus(GTK_WIDGET(glk));
+	gtk_widget_grab_focus(GTK_WIDGET(glk));
 }
 
 /* Compile finished action: run the output and feed it the command "test me" */
@@ -60,15 +60,15 @@ i7_story_test_compiler_output(I7Story *story)
 	/* Load and start the interpreter */
 	if(!chimara_if_run_game(glk, priv->compiler_output, &err)) {
 		error_dialog(GTK_WINDOW(story), err, _("Could not load interpreter: "));
-    }
+	}
 
 	/* Tell the interpreter to "test me" */
-    i7_skein_reset(priv->skein, TRUE);
-    chimara_glk_feed_line_input(CHIMARA_GLK(glk), "test me");
+	i7_skein_reset(priv->skein, TRUE);
+	chimara_glk_feed_line_input(CHIMARA_GLK(glk), "test me");
 
 	/* Display and set the focus to the interpreter */
 	i7_story_show_pane(story, I7_PANE_GAME);
-    gtk_widget_grab_focus(GTK_WIDGET(glk));
+	gtk_widget_grab_focus(GTK_WIDGET(glk));
 }
 
 /* Finish setting up the interpreter when forced input is done processing */
@@ -77,14 +77,14 @@ on_waiting(ChimaraGlk *glk)
 {
 	if(!chimara_glk_is_line_input_pending(glk)) {
 		chimara_glk_set_interactive(glk, TRUE);
-	
+
 		/* Set focus to the interpreter */
 		gtk_widget_grab_focus(GTK_WIDGET(glk));
 
 		/* Disconnect this signal handler - have to do it this way, because
 		 a gulong can't be packed into a pointer */
-		gulong handler = g_signal_handler_find(glk, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 
-		    0, 0, NULL, on_waiting, NULL);
+		gulong handler = g_signal_handler_find(glk, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+			0, 0, NULL, on_waiting, NULL);
 		g_signal_handler_disconnect(glk, handler);
 	}
 }
@@ -95,13 +95,13 @@ play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
 	GError *err = NULL;
-	
+
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
 	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
 
-    /* Set non-interactive if there are commands, because we don't want to
+	/* Set non-interactive if there are commands, because we don't want to
 	 scroll through screens full of -- more -- prompts */
-    if(commands)
+	if(commands)
 		chimara_glk_set_interactive(CHIMARA_GLK(glk), FALSE);
 
 	/* Load and start the interpreter */
@@ -111,12 +111,12 @@ play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 		}
 		i7_skein_reset(priv->skein, TRUE);
 	}
-	
+
 	/* Display the interpreter */
 	i7_story_show_pane(story, I7_PANE_GAME);
 
 	/* Feed the commands up to the "played" pointer in the skein into the
-    interpreter */
+	interpreter */
 	GSList *iter;
 	for(iter = commands; iter; iter = g_slist_next(iter))
 		chimara_glk_feed_line_input(CHIMARA_GLK(glk), (gchar *)iter->data);
@@ -131,7 +131,7 @@ i7_story_run_compiler_output_and_replay(I7Story *story)
 	I7_STORY_USE_PRIVATE(story, priv);
 
 	/* Get a list of the commands that need to be fed in */
-    GSList *commands = i7_skein_get_commands(priv->skein);
+	GSList *commands = i7_skein_get_commands(priv->skein);
 	play_commands(story, commands, TRUE);
 	g_slist_foreach(commands, (GFunc)g_free, NULL);
 	g_slist_free(commands);
@@ -143,7 +143,7 @@ i7_story_run_compiler_output_and_play_to_node(I7Story *story, I7Node *node)
 	I7_STORY_USE_PRIVATE(story, priv);
 
 	/* Get a list of the commands that need to be fed in */
-    GSList *commands = i7_skein_get_commands_to_node(priv->skein, i7_skein_get_root_node(priv->skein), node);
+	GSList *commands = i7_skein_get_commands_to_node(priv->skein, i7_skein_get_root_node(priv->skein), node);
 	play_commands(story, commands, TRUE);
 	g_slist_foreach(commands, (GFunc)g_free, NULL);
 	g_slist_free(commands);
@@ -151,14 +151,14 @@ i7_story_run_compiler_output_and_play_to_node(I7Story *story, I7Node *node)
 
 void
 i7_story_run_commands_from_node(I7Story *story, I7Node *node)
-{	
+{
 	I7_STORY_USE_PRIVATE(story, priv);
 
 	I7Node *played = i7_skein_get_played_node(priv->skein);
 	g_assert(g_node_is_ancestor(played->gnode, node->gnode));
 
 	/* Get a list of the commands that need to be fed in */
-    GSList *commands = i7_skein_get_commands_to_node(priv->skein, played, node);
+	GSList *commands = i7_skein_get_commands_to_node(priv->skein, played, node);
 	play_commands(story, commands, FALSE);
 	g_slist_foreach(commands, (GFunc)g_free, NULL);
 	g_slist_free(commands);
@@ -185,7 +185,7 @@ i7_story_stop_running_game(I7Story *story)
 	i7_story_foreach_panel(story, (I7PanelForeachFunc)panel_stop_running_game, NULL);
 }
 
-gboolean 
+gboolean
 i7_story_get_game_running(I7Story *story)
 {
 	return chimara_glk_get_running(CHIMARA_GLK(story->panel[LEFT]->tabs[I7_PANE_GAME]))
@@ -200,7 +200,7 @@ panel_set_use_git(I7Story *story, I7Panel *panel, gpointer data)
 	chimara_if_set_preferred_interpreter(glk, CHIMARA_IF_FORMAT_GLULX, interpreter);
 }
 
-void 
+void
 i7_story_set_use_git(I7Story *story, gboolean use_git)
 {
 	i7_story_foreach_panel(story, (I7PanelForeachFunc)panel_set_use_git, GINT_TO_POINTER(use_git));
@@ -212,7 +212,7 @@ load_blorb_resource(ChimaraResourceType usage, guint32 resnum, I7Story *story)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
 	g_return_val_if_fail(priv->manifest, NULL);
-	
+
 	/* Look up the filename in the manifest */
 	gchar *resstring = g_strdup_printf("%d", resnum);
 	const gchar *restype;

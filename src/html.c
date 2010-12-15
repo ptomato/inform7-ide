@@ -23,13 +23,13 @@
 #include "error.h"
 
 /* Have the html widget display the HTML file in filename */
-void 
-html_load_file(WebKitWebView *html, const gchar *filename) 
+void
+html_load_file(WebKitWebView *html, const gchar *filename)
 {
-    g_return_if_fail(html);
-    g_return_if_fail(filename || strlen(filename));
-    
-    GError *error = NULL;
+	g_return_if_fail(html);
+	g_return_if_fail(filename || strlen(filename));
+
+	GError *error = NULL;
 	gchar *uri = g_filename_to_uri(filename, NULL, &error);
 	if(!uri) {
 		WARN_S(_("Could not convert filename to URI"), filename, error);
@@ -44,10 +44,10 @@ void
 html_load_file_at_anchor(WebKitWebView *html, const gchar *file, const gchar *anchor)
 {
 	g_return_if_fail(html);
-    g_return_if_fail(file || strlen(file));
+	g_return_if_fail(file || strlen(file));
 	g_return_if_fail(anchor);
-    
-    GError *error = NULL;
+
+	GError *error = NULL;
 	gchar *uri = g_filename_to_uri(file, NULL, &error);
 	if(!uri) {
 		WARN_S(_("Could not convert filename to URI"), file, error);
@@ -60,10 +60,10 @@ html_load_file_at_anchor(WebKitWebView *html, const gchar *file, const gchar *an
 }
 
 /* Blank the html widget */
-void 
-html_load_blank(WebKitWebView *html) 
+void
+html_load_blank(WebKitWebView *html)
 {
-    g_return_if_fail(html);
+	g_return_if_fail(html);
 	webkit_web_view_open(html, "about:blank"); /* SUCKY DEBIAN Deprecated since 1.1.1 */
 }
 

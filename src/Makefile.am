@@ -7,36 +7,36 @@ pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
 bin_PROGRAMS = gnome-inform7
 gnome_inform7_SOURCES = \
-    actions.c actions.h \
-    app.c app.h app-private.h \
-    builder.c builder.h \
-    colorscheme.c colorscheme.h \
-    configfile.c configfile.h \
-    document.c document.h document-private.h \
-    document-search.c \
-    elastic.c elastic.h \
-    error.c error.h \
-    extension.c extension.h \
-    file.c file.h \
-    history.c history.h \
-    html.c html.h \
-    lang.c lang.h \
-    newdialog.c newdialog.h \
-    node.c node.h \
-    notepad.c \
-    panel.c panel.h panel-private.h \
-    placeholder-entry.c placeholder-entry.h \
-    prefs.c prefs.h \
-    searchwindow.c searchwindow.h \
-    skein.c skein.h \
-    skein-view.c skein-view.h \
-    source-view.c source-view.h \
-    spawn.c spawn.h \
-    story.c story.h story-private.h \
-    story-source.c story-errors.c story-index.c story-settings.c \
-    story-compile.c story-game.c story-skein.c \
-    welcomedialog.c welcomedialog.h \
-    main.c
+	actions.c actions.h \
+	app.c app.h app-private.h \
+	builder.c builder.h \
+	colorscheme.c colorscheme.h \
+	configfile.c configfile.h \
+	document.c document.h document-private.h \
+	document-search.c \
+	elastic.c elastic.h \
+	error.c error.h \
+	extension.c extension.h \
+	file.c file.h \
+	history.c history.h \
+	html.c html.h \
+	lang.c lang.h \
+	newdialog.c newdialog.h \
+	node.c node.h \
+	notepad.c \
+	panel.c panel.h panel-private.h \
+	placeholder-entry.c placeholder-entry.h \
+	prefs.c prefs.h \
+	searchwindow.c searchwindow.h \
+	skein.c skein.h \
+	skein-view.c skein-view.h \
+	source-view.c source-view.h \
+	spawn.c spawn.h \
+	story.c story.h story-private.h \
+	story-source.c story-errors.c story-index.c story-settings.c \
+	story-compile.c story-game.c story-skein.c \
+	welcomedialog.c welcomedialog.h \
+	main.c
 gnome_inform7_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \

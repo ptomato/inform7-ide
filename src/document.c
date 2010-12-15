@@ -1,17 +1,17 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
  * new-i7
- * 
+ *
  * new-i7 is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * new-i7 is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -86,12 +86,12 @@ i7_document_init(I7Document *self)
 	/* Set the minimum size so that the window can be sized smaller than the
 	 widgets inside it */
 	gtk_widget_set_size_request(GTK_WIDGET(self), 200, 100);
-	
+
 	/* Build the interface */
 	gchar *filename = i7_app_get_datafile_path(theapp, "ui/document.ui");
 	GtkBuilder *builder = create_new_builder(filename, self);
 	g_free(filename);
-	
+
 	/* Create the private properties */
 	priv->filename = NULL;
 	priv->monitor = NULL;
@@ -112,7 +112,7 @@ i7_document_init(I7Document *self)
 	priv->current_heading = gtk_tree_path_new_first();
 	priv->highlighted_view = NULL;
 	priv->modified = FALSE;
-	
+
 	/* Make the action groups. This for-loop is a temporary fix
 	and can be removed once Glade supports adding actions and accelerators to an
 	action group. */
@@ -150,7 +150,7 @@ i7_document_init(I7Document *self)
 		"indent", "<ctrl>T",
 		"unindent", "<shift><ctrl>T",
 		"renumber_all_sections", "<alt><ctrl>N",
-		"enable_elastic_tabs", "", 
+		"enable_elastic_tabs", "",
 		NULL
 	};
 	const gchar *selection_actions[] = {
@@ -167,13 +167,13 @@ i7_document_init(I7Document *self)
 	add_actions(builder, &(priv->document_action_group), "document_actions", actions);
 	add_actions(builder, &(priv->selection_action_group), "selection_actions", selection_actions);
 	add_actions(builder, &(priv->copy_action_group), "copy_actions", copy_actions);
-	
+
 	self->ui_manager = gtk_ui_manager_new();
 	i7_app_insert_action_groups(theapp, self->ui_manager);
 	gtk_ui_manager_insert_action_group(self->ui_manager, priv->document_action_group, 0);
 	gtk_ui_manager_insert_action_group(self->ui_manager, priv->selection_action_group, 0);
 	gtk_ui_manager_insert_action_group(self->ui_manager, priv->copy_action_group, 0);
-	
+
 	/* Public members */
 	LOAD_WIDGET(box);
 	LOAD_WIDGET(statusline);
@@ -224,11 +224,11 @@ i7_document_finalize(GObject *self)
 {
 	I7_DOCUMENT_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
-	
+
 	if(priv->filename)
 		g_free(priv->filename);
 	if(priv->monitor) {
-        g_file_monitor_cancel(priv->monitor);
+		g_file_monitor_cancel(priv->monitor);
 		g_object_unref(priv->monitor);
 	}
 	g_object_unref(I7_DOCUMENT(self)->ui_manager);
@@ -236,7 +236,7 @@ i7_document_finalize(GObject *self)
 	gtk_tree_path_free(priv->current_heading);
 
 	i7_app_remove_document(theapp, I7_DOCUMENT(self));
-	
+
 	G_OBJECT_CLASS(i7_document_parent_class)->finalize(self);
 
 	if(i7_app_get_num_open_documents(theapp) == 0)
@@ -247,7 +247,7 @@ static void
 i7_document_class_init(I7DocumentClass *klass)
 {
 	g_type_class_add_private(klass, sizeof(I7DocumentPrivate));
-	
+
 	/* Private pure virtual function */
 	klass->extract_title = NULL;
 	klass->set_contents_display = NULL;
@@ -264,7 +264,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->set_spellcheck = NULL;
 	klass->check_spelling = NULL;
 	klass->set_elastic_tabs = NULL;
-	
+
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_document_finalize;
 }
@@ -274,7 +274,7 @@ i7_document_add_menus_and_findbar(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
 	GError *error = NULL;
-	
+
 	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/gnome-inform7.uimanager.xml");
 	gtk_ui_manager_add_ui_from_file(document->ui_manager, filename, &error);
 	g_free(filename);
@@ -299,10 +299,10 @@ i7_document_add_menus_and_findbar(I7Document *document)
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_close, -1);
 
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_toolbar")), config_file_get_bool(PREFS_TOOLBAR_VISIBLE));
-	
+
 	/* Connect the accelerators */
 	priv->accels = gtk_ui_manager_get_accel_group(document->ui_manager);
-	g_object_ref(priv->accels); /* Apparently adding it to the window doesn't ref it? */ 
+	g_object_ref(priv->accels); /* Apparently adding it to the window doesn't ref it? */
 	gtk_window_add_accel_group(GTK_WINDOW(document), priv->accels);
 }
 
@@ -311,7 +311,7 @@ i7_document_refresh_title(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
 	gchar *documentname = i7_document_get_display_name(document);
-	
+
 	if(priv->modified)
 	{
 		gchar *title = g_strconcat("*", documentname, NULL);
@@ -326,10 +326,10 @@ void
 i7_document_set_path(I7Document *document, const gchar *filename)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-    if(priv->filename)
-        g_free(priv->filename);
-    priv->filename = g_strdup(filename);
-    i7_document_refresh_title(document);
+	if(priv->filename)
+		g_free(priv->filename);
+	priv->filename = g_strdup(filename);
+	i7_document_refresh_title(document);
 }
 
 /* Returns a newly-allocated string containing the full path to this document */
@@ -340,7 +340,7 @@ i7_document_get_path(const I7Document *document)
 }
 
 /* Returns a newly-allocated string containing the filename of this document
- without the full path, converted to UTF-8, suitable for display in a window 
+ without the full path, converted to UTF-8, suitable for display in a window
  titlebar */
 gchar *
 i7_document_get_display_name(I7Document *document)
@@ -421,7 +421,7 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 		case G_FILE_MONITOR_EVENT_CHANGED:
 		/* g_file_set_contents works by deleting and creating */
 		{
-			GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT, 
+			GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
 				_("The source code has been modified from outside Inform.\n"
 				"Do you want to reload it?"));
@@ -451,13 +451,13 @@ void
 i7_document_monitor_file(I7Document *document, const gchar *filename)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	
+
 	GError *error = NULL;
 	GFile *handle = g_file_new_for_path(filename);
 	priv->monitor = g_file_monitor_file(handle,	G_FILE_MONITOR_NONE, NULL, &error);
 	g_object_unref(handle);
 	if(!priv->monitor) {
-	    WARN_S(_("Could not start file monitor"), filename, error);
+		WARN_S(_("Could not start file monitor"), filename, error);
 		g_error_free(error);
 		return;
 	}
@@ -468,7 +468,7 @@ void
 i7_document_stop_file_monitor(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	
+
 	if(priv->monitor) {
 		g_file_monitor_cancel(priv->monitor);
 		g_object_unref(priv->monitor);
@@ -489,12 +489,12 @@ i7_document_save_as(I7Document *document, const gchar *filename)
 
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
-gboolean 
-i7_document_verify_save(I7Document *document) 
+gboolean
+i7_document_verify_save(I7Document *document)
 {
 	if(!i7_document_get_modified(document))
 		return TRUE;
-	
+
 	gchar *filename = i7_document_get_display_name(document);
 	GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
@@ -561,7 +561,7 @@ i7_document_jump_to_line(I7Document *document, guint lineno)
 	I7_DOCUMENT_GET_CLASS(document)->scroll_to_selection(document);
 }
 
-void 
+void
 i7_document_update_tabs(I7Document *document)
 {
 	I7_DOCUMENT_GET_CLASS(document)->update_tabs(document);
@@ -573,7 +573,7 @@ i7_document_update_fonts(I7Document *document)
 	I7_DOCUMENT_GET_CLASS(document)->update_fonts(document);
 }
 
-void 
+void
 i7_document_update_font_sizes(I7Document *document)
 {
 	I7_DOCUMENT_GET_CLASS(document)->update_font_sizes(document);
@@ -586,11 +586,11 @@ i7_document_update_font_styles(I7Document *document)
 }
 
 /* Turn source highlighting on or off in this document's source buffer */
-void 
-i7_document_update_source_highlight(I7Document *document) 
+void
+i7_document_update_source_highlight(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-    gtk_source_buffer_set_highlight_syntax(priv->buffer, config_file_get_bool(PREFS_SYNTAX_HIGHLIGHTING));
+	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_file_get_bool(PREFS_SYNTAX_HIGHLIGHTING));
 }
 
 /* Recalculate the document's elastic tabs */
@@ -620,7 +620,7 @@ static int
 get_heading_from_string(gchar *text)
 {
 	int retval = -1;
-		
+
 	gchar *lcase = g_utf8_strdown(text, -1);
 	if(strcmp(lcase, "volume") == 0)
 		retval = I7_HEADING_VOLUME;
@@ -632,9 +632,9 @@ get_heading_from_string(gchar *text)
 		retval = I7_HEADING_CHAPTER;
 	else if(strcmp(lcase, "section") == 0)
 		retval = I7_HEADING_SECTION;
-	
+
 	g_assert(retval != -1);
-	
+
 	g_free(lcase);
 	return retval;
 }
@@ -645,21 +645,21 @@ i7_document_reindex_headings(I7Document *document)
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
 	I7App *theapp = i7_app_get();
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
-    GtkTreeStore *tree = priv->headings;
-    gtk_tree_store_clear(tree);
-    GtkTreeIter title, volume, book, part, chapter, section, current;
-    gboolean volume_used = FALSE, book_used = FALSE, part_used = FALSE, chapter_used = FALSE;
+	GtkTreeStore *tree = priv->headings;
+	gtk_tree_store_clear(tree);
+	GtkTreeIter title, volume, book, part, chapter, section, current;
+	gboolean volume_used = FALSE, book_used = FALSE, part_used = FALSE, chapter_used = FALSE;
 	gboolean at_least_one = FALSE;
-	
+
 	GtkTextIter lastline, thisline, nextline, end;
-    gtk_text_buffer_get_start_iter(buffer, &lastline);
-    gtk_text_buffer_get_iter_at_line(buffer, &thisline, 1);
+	gtk_text_buffer_get_start_iter(buffer, &lastline);
+	gtk_text_buffer_get_iter_at_line(buffer, &thisline, 1);
 	gtk_text_buffer_get_iter_at_line(buffer, &nextline, 2);
 	gchar *text = gtk_text_iter_get_text(&lastline, &thisline);
 	/* Include \n */
 	gchar *realtitle = I7_DOCUMENT_GET_CLASS(document)->extract_title(document, text);
 	g_free(text);
-	
+
 	gtk_tree_store_append(tree, &title, NULL);
 	gtk_tree_store_set(tree, &title,
 		I7_HEADINGS_TITLE, realtitle,
@@ -668,20 +668,20 @@ i7_document_reindex_headings(I7Document *document)
 		I7_HEADINGS_BOLD, PANGO_WEIGHT_BOLD,
 		-1);
 	g_free(realtitle);
-	
-    while(gtk_text_iter_forward_lines(&lastline, 3)) {
+
+	while(gtk_text_iter_forward_lines(&lastline, 3)) {
 		/* Swap the iterators around using end as a temporary variable */
 		end = nextline;
 		nextline = lastline;
 		lastline = thisline;
 		thisline = end;
 		gtk_text_iter_forward_to_line_end(&end);
-		
+
 		GMatchInfo *match = NULL;
 		text = NULL;
 		if(gtk_text_iter_ends_line(&lastline) && gtk_text_iter_ends_line(&nextline) /* Blank line before and after */
 			&& (text = gtk_text_iter_get_text(&thisline, &end))
-			&& g_regex_match(theapp->regices[I7_APP_REGEX_HEADINGS], text, 0, &match)) 
+			&& g_regex_match(theapp->regices[I7_APP_REGEX_HEADINGS], text, 0, &match))
 		{
 			gchar *level = g_match_info_fetch_named(match, "level");
 			int depth = get_heading_from_string(level);
@@ -690,7 +690,7 @@ i7_document_reindex_headings(I7Document *document)
 			gchar *sectitle = g_match_info_fetch_named(match, "sectitle");
 			guint lineno = gtk_text_iter_get_line(&thisline) + 1;
 			/* Line numbers counted from 0 */
-			
+
 			switch(depth) {
 				case I7_HEADING_VOLUME:
 					gtk_tree_store_append(tree, &volume, &title);
@@ -716,7 +716,7 @@ i7_document_reindex_headings(I7Document *document)
 					gtk_tree_store_append(tree, &section, chapter_used? &chapter : part_used? &part : book_used? &book : volume_used? &volume : &title);
 					current = section;
 			}
-			
+
 			gtk_tree_store_set(tree, &current,
 				I7_HEADINGS_TITLE, text,
 				I7_HEADINGS_LINE, lineno,
@@ -728,14 +728,14 @@ i7_document_reindex_headings(I7Document *document)
 			/* Do not free strings (?) */
 			at_least_one = TRUE;
 		}
-		
+
 		if(text)
 			g_free(text);
 		if(match)
 			g_match_info_free(match);
-    }
+	}
 	i7_document_expand_headings_view(document);
-	
+
 	/* Display appropriate messages in the contents view */
 	/* If there is at least one child of the root node in the filtered model,
 	then the contents can be shown normally. */
@@ -761,15 +761,15 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
-	
+
 	GtkTreeIter iter;
 	g_assert(gtk_tree_model_get_iter(headings, &iter, path));
-	
+
 	guint startline = 0;
 	I7Heading depth = I7_HEADING_NONE;
 	gtk_tree_model_get(headings, &iter,
 		I7_HEADINGS_LINE, &startline,
-		I7_HEADINGS_DEPTH, &depth, 
+		I7_HEADINGS_DEPTH, &depth,
 		-1);
 	startline--;
 
@@ -778,10 +778,10 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	gtk_text_buffer_remove_tag(buffer, priv->invisible_tag, &start, &end);
-	
+
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = path;
-	
+
 	/* If the user clicked on the title, show the entire source */
 	if(depth == I7_HEADING_NONE) {
 		/* we have now shown the entire source */
@@ -792,30 +792,30 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 		gtk_text_buffer_place_cursor(buffer, &start);
 		return;
 	}
-	
+
 	gtk_action_set_sensitive(document->previous_section, TRUE);
 	gtk_action_set_sensitive(document->decrease_restriction, TRUE);
 	gtk_action_set_sensitive(document->entire_source, TRUE);
-	
+
 	GtkTextIter mid;
 	gtk_text_buffer_get_iter_at_line(buffer, &mid, startline);
 	gtk_text_buffer_apply_tag(buffer, priv->invisible_tag, &start, &mid);
 	gtk_text_buffer_place_cursor(buffer, &mid);
-	
+
 	GtkTreeIter next_iter = iter;
 	/* if there is a next heading at the current level, display until there */
 	if(!gtk_tree_model_iter_next(headings, &next_iter))
-		/* if not, then if there is no next heading at the same level, display 
+		/* if not, then if there is no next heading at the same level, display
 		until the next heading one level out */
-		if(!(gtk_tree_model_iter_parent(headings, &next_iter, &iter) 
-			&& gtk_tree_model_iter_next(headings, &next_iter))) 
+		if(!(gtk_tree_model_iter_parent(headings, &next_iter, &iter)
+			&& gtk_tree_model_iter_next(headings, &next_iter)))
 		{
 			/* otherwise, there is no next heading, display until the end of the
 			source text */
 			gtk_action_set_sensitive(document->next_section, FALSE);
 			return;
 		}
-	
+
 	guint endline = 0;
 	gtk_tree_model_get(headings, &next_iter, I7_HEADINGS_LINE, &endline, -1);
 	/* the line should be counted from zero, and also we need to back up
@@ -823,7 +823,7 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	endline -= 2;
 	gtk_text_buffer_get_iter_at_line(buffer, &mid, endline);
 	gtk_text_buffer_apply_tag(buffer, priv->invisible_tag, &mid, &end);
-	
+
 	gtk_action_set_sensitive(document->next_section, TRUE);
 }
 
@@ -850,9 +850,9 @@ i7_document_get_next_heading(I7Document *document)
 	GtkTreeIter next_iter = iter;
 	/* if there is a next heading at the current level, display that */
 	if(!gtk_tree_model_iter_next(headings, &next_iter))
-		/* if not, then if there is no next heading at the same level, display 
+		/* if not, then if there is no next heading at the same level, display
 		the next heading one level out */
-		if(!(gtk_tree_model_iter_parent(headings, &next_iter, &iter) 
+		if(!(gtk_tree_model_iter_parent(headings, &next_iter, &iter)
 			&& gtk_tree_model_iter_next(headings, &next_iter)))
 			/* otherwise, there is no next heading, display until the end of the
 			source text */
@@ -885,7 +885,7 @@ i7_document_get_deeper_heading(I7Document *document)
 {
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
-	
+
 	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->buffer));
 	GtkTreeIter iter, next_iter;
 	guint line = 0;
@@ -900,7 +900,7 @@ i7_document_get_deeper_heading(I7Document *document)
 			iter = next_iter;
 		} while(gtk_tree_model_iter_next(headings, &next_iter));
 	}
-	
+
 	/* iter is the heading we want to go to; if it had no children, it stays
 	the same */
 	GtkTreePath *path = gtk_tree_model_get_path(headings, &iter);
@@ -925,9 +925,9 @@ i7_document_get_deepest_heading(I7Document *document)
 			gtk_tree_model_iter_nth_child(headings, &next_iter, &iter, 0);
 		else {
 			next_iter = iter;
-			if(!gtk_tree_model_iter_next(headings, &next_iter) 
-				&& !(gtk_tree_model_iter_parent(headings, &next_iter, &iter) 
-				&& gtk_tree_model_iter_next(headings, &next_iter))) 
+			if(!gtk_tree_model_iter_next(headings, &next_iter)
+				&& !(gtk_tree_model_iter_parent(headings, &next_iter, &iter)
+				&& gtk_tree_model_iter_next(headings, &next_iter)))
 				/* We've reached the end */
 				break;
 		}
@@ -936,7 +936,7 @@ i7_document_get_deepest_heading(I7Document *document)
 			break;
 		iter = next_iter;
 	}
-	
+
 	/* Now iter is the heading we want to go to */
 	GtkTreePath *path = gtk_tree_model_get_path(headings, &iter);
 	return path;
@@ -948,24 +948,24 @@ i7_document_show_entire_source(I7Document *document)
 {
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
-	
+
 	GtkTextIter start, end;
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	gtk_text_buffer_remove_tag(buffer, priv->invisible_tag, &start, &end);
-	
+
 	gtk_action_set_sensitive(document->previous_section, FALSE);
 	gtk_action_set_sensitive(document->next_section, FALSE);
 	gtk_action_set_sensitive(document->decrease_restriction, FALSE);
 	gtk_action_set_sensitive(document->entire_source, FALSE);
-	
+
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = gtk_tree_path_new_first();
 }
 
 /* Displays the message text in the status bar of the current window. */
-void 
-i7_document_display_status_message(I7Document *document, const gchar *message, const gchar *context) 
+void
+i7_document_display_status_message(I7Document *document, const gchar *message, const gchar *context)
 {
 	GtkStatusbar *status = GTK_STATUSBAR(document->statusbar);
 	guint id = gtk_statusbar_get_context_id(status, context);
@@ -987,7 +987,7 @@ struct StatusData {
 	guint message_id;
 };
 
-static gboolean 
+static gboolean
 end_flash_message(struct StatusData *data)
 {
 	gtk_statusbar_remove(data->status, data->context_id, data->message_id);
@@ -1007,17 +1007,17 @@ i7_document_flash_status_message(I7Document *document, const gchar *message, con
 }
 
 /* Pulses the progress bar */
-void 
-i7_document_display_progress_busy(I7Document *document) 
+void
+i7_document_display_progress_busy(I7Document *document)
 {
-    gtk_progress_bar_pulse(GTK_PROGRESS_BAR(document->progressbar));
+	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(document->progressbar));
 }
 
 /* Displays a percentage in the progress indicator */
-void 
-i7_document_display_progress_percentage(I7Document *document, gdouble fraction) 
+void
+i7_document_display_progress_percentage(I7Document *document, gdouble fraction)
 {
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), fraction);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), fraction);
 }
 
 /* Displays a message in the progress indicator */
@@ -1073,13 +1073,13 @@ i7_document_attach_menu_hints(I7Document *document, GtkMenuBar *menu)
 	gtk_container_foreach(GTK_CONTAINER(menu), attach_menu_hints, GTK_STATUSBAR(document->statusbar));
 }
 
-void 
+void
 i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 {
 	I7_DOCUMENT_GET_CLASS(document)->set_spellcheck(document, spellcheck);
 }
 
-void 
+void
 i7_document_check_spelling(I7Document *document)
 {
 	I7_DOCUMENT_GET_CLASS(document)->check_spelling(document);
@@ -1091,4 +1091,3 @@ i7_document_set_elastic_tabs(I7Document *document, gboolean elastic)
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabs), elastic);
 	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabs(document, elastic);
 }
-

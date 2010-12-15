@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef STORY_H
 #define STORY_H
 
@@ -30,10 +30,10 @@
 #include "skein.h"
 
 typedef enum {
-    I7_STORY_FORMAT_Z5 = 5,
-    I7_STORY_FORMAT_Z6 = 6,
-    I7_STORY_FORMAT_Z8 = 8,
-    I7_STORY_FORMAT_GLULX = 256
+	I7_STORY_FORMAT_Z5 = 5,
+	I7_STORY_FORMAT_Z6 = 6,
+	I7_STORY_FORMAT_Z8 = 8,
+	I7_STORY_FORMAT_GLULX = 256
 } I7StoryFormat;
 
 typedef enum {

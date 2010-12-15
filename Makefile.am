@@ -27,7 +27,7 @@ EXTRA_DIST = \
 	gnome-inform7.glade \
 	gnome-inform7.gladep \
 	gnome-inform7.spec.in
-	
+
 if BUILDING_RPM
 EXTRA_DIST += gnome-inform7.spec
 endif

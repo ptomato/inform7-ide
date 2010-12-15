@@ -29,17 +29,17 @@
 
 typedef enum _I7NewProjectType I7NewProjectType;
 enum _I7NewProjectType {
-    I7_NEW_PROJECT_NOTHING = 0,
-    I7_NEW_PROJECT_INFORM7_STORY,
-    I7_NEW_PROJECT_INFORM7_EXTENSION,
-    I7_NEW_PROJECT_INFORM6_EMPTY,
-    I7_NEW_PROJECT_INFORM6_ONE_ROOM
+	I7_NEW_PROJECT_NOTHING = 0,
+	I7_NEW_PROJECT_INFORM7_STORY,
+	I7_NEW_PROJECT_INFORM7_EXTENSION,
+	I7_NEW_PROJECT_INFORM6_EMPTY,
+	I7_NEW_PROJECT_INFORM6_ONE_ROOM
 };
 
 enum {
-    COLUMN_TYPE,
-    COLUMN_TYPE_NAME,
-    COLUMN_DISPLAY_TEXT
+	COLUMN_TYPE,
+	COLUMN_TYPE_NAME,
+	COLUMN_DISPLAY_TEXT
 };
 
 typedef struct {
@@ -55,20 +55,20 @@ typedef struct {
 } I7NewProjectOptions;
 
 /* Change the description text when the selection changes */
-static void 
+static void
 on_project_type_selection_changed(GtkTreeSelection *selection, I7NewProjectOptions *options)
 {
-    GtkTreeIter iter;
-    GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
 
 	GtkWidget *page = gtk_assistant_get_nth_page(GTK_ASSISTANT(options->assistant), 0);
 
-    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		gchar *description;
 		I7NewProjectType type;
-		gtk_tree_model_get(model, &iter, 
-			COLUMN_TYPE, &type, 
-			COLUMN_DISPLAY_TEXT, &description, 
+		gtk_tree_model_get(model, &iter,
+			COLUMN_TYPE, &type,
+			COLUMN_DISPLAY_TEXT, &description,
 			-1);
 		gtk_label_set_text(GTK_LABEL(options->label), description);
 		gtk_assistant_set_page_complete(GTK_ASSISTANT(options->assistant), page, TRUE);
@@ -95,20 +95,20 @@ new_project_options_free(I7NewProjectOptions *options)
 void
 on_newdialog_cancel(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
-    gtk_widget_destroy(GTK_WIDGET(assistant));
+	gtk_widget_destroy(GTK_WIDGET(assistant));
 	new_project_options_free(options);
-    /* If we aren't editing a story, go back to the welcome dialog */
-    if(i7_app_get_num_open_documents(i7_app_get()) == 0) {
-        GtkWidget *welcome_dialog = create_welcome_dialog();
-        gtk_widget_show(welcome_dialog);
-    }
+	/* If we aren't editing a story, go back to the welcome dialog */
+	if(i7_app_get_num_open_documents(i7_app_get()) == 0) {
+		GtkWidget *welcome_dialog = create_welcome_dialog();
+		gtk_widget_show(welcome_dialog);
+	}
 }
 
 gboolean
 on_newdialog_delete_event(GtkWidget *widget, GdkEvent *event, I7NewProjectOptions *options)
 {
-    on_newdialog_cancel(GTK_ASSISTANT(widget), options);
-    return TRUE;
+	on_newdialog_cancel(GTK_ASSISTANT(widget), options);
+	return TRUE;
 }
 
 /* Enable the OK button if data in all fields are filled in */
@@ -118,27 +118,27 @@ check_page_finished(I7NewProjectOptions *options)
 	GtkWidget *page = gtk_assistant_get_nth_page(GTK_ASSISTANT(options->assistant), 1);
 	if(options->directory && strlen(options->directory)
 		&& options->name && strlen(options->name)
-		&& options->author && strlen(options->author)) 
+		&& options->author && strlen(options->author))
 	{
 		gchar *file = g_strconcat(options->name, ".inform", NULL);
 		gchar *directory = g_build_filename(options->directory, file, NULL);
 		g_free(file);
-	
+
 		if(!g_file_test(directory, G_FILE_TEST_EXISTS)) {
 			gtk_assistant_set_page_complete(GTK_ASSISTANT(options->assistant), page, TRUE);
 			g_free(directory);
 			return;
 		}
-		
+
 		g_free(directory);
 		error_dialog(NULL, NULL, _("The story \"%s\" already exists in the "
-			"directory %s. Please choose another title or directory."), 
+			"directory %s. Please choose another title or directory."),
 			options->name, options->directory);
 	}
 	gtk_assistant_set_page_complete(GTK_ASSISTANT(options->assistant), page, FALSE);
 }
 
-void 
+void
 on_new_directory_current_folder_changed(GtkFileChooser *chooser, I7NewProjectOptions *options)
 {
 	if(options->directory)
@@ -148,7 +148,7 @@ on_new_directory_current_folder_changed(GtkFileChooser *chooser, I7NewProjectOpt
 }
 
 /* Get the project name from the text entry and format it */
-void 
+void
 on_new_name_changed(GtkEditable *editable, I7NewProjectOptions *options)
 {
 	if(options->name)
@@ -157,17 +157,17 @@ on_new_name_changed(GtkEditable *editable, I7NewProjectOptions *options)
 	/* Check that the project name is valid */
 	const char *invalid = "\\/:*?\"<>|";
 	if(strpbrk(options->name, invalid)) {
-		error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(editable))), 
+		error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(editable))),
 			NULL, _("The project name cannot contain any of the following: %s"),
 			invalid);
 		g_free(options->name);
 		options->name = NULL;
-    }
+	}
 	check_page_finished(options);
 }
 
 /* Get the author's name from the text entry and format it */
-void 
+void
 on_new_author_changed(GtkEditable *editable, I7NewProjectOptions *options)
 {
 	if(options->author)
@@ -192,9 +192,9 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 			break;
 		case 2:
 			text = g_strdup_printf("<big><b>%s</b>\nby %s</big>\n\n"
-				"Project Type: %s\nDirectory to create project in: %s\n", 
+				"Project Type: %s\nDirectory to create project in: %s\n",
 				options->name, options->author,
-				(options->type == I7_NEW_PROJECT_INFORM7_EXTENSION)? 
+				(options->type == I7_NEW_PROJECT_INFORM7_EXTENSION)?
 				"Inform 7 Extension" : "Inform 7 Story",
 				options->directory);
 			gtk_label_set_markup(GTK_LABEL(page), text);
@@ -213,10 +213,10 @@ void
 on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
 	gchar *file, *path;
-	
+
 	/* Save the author name to the config file */
-    config_file_set_string(PREFS_AUTHOR_NAME, options->author);
-	
+	config_file_set_string(PREFS_AUTHOR_NAME, options->author);
+
 	switch(options->type) {
 		case I7_NEW_PROJECT_INFORM7_STORY:
 			file = g_strconcat(options->name, ".inform", NULL);
@@ -234,7 +234,7 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 	}
 	g_free(file);
 	g_free(path);
-	
+
 	new_project_options_free(options);
 	gtk_widget_destroy(GTK_WIDGET(assistant));
 }
@@ -254,7 +254,7 @@ create_new_dialog(void)
 	/* Create data object to be passed to the callbacks */
 	I7NewProjectOptions *options = g_slice_new0(I7NewProjectOptions);
 	options->type = I7_NEW_PROJECT_INFORM7_STORY;
-	
+
 	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/newdialog.ui");
 	GtkBuilder *builder = create_new_builder(filename, options);
 	g_free(filename);
@@ -263,11 +263,11 @@ create_new_dialog(void)
 	options->author_box = GTK_WIDGET(load_object(builder, "new_author"));
 	options->chooser = GTK_WIDGET(load_object(builder, "new_directory"));
 
-	/* Set default button by illegally accessing GtkAssistant struct 
+	/* Set default button by illegally accessing GtkAssistant struct
 	(FIXME, this is naughty) */
 	GTK_WIDGET_SET_FLAGS(GTK_ASSISTANT(options->assistant)->forward, GTK_CAN_DEFAULT);
 	gtk_window_set_default(GTK_WINDOW(options->assistant), GTK_ASSISTANT(options->assistant)->forward);
-	
+
 	/* Create a tree store with one column, with a string in it, and have two
 	columns of "hidden" data: an integer index and a description string */
 
@@ -283,12 +283,12 @@ create_new_dialog(void)
 		-1);
 	gtk_tree_store_append(store, &iter_child, &iter_parent); /*Child iterator*/
 	gtk_tree_store_set(store, &iter_child,
-		COLUMN_TYPE, I7_NEW_PROJECT_INFORM7_STORY, 
+		COLUMN_TYPE, I7_NEW_PROJECT_INFORM7_STORY,
 		COLUMN_TYPE_NAME, _("New story"),
 		COLUMN_DISPLAY_TEXT, _("Creates a blank Inform 7 project, in which you "
 		"can write a work of interactive fiction."),
 		-1);
-	gtk_tree_store_append(store, &iter_child, &iter_parent); 
+	gtk_tree_store_append(store, &iter_child, &iter_parent);
 	gtk_tree_store_set(store, &iter_child,
 		COLUMN_TYPE, I7_NEW_PROJECT_INFORM7_EXTENSION,
 		COLUMN_TYPE_NAME, _("New set of extension rules"),
@@ -304,13 +304,13 @@ create_new_dialog(void)
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 	gtk_tree_selection_set_select_function(select, project_type_selection_function, NULL, NULL);
 	g_signal_connect(select, "changed", G_CALLBACK(on_project_type_selection_changed), options);
-	
+
 	/* Select "Inform 7 project" by default. */
 	GtkTreePath *default_path = gtk_tree_path_new_from_indices(0, 0, -1);
 	gtk_tree_view_expand_to_path(tree, default_path);
 	gtk_tree_selection_select_path(select, default_path);
 	gtk_tree_path_free(default_path);
-	
+
 	g_object_unref(builder);
 
 	return options->assistant;

@@ -2,17 +2,17 @@
 /*
  * new-i7
  * Copyright (C) P. F. Chimento 2008 <philip.chimento@gmail.com>
- * 
+ *
  * new-i7 is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * new-i7 is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -43,14 +43,14 @@ gboolean on_documentation_scrollbar_policy_changed(WebKitWebFrame *frame);
 
 /* JAVASCRIPT METHODS */
 
-static JSValueRef 
+static JSValueRef
 js_select_view(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
 	if(argumentCount != 1)
 		return NULL;
 	if(!JSValueIsString(ctx, arguments[0]))
 		return NULL;
-	
+
 	I7Panel *panel = (I7Panel *)JSObjectGetPrivate(thisObject);
 	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
 	if(*exception != NULL)
@@ -59,12 +59,12 @@ js_select_view(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, s
 		g_signal_emit_by_name(panel, "select-view", I7_PANE_SOURCE);
 	else
 		error_dialog(NULL, NULL, _("JavaScript error: Unknown argument to selectView()"));
-	
+
 	JSStringRelease(arg_js);
 	return NULL;
 }
 
-static gboolean 
+static gboolean
 unescape_unicode(const GMatchInfo *match, GString *result, gpointer data)
 {
 	gchar *capture = g_match_info_fetch(match, 1);
@@ -74,14 +74,14 @@ unescape_unicode(const GMatchInfo *match, GString *result, gpointer data)
 	return FALSE; /* keep going */
 }
 
-static JSValueRef 
+static JSValueRef
 js_paste_code(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
 	if(argumentCount != 1)
 		return NULL;
 	if(!JSValueIsString(ctx, arguments[0]))
 		return NULL;
-	
+
 	/* Get the string of code to paste */
 	I7Panel *panel = (I7Panel *)JSObjectGetPrivate(thisObject);
 	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
@@ -91,7 +91,7 @@ js_paste_code(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, si
 	gchar *code = g_malloc(length);
 	JSStringGetUTF8CString(arg_js, code, length);
 	JSStringRelease(arg_js);
-	
+
 	GError *error = NULL;
 	I7App *theapp = i7_app_get();
 	gchar *unescaped = g_regex_replace_eval(theapp->regices[I7_APP_REGEX_UNICODE_ESCAPE], code, -1, 0, 0, unescape_unicode, NULL, &error);
@@ -101,24 +101,24 @@ js_paste_code(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, si
 		unescaped = g_strdup(code);
 	}
 	g_free(code);
-	
+
 	g_signal_emit_by_name(panel, "paste-code", unescaped);
-	
+
 	g_free(unescaped);
-	
+
 	return NULL;
 }
 
-static JSValueRef 
+static JSValueRef
 js_open_file(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
 	GError *error = NULL;
-	
+
 	if(argumentCount != 1)
 		return NULL;
 	if(!JSValueIsString(ctx, arguments[0]))
 		return NULL;
-	
+
 	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
 	if(*exception != NULL)
 		return NULL;
@@ -142,16 +142,16 @@ finally:
 	return NULL;
 }
 
-static JSValueRef 
+static JSValueRef
 js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
 	GError *error = NULL;
-	
+
 	if(argumentCount != 1)
 		return NULL;
 	if(!JSValueIsString(ctx, arguments[0]))
 		return NULL;
-	
+
 	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
 	if(*exception != NULL)
 		return NULL;
@@ -174,30 +174,30 @@ void
 action_back(GtkAction *back, I7Panel *panel)
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
-	
-    if(priv->current == 0)
+
+	if(priv->current == 0)
 		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "forward"), TRUE);
-    
-    priv->current++;
-    history_goto_current(panel);
-	
-    if(priv->current == g_queue_get_length(priv->history) - 1)
-        gtk_action_set_sensitive(back, FALSE);
+
+	priv->current++;
+	history_goto_current(panel);
+
+	if(priv->current == g_queue_get_length(priv->history) - 1)
+		gtk_action_set_sensitive(back, FALSE);
 }
 
 void
 action_forward(GtkAction *forward, I7Panel *panel)
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
-	
+
 	if(priv->current == g_queue_get_length(priv->history) - 1)
 		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
-    
-    priv->current--;
-    history_goto_current(panel);
-    
-    if(priv->current == 0)
-        gtk_action_set_sensitive(forward, FALSE);
+
+	priv->current--;
+	history_goto_current(panel);
+
+	if(priv->current == 0)
+		gtk_action_set_sensitive(forward, FALSE);
 }
 
 void
@@ -223,7 +223,7 @@ action_layout(GtkAction *action, I7Panel *panel)
 		response = gtk_dialog_run(GTK_DIALOG(story->skein_spacing_dialog));
 		/* If "Use defaults" clicked, then restart the dialog */
 	gtk_widget_hide(story->skein_spacing_dialog);
-	
+
 	if(response != GTK_RESPONSE_OK) {
 		config_file_set_int(PREFS_HORIZONTAL_SPACING, GPOINTER_TO_INT(g_object_get_data(G_OBJECT(story->skein_spacing_dialog), "old-horizontal-spacing")));
 		config_file_set_int(PREFS_VERTICAL_SPACING, GPOINTER_TO_INT(g_object_get_data(G_OBJECT(story->skein_spacing_dialog), "old-vertical-spacing")));
@@ -291,7 +291,7 @@ i7_panel_init(I7Panel *self)
 	item->tab = I7_SOURCE_VIEW_TAB_SOURCE;
 	g_queue_push_head(priv->history, item);
 	priv->current = 0;
-	
+
 	/* Build the interface */
 	gchar *filename = i7_app_get_datafile_path(theapp, "ui/panel.ui");
 	GtkBuilder *builder = create_new_builder(filename, self);
@@ -321,7 +321,7 @@ i7_panel_init(I7Panel *self)
 	self->toolbar = gtk_ui_manager_get_widget(priv->ui_manager, "/PanelToolbar");
 	gtk_toolbar_set_icon_size(GTK_TOOLBAR(self->toolbar), GTK_ICON_SIZE_MENU);
 	gtk_toolbar_set_style(GTK_TOOLBAR(self->toolbar), GTK_TOOLBAR_BOTH_HORIZ);
-	
+
 	/* Add the Labels menu; apparently GtkUIManager can't build menu tool items */
 	self->labels = gtk_menu_tool_button_new(NULL, NULL);
 	gtk_toolbar_insert(GTK_TOOLBAR(self->toolbar), self->labels, 3);
@@ -386,19 +386,19 @@ i7_panel_init(I7Panel *self)
 		if(foo < I7_ERRORS_NUM_TABS)
 			self->errors_tabs[foo] = GTK_WIDGET(load_object(builder, errors_tab_names[foo]));
 		self->index_tabs[foo] = GTK_WIDGET(load_object(builder, index_tab_names[foo]));
-	}	
+	}
 
 	/* Update the web settings for this panel */
 	priv->websettings = WEBKIT_WEB_SETTINGS(load_object(builder, "websettings"));
 	/* Parse the font descriptions */
 	gchar *font = config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
-    PangoFontDescription *stdfont = pango_font_description_from_string(font);
-    g_free(font);
+	PangoFontDescription *stdfont = pango_font_description_from_string(font);
+	g_free(font);
 	font = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
 	PangoFontDescription *monofont = pango_font_description_from_string(font);
 	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
-    gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
-	g_object_set(priv->websettings, 
+	gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
+	g_object_set(priv->websettings,
 		"default-font-family", pango_font_description_get_family(stdfont),
 		"monospace-font-family", pango_font_description_get_family(monofont),
 		"default-font-size", stdsize,
@@ -414,7 +414,7 @@ i7_panel_init(I7Panel *self)
 
 	/* Builder object not needed anymore */
 	g_object_unref(builder);
-	
+
 	/* Declare the JavaScript Project class */
 	JSStaticFunction project_class_functions[] = {
 		{ "selectView", js_select_view, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
@@ -424,13 +424,13 @@ i7_panel_init(I7Panel *self)
 		{ NULL, NULL, 0 }
 	};
 	JSClassDefinition project_class_definition = {
-		/* version */ 0, kJSClassAttributeNone, "ProjectClass", 
+		/* version */ 0, kJSClassAttributeNone, "ProjectClass",
 		/* parent */ NULL, /* static values */ NULL, project_class_functions,
 		/* callbacks */ NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 		NULL, NULL
 	};
 	priv->js_class = JSClassCreate(&project_class_definition);
-	
+
 	/* Load the documentation page */
 	filename = i7_app_get_datafile_path(theapp, "Documentation/index.html");
 	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), filename);
@@ -441,11 +441,11 @@ static void
 i7_panel_finalize(GObject *self)
 {
 	I7_PANEL_USE_PRIVATE(self, priv);
-	
+
 	history_free_queue(I7_PANEL(self));
 	JSClassRelease(priv->js_class);
 	g_object_unref(priv->ui_manager);
-	
+
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
 
@@ -454,9 +454,9 @@ i7_panel_class_init(I7PanelClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_panel_finalize;
-	
+
 	parent_class = g_type_class_peek_parent(klass);
-	
+
 	i7_panel_signals[SELECT_VIEW_SIGNAL] = g_signal_new("select-view",
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 		G_STRUCT_OFFSET(I7PanelClass, select_view), NULL, NULL,
@@ -482,7 +482,7 @@ void
 on_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
-	
+
 	switch(page_num) {
 		case I7_PANE_SKEIN:
 			gtk_action_group_set_visible(priv->skein_action_group, TRUE);
@@ -506,49 +506,49 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page
 	}
 }
 
-void 
+void
 after_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
 {
-    switch(page_num) {
+	switch(page_num) {
 		case I7_PANE_SOURCE:
-			history_push_tab(panel, page_num, 
+			history_push_tab(panel, page_num,
 				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE])));
 			break;
-        case I7_PANE_ERRORS:
-            history_push_tab(panel, page_num,
+		case I7_PANE_ERRORS:
+			history_push_tab(panel, page_num,
 				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_ERRORS])));
-            break;
-        case I7_PANE_INDEX:
-            history_push_tab(panel, page_num,
+			break;
+		case I7_PANE_INDEX:
+			history_push_tab(panel, page_num,
 				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_INDEX])));
-            break;
-        case I7_PANE_DOCUMENTATION:
-            history_push_docpage(panel, NULL);
-            break;
-        default:
-            history_push_pane(panel, page_num);
-    }
+			break;
+		case I7_PANE_DOCUMENTATION:
+			history_push_docpage(panel, NULL);
+			break;
+		default:
+			history_push_pane(panel, page_num);
+	}
 }
 
-void 
+void
 after_source_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_SOURCE)
-        history_push_tab(panel, I7_PANE_SOURCE, page_num);
+		history_push_tab(panel, I7_PANE_SOURCE, page_num);
 }
 
-void 
+void
 after_errors_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_ERRORS)
-        history_push_tab(panel, I7_PANE_ERRORS, page_num);
+		history_push_tab(panel, I7_PANE_ERRORS, page_num);
 }
 
-void 
+void
 after_index_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_INDEX)
-        history_push_tab(panel, I7_PANE_INDEX, page_num);
+		history_push_tab(panel, I7_PANE_INDEX, page_num);
 }
 
 /* Internal function: find the real filename referred to by a URI starting with
@@ -558,9 +558,9 @@ static gchar *
 find_real_filename_for_inform_protocol(const gchar *uri)
 {
 	g_return_val_if_fail(g_str_has_prefix (uri, "inform:"), NULL);
-	
+
 	I7App *theapp = i7_app_get();
-	
+
 	/* Get the rest of the URI after the scheme, a colon, and up to two slashes */
 	const gchar *rest = uri + 7; /* strlen("inform:") */
 	if(*rest == '/' && *++rest == '/')
@@ -579,10 +579,10 @@ find_real_filename_for_inform_protocol(const gchar *uri)
 		tail = g_build_filenamev(elements + 1);
 	} else
 		tail = g_build_filenamev(elements);
-	g_strfreev(elements);	
+	g_strfreev(elements);
 
 	gchar *real_filename = NULL;
-	
+
 	gchar *tryloc = g_build_filename("Documentation", "Sections", tail, NULL);
 	if(i7_app_check_datafile(theapp, tryloc)) {
 		real_filename = i7_app_get_datafile_path(theapp, tryloc);
@@ -615,17 +615,17 @@ finally2:
  manipulate the HTML pages as we load them. This function is called by the
  regex that looks for <img src=inform://...> links in the HTML, in order to
  replace them with real paths */
-static gboolean 
+static gboolean
 replace_images(const GMatchInfo *match, GString *result, gchar *data_uri)
 {
 	gchar *filename = g_match_info_fetch(match, 2);
 	gchar *delimiter = g_match_info_fetch(match, 3);
-	
+
 	/* These are the only files used in the Index pages */
 	if(strcmp(filename, "Reveal.png") == 0
 		|| strcmp(filename, "help.png") == 0
 		|| strcmp(filename, "Below.png") == 0
-	    || strcmp(filename, "Revealext.png") == 0)
+		|| strcmp(filename, "Revealext.png") == 0)
 	{
 		g_string_append_printf(result, "src=\"%s/Documentation/doc_images/%s\"%s", data_uri, filename, delimiter);
 		g_free(filename);
@@ -633,17 +633,17 @@ replace_images(const GMatchInfo *match, GString *result, gchar *data_uri)
 		return FALSE; /* keep going */
 	}
 	if(g_str_has_prefix(filename, "doc_images")
-	    || strcmp(filename, "Beneath.png") == 0
-	    || strcmp(filename, "extra.png") == 0
-	    || strcmp(filename, "noextra.png") == 0
-	    || strcmp(filename, "deprecated.png") == 0
-	    || strcmp(filename, "launch.png") == 0
+		|| strcmp(filename, "Beneath.png") == 0
+		|| strcmp(filename, "extra.png") == 0
+		|| strcmp(filename, "noextra.png") == 0
+		|| strcmp(filename, "deprecated.png") == 0
+		|| strcmp(filename, "launch.png") == 0
 		|| g_str_has_prefix(filename, "map_icons")
 		|| g_str_has_prefix(filename, "scene_icons")
 		|| strstr(filename, "succeeded")
 		|| strstr(filename, "failed")
 		|| strstr(filename, "crash")
-	    || strstr(filename, "folder"))
+		|| strstr(filename, "folder"))
 	{
 		g_string_append_printf(result, "src=\"%s/Documentation/%s\"%s", data_uri, filename, delimiter);
 		g_free(filename);
@@ -680,22 +680,22 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 	GError *error = NULL;
 	const gchar *uri = webkit_network_request_get_uri(request);
 	gchar *scheme = g_uri_parse_scheme(uri);
-	
+
 	/* If no protocol found, just go on -- it's a file:// */
 	if(!scheme)
 		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-	
+
 	if(strcmp(scheme, "about") == 0) {
 		/* These are protocols that we explicitly allow WebKit to load */
 		g_free(scheme);
 		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-	
+
 	} else if(strcmp(scheme, "file") == 0) {
 		/* If the "resource-request-starting" signal is available, then no
 		 special manipulation is needed */
-		if(webkit_major_version() >= 1 
-		    && webkit_minor_version() >= 1 
-		    && webkit_micro_version() >= 14) {
+		if(webkit_major_version() >= 1
+			&& webkit_minor_version() >= 1
+			&& webkit_micro_version() >= 14) {
 			/* webkit_check_version() undefined? FIXME */
 			g_free(scheme);
 			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
@@ -710,7 +710,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				/* let webkit handle it */
 				g_free(scheme);
 				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT; 
+				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 			}
 
 			/* If this is an index or problems page, then all the image links need to
@@ -721,7 +721,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				g_strfreev(uri_parts);
 				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 			}
-		
+
 			gchar *contents;
 			if(!g_file_get_contents(filename, &contents, NULL, &error)) {
 				WARN_S(_("Could not read file"), filename, error);
@@ -731,7 +731,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				g_strfreev(uri_parts);
 				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 			}
-		
+
 			/* Replace the image links */
 			gchar *datadir = i7_app_get_datafile_path(i7_app_get(), ".");
 			gchar *data_uri = g_filename_to_uri(datadir, NULL, &error);
@@ -743,7 +743,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				g_free(filename);
 				g_free(scheme);
 				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT; 
+				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 			}
 			gchar *newcontents = g_regex_replace_eval(theapp->regices[I7_APP_REGEX_IMAGES_REPLACE], contents, -1, 0, 0, (GRegexEvalCallback)replace_images, data_uri, &error);
 			g_free(contents);
@@ -754,9 +754,9 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				g_free(filename);
 				g_free(scheme);
 				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT; 
+				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 			}
-			
+
 			/* Get the base path */
 			gchar *base = g_path_get_dirname(filename);
 			gchar *base_uri = g_filename_to_uri(base, NULL, &error);
@@ -768,13 +768,13 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				g_free(newcontents);
 				g_free(scheme);
 				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT; 
+				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 			}
 			g_free(base);
 			gchar *base_rel = g_strconcat(base_uri, "/", NULL);
 			g_free(base_uri);
-		
-			/* Load the HTML and call the after-signal handler if this is the 
+
+			/* Load the HTML and call the after-signal handler if this is the
 			 documentation widget */
 			webkit_web_view_load_html_string(webview, newcontents, base_rel);
 			if(uri_parts[1]) {
@@ -784,14 +784,14 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 				webkit_web_frame_load_request(frame, webkit_network_request_new(anchor));
 				g_free(anchor);
 			}
-			if(webview == WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]) 
+			if(webview == WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])
 				&& g_signal_handler_find(webview, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_UNBLOCKED,
-				g_signal_lookup("navigation-requested", WEBKIT_TYPE_WEB_VIEW), 0, NULL, 
-				after_documentation_navigation_requested, NULL) != 0) 
+				g_signal_lookup("navigation-requested", WEBKIT_TYPE_WEB_VIEW), 0, NULL,
+				after_documentation_navigation_requested, NULL) != 0)
 			{
 				after_documentation_navigation_requested(webview, frame, request, panel);
 			}
-		
+
 			g_free(newcontents);
 			g_free(base_rel);
 			g_strfreev(uri_parts);
@@ -810,13 +810,13 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		gchar *real_filename = find_real_filename_for_inform_protocol(uri);
 		html_load_file(webview, real_filename);
 		g_free(real_filename);
-	
+
 	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
 		if(!g_app_info_launch_default_for_uri(uri, NULL, &error)) {
 			/* SUCKY DEBIAN replace with gtk_show_uri() */
 			error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(panel))), error, _("Error opening external viewer for %s: "), uri);
 		}
-		
+
 	} else if(strcmp(scheme, "source") == 0) {
 		guint line;
 		gchar *path = g_strdup(uri + strlen("source:"));
@@ -841,22 +841,22 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 			gchar *userpath = i7_app_get_extension_path(i7_app_get(), NULL, NULL);
 			gboolean readonly = !strstr(realpath, userpath);
 			g_free(userpath);
-			
-			I7Extension *ext = i7_extension_new_from_file(i7_app_get(), realpath, readonly); 
-            if(ext != NULL) { 
-                if(sscanf(anchor, "#line%u", &line)) 
-                    i7_source_view_jump_to_line(ext->sourceview, line);
-            } 
+
+			I7Extension *ext = i7_extension_new_from_file(i7_app_get(), realpath, readonly);
+			if(ext != NULL) {
+				if(sscanf(anchor, "#line%u", &line))
+					i7_source_view_jump_to_line(ext->sourceview, line);
+			}
 			g_free(realpath);
 		}
 		g_free(path);
 		g_free(anchor);
-		
+
 	} else
 		g_warning(_("Unrecognized protocol: %s\n"), scheme);
-	
+
 	g_free(scheme);
-	
+
 	return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
 }
 
@@ -888,12 +888,12 @@ on_documentation_window_object_cleared(WebKitWebView *webview, WebKitWebFrame *f
 {
 	JSValueRef exception = NULL;
 	JSStringRef varname = JSStringCreateWithUTF8CString("Project");
-    JSObjectSetProperty(ctx, window, varname, 
-		JSObjectMake(ctx, I7_PANEL_PRIVATE(panel)->js_class, panel), 
-		kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, 
+	JSObjectSetProperty(ctx, window, varname,
+		JSObjectMake(ctx, I7_PANEL_PRIVATE(panel)->js_class, panel),
+		kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly,
 		&exception);
-    g_assert(exception == NULL);
-    JSStringRelease(varname);
+	g_assert(exception == NULL);
+	JSStringRelease(varname);
 }
 
 gboolean
@@ -949,7 +949,7 @@ static gboolean
 update_font_tabs(GtkSourceView *view)
 {
 	update_font(GTK_WIDGET(view));
-    update_tabs(view);
+	update_tabs(view);
 	return FALSE; /* one-shot idle function */
 }
 
@@ -963,19 +963,19 @@ i7_panel_update_fonts(I7Panel *self)
 	WebKitWebSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
 	PangoFontDescription *fontdesc = get_font_description();
 	g_object_set(G_OBJECT(settings),
-	    "default-font-family", pango_font_description_get_family(fontdesc),
-	    NULL);
+		"default-font-family", pango_font_description_get_family(fontdesc),
+		NULL);
 
 	const gchar *font = pango_font_description_get_family(fontdesc);
 	gint size = pango_font_description_get_size(fontdesc) / PANGO_SCALE;
 	gchar *css = g_strdup_printf(
-	    "grid.normal { font-size: %d; }"
+		"grid.normal { font-size: %d; }"
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
 		"buffer.normal { font-size: %d; font-family: '%s'; }"
 		"buffer.header { font-size: %d; font-family: '%s';"
 		"    font-weight: bold; }"
 		"buffer.subheader { font-size: %d; font-family: '%s';"
-	    "    font-weight: bold; }"
+		"    font-weight: bold; }"
 		"buffer.alert { color: #aa0000; font-weight: bold; }"
 		"buffer.note { color: #aaaa00; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
@@ -983,25 +983,25 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.user1 { }"
 		"buffer.user2 { }"
 		"buffer.pager { color: #ffffff; background-color: #aa0000; }",
-	    size, size, font, (gint)(size * RELATIVE_SIZE_MEDIUM), font, size, font);
+		size, size, font, (gint)(size * RELATIVE_SIZE_MEDIUM), font, size, font);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_GAME]), css);
 	g_free(css);
 	pango_font_description_free(fontdesc);
 }
 
 /* Update the font sizes of WebViews in this pane */
-void 
+void
 i7_panel_update_font_sizes(I7Panel *self)
 {
-    WebKitWebSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
+	WebKitWebSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
 	gchar *font = config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
-    PangoFontDescription *stdfont = pango_font_description_from_string(font);
-    g_free(font);
+	PangoFontDescription *stdfont = pango_font_description_from_string(font);
+	g_free(font);
 	font = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
 	PangoFontDescription *monofont = pango_font_description_from_string(font);
 	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
-    gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
-	g_object_set(G_OBJECT(settings), 
+	gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
+	g_object_set(G_OBJECT(settings),
 		"default-font-size", stdsize,
 		"default-monospace-font-size", monosize,
 		"minimum-font-size", MIN(stdsize, monosize),

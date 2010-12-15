@@ -1,17 +1,17 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
  * new-i7
- * 
+ *
  * new-i7 is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * new-i7 is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -87,7 +87,7 @@ gchar *i7_app_get_extension_path(I7App *app, const gchar *author, const gchar *e
 gchar *i7_app_get_datafile_path(I7App *app, const gchar *filename);
 gchar *i7_app_get_datafile_path_va(I7App *app, const gchar *path1, ...);
 gboolean i7_app_check_datafile(I7App *app, const gchar *filename);
-gboolean i7_app_check_datafile_va(I7App *app, const gchar *path1, ...); 
+gboolean i7_app_check_datafile_va(I7App *app, const gchar *path1, ...);
 gchar *i7_app_get_pixmap_path(I7App *app, const gchar *filename);
 gchar *i7_app_get_binary_path(I7App *app, const gchar *filename);
 

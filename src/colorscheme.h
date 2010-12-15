@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef COLOR_SCHEME_H
 #define COLOR_SCHEME_H
 
@@ -25,23 +25,23 @@
 #if 0
 /* All the different colors we use in the application */
 enum {
-    CLR_BACKGROUND = 0,
-    CLR_TEXT,
-    CLR_STRING,
-    CLR_STRING_MARKUP,
-    CLR_KEYWORD,
-    CLR_COMMENT,
-    CLR_ERROR,
-    CLR_HIGHLIGHT,
-    CLR_LOCKED,
-    CLR_UNLOCKED,
-    CLR_SKEIN_INPUT,
-    CLR_I6_CODE,
-    CLR_TRANS_CHANGED,
-    CLR_TRANS_UNCHANGED,
-    CLR_TRANS_INPUT,
-    CLR_TRANS_UNSET,
-    CLR_LAST = CLR_TRANS_UNSET
+	CLR_BACKGROUND = 0,
+	CLR_TEXT,
+	CLR_STRING,
+	CLR_STRING_MARKUP,
+	CLR_KEYWORD,
+	CLR_COMMENT,
+	CLR_ERROR,
+	CLR_HIGHLIGHT,
+	CLR_LOCKED,
+	CLR_UNLOCKED,
+	CLR_SKEIN_INPUT,
+	CLR_I6_CODE,
+	CLR_TRANS_CHANGED,
+	CLR_TRANS_UNCHANGED,
+	CLR_TRANS_INPUT,
+	CLR_TRANS_UNSET,
+	CLR_LAST = CLR_TRANS_UNSET
 };
 #endif
 

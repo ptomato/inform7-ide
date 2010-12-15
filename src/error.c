@@ -23,34 +23,34 @@
 /* Create and display an error dialog box, with parent window parent, and
 message format string msg. If err is not NULL, tack the error message on to the
 end of the format string. */
-void 
-error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...) 
+void
+error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...)
 {
-    va_list ap;
-    
-    va_start(ap, msg);
-    gchar buffer[1024];
-    g_vsnprintf(buffer, 1024, msg, ap);
-    va_end(ap);
-    
-    gchar *message;
-    if(err) {
-        message = g_strconcat(buffer, err->message, NULL);
-        g_error_free(err);
-    } else
-        message = g_strdup(buffer);
-    
-    GtkWidget *dialog = gtk_message_dialog_new(parent,
-          parent? GTK_DIALOG_DESTROY_WITH_PARENT : 0,
-          GTK_MESSAGE_ERROR,
-          GTK_BUTTONS_OK,
-          message);
+	va_list ap;
+
+	va_start(ap, msg);
+	gchar buffer[1024];
+	g_vsnprintf(buffer, 1024, msg, ap);
+	va_end(ap);
+
+	gchar *message;
+	if(err) {
+		message = g_strconcat(buffer, err->message, NULL);
+		g_error_free(err);
+	} else
+		message = g_strdup(buffer);
+
+	GtkWidget *dialog = gtk_message_dialog_new(parent,
+		  parent? GTK_DIALOG_DESTROY_WITH_PARENT : 0,
+		  GTK_MESSAGE_ERROR,
+		  GTK_BUTTONS_OK,
+		  message);
 
 	/* WTF doesn't gtk_dialog_run() do this anymore? */
 	gtk_widget_show(dialog);
 	gtk_window_present(GTK_WINDOW(dialog));
-	
-    gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-    g_free(message);
+
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+	g_free(message);
 }

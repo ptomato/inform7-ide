@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include <errno.h>
 #include <string.h>
 #include <glib.h>
@@ -48,7 +48,7 @@ get_user_styles_dir(void)
 static GtkSourceStyleSchemeManager *
 get_style_scheme_manager(void)
 {
-    if(!scheme_manager) {
+	if(!scheme_manager) {
 		scheme_manager = gtk_source_style_scheme_manager_new();
 		/* Add the built-in styles directory */
 		gchar *dir = i7_app_get_datafile_path_va(i7_app_get(), "styles", NULL);
@@ -60,9 +60,9 @@ get_style_scheme_manager(void)
 			gtk_source_style_scheme_manager_append_search_path(scheme_manager, dir);
 			g_free(dir);
 		}
-    }
+	}
 
-    return scheme_manager;
+	return scheme_manager;
 }
 
 static gint
@@ -79,7 +79,7 @@ get_style_schemes_sorted()
 	GSList *schemes = NULL;
 	GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
 	const gchar * const *scheme_ids = gtk_source_style_scheme_manager_get_scheme_ids(manager);
-	
+
 	while (*scheme_ids != NULL) {
 		GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, *scheme_ids);
 		schemes = g_slist_prepend(schemes, scheme);
@@ -190,7 +190,7 @@ install_scheme(const gchar *fname)
 	gboolean copied = FALSE;
 
 	g_return_val_if_fail(fname != NULL, NULL);
-	
+
 	GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
 	gchar *dirname = g_path_get_dirname(fname);
 	gchar *styles_dir = get_user_styles_dir();
@@ -267,11 +267,11 @@ uninstall_scheme(const gchar *id)
 
 	if(g_unlink(filename) == -1)
 		return FALSE;
-		
+
 	/* Reload the available style schemes */
 	gtk_source_style_scheme_manager_force_rescan(manager);
-	
-	return TRUE;	
+
+	return TRUE;
 }
 
 /* Get the appropriate color scheme for the current settings. Return value must
@@ -279,39 +279,39 @@ not be unref'd. */
 GtkSourceStyleScheme *
 get_style_scheme(void)
 {
-    GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
-    gchar *scheme_name = config_file_get_string(PREFS_STYLE_SCHEME);
-    GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, scheme_name);
-    g_free(scheme_name);
-    return scheme;
+	GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
+	gchar *scheme_name = config_file_get_string(PREFS_STYLE_SCHEME);
+	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, scheme_name);
+	g_free(scheme_name);
+	return scheme;
 }
 
 /* Set up the style colors for the Natural Inform highlighting */
-void 
-set_highlight_styles(GtkSourceBuffer *buffer) 
+void
+set_highlight_styles(GtkSourceBuffer *buffer)
 {
-    GtkSourceStyleScheme *scheme = get_style_scheme();
-    gtk_source_buffer_set_style_scheme(buffer, scheme);
+	GtkSourceStyleScheme *scheme = get_style_scheme();
+	gtk_source_buffer_set_style_scheme(buffer, scheme);
 }
 
 #if 0
 /* Return the GdkColor in the current scheme */
-GdkColor 
-get_scheme_color(int color) 
+GdkColor
+get_scheme_color(int color)
 {
-    GdkColor *scheme;
-    switch(config_file_get_enum("EditorSettings", "ColorSet",
-      color_set_lookup_table)) {
-        case COLOR_SET_SUBDUED:
-            scheme = scheme_subdued;
-            break;
-        case COLOR_SET_PSYCHEDELIC:
-            scheme = scheme_psychedelic;
-            break;
-        case COLOR_SET_STANDARD:
-        default:
-            scheme = scheme_standard;
-    }
-    return scheme[color];
+	GdkColor *scheme;
+	switch(config_file_get_enum("EditorSettings", "ColorSet",
+	  color_set_lookup_table)) {
+		case COLOR_SET_SUBDUED:
+			scheme = scheme_subdued;
+			break;
+		case COLOR_SET_PSYCHEDELIC:
+			scheme = scheme_psychedelic;
+			break;
+		case COLOR_SET_STANDARD:
+		default:
+			scheme = scheme_standard;
+	}
+	return scheme[color];
 }
 #endif

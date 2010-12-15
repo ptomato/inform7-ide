@@ -45,8 +45,8 @@ history_block_handlers(I7Panel *panel)
 {
 	g_signal_handlers_block_by_func(panel->notebook, after_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_SOURCE], after_source_notebook_switch_page, panel);
-    g_signal_handlers_block_by_func(panel->tabs[I7_PANE_ERRORS], after_errors_notebook_switch_page, panel);
-    g_signal_handlers_block_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
+	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_ERRORS], after_errors_notebook_switch_page, panel);
+	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_navigation_requested, panel);
 }
 
@@ -55,8 +55,8 @@ history_unblock_handlers(I7Panel *panel)
 {
 	g_signal_handlers_unblock_by_func(panel->notebook, after_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_SOURCE], after_source_notebook_switch_page, panel);
-    g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_ERRORS], after_errors_notebook_switch_page, panel);
-    g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
+	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_ERRORS], after_errors_notebook_switch_page, panel);
+	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_navigation_requested, panel);
 }
 
@@ -80,7 +80,7 @@ history_goto_current(I7Panel *panel)
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
 	I7PanelHistory *current = g_queue_peek_nth(priv->history, priv->current);
-	
+
 	history_block_handlers(panel);
 	switch(current->pane) {
 		case I7_PANE_SOURCE:
@@ -94,9 +94,9 @@ history_goto_current(I7Panel *panel)
 			break;
 		default:
 			;
-    }
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(panel->notebook), current->pane);
-    history_unblock_handlers(panel);
+	}
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(panel->notebook), current->pane);
+	history_unblock_handlers(panel);
 }
 
 /* Empty the forward queue and push a new item to the front of the history */
@@ -106,7 +106,7 @@ history_push_item(I7Panel *panel, I7PanelHistory *item)
 	I7_PANEL_USE_PRIVATE(panel, priv);
 
 	if(priv->current == g_queue_get_length(priv->history) - 1)
-        gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
+		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
 
 	history_empty_forward_queue(panel);
 	g_queue_push_head(priv->history, item);
@@ -123,7 +123,7 @@ history_push_pane(I7Panel *panel, I7PanelPane pane)
 	history_push_item(panel, newitem);
 }
 
-/* Set a combination of pane and tab as the current location, and 
+/* Set a combination of pane and tab as the current location, and
 push the previous location into the back queue */
 void
 history_push_tab(I7Panel *panel, I7PanelPane pane, guint tab)

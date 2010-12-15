@@ -2,17 +2,17 @@
 /*
  * new-i7
  * Copyright (C) P. F. Chimento 2008 <philip.chimento@gmail.com>
- * 
+ *
  * new-i7 is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * new-i7 is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,36 +34,36 @@
 
 /* The names of the panes in each notebook */
 typedef enum {
-    I7_PANE_SOURCE = 0,
-    I7_PANE_ERRORS,
-    I7_PANE_INDEX,
-    I7_PANE_SKEIN,
-    I7_PANE_TRANSCRIPT,
-    I7_PANE_GAME,
-    I7_PANE_DOCUMENTATION,
-    I7_PANE_SETTINGS,
-    I7_PANEL_NUM_PANES
+	I7_PANE_SOURCE = 0,
+	I7_PANE_ERRORS,
+	I7_PANE_INDEX,
+	I7_PANE_SKEIN,
+	I7_PANE_TRANSCRIPT,
+	I7_PANE_GAME,
+	I7_PANE_DOCUMENTATION,
+	I7_PANE_SETTINGS,
+	I7_PANEL_NUM_PANES
 } I7PanelPane;
 
 /* The names of the sub tabs in "Errors" */
 typedef enum {
-    I7_ERRORS_TAB_PROGRESS = 0,
-    I7_ERRORS_TAB_DEBUGGING,
+	I7_ERRORS_TAB_PROGRESS = 0,
+	I7_ERRORS_TAB_DEBUGGING,
 	I7_ERRORS_TAB_PROBLEMS,
-    I7_ERRORS_TAB_INFORM6,
-    I7_ERRORS_NUM_TABS
+	I7_ERRORS_TAB_INFORM6,
+	I7_ERRORS_NUM_TABS
 } I7PaneErrorsTab;
 
 /* The names of the sub tabs in "Index" */
 typedef enum {
-    I7_INDEX_TAB_ACTIONS = 0,
-    I7_INDEX_TAB_CONTENTS,
-    I7_INDEX_TAB_KINDS,
-    I7_INDEX_TAB_PHRASEBOOK,
-    I7_INDEX_TAB_RULES,
-    I7_INDEX_TAB_SCENES,
-    I7_INDEX_TAB_WORLD,
-    I7_INDEX_NUM_TABS
+	I7_INDEX_TAB_ACTIONS = 0,
+	I7_INDEX_TAB_CONTENTS,
+	I7_INDEX_TAB_KINDS,
+	I7_INDEX_TAB_PHRASEBOOK,
+	I7_INDEX_TAB_RULES,
+	I7_INDEX_TAB_SCENES,
+	I7_INDEX_TAB_WORLD,
+	I7_INDEX_NUM_TABS
 } I7PaneIndexTab;
 
 typedef struct {

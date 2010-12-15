@@ -17,4 +17,3 @@ uninstall-local:
 	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/ /\\ /' \
 		| $(XARGS) rm --force; \
 	rm --force uninstall_manifest.txt
-
