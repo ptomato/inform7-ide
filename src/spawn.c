@@ -111,6 +111,19 @@ set_up_io_channel(gint fd, GtkTextBuffer *output)
 	g_io_channel_unref(ioc);
 }
 
+/* Echo the command invocation to the output buffer */
+static void
+echo_invocation_to_output(gchar **argv, GtkTextBuffer *output)
+{
+	gchar *args = g_strjoinv(" ", argv + 1);
+	GtkTextIter end;
+	gtk_text_buffer_get_end_iter(output, &end);
+	gchar *invocation = g_strdup_printf("\n%s \\\n\t%s\n", argv[0], args);
+	gtk_text_buffer_insert(output, &end, invocation, -1);
+	g_free(args);
+	g_free(invocation);
+}
+
 /* Runs a command (in argv[0]) with working directory wd, and pipes the output
 to a GtkTextBuffer */
 GPid
@@ -120,14 +133,7 @@ run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output)
 	GPid child_pid;
 	gint stdout_fd, stderr_fd;
 
-	/* Echo the invocation to the output buffer */
-	gchar *args = g_strjoinv(" ", argv + 1);
-	GtkTextIter end;
-	gtk_text_buffer_get_end_iter(output, &end);
-	gchar *invocation = g_strdup_printf("\n%s \\\n\t%s\n", argv[0], args);
-	gtk_text_buffer_insert(output, &end, invocation, -1);
-	g_free(args);
-	g_free(invocation);
+	echo_invocation_to_output(argv, output);
 
 	if (!g_spawn_async_with_pipes(
 	  wd,           /* working directory */
@@ -187,14 +193,7 @@ run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
 	GPid child_pid;
 	gint stdout_fd, stderr_fd;
 
-	/* Echo the invocation to the output buffer */
-	gchar *args = g_strjoinv(" ", argv + 1);
-	GtkTextIter end;
-	gtk_text_buffer_get_end_iter(output, &end);
-	gchar *invocation = g_strdup_printf("\n%s \\\n\t%s\n", argv[0], args);
-	gtk_text_buffer_insert(output, &end, invocation, -1);
-	g_free(args);
-	g_free(invocation);
+	echo_invocation_to_output(argv, output);
 
 	if (!g_spawn_async_with_pipes(
 	  wd,           /* working directory */
