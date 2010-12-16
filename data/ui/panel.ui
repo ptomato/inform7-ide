@@ -4,97 +4,15 @@
   <!-- interface-requires webkit 1.0 -->
   <!-- interface-requires gtksourceview 2.0 -->
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkAction" id="labels">
-    <property name="label">_Labels</property>
-    <property name="tooltip">Jump to a labeled node in the Skein</property>
-    <property name="stock_id">gtk-jump-to</property>
-    <property name="is_important">True</property>
-    <signal name="activate" handler="action_labels" swapped="no"/>
+  <object class="GtkLabel" id="game_pane_label">
+    <property name="visible">True</property>
+    <property name="label" translatable="yes">Game</property>
+    <property name="angle">270</property>
   </object>
-  <object class="GtkActionGroup" id="panel_actions"/>
-  <object class="GtkActionGroup" id="skein_actions">
-    <property name="visible">False</property>
-  </object>
-  <object class="GtkActionGroup" id="transcript_actions">
-    <property name="sensitive">False</property>
-  </object>
-  <object class="GtkActionGroup" id="documentation_actions">
-    <property name="visible">False</property>
-  </object>
-  <object class="GtkAction" id="back">
-    <property name="label">_Back</property>
-    <property name="tooltip">Go back</property>
-    <property name="stock_id">gtk-go-back</property>
-    <property name="sensitive">False</property>
-    <signal name="activate" handler="action_back" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="forward">
-    <property name="label">_Forward</property>
-    <property name="tooltip">Go forward</property>
-    <property name="stock_id">gtk-go-forward</property>
-    <property name="sensitive">False</property>
-    <signal name="activate" handler="action_forward" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="layout">
-    <property name="label">La_yout</property>
-    <property name="tooltip">Edit the spacing for items in the skein</property>
-    <property name="stock_id">gtk-preferences</property>
-    <property name="is_important">True</property>
-    <signal name="activate" handler="action_layout" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="trim">
-    <property name="label">_Trim</property>
-    <property name="tooltip">Trim unused nodes from the skein</property>
-    <property name="stock_id">gtk-cut</property>
-    <property name="is_important">True</property>
-    <signal name="activate" handler="action_trim" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="play_all_blessed">
-    <property name="label">Play _All</property>
-    <property name="tooltip">Play through all the blessed nodes in the entire skein</property>
-    <property name="stock_id">gtk-media-play</property>
-    <property name="is_important">True</property>
-    <property name="sensitive">False</property>
-    <property name="visible">False</property>
-    <signal name="activate" handler="action_play_all_blessed" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="next_difference_skein">
-    <property name="label">Next in _Skein</property>
-    <property name="tooltip">Go to the next difference in the Skein</property>
-    <property name="stock_id">gtk-goto-bottom</property>
-    <property name="is_important">True</property>
-  </object>
-  <object class="GtkAction" id="next_difference">
-    <property name="label">_Next Diff</property>
-    <property name="tooltip">Go to the next difference</property>
-    <property name="stock_id">gtk-go-down</property>
-    <property name="is_important">True</property>
-  </object>
-  <object class="GtkAction" id="previous_difference">
-    <property name="label">_Prev Diff</property>
-    <property name="tooltip">Go to the previous difference</property>
-    <property name="stock_id">gtk-go-up</property>
-    <property name="is_important">True</property>
-  </object>
-  <object class="GtkAction" id="bless_all">
-    <property name="label">B_less All</property>
-    <property name="tooltip">Bless the entire transcript</property>
-    <property name="stock_id">gtk-yes</property>
-    <property name="is_important">True</property>
-  </object>
-  <object class="GtkAction" id="goto_contents">
-    <property name="label">_Contents</property>
-    <property name="tooltip">Display the Inform 7 documentation</property>
-    <property name="stock_id">gtk-index</property>
-    <property name="is_important">True</property>
-    <signal name="activate" handler="action_contents" swapped="no"/>
-  </object>
-  <object class="WebkitWebSettings" id="websettings">
-    <property name="default_encoding">utf8</property>
-    <property name="enable_plugins">False</property>
-    <property name="resizable_text_areas">False</property>
-    <property name="enable_html5_database">False</property>
-    <property name="enable_html5_local_storage">False</property>
+  <object class="GtkLabel" id="source_pane_label">
+    <property name="visible">True</property>
+    <property name="label" translatable="yes">Source</property>
+    <property name="angle">270</property>
   </object>
   <object class="GtkNotebook" id="panel">
     <property name="visible">True</property>
@@ -260,35 +178,6 @@
         <property name="scrollable">True</property>
         <signal name="switch-page" handler="after_index_notebook_switch_page" after="yes" swapped="no"/>
         <child>
-          <object class="GtkScrolledWindow" id="actions_scrolledwindow">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
-            <child>
-              <object class="WebkitWebView" id="actions">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="settings">websettings</property>
-                <signal name="resource-request-starting" handler="on_resource_request_starting" swapped="no"/>
-                <signal name="navigation-requested" handler="on_navigation_requested" swapped="no"/>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child type="tab">
-          <object class="GtkLabel" id="actions_label">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Actions</property>
-          </object>
-          <packing>
-            <property name="tab_fill">False</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkScrolledWindow" id="contents_scrolledwindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -307,14 +196,43 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child type="tab">
           <object class="GtkLabel" id="contents_label">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Contents</property>
+          </object>
+          <packing>
+            <property name="tab_fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="actions_scrolledwindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <child>
+              <object class="WebkitWebView" id="actions">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="settings">websettings</property>
+                <signal name="resource-request-starting" handler="on_resource_request_starting" swapped="no"/>
+                <signal name="navigation-requested" handler="on_navigation_requested" swapped="no"/>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child type="tab">
+          <object class="GtkLabel" id="actions_label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Actions</property>
           </object>
           <packing>
             <property name="position">1</property>
@@ -831,14 +749,96 @@
       </packing>
     </child>
   </object>
-  <object class="GtkLabel" id="source_pane_label">
-    <property name="visible">True</property>
-    <property name="label" translatable="yes">Source</property>
-    <property name="angle">270</property>
+  <object class="WebkitWebSettings" id="websettings">
+    <property name="default_encoding">utf8</property>
+    <property name="enable_plugins">False</property>
+    <property name="resizable_text_areas">False</property>
+    <property name="enable_html5_database">False</property>
+    <property name="enable_html5_local_storage">False</property>
   </object>
-  <object class="GtkLabel" id="game_pane_label">
-    <property name="visible">True</property>
-    <property name="label" translatable="yes">Game</property>
-    <property name="angle">270</property>
+  <object class="GtkAction" id="goto_contents">
+    <property name="label">_Contents</property>
+    <property name="tooltip">Display the Inform 7 documentation</property>
+    <property name="stock_id">gtk-index</property>
+    <property name="is_important">True</property>
+    <signal name="activate" handler="action_contents" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="bless_all">
+    <property name="label">B_less All</property>
+    <property name="tooltip">Bless the entire transcript</property>
+    <property name="stock_id">gtk-yes</property>
+    <property name="is_important">True</property>
+  </object>
+  <object class="GtkAction" id="previous_difference">
+    <property name="label">_Prev Diff</property>
+    <property name="tooltip">Go to the previous difference</property>
+    <property name="stock_id">gtk-go-up</property>
+    <property name="is_important">True</property>
+  </object>
+  <object class="GtkAction" id="next_difference">
+    <property name="label">_Next Diff</property>
+    <property name="tooltip">Go to the next difference</property>
+    <property name="stock_id">gtk-go-down</property>
+    <property name="is_important">True</property>
+  </object>
+  <object class="GtkAction" id="next_difference_skein">
+    <property name="label">Next in _Skein</property>
+    <property name="tooltip">Go to the next difference in the Skein</property>
+    <property name="stock_id">gtk-goto-bottom</property>
+    <property name="is_important">True</property>
+  </object>
+  <object class="GtkAction" id="play_all_blessed">
+    <property name="label">Play _All</property>
+    <property name="tooltip">Play through all the blessed nodes in the entire skein</property>
+    <property name="stock_id">gtk-media-play</property>
+    <property name="is_important">True</property>
+    <property name="sensitive">False</property>
+    <property name="visible">False</property>
+    <signal name="activate" handler="action_play_all_blessed" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="trim">
+    <property name="label">_Trim</property>
+    <property name="tooltip">Trim unused nodes from the skein</property>
+    <property name="stock_id">gtk-cut</property>
+    <property name="is_important">True</property>
+    <signal name="activate" handler="action_trim" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="layout">
+    <property name="label">La_yout</property>
+    <property name="tooltip">Edit the spacing for items in the skein</property>
+    <property name="stock_id">gtk-preferences</property>
+    <property name="is_important">True</property>
+    <signal name="activate" handler="action_layout" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="forward">
+    <property name="label">_Forward</property>
+    <property name="tooltip">Go forward</property>
+    <property name="stock_id">gtk-go-forward</property>
+    <property name="sensitive">False</property>
+    <signal name="activate" handler="action_forward" swapped="no"/>
+  </object>
+  <object class="GtkAction" id="back">
+    <property name="label">_Back</property>
+    <property name="tooltip">Go back</property>
+    <property name="stock_id">gtk-go-back</property>
+    <property name="sensitive">False</property>
+    <signal name="activate" handler="action_back" swapped="no"/>
+  </object>
+  <object class="GtkActionGroup" id="documentation_actions">
+    <property name="visible">False</property>
+  </object>
+  <object class="GtkActionGroup" id="transcript_actions">
+    <property name="sensitive">False</property>
+  </object>
+  <object class="GtkActionGroup" id="skein_actions">
+    <property name="visible">False</property>
+  </object>
+  <object class="GtkActionGroup" id="panel_actions"/>
+  <object class="GtkAction" id="labels">
+    <property name="label">_Labels</property>
+    <property name="tooltip">Jump to a labeled node in the Skein</property>
+    <property name="stock_id">gtk-jump-to</property>
+    <property name="is_important">True</property>
+    <signal name="activate" handler="action_labels" swapped="no"/>
   </object>
 </interface>
