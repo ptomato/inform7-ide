@@ -67,10 +67,3 @@ html_load_blank(WebKitWebView *html)
 	webkit_web_view_open(html, "about:blank"); /* SUCKY DEBIAN Deprecated since 1.1.1 */
 }
 
-/* Reload the html widget */
-void
-html_refresh(WebKitWebView *html)
-{
-	g_return_if_fail(html);
-	webkit_web_view_reload(html);
-}

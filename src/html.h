@@ -24,6 +24,5 @@
 void html_load_file(WebKitWebView *html, const gchar *filename);
 void html_load_file_at_anchor(WebKitWebView *html, const gchar *file, const gchar *anchor);
 void html_load_blank(WebKitWebView *html);
-void html_refresh(WebKitWebView *html);
 
 #endif
