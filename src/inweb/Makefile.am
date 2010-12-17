@@ -89,6 +89,12 @@ EXTRA_DIST = $(inwebmaterials)
 
 # Copy the sources ourselves, they have SPACES in their filenames! Wooooo!
 # I'm automake! Spaces are evil! I refuse to handle such newfangled notions!
+#
+# Also: why should the distdir be unwritable?!
 dist-hook:
-	cp --preserve=mode,ownership,timestamps --parents $(inwebsrc) $(distdir)
-	$(MKDIR_P) $(distdir)/Woven
+	$(MKDIR_P) --mode=u+w $(distdir)/Preliminaries $(distdir)/Chapter\ 1 \
+		$(distdir)/Chapter\ 2 $(distdir)/Chapter\ 3 $(distdir)/Woven
+	cd $(srcdir) && \
+		cp --preserve=mode,ownership,timestamps --parents \
+		$(inwebsrc) $(abs_builddir)/$(distdir)
+

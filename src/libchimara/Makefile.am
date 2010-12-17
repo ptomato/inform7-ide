@@ -42,7 +42,7 @@ libchimara_a_CPPFLAGS = \
 	-DLOCALEDIR=\""$(datadir)/locale"\" \
 	-DPLUGINDIR=\""$(pluginpath)"\" \
 	-DPLUGINSOURCEDIR=\""$(abs_builddir)/../interpreters"\" \
-	-I..
+	-I$(srcdir)/..
 libchimara_a_CFLAGS = @CHIMARA_CFLAGS@ $(AM_CFLAGS)
 
 BUILT_SOURCES = chimara-marshallers.c chimara-marshallers.h

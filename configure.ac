@@ -24,20 +24,20 @@ AM_SILENT_RULES([yes])
 AC_PROG_GREP
 AC_PROG_EGREP
 
-AC_CHECK_FILE([src/ni/ni], [], [
-	AC_MSG_ERROR([ni not found in src/ni.
+AC_CHECK_FILE([${srcdir}/src/ni/ni], [NI=${srcdir}/src/ni/ni], [
+	AC_MSG_ERROR([ni not found in ${srcdir}/src/ni.
 	IMPORTANT NOTE! You must download version $VERSION of the appropriate
 	compiler package from inform7.org and put the file `ni' into the
-	directory `$(pwd)/src/ni'.])
+	directory `${srcdir}/src/ni'.])
 ])
-AC_MSG_CHECKING([the version of src/ni/ni])
-AS_IF([src/ni/ni | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
+AC_MSG_CHECKING([the version of ${NI}])
+AS_IF([${NI} | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
 	AC_MSG_ERROR([You have version
-	[$(src/ni/ni | $EGREP -o '[0-9][A-Z][0-9]{2}')] of ni in src/ni. This version of Inform 7 will only work with
+	[$(${NI} | $EGREP -o '[0-9][A-Z][0-9]{2}')] of ni in src/ni. This version of Inform 7 will only work with
 	version $VERSION.
 	IMPORTANT NOTE! You must download version $VERSION of the appropriate
 	compiler package from inform7.org and put the file `ni' into the
-	directory `$(pwd)/src/ni'.])
+	directory `${srcdir}/src/ni'.])
 ])
 
 ### DECLARE OPTIONS ############################################################
@@ -86,6 +86,20 @@ AC_ARG_ENABLE([deb],
 	[deb=false]
 )
 AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$deb" = xtrue])
+
+# --enable-distcheck does the same thing as --enable-deb, but doesn't require
+# dpkg-buildpackage. This is because the tarball for distcheck needs to have
+# the ni binary in it, otherwise configuring it will fail.
+AC_ARG_ENABLE([distcheck],
+	[AS_HELP_STRING([--enable-distcheck],[Configure for make distcheck [no]])],
+	[AS_CASE([${enableval}],
+		[yes], [distcheck=true],
+		[no],  [distcheck=false],
+		[AC_MSG_ERROR([bad value ${enableval} for --enable-distcheck])]
+	)],
+	[distcheck=false]
+)
+AM_CONDITIONAL([DISTCHECK], [$TEST "x$distcheck" = xtrue])
 
 # --enable-manuals builds the inweb and cBlorb manuals. Requires pdftex and dot.
 AC_ARG_ENABLE([manuals],

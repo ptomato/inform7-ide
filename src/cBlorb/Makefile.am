@@ -22,7 +22,9 @@ pkglibexec_PROGRAMS = cBlorb
 nodist_cBlorb_SOURCES = Tangled/cBlorb.c
 BUILT_SOURCES = $(nodist_cBlorb_SOURCES)
 $(nodist_cBlorb_SOURCES) : $(cblorbsrc)
-	$(PERL) ../inweb/Tangled/inweb.pl . -tangle -at ../
+	$(MKDIR_P) Tangled;
+	$(PERL) $(srcdir)/../inweb/Tangled/inweb.pl \
+		$(srcdir) -tangle-to $(nodist_cBlorb_SOURCES) -at $(srcdir)/../
 CLEANFILES = $(nodist_cBlorb_SOURCES)
 
 if MANUALS
@@ -77,5 +79,10 @@ endif
 EXTRA_DIST = $(cblorbmaterials)
 
 dist-hook:
-	cp --preserve=mode,ownership,timestamps --parents $(cblorbsrc) $(distdir)
-	$(MKDIR_P) $(distdir)/Woven $(distdir)/Tangled
+	$(MKDIR_P) --mode=u+w $(distdir)/Preliminaries $(distdir)/Chapter\ 1 \
+		$(distdir)/Chapter\ 2 $(distdir)/Chapter\ 3 $(distdir)/Woven \
+		$(distdir)/Tangled
+	cd $(srcdir) && \
+		cp --preserve=mode,ownership,timestamps --parents \
+		$(cblorbsrc) $(abs_builddir)/$(distdir)
+
