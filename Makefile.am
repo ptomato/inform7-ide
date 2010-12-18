@@ -9,7 +9,7 @@ schemadir = @GCONF_SCHEMA_FILE_DIR@
 dist_schema_DATA = gnome-inform7.schemas
 
 docdir = $(datadir)/doc/$(PACKAGE)
-dist_doc_DATA = AUTHORS ChangeLog COPYING INSTALL NEWS README THANKS TODO
+dist_doc_DATA = AUTHORS ChangeLog COPYING NEWS README THANKS TODO
 
 install-data-local:
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
@@ -20,6 +20,7 @@ uninstall-local:
 	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(dist_schema_DATA)
 
 EXTRA_DIST = \
+	INSTALL \
 	autogen.sh \
 	intltool-update.in \
 	intltool-extract.in \
@@ -45,12 +46,22 @@ DEBUGRPM = $(PACKAGE)-debuginfo-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
 SRCRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).src.rpm
 rpm: dist
 	$(ECHO) "Building RPM package..."; \
-	$(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.gz && \
-	$(CP) $(RPMDIR)/$(RPMARCH)/$(BINRPM) $(srcdir); \
-	$(CP) $(SRCRPMDIR)/$(SRCRPM) $(srcdir) && \
-	$(TEST) -e $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) && \
-	$(CP) $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) $(srcdir) || \
-	$(ECHO) "No debug package; install redhat-rpm-config if you want one."
+	if $(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.gz; then \
+		if $(TEST) -e $(RPMDIR)/$(BINRPM); then \
+			$(CP) $(RPMDIR)/$(BINRPM) $(builddir); \
+		elif $(TEST) -e $(RPMDIR)/$(RPMARCH)/$(BINRPM); then \
+			$(CP) $(RPMDIR)/$(RPMARCH)/$(BINRPM) $(builddir); \
+		fi; \
+		$(TEST) -e $(SRCRPMDIR)/$(SRCRPM) && \
+		$(CP) $(SRCRPMDIR)/$(SRCRPM) $(builddir); \
+		if $(TEST) -e $(RPMDIR)/$(DEBUGRPM); then \
+			$(CP) $(RPMDIR)/$(DEBUGRPM) $(builddir); \
+		elif $(TEST) -e $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM); then \
+			$(CP) $(RPMDIR)/$(RPMARCH)/$(DEBUGRPM) $(builddir); \
+		else \
+			$(ECHO) "No debug package; install redhat-rpm-config if you want one."; \
+		fi; \
+	fi
 else
 rpm:
 	@$(ECHO) \

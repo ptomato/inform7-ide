@@ -33,6 +33,7 @@ BuildRequires: dbus-glib-devel
 BuildRequires: SDL_sound-devel, SDL_mixer-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+BuildRequires: GConf2
 Requires(pre): GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
@@ -57,14 +58,26 @@ make
 %install
 rm -rf %{buildroot}
 export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
-%makeinstall
+make install DESTDIR=%{buildroot}
 unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
+# Clean out files that should not be part of the rpm.
+%{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
 
 %post
 %gconf_schema_upgrade gnome-inform7
+touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
 %preun
 %gconf_schema_remove gnome-inform7
+
+%postun
+if [ $1 -eq 0 ] ; then
+    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+
+%posttrans
+gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %clean
 rm -rf %{buildroot}
@@ -73,6 +86,7 @@ rm -rf %{buildroot}
 %defattr(-, root, root)
 %define pkgdatadir %{_datadir}/%{name}
 %define pkgdocdir %{_datadir}/doc/%{name}
+%define pkglibdir %{_libdir}/%{name}
 %define pkglibexecdir %{_libexecdir}/%{name}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
@@ -117,29 +131,35 @@ rm -rf %{buildroot}
 %{pkgdatadir}/languages/*.lang
 %{pkgdatadir}/Documentation/licenses/*.html
 %{pkgdatadir}/styles/*.xml
-%{_datadir}/pixmaps/Inform.png
-%{_datadir}/pixmaps/%{name}/*.png
+%{pkgdatadir}/ui/*.ui
+%{pkgdatadir}/ui/*.xml
+%{_datadir}/icons/hicolor/*/actions/inform7-builtin.png
+%{_datadir}/icons/hicolor/*/apps/inform7.png
+%{_datadir}/icons/hicolor/*/mimetypes/application-x-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/text-x-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform.png
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
 %{_bindir}/gnome-inform7
 %{pkglibexecdir}/cBlorb
 %{pkgdocdir}/cBlorb/Complete.pdf
-%{pkglibexecdir}/gtkterp-frotz
+%{pkglibdir}/frotz.so
 %{pkgdocdir}/frotz/AUTHORS
 %{pkgdocdir}/frotz/COPYING
 %{pkgdocdir}/frotz/README
 %{pkgdocdir}/frotz/TODO
-%config(noreplace) %{_sysconfdir}/gtkterp.ini
-%{pkgdocdir}/garglk/*.txt
-%{pkgdocdir}/garglk/TODO
-%{pkglibexecdir}/gtkterp-git
+%{pkglibdir}/git.so
 %{pkgdocdir}/git/README.txt
-%{pkglibexecdir}/gtkterp-glulxe
+%{pkglibdir}/glulxe.so
 %{pkgdocdir}/glulxe/README
 %{pkglibexecdir}/inform-6.31-biplatform
 %{pkgdocdir}/inform6/readme.txt
 %{pkglibexecdir}/ni
 
 %changelog
+* Fri Dec 17 2010 P.F. Chimento <philip.chimento@gmail.com>
+- Changed files after merge of development branch.
+- Added scriptlet for icon cache updating.
+- Updated scriptlet for GConf schemas.
 * Tue Oct 26 2010 P.F. Chimento <philip.chimento@gmail.com>
 - Added Quixe and Eric Eve directories to packing list.
 * Mon Oct 4 2010 P.F. Chimento <philip.chimento@gmail.com>
