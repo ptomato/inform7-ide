@@ -54,8 +54,8 @@ typedef enum {
 
 /* The names of the sub tabs in "Index" */
 typedef enum {
-	I7_INDEX_TAB_ACTIONS = 0,
-	I7_INDEX_TAB_CONTENTS,
+	I7_INDEX_TAB_CONTENTS = 0,
+	I7_INDEX_TAB_ACTIONS,
 	I7_INDEX_TAB_KINDS,
 	I7_INDEX_TAB_PHRASEBOOK,
 	I7_INDEX_TAB_RULES,
