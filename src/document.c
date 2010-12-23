@@ -112,61 +112,11 @@ i7_document_init(I7Document *self)
 	priv->highlighted_view = NULL;
 	priv->modified = FALSE;
 
-	/* Make the action groups. This for-loop is a temporary fix
-	and can be removed once Glade supports adding actions and accelerators to an
-	action group. */
-	const gchar *actions[] = {
-		"view_menu", "",
-		"format_menu", "",
-		"save", NULL, /* NULL means use the stock accelerator */
-		"save_as", "<shift><ctrl>S",
-		"save_copy", "",
-		"revert", NULL,
-		"page_setup", "",
-		"print_preview", "<shift><ctrl>P",
-		"print", "<ctrl>P",
-		"close", NULL,
-		"undo", "<ctrl>Z",
-		"redo", "<shift><ctrl>Z",
-		"paste", NULL,
-		"select_all", "<ctrl>A",
-		"find", NULL,
-		"find_next", "<ctrl>G",
-		"find_previous", "<shift><ctrl>G",
-		"replace", "<ctrl>H",
-		"search", "<shift><ctrl>F",
-		"check_spelling", "<shift>F7",
-		"autocheck_spelling", "",
-		"view_toolbar", "",
-		"view_statusbar", "",
-		"show_headings", "<shift><ctrl>H",
-		"current_section_only", "<alt><ctrl>Right",
-		"increase_restriction", "<ctrl>Right",
-		"decrease_restriction", "<ctrl>Left",
-		"entire_source", "<alt><ctrl>Left",
-		"previous_section", "<ctrl>Page_Up",
-		"next_section", "<ctrl>Page_Down",
-		"indent", "<ctrl>T",
-		"unindent", "<shift><ctrl>T",
-		"renumber_all_sections", "<alt><ctrl>N",
-		"enable_elastic_tabs", "",
-		NULL
-	};
-	const gchar *selection_actions[] = {
-		"scroll_selection", "<ctrl>J",
-		"comment_out_selection", "<ctrl>slash",
-		"uncomment_selection", "<ctrl>question", /* Ctrl-Shift-/ doesn't work, Gnome bug #614146 */
-		NULL
-	};
-	const gchar *copy_actions[] = {
-		"cut", NULL,
-		"copy", NULL,
-		NULL
-	};
-	add_actions(builder, &(priv->document_action_group), "document_actions", actions);
-	add_actions(builder, &(priv->selection_action_group), "selection_actions", selection_actions);
-	add_actions(builder, &(priv->copy_action_group), "copy_actions", copy_actions);
-
+	/* Make the action groups */
+	priv->document_action_group = GTK_ACTION_GROUP(load_object(builder, "document_actions"));
+	priv->selection_action_group = GTK_ACTION_GROUP(load_object(builder, "selection_actions"));
+	priv->copy_action_group = GTK_ACTION_GROUP(load_object(builder, "copy_actions"));
+	
 	self->ui_manager = gtk_ui_manager_new();
 	i7_app_insert_action_groups(theapp, self->ui_manager);
 	gtk_ui_manager_insert_action_group(self->ui_manager, priv->document_action_group, 0);

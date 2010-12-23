@@ -3,96 +3,183 @@
   <!-- interface-requires gtk+ 2.12 -->
   <requires lib="gtksourceview" version="2473.34008"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkAction" id="suggest_feature">
-    <property name="label">Suggest a _Feature...</property>
-    <property name="short_label">Suggest a _Feature</property>
-    <property name="tooltip">Open the Inform 7 suggestions forum in the browser</property>
-    <signal name="activate" handler="action_suggest_feature" swapped="no"/>
+  <object class="GtkActionGroup" id="app_actions">
+    <child>
+      <object class="GtkAction" id="about">
+        <property name="label">_About</property>
+        <property name="short_label" translatable="yes">_About</property>
+        <property name="tooltip">About this application</property>
+        <property name="stock_id">gtk-about</property>
+        <signal name="activate" handler="action_about" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="report_bug">
+        <property name="label">Report a _Bug...</property>
+        <property name="short_label">Report a _Bug</property>
+        <property name="tooltip">Open the Inform 7 bug tracker in the browser</property>
+        <signal name="activate" handler="action_report_bug" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="suggest_feature">
+        <property name="label">Suggest a _Feature...</property>
+        <property name="short_label">Suggest a _Feature</property>
+        <property name="tooltip">Open the Inform 7 suggestions forum in the browser</property>
+        <signal name="activate" handler="action_suggest_feature" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="visit_inform7_com">
+        <property name="label">_Visit Inform7.com</property>
+        <property name="short_label" translatable="yes">_Visit Inform7.com</property>
+        <property name="tooltip">Go to the Inform 7 website in your web browser</property>
+        <signal name="activate" handler="action_visit_inform7_com" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="quit">
+        <property name="label">_Quit</property>
+        <property name="short_label" translatable="yes">_Quit</property>
+        <property name="tooltip">Quit the program</property>
+        <property name="stock_id">gtk-quit</property>
+        <signal name="activate" handler="action_quit" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="preferences">
+        <property name="label">Pr_eferences</property>
+        <property name="short_label" translatable="yes">Pr_eferences</property>
+        <property name="tooltip">Configure the application</property>
+        <property name="stock_id">gtk-preferences</property>
+        <signal name="activate" handler="action_preferences" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="open_extension">
+        <property name="label">Open _Extension</property>
+        <property name="short_label" translatable="yes">Open _Extension</property>
+        <property name="tooltip">Open an extension for editing</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="install_extension">
+        <property name="label">Install E_xtension...</property>
+        <property name="short_label" translatable="yes">Install E_xtension...</property>
+        <property name="tooltip">Install an extension for use in Inform projects</property>
+        <property name="stock_id">gtk-add</property>
+        <signal name="activate" handler="action_install_extension" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkRecentAction" id="open_recent">
+        <property name="label">Open Recen_t</property>
+        <property name="short_label" translatable="yes">Open Recen_t</property>
+        <property name="tooltip">Open a recently opened story</property>
+        <property name="limit">10</property>
+        <property name="sort_type">mru</property>
+        <signal name="item-activated" handler="action_open_recent" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="open">
+        <property name="label">_Open...</property>
+        <property name="short_label" translatable="yes">_Open...</property>
+        <property name="tooltip">Open an existing story</property>
+        <property name="stock_id">gtk-open</property>
+        <signal name="activate" handler="action_open" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="new">
+        <property name="label">_New...</property>
+        <property name="short_label" translatable="yes">_New...</property>
+        <property name="tooltip">Start a new story</property>
+        <property name="stock_id">gtk-new</property>
+        <signal name="activate" handler="action_new" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="help_menu">
+        <property name="label">_Help</property>
+        <property name="short_label" translatable="yes">_Help</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="edit_menu">
+        <property name="label">_Edit</property>
+        <property name="short_label" translatable="yes">_Edit</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="file_menu">
+        <property name="label">_File</property>
+        <property name="short_label" translatable="yes">_File</property>
+      </object>
+    </child>
   </object>
-  <object class="GtkAction" id="visit_inform7_com">
-    <property name="label">_Visit Inform7.com</property>
-    <property name="tooltip">Go to the Inform 7 website in your web browser</property>
-    <signal name="activate" handler="action_visit_inform7_com" swapped="no"/>
+  <object class="GtkListStore" id="font_set_model">
+    <columns>
+      <!-- column-name item -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Use font from theme</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Use monospace font from theme</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Use custom font</col>
+      </row>
+    </data>
   </object>
-  <object class="GtkAction" id="report_bug">
-    <property name="label">Report a _Bug...</property>
-    <property name="short_label">Report a _Bug</property>
-    <property name="tooltip">Open the Inform 7 bug tracker in the browser</property>
-    <signal name="activate" handler="action_report_bug" swapped="no"/>
+  <object class="GtkListStore" id="font_size_model">
+    <columns>
+      <!-- column-name item -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Standard</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Medium</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Large</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Huge</col>
+      </row>
+    </data>
   </object>
-  <object class="GtkSourceBuffer" id="sample_buffer">
-    <property name="text" translatable="yes">Part One - the Wharf
-
-The Customs Wharf is a room. [change the description if the cask is open] "Amid the bustle of the quayside, [if the case is open]many eyes stray to your broached cask. [otherwise]nobody takes much notice of a man heaving a cask about.[end if]Sleek gondolas jostle at the plank pier."</property>
-    <property name="highlight_matching_brackets">False</property>
-    <property name="max_undo_levels">-1</property>
+  <object class="GtkListStore" id="glulx_terps_model">
+    <columns>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Glulxe (default)</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">git</col>
+      </row>
+    </data>
   </object>
-  <object class="GtkSourceBuffer" id="tab_buffer">
-    <property name="text" translatable="yes" comments="Make sure to keep TAB characters ('\t') between the words">	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab</property>
-    <property name="highlight_syntax">False</property>
-    <property name="highlight_matching_brackets">False</property>
-    <property name="max_undo_levels">-1</property>
-  </object>
-  <object class="GtkRecentAction" id="open_recent">
-    <property name="label">Open Recen_t</property>
-    <property name="tooltip">Open a recently opened story</property>
-    <property name="limit">10</property>
-    <property name="sort_type">mru</property>
-    <signal name="item-activated" handler="action_open_recent" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="about">
-    <property name="label">_About</property>
-    <property name="tooltip">About this application</property>
-    <property name="stock_id">gtk-about</property>
-    <signal name="activate" handler="action_about" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="quit">
-    <property name="label">_Quit</property>
-    <property name="tooltip">Quit the program</property>
-    <property name="stock_id">gtk-quit</property>
-    <signal name="activate" handler="action_quit" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="preferences">
-    <property name="label">Pr_eferences</property>
-    <property name="tooltip">Configure the application</property>
-    <property name="stock_id">gtk-preferences</property>
-    <signal name="activate" handler="action_preferences" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="open_extension">
-    <property name="label">Open _Extension</property>
-    <property name="tooltip">Open an extension for editing</property>
-  </object>
-  <object class="GtkAction" id="install_extension">
-    <property name="label">Install E_xtension...</property>
-    <property name="tooltip">Install an extension for use in Inform projects</property>
-    <property name="stock_id">gtk-add</property>
-    <signal name="activate" handler="action_install_extension" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="open">
-    <property name="label">_Open...</property>
-    <property name="tooltip">Open an existing story</property>
-    <property name="stock_id">gtk-open</property>
-    <signal name="activate" handler="action_open" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="new">
-    <property name="label">_New...</property>
-    <property name="tooltip">Start a new story</property>
-    <property name="stock_id">gtk-new</property>
-    <signal name="activate" handler="action_new" swapped="no"/>
-  </object>
-  <object class="GtkAction" id="help_menu">
-    <property name="label">_Help</property>
-  </object>
-  <object class="GtkAction" id="edit_menu">
-    <property name="label">_Edit</property>
-  </object>
-  <object class="GtkAction" id="file_menu">
-    <property name="label">_File</property>
-  </object>
-  <object class="GtkActionGroup" id="app_actions"/>
-  <object class="GtkAdjustment" id="tab_ruler_adjustment">
-    <property name="upper">32</property>
-    <property name="step_increment">1</property>
+  <object class="GtkTreeStore" id="installed_extensions_store">
+    <columns>
+      <!-- column-name text -->
+      <column type="gchararray"/>
+      <!-- column-name readonly -->
+      <column type="gboolean"/>
+      <!-- column-name icon -->
+      <column type="gchararray"/>
+      <!-- column-name path -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkDialog" id="prefs_dialog">
     <property name="border_width">5</property>
@@ -106,6 +193,33 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
       <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area2">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="prefs_close">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="gtk_widget_hide" object="prefs_dialog" swapped="yes"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkNotebook" id="prefs_notebook">
             <property name="visible">True</property>
@@ -130,6 +244,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -141,12 +256,15 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                         <signal name="changed" handler="on_author_name_changed" swapped="no"/>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -176,6 +294,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="stock">gtk-orientation-portrait</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -185,6 +305,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="label" translatable="yes">Author</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -211,6 +333,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -227,6 +350,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -243,6 +367,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -259,6 +384,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">3</property>
                   </packing>
                 </child>
@@ -276,6 +402,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="stock">gtk-edit</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -285,6 +413,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="label" translatable="yes">Editing</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -325,6 +455,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                               </object>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -435,6 +566,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 </child>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -451,6 +584,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -498,6 +633,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 </child>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -542,6 +679,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 </child>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -560,6 +699,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -587,6 +728,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 <signal name="format-value" handler="on_tab_ruler_format_value" swapped="no"/>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -604,6 +747,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 <property name="buffer">tab_buffer</property>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -622,6 +767,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -667,6 +814,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">3</property>
                   </packing>
                 </child>
@@ -684,6 +833,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="stock">gtk-select-font</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -693,6 +844,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="label" translatable="yes">Formatting</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -752,6 +905,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                             </child>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -766,6 +921,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                               </object>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -776,12 +932,15 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 <property name="label" translatable="yes">indicates an extension built into Inform.</property>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -857,6 +1016,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="icon_name">package-x-generic</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -866,6 +1027,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="label" translatable="yes">Extensions</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -906,6 +1069,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                               </object>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -922,6 +1086,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                               </object>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -939,6 +1104,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -962,6 +1128,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                               </object>
                               <packing>
                                 <property name="expand">False</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -978,6 +1145,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 </child>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -995,6 +1164,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -1023,6 +1193,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 <signal name="toggled" handler="on_show_debug_tabs_toggled" swapped="no"/>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -1035,6 +1207,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 <property name="wrap_mode">word-char</property>
                               </object>
                               <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -1052,6 +1226,7 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -1070,6 +1245,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="icon-size">1</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -1079,6 +1256,8 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                     <property name="label" translatable="yes">Advanced</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -1090,33 +1269,9 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area2">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="prefs_close">
-                <property name="label">gtk-close</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <signal name="clicked" handler="gtk_widget_hide" object="prefs_dialog" swapped="yes"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
           </packing>
         </child>
       </object>
@@ -1125,19 +1280,12 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
       <action-widget response="0">prefs_close</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkListStore" id="glulx_terps_model">
-    <columns>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Glulxe (default)</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">git</col>
-      </row>
-    </data>
+  <object class="GtkSourceBuffer" id="sample_buffer">
+    <property name="text" translatable="yes">Part One - the Wharf
+
+The Customs Wharf is a room. [change the description if the cask is open] "Amid the bustle of the quayside, [if the case is open]many eyes stray to your broached cask. [otherwise]nobody takes much notice of a man heaving a cask about.[end if]Sleek gondolas jostle at the plank pier."</property>
+    <property name="highlight_matching_brackets">False</property>
+    <property name="max_undo_levels">-1</property>
   </object>
   <object class="GtkListStore" id="schemes_list">
     <columns>
@@ -1149,53 +1297,14 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkListStore" id="font_size_model">
-    <columns>
-      <!-- column-name item -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Standard</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Medium</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Large</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Huge</col>
-      </row>
-    </data>
+  <object class="GtkSourceBuffer" id="tab_buffer">
+    <property name="text" translatable="yes" comments="Make sure to keep TAB characters ('\t') between the words">	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab</property>
+    <property name="highlight_syntax">False</property>
+    <property name="highlight_matching_brackets">False</property>
+    <property name="max_undo_levels">-1</property>
   </object>
-  <object class="GtkListStore" id="font_set_model">
-    <columns>
-      <!-- column-name item -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Use font from theme</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Use monospace font from theme</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Use custom font</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkTreeStore" id="installed_extensions_store">
-    <columns>
-      <!-- column-name text -->
-      <column type="gchararray"/>
-      <!-- column-name readonly -->
-      <column type="gboolean"/>
-      <!-- column-name icon -->
-      <column type="gchararray"/>
-      <!-- column-name path -->
-      <column type="gchararray"/>
-    </columns>
+  <object class="GtkAdjustment" id="tab_ruler_adjustment">
+    <property name="upper">32</property>
+    <property name="step_increment">1</property>
   </object>
 </interface>

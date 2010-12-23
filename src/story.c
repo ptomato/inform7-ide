@@ -654,66 +654,11 @@ i7_story_init(I7Story *self)
 	GtkBuilder *builder = create_new_builder(filename, self);
 	g_free(filename);
 
-	/* Make the action groups. This for-loop is a temporary fix
-	and can be removed once Glade supports adding actions and accelerators to an
-	action group. */
-	const gchar *actions[] = {
-		"play_menu", "",
-		"replay_menu", "",
-		"release_menu", "",
-		"show_pane_menu", "",
-		"view_notepad", "<shift><ctrl>N",
-		"refresh_index", "<ctrl>I",
-		"go", "<ctrl>R",
-		"replay", "<alt><ctrl>R",
-		"show_last_command_skein", "<shift><ctrl>L",
-		"stop", "<shift><ctrl>Q",
-		"release", "<shift><ctrl>R",
-		"save_debug_build", "",
-		"test_me", "<alt><ctrl>T",
-		"export_ifiction_record", "",
-		"show_source", "<ctrl>F2",
-		"show_errors", "<ctrl>F3",
-		"show_index", "<ctrl>F4",
-		"show_skein", "<ctrl>F5",
-		"show_transcript", "<ctrl>F6",
-		"show_game", "<ctrl>F7",
-		"show_documentation", "<ctrl>F8",
-		"show_settings", "<ctrl>F9",
-		"show_index_menu", "",
-		"show_actions", "<ctrl>3",
-		"show_contents", "<ctrl>4",
-		"show_kinds", "<ctrl>5",
-		"show_phrasebook", "<ctrl>6",
-		"show_rules", "<ctrl>7",
-		"show_scenes", "<ctrl>8",
-		"show_world", "<ctrl>9",
-		"open_materials_folder", "<alt><ctrl>M",
-		"help_contents", "F1",
-		"help_license", "",
-		"help_extensions", "",
-		"help_recipe_book", "<shift><ctrl>F1",
-		NULL
-	};
+	/* Make the action groups */
+	priv->story_action_group = GTK_ACTION_GROUP(load_object(builder, "story_actions"));
 	/* Temporary "unimplemented" group */
-	const gchar *unimplemented[] = {
-		"import_into_skein", "",
-		"show_last_command", "<alt><ctrl>L",
-		"previous_changed_command", "",
-		"next_changed_command", "",
-		"previous_difference", "",
-		"next_difference", "",
-		"next_difference_skein", "",
-		"play_all_blessed", "<shift><ctrl><alt>R",
-		NULL
-	};
-	add_actions(builder, &(priv->story_action_group), "story_actions", actions);
-	add_actions(builder, &(priv->unimplemented_action_group), "unimplemented_actions", unimplemented);
-
-	/* One exception: the "stop" action starts out insensitive */
-	GtkAction *stop = gtk_action_group_get_action(priv->story_action_group, "stop");
-	gtk_action_set_sensitive(stop, FALSE);
-
+	priv->unimplemented_action_group = GTK_ACTION_GROUP(load_object(builder, "unimplemented_actions"));
+	
 	/* Build the menus and toolbars from the GtkUIManager file */
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->story_action_group, 0);
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->unimplemented_action_group, 0);

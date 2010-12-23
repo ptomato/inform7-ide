@@ -294,17 +294,13 @@ i7_panel_init(I7Panel *self)
 	gchar *filename = i7_app_get_datafile_path(theapp, "ui/panel.ui");
 	GtkBuilder *builder = create_new_builder(filename, self);
 	g_free(filename);
-
+	
 	/* Make the action groups */
-	const gchar *panel_actions[] = { "back", "", "forward", "", NULL };
-	const gchar *skein_actions[] = { "labels", "", "layout", "", "trim", "", "play_all_blessed", "", NULL };
-	const gchar *transcript_actions[] = { "next_difference_skein", "", "next_difference", "", "previous_difference", "", "bless_all", "", NULL };
-	const gchar *documentation_actions[] = { "goto_contents", "", NULL };
-	add_actions(builder, &(priv->common_action_group), "panel_actions", panel_actions);
-	add_actions(builder, &(priv->skein_action_group), "skein_actions", skein_actions);
-	add_actions(builder, &(priv->transcript_action_group), "transcript_actions", transcript_actions);
-	add_actions(builder, &(priv->documentation_action_group), "documentation_actions", documentation_actions);
-
+	priv->common_action_group = GTK_ACTION_GROUP(load_object(builder, "panel_actions"));
+	priv->skein_action_group = GTK_ACTION_GROUP(load_object(builder, "skein_actions"));
+	priv->transcript_action_group = GTK_ACTION_GROUP(load_object(builder, "transcript_actions"));
+	priv->documentation_action_group = GTK_ACTION_GROUP(load_object(builder, "documentation_actions"));
+	
 	/* Build the toolbar from the GtkUIManager file. The UI manager owns the action groups now. */
 	priv->ui_manager = gtk_ui_manager_new();
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->common_action_group, 0);

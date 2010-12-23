@@ -76,31 +76,13 @@ i7_app_init(I7App *self)
 	GtkBuilder *builder = create_new_builder(builderfilename, self);
 	g_free(builderfilename);
 
-	/* Make the action groups. This for-loop is a temporary fix
-	and can be removed once Glade supports adding actions and accelerators to an
-	action group. */
-	const gchar *actions[] = {
-		"file_menu", "",
-		"edit_menu", "",
-		"help_menu", "",
-		"new", NULL, /* NULL means use the stock accelerator */
-		"open", NULL,
-		"open_recent", "",
-		"install_extension", "",
-		"open_extension", "",
-		"preferences", "",
-		"quit", NULL,
-		"visit_inform7_com", "",
-		"suggest_feature", "",
-		"report_bug", "",
-		"about", "",
-		NULL
-	};
-	add_actions(builder, &(priv->app_action_group), "app_actions", actions);
+	/* Make the action group and ref it so that it won't be owned by whatever
+	UI manager it's inserted into */
+	priv->app_action_group = GTK_ACTION_GROUP(load_object(builder, "app_actions"));
 	g_object_ref(priv->app_action_group);
 
 	/* Add a filter to the Open Recent menu (can be removed once Glade supports
-	building GtkRecentFilters */
+	building GtkRecentFilters) */
 	GtkAction *recent = GTK_ACTION(load_object(builder, "open_recent"));
 	GtkRecentFilter *filter = gtk_recent_filter_new();
 	gtk_recent_filter_add_application(filter, "GNOME Inform 7");
