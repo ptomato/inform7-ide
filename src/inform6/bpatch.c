@@ -2,8 +2,8 @@
 /*   "bpatch" : Keeps track of, and finally acts on, backpatch markers,      */
 /*              correcting symbol values not known at compilation time       */
 /*                                                                           */
-/*   Part of Inform 6.31                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2006                                 */
+/*   Part of Inform 6.32                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2010                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -200,7 +200,7 @@ static int32 backpatch_value_g(int32 value)
             value = value_of_system_constant(value); break;
         case DWORD_MV:
             value = dictionary_offset + 4 
-              + final_dict_order[value]*(7+DICT_WORD_SIZE);
+              + final_dict_order[value]*DICT_ENTRY_BYTE_LENGTH;
             break;
         case ACTION_MV:
             break;

@@ -3713,7 +3713,7 @@ sub show_endnotes_on_previous_paragraph {
 	my $no_sections_using = 0;
 	
  { 
-#line 723 "Chapter 3/The Weaver.w"
+#line 729 "Chapter 3/The Weaver.w"
 	my $x;
 	for ($x=0; $x<$no_sections; $x++) { $usages[$x] = 0; }
 	my $cp = $functions_usage_concisely_described{$fname};
@@ -3727,32 +3727,38 @@ sub show_endnotes_on_previous_paragraph {
 	my $fname_with_underscores_escaped = $fname;
 	$fname_with_underscores_escaped =~ s/__/::/g;
 	$fname_with_underscores_escaped =~ s/_/\\_/g;
-	print WEAVEOUT "\\par\\noindent";
-	print WEAVEOUT "\\penalty10000\n";
-	print WEAVEOUT "{\\usagefont The function $fname_with_underscores_escaped is";
+
+	my $fr = "";
+
 	my $clause_begins = 0;
 	if ($scope eq "*****") {
-		print WEAVEOUT " where execution begins"; $clause_begins = 1;
+		$fr .= " where execution begins"; $clause_begins = 1;
 	}
 	if ($scope eq "****") {
-		print WEAVEOUT " invoked by a command in a |.i6t| template file"; $clause_begins = 1;
+		$fr .= " invoked by a command in a |.i6t| template file"; $clause_begins = 1;
 	}
 	if (($clause_begins == 1) || (($scope eq "***") || ($scope eq "**"))) {
 		if ($no_sections_using > 0) {
-			if ($clause_begins) { print WEAVEOUT " and"; }
-			print WEAVEOUT " called from ";
+			if ($clause_begins) { $fr .= " and"; }
+			$fr .= " called from ";
 			my $x;
 			for ($x=0; $x<$no_sections; $x++) {
 				if ($usages[$x] == 1) {
-					print WEAVEOUT $section_sigil[$x];
-					if ($no_sections_using > 2) { print WEAVEOUT ", "; }
-					if ($no_sections_using == 2) { print WEAVEOUT " and "; }
+					$fr .= $section_sigil[$x];
+					if ($no_sections_using > 2) { $fr .= ", "; }
+					if ($no_sections_using == 2) { $fr .= " and "; }
 					$no_sections_using--;
 				}
 			}
 		}
 	}
-	print WEAVEOUT ".}\n";
+
+	if ($fr ne "") {
+		print WEAVEOUT "\\par\\noindent";
+		print WEAVEOUT "\\penalty10000\n";
+		print WEAVEOUT "{\\usagefont The function $fname_with_underscores_escaped is", $fr;
+		print WEAVEOUT ".}\n";
+	}
 
  } 
 #line 645 "Chapter 3/The Weaver.w"
@@ -3782,7 +3788,7 @@ sub show_endnotes_on_previous_paragraph {
 	}
 }
 
-#line 735 "Chapter 3/The Weaver.w"
+#line 741 "Chapter 3/The Weaver.w"
 sub weave_cover_sheet {
 	my $cover_sheet = $path_to_inweb_setting.'inweb/Materials/cover-sheet.tex';
 	if (exists ($bibliographic_data{"Cover Sheet"})) {
@@ -3796,7 +3802,7 @@ sub weave_cover_sheet {
 	weave_cover_from($cover_sheet);
 }
 
-#line 752 "Chapter 3/The Weaver.w"
+#line 758 "Chapter 3/The Weaver.w"
 sub weave_cover_from {
 	my $cs_filename = $_[0];
 	local *COVER;
@@ -3824,7 +3830,7 @@ sub weave_cover_from {
 	close (COVER);
 }
 
-#line 784 "Chapter 3/The Weaver.w"
+#line 790 "Chapter 3/The Weaver.w"
 sub weave_interface_table_for_section {
 	my $sect_no = $_[0];
 	my $j;
@@ -3868,7 +3874,7 @@ sub weave_interface_table_for_section {
 	}
 }
 
-#line 832 "Chapter 3/The Weaver.w"
+#line 838 "Chapter 3/The Weaver.w"
 sub weave_thematic_index {
 	my $wanted= $_[0];
 	foreach $subject (sort keys %thematic_indices) {
@@ -3890,7 +3896,7 @@ sub weave_thematic_index {
 	}
 }
 
-#line 860 "Chapter 3/The Weaver.w"
+#line 866 "Chapter 3/The Weaver.w"
 sub begin_making_pdf_links {
 	%link_number_for_par_name = ();
 	$no_par_name_links = 1;

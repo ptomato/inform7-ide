@@ -1,10 +1,10 @@
 /* ------------------------------------------------------------------------- */
 /*   Header file for Inform:  Z-machine ("Infocom" format) compiler          */
 /*                                                                           */
-/*                              Inform 6.31                                  */
+/*                              Inform 6.32                                  */
 /*                                                                           */
 /*   This header file and the others making up the Inform source code are    */
-/*   copyright (c) Graham Nelson 1993 - 2006                                 */
+/*   copyright (c) Graham Nelson 1993 - 2010                                 */
 /*                                                                           */
 /*   Manuals for this language are available from the IF-Archive at          */
 /*   http://www.ifarchive.org/                                               */
@@ -30,8 +30,8 @@
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-#define RELEASE_DATE "22nd April 2010"
-#define RELEASE_NUMBER 1631
+#define RELEASE_DATE "18th November 2010"
+#define RELEASE_NUMBER 1632
 #define GLULX_RELEASE_NUMBER 38
 #define MODULE_VERSION_NUMBER 1
 #define VNUMBER RELEASE_NUMBER
@@ -82,6 +82,7 @@
 #include <string.h>
 #include <time.h>
 #include <limits.h>
+#include <math.h>
 
 #ifndef VAX
 #if   SCHAR_MAX >= 0x7FFFFFFFL && SCHAR_MIN <= -0x7FFFFFFFL
@@ -420,7 +421,9 @@ static int32 unique_task_id(void)
 /* ------------------------------------------------------------------------- */
 #ifdef UNIX64
 /* 1 */
+#ifndef MACHINE_STRING
 #define MACHINE_STRING   "Unix"
+#endif
 /* 2 */
 #define USE_TEMPORARY_FILES
 /* 3 */
@@ -687,6 +690,7 @@ static int32 unique_task_id(void)
 #define  MAX_IDENTIFIER_LENGTH  32
 #define  MAX_ABBREV_LENGTH      64
 #define  MAX_DICT_WORD_SIZE     40
+#define  MAX_DICT_WORD_BYTES    (40*4)
 #define  MAX_NUM_ATTR_BYTES     39
 
 #define  VENEER_CONSTRAINT_ON_CLASSES_Z       256
@@ -1130,6 +1134,35 @@ typedef struct operator_s
 #define mfree_gc 84
 #define accelfunc_gc 85
 #define accelparam_gc 86
+#define numtof_gc 87
+#define ftonumz_gc 88
+#define ftonumn_gc 89
+#define ceil_gc 90
+#define floor_gc 91
+#define fadd_gc 92
+#define fsub_gc 93
+#define fmul_gc 94
+#define fdiv_gc 95
+#define fmod_gc 96
+#define sqrt_gc 97
+#define exp_gc 98
+#define log_gc 99
+#define pow_gc 100
+#define sin_gc 101
+#define cos_gc 102
+#define tan_gc 103
+#define asin_gc 104
+#define acos_gc 105
+#define atan_gc 106
+#define atan2_gc 107
+#define jfeq_gc 108
+#define jfne_gc 109
+#define jflt_gc 110
+#define jfle_gc 111
+#define jfgt_gc 112
+#define jfge_gc 113
+#define jisnan_gc 114
+#define jisinf_gc 115
 
 /* ------------------------------------------------------------------------- */
 /*   Index numbers into the keyword group "opcode_macros_g" (see "lexer.c")  */
@@ -2017,7 +2050,7 @@ extern int32 zmachine_pc;
 extern int32 no_instructions;
 extern int   sequence_point_follows;
 extern int   uses_unicode_features, uses_memheap_features, 
-    uses_acceleration_features;
+    uses_acceleration_features, uses_float_features;
 extern dbgl  debug_line_ref;
 extern int   execution_never_reaches_here;
 extern int   *variable_usage;
@@ -2287,7 +2320,8 @@ extern int endofpass_flag;
 extern int version_number,  instruction_set_number, extend_memory_map;
 extern int32 scale_factor,  length_scale_factor;
 
-extern int WORDSIZE, INDIV_PROP_START, OBJECT_BYTE_LENGTH;
+extern int WORDSIZE, INDIV_PROP_START, 
+    OBJECT_BYTE_LENGTH, DICT_ENTRY_BYTE_LENGTH, DICT_ENTRY_FLAG_POS;
 extern int32 MAXINTWORD;
 
 extern int asm_trace_level, line_trace_level,     expr_trace_level,
@@ -2413,7 +2447,7 @@ extern int32 MAX_STATIC_STRINGS, MAX_ZCODE_SIZE, MAX_LINK_DATA_SIZE,
 
 extern int32 MAX_OBJ_PROP_COUNT, MAX_OBJ_PROP_TABLE_SIZE;
 extern int MAX_LOCAL_VARIABLES, MAX_GLOBAL_VARIABLES;
-extern int DICT_WORD_SIZE, NUM_ATTR_BYTES;
+extern int DICT_WORD_SIZE, DICT_CHAR_SIZE, DICT_WORD_BYTES, NUM_ATTR_BYTES;
 
 extern void *my_malloc(int32 size, char *whatfor);
 extern void *my_calloc(int32 size, int32 howmany, char *whatfor);

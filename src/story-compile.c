@@ -393,7 +393,7 @@ start_i6_compiler(CompilerData *data)
 
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 6);
-	commandline[0] = i7_app_get_binary_path(i7_app_get(), "inform-6.31-biplatform");
+	commandline[0] = i7_app_get_binary_path(i7_app_get(), "inform-6.32-biplatform");
 	commandline[1] = get_i6_compiler_switches(data->build_for_release, i7_story_get_story_format(data->story));
 	commandline[2] = g_strdup("$huge");
 	commandline[3] = g_strdup("auto.inf");

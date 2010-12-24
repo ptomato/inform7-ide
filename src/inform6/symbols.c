@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------------- */
 /*   "symbols" :  The symbols table; creating stock of reserved words        */
 /*                                                                           */
-/*   Part of Inform 6.31                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2006                                 */
+/*   Part of Inform 6.32                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2010                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -510,7 +510,7 @@ extern void assign_marked_symbol(int index, int marker, int32 value, int type)
 }
 
 
-static void create_symbol(char *p, int value, int type)
+static void create_symbol(char *p, int32 value, int type)
 {   int i = symbol_index(p, -1);
     svals[i] = value; stypes[i] = type; slines[i] = 0;
     sflags[i] = USED_SFLAG + SYSTEM_SFLAG;
@@ -560,12 +560,16 @@ static void stockup_symbols(void)
     }
 
     create_symbol("WORDSIZE",        WORDSIZE, CONSTANT_T);
+    create_symbol("DICT_ENTRY_BYTES", DICT_ENTRY_BYTE_LENGTH, CONSTANT_T);
     if (!glulx_mode) {
         create_symbol("DICT_WORD_SIZE", ((version_number==3)?4:6), CONSTANT_T);
         create_symbol("NUM_ATTR_BYTES", ((version_number==3)?4:6), CONSTANT_T);
     }
     else {
         create_symbol("DICT_WORD_SIZE",     DICT_WORD_SIZE, CONSTANT_T);
+        create_symbol("DICT_CHAR_SIZE",     DICT_CHAR_SIZE, CONSTANT_T);
+        if (DICT_CHAR_SIZE != 1)
+            create_symbol("DICT_IS_UNICODE", 1, CONSTANT_T);
         create_symbol("NUM_ATTR_BYTES",     NUM_ATTR_BYTES, CONSTANT_T);
         create_symbol("INDIV_PROP_START",   INDIV_PROP_START, CONSTANT_T);
     }    
@@ -640,6 +644,14 @@ static void stockup_symbols(void)
           INDIVIDUAL_PROPERTY_T);
         create_symbol("print_to_array",INDIV_PROP_START+7, 
           INDIVIDUAL_PROPERTY_T);
+
+        /* Floating-point constants. Note that FLOAT_NINFINITY is not
+           -FLOAT_INFINITY, because float negation doesn't work that
+           way. Also note that FLOAT_NAN is just one of many possible
+           "not-a-number" values. */
+        create_symbol("FLOAT_INFINITY",  0x7F800000, CONSTANT_T);
+        create_symbol("FLOAT_NINFINITY", 0xFF800000, CONSTANT_T);
+        create_symbol("FLOAT_NAN",       0x7FC00000, CONSTANT_T);
     }
 }
 

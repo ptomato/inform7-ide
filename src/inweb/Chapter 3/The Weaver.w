@@ -690,32 +690,38 @@ the high |\penalty| value). Sometimes this succeeds.
 	my $fname_with_underscores_escaped = $fname;
 	$fname_with_underscores_escaped =~ s/__/::/g;
 	$fname_with_underscores_escaped =~ s/_/\\_/g;
-	print WEAVEOUT "\\par\\noindent";
-	print WEAVEOUT "\\penalty10000\n";
-	print WEAVEOUT "{\\usagefont The function $fname_with_underscores_escaped is";
+	
+	my $fr = "";
+	
 	my $clause_begins = 0;
 	if ($scope eq "*****") {
-		print WEAVEOUT " where execution begins"; $clause_begins = 1;
+		$fr .= " where execution begins"; $clause_begins = 1;
 	}
 	if ($scope eq "****") {
-		print WEAVEOUT " invoked by a command in a |.i6t| template file"; $clause_begins = 1;
+		$fr .= " invoked by a command in a |.i6t| template file"; $clause_begins = 1;
 	}
 	if (($clause_begins == 1) || (($scope eq "***") || ($scope eq "**"))) {
 		if ($no_sections_using > 0) {
-			if ($clause_begins) { print WEAVEOUT " and"; }
-			print WEAVEOUT " called from ";
+			if ($clause_begins) { $fr .= " and"; }
+			$fr .= " called from ";
 			my $x;
 			for ($x=0; $x<$no_sections; $x++) {
 				if ($usages[$x] == 1) {
-					print WEAVEOUT $section_sigil[$x];
-					if ($no_sections_using > 2) { print WEAVEOUT ", "; }
-					if ($no_sections_using == 2) { print WEAVEOUT " and "; }
+					$fr .= $section_sigil[$x];
+					if ($no_sections_using > 2) { $fr .= ", "; }
+					if ($no_sections_using == 2) { $fr .= " and "; }
 					$no_sections_using--;
 				}
 			}
 		}
 	}
-	print WEAVEOUT ".}\n";
+	
+	if ($fr ne "") {
+		print WEAVEOUT "\\par\\noindent";
+		print WEAVEOUT "\\penalty10000\n";
+		print WEAVEOUT "{\\usagefont The function $fname_with_underscores_escaped is", $fr;
+		print WEAVEOUT ".}\n";
+	}
 
 @ Loop through the concise string holding this information:
 

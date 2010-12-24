@@ -7,8 +7,8 @@
 /*             routines in "inform.c", since they are tied up with ICL       */
 /*             settings and are very host OS-dependent.                      */
 /*                                                                           */
-/*   Part of Inform 6.31                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2006                                 */
+/*   Part of Inform 6.32                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2010                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -516,13 +516,16 @@ static void output_file_g(void)
     if (uses_acceleration_features) {
       VersionNum = 0x00030101;
     }
+    if (uses_float_features) {
+      VersionNum = 0x00030102;
+    }
 
     /* And check if the user has requested a specific version. */
     if (requested_glulx_version) {
       if (requested_glulx_version < VersionNum) {
         static char error_message_buff[256];
         sprintf(error_message_buff, "Version 0x%08lx requested, but \
-game features require version 0x%08lx", requested_glulx_version, VersionNum);
+game features require version 0x%08lx", (long)requested_glulx_version, (long)VersionNum);
         warning(error_message_buff);
       }
       else {
