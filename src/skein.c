@@ -571,6 +571,63 @@ i7_skein_save(I7Skein *self, const gchar *filename, GError **error)
 	return TRUE;
 }
 
+/* Imports a list of commands into the Skein */
+gboolean
+i7_skein_import(I7Skein *self, const gchar *filename, GError **error)
+{
+	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
+	
+	I7_SKEIN_USE_PRIVATE;
+	
+	I7Node *node = priv->root;
+	gboolean added = FALSE;
+
+	GFile *importfile = g_file_new_for_path(filename);
+	GFileInputStream *istream = g_file_read(importfile, NULL, error);
+	if(!istream)
+		goto fail;
+	GDataInputStream *stream = g_data_input_stream_new(G_INPUT_STREAM(istream));
+
+	gchar *line;
+	while((line = g_data_input_stream_read_line(stream, NULL, NULL, error))) {
+		g_strstrip(line);
+		if(*line) {
+			gchar *node_command = g_strescape(line, "\"");
+			I7Node *newnode = i7_node_find_child(node, node_command);
+			if(!newnode) {
+				/* Wasn't found, create new node */
+				newnode = i7_node_new(node_command, "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
+				node_listen(self, newnode);
+				g_node_append(node->gnode, newnode->gnode);
+				added = TRUE;
+			}
+			g_free(node_command);
+			node = newnode;	
+		}
+		g_free(line);
+	}
+
+	if(*error)
+		goto fail1;
+
+	if(added) {
+		g_signal_emit_by_name(self, "needs-layout");
+		g_signal_emit_by_name(self, "modified");
+	}
+
+	g_object_unref(stream);
+	g_object_unref(istream);
+	g_object_unref(importfile);
+	return TRUE;
+
+fail1:
+	g_object_unref(stream);
+	g_object_unref(istream);
+fail:
+	g_object_unref(importfile);
+	return FALSE;
+}
+
 /* Rewinds the skein to the beginning; if @current is TRUE, also resets the
  view in the Transcript to the beginning */
 void
@@ -669,19 +726,7 @@ i7_skein_new_command(I7Skein *self, const gchar *command)
 	gboolean node_added = FALSE;
 	gchar *node_command = g_strescape(command, "\"");
 
-	/* Is there a child node with the same line? */
-	I7Node *node = NULL;
-	GNode *gnode = priv->played->gnode->children;
-	while(gnode != NULL) {
-		gchar *cmp_command = i7_node_get_command(I7_NODE(gnode->data));
-		/* Special case: NULL is treated as "" */
-		if((strlen(cmp_command) == 0 && (command == NULL || strlen(command) == 0)) || (strcmp(cmp_command, command) == 0)) {
-			g_free(cmp_command);
-			node = gnode->data;
-			break;
-		}
-		gnode = gnode->next;
-	}
+	I7Node *node = i7_node_find_child(priv->played, node_command);
 	if(node == NULL) {
 		/* Wasn't found, create new node */
 		node = i7_node_new(node_command, "", "", "", TRUE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));

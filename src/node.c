@@ -601,6 +601,28 @@ i7_node_is_root(I7Node *self)
 	return self->gnode->parent == NULL;
 }
 
+/* Is there a child node with the given command? (@command should already be
+escaped.) */
+I7Node *
+i7_node_find_child(I7Node *self, const gchar *command)
+{
+	I7Node *node = NULL;
+	GNode *gnode = self->gnode->children;
+	while(gnode != NULL) {
+		gchar *cmp_command = i7_node_get_command(I7_NODE(gnode->data));
+		/* Special case: NULL is treated as "" */
+		if((strlen(cmp_command) == 0 && (command == NULL || strlen(command) == 0)) || (strcmp(cmp_command, command) == 0)) {
+			g_free(cmp_command);
+			node = gnode->data;
+			break;
+		}
+		gnode = gnode->next;
+		g_free(cmp_command);
+	}
+
+	return node;
+}
+
 static void
 write_child_pointer(GNode *gnode, GString *string)
 {

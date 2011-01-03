@@ -125,7 +125,42 @@ on_open_extension_activate(GtkMenuItem *menuitem, gchar *path)
 void
 action_import_into_skein(GtkAction *action, I7Story *story)
 {
+	GError *err = NULL;
+	
+	/* Ask the user for a file to import */
+	GtkWidget *dialog = gtk_file_chooser_dialog_new(
+	  _("Select the file to import into the skein"),
+	  GTK_WINDOW(story),
+	  GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	  GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	/* Create appropriate file filters */
+	GtkFileFilter *filter1 = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter1, _("Interpreter recording files (*.rec)"));
+	gtk_file_filter_add_pattern(filter1, "*.rec");
+	GtkFileFilter *filter2 = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter2, _("All Files"));
+	gtk_file_filter_add_pattern(filter2, "*");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
 
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
+		gtk_widget_destroy(dialog);
+		return;
+	}
+	
+	gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	gtk_widget_destroy(dialog);
+	if(!filename)
+		return; /* Fail silently */
+
+	/* Provide some visual feedback that the command did something */
+	if(!i7_skein_import(i7_story_get_skein(story), filename, &err))
+		error_dialog(GTK_WINDOW(story), err, _("Failed to import file '%s' into"
+			" skein: "), filename);
+	else
+		i7_story_show_pane(story, I7_PANE_SKEIN);
+	
+	g_free(filename);
 }
 
 /* File->Save */
