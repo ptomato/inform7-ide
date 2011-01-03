@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -274,7 +274,7 @@ i7_story_save(I7Document *document)
 		&& g_file_test(filename, G_FILE_TEST_IS_DIR))
 		i7_document_save_as(document, filename);
 	else {
-		gchar *newname = get_filename_from_save_dialog(filename);
+		gchar *newname = get_filename_from_save_dialog(document, filename);
 		if(!newname)
 			return FALSE;
 		i7_document_set_path(document, newname);

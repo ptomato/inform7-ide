@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -133,6 +133,7 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 	  GTK_WINDOW(story),
 	  GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 	  GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter1, _("Interpreter recording files (*.rec)"));
@@ -174,7 +175,7 @@ action_save(GtkAction *action, I7Document *document)
 void
 action_save_as(GtkAction *action, I7Document *document)
 {
-	gchar *filename = get_filename_from_save_dialog(NULL);
+	gchar *filename = get_filename_from_save_dialog(document, NULL);
 	if(filename) {
 		i7_document_set_path(document, filename);
 		/* This hack is convenient so that if you save a built-in (read-only)
@@ -190,7 +191,7 @@ action_save_as(GtkAction *action, I7Document *document)
 void
 action_save_copy(GtkAction *action, I7Document *document)
 {
-	gchar *filename = get_filename_from_save_dialog(NULL);
+	gchar *filename = get_filename_from_save_dialog(document, NULL);
 	if(filename) {
 		i7_document_save_as(document, filename);
 		g_free(filename);
@@ -1203,6 +1204,7 @@ action_about(GtkAction *action, I7App *app)
 	GtkWindow *aboutwindow = GTK_WINDOW(load_object(builder, "aboutwindow"));
 	GtkWindow *parent = get_toplevel_for_action(action);
 	gtk_window_set_transient_for(aboutwindow, parent);
+	gtk_window_set_position(aboutwindow, GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_window_present(aboutwindow);
 	g_object_unref(builder);
 }

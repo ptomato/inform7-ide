@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include "configfile.h"
 #include "error.h"
 #include "story.h"
+#include "document.h"
 
 /* HELPER FUNCTIONS */
 
@@ -97,13 +98,14 @@ read_source_file(const gchar *filename)
  */
 
 gchar *
-get_filename_from_save_dialog(const gchar *default_filename)
+get_filename_from_save_dialog(I7Document *document, const gchar *default_filename)
 {
 	/* Create a file chooser */
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), NULL, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,
+	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 		NULL);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	if(default_filename) {
 		gchar *path = g_path_get_dirname(default_filename);
@@ -156,7 +158,7 @@ get_filename_from_save_dialog(const gchar *default_filename)
 			if(response != GTK_RESPONSE_ACCEPT) {
 				g_free(filename);
 				g_free(sourcefile);
-				return get_filename_from_save_dialog(default_filename);
+				return get_filename_from_save_dialog(document, default_filename);
 			}
 		}
 		g_free(sourcefile);

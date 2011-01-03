@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,11 +21,12 @@
 #include <glib.h>
 #include <gtksourceview/gtksourcebuffer.h>
 #include "story.h"
+#include "document.h"
 
 gchar *expand_initial_tilde(const gchar *path);
 gchar *read_source_file(const gchar *filename);
 void set_source_text(GtkSourceBuffer *buffer, gchar *text);
-gchar *get_filename_from_save_dialog(const gchar *default_filename);
+gchar *get_filename_from_save_dialog(I7Document *document, const gchar *default_filename);
 void delete_build_files(I7Story *story);
 gchar *get_case_insensitive_extension(const gchar *path);
 
