@@ -94,7 +94,7 @@ i7_app_init(I7App *self)
 	/* Set print settings to NULL, since they are not remembered across
 	application runs (yet) */
 	priv->print_settings = NULL;
-	priv->page_setup = NULL;
+	priv->page_setup = gtk_page_setup_new();
 
 	/* Create the Gnome Inform7 dir if it doesn't already exist */
 	gchar *extensions_dir = i7_app_get_extension_path(self, NULL, NULL);
