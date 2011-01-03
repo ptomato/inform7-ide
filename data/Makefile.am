@@ -7,7 +7,7 @@ dist_pkgdata_DATA = $(INFORMTARBALL)
 install-data-hook:
 	cd $(DESTDIR)$(pkgdatadir); \
 	$(CAT) $(INFORMTARBALL) | $(UNLZMA) | $(TAR) --list > uninstall_manifest.txt; \
-	$(CAT) $(INFORMTARBALL) | $(UNLZMA) | $(TAR) --get; \
+	$(CAT) $(INFORMTARBALL) | $(UNLZMA) | $(TAR) --no-same-owner --extract; \
 	rm --force $(INFORMTARBALL); \
 	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/^\|$$/"/g' \
 		| $(XARGS) $(CHMOD) a=rX,u+w
