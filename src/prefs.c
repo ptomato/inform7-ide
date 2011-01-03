@@ -382,10 +382,10 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter1, "Inform 7 Extensions");
+	gtk_file_filter_set_name(filter1, _("Inform 7 Extensions (*.i7x)"));
 	gtk_file_filter_add_pattern(filter1, "*.i7x");
 	GtkFileFilter *filter2 = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter2, "All Files");
+	gtk_file_filter_set_name(filter2, _("All Files"));
 	gtk_file_filter_add_pattern(filter2, "*");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
