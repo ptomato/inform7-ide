@@ -297,6 +297,9 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		return;
 	}
 
+	/* Reload the Index in the background */
+	i7_story_reload_index_tabs(data->story, FALSE);
+
 	/* Read in the Blorb manifest */
 	gchar *path = i7_document_get_path(I7_DOCUMENT(data->story));
 	gchar *manifest_filename = g_build_filename(path, "manifest.plist", NULL);

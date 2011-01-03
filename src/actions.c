@@ -975,19 +975,11 @@ action_stop(GtkAction *action, I7Story *story)
 	i7_story_stop_running_game(story);
 }
 
-/* Helper function to reload the index tabs and then display the index pane */
-static void
-refresh_index_helper(I7Story *story)
-{
-	i7_story_reload_index_tabs(story, TRUE);
-	i7_story_show_pane(story, I7_PANE_INDEX);
-}
-
 /* Play->Refresh Index */
 void
 action_refresh_index(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)refresh_index_helper, NULL);
+	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_show_pane, GUINT_TO_POINTER(I7_PANE_INDEX));
 	i7_story_compile(story, FALSE, TRUE);
 }
 
