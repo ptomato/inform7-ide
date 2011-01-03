@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -570,7 +570,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 			else
 				continue;
 
-			gchar *label = g_strdup_printf(_("Indexing %s, please be patient..."), filename);
+			gchar *label = g_strdup_printf(_("Please be patient, indexing %s..."), filename);
 			gtk_label_set_text(GTK_LABEL(self->search_text), label);
 			g_free(label);
 
@@ -751,6 +751,7 @@ pack_spinner_in_box(GtkWidget *box)
 	if(gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
 		return NULL;
 	GtkWidget *spinner = gtk_spinner_new();
+	gtk_widget_set_no_show_all(spinner, TRUE);
 	gtk_box_pack_end(GTK_BOX(box), spinner, FALSE, FALSE, 0);
 	return spinner;
 }
@@ -758,15 +759,19 @@ pack_spinner_in_box(GtkWidget *box)
 static void
 start_spinner(I7SearchWindow *self)
 {
-	if(!gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
+	if(!gtk_check_version(2, 20, 0)) { /* returns NULL if compatible */
 		gtk_spinner_start(GTK_SPINNER(self->spinner));
+		gtk_widget_show(self->spinner);
+	}
 }
 
 static void
 stop_spinner(I7SearchWindow *self)
 {
-	if(!gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
+	if(!gtk_check_version(2, 20, 0)) { /* returns NULL if compatible */
 		gtk_spinner_stop(GTK_SPINNER(self->spinner));
+		gtk_widget_hide(self->spinner);
+	}
 }
 
 #else /* not GTK_CHECK_VERSION(2,20,0) */
