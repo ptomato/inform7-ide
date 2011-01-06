@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "chimara-glk-private.h"
 #include "glk.h"
 #include "style.h"
@@ -214,6 +215,7 @@ gtk_text_tag_copy(GtkTextTag *tag)
 		_COPY_FLAG (invisible_set);
 		_COPY_FLAG (editable_set);
 		_COPY_FLAG (language_set);
+		_COPY_FLAG (scale_set);
 	#undef _COPY_FLAG
 
 	/* Copy the data that was added manually */
@@ -319,12 +321,12 @@ style_init(ChimaraGlk *glk)
 
 	tag = gtk_text_tag_new("header");
 	//g_object_set(tag, "font-desc", default_font_desc, "size-points", 18.0, "weight", PANGO_WEIGHT_BOLD, NULL);
-	g_object_set(tag, "size-points", 18.0, "weight", PANGO_WEIGHT_BOLD, NULL);
+	g_object_set(tag, "weight", PANGO_WEIGHT_BOLD, NULL);
 	g_hash_table_insert(default_text_buffer_styles, "header", tag);
 
 	tag = gtk_text_tag_new("subheader");
 	//g_object_set(tag, "font-desc", default_font_desc, "size-points", 14.0, "weight", PANGO_WEIGHT_BOLD, NULL);
-	g_object_set(tag, "size-points", 14.0, "weight", PANGO_WEIGHT_BOLD, NULL);
+	g_object_set(tag, "weight", PANGO_WEIGHT_BOLD, NULL);
 	g_hash_table_insert(default_text_buffer_styles, "subheader", tag);
 
 	tag = gtk_text_tag_new("alert");
@@ -732,7 +734,24 @@ apply_stylehint_to_tag(GtkTextTag *tag, GtkTextTag *default_tag, glui32 wintype,
 		break;
 
 	case stylehint_Size:
-		g_object_set(tag_object, "size", 14+(2*val), "size-set", TRUE, NULL);
+		{
+			gdouble scale = PANGO_SCALE_MEDIUM;
+			switch(val) {
+				case -3: scale = PANGO_SCALE_XX_SMALL; break;
+				case -2: scale = PANGO_SCALE_X_SMALL; break;
+				case -1: scale = PANGO_SCALE_SMALL; break;
+				case  0: scale = PANGO_SCALE_MEDIUM; break;
+				case  1: scale = PANGO_SCALE_LARGE; break;
+				case  2: scale = PANGO_SCALE_X_LARGE; break;
+				case  3: scale = PANGO_SCALE_XX_LARGE; break;
+				default:
+					/* We follow Pango's convention of having each magnification
+					step be a scaling of 1.2 */
+					scale = pow(1.2, (double)val);
+			}
+			g_printerr("Setting tag to %f\n", scale);
+			g_object_set(tag_object, "scale", scale, "scale-set", TRUE, NULL);
+		}
 		break;
 
 	case stylehint_Oblique:
@@ -813,6 +832,7 @@ static gint
 query_tag(GtkTextTag *tag, glui32 wintype, glui32 hint)
 {
 	gint intval;
+	gdouble doubleval;
 	GdkColor *colval;
 
 	g_return_val_if_fail(tag != NULL, 0);
@@ -850,8 +870,8 @@ query_tag(GtkTextTag *tag, glui32 wintype, glui32 hint)
 		}
 
 	case stylehint_Size:
-		g_object_get(tag, "size", &intval, NULL);
-		return (intval/2)-14;
+		g_object_get(tag, "scale", &doubleval, NULL);
+		return (gint)round(log(doubleval) / log(1.2));
 
 	case stylehint_Oblique:
 		g_object_get(tag, "style", &intval , NULL);
@@ -1083,21 +1103,21 @@ PangoFontDescription *
 get_current_font(guint32 wintype)
 {
 	ChimaraGlkPrivate *glk_data = g_private_get(glk_data_key);
-	GtkTextTag *normal;
+	GtkTextTag *tag;
 
 	switch(wintype) {
 	case wintype_TextGrid:
-		normal = g_hash_table_lookup(glk_data->styles->text_grid, "normal");
+		tag = g_hash_table_lookup(glk_data->styles->text_grid, "default");
 		break;
 	case wintype_TextBuffer:
-		normal = g_hash_table_lookup(glk_data->styles->text_buffer, "normal");
+		tag = g_hash_table_lookup(glk_data->styles->text_buffer, "default");
 		break;
 	default:
 		return NULL;
 	}
 
 	PangoFontDescription *font;
-	g_object_get( G_OBJECT(normal), "font-desc", &font, NULL );
+	g_object_get( G_OBJECT(tag), "font-desc", &font, NULL );
 
 	return font;
 }
