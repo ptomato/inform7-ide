@@ -763,7 +763,7 @@ apply_stylehint_to_tag(GtkTextTag *tag, GtkTextTag *default_tag, glui32 wintype,
 		gchar *font_family;
 		GtkTextTag *font_tag = g_hash_table_lookup(
 		    wintype == wintype_TextBuffer? glk_data->styles->text_buffer : glk_data->styles->text_grid,
-		    val? "normal" : "preformatted");
+		    val? "default" : "preformatted");
 		g_object_get(font_tag, "family", &font_family, NULL);
 		g_object_set(tag_object, "family", font_family, "family-set", TRUE, NULL);
 		g_free(font_family);

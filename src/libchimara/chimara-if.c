@@ -126,6 +126,17 @@ chimara_if_stopped(ChimaraGlk *glk)
 }
 
 static void
+chimara_if_char_input(ChimaraGlk *glk, guint32 win_rock, guint keysym)
+{
+	CHIMARA_IF_USE_PRIVATE(glk, priv);
+	g_assert(priv->input == NULL);
+
+	gchar outbuf[6];
+	gint outbuflen = g_unichar_to_utf8(gdk_keyval_to_unicode(keysym), outbuf);
+	priv->input = g_strndup(outbuf, outbuflen);
+}
+
+static void
 chimara_if_line_input(ChimaraGlk *glk, guint32 win_rock, gchar *input)
 {
 	CHIMARA_IF_USE_PRIVATE(glk, priv);
@@ -161,6 +172,7 @@ chimara_if_init(ChimaraIF *self)
 	/* Connect to signals of ChimaraGlk parent */
 	g_signal_connect(self, "stopped", G_CALLBACK(chimara_if_stopped), NULL);
 	g_signal_connect(self, "waiting", G_CALLBACK(chimara_if_waiting), NULL);
+	g_signal_connect(self, "char-input", G_CALLBACK(chimara_if_char_input), NULL);
 	g_signal_connect(self, "line-input", G_CALLBACK(chimara_if_line_input), NULL);
 	g_signal_connect(self, "text-buffer-output", G_CALLBACK(chimara_if_text_buffer_output), NULL);
 }
