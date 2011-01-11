@@ -265,13 +265,14 @@ on_game_command(ChimaraIF *game, gchar *input, gchar *response, I7Story *story)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
 	if(!input) {
-		/* If no input, then this was the text printed before the first prompt.
-		 It should become the transcript text of the root node. */
+		/* If no input, then this was either the text printed before the first 
+		 prompt, or a keypress of Enter in response to character input. */
 		I7Node *root = i7_skein_get_root_node(priv->skein);
-		g_assert(i7_skein_get_current_node(priv->skein) == root);
-		i7_node_set_transcript_text(root, response);
-	} else {
-		I7Node *node = i7_skein_new_command(priv->skein, input);
-		i7_node_set_transcript_text(node, response);
-	}
+		if(i7_skein_get_current_node(priv->skein) == root) {
+			i7_node_set_transcript_text(root, response);
+			return;
+		}
+	} 
+	I7Node *node = i7_skein_new_command(priv->skein, input);
+	i7_node_set_transcript_text(node, response);
 }
