@@ -965,11 +965,10 @@ i7_panel_update_fonts(I7Panel *self)
 	gchar *css = g_strdup_printf(
 		"grid.normal { font-size: %d; }"
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
-		"buffer.normal { font-size: %d; font-family: '%s'; }"
-		"buffer.header { font-size: %d; font-family: '%s';"
-		"    font-weight: bold; }"
-		"buffer.subheader { font-size: %d; font-family: '%s';"
-		"    font-weight: bold; }"
+	    "buffer.default { font-family: '%s'; }"
+		"buffer.normal { font-size: %d; }"
+		"buffer.header { font-size: %d; font-weight: bold; }"
+		"buffer.subheader { font-size: %d; font-weight: bold; }"
 		"buffer.alert { color: #aa0000; font-weight: bold; }"
 		"buffer.note { color: #aaaa00; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
@@ -977,7 +976,7 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.user1 { }"
 		"buffer.user2 { }"
 		"buffer.pager { color: #ffffff; background-color: #aa0000; }",
-		size, size, font, (gint)(size * RELATIVE_SIZE_MEDIUM), font, size, font);
+		size, font, size, (gint)(size * RELATIVE_SIZE_MEDIUM), size);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_GAME]), css);
 	g_free(css);
 	pango_font_description_free(fontdesc);
