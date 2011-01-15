@@ -11,6 +11,7 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 #include <pango/pango.h>
+#include <gio/gio.h>
 #include "chimara-glk.h"
 #include "chimara-glk-private.h"
 #include "chimara-marshallers.h"
