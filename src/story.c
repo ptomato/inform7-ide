@@ -189,11 +189,13 @@ on_search_entry_activate(GtkEntry *entry, I7Story *story)
 	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
 }
 
+#if GTK_CHECK_VERSION(2,16,0)
 void
 on_search_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event)
 {
 	gtk_entry_set_text(entry, "");
 }
+#endif
 
 /* OVERRIDES */
 

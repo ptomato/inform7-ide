@@ -854,6 +854,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 	return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
 }
 
+#if WEBKIT_CHECK_VERSION(1,1,14)
 void
 on_resource_request_starting(WebKitWebView *self, WebKitWebFrame *frame, WebKitWebResource *resource, WebKitNetworkRequest *request, WebKitNetworkResponse *response)
 {
@@ -868,6 +869,7 @@ on_resource_request_starting(WebKitWebView *self, WebKitWebFrame *frame, WebKitW
 	g_free(escaped);
 	g_free(real_uri);
 }
+#endif /* Webkit 1.1.14 SUCKY DEBIAN */
 
 gint
 after_documentation_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel)

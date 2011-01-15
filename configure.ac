@@ -15,8 +15,8 @@ AC_CONFIG_MACRO_DIR([m4])
 # Initialize automake; $(MKDIR_P) was introduced in 1.10
 AM_INIT_AUTOMAKE([1.10 -Wall])
 # Configure with --enable-silent-rules to cut down on clutter
-# Requires automake 1.11, but should just be ignored on 1.10
-AM_SILENT_RULES([yes])
+# Requires automake 1.11
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 ### CHECK FOR PROPER NI EXECUTABLE #############################################
 
@@ -137,12 +137,14 @@ AM_PROG_CC_C_O                    # Automake requires this for per-target CFLAGS
 AC_PROG_INSTALL                   # Install
 AC_PROG_SED                       # Sed
 AC_PROG_MKDIR_P                   # mkdir -p
-m4_defun([_LT_AC_LANG_CXX_CONFIG], [:]) # Disable unnecessary Libtool checks
-m4_defun([_LT_AC_LANG_F77_CONFIG], [:]) # to save time (1.5 only)
-#LT_INIT                           # Libtool 2.2.6 and up
-LT_INIT([dlopen])                # Should call it this way, but
-#LT_PREREQ([2.2.6])               # ...goddamn Debian still has 1.5
-AC_PROG_LIBTOOL                   # Old way of declaring Libtool
+m4_ifdef([LT_INIT], [
+	LT_INIT([dlopen])             # Libtool 2.2.6 and up
+	LT_PREREQ([2.2.6])
+], [
+	m4_defun([_LT_AC_LANG_CXX_CONFIG], [:]) # Disable unnecessary Libtool checks
+	m4_defun([_LT_AC_LANG_F77_CONFIG], [:]) # to save time (1.5 only)
+	AC_PROG_LIBTOOL               # goddamn Debian still has 1.5
+])             
 # Other tools used in this package's various make scripts
 AC_PATH_PROG([PERL], [perl])      # Perl
 AC_PATH_PROG([TAR], [tar gtar])   # tar

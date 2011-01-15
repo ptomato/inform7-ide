@@ -956,9 +956,15 @@ i7_app_present_prefs_window(I7App *app)
 static void
 set_cursor(GtkWindow *toplevel, GdkCursor *cursor)
 {
+#if !GTK_CHECK_VERSION(2,14,0)
+#define gtk_widget_get_window(w) ((w)->window)
+#endif /* SUCKY DEBIAN */
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(toplevel));
 	if(window)
 		gdk_window_set_cursor(window, cursor);
+#if !GTK_CHECK_VERSION(2,14,0)
+#undef gtk_widget_get_window
+#endif /* SUCKY DEBIAN */
 }
 
 /* Change the cursor in all application windows to GDK_WATCH if @busy is TRUE,

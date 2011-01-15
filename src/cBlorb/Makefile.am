@@ -78,11 +78,12 @@ endif
 
 EXTRA_DIST = $(cblorbmaterials)
 
+ABSDISTDIR = $(abspath $(distdir))
 dist-hook:
 	$(MKDIR_P) --mode=u+w $(distdir)/Preliminaries $(distdir)/Chapter\ 1 \
 		$(distdir)/Chapter\ 2 $(distdir)/Chapter\ 3 $(distdir)/Woven \
 		$(distdir)/Tangled
 	cd $(srcdir) && \
 		cp --preserve=mode,ownership,timestamps --parents \
-		$(cblorbsrc) $(abs_builddir)/$(distdir)
+		$(cblorbsrc) $(ABSDISTDIR)
 

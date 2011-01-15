@@ -21,6 +21,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include <gio/gio.h>
 #include "document.h"
 
 typedef struct {

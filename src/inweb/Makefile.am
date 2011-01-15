@@ -91,10 +91,13 @@ EXTRA_DIST = $(inwebmaterials)
 # I'm automake! Spaces are evil! I refuse to handle such newfangled notions!
 #
 # Also: why should the distdir be unwritable?!
+#
+# Also: why is distdir sometimes an absolute path and sometimes relative?
+ABSDISTDIR = $(abspath $(distdir))
 dist-hook:
 	$(MKDIR_P) --mode=u+w $(distdir)/Preliminaries $(distdir)/Chapter\ 1 \
 		$(distdir)/Chapter\ 2 $(distdir)/Chapter\ 3 $(distdir)/Woven
 	cd $(srcdir) && \
 		cp --preserve=mode,ownership,timestamps --parents \
-		$(inwebsrc) $(abs_builddir)/$(distdir)
+		$(inwebsrc) $(ABSDISTDIR)
 

@@ -17,6 +17,7 @@
 
 #include <errno.h>
 #include <gtk/gtk.h>
+#include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
