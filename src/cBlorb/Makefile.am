@@ -71,6 +71,7 @@ cblorbdoc_DATA = $(cblorbmanual) $(cblorbweavefiles)
 
 $(cblorbweavefiles): $(cblorbmanual)
 $(cblorbmanual): $(cblorbsrc) Makefile
+	$(MKDIR_P) --mode=u+w,o-w $(builddir)/Woven;
 	$(PERL) ../inweb/Tangled/inweb.pl . -closed -weave $(inwebcommand) -at ../
 
 CLEANFILES += $(cblorbmanual) $(cblorbweavefiles)

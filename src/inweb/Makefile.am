@@ -78,6 +78,7 @@ $(inwebweavefiles): $(inwebmanual)
 # user could have switched from 'chapters' to 'sections' for example and the
 # extra PDF files wouldn't build
 $(inwebmanual): $(inwebsrc) Makefile
+	$(MKDIR_P) --mode=u+w,o-w $(builddir)/Woven;
 	$(PERL) Tangled/inweb.pl . -closed -weave $(inwebcommand) -at ../
 
 CLEANFILES = $(inwebweavefiles) $(inwebmanual)
