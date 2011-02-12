@@ -54,76 +54,52 @@ AC_PATH_PROG([DEBUILD], [dpkg-buildpackage], [notfound])
 # --enable-rpm copies the ni executable and the spec file to the dist package,
 # for use in building RPM packages. Requires rpm and rpmbuild.
 AC_ARG_ENABLE([rpm],
-	[AS_HELP_STRING([--enable-rpm],[Configure for building RPM package [no] (requires rpm and rpmbuild)])],
-	[AS_CASE([${enableval}],
-		[yes], [AS_IF(
-			[$TEST "x$RPMBUILD" = xnotfound],
-				[AC_MSG_ERROR([rpmbuild is required for --enable-rpm])],
-			[$TEST "x$RPM" = xnotfound],
-				[AC_MSG_ERROR([rpm is required for --enable-rpm])],
-			[rpm=true])],
-		[no],  [rpm=false],
-		[AC_MSG_ERROR([bad value ${enableval} for --enable-rpm])]
-	)],
-	[rpm=false]
-)
-AM_CONDITIONAL([BUILDING_RPM], [$TEST "x$rpm" = xtrue])
+	[AS_HELP_STRING([--enable-rpm=@<:@yes/no@:>@],
+		[Configure for building RPM package @<:@default=no@:>@ (requires rpm and rpmbuild)])],
+	[AS_IF([$TEST "x$enable_rpm" = xyes],
+		[AS_IF([$TEST "x$RPMBUILD" = xnotfound],
+			[AC_MSG_ERROR([rpmbuild is required for --enable-rpm])],
+		[$TEST "x$RPM" = xnotfound],
+			[AC_MSG_ERROR([rpm is required for --enable-rpm])])])],
+	[enable_rpm=no])
+AM_CONDITIONAL(BUILDING_RPM, $TEST "x$enable_rpm" = xyes)
 
 # --enable-deb copies only the ni executable to the dist package, for use in
 # building DEB packages.
 AC_ARG_ENABLE([deb],
-	[AS_HELP_STRING([--enable-deb],[Configure for building DEB package [no]])],
-	[AS_CASE([${enableval}],
-		[yes], [AS_IF(
-			[$TEST "x$DEBUILD" = xnotfound],
-				[AC_MSG_ERROR([dpkg-buildpackage is required for --enable-deb])],
-			[$TEST "x$rpm" = xtrue],
-				[AC_MSG_ERROR([--enable-rpm and --enable-deb are mutually exclusive])],
-			[deb=true])],
-		[no],  [deb=false],
-		[AC_MSG_ERROR([bad value ${enableval} for --enable-deb])]
-	)],
-	[deb=false]
-)
-AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$deb" = xtrue])
+	[AS_HELP_STRING([--enable-deb=@<:@yes/no@:>@],
+		[Configure for building Debian package @<:@default=no@:>@ (requires dpkg-buildpackage)])],
+	[AS_IF([$TEST "x$enable_deb" = xyes],
+		[AS_IF([$TEST "x$DEBUILD" = xnotfound],
+			[AC_MSG_ERROR([dpkg-buildpackage is required for --enable-deb])],
+		[$TEST "x$enable_rpm" = xyes],
+			[AC_MSG_ERROR([--enable-rpm and --enable-deb are mutually exclusive])])])],
+	[enable_deb=no])
+AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$enable_deb" = xyes])
 
 # --enable-distcheck does the same thing as --enable-deb, but doesn't require
 # dpkg-buildpackage. This is because the tarball for distcheck needs to have
 # the ni binary in it, otherwise configuring it will fail.
 AC_ARG_ENABLE([distcheck],
-	[AS_HELP_STRING([--enable-distcheck],[Configure for make distcheck [no]])],
-	[AS_CASE([${enableval}],
-		[yes], [distcheck=true],
-		[no],  [distcheck=false],
-		[AC_MSG_ERROR([bad value ${enableval} for --enable-distcheck])]
-	)],
-	[distcheck=false]
-)
-AM_CONDITIONAL([DISTCHECK], [$TEST "x$distcheck" = xtrue])
+	[AS_HELP_STRING([--enable-distcheck=@<:@yes/no@:>@],
+		[Configure for make distcheck @<:@default=no@:>@])],
+	[]
+	[enable_distcheck=no])
+AM_CONDITIONAL([DISTCHECK], [$TEST "x$enable_distcheck" = xyes])
 
 # --enable-manuals builds the inweb and cBlorb manuals. Requires pdftex and dot.
 AC_ARG_ENABLE([manuals],
-	[AS_HELP_STRING([--enable-manuals], [Build the inweb and cBlorb manuals [no] (requires pdftex and dot; optionally specify 'chapters' or 'sections')])],
-	[AS_CASE([${enableval}],
-		[yes|chapters|sections], [AS_IF(
-			[$TEST "x$PDFTEX" = xnotfound],
-				[AC_MSG_ERROR([pdftex is required for --enable-manuals])],
-			[$TEST "x$DOT" = xnotfound],
-				[AC_MSG_ERROR([dot is required for --enable-manuals])],
-			[manuals=true])
-			AS_IF(
-				[$TEST "x${enableval}" = xsections], [manualtype=sections],
-				[$TEST "x${enableval}" = xchapters], [manualtype=chapters],
-				[manualtype=justthefacts]
-			)],
-		[no], [manuals=false],
-		[AC_MSG_ERROR([bad value ${enableval} for --enable-manuals])]
-	)],
-	[manuals=false]
-)
-AM_CONDITIONAL([MANUALS], [$TEST "x$manuals" = xtrue])
-AM_CONDITIONAL([MANUALS_CHAPTERS], [$TEST "x$manualtype" = xchapters])
-AM_CONDITIONAL([MANUALS_SECTIONS], [$TEST "x$manualtype" = xsections])
+	[AS_HELP_STRING([--enable-manuals=@<:@yes/chapters/sections/no@:>@],
+		[Build the inweb and cBlorb manuals @<:@default=no@:>@ (requires pdftex and dot)])],
+	[AS_IF([$TEST "x$enable_manuals" != xno],
+		[AS_IF([$TEST "x$PDFTEX" = xnotfound],
+			[AC_MSG_ERROR([pdftex is required for --enable-manuals])],
+		[$TEST "x$DOT" = xnotfound],
+			[AC_MSG_ERROR([dot is required for --enable-manuals])])])],
+	[enable_manuals=no])
+AM_CONDITIONAL([MANUALS], [$TEST "x$enable_manuals" != xno])
+AM_CONDITIONAL([MANUALS_CHAPTERS], [$TEST "x$enable_manuals" = xchapters])
+AM_CONDITIONAL([MANUALS_SECTIONS], [$TEST "x$enable_manuals" = xsections])
 
 # The user can specify the RPM release number in the environment (e.g. '1.fc10')
 AC_ARG_VAR([RPM_RELEASE], [Release number to build RPMs with [1]])
