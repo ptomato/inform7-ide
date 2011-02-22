@@ -13,10 +13,10 @@ extern GPrivate *glk_data_key;
 static gboolean style_accept(GScanner *scanner, GTokenType token);
 static gboolean style_accept_style_selector(GScanner *scanner, ChimaraGlk *glk);
 static gboolean style_accept_style_hint(GScanner *scanner, GtkTextTag *current_tag);
-static void style_add_tag_to_textbuffer(gpointer key, gpointer tag, gpointer tag_table);
 static void style_copy_tag_to_textbuffer(gpointer key, gpointer tag, gpointer target_table);
 static void text_tag_to_attr_list(GtkTextTag *tag, PangoAttrList *list);
 GtkTextTag* gtk_text_tag_copy(GtkTextTag *tag);
+static void style_cascade_colors(GtkTextTag *tag, GtkTextTag *glk_tag, GtkTextTag *default_tag, GdkColor **foreground, GdkColor **background);
 
 /**
  * glk_set_style:
@@ -138,7 +138,7 @@ style_init_textbuffer(GtkTextBuffer *buffer)
 	ChimaraGlkPrivate *glk_data = g_private_get(glk_data_key);
 
 	/* Place the default text tags in the textbuffer's tag table */
-	g_hash_table_foreach(glk_data->styles->text_buffer, style_add_tag_to_textbuffer, gtk_text_buffer_get_tag_table(buffer));
+	g_hash_table_foreach(glk_data->styles->text_buffer, style_copy_tag_to_textbuffer, gtk_text_buffer_get_tag_table(buffer));
 
 	/* Copy the override text tags to the textbuffers's tag table */
 	g_hash_table_foreach(glk_data->glk_styles->text_buffer, style_copy_tag_to_textbuffer, gtk_text_buffer_get_tag_table(buffer));
@@ -154,21 +154,10 @@ style_init_textgrid(GtkTextBuffer *buffer)
 	ChimaraGlkPrivate *glk_data = g_private_get(glk_data_key);
 
 	/* Place the default text tags in the textbuffer's tag table */
-	g_hash_table_foreach(glk_data->styles->text_grid, style_add_tag_to_textbuffer, gtk_text_buffer_get_tag_table(buffer));
+	g_hash_table_foreach(glk_data->styles->text_grid, style_copy_tag_to_textbuffer, gtk_text_buffer_get_tag_table(buffer));
 
 	/* Copy the current text tags to the textbuffers's tag table */
 	g_hash_table_foreach(glk_data->glk_styles->text_grid, style_copy_tag_to_textbuffer, gtk_text_buffer_get_tag_table(buffer));
-}
-
-/* Internal function used to iterate over the default text tag table, applying them to a textbuffer */
-static void
-style_add_tag_to_textbuffer(gpointer key, gpointer tag, gpointer tag_table)
-{
-	g_return_if_fail(key != NULL);
-	g_return_if_fail(tag != NULL);
-	g_return_if_fail(tag_table != NULL);
-
-	gtk_text_tag_table_add(tag_table, tag);
 }
 
 /* Internal function used to iterate over a style table, copying it */
@@ -219,10 +208,11 @@ gtk_text_tag_copy(GtkTextTag *tag)
 	#undef _COPY_FLAG
 
 	/* Copy the data that was added manually */
-	gpointer reverse_color = g_object_get_data( G_OBJECT(tag), "reverse_color" );
+	gpointer reverse_color = g_object_get_data( G_OBJECT(tag), "reverse-color" );
 
-	if(reverse_color)
-		g_object_set_data( G_OBJECT(copy), "reverse_color", reverse_color );
+	if(reverse_color) {
+		g_object_set_data( G_OBJECT(copy), "reverse-color", reverse_color );
+	}
 
 	return copy;
 }
@@ -392,21 +382,6 @@ void
 reset_default_styles(ChimaraGlk *glk)
 {
 	/* TODO: write this function */
-}
-
-/* Copy the default styles to the current styles
- FIXME: This function is temporary and will not be needed later on */
-void
-copy_default_styles_to_current_styles(ChimaraGlk *glk)
-{
-	/*
-	CHIMARA_GLK_USE_PRIVATE(glk, priv);
-	g_hash_table_foreach(priv->styles->text_grid, style_table_copy, priv->glk_styles->text_grid);
-	g_hash_table_foreach(priv->styles->text_buffer, style_table_copy, priv->glk_styles->text_buffer);
-
-	GtkTextTag *pager_tag = GTK_TEXT_TAG( g_hash_table_lookup(priv->styles->text_buffer, "pager") );
-	text_tag_to_attr_list(pager_tag, priv->pager_attr_list);
-	*/
 }
 
 /* Create the CSS file scanner */
@@ -657,19 +632,6 @@ style_accept_style_hint(GScanner *scanner, GtkTextTag *current_tag)
 	return TRUE;
 }
 
-/* Internal function: parses a glk color to a #hex-value */
-static void
-glkcolor_to_hex(glui32 val, gchar *buffer)
-{
-	g_return_if_fail(buffer != NULL);
-
-	sprintf(buffer, "#%02X%02X%02X",
-		((val & 0xff0000) >> 16),
-		((val & 0x00ff00) >> 8),
-		(val & 0x0000ff)
-	);
-}
-
 /* Internal function: parses a glk color to a GdkColor */
 void
 glkcolor_to_gdkcolor(glui32 val, GdkColor *color)
@@ -677,6 +639,26 @@ glkcolor_to_gdkcolor(glui32 val, GdkColor *color)
 	color->red = 256 * ((val & 0xff0000) >> 16);
 	color->green = 256 * ((val & 0x00ff00) >> 8);
 	color->blue = 256 * (val & 0x0000ff);
+}
+
+/* Internal function: parses a glk color to a hex string */
+gchar*
+glkcolor_to_hex(glui32 val)
+{
+	return g_strdup_printf("%04X%04X%04X",
+		256 * ((val & 0xff0000) >> 16),
+		256 * ((val & 0x00ff00) >> 8),
+		256 * (val & 0x0000ff)
+	);
+}
+
+/* Internal function: parses a gdk color to a hex string */
+gchar*
+gdkcolor_to_hex(GdkColor *color)
+{
+	return g_strdup_printf("%04X%04X%04X",
+		color->red, color->green, color->blue
+	);
 }
 
 /* Internal function: parses a GdkColor to a glk color */
@@ -689,7 +671,7 @@ gdkcolor_to_glkcolor(GdkColor *color)
 
 /* Internal function: changes a GTK tag to correspond with the given style. */
 static void
-apply_stylehint_to_tag(GtkTextTag *tag, GtkTextTag *default_tag, glui32 wintype, glui32 hint, glsi32 val)
+apply_stylehint_to_tag(GtkTextTag *tag, glui32 wintype, glui32 styl, glui32 hint, glsi32 val)
 {
 	g_return_if_fail(tag != NULL);
 
@@ -699,7 +681,7 @@ apply_stylehint_to_tag(GtkTextTag *tag, GtkTextTag *default_tag, glui32 wintype,
 	gint reverse_color = GPOINTER_TO_INT( g_object_get_data(tag_object, "reverse-color") );
 
 	int i = 0;
-	gchar color[20];
+	GdkColor color;
 	switch(hint) {
 	case stylehint_Indentation:
 		g_object_set(tag_object, "left-margin", 5*val, "left-margin-set", TRUE, NULL);
@@ -749,7 +731,6 @@ apply_stylehint_to_tag(GtkTextTag *tag, GtkTextTag *default_tag, glui32 wintype,
 					step be a scaling of 1.2 */
 					scale = pow(1.2, (double)val);
 			}
-			g_printerr("Setting tag to %f\n", scale);
 			g_object_set(tag_object, "scale", scale, "scale-set", TRUE, NULL);
 		}
 		break;
@@ -771,56 +752,66 @@ apply_stylehint_to_tag(GtkTextTag *tag, GtkTextTag *default_tag, glui32 wintype,
 		break;
 
 	case stylehint_TextColor:
-		glkcolor_to_hex(val, color);
+		glkcolor_to_gdkcolor(val, &color);
 
 		if(!reverse_color)
-			g_object_set(tag_object, "foreground", color, "foreground-set", TRUE, NULL);
+			g_object_set(tag_object, "foreground-gdk", &color, "foreground-set", TRUE, NULL);
 		else
-			g_object_set(tag_object, "background", color, "background-set", TRUE, NULL);
+			g_object_set(tag_object, "background-gdk", &color, "background-set", TRUE, NULL);
 
 		break;
 
 	case stylehint_BackColor:
-		glkcolor_to_hex(val, color);
+		glkcolor_to_gdkcolor(val, &color);
 
 		if(!reverse_color)
-			g_object_set(tag_object, "background", color, "background-set", TRUE, NULL);
+			g_object_set(tag_object, "background-gdk", &color, "background-set", TRUE, NULL);
 		else
-			g_object_set(tag_object, "foreground", color, "background-set", TRUE, NULL);
+			g_object_set(tag_object, "foreground-gdk", &color, "background-set", TRUE, NULL);
 
 		break;
 
 	case stylehint_ReverseColor:
-		if(reverse_color != val) {
-			/* Flip the fore- and background colors */
-			GdkColor* foreground_color;
-			GdkColor* background_color;
-			gint f_set, b_set, df_set, db_set = 0;
-			g_object_get(tag_object, "foreground-set", &f_set, "background-set", &b_set, NULL);
-			g_object_get(default_tag, "foreground-set", &df_set, "background-set", &db_set, NULL);
+	{
+		// Determine the current colors
+		
+		// If all fails, use black/white
+		// FIXME: Use system theme here
+		GdkColor foreground, background;
+		gdk_color_parse("black", &foreground);
+		gdk_color_parse("white", &background);
+		GdkColor *current_foreground = &foreground;
+		GdkColor *current_background = &background;
 
-			if(f_set)
-				g_object_get(tag_object, "foreground-gdk", &foreground_color, NULL);
-			else if(df_set)
-				g_object_get(default_tag, "foreground-gdk", &foreground_color, NULL);
-			if(b_set)
-				g_object_get(tag_object, "background-gdk", &background_color, NULL);
-			else if(db_set)
-				g_object_get(default_tag, "background-gdk", &background_color, NULL);
-
-			if(b_set || db_set)
-				g_object_set(tag_object, "foreground-gdk", background_color, NULL);
-			else
-				g_object_set(tag_object, "foreground", "#ffffff", NULL);
-
-			if(f_set || df_set)
-				g_object_set(tag_object, "background-gdk", foreground_color, NULL);
-			else
-				g_object_set(tag_object, "background", "#000000", NULL);
-
-			g_object_set_data( tag_object, "reverse-color", GINT_TO_POINTER(val != 0) );
+		if(wintype == wintype_TextBuffer) {
+			GtkTextTag* default_tag = g_hash_table_lookup(glk_data->styles->text_buffer, "default");
+			GtkTextTag* base_tag = g_hash_table_lookup(glk_data->styles->text_buffer, get_tag_name(styl));
+			style_cascade_colors(base_tag, tag, default_tag, &current_foreground, &current_background);
 		}
+		else if(wintype == wintype_TextGrid) {
+			GtkTextTag* default_tag = g_hash_table_lookup(glk_data->styles->text_grid, "default");
+			GtkTextTag* base_tag = g_hash_table_lookup(glk_data->styles->text_grid, get_tag_name(styl));
+			style_cascade_colors(base_tag, tag, default_tag, &current_foreground, &current_background);
+		}
+
+		if(val) {
+			/* Flip the fore- and background colors */
+			GdkColor *temp = current_foreground;
+			current_foreground = current_background;
+			current_background = temp;
+		}
+
+		g_object_set(tag,
+			"foreground-gdk", current_foreground,
+			"foreground-set", TRUE,
+			"background-gdk", current_background,
+			"background-set", TRUE,
+			NULL
+		);
+
+		g_object_set_data( tag_object, "reverse-color", GINT_TO_POINTER(val != 0) );
 		break;
+	}
 
 	default:
 		WARNING("Unknown style hint");
@@ -930,17 +921,15 @@ glk_stylehint_set(glui32 wintype, glui32 styl, glui32 hint, glsi32 val)
 {
 	ChimaraGlkPrivate *glk_data = g_private_get(glk_data_key);
 
-	GtkTextTag *to_change, *default_tag;
+	GtkTextTag *to_change;
 	if(wintype == wintype_TextBuffer || wintype == wintype_AllTypes) {
 		to_change = g_hash_table_lookup( glk_data->glk_styles->text_buffer, get_glk_tag_name(styl) );
-		default_tag = g_hash_table_lookup( glk_data->styles->text_buffer, get_tag_name(styl) );
-		apply_stylehint_to_tag(to_change, default_tag, wintype_TextBuffer, hint, val);
+		apply_stylehint_to_tag(to_change, wintype_TextBuffer, styl, hint, val);
 	}
 
 	if(wintype == wintype_TextGrid || wintype == wintype_AllTypes) {
 		to_change = g_hash_table_lookup( glk_data->glk_styles->text_grid, get_glk_tag_name(styl) );
-		default_tag = g_hash_table_lookup( glk_data->styles->text_grid, get_tag_name(styl) );
-		apply_stylehint_to_tag(to_change, default_tag, wintype_TextGrid, hint, val);
+		apply_stylehint_to_tag(to_change, wintype_TextGrid, styl, hint, val);
 	}
 }
 
@@ -1188,4 +1177,68 @@ style_update(ChimaraGlk *glk)
 
 	GtkTextTag *pager_tag = GTK_TEXT_TAG( g_hash_table_lookup(priv->styles->text_buffer, "pager") );
 	text_tag_to_attr_list(pager_tag, priv->pager_attr_list);
+}
+
+/* Determine the current colors used to render the text for a given stream. 
+ * This can be set in a number of places */
+static void
+style_cascade_colors(GtkTextTag *tag, GtkTextTag *glk_tag, GtkTextTag *default_tag, GdkColor **foreground, GdkColor **background)
+{
+	gboolean foreground_set = FALSE;
+	gboolean background_set = FALSE;
+	gint reverse_color;
+
+	// Default color
+	reverse_color = GPOINTER_TO_INT( g_object_get_data(G_OBJECT(default_tag), "reverse-color") );
+	g_object_get(default_tag, "foreground-set", &foreground_set, "background-set", &background_set, NULL);
+	if(foreground_set)
+		g_object_get(default_tag, "foreground-gdk", reverse_color ? background:foreground, NULL);
+	if(background_set)
+		g_object_get(default_tag, "background-gdk", reverse_color ? foreground:background, NULL);
+
+	// Player defined color
+	reverse_color = GPOINTER_TO_INT( g_object_get_data(G_OBJECT(tag), "reverse-color") );
+	g_object_get(tag, "foreground-set", &foreground_set, "background-set", &background_set, NULL);
+	if(foreground_set)
+		g_object_get(tag, "foreground-gdk", reverse_color ? background:foreground, NULL);
+	if(background_set)
+		g_object_get(tag, "background-gdk", reverse_color ? foreground:background, NULL);
+
+	// GLK defined color
+	reverse_color = GPOINTER_TO_INT( g_object_get_data(G_OBJECT(glk_tag), "reverse-color") );
+	g_object_get(glk_tag, "foreground-set", &foreground_set, "background-set", &background_set, NULL);
+	if(foreground_set)
+		g_object_get(glk_tag, "foreground-gdk", reverse_color ? background:foreground, NULL);
+	if(background_set)
+		g_object_get(glk_tag, "background-gdk", reverse_color ? foreground:background, NULL);
+
+}
+
+/* Determine the current colors used to render the text for a given stream. 
+ * This can be set in a number of places */
+void
+style_stream_colors(strid_t str, GdkColor **foreground, GdkColor **background)
+{
+	VALID_STREAM(str, return);
+	g_return_if_fail(str->window != NULL);
+	g_return_if_fail(str->window->type != wintype_TextBuffer || str->window->type != wintype_TextGrid);
+	
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer( GTK_TEXT_VIEW(str->window->widget) );	
+	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
+	GtkTextTag* default_tag = gtk_text_tag_table_lookup(tags, "default");
+	GtkTextTag* tag = gtk_text_tag_table_lookup(tags, str->style);
+	GtkTextTag* glk_tag = gtk_text_tag_table_lookup(tags, str->glk_style);
+
+	style_cascade_colors(tag, glk_tag, default_tag, foreground, background);
+
+	gboolean foreground_set, background_set;
+
+	// Windows can have zcolors defined
+	if(str->window->zcolor) {
+		g_object_get(str->window->zcolor, "foreground-set", &foreground_set, "background-set", &background_set, NULL);
+		if(foreground_set)
+			g_object_get(str->window->zcolor, "foreground-gdk", foreground, NULL);
+		if(background_set)
+			g_object_get(str->window->zcolor, "background-gdk", background, NULL);
+	}
 }

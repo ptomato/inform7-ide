@@ -3,6 +3,7 @@
 #include "window.h"
 #include "stream.h"
 #include "fileref.h"
+#include "schannel.h"
 
 extern GPrivate *glk_data_key;
 
@@ -117,6 +118,8 @@ gidispatch_get_objrock(void *obj, glui32 objclass)
 			return ((strid_t)obj)->disprock;
 		case gidisp_Class_Fileref:
 			return ((frefid_t)obj)->disprock;
+		case gidisp_Class_Schannel:
+			return ((schanid_t)obj)->disprock;
 		default: 
 		{
 			gidispatch_rock_t dummy;

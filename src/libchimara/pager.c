@@ -34,7 +34,7 @@ move_pager_and_get_scroll_distance(GtkTextView *textview, gint *view_height, gin
 
 	/*
 	g_printerr("View height = %d\n", visiblerect.height);
-	g_printerr("End - Pager = %d\n", endpos.y - pagerpos.y);
+	g_printerr("End - Pager = %d - %d = %d\n", endpos.y, pagerpos.y, endpos.y - pagerpos.y);
 	*/
 	
 	*view_height = visiblerect.height;
@@ -81,24 +81,22 @@ gboolean
 pager_on_key_press_event(GtkTextView *textview, GdkEventKey *event, winid_t win)
 {
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment( GTK_SCROLLED_WINDOW(win->frame) );
-	gdouble step_increment, page_size, upper, lower, value;
+	gdouble page_size, upper, lower, value;
 	g_object_get(adj, 
 		"page-size", &page_size,
-		"step-increment", &step_increment,
 		"upper", &upper,
 		"lower", &lower,
 		"value", &value,
 		NULL);
 	
 	switch (event->keyval) {
-		case GDK_space: case GDK_KP_Space: case GDK_Page_Down: case GDK_KP_Page_Down:
+		case GDK_space: case GDK_KP_Space:
+		case GDK_Page_Down: case GDK_KP_Page_Down:
+		case GDK_Return: case GDK_KP_Enter:
 			gtk_adjustment_set_value(adj, CLAMP(value + page_size, lower, upper - page_size));
 			return TRUE;
 		case GDK_Page_Up: case GDK_KP_Page_Up:
 			gtk_adjustment_set_value(adj, CLAMP(value - page_size, lower, upper - page_size));
-			return TRUE;
-		case GDK_Return: case GDK_KP_Enter:
-			gtk_adjustment_set_value(adj, CLAMP(value + step_increment, lower, upper - page_size));
 			return TRUE;
 			/* don't handle "up" and "down", they're used for input history */
 	}

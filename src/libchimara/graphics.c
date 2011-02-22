@@ -63,6 +63,7 @@ load_image_from_blorb(giblorb_result_t resource, glui32 image, gint width, gint 
 	g_mutex_unlock(glk_data->resource_lock);
 
 	info->pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
+	gdk_pixbuf_ref(info->pixbuf);
 
 	g_object_unref(loader);
 	return info;
@@ -88,6 +89,7 @@ load_image_from_file(const gchar *filename, glui32 image, gint width, gint heigh
 		g_free(info);
 		return NULL;
 	}
+	gdk_pixbuf_ref(info->pixbuf);
 
 	return info;
 }
@@ -130,7 +132,6 @@ load_image_in_cache(glui32 image, gint width, gint height)
 		g_free(head);
 		glk_data->image_cache = g_slist_remove_link(glk_data->image_cache, glk_data->image_cache);
 	}
-	gdk_pixbuf_ref(info->pixbuf);
 	info->width = gdk_pixbuf_get_width(info->pixbuf);
 	info->height = gdk_pixbuf_get_height(info->pixbuf);
 	glk_data->image_cache = g_slist_prepend(glk_data->image_cache, info);

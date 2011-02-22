@@ -1,4 +1,5 @@
 #include <stddef.h> /* Surprisingly, the only symbol needed is NULL */
+#include <config.h>
 #include "glk.h"
 
 /* Version of the Glk specification implemented by this library */
@@ -124,11 +125,18 @@ glk_gestalt_ext(glui32 sel, glui32 val, glui32 *arr, glui32 arrlen)
 
 		case gestalt_GraphicsTransparency:
 			return 1;
-			
-		/* Unsupported capabilities */
+
+		/* Capabilities supported if compiled with GStreamer */
 		case gestalt_Sound:
 		case gestalt_SoundVolume:
 		case gestalt_SoundNotify:
+#ifdef GSTREAMER_SOUND
+			return 1;
+#else
+			return 0;
+#endif
+			
+		/* Unsupported capabilities */
 		case gestalt_SoundMusic:
 		/* Selector not supported */	
 		default:

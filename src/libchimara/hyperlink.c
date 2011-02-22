@@ -1,3 +1,5 @@
+#include <config.h>
+#include <glib/gi18n-lib.h>
 #include "hyperlink.h"
 #include "chimara-glk-private.h"
 #include "magic.h"
@@ -75,7 +77,8 @@ glk_set_hyperlink_stream(strid_t str, glui32 linkval)
 		new_hyperlink->value = linkval;
 		new_hyperlink->tag = gtk_text_tag_new(NULL);
 		new_hyperlink->event_handler = g_signal_connect( new_hyperlink->tag, "event", G_CALLBACK(on_hyperlink_clicked), new_hyperlink );
-		g_signal_handler_block(new_hyperlink->tag, new_hyperlink->event_handler);
+		if(!str->window->hyperlink_event_requested)
+			g_signal_handler_block(new_hyperlink->tag, new_hyperlink->event_handler);
 		new_hyperlink->window = str->window;
 
 		/* Add the new tag to the tag table of the textbuffer */
@@ -137,6 +140,12 @@ glk_request_hyperlink_event(winid_t win)
 	g_return_if_fail(win != NULL);
 	g_return_if_fail(win->type == wintype_TextBuffer || win->type == wintype_TextGrid);
 
+	if(win->hyperlink_event_requested) {
+		WARNING(_("Tried to request a hyperlink event on a window that already had a hyperlink request"));
+		return;
+	}
+
+	win->hyperlink_event_requested = TRUE;
 	g_hash_table_foreach(win->hyperlinks, hyperlink_unblock_event_handler, NULL);
 
 }
@@ -155,6 +164,12 @@ glk_cancel_hyperlink_event(winid_t win)
 	g_return_if_fail(win != NULL);
 	g_return_if_fail(win->type == wintype_TextBuffer || win->type == wintype_TextGrid);
 
+	if(!win->hyperlink_event_requested) {
+		WARNING(_("Tried to cancel a nonexistent hyperlink request"));
+		return;
+	}
+
+	win->hyperlink_event_requested = FALSE;
 	g_hash_table_foreach(win->hyperlinks, hyperlink_block_event_handler, NULL);
 }
 
@@ -165,6 +180,8 @@ on_hyperlink_clicked(GtkTextTag *tag, GObject *object, GdkEvent *event, GtkTextI
 	g_assert(glk);
 
 	if(event->type == GDK_BUTTON_PRESS) {
+		link->window->hyperlink_event_requested = FALSE;
+		g_hash_table_foreach(link->window->hyperlinks, hyperlink_block_event_handler, NULL);
 		event_throw(glk, evtype_Hyperlink, link->window, link->value, 0);
 	}
 

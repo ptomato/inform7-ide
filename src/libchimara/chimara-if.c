@@ -67,6 +67,7 @@ typedef struct _ChimaraIFPrivate {
 	ChimaraIFZmachineVersion interpreter_number;
 	gint random_seed;
 	gboolean random_seed_set;
+	gchar *graphics_file;
 	/* Holding buffers for input and response */
 	gchar *input;
 	GString *response;
@@ -84,7 +85,8 @@ enum {
 	PROP_TYPO_CORRECTION,
 	PROP_INTERPRETER_NUMBER,
 	PROP_RANDOM_SEED,
-	PROP_RANDOM_SEED_SET
+	PROP_RANDOM_SEED_SET,
+	PROP_GRAPHICS_FILE
 };
 
 enum {
@@ -166,6 +168,7 @@ chimara_if_init(ChimaraIF *self)
 	priv->flags = CHIMARA_IF_TYPO_CORRECTION;
 	priv->interpreter_number = CHIMARA_IF_ZMACHINE_DEFAULT;
 	priv->random_seed_set = FALSE;
+	priv->graphics_file = NULL;
 	priv->input = NULL;
 	priv->response = g_string_new("");
 
@@ -217,6 +220,10 @@ chimara_if_set_property(GObject *object, guint prop_id, const GValue *value, GPa
     		priv->random_seed_set = g_value_get_boolean(value);
     		g_object_notify(object, "random-seed-set");
     		break;
+		case PROP_GRAPHICS_FILE:
+			priv->graphics_file = g_strdup(g_value_get_string(value));
+			g_object_notify(object, "graphics-file");
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
     }
@@ -252,6 +259,9 @@ chimara_if_get_property(GObject *object, guint prop_id, GValue *value, GParamSpe
     	case PROP_RANDOM_SEED_SET:
     		g_value_set_boolean(value, priv->random_seed_set);
     		break;
+		case PROP_GRAPHICS_FILE:
+			g_value_set_string(value, priv->graphics_file);
+			break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
     }
@@ -260,6 +270,8 @@ chimara_if_get_property(GObject *object, guint prop_id, GValue *value, GParamSpe
 static void
 chimara_if_finalize(GObject *object)
 {
+	CHIMARA_IF_USE_PRIVATE(object, priv);
+	g_free(priv->graphics_file);
     G_OBJECT_CLASS(chimara_if_parent_class)->finalize(object);
 }
 
@@ -461,7 +473,21 @@ chimara_if_class_init(ChimaraIFClass *klass)
 		g_param_spec_boolean("random-seed-set", _("Random seed set"),
 		_("Whether the seed for the random number generator should be set manually"), FALSE,
 		G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS));
-
+	/**
+	 * ChimaraIF:graphics-file:
+	 *
+	 * Some Z-machine interpreters accept an extra argument that indicates a
+	 * separate Blorb file containing graphics and sound resources. The
+	 * interpreter will check if the file specified in this property really
+	 * exists, and if so, use it as a resource file. If this property is set to 
+	 * %NULL, the interpreter will not look for an extra file.
+	 *
+	 * Only affects Frotz and Nitfol.
+	 */
+	g_object_class_install_property(object_class, PROP_GRAPHICS_FILE,
+	    g_param_spec_string("graphics-file", _("Graphics file"),
+	    _("Location in which to look for a separate graphics Blorb file"), NULL,
+	    G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS));
 	/* Private data */
 	g_type_class_add_private(klass, sizeof(ChimaraIFPrivate));
 }
@@ -601,7 +627,6 @@ chimara_if_run_game(ChimaraIF *self, gchar *gamefile, GError **error)
 	GSList *args = NULL;
 	gchar *terpnumstr = NULL, *randomstr = NULL;
 	args = g_slist_prepend(args, pluginpath);
-	args = g_slist_prepend(args, gamefile);
 	switch(interpreter)
 	{
 		case CHIMARA_IF_INTERPRETER_FROTZ:
@@ -650,6 +675,14 @@ chimara_if_run_game(ChimaraIF *self, gchar *gamefile, GError **error)
 			;
 	}
 
+	/* Game file and external blorb file */
+	args = g_slist_prepend(args, gamefile);
+	if(priv->graphics_file
+		&& (interpreter == CHIMARA_IF_INTERPRETER_FROTZ || interpreter == CHIMARA_IF_INTERPRETER_NITFOL)
+	    && g_file_test(priv->graphics_file, G_FILE_TEST_EXISTS)) {
+		args = g_slist_prepend(args, priv->graphics_file);
+	}
+
 	/* Allocate argv to hold the arguments */
 	int argc = g_slist_length(args);
 	args = g_slist_prepend(args, NULL);
@@ -661,7 +694,7 @@ chimara_if_run_game(ChimaraIF *self, gchar *gamefile, GError **error)
 	GSList *ptr;
 	for(count = 0, ptr = args; ptr; count++, ptr = g_slist_next(ptr))
 		argv[count] = ptr->data;
-		
+
 	/* Set the story name */
 	/* We peek into ChimaraGlk's private data here, because GObject has no
 	equivalent to "protected" */

@@ -83,6 +83,8 @@ struct _ChimaraGlkPrivate {
     strid_t current_stream;
     /* List of streams currently in existence */
     GList *stream_list;
+	/* List of sound channels currently in existence */
+	GList *schannel_list;
 	/* Current timer */
 	guint timer_id;
 	/* Current resource blorb map */
