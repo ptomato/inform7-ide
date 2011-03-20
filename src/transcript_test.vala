@@ -69,8 +69,13 @@ A kosher pickle is on the floor.
 			"transcript_text", 1,
 			"expected_text", 2);
 
-		renderer.wrap_width = 50;
 		view.append_column(column);
+		view.size_allocate.connect_after( (view, allocation) => {
+			if(renderer.wrap_width != allocation.width) {
+				renderer.wrap_width = allocation.width;
+				column.queue_resize();
+			}
+		});
 		scrolled.add(view);
 		add(scrolled);
 		set_default_size(480, 400);
@@ -83,7 +88,7 @@ public class CellRendererTranscript : CellRenderer
 {
 	/* Renderer state; any call to render() must yield a cell of the
 	same size for the same values of these properties */
-	public uint wrap_width { get; set; }
+	public uint wrap_width { get; set; default = 400; }
 	public string command { get; set; }
 	public string transcript_text { get; set; }
 	public string expected_text { get; set; }
@@ -94,17 +99,92 @@ public class CellRendererTranscript : CellRenderer
 	
 	public override void get_size(Widget widget, Gdk.Rectangle? cell_area, out int x_offset, out int y_offset, out int width, out int height)
 	{
+		Pango.Rectangle command_rect, transcript_rect, expected_rect;
+		var layout = widget.create_pango_layout(command);
+		layout.get_pixel_extents(null, out command_rect);
+		layout = widget.create_pango_layout(transcript_text);
+		layout.set_width((int)wrap_width / 2 * Pango.SCALE);
+		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
+		layout.get_pixel_extents(null, out transcript_rect);
+		layout = widget.create_pango_layout(expected_text);
+		layout.set_width((int)wrap_width / 2 * Pango.SCALE);
+		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
+		layout.get_pixel_extents(null, out expected_rect);
+		
+		var calc_width = wrap_width + xpad * 2;
+		var calc_height = command_rect.height + uint.max(transcript_rect.height, expected_rect.height) + ypad * 2;
+		
 		if(cell_area != null) {
-			x_offset = 0;
-			y_offset = 0;
-			width = (int)wrap_width;
-			height = 20;
+			if(&width != null)
+				width = int.max(cell_area.width, (int)calc_width);
+			if(&height != null)
+				height = int.max(cell_area.height, (int)calc_height);
+		} else {
+			if(&width != null)
+				width = (int)calc_width;
+			if(&height != null)
+				height = (int)calc_height;
 		}
+		
+		if(&x_offset != null)
+			x_offset = 0;
+		if(&y_offset != null)
+			y_offset = 0;
 	}
 	
 	public override void render(Gdk.Window window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
 	{
-		paint_box(widget.style, window, StateType.NORMAL, ShadowType.NONE, cell_area, null, null, cell_area.x, cell_area.y, cell_area.width, cell_area.height);
+		// Make copies of the widget's style
+		var command_style = widget.style.clone();
+		command_style.rc_style = widget.style.rc_style;
+		var good_style = widget.style.clone();
+		good_style.rc_style = widget.style.rc_style;
+		var bad_style = widget.style.clone();
+		bad_style.rc_style = widget.style.rc_style;
+		
+		// Set the background colors of the styles
+		Gdk.Color command_bg, green_bg, red_bg;
+		Gdk.Color.parse("#E0E0FF", out command_bg);
+		command_style.bg[StateType.NORMAL] = command_bg;
+		Gdk.Color.parse("#E0FFE0", out green_bg);
+		good_style.bg[StateType.NORMAL] = green_bg;
+		Gdk.Color.parse("#FFE0E0", out red_bg);
+		bad_style.bg[StateType.NORMAL] = red_bg;
+		
+		// Attach the styles to the window
+		command_style = command_style.attach(window);
+		good_style = good_style.attach(window);
+		bad_style = bad_style.attach(window);
+		
+		int x, y, width, height;
+		get_size(widget, cell_area, out x, out y, out width, out height);
+		x += cell_area.x;
+		y += cell_area.y;
+		
+		Pango.Rectangle command_rect;
+		var layout = widget.create_pango_layout(command);
+		layout.get_pixel_extents(null, out command_rect);
+		
+		paint_flat_box(command_style, window, StateType.NORMAL, ShadowType.NONE, cell_area, widget, null, x, y, width, command_rect.height);
+		paint_layout(widget.style, window, StateType.NORMAL, true, cell_area, widget, null, x, y, layout);
+		
+		weak Style transcript_style;
+		if(expected_text != null && transcript_text != expected_text)
+			transcript_style = bad_style;
+		else
+			transcript_style = good_style;
+
+		paint_flat_box(transcript_style, window, StateType.NORMAL, ShadowType.NONE, cell_area, widget, null, x, y + command_rect.height, width / 2, height - command_rect.height);
+		layout = widget.create_pango_layout(transcript_text);
+		layout.set_width((int)wrap_width / 2 * Pango.SCALE);
+		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
+		paint_layout(transcript_style, window, StateType.NORMAL, true, cell_area, widget, null, x, y + command_rect.height, layout);
+		
+		paint_flat_box(transcript_style, window, StateType.NORMAL, ShadowType.NONE, cell_area, widget, null, x + width / 2, y + command_rect.height, width / 2, height - command_rect.height);
+		layout = widget.create_pango_layout(expected_text);
+		layout.set_width((int)wrap_width / 2 * Pango.SCALE);
+		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
+		paint_layout(transcript_style, window, StateType.NORMAL, true, cell_area, widget, null, x + width / 2, y + command_rect.height, layout);
 	}
 }
 
