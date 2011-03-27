@@ -91,9 +91,12 @@ A kosher pickle is on the floor.
 			}
 		});
 		view.append_column(column);
+		view.headers_visible = false;
 		scrolled.add(view);
 		add(scrolled);
 		set_default_size(480, 400);
+
+		view.realize();
 		
 		destroy.connect(main_quit);
 	}
@@ -104,6 +107,7 @@ public class CellRendererTranscript : CellRenderer
 	/* Renderer state; any call to render() must yield a cell of the
 	same size for the same values of these properties */
 	public uint default_width { get; set; default = 400; }
+	public uint text_padding { get; set; default = 6; }
 	public string command { get; set; }
 	public string transcript_text { get; set; }
 	public string expected_text { get; set; }
@@ -119,16 +123,16 @@ public class CellRendererTranscript : CellRenderer
 		var transcript_width = default_width / 2 - xpad;
 		layout.get_pixel_extents(null, out command_rect);
 		layout = widget.create_pango_layout(transcript_text);
-		layout.set_width((int)transcript_width * Pango.SCALE);
+		layout.set_width((int)(transcript_width - text_padding * 2) * Pango.SCALE);
 		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
 		layout.get_pixel_extents(null, out transcript_rect);
 		layout = widget.create_pango_layout(expected_text);
-		layout.set_width((int)transcript_width * Pango.SCALE);
+		layout.set_width((int)(transcript_width - text_padding * 2) * Pango.SCALE);
 		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
 		layout.get_pixel_extents(null, out expected_rect);
 		
 		var calc_width = default_width;
-		var calc_height = command_rect.height + uint.max(transcript_rect.height, expected_rect.height) + ypad * 2;
+		var calc_height = command_rect.height + uint.max(transcript_rect.height, expected_rect.height) + ypad * 2 + text_padding * 2;
 		
 		if(cell_area != null) {
 			if(&width != null)
@@ -207,11 +211,11 @@ public class CellRendererTranscript : CellRenderer
 			width / 2, 
 			height - command_rect.height);
 		layout = widget.create_pango_layout(transcript_text);
-		layout.set_width((int)transcript_width * Pango.SCALE);
+		layout.set_width((int)(transcript_width - text_padding * 2) * Pango.SCALE);
 		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
 		paint_layout(transcript_style, window, StateType.NORMAL, true, cell_area, widget, null, 
-			x, 
-			y + command_rect.height, 
+			x + (int)text_padding, 
+			y + command_rect.height + (int)text_padding, 
 			layout);
 		
 		weak Style expected_style;
@@ -228,11 +232,11 @@ public class CellRendererTranscript : CellRenderer
 			width / 2, 
 			height - command_rect.height);
 		layout = widget.create_pango_layout(expected_text);
-		layout.set_width((int)transcript_width * Pango.SCALE);
+		layout.set_width((int)(transcript_width - text_padding * 2) * Pango.SCALE);
 		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
 		paint_layout(expected_style, window, StateType.NORMAL, true, cell_area, widget, null, 
-			x + width / 2, 
-			y + command_rect.height, 
+			x + width / 2 + (int)text_padding, 
+			y + command_rect.height + (int)text_padding, 
 			layout);
 	}
 }
