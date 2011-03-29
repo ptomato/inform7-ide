@@ -35,6 +35,7 @@ gnome_inform7_SOURCES = \
 	story.c story.h story-private.h \
 	story-source.c story-errors.c story-index.c story-settings.c \
 	story-compile.c story-game.c story-skein.c \
+	transcript-renderer.c transcript-renderer.h \
 	welcomedialog.c welcomedialog.h \
 	main.c
 gnome_inform7_CPPFLAGS = \
