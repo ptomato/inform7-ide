@@ -1,14 +1,35 @@
 using Gtk;
 
 enum Styl {
+	UNPLAYED,
+	UNCHANGED,
+	CHANGED,
+	NO_EXPECTED,
+	NO_MATCH,
+	NEAR_MATCH,
+	EXACT_MATCH,
 	COMMAND,
-	TRANSCRIPT_GREEN,
-	TRANSCRIPT_RED,
-	EXPECTED_GREEN,
-	EXPECTED_RED,
+	HIGHLIGHT,
+	ACTIVE,
 	LAST
 }
 
+/*
+enum DiffOperation {
+	UNCHANGED,
+	ADDED,
+	DELETED,
+	LAST
+}
+
+struct DiffResult {
+	uint left_index;
+	uint left_length;
+	uint right_index;
+	uint right_length;
+	DiffOperation op;
+}
+*/
 void
 main(string[] args)
 {
@@ -104,6 +125,27 @@ A kosher pickle is on the floor.
 
 public class CellRendererTranscript : CellRenderer
 {
+	// Colors
+	private struct TranscriptColor 
+	{
+		public double r;
+		public double g;
+		public double b;
+	}
+	private static TranscriptColor[] colors = 
+	{
+		TranscriptColor() { r=0.8, g=0.8, b=0.8 }, // UNPLAYED
+		TranscriptColor() { r=0.6, g=1.0, b=0.6 }, // UNCHANGED
+		TranscriptColor() { r=1.0, g=0.6, b=0.6 }, // CHANGED
+		TranscriptColor() { r=0.7, g=0.7, b=0.7 }, // NO_EXPECTED
+		TranscriptColor() { r=1.0, g=0.5, b=0.5 }, // NO_MATCH
+		TranscriptColor() { r=1.0, g=1.0, b=0.5 }, // NEAR_MATCH
+		TranscriptColor() { r=0.5, g=1.0, b=0.5 }, // EXACT_MATCH
+		TranscriptColor() { r=0.6, g=0.8, b=1.0 }, // COMMAND
+		TranscriptColor() { r=0.4, g=0.4, b=1.0 }, // HIGHLIGHT
+		TranscriptColor() { r=1.0, g=1.0, b=0.7 } // ACTIVE
+	};
+	
 	/* Renderer state; any call to render() must yield a cell of the
 	same size for the same values of these properties */
 	public uint default_width { get; set; default = 400; }
@@ -152,31 +194,15 @@ public class CellRendererTranscript : CellRenderer
 			y_offset = 0;
 	}
 	
+	private static void set_rgb_style(Cairo.Context cr, Styl style)
+	{
+		cr.set_source_rgb(CellRendererTranscript.colors[style].r, 
+			CellRendererTranscript.colors[style].g, 
+			CellRendererTranscript.colors[style].b);
+	}
+	
 	public override void render(Gdk.Window window, Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
 	{
-		string color_spec[5] = {
-			"#E0E0FF",
-			"#E0FFE0",
-			"#FFE0E0",
-			"#C0FFC0",
-			"#FFC0C0"
-		};
-		Style render_style[5];
-		
-		for(int iter = 0; iter < Styl.LAST; iter++) {
-			// Make copies of the widget's style
-			render_style[iter] = widget.style.clone();
-			render_style[iter].rc_style = widget.style.rc_style; // crashes otherwise
-			
-			// Set the background colors of the styles
-			Gdk.Color color;
-			Gdk.Color.parse(color_spec[iter], out color);
-			render_style[iter].bg[StateType.NORMAL] = color;
-			
-			// Attach the styles to the window
-			render_style[iter] = render_style[iter].attach(window);
-		}
-		
 		int x, y, width, height;
 		get_size(widget, cell_area, out x, out y, out width, out height);
 		x += cell_area.x + (int)xpad;
@@ -184,60 +210,78 @@ public class CellRendererTranscript : CellRenderer
 		width -= (int)xpad * 2;
 		height -= (int)ypad * 2;
 		
+		// Decide what state to draw the widget components in
+		StateType state;
+		switch(flags) {
+			case CellRendererState.PRELIT:
+				state = StateType.PRELIGHT;
+				break;
+			case CellRendererState.INSENSITIVE:
+				state = StateType.INSENSITIVE;
+				break;
+			default:
+				state = StateType.NORMAL;
+				break;
+		}
+		
+		// Draw the rectangles directly on the Cairo context
+		var cr = Gdk.cairo_create(window);
+
+		// Draw the command		
 		Pango.Rectangle command_rect;
 		var layout = widget.create_pango_layout(command);
 		layout.get_pixel_extents(null, out command_rect);
-		
-		paint_flat_box(render_style[Styl.COMMAND], window, StateType.NORMAL, ShadowType.NONE, cell_area, widget, null,
-			x, 
-			y, 
-			width, 
-			command_rect.height);
-		paint_layout(widget.style, window, StateType.NORMAL, true, cell_area, widget, null, 
-			x, 
-			y, 
+
+		set_rgb_style(cr, Styl.COMMAND);
+		cr.rectangle(x, y, 
+			width, command_rect.height);
+		cr.fill();
+		paint_layout(widget.style, window, state, true, cell_area, widget, null, 
+			x, y, 
 			layout);
 		
+		// Draw the transcript text
 		var transcript_width = default_width / 2 - xpad;
-		weak Style transcript_style;
 		if(expected_text != null && transcript_text != expected_text)
-			transcript_style = render_style[Styl.TRANSCRIPT_RED];
+			set_rgb_style(cr, Styl.CHANGED);
 		else
-			transcript_style = render_style[Styl.TRANSCRIPT_GREEN];
+			set_rgb_style(cr, Styl.UNCHANGED);
 
-		paint_flat_box(transcript_style, window, StateType.NORMAL, ShadowType.NONE, cell_area, widget, null, 
-			x, 
-			y + command_rect.height, 
-			width / 2, 
-			height - command_rect.height);
+		cr.rectangle(x, y + command_rect.height, 
+			width / 2, height - command_rect.height);
+		cr.fill();
 		layout = widget.create_pango_layout(transcript_text);
 		layout.set_width((int)(transcript_width - text_padding * 2) * Pango.SCALE);
 		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
-		paint_layout(transcript_style, window, StateType.NORMAL, true, cell_area, widget, null, 
+		paint_layout(widget.style, window, state, true, cell_area, widget, null, 
 			x + (int)text_padding, 
 			y + command_rect.height + (int)text_padding, 
 			layout);
 		
-		weak Style expected_style;
+		// Draw the expected text
 		if(expected_text == null)
-			expected_style = widget.style;
+			set_rgb_style(cr, Styl.NO_EXPECTED);
 		else if(transcript_text != expected_text)
-			expected_style = render_style[Styl.EXPECTED_RED];
+			set_rgb_style(cr, Styl.NO_MATCH);
 		else
-			expected_style = render_style[Styl.EXPECTED_GREEN];
+			set_rgb_style(cr, Styl.EXACT_MATCH);
 		
-		paint_flat_box(expected_style, window, StateType.NORMAL, ShadowType.NONE, cell_area, widget, null, 
-			x + width / 2, 
-			y + command_rect.height, 
-			width / 2, 
-			height - command_rect.height);
+		cr.rectangle(x + width / 2, y + command_rect.height, 
+			width / 2, height - command_rect.height);
+		cr.fill();
 		layout = widget.create_pango_layout(expected_text);
 		layout.set_width((int)(transcript_width - text_padding * 2) * Pango.SCALE);
 		layout.set_wrap(Pango.WrapMode.WORD_CHAR);
-		paint_layout(expected_style, window, StateType.NORMAL, true, cell_area, widget, null, 
+		paint_layout(widget.style, window, state, true, cell_area, widget, null, 
 			x + width / 2 + (int)text_padding, 
 			y + command_rect.height + (int)text_padding, 
 			layout);
+			
+		// Draw some lines
+		paint_hline(widget.style, window, state, cell_area, widget, null,
+			x, x + width, y + command_rect.height);
+		paint_vline(widget.style, window, state, cell_area, widget, null,
+			y + command_rect.height, y + height, x + width / 2);
 	}
 }
 
