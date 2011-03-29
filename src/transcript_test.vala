@@ -14,22 +14,6 @@ enum Styl {
 	LAST
 }
 
-/*
-enum DiffOperation {
-	UNCHANGED,
-	ADDED,
-	DELETED,
-	LAST
-}
-
-struct DiffResult {
-	uint left_index;
-	uint left_length;
-	uint right_index;
-	uint right_length;
-	DiffOperation op;
-}
-*/
 void
 main(string[] args)
 {
