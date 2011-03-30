@@ -129,8 +129,7 @@ js_open_file(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, siz
 		error_dialog(NULL, error, _("Error converting '%s' to URI: "), file);
 		goto finally;
 	}
-	/* SUCKY DEBIAN replace with gtk_show_uri() */
-	if(!g_app_info_launch_default_for_uri(uri, NULL, &error))
+	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
 		error_dialog(NULL, error, _("Error opening external viewer for %s: "), uri);
 
 	g_free(uri);
@@ -157,8 +156,7 @@ js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size
 	gchar *uri = g_new0(gchar, bufsize);
 	JSStringGetUTF8CString(arg_js, uri, bufsize);
 
-	/* SUCKY DEBIAN replace with gtk_show_uri() */
-	if(!g_app_info_launch_default_for_uri(uri, NULL, &error))
+	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
 		error_dialog(NULL, error, _("Error opening external viewer for %s: "), uri);
 
 	g_free(uri);
@@ -685,111 +683,11 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
 	} else if(strcmp(scheme, "file") == 0) {
-		/* If the "resource-request-starting" signal is available, then no
-		 special manipulation is needed */
-		if(webkit_major_version() >= 1
-			&& webkit_minor_version() >= 1
-			&& webkit_micro_version() >= 14) {
-			/* webkit_check_version() undefined? FIXME */
-			g_free(scheme);
-			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-		} else {
-			/* Load the HTML from the file ourselves */
-			I7App *theapp = i7_app_get();
-			gchar **uri_parts = g_strsplit(uri, "#", 2);
-			gchar *filename = g_filename_from_uri(uri_parts[0], NULL, &error);
-			if(!filename) {
-				WARN_S(_("Could not find filename"), uri, error);
-				g_error_free(error);
-				/* let webkit handle it */
-				g_free(scheme);
-				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-			}
+		/* If the "resource-request-starting" signal is available, as it
+		 is from 1.1.14 onward, then no special manipulation is needed */
+		g_free(scheme);
+		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
-			/* If this is an index or problems page, then all the image links need to
-			 be redirected. If this is not an index page, save ourself some trouble */
-			if(!strstr(filename, "Problems.html") && !strstr(filename, "Cblorb.html") && (!strstr(filename, ".inform/Index/") || g_str_has_suffix(filename, ".inform/Index/"))) {
-				g_free(filename);
-				g_free(scheme);
-				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-			}
-
-			gchar *contents;
-			if(!g_file_get_contents(filename, &contents, NULL, &error)) {
-				WARN_S(_("Could not read file"), filename, error);
-				g_free(filename);
-				g_error_free(error);
-				g_free(scheme);
-				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-			}
-
-			/* Replace the image links */
-			gchar *datadir = i7_app_get_datafile_path(i7_app_get(), ".");
-			gchar *data_uri = g_filename_to_uri(datadir, NULL, &error);
-			g_free(datadir);
-			if(!data_uri) {
-				WARN(_("Could not make URI from datadir"), error);
-				g_error_free(error);
-				g_free(contents);
-				g_free(filename);
-				g_free(scheme);
-				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-			}
-			gchar *newcontents = g_regex_replace_eval(theapp->regices[I7_APP_REGEX_IMAGES_REPLACE], contents, -1, 0, 0, (GRegexEvalCallback)replace_images, data_uri, &error);
-			g_free(contents);
-			g_free(data_uri);
-			if(!newcontents) {
-				WARN(_("Could not replace image links"), error);
-				g_error_free(error);
-				g_free(filename);
-				g_free(scheme);
-				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-			}
-
-			/* Get the base path */
-			gchar *base = g_path_get_dirname(filename);
-			gchar *base_uri = g_filename_to_uri(base, NULL, &error);
-			g_free(filename);
-			if(!base_uri) {
-				WARN_S(_("Could not make URI"), base, error);
-				g_error_free(error);
-				g_free(base);
-				g_free(newcontents);
-				g_free(scheme);
-				g_strfreev(uri_parts);
-				return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
-			}
-			g_free(base);
-			gchar *base_rel = g_strconcat(base_uri, "/", NULL);
-			g_free(base_uri);
-
-			/* Load the HTML and call the after-signal handler if this is the
-			 documentation widget */
-			webkit_web_view_load_html_string(webview, newcontents, base_rel);
-			if(uri_parts[1]) {
-				/* Jump to the anchor if there was one */
-				gchar *anchor = g_strconcat("#", uri_parts[1], NULL);
-				/* SUCKY DEBIAN use webkit_web_view_load_request */
-				webkit_web_frame_load_request(frame, webkit_network_request_new(anchor));
-				g_free(anchor);
-			}
-			if(webview == WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])
-				&& g_signal_handler_find(webview, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_UNBLOCKED,
-				g_signal_lookup("navigation-requested", WEBKIT_TYPE_WEB_VIEW), 0, NULL,
-				after_documentation_navigation_requested, NULL) != 0)
-			{
-				after_documentation_navigation_requested(webview, frame, request, panel);
-			}
-
-			g_free(newcontents);
-			g_free(base_rel);
-			g_strfreev(uri_parts);
-		} /* webkit_check_version(1,1,14) SUCKY_DEBIAN */
 	} else if(strcmp(scheme, "inform") == 0) {
 		/* The inform: protocol can mean files in any of several different
 		locations */
@@ -806,8 +704,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		g_free(real_filename);
 
 	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
-		if(!g_app_info_launch_default_for_uri(uri, NULL, &error)) {
-			/* SUCKY DEBIAN replace with gtk_show_uri() */
+		if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error)) {
 			error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(panel))), error, _("Error opening external viewer for %s: "), uri);
 		}
 
@@ -854,7 +751,6 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 	return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
 }
 
-#if WEBKIT_CHECK_VERSION(1,1,14)
 void
 on_resource_request_starting(WebKitWebView *self, WebKitWebFrame *frame, WebKitWebResource *resource, WebKitNetworkRequest *request, WebKitNetworkResponse *response)
 {
@@ -869,7 +765,6 @@ on_resource_request_starting(WebKitWebView *self, WebKitWebFrame *frame, WebKitW
 	g_free(escaped);
 	g_free(real_uri);
 }
-#endif /* Webkit 1.1.14 SUCKY DEBIAN */
 
 gint
 after_documentation_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel)

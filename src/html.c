@@ -35,7 +35,7 @@ html_load_file(WebKitWebView *html, const gchar *filename)
 		WARN_S(_("Could not convert filename to URI"), filename, error);
 		return;
 	}
-	webkit_web_view_open(html, uri); /* SUCKY DEBIAN Deprecated since 1.1.1 */
+	webkit_web_view_load_uri(html, uri);
 	g_free(uri);
 }
 
@@ -55,7 +55,7 @@ html_load_file_at_anchor(WebKitWebView *html, const gchar *file, const gchar *an
 	}
 	gchar *real_uri = g_strconcat(uri, "#", anchor, NULL);
 	g_free(uri);
-	webkit_web_view_open(html, real_uri); /* SUCKY DEBIAN Deprecated since 1.1.1 */
+	webkit_web_view_load_uri(html, real_uri);
 	g_free(real_uri);
 }
 
@@ -64,6 +64,6 @@ void
 html_load_blank(WebKitWebView *html)
 {
 	g_return_if_fail(html);
-	webkit_web_view_open(html, "about:blank"); /* SUCKY DEBIAN Deprecated since 1.1.1 */
+	webkit_web_view_load_uri(html, "about:blank");
 }
 

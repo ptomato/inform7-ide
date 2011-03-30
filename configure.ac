@@ -113,14 +113,9 @@ AM_PROG_CC_C_O                    # Automake requires this for per-target CFLAGS
 AC_PROG_INSTALL                   # Install
 AC_PROG_SED                       # Sed
 AC_PROG_MKDIR_P                   # mkdir -p
-m4_ifdef([LT_INIT], [
-	LT_INIT([dlopen])             # Libtool 2.2.6 and up
-	LT_PREREQ([2.2.6])
-], [
-	m4_defun([_LT_AC_LANG_CXX_CONFIG], [:]) # Disable unnecessary Libtool checks
-	m4_defun([_LT_AC_LANG_F77_CONFIG], [:]) # to save time (1.5 only)
-	AC_PROG_LIBTOOL               # goddamn Debian still has 1.5
-])             
+LT_INIT([dlopen])                 # Libtool 2.2.6 and up
+LT_PREREQ([2.2.6])
+
 # Other tools used in this package's various make scripts
 AC_PATH_PROG([PERL], [perl])      # Perl
 AC_PATH_PROG([TAR], [tar gtar])   # tar
@@ -165,7 +160,7 @@ AC_CHECK_HEADERS([uuid.h ossp/uuid.h uuid/uuid.h])
 PKG_CHECK_MODULES([INFORM7], [
 	gdk-2.0 >= 2.2
 	glib-2.0 >= 2.16
-	gtk+-2.0 >= 2.12
+	gtk+-2.0 >= 2.20
 	gio-2.0 >= 2.16
 	gconf-2.0 >= 2.4
 	gtksourceview-2.0 >= 2.2

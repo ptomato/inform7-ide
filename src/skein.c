@@ -248,8 +248,7 @@ i7_skein_class_init(I7SkeinClass *klass)
 		g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 
 	/* Install properties */
-	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB;
-	/* SUCKY DEBIAN replace with G_PARAM_STATIC_STRINGS */
+	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS;
 	g_object_class_install_property(object_class, PROP_CURRENT_NODE,
 		g_param_spec_object("current-node", _("Current node"),
 			_("The node currently displayed in the Transcript"),

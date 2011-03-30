@@ -31,7 +31,7 @@
 #include "story.h"
 
 /* These functions are stubs if the GTK version is less than 2.20. See the end
- of the file. */
+ of the file. SUCKY DEBIAN */
 static GtkWidget *pack_spinner_in_box(GtkWidget *box);
 static void start_spinner(I7SearchWindow *self);
 static void stop_spinner(I7SearchWindow *self);
@@ -137,8 +137,7 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 				WARN_S(_("Could not convert filename to URI"), filename, err);
 				break;
 			}
-			/* SUCKY DEBIAN replace with gtk_show_uri() */
-			if(!g_app_info_launch_default_for_uri(uri, NULL, &err))
+			if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &err))
 				error_dialog(GTK_WINDOW(self), err, _("The page \"%s\" should have opened in your browser:"), uri);
 		}
 	}
@@ -740,16 +739,10 @@ i7_search_window_done_searching(I7SearchWindow *self)
 	g_signal_handlers_disconnect_by_func(self, on_search_window_delete_event, NULL);
 }
 
-/* These functions are related to the GtkSpinner which is only available in
- 2.20 and above. If the version is not recent enough, then the functions are
- stubs. SUCKY DEBIAN */
-#if GTK_CHECK_VERSION(2,20,0)
-
+/* SUCKY DEBIAN move to builder file */
 static GtkWidget *
 pack_spinner_in_box(GtkWidget *box)
 {
-	if(gtk_check_version(2, 20, 0)) /* returns NULL if compatible */
-		return NULL;
 	GtkWidget *spinner = gtk_spinner_new();
 	gtk_widget_set_no_show_all(spinner, TRUE);
 	gtk_box_pack_end(GTK_BOX(box), spinner, FALSE, FALSE, 0);
@@ -759,25 +752,14 @@ pack_spinner_in_box(GtkWidget *box)
 static void
 start_spinner(I7SearchWindow *self)
 {
-	if(!gtk_check_version(2, 20, 0)) { /* returns NULL if compatible */
-		gtk_spinner_start(GTK_SPINNER(self->spinner));
-		gtk_widget_show(self->spinner);
-	}
+	gtk_spinner_start(GTK_SPINNER(self->spinner));
+	gtk_widget_show(self->spinner);
 }
 
 static void
 stop_spinner(I7SearchWindow *self)
 {
-	if(!gtk_check_version(2, 20, 0)) { /* returns NULL if compatible */
-		gtk_spinner_stop(GTK_SPINNER(self->spinner));
-		gtk_widget_hide(self->spinner);
-	}
+	gtk_spinner_stop(GTK_SPINNER(self->spinner));
+	gtk_widget_hide(self->spinner);
 }
 
-#else /* not GTK_CHECK_VERSION(2,20,0) */
-
-static GtkWidget *pack_spinner_in_box(GtkWidget *box) { return NULL; }
-static void start_spinner(I7SearchWindow *self) {}
-static void stop_spinner(I7SearchWindow *self) {}
-
-#endif /* GTK_CHECK_VERSION(2,20,0) */

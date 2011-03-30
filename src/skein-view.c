@@ -164,9 +164,6 @@ on_edit_popup_key_press(GtkWidget *entry, GdkEventKey *event, GtkWidget *edit_po
 static GtkWidget *
 popup_edit_window(GtkWidget *parent, gint x, gint y, const gchar *text)
 {
-#if !GTK_CHECK_VERSION(2,14,0)
-#define gtk_widget_get_window(w) ((w)->window)
-#endif /* SUCKY DEBIAN */
 	gint px, py;
 	gdk_window_get_origin(gtk_widget_get_window(parent), &px, &py);
 
@@ -195,9 +192,6 @@ popup_edit_window(GtkWidget *parent, gint x, gint y, const gchar *text)
 	gtk_window_present(GTK_WINDOW(edit_popup));
 
 	return edit_popup;
-#if !GTK_CHECK_VERSION(2,14,0)
-#undef gtk_widget_get_window
-#endif /* SUCKY DEBIAN */
 }
 
 void
@@ -235,9 +229,6 @@ i7_skein_view_edit_label(I7SkeinView *self, I7Node *node)
 void
 i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason why)
 {
-#if !GTK_CHECK_VERSION(2,14,0)
-#define gtk_adjustment_get_page_size(a) ((a)->page_size)
-#endif /* SUCKY DEBIAN */
 	switch(why) {
 		case I7_REASON_COMMAND:
 		case I7_REASON_USER_ACTION:
@@ -266,7 +257,4 @@ i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason w
 		default:
 			g_assert_not_reached();
 	}
-#if !GTK_CHECK_VERSION(2,14,0)
-#undef gtk_adjustment_get_page_size
-#endif /* SUCKY DEBIAN */
 }

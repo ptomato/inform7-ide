@@ -1110,8 +1110,7 @@ action_open_materials_folder(GtkAction *action, I7Story *story)
 		error_dialog(GTK_WINDOW(story), error, _("Error converting '%s' to URI: "), materialspath);
 		goto finally;
 	}
-	/* SUCKY DEBIAN replace with gtk_show_uri() */
-	if(!g_app_info_launch_default_for_uri(uri, NULL, &error))
+	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
 		error_dialog(GTK_WINDOW(story), error, _("Error opening external viewer for %s: "), uri);
 
 	g_free(uri);
@@ -1168,8 +1167,7 @@ static void
 open_page_in_browser(const gchar *uri)
 {
 	GError *err = NULL;
-	/* SUCKY DEBIAN replace with gtk_show_uri() */
-	if(!g_app_info_launch_default_for_uri(uri, NULL, &err))
+	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &err))
 		error_dialog(NULL, err, _("The page \"%s\" should have opened in your browser:"), uri);
 }
 
