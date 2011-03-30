@@ -346,8 +346,7 @@ i7_node_class_init(I7NodeClass *klass)
 	object_class->finalize = i7_node_finalize;
 
 	/* Install properties */
-	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB;
-	/* SUCKY DEBIAN replace with G_PARAM_STATIC_STRINGS */
+	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS;
 	g_object_class_install_property(object_class, PROP_COMMAND,
 		g_param_spec_string("command", _("Command"),
 			_("The command entered in the game"),
@@ -842,18 +841,6 @@ i7_node_invalidate_size(I7Node *self)
 static gboolean
 i7_goo_canvas_item_get_onscreen_coordinates(GooCanvasItem *item, GooCanvas *canvas, gint *x, gint *y)
 {
-#if !GTK_CHECK_VERSION(2,14,0)
-#define gtk_adjustment_get_page_size(a) ((a)->page_size)
-#endif /* SUCKY DEBIAN */
-#if !GTK_CHECK_VERSION(2,18,0)
-#define gtk_widget_get_allocation(w, a) \
-	G_STMT_START { \
-		(a)->x = (w)->allocation.x; \
-		(a)->y = (w)->allocation.y; \
-		(a)->width = (w)->allocation.width; \
-		(a)->height = (w)->allocation.height; \
-	} G_STMT_END
-#endif /* SUCKY_DEBIAN */
 	GooCanvasBounds bounds;
 	GtkAllocation allocation;
 	gdouble canvas_x, canvas_y;
@@ -889,12 +876,6 @@ i7_goo_canvas_item_get_onscreen_coordinates(GooCanvasItem *item, GooCanvas *canv
 		*y = (gint)(item_y - top) + allocation.y;
 	}
 	return TRUE;
-#if !GTK_CHECK_VERSION(2,14,0)
-#undef gtk_adjustment_get_page_size
-#endif /* SUCKY DEBIAN */
-#if !GTK_CHECK_VERSION(2,18,0)
-#undef gtk_widget_get_allocation
-#endif /* SUCKY_DEBIAN */
 }
 
 gboolean
