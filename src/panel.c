@@ -603,67 +603,6 @@ finally2:
 	return real_filename;
 }
 
-/* If "resource-request-starting" signal not available, then we have to
- manipulate the HTML pages as we load them. This function is called by the
- regex that looks for <img src=inform://...> links in the HTML, in order to
- replace them with real paths */
-static gboolean
-replace_images(const GMatchInfo *match, GString *result, gchar *data_uri)
-{
-	gchar *filename = g_match_info_fetch(match, 2);
-	gchar *delimiter = g_match_info_fetch(match, 3);
-
-	/* These are the only files used in the Index pages */
-	if(strcmp(filename, "Reveal.png") == 0
-		|| strcmp(filename, "help.png") == 0
-		|| strcmp(filename, "Below.png") == 0
-		|| strcmp(filename, "Revealext.png") == 0)
-	{
-		g_string_append_printf(result, "src=\"%s/Documentation/doc_images/%s\"%s", data_uri, filename, delimiter);
-		g_free(filename);
-		g_free(delimiter);
-		return FALSE; /* keep going */
-	}
-	if(g_str_has_prefix(filename, "doc_images")
-		|| strcmp(filename, "Beneath.png") == 0
-		|| strcmp(filename, "extra.png") == 0
-		|| strcmp(filename, "noextra.png") == 0
-		|| strcmp(filename, "deprecated.png") == 0
-		|| strcmp(filename, "launch.png") == 0
-		|| g_str_has_prefix(filename, "map_icons")
-		|| g_str_has_prefix(filename, "scene_icons")
-		|| strstr(filename, "succeeded")
-		|| strstr(filename, "failed")
-		|| strstr(filename, "crash")
-		|| strstr(filename, "folder"))
-	{
-		g_string_append_printf(result, "src=\"%s/Documentation/%s\"%s", data_uri, filename, delimiter);
-		g_free(filename);
-		g_free(delimiter);
-		return FALSE; /* keep going */
-	}
-
-	/* This normally shouldn't happen, but covers every case at a large speed cost */
-	g_warning("Possibly unnecessary call to replace_images(): %s\n", filename);
-	I7App *theapp = i7_app_get();
-
-	gchar *testfile = g_build_filename("Documentation", filename, NULL);
-	if(i7_app_check_datafile(theapp, testfile))
-		g_string_append_printf(result, "src=\"%s/Documentation/%s\"%s", data_uri, filename, delimiter);
-	else {
-		g_free(testfile);
-		testfile = g_build_filename("Documentation", "doc_images", filename, NULL);
-		if(i7_app_check_datafile(theapp, testfile))
-			g_string_append_printf(result, "src=\"%s/Documentation/doc_images/%s\"%s", data_uri, filename, delimiter);
-		else
-			g_string_append_printf(result, "src=\"%s/%s\"%s", data_uri, filename, delimiter);
-	}
-	g_free(testfile);
-	g_free(filename);
-	g_free(delimiter);
-	return FALSE; /* keep going */
-}
-
 /* This is the callback that handles the custom protocols and
  disallows any funny stuff */
 gint
