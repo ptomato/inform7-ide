@@ -30,12 +30,6 @@
 #include "extension.h"
 #include "story.h"
 
-/* These functions are stubs if the GTK version is less than 2.20. See the end
- of the file. SUCKY DEBIAN */
-static GtkWidget *pack_spinner_in_box(GtkWidget *box);
-static void start_spinner(I7SearchWindow *self);
-static void stop_spinner(I7SearchWindow *self);
-
 /* An index of the text of the documentation and example pages. Only built
 the first time someone does a documentation search, and freed atexit. */
 static GList *doc_index = NULL;
@@ -262,8 +256,6 @@ i7_search_window_init(I7SearchWindow *self)
 
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
-	GtkWidget *box = GTK_WIDGET(load_object(builder, "search_text_box"));
-	self->spinner = pack_spinner_in_box(box);
 	priv->results = GTK_LIST_STORE(load_object(builder, "results"));
 	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "file_column")),
 		GTK_CELL_RENDERER(load_object(builder, "file_renderer")),
@@ -276,6 +268,7 @@ i7_search_window_init(I7SearchWindow *self)
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(search_text);
 	LOAD_WIDGET(results_view);
+	LOAD_WIDGET(spinner);
 
 	/* Builder object not needed anymore */
 	g_object_unref(builder);
@@ -511,6 +504,22 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 	g_object_unref(buffer);
 }
 
+/* Helper functions: start and stop the spinner, and keep it hidden when it is
+ not going */
+static void
+start_spinner(I7SearchWindow *self)
+{
+	gtk_spinner_start(GTK_SPINNER(self->spinner));
+	gtk_widget_show(self->spinner);
+}
+
+static void
+stop_spinner(I7SearchWindow *self)
+{
+	gtk_spinner_stop(GTK_SPINNER(self->spinner));
+	gtk_widget_hide(self->spinner);
+}
+
 /* PUBLIC FUNCTIONS */
 
 /* Create a new search results window */
@@ -738,28 +747,3 @@ i7_search_window_done_searching(I7SearchWindow *self)
 {
 	g_signal_handlers_disconnect_by_func(self, on_search_window_delete_event, NULL);
 }
-
-/* SUCKY DEBIAN move to builder file */
-static GtkWidget *
-pack_spinner_in_box(GtkWidget *box)
-{
-	GtkWidget *spinner = gtk_spinner_new();
-	gtk_widget_set_no_show_all(spinner, TRUE);
-	gtk_box_pack_end(GTK_BOX(box), spinner, FALSE, FALSE, 0);
-	return spinner;
-}
-
-static void
-start_spinner(I7SearchWindow *self)
-{
-	gtk_spinner_start(GTK_SPINNER(self->spinner));
-	gtk_widget_show(self->spinner);
-}
-
-static void
-stop_spinner(I7SearchWindow *self)
-{
-	gtk_spinner_stop(GTK_SPINNER(self->spinner));
-	gtk_widget_hide(self->spinner);
-}
-
