@@ -85,8 +85,8 @@ void i7_app_run_census(I7App *app, gboolean wait);
 gchar *i7_app_get_extension_path(I7App *app, const gchar *author, const gchar *extname);
 gchar *i7_app_get_datafile_path(I7App *app, const gchar *filename);
 gchar *i7_app_get_datafile_path_va(I7App *app, const gchar *path1, ...);
-gboolean i7_app_check_datafile(I7App *app, const gchar *filename);
-gboolean i7_app_check_datafile_va(I7App *app, const gchar *path1, ...);
+char *i7_app_check_datafile(I7App *app, const char *filename);
+char *i7_app_check_datafile_va(I7App *app, const char *path1, ...);
 gchar *i7_app_get_pixmap_path(I7App *app, const gchar *filename);
 gchar *i7_app_get_binary_path(I7App *app, const gchar *filename);
 

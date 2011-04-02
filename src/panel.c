@@ -573,23 +573,18 @@ find_real_filename_for_inform_protocol(const char *uri)
 		tail = g_build_filenamev(elements);
 	g_strfreev(elements);
 
-	char *real_filename = NULL;
-
 	char *tryloc = g_build_filename("Documentation", "doc_images", tail, NULL);
-	if(i7_app_check_datafile(theapp, tryloc)) {
-		real_filename = i7_app_get_datafile_path(theapp, tryloc);
+	char *real_filename = i7_app_check_datafile(theapp, tryloc);
+	if(real_filename)
 		goto finally;
-	}
 	tryloc = g_build_filename("Documentation", "Sections", tail, NULL);
-	if(i7_app_check_datafile(theapp, tryloc)) {
-		real_filename = i7_app_get_datafile_path(theapp, tryloc);
+	real_filename = i7_app_check_datafile(theapp, tryloc);
+	if(real_filename)
 		goto finally;
-	}
 	tryloc = g_build_filename("Documentation", tail, NULL);
-	if(i7_app_check_datafile(theapp, tryloc)) {
-		real_filename = i7_app_get_datafile_path(theapp, tryloc);
+	real_filename = i7_app_check_datafile(theapp, tryloc);
+	if(real_filename)
 		goto finally;
-	}
 	tryloc = g_build_filename(g_get_home_dir(), "Inform", "Documentation", tail, NULL);
 	if(g_file_test(tryloc, G_FILE_TEST_EXISTS)) {
 		real_filename = tryloc;
