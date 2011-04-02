@@ -701,9 +701,8 @@ i7_node_layout(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas, gdoub
 
 	/* Move the node's group to its proper place */
 	gdouble y = (gdouble)(g_node_depth(self->gnode) - 1.0) * vspacing;
-	/* SUCKY DEBIAN set_simple_transform -> x,y properties */
-	goo_canvas_item_model_set_simple_transform(GOO_CANVAS_ITEM_MODEL(self), x, y, 1.0, 0.0);
-
+	g_object_set(self, "x", x, "y", y, NULL);
+	
 	/* Cache the x coordinate */
 	priv->x = x;
 }
@@ -728,11 +727,14 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 
 	if((width != 0.0 && priv->command_width != width) || (height != 0.0 && priv->command_height != height)) {
 		/* Move the label, its background, and the differs badge */
-		/* SUCKY DEBIAN we have to do this with set_simple_transform, because x and
-		y properties don't yet exist */
-		goo_canvas_item_model_set_simple_transform(priv->label_item, 0.0, -height, 1.0, 0.0);
-		goo_canvas_item_model_set_simple_transform(priv->label_shape_item, 0.0, -height, 1.0, 0.0);
-		goo_canvas_item_model_set_simple_transform(priv->badge_item, width / 2 + DIFFERS_BADGE_WIDTH, height / 2, DIFFERS_BADGE_WIDTH, 0.0);
+		g_object_set(priv->label_item, "x", 0.0, "y", -height, NULL);
+		g_object_set(priv->label_shape_item, "x", 0.0, "y", -height, NULL);
+		g_object_set(priv->badge_item, 
+			"x", width / 2 + DIFFERS_BADGE_WIDTH,
+			"y", height / 2,
+			"width", DIFFERS_BADGE_WIDTH,
+			"height", DIFFERS_BADGE_WIDTH,
+			NULL);
 
 		/* Calculate the scale for the pattern gradients */
 		cairo_matrix_init_scale(&matrix, 0.5 / width, 1.0 / height);
