@@ -686,15 +686,11 @@ i7_story_init(I7Story *self)
 	g_signal_connect(search_entry, "activate", G_CALLBACK(on_search_entry_activate), self);
 	gtk_widget_show_all(GTK_WIDGET(search_toolitem));
 	gtk_toolbar_insert(GTK_TOOLBAR(I7_DOCUMENT(self)->toolbar), search_toolitem, 6);
-	/* Add icons to the entry, but only if compiled and linked with >= 2.16 */
-#if GTK_CHECK_VERSION(2,16,0)
-	if(gtk_check_version(2, 16, 0) == NULL) {
-		gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, GTK_STOCK_FIND);
-		gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
-		gtk_entry_set_icon_activatable(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, TRUE);
-		g_signal_connect(search_entry, "icon-press", G_CALLBACK(on_search_entry_icon_press), NULL);
-	}
-#endif /* GTK_CHECK_VERSION(2,16,0) */
+	/* Add icons to the entry */
+	gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, GTK_STOCK_FIND);
+	gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+	gtk_entry_set_icon_activatable(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, TRUE);
+	g_signal_connect(search_entry, "icon-press", G_CALLBACK(on_search_entry_icon_press), NULL);
 
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(facing_pages);
