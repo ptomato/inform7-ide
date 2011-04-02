@@ -35,6 +35,7 @@
 #include "history.h"
 #include "html.h"
 #include "skein-view.h"
+#include "transcript-renderer.h"
 
 /* Forward declarations */
 gboolean on_documentation_scrollbar_policy_changed(WebKitWebFrame *frame);
@@ -352,21 +353,31 @@ i7_panel_init(I7Panel *self)
 	chimara_glk_set_interactive(CHIMARA_GLK(game), TRUE);
 	chimara_glk_set_protect(CHIMARA_GLK(game), FALSE);
 
+	/* Add the transcript cell renderer */
+	self->transcript_cell = GTK_CELL_RENDERER(i7_cell_renderer_transcript_new());
+	gtk_cell_renderer_set_padding(self->transcript_cell, 6, 6);
+	self->transcript_column = GTK_TREE_VIEW_COLUMN(load_object(builder, "transcript_column"));
+	gtk_tree_view_column_pack_start(self->transcript_column, self->transcript_cell, TRUE);
+	gtk_tree_view_column_add_attribute(self->transcript_column, self->transcript_cell, "command", 0);
+	gtk_tree_view_column_add_attribute(self->transcript_column, self->transcript_cell, "transcript_text", 1);
+	gtk_tree_view_column_add_attribute(self->transcript_column, self->transcript_cell, "expected_text", 2);
+	
 	/* Save public pointers to specific widgets */
-	self->z5 = GTK_WIDGET(load_object(builder, "z5"));
-	self->z8 = GTK_WIDGET(load_object(builder, "z8"));
-	self->z6 = GTK_WIDGET(load_object(builder, "z6"));
-	self->glulx = GTK_WIDGET(load_object(builder, "glulx"));
-	self->blorb = GTK_WIDGET(load_object(builder, "blorb"));
-	self->nobble_rng = GTK_WIDGET(load_object(builder, "nobble_rng"));
-	self->debugging_scrolledwindow = GTK_WIDGET(load_object(builder, "debugging_scrolledwindow"));
-	self->inform6_scrolledwindow = GTK_WIDGET(load_object(builder, "inform6_scrolledwindow"));
+	LOAD_WIDGET(z5);
+	LOAD_WIDGET(z8);
+	LOAD_WIDGET(z6);
+	LOAD_WIDGET(glulx);
+	LOAD_WIDGET(blorb);
+	LOAD_WIDGET(nobble_rng);
+	LOAD_WIDGET(debugging_scrolledwindow);
+	LOAD_WIDGET(inform6_scrolledwindow);
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
 	self->tabs[I7_PANE_ERRORS] = GTK_WIDGET(load_object(builder, "errors_notebook"));
 	self->tabs[I7_PANE_INDEX] = GTK_WIDGET(load_object(builder, "index_notebook"));
 	self->tabs[I7_PANE_SKEIN] = skeinview;
+	self->tabs[I7_PANE_TRANSCRIPT] = GTK_WIDGET(load_object(builder, "transcript"));
 	self->tabs[I7_PANE_GAME] = game;
 	self->tabs[I7_PANE_DOCUMENTATION] = GTK_WIDGET(load_object(builder, "documentation"));
 	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));

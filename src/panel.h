@@ -81,6 +81,8 @@ typedef struct {
 	GtkWidget *nobble_rng;
 	GtkWidget *debugging_scrolledwindow;
 	GtkWidget *inform6_scrolledwindow;
+	GtkTreeViewColumn *transcript_column;
+	GtkCellRenderer *transcript_cell;
 	GtkWidget *tabs[I7_PANEL_NUM_PANES];
 	GtkWidget *source_tabs[I7_SOURCE_VIEW_NUM_TABS];
 	GtkWidget *errors_tabs[I7_ERRORS_NUM_TABS];

@@ -48,6 +48,8 @@ typedef struct {
 	/* Skein / running */
 	I7Skein *skein;
 	gboolean test_me;
+	/* Transcript */
+	GtkListStore *transcript_model;
 } I7StoryPrivate;
 
 #define I7_STORY_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_STORY, I7StoryPrivate))
