@@ -24,9 +24,8 @@
 /* Miscellaneous GtkBuilder-related functions and macros; also, the arbitrary
  home of the START_TIMER and STOP_TIMER macros */
 
-/* SUCKY DEBIAN: When Debian updates to GTK 2.14, then move all the GtkBuilder
- interface definitions into one file and use gtk_builder_add_objects_from_file()
- to build the appropriate ones */
+/* TODO: Move all the GtkBuilder interface definitions into one file and use
+ gtk_builder_add_objects_from_file() to build the appropriate ones */
 
 /* Create a new GtkBuilder from an interface definition file and connect its
  signals */
