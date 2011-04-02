@@ -250,11 +250,10 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	} else {
 		I7App *theapp = i7_app_get();
 		gchar *file = g_strdup_printf("Error%i.html", exit_code);
-		if(i7_app_check_datafile_va(theapp, "Documentation", "Sections", file, NULL))
-			problems_url = i7_app_get_datafile_path_va(theapp, "Documentation", "Sections", file, NULL);
-		else
-			problems_url = i7_app_get_datafile_path_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
+		problems_url = i7_app_check_datafile_va(theapp, "Documentation", "Sections", file, NULL);
 		g_free(file);
+		if(!problems_url)
+			problems_url = i7_app_get_datafile_path_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
 	}
 
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);

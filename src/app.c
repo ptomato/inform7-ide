@@ -788,20 +788,23 @@ i7_app_get_datafile_path_va(I7App *app, const gchar *path1, ...)
 	return NULL;
 }
 
-/* Returns TRUE if filename exists in the data directory, otherwise FALSE.
-Used when we do not necessarily want to return an error if it does not. */
-gboolean
-i7_app_check_datafile(I7App *app, const gchar *filename)
+/* Returns the full path to filename in a newly-allocated string, if it exists 
+ in the data directory, otherwise NULL. Used when we do not necessarily want to
+ return an error if it does not exist. */
+char *
+i7_app_check_datafile(I7App *app, const char *filename)
 {
-	gchar *path = g_build_filename(I7_APP_PRIVATE(app)->datadir, filename, NULL);
-	gboolean retval = g_file_test(path, G_FILE_TEST_EXISTS);
-	g_free(path);
-	return retval;
+	char *path = g_build_filename(I7_APP_PRIVATE(app)->datadir, filename, NULL);
+	if(!g_file_test(path, G_FILE_TEST_EXISTS)) {
+		g_free(path);
+		return NULL;
+	}
+	return path;
 }
 
 /* Varargs variant of check_datafile. Must end with NULL. */
-gboolean
-i7_app_check_datafile_va(I7App *app, const gchar *path1, ...)
+char *
+i7_app_check_datafile_va(I7App *app, const char *path1, ...)
 {
 	va_list ap;
 
@@ -822,9 +825,13 @@ i7_app_check_datafile_va(I7App *app, const gchar *path1, ...)
 	va_end(ap);
 
 	gchar *path = g_build_filenamev(args);
-	gboolean retval = g_file_test(path, G_FILE_TEST_EXISTS);
 	g_strfreev(args);
-	return retval;
+	
+	if(!g_file_test(path, G_FILE_TEST_EXISTS)) {
+		g_free(path);
+		return NULL;
+	}
+	return path;
 }
 
 /* Returns the path to filename in the application pixmap directory. Free string
