@@ -69,7 +69,10 @@ enum
 
 static guint i7_skein_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE(I7Skein, i7_skein, GOO_TYPE_CANVAS_GROUP_MODEL);
+static void i7_skein_tree_model_init(GtkTreeModelIface *iface);
+
+G_DEFINE_TYPE_EXTENDED(I7Skein, i7_skein, GOO_TYPE_CANVAS_GROUP_MODEL, 0,
+    G_IMPLEMENT_INTERFACE(GTK_TYPE_TREE_MODEL, i7_skein_tree_model_init));
 
 /* SIGNAL HANDLERS */
 
@@ -277,6 +280,47 @@ i7_skein_class_init(I7SkeinClass *klass)
 	/* Add private data */
 	g_type_class_add_private(klass, sizeof(I7SkeinPrivate));
 }
+
+/* TREE MODEL INTERFACE IMPLEMENTATION */
+
+static G_GNUC_CONST GtkTreeModelFlags
+i7_skein_tree_model_get_flags(GtkTreeModel *model)
+{
+	return GTK_TREE_MODEL_LIST_ONLY /* | GTK_TREE_MODEL_ITERS_PERSIST? */;
+}
+
+static G_GNUC_CONST int
+i7_skein_tree_model_get_n_columns(GtkTreeModel *model)
+{
+	return 3;
+}
+
+static G_GNUC_CONST GType
+i7_skein_tree_model_get_column_type(GtkTreeModel *model, int ncol)
+{
+	return G_TYPE_STRING;
+}
+
+static void
+i7_skein_tree_model_init(GtkTreeModelIface *iface)
+{
+	iface->get_flags = i7_skein_tree_model_get_flags;
+	iface->get_n_columns = i7_skein_tree_model_get_n_columns;
+	iface->get_column_type = i7_skein_tree_model_get_column_type;
+	iface->get_iter = NULL;
+	iface->get_path = NULL;
+	iface->get_value = NULL;
+	iface->iter_next = NULL;
+	iface->iter_children = NULL;
+	iface->iter_has_child = NULL;
+	iface->iter_n_children = NULL;
+	iface->iter_nth_child = NULL;
+	iface->iter_parent = NULL;
+	iface->ref_node = NULL; /* optional */
+	iface->unref_node = NULL; /* optional */
+}
+
+/* PUBLIC FUNCTIONS */
 
 I7Skein *
 i7_skein_new(void)
