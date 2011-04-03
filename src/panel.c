@@ -358,9 +358,11 @@ i7_panel_init(I7Panel *self)
 	gtk_cell_renderer_set_padding(self->transcript_cell, 6, 6);
 	self->transcript_column = GTK_TREE_VIEW_COLUMN(load_object(builder, "transcript_column"));
 	gtk_tree_view_column_pack_start(self->transcript_column, self->transcript_cell, TRUE);
-	gtk_tree_view_column_add_attribute(self->transcript_column, self->transcript_cell, "command", 0);
-	gtk_tree_view_column_add_attribute(self->transcript_column, self->transcript_cell, "transcript_text", 1);
-	gtk_tree_view_column_add_attribute(self->transcript_column, self->transcript_cell, "expected_text", 2);
+	gtk_tree_view_column_set_attributes(self->transcript_column, self->transcript_cell,
+	    "command", 0,
+	    "transcript_text", 1,
+	    "expected_text", 2,
+	    NULL);
 	
 	/* Save public pointers to specific widgets */
 	LOAD_WIDGET(z5);
