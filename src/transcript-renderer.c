@@ -72,6 +72,9 @@ struct _I7CellRendererTranscriptPrivate
 	char *command;
 	char *transcript_text;
 	char *expected_text;
+	/* Which borders to render */
+	gboolean current;
+	gboolean played;
 };
 
 #define I7_CELL_RENDERER_TRANSCRIPT_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_CELL_RENDERER_TRANSCRIPT, I7CellRendererTranscriptPrivate))
@@ -83,7 +86,9 @@ enum  {
 	PROP_TEXT_PADDING,
 	PROP_COMMAND,
 	PROP_TRANSCRIPT_TEXT,
-	PROP_EXPECTED_TEXT
+	PROP_EXPECTED_TEXT,
+	PROP_CURRENT,
+	PROP_PLAYED
 };
 
 G_DEFINE_TYPE(I7CellRendererTranscript, i7_cell_renderer_transcript, GTK_TYPE_CELL_RENDERER);
@@ -96,10 +101,12 @@ i7_cell_renderer_transcript_init(I7CellRendererTranscript *self)
 	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
 	/* Default values of properties */
 	priv->default_width = 400;
-	priv->text_padding = 6;
+	priv->text_padding = 8;
 	priv->command = NULL;
 	priv->transcript_text = NULL;
 	priv->expected_text = NULL;
+	priv->current = FALSE;
+	priv->played = FALSE;
 }
 
 static void 
@@ -130,6 +137,14 @@ i7_cell_renderer_transcript_set_property(GObject *self, unsigned prop_id, const 
 			priv->expected_text = g_strdup(g_value_get_string(value));
 			g_object_notify(self, "expected-text");
 			break;
+		case PROP_CURRENT:
+			priv->current = g_value_get_boolean(value);
+			g_object_notify(self, "current");
+			break;
+		case PROP_PLAYED:
+			priv->played = g_value_get_boolean(value);
+			g_object_notify(self, "played");
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
 	}
@@ -154,6 +169,12 @@ i7_cell_renderer_transcript_get_property(GObject *self, guint prop_id, GValue *v
 			break;
 		case PROP_EXPECTED_TEXT:
 			g_value_set_string(value, priv->expected_text);
+			break;
+		case PROP_CURRENT:
+			g_value_set_boolean(value, priv->current);
+			break;
+		case PROP_PLAYED:
+			g_value_set_boolean(value, priv->played);
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -205,7 +226,7 @@ i7_cell_renderer_transcript_get_size(GtkCellRenderer *self, GtkWidget *widget, G
 
 	/* Calculate the required width and height for the cell */
 	calc_width = priv->default_width;
-	calc_height = (unsigned)(command_rect.height + MAX(transcript_rect.height, expected_rect.height)) + ypad * 2 + priv->text_padding * 2;
+	calc_height = (unsigned)(command_rect.height + MAX(transcript_rect.height, expected_rect.height)) + ypad * 2 + priv->text_padding * 4;
 
 	/* Set the passed-in parameters; if the available cell area is larger than
 	 the required width and height, just use that instead */
@@ -232,7 +253,7 @@ set_rgb_style(cairo_t *cr, I7TranscriptStyle style) {
 	cairo_set_source_rgb(cr, colors[style].r, colors[style].g, colors[style].b);
 }
 
-/* TODO prettify and recomment */
+/* TODO remove redundant code */
 static void 
 i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, GtkWidget *widget, GdkRectangle *background_area, GdkRectangle *cell_area, GdkRectangle *expose_area, GtkCellRendererState flags) 
 {
@@ -276,10 +297,10 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 
 	set_rgb_style(cr, STYLE_COMMAND);
 	cairo_rectangle(cr, (double)x, (double)y, 
-	    (double)width, (double)command_rect.height);
+	    (double)width, (double)(command_rect.height + priv->text_padding * 2));
 	cairo_fill(cr);
 	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL, 
-	    	x, y, 
+	    	x + priv->text_padding, y + priv->text_padding, 
 	    	layout);
 	g_object_unref(layout);
 
@@ -290,14 +311,18 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	else
 		set_rgb_style(cr, STYLE_UNCHANGED);
 
-	cairo_rectangle(cr, (double)x, (double)(y + command_rect.height), 
-	    (double)(width / 2), (double)(height - command_rect.height));
+	cairo_rectangle(cr, 
+	    (double)x, 
+	    (double)(y + command_rect.height + priv->text_padding * 2), 
+	    (double)(width / 2), 
+	    (double)(height - command_rect.height - priv->text_padding * 2));
 	cairo_fill(cr);
 	layout = gtk_widget_create_pango_layout(widget, priv->transcript_text);
 	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL, 
-	    x + (int)priv->text_padding, y + command_rect.height + (int)priv->text_padding, 
+	    x + (int)priv->text_padding, 
+	    y + command_rect.height + (int)priv->text_padding * 3, 
 		layout);
 	g_object_unref(layout);
 	
@@ -309,22 +334,46 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	else
 		set_rgb_style(cr, STYLE_EXACT_MATCH);
 
-	cairo_rectangle(cr, (double)(x + width / 2), (double)(y + command_rect.height), 
-	    (double)(width / 2), (double)(height - command_rect.height));
+	cairo_rectangle(cr, 
+	    (double)(x + width / 2), 
+	    (double)(y + command_rect.height + priv->text_padding * 2), 
+	    (double)(width / 2), 
+	    (double)(height - command_rect.height - priv->text_padding * 2));
 	cairo_fill(cr);
 	layout = gtk_widget_create_pango_layout(widget, priv->expected_text);
 	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL,
-	    x + width / 2 + (int)priv->text_padding, y + command_rect.height + (int)priv->text_padding, 
+	    x + width / 2 + (int)priv->text_padding, 
+	    y + command_rect.height + (int)priv->text_padding * 3, 
 		layout);
 	g_object_unref(layout);
 
 	/* Draw some lines */
 	gtk_paint_hline(style, window, state, cell_area, widget, NULL, 
-	    x, x + width, y + command_rect.height);
+	    x, x + width, 
+	    y + command_rect.height + priv->text_padding * 2);
 	gtk_paint_vline(style, window, state, cell_area, widget, NULL, 
-	    y + command_rect.height, y + height, x + width / 2);
+	    y + command_rect.height + priv->text_padding * 2, y + height, 
+	    x + width / 2);
+	
+	/* Draw a border around the highlighted node */
+	if(priv->current) {
+		cairo_set_line_width(cr, 4.0);
+		set_rgb_style(cr, STYLE_HIGHLIGHT);
+		cairo_rectangle(cr, (double)x + 2.0, (double)y + 2.0, 
+			(double)width - 4.0, (double)height - 4.0);
+		cairo_stroke(cr);
+	}
+
+	/* Draw a border around the active node */
+	if(priv->played) {
+		cairo_set_line_width(cr, 2.0);
+		set_rgb_style(cr, STYLE_ACTIVE);
+		cairo_rectangle(cr, (double)x + 1.0, (double)y + 1.0, 
+			(double)width - 2.0, (double)height - 2.0);
+		cairo_stroke(cr);
+	}
 	
 	cairo_destroy(cr);
 }
@@ -362,6 +411,14 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 		g_param_spec_string("expected-text", _("Expected text"), 
 			_("Expected text from the Skein"), 
 			NULL, G_PARAM_READWRITE | flags));
+	g_object_class_install_property(object_class, PROP_CURRENT,
+	    g_param_spec_boolean("current", _("Current"),
+		    _("Whether to render the node as the currently highlighted node"),
+		    FALSE, G_PARAM_READWRITE | flags));
+	g_object_class_install_property(object_class, PROP_PLAYED,
+	    g_param_spec_boolean("played", _("Played"),
+		    _("Whether to render the node as the latest played node"),
+		    FALSE, G_PARAM_READWRITE | flags));
 	
 	/* Add private data */
 	g_type_class_add_private (klass, sizeof (I7CellRendererTranscriptPrivate));

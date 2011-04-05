@@ -632,7 +632,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_DEBUGGING]), priv->debug_log);
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->transcript_model));
+	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
 	
 	/* Set the Errors/Progress to a monospace font */
 	gtk_widget_modify_font(GTK_WIDGET(panel->errors_tabs[I7_ERRORS_TAB_PROGRESS]), font);
@@ -736,16 +736,6 @@ i7_story_init(I7Story *self)
 	priv->compiler_output = NULL;
 	priv->test_me = FALSE;
 	priv->manifest = NULL;
-	priv->transcript_model = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-
-	/* temp */
-	GtkTreeIter iter;
-	gtk_list_store_append(priv->transcript_model, &iter);
-	gtk_list_store_set(priv->transcript_model, &iter,
-		0, "aaa",
-	    1, "bbb",
-	    2, "ccc",
-	    -1);
 	
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
@@ -1077,6 +1067,13 @@ i7_story_choose_panel(I7Story *story, I7PanelPane newpane)
 	int left = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[LEFT]->notebook));
 	if(left == newpane)
 		return LEFT;
+	/* If the Skein is showing, use the other side for the Transcript */
+	if(newpane == I7_PANE_TRANSCRIPT) {
+		if(right == I7_PANE_SKEIN)
+			return LEFT;
+		if(left == I7_PANE_SKEIN)
+			return RIGHT;
+	}
 	/* Always try to use the left panel for source */
 	if(newpane == I7_PANE_SOURCE)
 		return LEFT;

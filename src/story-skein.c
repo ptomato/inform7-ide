@@ -85,6 +85,10 @@ on_popup_menu_edit_label(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 static void
 on_popup_menu_show_in_transcript(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 {
+	i7_skein_set_current_node(data->skein, data->node);
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(data->view)));
+	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
+	
 	g_slice_free(I7PopupMenuCallbackData, data);
 }
 
@@ -125,9 +129,10 @@ on_popup_menu_insert_knot(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 }
 
 static gboolean
-can_remove(I7Skein *skein, I7Node *node/*, I7Story *story */)
+can_remove(I7Skein *skein, I7Node *node/*, TODO I7Story *story */)
 {
-	if(/*game_is_running(story) &&*/ i7_skein_is_node_in_current_thread(skein, node)) {
+	I7Node *played = i7_skein_get_played_node(skein);
+	if(/*game_is_running(story) &&*/ i7_node_in_thread(node, played)) {
 		GtkWidget *dialog = gtk_message_dialog_new_with_markup(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
 			_("<b>Unable to delete the active branch in the skein</b>"));
 		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
@@ -221,7 +226,6 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 		ADD_IMAGE_MENU_ITEM(i7_node_has_label(node)? _("Edit _Label") : _("Add _Label"), GTK_STOCK_EDIT, on_popup_menu_edit_label);
 	}
 	ADD_IMAGE_MENU_ITEM(_("Show in _Transcript"), GTK_STOCK_GO_FORWARD, on_popup_menu_show_in_transcript);
-	gtk_widget_set_sensitive(menuitem, FALSE);
 	if(!i7_node_is_root(node)) {
 		ADD_MENU_ITEM(i7_node_get_locked(node)? _("Un_lock") : _("_Lock"), on_popup_menu_lock);
 		ADD_MENU_ITEM(i7_node_get_locked(node)? _("Unloc_k This Thread") : _("Loc_k This Thread"), on_popup_menu_lock_thread);

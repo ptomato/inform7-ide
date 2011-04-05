@@ -355,13 +355,15 @@ i7_panel_init(I7Panel *self)
 
 	/* Add the transcript cell renderer */
 	self->transcript_cell = GTK_CELL_RENDERER(i7_cell_renderer_transcript_new());
-	gtk_cell_renderer_set_padding(self->transcript_cell, 6, 6);
+	gtk_cell_renderer_set_padding(self->transcript_cell, 4, 4);
 	self->transcript_column = GTK_TREE_VIEW_COLUMN(load_object(builder, "transcript_column"));
 	gtk_tree_view_column_pack_start(self->transcript_column, self->transcript_cell, TRUE);
 	gtk_tree_view_column_set_attributes(self->transcript_column, self->transcript_cell,
-	    "command", 0,
-	    "transcript_text", 1,
-	    "expected_text", 2,
+	    "command", I7_SKEIN_COLUMN_COMMAND,
+	    "transcript_text", I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
+	    "expected_text", I7_SKEIN_COLUMN_EXPECTED_TEXT,
+	    "current", I7_SKEIN_COLUMN_CURRENT,
+	    "played", I7_SKEIN_COLUMN_PLAYED,
 	    NULL);
 	
 	/* Save public pointers to specific widgets */
