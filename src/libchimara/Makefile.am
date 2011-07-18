@@ -53,3 +53,5 @@ chimara-marshallers.h: chimara-marshallers.txt
 	glib-genmarshal --header --prefix=_chimara_marshal $< > $@
 
 EXTRA_DIST = chimara-marshallers.txt
+
+-include $(top_srcdir)/git.mk

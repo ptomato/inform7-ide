@@ -1,4 +1,4 @@
-SUBDIRS = inweb cBlorb inform6 ni osxcart libchimara interpreters
+SUBDIRS = inweb cBlorb inform6 ni libchimara #osxcart interpreters
 
 AM_CFLAGS = -Wall
 
@@ -59,3 +59,5 @@ gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
 #skeintest_SOURCES = skeintest.c skein.c skein.h node.c node.h skein-view.c skein-view.h
 #skeintest_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
 #skeintest_LDADD = @INFORM7_LIBS@
+
+-include $(top_srcdir)/git.mk

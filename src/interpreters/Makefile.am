@@ -1,1 +1,3 @@
-SUBDIRS = frotz glulxe git
+#SUBDIRS = frotz glulxe git
+
+-include $(top_srcdir)/git.mk

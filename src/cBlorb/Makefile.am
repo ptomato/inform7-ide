@@ -88,3 +88,5 @@ dist-hook:
 		cp --preserve=mode,ownership,timestamps --parents \
 		$(cblorbsrc) $(ABSDISTDIR)
 
+
+-include $(top_srcdir)/git.mk

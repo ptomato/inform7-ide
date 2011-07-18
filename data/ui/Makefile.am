@@ -13,3 +13,5 @@ dist_ui_DATA = \
 	story.ui \
 	story.uimanager.xml \
 	welcomedialog.ui
+
+-include $(top_srcdir)/git.mk

@@ -102,3 +102,5 @@ dist-hook:
 		cp --preserve=mode,ownership,timestamps --parents \
 		$(inwebsrc) $(ABSDISTDIR)
 
+
+-include $(top_srcdir)/git.mk
