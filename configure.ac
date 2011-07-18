@@ -207,12 +207,8 @@ src/inweb/Makefile
 src/inweb/Materials/inweb-configuration.txt
 src/cBlorb/Makefile
 src/ni/Makefile
-src/osxcart/Makefile
 src/libchimara/Makefile
 src/interpreters/Makefile
-src/interpreters/frotz/Makefile
-src/interpreters/glulxe/Makefile
-src/interpreters/git/Makefile
 po/Makefile.in
 data/Makefile
 data/ui/Makefile
