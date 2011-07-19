@@ -598,7 +598,6 @@ i7_document_reindex_headings(I7Document *document)
 	gtk_tree_store_clear(tree);
 	GtkTreeIter title, volume, book, part, chapter, section, current;
 	gboolean volume_used = FALSE, book_used = FALSE, part_used = FALSE, chapter_used = FALSE;
-	gboolean at_least_one = FALSE;
 
 	GtkTextIter lastline, thisline, nextline, end;
 	gtk_text_buffer_get_start_iter(buffer, &lastline);
@@ -675,7 +674,6 @@ i7_document_reindex_headings(I7Document *document)
 				I7_HEADINGS_BOLD, PANGO_WEIGHT_NORMAL,
 				-1);
 			/* Do not free strings (?) */
-			at_least_one = TRUE;
 		}
 
 		if(text)
