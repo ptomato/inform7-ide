@@ -182,7 +182,27 @@ PKG_CHECK_MODULES([CHIMARA], [
 	gthread-2.0
 	gmodule-2.0
 	pango
+	gstreamer-0.10 >= 0.10.12
 ])
+
+AC_DEFINE([GSTREAMER_SOUND], [1], [Define to enable sound support with GStreamer])
+
+# GStreamer plugins needed to run library
+m4_defun([AX_GST_REQUIRE_ELEMENT],
+	[AM_GST_ELEMENT_CHECK([$1],
+		[],
+		[AC_MSG_ERROR([GStreamer element $1 not found. You need to install gstreamer-plugins-m4_default([$2], [base]).])]
+	)]
+)
+AX_GST_REQUIRE_ELEMENT([giostreamsrc])
+AX_GST_REQUIRE_ELEMENT([typefind])
+AX_GST_REQUIRE_ELEMENT([audioconvert])
+AX_GST_REQUIRE_ELEMENT([volume])
+AX_GST_REQUIRE_ELEMENT([oggdemux])
+AX_GST_REQUIRE_ELEMENT([vorbisdec])
+AX_GST_REQUIRE_ELEMENT([autoaudiosink], [good])
+AX_GST_REQUIRE_ELEMENT([aiffparse], [bad])
+AX_GST_REQUIRE_ELEMENT([modplug], [bad])
 
 # Plugin flags; include '-module' in each Makefile.am, because AC_SUBSTed
 # variables are black boxes to Automake, so it has to know about it being a
@@ -207,8 +227,6 @@ src/inweb/Makefile
 src/inweb/Materials/inweb-configuration.txt
 src/cBlorb/Makefile
 src/ni/Makefile
-src/libchimara/Makefile
-src/interpreters/Makefile
 po/Makefile.in
 data/Makefile
 data/ui/Makefile
