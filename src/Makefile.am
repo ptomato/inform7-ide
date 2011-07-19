@@ -116,6 +116,7 @@ chimara-marshallers.c: chimara/libchimara/chimara-marshallers.txt
 
 chimara-marshallers.h: chimara/libchimara/chimara-marshallers.txt
 	glib-genmarshal --header --prefix=_chimara_marshal $< > $@
+EXTRA_DIST = chimara/libchimara/chimara-marshallers.txt
 
 pkglib_LTLIBRARIES = frotz.la glulxe.la git.la
 
@@ -192,7 +193,7 @@ dist_glulxedoc_DATA = chimara/interpreters/glulxe/README
 GIT_MAJOR = 1
 GIT_MINOR = 2
 GIT_PATCH = 8
-chimara/interpreters/git/version.h: chimara/interpreters/git/Makefile.am
+chimara/interpreters/git/version.h: Makefile.am
 	echo "// Automatically generated file -- do not edit!" > $@
 	echo "#define GIT_MAJOR" $(GIT_MAJOR) >> $@
 	echo "#define GIT_MINOR" $(GIT_MINOR) >> $@
