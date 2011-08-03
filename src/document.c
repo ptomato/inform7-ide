@@ -374,7 +374,13 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 				GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
 				_("The source code has been modified from outside Inform.\n"
 				"Do you want to reload it?"));
-			if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+			/* This is a non-GTK callback, so we have to hold the GTK lock to
+			 * start a GTK main loop (which is what gtk_dialog_run() does) */
+			gdk_threads_enter();
+			int response = gtk_dialog_run(GTK_DIALOG(dialog));
+			gdk_threads_leave();
+			gtk_widget_destroy(dialog);
+			if(response == GTK_RESPONSE_YES) {
 				gchar *filename = g_file_get_path(file);
 				gchar *text = read_source_file(filename);
 				g_free(filename);
@@ -383,7 +389,6 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 					g_free(text);
 				}
 			}
-			gtk_widget_destroy(dialog);
 		}
 			break;
 		case G_FILE_MONITOR_EVENT_DELETED:
