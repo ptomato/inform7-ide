@@ -49,7 +49,8 @@
 
 typedef struct _CompilerData {
 	I7Story *story;
-	gboolean build_for_release;
+	gboolean create_blorb;
+	gboolean use_debug_flags;
 	gboolean refresh_only;
 	gchar *input_file;
 	gchar *output_file;
@@ -93,11 +94,12 @@ i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
 	/* Set up the compiler */
 	CompilerData *data = g_slice_new0(CompilerData);
 	data->story = story;
-	data->build_for_release = i7_story_get_create_blorb(story) && release;
+	data->create_blorb = i7_story_get_create_blorb(story);
+	data->use_debug_flags = !release;
 	data->refresh_only = refresh;
 
 	gchar *filename;
-	if(data->build_for_release) {
+	if(data->create_blorb) {
 		if(i7_story_get_story_format(story) == I7_STORY_FORMAT_GLULX)
 			filename = g_strdup("output.gblorb");
 		else
@@ -197,8 +199,8 @@ start_ni_compiler(CompilerData *data)
 	args = g_slist_prepend(args, g_strconcat("-extension=", i7_story_get_extension(data->story), NULL));
 	args = g_slist_prepend(args, g_strdup("-package"));
 	args = g_slist_prepend(args, g_strdup(data->input_file));
-	if(data->build_for_release)
-		args = g_slist_prepend(args, g_strdup("-release"));
+	if(!data->use_debug_flags)
+		args = g_slist_prepend(args, g_strdup("-release")); /* Omit "not for relase" material */
 	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE))
 		args = g_slist_prepend(args, g_strdup("-log"));
 	if(i7_story_get_nobble_rng(data->story))
@@ -341,15 +343,15 @@ prepare_i6_compiler(CompilerData *data)
 /* Determine i6 compiler switches, given the compiler action and the virtual
 machine format. Return string must be freed. */
 static gchar *
-get_i6_compiler_switches(gboolean release, int format)
+get_i6_compiler_switches(gboolean use_debug_flags, int format)
 {
 	gchar *debug_switches, *version_switches, *retval;
 
 	/* Switch off strict warnings and debug if the game is for release */
-	if(release)
-		debug_switches = g_strdup("~S~D");
-	else
+	if(use_debug_flags)
 		debug_switches = g_strdup("kSD");
+	else
+		debug_switches = g_strdup("~S~D");
 	/* Pick the appropriate virtual machine version */
 	switch(format) {
 	case I7_STORY_FORMAT_GLULX:
@@ -396,7 +398,7 @@ start_i6_compiler(CompilerData *data)
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 6);
 	commandline[0] = i7_app_get_binary_path(i7_app_get(), "inform-6.32-biplatform");
-	commandline[1] = get_i6_compiler_switches(data->build_for_release, i7_story_get_story_format(data->story));
+	commandline[1] = get_i6_compiler_switches(data->use_debug_flags, i7_story_get_story_format(data->story));
 	commandline[2] = g_strdup("$huge");
 	commandline[3] = g_strdup("auto.inf");
 	gchar *i6out = g_strconcat("output.", i7_story_get_extension(data->story), NULL);
@@ -488,7 +490,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	}
 
 	/* Decide what to do next */
-	if(!data->build_for_release) {
+	if(!data->create_blorb) {
 		I7Story *story = data->story;
 		finish_compiling(TRUE, data);
 		/* Hold the GDK lock for the callback */
