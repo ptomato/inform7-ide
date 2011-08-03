@@ -94,7 +94,7 @@ i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
 	/* Set up the compiler */
 	CompilerData *data = g_slice_new0(CompilerData);
 	data->story = story;
-	data->create_blorb = i7_story_get_create_blorb(story);
+	data->create_blorb = release && i7_story_get_create_blorb(story);
 	data->use_debug_flags = !release;
 	data->refresh_only = refresh;
 
