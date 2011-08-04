@@ -277,8 +277,7 @@ gnome_inform7_CFLAGS = -g @INFORM7_CFLAGS@ $(AM_CFLAGS)
 gnome_inform7_LDADD = \
 	@INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 	$(INTLLIBS) \
-	libosxcart.a \
-	libchimara.a
+	libosxcart.a
 # The following mystical incantation is needed because the Glk programs, which
 # are dynamically loaded, reference symbols from the Glk API in libchimara.a
 # which are not referenced by the main program. The default behavior of ld is
