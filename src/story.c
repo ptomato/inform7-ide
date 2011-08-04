@@ -641,7 +641,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_action_connect_proxy(I7_DOCUMENT(self)->next_section, panel->sourceview->next);
 
 	/* Set the Blorb resource-loading callback */
-	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_GAME]), (ChimaraResourceLoadFunc)load_blorb_resource, self);
+	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_GAME]), (ChimaraResourceLoadFunc)load_blorb_resource, self, NULL);
 }
 
 static void

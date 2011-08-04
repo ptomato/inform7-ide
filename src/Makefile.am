@@ -57,6 +57,7 @@ libchimara_a_SOURCES = \
 	chimara/libchimara/chimara-if.h \
 	chimara-marshallers.c \
 	chimara-marshallers.h \
+	chimara/libchimara/datetime.c \
 	chimara/libchimara/dispatch.c \
 	chimara/libchimara/event.c \
 	chimara/libchimara/event.h \
