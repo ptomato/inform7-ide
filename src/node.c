@@ -194,11 +194,10 @@ i7_node_init(I7Node *self)
 
 	/* Create the cairo gradients */
 	/* Label */
-	priv->label_pattern = cairo_pattern_create_linear(0.0, 0.0, 0.0, -1.0);
-	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.0, 0.0, 0.33, 0.0, 0.1);
-	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.33, 0.2, 0.5, 0.2, 0.5);
-	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.67, 0.73, 0.84, 0.73, 0.5);
-	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 1.0, 0.5, 0.85, 0.5, 0.16);
+	priv->label_pattern = cairo_pattern_create_linear(0.0, 0.0, 0.0, 1.0);
+	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 1.0, 0.0, 0.33, 0.0, 0.3);
+	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.67, 0.73, 0.84, 0.73, 0.1);
+	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.0, 0.5, 0.85, 0.5, 0.0);
 	/* Node, unplayed, without blessed transcript text */
 	priv->node_pattern[NODE_UNPLAYED_UNBLESSED] = create_node_pattern(0.26, 0.56, 0.26);
 	/* Node, unplayed, with blessed transcript text */
@@ -712,7 +711,7 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	I7_NODE_USE_PRIVATE;
 	GooCanvasBounds size;
 	GooCanvasItem *item;
-	double width, command_width, command_height;
+	double command_width, command_height;
 	double label_width = 0.0, label_height = 0.0;
 	gchar *path;
 	cairo_matrix_t matrix;
@@ -731,25 +730,24 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 		label_width = size.x2 - size.x1;
 		label_height = size.y2 - size.y1;
 	}
-	width = MAX(command_width, label_width);
 
 	if((command_width != 0.0 && priv->command_width != command_width)
 		|| (command_height != 0.0 && priv->command_height != command_height)) {
 		/* Move the label, its background, and the differs badge */
 		g_object_set(priv->label_item, "x", 0.0, "y", -command_height, NULL);
 		g_object_set(priv->label_shape_item,
-			"x", -0.5 * width - label_height,
+			"x", -0.5 * label_width - label_height,
 			"y", -command_height - 0.5 * label_height,
 			NULL);
 		g_object_set(priv->badge_item, 
-			"x", width / 2 + DIFFERS_BADGE_WIDTH,
+			"x", command_width / 2 + DIFFERS_BADGE_WIDTH,
 			"y", command_height / 2,
 			"width", DIFFERS_BADGE_WIDTH,
 			"height", DIFFERS_BADGE_WIDTH,
 			NULL);
 
 		/* Calculate the scale for the pattern gradients */
-		cairo_matrix_init_scale(&matrix, 0.5 / width, 1.0 / command_height);
+		cairo_matrix_init_scale(&matrix, 0.5 / command_width, 1.0 / command_height);
 		cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_UNBLESSED], &matrix);
 		cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_BLESSED], &matrix);
 		cairo_pattern_set_matrix(priv->node_pattern[NODE_PLAYED_UNBLESSED], &matrix);
@@ -761,8 +759,8 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 			"h -%.1f "
 			"a %.1f,%.1f 0 0,1 0,-%.1f "
 			"Z",
-			width / 2, command_height / 2, command_height / 2,
-		    command_height / 2, command_height, width, command_height / 2,
+			command_width / 2, command_height / 2, command_height / 2,
+		    command_height / 2, command_height, command_width, command_height / 2,
 			command_height / 2, command_height);
 		g_object_set(priv->command_shape_item, "data", path, NULL);
 		g_free(path);
@@ -783,14 +781,17 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 				"h -%.1f "
 				"a %.1f,%.1f 0 0,0 -%.1f,%.1f "
 				"Z",
-				width / 2 + label_height, label_height / 2, label_height,
-				label_height, label_height, label_height, width, label_height,
+				label_width / 2 + label_height, label_height / 2, label_height,
+				label_height, label_height, label_height, label_width, label_height,
 				label_height, label_height, label_height);
+
+			cairo_matrix_init_scale(&matrix, 0.5 / label_width, -1.0 / label_height);
 			cairo_pattern_set_matrix(priv->label_pattern, &matrix);
+
 			g_object_set(priv->label_shape_item,
 				"data", path,
 				"visibility", GOO_CANVAS_ITEM_VISIBLE,
-			    "x", -0.5 * width - label_height,
+			    "x", -0.5 * label_width - label_height,
 			    "y", -command_height - 0.5 * label_height,
 				NULL);
 			g_free(path);
