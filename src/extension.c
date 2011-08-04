@@ -363,11 +363,11 @@ i7_extension_check_spelling(I7Document *document)
 }
 
 static void
-i7_extension_set_elastic_tabs(I7Document *document, gboolean elastic)
+i7_extension_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
 	I7_EXTENSION_USE_PRIVATE(document, priv);
 	priv->elastic = elastic;
-	i7_source_view_set_elastic_tabs(I7_EXTENSION(document)->sourceview, elastic);
+	i7_source_view_set_elastic_tabstops(I7_EXTENSION(document)->sourceview, elastic);
 }
 
 /* TYPE SYSTEM */
@@ -445,8 +445,8 @@ i7_extension_init(I7Extension *self)
 	/* Set spell checking and elastic tabstops */
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
 	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	priv->elastic = config_file_get_bool(PREFS_ELASTIC_TABS_DEFAULT);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->enable_elastic_tabs), priv->elastic);
+	priv->elastic = config_file_get_bool(PREFS_ELASTIC_TABSTOPS_DEFAULT);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->enable_elastic_tabstops), priv->elastic);
 
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_extensionwindow_delete_event), NULL);
@@ -475,7 +475,7 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->highlight_search = i7_extension_highlight_search;
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
 	document_class->check_spelling = i7_extension_check_spelling;
-	document_class->set_elastic_tabs = i7_extension_set_elastic_tabs;
+	document_class->set_elastic_tabstops = i7_extension_set_elastic_tabstops;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_extension_finalize;

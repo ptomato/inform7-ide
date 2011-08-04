@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ typedef struct {
 	gboolean (*highlight_search)();
 	void (*set_spellcheck)();
 	void (*check_spelling)();
-	void (*set_elastic_tabs)();
+	void (*set_elastic_tabstops)();
 } I7DocumentClass;
 
 typedef struct {
@@ -93,7 +93,7 @@ typedef struct {
 	GtkAction *next_section;
 	GtkAction *autocheck_spelling;
 	GtkAction *check_spelling;
-	GtkAction *enable_elastic_tabs;
+	GtkAction *enable_elastic_tabstops;
 } I7Document;
 
 typedef enum  {
@@ -156,7 +156,7 @@ void i7_document_update_fonts(I7Document *document);
 void i7_document_update_font_sizes(I7Document *document);
 void i7_document_update_font_styles(I7Document *document);
 void i7_document_update_source_highlight(I7Document *document);
-void i7_document_refresh_elastic_tabs(I7Document *document);
+void i7_document_refresh_elastic_tabstops(I7Document *document);
 
 void i7_document_expand_headings_view(I7Document *document);
 void i7_document_set_headings_filter_level(I7Document *document, gint depth);
@@ -181,7 +181,7 @@ void i7_document_attach_menu_hints(I7Document *document, GtkMenuBar *menu);
 
 void i7_document_set_spellcheck(I7Document *document, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *document);
-void i7_document_set_elastic_tabs(I7Document *document, gboolean elastic);
+void i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic);
 
 /* Search, document-search.c */
 gboolean i7_document_highlight_quicksearch(I7Document *document, const gchar *text, gboolean forward);

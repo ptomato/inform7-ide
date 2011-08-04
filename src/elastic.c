@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2010 P. F. Chimento
+/* Copyright (C) 2006-2010, 2011 P. F. Chimento
  * Portions copyright (C) 2007 Nick Gravgaard (based on
  * gedit-elastictabstops-plugin.c, released 2007-09-16)
  * This file is part of GNOME Inform 7.
@@ -45,7 +45,7 @@ find_tab(gunichar ch)
 }
 
 /* Calculate the tabstop widths in one block ranging from @block_start to
- @block_end. Set the tab widths in @tag. */
+ @block_end. Set the tabstop widths in @tag. */
 static void
 stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, GtkTextIter *block_start, GtkTextIter *block_end)
 {
@@ -96,7 +96,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 	int acc_tabstop = 0;
 	PangoTabArray *tab_array = pango_tab_array_new(max_tabs, TRUE);
 	for (current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++) {
-		acc_tabstop += max_widths[current_tab_num] + config_file_get_int(PREFS_ELASTIC_TABS_PADDING);
+		acc_tabstop += max_widths[current_tab_num] + config_file_get_int(PREFS_ELASTIC_TABSTOPS_PADDING);
 		pango_tab_array_set_tab(tab_array, current_tab_num, PANGO_TAB_LEFT, acc_tabstop);
 	}
 	g_object_set(tag,
@@ -136,7 +136,7 @@ forward_to_block_boundary(GtkTextBuffer *textbuffer, GtkTextIter *location)
 	return max_tabs;
 }
 
-/* Divide the range from @start to @end into blocks of elastic tabs, and
+/* Divide the range from @start to @end into blocks of elastic tabstops, and
  calculate the tab widths */
 static void
 divide_into_blocks(GtkTextView *view, GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end)

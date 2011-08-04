@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -249,7 +249,7 @@ on_config_intelligence_changed(GConfClient *client, guint id, GConfEntry *entry,
 }
 
 static void
-on_config_elastic_tabs_padding_changed(GConfClient *client, guint id, GConfEntry *entry)
+on_config_elastic_tabstops_padding_changed(GConfClient *client, guint id, GConfEntry *entry)
 {
 	int newvalue = gconf_value_get_int(gconf_entry_get_value(entry));
 	/* validate new value */
@@ -258,7 +258,7 @@ on_config_elastic_tabs_padding_changed(GConfClient *client, guint id, GConfEntry
 		return;
 	}
 	/* update application to reflect new value */
-	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)i7_document_refresh_elastic_tabs, NULL);
+	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)i7_document_refresh_elastic_tabstops, NULL);
 }
 
 static void
@@ -355,7 +355,7 @@ static struct KeyToMonitor keys_to_monitor[] = {
 	{ PREFS_CLEAN_INDEX_FILES, "clean_index_files", on_config_generic_bool_changed },
 	{ PREFS_DEBUG_LOG_VISIBLE, "show_debug_tabs", on_config_debug_log_visible_changed },
 	{ PREFS_USE_GIT, "glulx_combo", on_config_use_git_changed },
-	{ PREFS_ELASTIC_TABS_PADDING, NULL, on_config_elastic_tabs_padding_changed },
+	{ PREFS_ELASTIC_TABSTOPS_PADDING, NULL, on_config_elastic_tabstops_padding_changed },
 	{ PREFS_HORIZONTAL_SPACING, NULL, on_config_skein_spacing_changed },
 	{ PREFS_VERTICAL_SPACING, NULL, on_config_skein_spacing_changed }
 };

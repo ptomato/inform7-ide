@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -177,12 +177,12 @@ on_notify_nobble_rng(I7Story *story)
 }
 
 void
-on_notify_elastic_tabs(I7Story *story)
+on_notify_elastic_tabstops(I7Story *story)
 {
-	gboolean value = i7_story_get_elastic_tabs(story);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(story)->enable_elastic_tabs), value);
-	i7_source_view_set_elastic_tabs(story->panel[LEFT]->sourceview, value);
-	i7_source_view_set_elastic_tabs(story->panel[RIGHT]->sourceview, value);
+	gboolean value = i7_story_get_elastic_tabstops(story);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(story)->enable_elastic_tabstops), value);
+	i7_source_view_set_elastic_tabstops(story->panel[LEFT]->sourceview, value);
+	i7_source_view_set_elastic_tabstops(story->panel[RIGHT]->sourceview, value);
 }
 
 /* These 'get' functions provide for a default value even though we initialize a
@@ -286,7 +286,7 @@ i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng)
 }
 
 gboolean
-i7_story_get_elastic_tabs(I7Story *story)
+i7_story_get_elastic_tabstops(I7Story *story)
 {
 	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
 
@@ -298,7 +298,7 @@ i7_story_get_elastic_tabs(I7Story *story)
 }
 
 void
-i7_story_set_elastic_tabs(I7Story *story, gboolean elastic_tabs)
+i7_story_set_elastic_tabstops(I7Story *story, gboolean elastic_tabstops)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
 
@@ -306,13 +306,13 @@ i7_story_set_elastic_tabs(I7Story *story, gboolean elastic_tabs)
 	PlistObject *obj = plist_object_lookup(settings, "IFMiscSettings", "IFSettingElasticTabs", -1);
 	if(!obj) {
 		obj = plist_object_new(PLIST_OBJECT_BOOLEAN);
-		obj->boolean.val = elastic_tabs;
+		obj->boolean.val = elastic_tabstops;
 		insert_setting(settings, "IFMiscSettings", "IFSettingElasticTabs", obj);
-		g_object_notify(G_OBJECT(story), "elastic-tabs");
+		g_object_notify(G_OBJECT(story), "elastic-tabstops");
 		return;
 	}
-	if(obj->boolean.val != elastic_tabs) {
-		obj->boolean.val = elastic_tabs;
-		g_object_notify(G_OBJECT(story), "elastic-tabs");
+	if(obj->boolean.val != elastic_tabstops) {
+		obj->boolean.val = elastic_tabstops;
+		g_object_notify(G_OBJECT(story), "elastic-tabstops");
 	}
 }

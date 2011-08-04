@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, next_section);
 	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
 	LOAD_ACTION(priv->document_action_group, check_spelling);
-	LOAD_ACTION(priv->document_action_group, enable_elastic_tabs);
+	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")), config_file_get_bool(PREFS_STATUSBAR_VISIBLE));
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
@@ -212,7 +212,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->highlight_search = NULL;
 	klass->set_spellcheck = NULL;
 	klass->check_spelling = NULL;
-	klass->set_elastic_tabs = NULL;
+	klass->set_elastic_tabstops = NULL;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_document_finalize;
@@ -547,9 +547,9 @@ i7_document_update_source_highlight(I7Document *document)
 	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_file_get_bool(PREFS_SYNTAX_HIGHLIGHTING));
 }
 
-/* Recalculate the document's elastic tabs */
+/* Recalculate the document's elastic tabstops */
 void
-i7_document_refresh_elastic_tabs(I7Document *document)
+i7_document_refresh_elastic_tabstops(I7Document *document)
 {
 	elastic_recalculate_view(i7_document_get_default_view(document));
 }
@@ -1038,8 +1038,8 @@ i7_document_check_spelling(I7Document *document)
 }
 
 void
-i7_document_set_elastic_tabs(I7Document *document, gboolean elastic)
+i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabs), elastic);
-	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabs(document, elastic);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabstops), elastic);
+	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabstops(document, elastic);
 }
