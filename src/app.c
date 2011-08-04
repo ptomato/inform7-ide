@@ -116,9 +116,9 @@ i7_app_init(I7App *self)
 		{ "\\[=0x([0-9A-F]{4})=\\]", FALSE },
 		{ "src=(['\"]?)inform:/(.*?\\.png)\\1(\\s|>)", FALSE },
 		{ "^\\s*(?:version\\s.+\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */
-		  "(?P<title>.+)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)" /* <title> (for X only) */
+		  "(?P<title>.+)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)?" /* <title> [(for X only)] */
 		  "by\\s+(?P<author>.+)\\s+" /* by <author> */
-		  "begins?\\s+here\\.?\\s*\n", /* begins here */
+		  "begins?\\s+here\\.?\\s*\n", /* begins here[.] */
 		  TRUE },
 		{ "R?ex(?P<number>[0-9]+).html$", FALSE }
 	};
