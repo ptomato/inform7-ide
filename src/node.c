@@ -187,7 +187,7 @@ i7_node_init(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
 	priv->id = g_strdup_printf("node-%p", self);
-	self->gnode = NULL;
+	self->gnode = g_node_new(self);
 	self->tree_item = NULL;
 
 	/* TODO diffs */
@@ -403,7 +403,6 @@ i7_node_new(const gchar *command, const gchar *label, const gchar *transcript,
 		"score", score,
 		NULL);
 	g_object_set(self, "parent", skein, NULL);
-	self->gnode = g_node_new(self);
 	return self;
 }
 
@@ -713,7 +712,8 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	I7_NODE_USE_PRIVATE;
 	GooCanvasBounds size;
 	GooCanvasItem *item;
-	gdouble width, height;
+	double width, command_width, command_height;
+	double label_width = 0.0, label_height = 0.0;
 	gchar *path;
 	cairo_matrix_t matrix;
 	gboolean size_changed = FALSE;
@@ -722,22 +722,34 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	the canvas to calculate them */
 	item = goo_canvas_get_item(canvas, priv->command_item);
 	goo_canvas_item_get_bounds(item, &size);
-	width = size.x2 - size.x1;
-	height = size.y2 - size.y1;
+	command_width = size.x2 - size.x1;
+	command_height = size.y2 - size.y1;
 
-	if((width != 0.0 && priv->command_width != width) || (height != 0.0 && priv->command_height != height)) {
+	if(i7_node_has_label(self)) {
+		item = goo_canvas_get_item(canvas, priv->label_item);
+		goo_canvas_item_get_bounds(item, &size);
+		label_width = size.x2 - size.x1;
+		label_height = size.y2 - size.y1;
+	}
+	width = MAX(command_width, label_width);
+
+	if((command_width != 0.0 && priv->command_width != command_width)
+		|| (command_height != 0.0 && priv->command_height != command_height)) {
 		/* Move the label, its background, and the differs badge */
-		g_object_set(priv->label_item, "x", 0.0, "y", -height, NULL);
-		g_object_set(priv->label_shape_item, "x", 0.0, "y", -height, NULL);
+		g_object_set(priv->label_item, "x", 0.0, "y", -command_height, NULL);
+		g_object_set(priv->label_shape_item,
+			"x", -0.5 * width - label_height,
+			"y", -command_height - 0.5 * label_height,
+			NULL);
 		g_object_set(priv->badge_item, 
 			"x", width / 2 + DIFFERS_BADGE_WIDTH,
-			"y", height / 2,
+			"y", command_height / 2,
 			"width", DIFFERS_BADGE_WIDTH,
 			"height", DIFFERS_BADGE_WIDTH,
 			NULL);
 
 		/* Calculate the scale for the pattern gradients */
-		cairo_matrix_init_scale(&matrix, 0.5 / width, 1.0 / height);
+		cairo_matrix_init_scale(&matrix, 0.5 / width, 1.0 / command_height);
 		cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_UNBLESSED], &matrix);
 		cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_BLESSED], &matrix);
 		cairo_pattern_set_matrix(priv->node_pattern[NODE_PLAYED_UNBLESSED], &matrix);
@@ -749,43 +761,44 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 			"h -%.1f "
 			"a %.1f,%.1f 0 0,1 0,-%.1f "
 			"Z",
-			width / 2, height / 2, height / 2, height / 2, height, width,
-			height / 2, height / 2, height);
+			width / 2, command_height / 2, command_height / 2,
+		    command_height / 2, command_height, width, command_height / 2,
+			command_height / 2, command_height);
 		g_object_set(priv->command_shape_item, "data", path, NULL);
 		g_free(path);
 
 		/* If the size of the node has changed, we need to relayout the skein */
 		size_changed = TRUE;
-		priv->command_width = width;
-		priv->command_height = height;
+		priv->command_width = command_width;
+		priv->command_height = command_height;
 	}
 
 	/* Draw the label background */
-	if(priv->label && *priv->label) {
-		item = goo_canvas_get_item(canvas, priv->label_item);
-		goo_canvas_item_get_bounds(item, &size);
-		width = size.x2 - size.x1;
-		height = size.y2 - size.y1;
-
-		if((width != 0.0 && priv->label_width != width) || (height != 0.0 && priv->label_height != height)) {
+	if(i7_node_has_label(self)) {
+		if(size_changed
+			|| (label_width != 0.0 && priv->label_width != label_width)
+			|| (label_height != 0.0 && priv->label_height != label_height)) {
 			path = g_strdup_printf("M %.1f,%.1f "
 				"a %.1f,%.1f 0 0,0 -%.1f,-%.1f "
 				"h -%.1f "
 				"a %.1f,%.1f 0 0,0 -%.1f,%.1f "
 				"Z",
-				width / 2 + height, height / 2, height, height, height, height,
-				width, height, height, height, height);
+				width / 2 + label_height, label_height / 2, label_height,
+				label_height, label_height, label_height, width, label_height,
+				label_height, label_height, label_height);
 			cairo_pattern_set_matrix(priv->label_pattern, &matrix);
 			g_object_set(priv->label_shape_item,
 				"data", path,
 				"visibility", GOO_CANVAS_ITEM_VISIBLE,
+			    "x", -0.5 * width - label_height,
+			    "y", -command_height - 0.5 * label_height,
 				NULL);
 			g_free(path);
 
 			/* Again, if the label size has changed, we need to relayout the skein */
 			size_changed = TRUE;
-			priv->label_width = width;
-			priv->label_height = height;
+			priv->label_width = label_width;
+			priv->label_height = label_height;
 		}
 	} else {
 		g_object_set(priv->label_shape_item,
