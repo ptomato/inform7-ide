@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, next_section);
 	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
 	LOAD_ACTION(priv->document_action_group, check_spelling);
-	LOAD_ACTION(priv->document_action_group, enable_elastic_tabs);
+	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")), config_file_get_bool(PREFS_STATUSBAR_VISIBLE));
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
@@ -212,7 +212,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->highlight_search = NULL;
 	klass->set_spellcheck = NULL;
 	klass->check_spelling = NULL;
-	klass->set_elastic_tabs = NULL;
+	klass->set_elastic_tabstops = NULL;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_document_finalize;
@@ -374,7 +374,13 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 				GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
 				_("The source code has been modified from outside Inform.\n"
 				"Do you want to reload it?"));
-			if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+			/* This is a non-GTK callback, so we have to hold the GTK lock to
+			 * start a GTK main loop (which is what gtk_dialog_run() does) */
+			gdk_threads_enter();
+			int response = gtk_dialog_run(GTK_DIALOG(dialog));
+			gdk_threads_leave();
+			gtk_widget_destroy(dialog);
+			if(response == GTK_RESPONSE_YES) {
 				gchar *filename = g_file_get_path(file);
 				gchar *text = read_source_file(filename);
 				g_free(filename);
@@ -383,7 +389,6 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 					g_free(text);
 				}
 			}
-			gtk_widget_destroy(dialog);
 		}
 			break;
 		case G_FILE_MONITOR_EVENT_DELETED:
@@ -542,9 +547,9 @@ i7_document_update_source_highlight(I7Document *document)
 	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_file_get_bool(PREFS_SYNTAX_HIGHLIGHTING));
 }
 
-/* Recalculate the document's elastic tabs */
+/* Recalculate the document's elastic tabstops */
 void
-i7_document_refresh_elastic_tabs(I7Document *document)
+i7_document_refresh_elastic_tabstops(I7Document *document)
 {
 	elastic_recalculate_view(i7_document_get_default_view(document));
 }
@@ -598,7 +603,6 @@ i7_document_reindex_headings(I7Document *document)
 	gtk_tree_store_clear(tree);
 	GtkTreeIter title, volume, book, part, chapter, section, current;
 	gboolean volume_used = FALSE, book_used = FALSE, part_used = FALSE, chapter_used = FALSE;
-	gboolean at_least_one = FALSE;
 
 	GtkTextIter lastline, thisline, nextline, end;
 	gtk_text_buffer_get_start_iter(buffer, &lastline);
@@ -675,7 +679,6 @@ i7_document_reindex_headings(I7Document *document)
 				I7_HEADINGS_BOLD, PANGO_WEIGHT_NORMAL,
 				-1);
 			/* Do not free strings (?) */
-			at_least_one = TRUE;
 		}
 
 		if(text)
@@ -1035,8 +1038,8 @@ i7_document_check_spelling(I7Document *document)
 }
 
 void
-i7_document_set_elastic_tabs(I7Document *document, gboolean elastic)
+i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabs), elastic);
-	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabs(document, elastic);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabstops), elastic);
+	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabstops(document, elastic);
 }

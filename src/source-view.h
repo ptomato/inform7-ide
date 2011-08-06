@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -71,6 +71,6 @@ void i7_source_view_set_contents_display(I7SourceView *self, I7ContentsDisplay d
 void i7_source_view_jump_to_line(I7SourceView *self, guint line);
 void i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck);
 void i7_source_view_check_spelling(I7SourceView *self);
-void i7_source_view_set_elastic_tabs(I7SourceView *self, gboolean elastic);
+void i7_source_view_set_elastic_tabstops(I7SourceView *self, gboolean elastic);
 
 #endif /* _SOURCE_VIEW_H_ */

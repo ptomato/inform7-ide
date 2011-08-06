@@ -1,4 +1,4 @@
-/* Copyright (C) 2010 P. F. Chimento
+/* Copyright (C) 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ i7_skein_view_set_skein(I7SkeinView *self, I7Skein *skein)
 
 	goo_canvas_set_root_item_model(GOO_CANVAS(self), GOO_CANVAS_ITEM_MODEL(skein));
 	g_object_ref(skein);
-	priv->layout_handler = g_signal_connect(skein, "needs-layout", G_CALLBACK(i7_skein_draw), self);
+	priv->layout_handler = g_signal_connect(skein, "needs-layout", G_CALLBACK(i7_skein_schedule_draw), self);
 	i7_skein_draw(skein, GOO_CANVAS(self));
 }
 

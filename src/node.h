@@ -41,6 +41,7 @@ struct _I7Node {
 	GooCanvasGroupModel parent_instance;
 	GNode *gnode;
 	GooCanvasItemModel *tree_item; /* The tree line associated with the node */
+	GooCanvasPoints *tree_points; /* The points of tree_item */
 };
 
 /* Clickable parts of the node */

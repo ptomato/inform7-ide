@@ -349,7 +349,8 @@ i7_panel_init(I7Panel *self)
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z5, CHIMARA_IF_INTERPRETER_FROTZ);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z6, CHIMARA_IF_INTERPRETER_FROTZ);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z8, CHIMARA_IF_INTERPRETER_FROTZ);
-	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_GLULX, CHIMARA_IF_INTERPRETER_GLULXE);
+	ChimaraIFInterpreter glulx_interpreter = config_file_get_bool(PREFS_USE_GIT)? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
+	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_GLULX, glulx_interpreter);
 	chimara_glk_set_interactive(CHIMARA_GLK(game), TRUE);
 	chimara_glk_set_protect(CHIMARA_GLK(game), FALSE);
 

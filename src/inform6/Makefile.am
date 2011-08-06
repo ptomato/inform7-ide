@@ -10,3 +10,5 @@ inform_6_32_biplatform_CFLAGS = -ansi -DLINUX
 
 inform6docdir = $(datadir)/doc/$(PACKAGE)/inform6
 dist_inform6doc_DATA = readme.txt ReleaseNotes.html
+
+-include $(top_srcdir)/git.mk

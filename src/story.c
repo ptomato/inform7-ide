@@ -48,7 +48,7 @@ enum {
 	PROP_STORY_FORMAT,
 	PROP_MAKE_BLORB,
 	PROP_NOBBLE_RNG,
-	PROP_ELASTIC_TABS
+	PROP_ELASTIC_TABSTOPS
 };
 
 G_DEFINE_TYPE(I7Story, i7_story, I7_TYPE_DOCUMENT);
@@ -215,8 +215,8 @@ i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GPara
 		case PROP_NOBBLE_RNG:
 			i7_story_set_nobble_rng(story, g_value_get_boolean(value));
 			break;
-		case PROP_ELASTIC_TABS:
-			i7_document_set_elastic_tabs(I7_DOCUMENT(story), g_value_get_boolean(value));
+		case PROP_ELASTIC_TABSTOPS:
+			i7_document_set_elastic_tabstops(I7_DOCUMENT(story), g_value_get_boolean(value));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -239,8 +239,8 @@ i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec 
 		case PROP_NOBBLE_RNG:
 			g_value_set_boolean(value, i7_story_get_nobble_rng(story));
 			break;
-		case PROP_ELASTIC_TABS:
-			g_value_set_boolean(value, i7_story_get_elastic_tabs(story));
+		case PROP_ELASTIC_TABSTOPS:
+			g_value_set_boolean(value, i7_story_get_elastic_tabstops(story));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -642,7 +642,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_action_connect_proxy(I7_DOCUMENT(self)->next_section, panel->sourceview->next);
 
 	/* Set the Blorb resource-loading callback */
-	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_GAME]), (ChimaraResourceLoadFunc)load_blorb_resource, self);
+	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_GAME]), (ChimaraResourceLoadFunc)load_blorb_resource, self, NULL);
 }
 
 static void
@@ -802,7 +802,7 @@ i7_story_init(I7Story *self)
 	g_signal_connect(self, "notify::story-format", G_CALLBACK(on_notify_story_format), NULL);
 	g_signal_connect(self, "notify::create-blorb", G_CALLBACK(on_notify_create_blorb), NULL);
 	g_signal_connect(self, "notify::nobble-rng", G_CALLBACK(on_notify_nobble_rng), NULL);
-	g_signal_connect(self, "notify::elastic-tabs", G_CALLBACK(on_notify_elastic_tabs), NULL);
+	g_signal_connect(self, "notify::elastic-tabstops", G_CALLBACK(on_notify_elastic_tabstops), NULL);
 
 	/* Set font sizes, etc. */
 	i7_document_update_fonts(I7_DOCUMENT(self));
@@ -842,7 +842,7 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->highlight_search = i7_story_highlight_search;
 	document_class->set_spellcheck = i7_story_set_spellcheck;
 	document_class->check_spelling = i7_story_check_spelling;
-	document_class->set_elastic_tabs = i7_story_set_elastic_tabs;
+	document_class->set_elastic_tabstops = i7_story_set_elastic_tabstops;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->set_property = i7_story_set_property;
@@ -862,8 +862,8 @@ i7_story_class_init(I7StoryClass *klass)
 		g_param_spec_boolean("nobble-rng", "Nobble RNG",
 			"IFOutputSettings->IFSettingNobbleRNG", FALSE,
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-	g_object_class_install_property(object_class, PROP_ELASTIC_TABS,
-		g_param_spec_boolean("elastic-tabs", "Elastic Tabs",
+	g_object_class_install_property(object_class, PROP_ELASTIC_TABSTOPS,
+		g_param_spec_boolean("elastic-tabstops", "Elastic Tabstops",
 			"IFMiscSettings->IFSettingElasticTabs", FALSE,
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
@@ -1041,7 +1041,7 @@ i7_story_open(I7Story *story, const gchar *directory)
 	on_notify_story_format(story);
 	on_notify_create_blorb(story);
 	on_notify_nobble_rng(story);
-	on_notify_elastic_tabs(story);
+	on_notify_elastic_tabstops(story);
 
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(story, FALSE);

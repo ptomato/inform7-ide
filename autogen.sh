@@ -4,28 +4,15 @@
 # Use this script to bootstrap your build AFTER checking it out from
 # source control. You should not have to use it for anything else.
 
-### PATCHING EXTERNALS ##############################################
+### SUBMODULES ######################################################
 # Make local modifications to externals checked out from other
 # repositories. Skip this step if the patches have already been
 # applied.
+echo "Checking out submodules"
+git submodule init
+git submodule update
 echo "Patching externals"
-patch -N -r - src/osxcart/Makefile.am src/osxcart.Makefile.am.patch
-cp src/interpreters/frotz.Makefile.am src/interpreters/frotz/Makefile.am
-cp src/interpreters/glulxe.Makefile.am src/interpreters/glulxe/Makefile.am
-cp src/interpreters/git.Makefile.am src/interpreters/git/Makefile.am
-rm -f \
-	src/interpreters/glulxe/Makefile \
-	src/interpreters/glulxe/glulxdump.c \
-	src/interpreters/glulxe/macstart.c \
-	src/interpreters/glulxe/profile-analyze.py \
-	src/interpreters/glulxe/winstart.c \
-	src/interpreters/git/Makefile \
-	src/interpreters/git/Makefile.win \
-	src/interpreters/git/git_mac.c \
-	src/interpreters/git/git_windows.c
-rm -rf \
-	src/interpreters/git/test \
-	src/interpreters/git/win
+#patch -N -r - src/osxcart/Makefile.am src/osxcart.Makefile.am.patch
 
 ### AUTOTOOLS #######################################################
 # Runs autoconf, autoheader, aclocal, automake, autopoint, libtoolize

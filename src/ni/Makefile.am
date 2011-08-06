@@ -17,3 +17,7 @@ endif
 if DISTCHECK
 EXTRA_DIST = ni
 endif
+
+GITIGNOREFILES = ni
+
+-include $(top_srcdir)/git.mk

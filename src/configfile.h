@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,22 +33,22 @@
 
 #define PREFS_AUTHOR_NAME	PREFS_APP_PATH "AuthorName"
 
-#define PREFS_SPELL_CHECK_DEFAULT	PREFS_IDE_PATH "SpellCheckDefault"
-#define PREFS_CLEAN_BUILD_FILES		PREFS_IDE_PATH "CleanBuildFiles"
-#define PREFS_CLEAN_INDEX_FILES		PREFS_IDE_PATH "CleanIndexFiles"
-#define PREFS_DEBUG_LOG_VISIBLE		PREFS_IDE_PATH "DebugLogVisible"
-#define PREFS_TOOLBAR_VISIBLE       PREFS_IDE_PATH "ToolbarDefault"
-#define PREFS_STATUSBAR_VISIBLE     PREFS_IDE_PATH "StatusbarDefault"
-#define PREFS_NOTEPAD_VISIBLE       PREFS_IDE_PATH "NotepadDefault"
-#define PREFS_USE_GIT               PREFS_IDE_PATH "UseGit"
-#define PREFS_ELASTIC_TABS_DEFAULT  PREFS_IDE_PATH "ElasticTabsDefault"
+#define PREFS_SPELL_CHECK_DEFAULT	    PREFS_IDE_PATH "SpellCheckDefault"
+#define PREFS_CLEAN_BUILD_FILES		    PREFS_IDE_PATH "CleanBuildFiles"
+#define PREFS_CLEAN_INDEX_FILES		    PREFS_IDE_PATH "CleanIndexFiles"
+#define PREFS_DEBUG_LOG_VISIBLE		    PREFS_IDE_PATH "DebugLogVisible"
+#define PREFS_TOOLBAR_VISIBLE           PREFS_IDE_PATH "ToolbarDefault"
+#define PREFS_STATUSBAR_VISIBLE         PREFS_IDE_PATH "StatusbarDefault"
+#define PREFS_NOTEPAD_VISIBLE           PREFS_IDE_PATH "NotepadDefault"
+#define PREFS_USE_GIT                   PREFS_IDE_PATH "UseGit"
+#define PREFS_ELASTIC_TABSTOPS_DEFAULT  PREFS_IDE_PATH "ElasticTabsDefault"
 
-#define PREFS_FONT_SET		        PREFS_EDITOR_PATH "FontSet"
-#define PREFS_CUSTOM_FONT	        PREFS_EDITOR_PATH "CustomFont"
-#define PREFS_FONT_SIZE		        PREFS_EDITOR_PATH "FontSize"
-#define PREFS_STYLE_SCHEME	        PREFS_EDITOR_PATH "StyleScheme"
-#define PREFS_TAB_WIDTH		        PREFS_EDITOR_PATH "TabWidth"
-#define PREFS_ELASTIC_TABS_PADDING  PREFS_EDITOR_PATH "ElasticTabPadding"
+#define PREFS_FONT_SET		            PREFS_EDITOR_PATH "FontSet"
+#define PREFS_CUSTOM_FONT	            PREFS_EDITOR_PATH "CustomFont"
+#define PREFS_FONT_SIZE		            PREFS_EDITOR_PATH "FontSize"
+#define PREFS_STYLE_SCHEME	            PREFS_EDITOR_PATH "StyleScheme"
+#define PREFS_TAB_WIDTH		            PREFS_EDITOR_PATH "TabWidth"
+#define PREFS_ELASTIC_TABSTOPS_PADDING  PREFS_EDITOR_PATH "ElasticTabPadding"
 
 #define PREFS_SYNTAX_HIGHLIGHTING	PREFS_SYNTAX_PATH "SyntaxHighlighting"
 #define PREFS_AUTO_INDENT			PREFS_SYNTAX_PATH "AutoIndent"

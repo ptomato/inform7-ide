@@ -44,6 +44,7 @@ typedef struct _I7SkeinPrivate
 	GdkColor locked;
 	GdkColor unlocked;
 
+	GooCanvasLineDash *locked_dash;
 	GooCanvasLineDash *unlocked_dash;
 
 	int stamp; /* Stamp for identifying tree iterators belonging to this model */
@@ -142,6 +143,7 @@ i7_skein_init(I7Skein *self)
 	priv->current = priv->root;
 	priv->played = priv->root;
 	priv->modified = TRUE;
+	priv->locked_dash = goo_canvas_line_dash_new(0);
 	priv->unlocked_dash = goo_canvas_line_dash_new(2, 5.0, 5.0);
 
 	priv->hspacing = 40.0;
@@ -993,20 +995,17 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 		gdouble nodey = (gdouble)(g_node_depth(node->gnode) - 1.0) * priv->vspacing;
 		gdouble desty = nodey - priv->vspacing;
 
-		if(node->tree_item)
-			goo_canvas_item_model_remove(node->tree_item);
+		if(!node->tree_item)
+			node->tree_item = goo_canvas_polyline_model_new(GOO_CANVAS_ITEM_MODEL(self), FALSE, 0, NULL);
 
-		if(nodex == destx) {
-			node->tree_item = goo_canvas_polyline_model_new_line(GOO_CANVAS_ITEM_MODEL(self),
-				destx, desty, nodex, nodey,
-				NULL);
-		} else {
-			node->tree_item = goo_canvas_polyline_model_new(GOO_CANVAS_ITEM_MODEL(self), FALSE, 4,
-				destx, desty,
-				destx, desty + 0.2 * priv->vspacing,
-				nodex, nodey - 0.2 * priv->vspacing,
-				nodex, nodey,
-				NULL);
+		if(node->tree_points->coords[0] != destx || node->tree_points->coords[4] != nodex) {
+			node->tree_points->coords[0] = node->tree_points->coords[2] = destx;
+			node->tree_points->coords[1] = desty;
+			node->tree_points->coords[3] = desty + 0.2 * priv->vspacing;
+			node->tree_points->coords[4] = node->tree_points->coords[6] = nodex;
+			node->tree_points->coords[5] = nodey - 0.2 * priv->vspacing;
+			node->tree_points->coords[7] = nodey;
+			g_object_set(node->tree_item, "points", node->tree_points, NULL);
 		}
 
 		gboolean in_current_thread = i7_skein_is_node_in_current_thread(self, node);
@@ -1014,6 +1013,7 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 		if(i7_node_get_locked(node))
 			g_object_set(node->tree_item,
 				"stroke-color-rgba", rgba_from_gdk_color(&priv->locked),
+			    "line-dash", priv->locked_dash,
 				"line-width", in_current_thread? 4.0 : 1.5,
 				NULL);
 		else
@@ -1034,10 +1034,13 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 	}
 }
 
-void
-i7_skein_draw(I7Skein *self, GooCanvas *canvas)
+static void
+draw_intern(I7Skein *self, GooCanvas *canvas)
 {
 	I7_SKEIN_USE_PRIVATE;
+
+	if(GPOINTER_TO_INT(g_object_get_data(G_OBJECT(canvas), "waiting-for-draw")) == 0)
+		return;
 
 	i7_node_layout(priv->root, GOO_CANVAS_ITEM_MODEL(self), canvas, 0.0);
 
@@ -1047,6 +1050,44 @@ i7_skein_draw(I7Skein *self, GooCanvas *canvas)
 	goo_canvas_set_bounds(canvas,
 		-treewidth * 0.5 - priv->hspacing, -(priv->vspacing) * 0.5,
 		treewidth * 0.5 + priv->hspacing, g_node_max_height(priv->root->gnode) * priv->vspacing);
+
+	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(0));
+}
+
+void
+i7_skein_draw(I7Skein *self, GooCanvas *canvas)
+{
+	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(1));
+	draw_intern(self, canvas);
+}
+
+typedef struct {
+	I7Skein *skein;
+	GooCanvas *canvas;
+} DrawData;
+
+static gboolean
+idle_draw(DrawData *draw_data)
+{
+	draw_intern(draw_data->skein, draw_data->canvas);
+	return FALSE; /* one-shot */
+}
+
+static void
+destroy_draw_data(DrawData *draw_data)
+{
+	g_slice_free(DrawData, draw_data);
+}
+
+void
+i7_skein_schedule_draw(I7Skein *self, GooCanvas *canvas)
+{
+	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(1));
+	
+	DrawData *draw_data = g_slice_new0(DrawData);
+	draw_data->skein = self;
+	draw_data->canvas = canvas;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)idle_draw, draw_data, (GDestroyNotify)destroy_draw_data);
 }
 
 /* Add a new node with the given command, under the played node. Unless there

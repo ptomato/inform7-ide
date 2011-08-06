@@ -17,3 +17,5 @@ uninstall-local:
 	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/ /\\ /g' \
 		| $(XARGS) rm --force; \
 	rm --force uninstall_manifest.txt
+
+-include $(top_srcdir)/git.mk

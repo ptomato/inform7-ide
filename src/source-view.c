@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -210,7 +210,7 @@ i7_source_view_check_spelling(I7SourceView *self)
 }
 
 void
-i7_source_view_set_elastic_tabs(I7SourceView *self, gboolean elastic)
+i7_source_view_set_elastic_tabstops(I7SourceView *self, gboolean elastic)
 {
 	if(elastic) {
 		add_elastic_tabstops_to_view(GTK_TEXT_VIEW(self->source));

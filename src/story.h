@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -113,15 +113,15 @@ void on_nobble_rng_button_toggled(GtkToggleButton *togglebutton, I7Story *story)
 void on_notify_story_format(I7Story *story);
 void on_notify_create_blorb(I7Story *story);
 void on_notify_nobble_rng(I7Story *story);
-void on_notify_elastic_tabs(I7Story *story);
+void on_notify_elastic_tabstops(I7Story *story);
 I7StoryFormat i7_story_get_story_format(I7Story *story);
 void i7_story_set_story_format(I7Story *story, I7StoryFormat format);
 gboolean i7_story_get_create_blorb(I7Story *story);
 void i7_story_set_create_blorb(I7Story *story, gboolean create_blorb);
 gboolean i7_story_get_nobble_rng(I7Story *story);
 void i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng);
-gboolean i7_story_get_elastic_tabs(I7Story *story);
-void i7_story_set_elastic_tabs(I7Story *story, gboolean elastic_tabs);
+gboolean i7_story_get_elastic_tabstops(I7Story *story);
+void i7_story_set_elastic_tabstops(I7Story *story, gboolean elastic_tabstops);
 
 /* Compiling, story-compile.c */
 void i7_story_set_compile_finished_action(I7Story *story, CompileActionFunc callback, gpointer data);

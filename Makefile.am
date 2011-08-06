@@ -37,6 +37,11 @@ DISTCLEANFILES = \
 	intltool-update \
 	gnome-inform7.spec
 
+MAINTAINERCLEANFILES = ABOUT-NLS INSTALL aclocal.m4 compile config.guess \
+        config.h.in config.rpath config.sub depcomp install-sh \
+        intltool-extract.in intltool-merge.in intltool-update.in ltmain.sh \
+        missing autom4te.cache m4
+
 if BUILDING_RPM
 RPMDIR=`$(RPM) --eval %_rpmdir`
 SRCRPMDIR=`$(RPM) --eval %_srcrpmdir`
@@ -103,3 +108,5 @@ deb:
 	"To build a Debian package, you must run configure with --enable-deb."; \
 	exit 1
 endif
+
+-include $(top_srcdir)/git.mk

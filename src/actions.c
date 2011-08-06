@@ -943,14 +943,14 @@ action_renumber_all_sections(GtkAction *action, I7Document *document)
 	gtk_text_buffer_end_user_action(buffer);
 }
 
-/* Format->Enable Elastic Tabs */
+/* Format->Enable Elastic Tabstops */
 void
-action_enable_elastic_tabs_toggled(GtkToggleAction *action, I7Document *document)
+action_enable_elastic_tabstops_toggled(GtkToggleAction *action, I7Document *document)
 {
 	gboolean value = gtk_toggle_action_get_active(action);
 	/* Use this value as the default for new windows */
-	config_file_set_bool(PREFS_ELASTIC_TABS_DEFAULT, value);
-	i7_document_set_elastic_tabs(document, value);
+	config_file_set_bool(PREFS_ELASTIC_TABSTOPS_DEFAULT, value);
+	i7_document_set_elastic_tabstops(document, value);
 }
 
 /* Play->Go */
