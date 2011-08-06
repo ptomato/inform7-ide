@@ -666,15 +666,15 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 		if(!node->tree_item)
 			node->tree_item = goo_canvas_polyline_model_new(GOO_CANVAS_ITEM_MODEL(self), FALSE, 0, NULL);
 
-		GooCanvasPoints *points = goo_canvas_points_new(4);
-		points->coords[0] = points->coords[2] = destx;
-		points->coords[1] = desty;
-		points->coords[3] = desty + 0.2 * priv->vspacing;
-		points->coords[4] = points->coords[6] = nodex;
-		points->coords[5] = nodey - 0.2 * priv->vspacing;
-		points->coords[7] = nodey;
-		g_object_set(node->tree_item, "points", points, NULL);
-		goo_canvas_points_unref(points);
+		if(node->tree_points->coords[0] != destx || node->tree_points->coords[4] != nodex) {
+			node->tree_points->coords[0] = node->tree_points->coords[2] = destx;
+			node->tree_points->coords[1] = desty;
+			node->tree_points->coords[3] = desty + 0.2 * priv->vspacing;
+			node->tree_points->coords[4] = node->tree_points->coords[6] = nodex;
+			node->tree_points->coords[5] = nodey - 0.2 * priv->vspacing;
+			node->tree_points->coords[7] = nodey;
+			g_object_set(node->tree_item, "points", node->tree_points, NULL);
+		}
 
 		if(i7_node_get_locked(node))
 			g_object_set(node->tree_item,
@@ -704,7 +704,7 @@ void
 i7_skein_draw(I7Skein *self, GooCanvas *canvas)
 {
 	I7_SKEIN_USE_PRIVATE;
-
+	
 	i7_node_layout(priv->root, GOO_CANVAS_ITEM_MODEL(self), canvas, 0.0);
 
 	gdouble treewidth = i7_node_get_tree_width(priv->root, GOO_CANVAS_ITEM_MODEL(self), canvas);

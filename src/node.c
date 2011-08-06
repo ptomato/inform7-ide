@@ -189,6 +189,7 @@ i7_node_init(I7Node *self)
 	priv->id = g_strdup_printf("node-%p", self);
 	self->gnode = g_node_new(self);
 	self->tree_item = NULL;
+	self->tree_points = goo_canvas_points_new(4);
 
 	/* TODO diffs */
 
@@ -327,6 +328,7 @@ i7_node_finalize(GObject *self)
 	g_free(priv->transcript_text);
 	g_free(priv->expected_text);
 	g_free(priv->id);
+	goo_canvas_points_unref(I7_NODE(self)->tree_points);
 
 	/* recurse */
 	g_node_children_foreach(I7_NODE(self)->gnode, G_TRAVERSE_ALL, (GNodeForeachFunc)unref_node, NULL);
