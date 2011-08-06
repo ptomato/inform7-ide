@@ -836,6 +836,9 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	if(command_width_changed || command_height_changed)
 		redraw_command(self, command_width, command_height);
 
+	if(command_height_changed)
+		g_object_set(priv->label_item, "x", 0.0, "y", -command_height, NULL);
+
 	/* Draw the label background */
 	if(i7_node_has_label(self)) {
 		if(label_width_changed || label_height_changed)
@@ -846,9 +849,6 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 			    "x", -0.5 * label_width - label_height,
 			    "y", -command_height - 0.5 * label_height,
 				NULL);
-
-		if(command_height_changed)
-			g_object_set(priv->label_item, "x", 0.0, "y", -command_height, NULL);
 	} else {
 		g_object_set(priv->label_shape_item,
 			"data", "",
