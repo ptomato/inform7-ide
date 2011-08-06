@@ -812,7 +812,7 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	double label_width = 0.0, label_height = 0.0;
 	gboolean command_width_changed, command_height_changed;
 	gboolean label_width_changed, label_height_changed;
-	gboolean need_layout = FALSE;
+	gboolean need_layout;
 
 	/* Calculate the bounds of the command text and label text */
 	item = goo_canvas_get_item(canvas, priv->command_item);

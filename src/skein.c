@@ -38,6 +38,7 @@ typedef struct _I7SkeinPrivate
 	GdkColor locked;
 	GdkColor unlocked;
 
+	GooCanvasLineDash *locked_dash;
 	GooCanvasLineDash *unlocked_dash;
 } I7SkeinPrivate;
 
@@ -116,6 +117,7 @@ i7_skein_init(I7Skein *self)
 	priv->current = priv->root;
 	priv->played = priv->root;
 	priv->modified = TRUE;
+	priv->locked_dash = goo_canvas_line_dash_new(0);
 	priv->unlocked_dash = goo_canvas_line_dash_new(2, 5.0, 5.0);
 
 	priv->hspacing = 40.0;
@@ -661,25 +663,23 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 		gdouble nodey = (gdouble)(g_node_depth(node->gnode) - 1.0) * priv->vspacing;
 		gdouble desty = nodey - priv->vspacing;
 
-		if(node->tree_item)
-			goo_canvas_item_model_remove_child(GOO_CANVAS_ITEM_MODEL(self), goo_canvas_item_model_find_child(GOO_CANVAS_ITEM_MODEL(self), node->tree_item));
+		if(!node->tree_item)
+			node->tree_item = goo_canvas_polyline_model_new(GOO_CANVAS_ITEM_MODEL(self), FALSE, 0, NULL);
 
-		if(nodex == destx) {
-			node->tree_item = goo_canvas_polyline_model_new_line(GOO_CANVAS_ITEM_MODEL(self),
-				destx, desty, nodex, nodey,
-				NULL);
-		} else {
-			node->tree_item = goo_canvas_polyline_model_new(GOO_CANVAS_ITEM_MODEL(self), FALSE, 4,
-				destx, desty,
-				destx, desty + 0.2 * priv->vspacing,
-				nodex, nodey - 0.2 * priv->vspacing,
-				nodex, nodey,
-				NULL);
-		}
+		GooCanvasPoints *points = goo_canvas_points_new(4);
+		points->coords[0] = points->coords[2] = destx;
+		points->coords[1] = desty;
+		points->coords[3] = desty + 0.2 * priv->vspacing;
+		points->coords[4] = points->coords[6] = nodex;
+		points->coords[5] = nodey - 0.2 * priv->vspacing;
+		points->coords[7] = nodey;
+		g_object_set(node->tree_item, "points", points, NULL);
+		goo_canvas_points_unref(points);
 
 		if(i7_node_get_locked(node))
 			g_object_set(node->tree_item,
 				"stroke-color-rgba", rgba_from_gdk_color(&priv->locked),
+			    "line-dash", priv->locked_dash,
 				"line-width", i7_node_in_thread(node, priv->current)? 4.0 : 1.5,
 				NULL);
 		else
