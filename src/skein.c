@@ -700,11 +700,14 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 	}
 }
 
-void
-i7_skein_draw(I7Skein *self, GooCanvas *canvas)
+static void
+draw_intern(I7Skein *self, GooCanvas *canvas)
 {
 	I7_SKEIN_USE_PRIVATE;
-	
+
+	if(GPOINTER_TO_INT(g_object_get_data(G_OBJECT(canvas), "waiting-for-draw")) == 0)
+		return;
+
 	i7_node_layout(priv->root, GOO_CANVAS_ITEM_MODEL(self), canvas, 0.0);
 
 	gdouble treewidth = i7_node_get_tree_width(priv->root, GOO_CANVAS_ITEM_MODEL(self), canvas);
@@ -713,6 +716,44 @@ i7_skein_draw(I7Skein *self, GooCanvas *canvas)
 	goo_canvas_set_bounds(canvas,
 		-treewidth * 0.5 - priv->hspacing, -(priv->vspacing) * 0.5,
 		treewidth * 0.5 + priv->hspacing, g_node_max_height(priv->root->gnode) * priv->vspacing);
+
+	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(0));
+}
+
+void
+i7_skein_draw(I7Skein *self, GooCanvas *canvas)
+{
+	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(1));
+	draw_intern(self, canvas);
+}
+
+typedef struct {
+	I7Skein *skein;
+	GooCanvas *canvas;
+} DrawData;
+
+static gboolean
+idle_draw(DrawData *draw_data)
+{
+	draw_intern(draw_data->skein, draw_data->canvas);
+	return FALSE; /* one-shot */
+}
+
+static void
+destroy_draw_data(DrawData *draw_data)
+{
+	g_slice_free(DrawData, draw_data);
+}
+
+void
+i7_skein_schedule_draw(I7Skein *self, GooCanvas *canvas)
+{
+	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(1));
+	
+	DrawData *draw_data = g_slice_new0(DrawData);
+	draw_data->skein = self;
+	draw_data->canvas = canvas;
+	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)idle_draw, draw_data, (GDestroyNotify)destroy_draw_data);
 }
 
 /* Add a new node with the given command, under the played node. Unless there
