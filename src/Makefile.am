@@ -12,8 +12,6 @@ libosxcart_a_SOURCES = \
 	osxcart/osxcart/init.h \
 	osxcart/osxcart/plist.c \
 	osxcart/osxcart/plist.h \
-	osxcart/osxcart/plist-common.c \
-	osxcart/osxcart/plist-common.h \
 	osxcart/osxcart/plist-write.c \
 	osxcart/osxcart/plist-parser.c \
 	osxcart/osxcart/rtf.c \

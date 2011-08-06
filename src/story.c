@@ -820,6 +820,10 @@ i7_story_finalize(GObject *self)
 	I7_STORY_USE_PRIVATE(self, priv);
 	g_free(priv->copyblorbto);
 	g_free(priv->compiler_output);
+	if(priv->settings)
+		plist_object_free(priv->settings);
+	if(priv->manifest)
+		plist_object_free(priv->manifest);
 	G_OBJECT_CLASS(i7_story_parent_class)->finalize(self);
 }
 
