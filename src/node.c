@@ -705,6 +705,103 @@ i7_node_layout(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas, gdoub
 	priv->x = x;
 }
 
+static void
+redraw_command(I7Node *self, double width, double height)
+{
+	I7_NODE_USE_PRIVATE;
+	cairo_matrix_t matrix;
+	char *path;
+	
+	/* Calculate the scale for the pattern gradients */
+	cairo_matrix_init_scale(&matrix, 0.5 / width, 1.0 / height);
+	cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_UNBLESSED], &matrix);
+	cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_BLESSED], &matrix);
+	cairo_pattern_set_matrix(priv->node_pattern[NODE_PLAYED_UNBLESSED], &matrix);
+	cairo_pattern_set_matrix(priv->node_pattern[NODE_PLAYED_BLESSED], &matrix);
+
+	/* Draw the text background */
+	path = g_strdup_printf(
+	    "M %.1f -%.1f "              /* Move-to (w/2, -h/2) */
+		"a %.1f,%.1f 0 0,1 0,%.1f "  /* Arc r=(h/2, h/2) rot=0 large=0 dir=1 rel-to (0, h) */
+		"h -%.1f "                   /* Horizontal-line-rel-to (-w) */
+		"a %.1f,%.1f 0 0,1 0,-%.1f " /* Arc r=(h/2, h/2) rot=0 large=0 dir=1 rel-to (0, -h) */
+		"Z",                         /* Close-path */
+		width / 2, height / 2,
+	    height / 2, height / 2, height,
+	    width,
+	    height / 2, height / 2, height);
+	g_object_set(priv->command_shape_item, "data", path, NULL);
+	g_free(path);
+
+	priv->command_width = width;
+	priv->command_height = height;
+}
+
+static void
+redraw_label(I7Node *self, double width, double height)
+{
+	I7_NODE_USE_PRIVATE;
+	cairo_matrix_t matrix;
+	char *path;
+
+	/* Calculate the scale for the pattern gradient */
+	cairo_matrix_init_scale(&matrix, 0.5 / width, -1.0 / height);
+	cairo_pattern_set_matrix(priv->label_pattern, &matrix);
+	
+	path = g_strdup_printf(
+	    "M %.1f,%.1f "                   /* Move-to (w/2+h, h/2) */
+		"a %.1f,%.1f 0 0,0 -%.1f,-%.1f " /* Arc r=(h, h) rot=0 large=0 dir=0 rel-to (-h, -h) */
+		"h -%.1f "                       /* Horizontal-line-rel-to (-w) */
+		"a %.1f,%.1f 0 0,0 -%.1f,%.1f "  /* Arc r=(h, h) rot=0 large=0 dir=0 rel-to (-h, h) */
+		"Z",
+		width / 2 + height, height / 2,
+		height, height, height, height,
+		width,			                       
+		height, height, height, height);
+	g_object_set(priv->label_shape_item,
+		"data", path,
+		"visibility", GOO_CANVAS_ITEM_VISIBLE,
+		NULL);
+	g_free(path);
+
+	priv->label_width = width;
+	priv->label_height = height;
+}
+
+static void
+draw_differs_badge(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+	
+	if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
+		/* if the differs badge hasn't been drawn yet, draw it */
+		g_object_set(priv->badge_item, "data",
+		"M 1.0,0.0 0.691,0.112 0.949,0.317 0.62,0.325 0.799,0.601 "
+		"0.485,0.505 0.568,0.823 0.3,0.632 0.278,0.961 0.084,0.695 -0.04,0.999 "
+		"-0.14,0.686 -0.355,0.935 -0.35,0.606 -0.632,0.775 -0.524,0.464 "
+		"-0.845,0.534 -0.644,0.274 -0.971,0.239 -0.698,0.056 -0.997,-0.08 "
+		"-0.68,-0.168 -0.92,-0.392 -0.592,-0.374 -0.749,-0.663 -0.443,-0.542 "
+		"-0.5,-0.866 -0.248,-0.655 -0.2,-0.98 -0.028,-0.699 0.121,-0.993 "
+		"0.195,-0.672 0.429,-0.903 0.398,-0.576 0.693,-0.721 0.56,-0.421 "
+		"0.885,-0.465 0.664,-0.222 0.987,-0.16 0.7,-0.0 Z",
+		"visibility", GOO_CANVAS_ITEM_VISIBLE,
+		NULL);
+		/* That SVG code is generated with this Python code:
+		import numpy as N
+		angles = N.linspace(0, 2 * N.pi, 40)
+		radii = N.ones_like(angles)
+		radii[1::2] *= 0.7
+		xs = radii * N.cos(angles)
+		ys = radii * N.sin(angles)
+		print "M",
+		for x, y in zip(xs, ys):
+			print "{0:.3},{1:.3}".format(round(x, 3), round(y, 3)),
+		print "Z" */
+		g_object_set_data(G_OBJECT(priv->badge_item), "path-drawn", GINT_TO_POINTER(1));
+	} else
+		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_VISIBLE, NULL);
+}
+
 void
 i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas)
 {
@@ -713,12 +810,11 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	GooCanvasItem *item;
 	double command_width, command_height;
 	double label_width = 0.0, label_height = 0.0;
-	gchar *path;
-	cairo_matrix_t matrix;
-	gboolean size_changed = FALSE;
+	gboolean command_width_changed, command_height_changed;
+	gboolean label_width_changed, label_height_changed;
+	gboolean need_layout = FALSE;
 
-	/* Move this node's item models to their proper places, now that we can use
-	the canvas to calculate them */
+	/* Calculate the bounds of the command text and label text */
 	item = goo_canvas_get_item(canvas, priv->command_item);
 	goo_canvas_item_get_bounds(item, &size);
 	command_width = size.x2 - size.x1;
@@ -731,76 +827,30 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 		label_height = size.y2 - size.y1;
 	}
 
-	if((command_width != 0.0 && priv->command_width != command_width)
-		|| (command_height != 0.0 && priv->command_height != command_height)) {
-		/* Move the label, its background, and the differs badge */
-		g_object_set(priv->label_item, "x", 0.0, "y", -command_height, NULL);
-		g_object_set(priv->label_shape_item,
-			"x", -0.5 * label_width - label_height,
-			"y", -command_height - 0.5 * label_height,
-			NULL);
-		g_object_set(priv->badge_item, 
-			"x", command_width / 2 + DIFFERS_BADGE_WIDTH,
-			"y", command_height / 2,
-			"width", DIFFERS_BADGE_WIDTH,
-			"height", DIFFERS_BADGE_WIDTH,
-			NULL);
+	command_width_changed = command_width != 0.0 && priv->command_width != command_width;
+	command_height_changed = command_height != 0.0 && priv->command_height != command_height;
+	label_width_changed = label_width != 0.0 && priv->label_width != label_width;
+	label_height_changed = label_height != 0.0 && priv->label_height != label_height;
 
-		/* Calculate the scale for the pattern gradients */
-		cairo_matrix_init_scale(&matrix, 0.5 / command_width, 1.0 / command_height);
-		cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_UNBLESSED], &matrix);
-		cairo_pattern_set_matrix(priv->node_pattern[NODE_UNPLAYED_BLESSED], &matrix);
-		cairo_pattern_set_matrix(priv->node_pattern[NODE_PLAYED_UNBLESSED], &matrix);
-		cairo_pattern_set_matrix(priv->node_pattern[NODE_PLAYED_BLESSED], &matrix);
+	need_layout = (command_width >= label_width && command_width_changed)
+		|| (label_width >= command_width && label_width_changed);
 
-		/* Draw the text background */
-		path = g_strdup_printf("M %.1f -%.1f "
-			"a %.1f,%.1f 0 0,1 0,%.1f "
-			"h -%.1f "
-			"a %.1f,%.1f 0 0,1 0,-%.1f "
-			"Z",
-			command_width / 2, command_height / 2, command_height / 2,
-		    command_height / 2, command_height, command_width, command_height / 2,
-			command_height / 2, command_height);
-		g_object_set(priv->command_shape_item, "data", path, NULL);
-		g_free(path);
-
-		/* If the size of the node has changed, we need to relayout the skein */
-		size_changed = TRUE;
-		priv->command_width = command_width;
-		priv->command_height = command_height;
-	}
+	if(command_width_changed || command_height_changed)
+		redraw_command(self, command_width, command_height);
 
 	/* Draw the label background */
 	if(i7_node_has_label(self)) {
-		if(size_changed
-			|| (label_width != 0.0 && priv->label_width != label_width)
-			|| (label_height != 0.0 && priv->label_height != label_height)) {
-			path = g_strdup_printf("M %.1f,%.1f "
-				"a %.1f,%.1f 0 0,0 -%.1f,-%.1f "
-				"h -%.1f "
-				"a %.1f,%.1f 0 0,0 -%.1f,%.1f "
-				"Z",
-				label_width / 2 + label_height, label_height / 2, label_height,
-				label_height, label_height, label_height, label_width, label_height,
-				label_height, label_height, label_height);
+		if(label_width_changed || label_height_changed)
+			redraw_label(self, label_width, label_height);
 
-			cairo_matrix_init_scale(&matrix, 0.5 / label_width, -1.0 / label_height);
-			cairo_pattern_set_matrix(priv->label_pattern, &matrix);
-
+		if(label_width_changed || label_height_changed || command_height_changed)
 			g_object_set(priv->label_shape_item,
-				"data", path,
-				"visibility", GOO_CANVAS_ITEM_VISIBLE,
 			    "x", -0.5 * label_width - label_height,
 			    "y", -command_height - 0.5 * label_height,
 				NULL);
-			g_free(path);
 
-			/* Again, if the label size has changed, we need to relayout the skein */
-			size_changed = TRUE;
-			priv->label_width = label_width;
-			priv->label_height = label_height;
-		}
+		if(command_height_changed)
+			g_object_set(priv->label_item, "x", 0.0, "y", -command_height, NULL);
 	} else {
 		g_object_set(priv->label_shape_item,
 			"data", "",
@@ -810,37 +860,19 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 
 	/* Show or hide the differs badge */
 	if(priv->changed && priv->expected_text && *priv->expected_text) {
-		if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
-			/* if the differs badge hasn't been drawn yet, draw it */
-			g_object_set(priv->badge_item, "data",
-			"M 1.0,0.0 0.691,0.112 0.949,0.317 0.62,0.325 0.799,0.601 "
-			"0.485,0.505 0.568,0.823 0.3,0.632 0.278,0.961 0.084,0.695 -0.04,0.999 "
-			"-0.14,0.686 -0.355,0.935 -0.35,0.606 -0.632,0.775 -0.524,0.464 "
-			"-0.845,0.534 -0.644,0.274 -0.971,0.239 -0.698,0.056 -0.997,-0.08 "
-			"-0.68,-0.168 -0.92,-0.392 -0.592,-0.374 -0.749,-0.663 -0.443,-0.542 "
-			"-0.5,-0.866 -0.248,-0.655 -0.2,-0.98 -0.028,-0.699 0.121,-0.993 "
-			"0.195,-0.672 0.429,-0.903 0.398,-0.576 0.693,-0.721 0.56,-0.421 "
-			"0.885,-0.465 0.664,-0.222 0.987,-0.16 0.7,-0.0 Z",
-			"visibility", GOO_CANVAS_ITEM_VISIBLE,
-			NULL);
-			/* That SVG code is generated with this Python code:
-			import numpy as N
-			angles = N.linspace(0, 2 * N.pi, 40)
-			radii = N.ones_like(angles)
-			radii[1::2] *= 0.7
-			xs = radii * N.cos(angles)
-			ys = radii * N.sin(angles)
-			print "M",
-			for x, y in zip(xs, ys):
-				print "{0:.3},{1:.3}".format(round(x, 3), round(y, 3)),
-			print "Z" */
-			g_object_set_data(G_OBJECT(priv->badge_item), "path-drawn", GINT_TO_POINTER(1));
-		} else
-			g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_VISIBLE, NULL);
+		draw_differs_badge(self);
+		
+		if(command_width_changed || command_height_changed)
+			g_object_set(priv->badge_item, 
+				"x", command_width / 2 + DIFFERS_BADGE_WIDTH,
+				"y", command_height / 2,
+				"width", DIFFERS_BADGE_WIDTH,
+				"height", DIFFERS_BADGE_WIDTH,
+				NULL);
 	} else
 		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
 
-	if(size_changed)
+	if(need_layout)
 		g_signal_emit_by_name(skein, "needs-layout");
 }
 
