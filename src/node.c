@@ -814,7 +814,6 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	double label_width = 0.0, label_height = 0.0;
 	gboolean command_width_changed, command_height_changed;
 	gboolean label_width_changed, label_height_changed;
-	gboolean need_layout;
 
 	/* Calculate the bounds of the command text and label text */
 	item = goo_canvas_get_item(canvas, priv->command_item);
@@ -833,10 +832,7 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	command_height_changed = command_height != 0.0 && priv->command_height != command_height;
 	label_width_changed = label_width != 0.0 && priv->label_width != label_width;
 	label_height_changed = label_height != 0.0 && priv->label_height != label_height;
-
-	need_layout = (command_width >= label_width && command_width_changed)
-		|| (label_width >= command_width && label_width_changed);
-
+	
 	if(command_width_changed || command_height_changed)
 		redraw_command(self, command_width, command_height);
 
@@ -873,9 +869,6 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 				NULL);
 	} else
 		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
-
-	if(need_layout)
-		g_signal_emit_by_name(skein, "needs-layout");
 }
 
 void
