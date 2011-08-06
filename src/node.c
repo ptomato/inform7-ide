@@ -25,7 +25,7 @@
 #include "node.h"
 #include "skein.h"
 
-#define DIFFERS_BADGE_WIDTH 8.0
+#define DIFFERS_BADGE_RADIUS 8.0
 
 enum {
 	PROP_0,
@@ -862,10 +862,10 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 		
 		if(command_width_changed || command_height_changed)
 			g_object_set(priv->badge_item, 
-				"x", command_width / 2 + DIFFERS_BADGE_WIDTH,
-				"y", command_height / 2,
-				"width", DIFFERS_BADGE_WIDTH,
-				"height", DIFFERS_BADGE_WIDTH,
+				"x", command_width / 2,
+				"y", command_height / 2 - DIFFERS_BADGE_RADIUS,
+				"width", DIFFERS_BADGE_RADIUS * 2,
+				"height", DIFFERS_BADGE_RADIUS * 2,
 				NULL);
 	} else
 		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
