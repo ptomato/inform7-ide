@@ -810,6 +810,10 @@ i7_story_init(I7Story *self)
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
 	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
 
+	/* Make the Skein dialogs transient */
+	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));
+	gtk_window_set_transient_for(GTK_WINDOW(self->skein_trim_dialog), GTK_WINDOW(self));
+	
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_storywindow_delete_event), NULL);
 }

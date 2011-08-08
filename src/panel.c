@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,6 +41,11 @@ gboolean on_documentation_scrollbar_policy_changed(WebKitWebFrame *frame);
 
 /* JAVASCRIPT METHODS */
 
+/* The 'selectView()' function in JavaScript. Emits the 'select-view' signal,
+which the Story is listening for, so that it can preferably open the requested
+view in the _other_ panel.
+The only argument understood is "source", but that's the only one Inform uses
+currently. */
 static JSValueRef
 js_select_view(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
@@ -62,6 +67,8 @@ js_select_view(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, s
 	return NULL;
 }
 
+/* Regex match callback; replaces a unicode escape with the requested unicode
+ * character. */
 static gboolean
 unescape_unicode(const GMatchInfo *match, GString *result, gpointer data)
 {
@@ -72,6 +79,8 @@ unescape_unicode(const GMatchInfo *match, GString *result, gpointer data)
 	return FALSE; /* keep going */
 }
 
+/* The 'pasteCode' function in JavaScript. Unescapes the code to paste, and
+ * emits the 'paste-code' signal, which the I7Story is listening for. */
 static JSValueRef
 js_paste_code(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
@@ -107,6 +116,8 @@ js_paste_code(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, si
 	return NULL;
 }
 
+/* The 'openFile()' function in JavaScript. This simply opens its argument using
+the system's default viewer. */
 static JSValueRef
 js_open_file(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
@@ -139,6 +150,8 @@ finally:
 	return NULL;
 }
 
+/* The 'openUrl()' function in JavaScript. This also opens its argument in the
+system's default viewer, but that viewer happens to be the web browser. */
 static JSValueRef
 js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
@@ -166,6 +179,7 @@ js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size
 
 /* ACTIONS */
 
+/* Go to the previously viewed pane in this panel */
 void
 action_back(GtkAction *back, I7Panel *panel)
 {
@@ -181,6 +195,8 @@ action_back(GtkAction *back, I7Panel *panel)
 		gtk_action_set_sensitive(back, FALSE);
 }
 
+/* Go forward to the next viewed pane in this panel (after having gone back
+ * before) */
 void
 action_forward(GtkAction *forward, I7Panel *panel)
 {
@@ -196,12 +212,14 @@ action_forward(GtkAction *forward, I7Panel *panel)
 		gtk_action_set_sensitive(forward, FALSE);
 }
 
+/* Pop up a menu of all the Skein labels, on the Labels button */
 void
 action_labels(GtkAction *action, I7Panel *panel)
 {
 	gtk_menu_popup(GTK_MENU(panel->labels_menu), NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
 }
 
+/* Open the Skein layout dialog */
 void
 action_layout(GtkAction *action, I7Panel *panel)
 {
@@ -211,10 +229,7 @@ action_layout(GtkAction *action, I7Panel *panel)
 	g_object_set_data(G_OBJECT(story->skein_spacing_dialog), "old-horizontal-spacing", GINT_TO_POINTER(config_file_get_int(PREFS_HORIZONTAL_SPACING)));
 	g_object_set_data(G_OBJECT(story->skein_spacing_dialog), "old-vertical-spacing", GINT_TO_POINTER(config_file_get_int(PREFS_VERTICAL_SPACING)));
 
-	gtk_widget_show(story->skein_spacing_dialog);
-	gtk_window_present(GTK_WINDOW(story->skein_spacing_dialog));
-
-	gint response = 1; /* 1 = "Use defaults" */
+	int response = 1; /* 1 = "Use defaults" */
 	while(response == 1)
 		response = gtk_dialog_run(GTK_DIALOG(story->skein_spacing_dialog));
 		/* If "Use defaults" clicked, then restart the dialog */
@@ -226,15 +241,14 @@ action_layout(GtkAction *action, I7Panel *panel)
 	}
 }
 
+/* Open the Skein trimming dialog */
 void
 action_trim(GtkAction *action, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	I7Skein *skein = i7_story_get_skein(story);
 
-	gtk_widget_show(story->skein_trim_dialog);
-	gtk_window_present(GTK_WINDOW(story->skein_trim_dialog));
-	gint response = gtk_dialog_run(GTK_DIALOG(story->skein_trim_dialog));
+	int response = gtk_dialog_run(GTK_DIALOG(story->skein_trim_dialog));
 	gtk_widget_hide(story->skein_trim_dialog);
 
 	if(response == GTK_RESPONSE_OK) {
