@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -51,18 +51,4 @@ load_object(GtkBuilder *builder, const gchar *name)
 	if(G_UNLIKELY((retval = gtk_builder_get_object(builder, name)) == NULL))
 		g_error(_("Error while getting object '%s' during interface building"), name);
 	return retval;
-}
-
-/* Add actions constructed by @builder to an empty action group also constructed
- by @builder. @group_name is the name of the action group, and @action_names is
- an array of strings: alternating action names and accelerators. @action_names
- must also be terminated by NULL. A pointer to the action group is placed into
- @group. */
-void
-add_actions(GtkBuilder *builder, GtkActionGroup **group, const gchar *group_name, const gchar **action_names)
-{
-	const gchar **ptr;
-	*group = GTK_ACTION_GROUP(load_object(builder, group_name));
-	for(ptr = action_names; *ptr; ptr += 2)
-		gtk_action_group_add_action_with_accel(*group, GTK_ACTION(load_object(builder, ptr[0])), ptr[1]);
 }
