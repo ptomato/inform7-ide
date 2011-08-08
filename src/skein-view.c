@@ -25,6 +25,11 @@ typedef struct _I7SkeinViewPrivate
 {
 	I7Skein *skein;
 	gulong layout_handler;
+
+	/* Drag-scroll information */
+	gboolean dragging;
+	double drag_anchor[2];
+	double drag_offset[2];
 } I7SkeinViewPrivate;
 
 #define I7_SKEIN_VIEW_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SKEIN_VIEW, I7SkeinViewPrivate))
@@ -59,14 +64,117 @@ on_item_created(I7SkeinView *view, GooCanvasItem *item, GooCanvasItemModel *mode
 	}
 }
 
+/* Changes the mouse cursor to a dragging hand (GDK_FLEUR) if @dragging is TRUE.
+Otherwise, changes it back to normal. */
+static void
+set_drag_cursor(I7SkeinView *self, gboolean dragging)
+{
+	GtkWidget *widget = gtk_widget_get_toplevel(GTK_WIDGET(self));
+
+	if(dragging) {
+		GdkDisplay *display = gtk_widget_get_display(widget);
+		GdkCursor *cursor = gdk_cursor_new_for_display(display, GDK_FLEUR);
+		gdk_window_set_cursor(gtk_widget_get_window(widget), cursor);
+		gdk_cursor_unref(cursor);
+		gdk_flush();
+	} else {
+		gdk_window_set_cursor(gtk_widget_get_window(widget), NULL);
+	}
+}
+
+/* Event handler for button press. If the middle button is pressed, turn on
+ * dragging mode, where we can pan the canvas by moving the mouse. */
+static gboolean
+on_button_press(I7SkeinView *self, GdkEventButton *event)
+{
+	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+
+	if(priv->dragging)
+		return FALSE;
+
+	if(event->button == 2) {
+		set_drag_cursor(self, TRUE);
+		priv->dragging = TRUE;
+		priv->drag_anchor[0] = event->x;
+		priv->drag_anchor[1] = event->y;
+
+		/* Work out the current scrolling offsets */
+		GtkWidget *scrolled_window = gtk_widget_get_parent(GTK_WIDGET(self));
+		g_assert(GTK_IS_SCROLLED_WINDOW(scrolled_window));
+		GtkAdjustment *adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+		priv->drag_offset[0] = gtk_adjustment_get_value(adj);
+		adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrolled_window));
+		priv->drag_offset[1] = gtk_adjustment_get_value(adj);
+		goo_canvas_convert_from_pixels(GOO_CANVAS(self), &(priv->drag_offset[0]), &(priv->drag_offset[1]));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+/* Scroll canvas to event coordinates (@x, @y) relative to where the dragging
+mode was turned on. */ 
+static void
+drag_to(I7SkeinView *self, double x, double y)
+{
+	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	double dx = priv->drag_anchor[0] - x;
+	double dy = priv->drag_anchor[1] - y;
+	
+	x = priv->drag_offset[0] + dx;
+	y = priv->drag_offset[1] + dy;
+	
+	goo_canvas_scroll_to(GOO_CANVAS(self), x, y);
+}
+
+/* Button release handler. If the middle button is released in dragging mode, 
+ turn off dragging mode and scroll the canvas to the new coordinates. */
+static gboolean
+on_button_release(I7SkeinView *self, GdkEventButton *event)
+{
+	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+
+	if(!priv->dragging)
+		return FALSE;
+
+	if(event->button == 2) {
+		drag_to(self, event->x, event->y);
+		priv->dragging = FALSE;
+		set_drag_cursor(self, FALSE);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+/* Mouse motion handler. In dragging mode, scroll the canvas to the new
+ * coordinates. */
+static gboolean
+on_motion(I7SkeinView *self, GdkEventMotion *event)
+{
+	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+
+	if(!priv->dragging)
+		return FALSE;
+	
+	drag_to(self, event->x, event->y);
+	gdk_event_request_motions(event); /* For smoother motion */	
+
+	return TRUE;
+}
+
 static void
 i7_skein_view_init(I7SkeinView *self)
 {
 	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
 	priv->skein = NULL;
 	priv->layout_handler = 0;
+	priv->dragging = FALSE;
 
 	g_signal_connect_after(self, "item-created", G_CALLBACK(on_item_created), &priv->skein);
+	g_signal_connect(self, "button-press-event", G_CALLBACK(on_button_press), NULL);
+	g_signal_connect(self, "button-release-event", G_CALLBACK(on_button_release), NULL);
+	g_signal_connect(self, "motion-notify-event", G_CALLBACK(on_motion), NULL);
 }
 
 static void
