@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,13 @@
 #include "node.h"
 #include "skein.h"
 
+/* Methods of I7Story having to do with the Game pane:
+ - callbacks for when the compiler tool chain is finished
+ - methods for communicating with the Chimara interpreter
+*/
+
+/* Compile finished action: whatever the final product of the compiling process
+ * was, tell Chimara to run it. */
 void
 i7_story_run_compiler_output(I7Story *story)
 {
@@ -71,7 +78,9 @@ i7_story_test_compiler_output(I7Story *story)
 	gtk_widget_grab_focus(GTK_WIDGET(glk));
 }
 
-/* Finish setting up the interpreter when forced input is done processing */
+/* Finish setting up the interpreter when forced input is done processing;
+ * this signal is set up in play_commands() because the interpreter processes
+ * the commands you feed it asynchronously. */
 static void
 on_waiting(ChimaraGlk *glk)
 {
@@ -89,7 +98,9 @@ on_waiting(ChimaraGlk *glk)
 	}
 }
 
-/* Force input (listed in @commands) to the interpreter. */
+/* Force input (listed in @commands) to the interpreter. If @start_interpreter
+ * is TRUE, run the compiler's finished product and reset the skein to the
+ * start knot. */
 static void
 play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 {
@@ -125,6 +136,8 @@ play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 	g_signal_connect(glk, "waiting", G_CALLBACK(on_waiting), NULL);
 }
 
+/* Compile finished action: run the compiler output and feed commands from the
+ * Skein leading up to the last play point. */
 void
 i7_story_run_compiler_output_and_replay(I7Story *story)
 {
@@ -137,6 +150,8 @@ i7_story_run_compiler_output_and_replay(I7Story *story)
 	g_slist_free(commands);
 }
 
+/* Compile finished action: run the compiler output and feed commands from the
+ * Skein leading up to a certain knot @node. */
 void
 i7_story_run_compiler_output_and_play_to_node(I7Story *story, I7Node *node)
 {
@@ -149,6 +164,8 @@ i7_story_run_compiler_output_and_play_to_node(I7Story *story, I7Node *node)
 	g_slist_free(commands);
 }
 
+/* Don't restart the game, but feed commands from the Skein leading from the
+ * currently played knot to another knot @node. */
 void
 i7_story_run_commands_from_node(I7Story *story, I7Node *node)
 {
@@ -164,11 +181,15 @@ i7_story_run_commands_from_node(I7Story *story, I7Node *node)
 	g_slist_free(commands);
 }
 
+/* Compile finished action: run every branch in the Skein, to make sure the
+ * transcripts still match. */
 void
 i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 {
+	/* TODO */
 }
 
+/* Helper function: stop the game in @panel if it is running */
 static void
 panel_stop_running_game(I7Story *story, I7Panel *panel)
 {
@@ -179,12 +200,14 @@ panel_stop_running_game(I7Story *story, I7Panel *panel)
 	}
 }
 
+/* Stop the currently running game in either panel */
 void
 i7_story_stop_running_game(I7Story *story)
 {
 	i7_story_foreach_panel(story, (I7PanelForeachFunc)panel_stop_running_game, NULL);
 }
 
+/* Returns whether a game is running in either panel */
 gboolean
 i7_story_get_game_running(I7Story *story)
 {
@@ -192,6 +215,8 @@ i7_story_get_game_running(I7Story *story)
 		|| chimara_glk_get_running(CHIMARA_GLK(story->panel[RIGHT]->tabs[I7_PANE_GAME]));
 }
 
+/* Helper function: set the Chimara interpreter in @panel to prefer Git for
+ * Glulx games */
 static void
 panel_set_use_git(I7Story *story, I7Panel *panel, gpointer data)
 {
@@ -200,13 +225,15 @@ panel_set_use_git(I7Story *story, I7Panel *panel, gpointer data)
 	chimara_if_set_preferred_interpreter(glk, CHIMARA_IF_FORMAT_GLULX, interpreter);
 }
 
+/* Set all Chimara interpreters to prefer Git for Glulx games */
 void
 i7_story_set_use_git(I7Story *story, gboolean use_git)
 {
 	i7_story_foreach_panel(story, (I7PanelForeachFunc)panel_set_use_git, GINT_TO_POINTER(use_git));
 }
 
-/* Blorb resource load callback */
+/* Blorb resource load callback: look up the file name for a resource in the
+ manifest.plist file, and search for it in the Materials folder. */
 gchar *
 load_blorb_resource(ChimaraResourceType usage, guint32 resnum, I7Story *story)
 {
