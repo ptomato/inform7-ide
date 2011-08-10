@@ -212,6 +212,7 @@ AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
 
 # Get current year for updating copyrights
 AC_SUBST(COPYRIGHT_YEAR, [`$DATE +%Y`])
+AC_DEFINE_UNQUOTED([COPYRIGHT_YEAR], ["$COPYRIGHT_YEAR"], [Year this program was built.])
 
 ### OUTPUT #####################################################################
 
@@ -230,7 +231,6 @@ src/ni/Makefile
 po/Makefile.in
 data/Makefile
 data/ui/Makefile
-data/ui/aboutwindow.ui
 data/licenses/Makefile
 data/licenses/license.html
 data/languages/Makefile

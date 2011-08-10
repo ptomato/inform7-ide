@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <webkit/webkit.h>
 #include <gtksourceview/gtksourceprintcompositor.h>
+#include <config.h>
 
 #include "app.h"
 #include "builder.h"
@@ -1196,13 +1197,53 @@ action_report_bug(GtkAction *action, I7App *app)
 void
 action_about(GtkAction *action, I7App *app)
 {
-	gchar *filename = i7_app_get_datafile_path(app, "ui/aboutwindow.ui");
-	GtkBuilder *builder = create_new_builder(filename, NULL);
-	g_free(filename);
-	GtkWindow *aboutwindow = GTK_WINDOW(load_object(builder, "aboutwindow"));
+	/* TRANSLATORS: %s is the copyright year. */
+	char *copyright = g_strdup_printf(_("Copyright 2006\xE2\x80\x93%s " /* UTF8 en-dash */
+		"P. F. Chimento (front end),\n"
+	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
+	char *authors[] = {
+		N_("Inform written by:"),
+		N_("    Graham Nelson"),
+		N_("Glulx compiler written by:"),
+		N_("    Graham Nelson and Andrew Plotkin"),
+		N_("Inform front-end written by:"),
+		N_("    P. F. Chimento"),
+		N_("Contributions by:"),
+		N_("    Adam Thornton"),
+		N_("    Daniel Nilsson"),
+		N_("    Evil Tabby Cat"),
+		N_("    Eric Forgeot"),
+		N_("    Jonathan Liu"),
+		N_("    Zachary Amsden"),
+		N_("    David Leverton"),
+		N_("Contributions to the compiler:"),
+		N_("    Emily Short"),
+		N_("    Gunther Schmidl"),
+		N_("    Andrew Plotkin"),
+		N_("    Jason Penney"),
+		N_("    Joe Mason"),
+		N_("    Cedric Knight"),
+		N_("    David Kinder"),
+		N_("    Roger Firth"),
+		N_("    Michael Coyne"),
+		N_("    David Cornelson"),
+		N_("    Neil Cerutti"),
+		N_("    Kevin Bracey"),
+		NULL
+	};
+
 	GtkWindow *parent = get_toplevel_for_action(action);
-	gtk_window_set_transient_for(aboutwindow, parent);
-	gtk_window_set_position(aboutwindow, GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_window_present(aboutwindow);
-	g_object_unref(builder);
+	gtk_show_about_dialog(parent,
+		"program-name", _("Inform"),
+		"copyright", copyright,
+		"comments", "Inform (1.2 6.32N/" PACKAGE_VERSION ")",
+		"website", "http://inform7.com",
+		"website-label", "inform7.com",
+		"license", _("See Help\xE2\x86\x92License for licensing information."), /* UTF8 right arrow */
+	    "authors", authors,
+		"translator-credits", _("\xC3\x81ngel Eduardo (Spanish)"), /* UTF8 capital A acute accent */
+		"logo-icon-name", "inform7",
+		"title", _("About Inform"),
+		NULL);
+	g_free(copyright);
 }
