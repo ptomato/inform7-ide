@@ -283,6 +283,9 @@ gnome_inform7_LDADD = \
 # product. This tells ld to link in all object files in libchimara.a.
 gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
 	-Wl,--whole-archive,libchimara.a,--no-whole-archive
+# The gnome-inform7 executable must also depend on libchimara.a; because of the
+# trickery above, Automake doesn't realize that.
+gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a
 
 #noinst_PROGRAMS = skeintest
 #skeintest_SOURCES = skeintest.c skein.c skein.h node.c node.h skein-view.c skein-view.h
