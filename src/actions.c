@@ -1202,33 +1202,33 @@ action_about(GtkAction *action, I7App *app)
 		"P. F. Chimento (front end),\n"
 	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
 	char *authors[] = {
-		N_("Inform written by:"),
-		N_("    Graham Nelson"),
-		N_("Glulx compiler written by:"),
-		N_("    Graham Nelson and Andrew Plotkin"),
-		N_("Inform front-end written by:"),
-		N_("    P. F. Chimento"),
-		N_("Contributions by:"),
-		N_("    Adam Thornton"),
-		N_("    Daniel Nilsson"),
-		N_("    Evil Tabby Cat"),
-		N_("    Eric Forgeot"),
-		N_("    Jonathan Liu"),
-		N_("    Zachary Amsden"),
-		N_("    David Leverton"),
-		N_("Contributions to the compiler:"),
-		N_("    Emily Short"),
-		N_("    Gunther Schmidl"),
-		N_("    Andrew Plotkin"),
-		N_("    Jason Penney"),
-		N_("    Joe Mason"),
-		N_("    Cedric Knight"),
-		N_("    David Kinder"),
-		N_("    Roger Firth"),
-		N_("    Michael Coyne"),
-		N_("    David Cornelson"),
-		N_("    Neil Cerutti"),
-		N_("    Kevin Bracey"),
+		N_("Inform written by:\n"
+		"    Graham Nelson\n"
+		"Glulx compiler written by:\n"
+		"    Graham Nelson and Andrew Plotkin\n"
+		"Inform front-end written by:\n"
+		"    P. F. Chimento\n"
+		"Contributions by:\n"
+		"    Adam Thornton\n"
+		"    Daniel Nilsson\n"
+		"    Evil Tabby Cat\n"
+		"    Eric Forgeot\n"
+		"    Jonathan Liu\n"
+		"    Zachary Amsden\n"
+		"    David Leverton\n"
+		"Contributions to the compiler:\n"
+		"    Emily Short\n"
+		"    Gunther Schmidl\n"
+		"    Andrew Plotkin\n"
+		"    Jason Penney\n"
+		"    Joe Mason\n"
+		"    Cedric Knight\n"
+		"    David Kinder\n"
+		"    Roger Firth\n"
+		"    Michael Coyne\n"
+		"    David Cornelson\n"
+		"    Neil Cerutti\n"
+		"    Kevin Bracey"),
 		NULL
 	};
 
