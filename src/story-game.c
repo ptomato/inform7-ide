@@ -194,10 +194,9 @@ static void
 panel_stop_running_game(I7Story *story, I7Panel *panel)
 {
 	ChimaraGlk *glk = CHIMARA_GLK(panel->tabs[I7_PANE_GAME]);
-	if(chimara_glk_get_running(glk)) {
-		chimara_glk_stop(glk);
-		chimara_glk_wait(glk); /* Seems to be necessary? */
-	}
+	chimara_glk_stop(glk);
+	chimara_glk_wait(glk); /* Seems to be necessary? */
+	chimara_glk_unload_plugin(glk);
 }
 
 /* Stop the currently running game in either panel */
