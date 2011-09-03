@@ -883,10 +883,9 @@ i7_story_class_init(I7StoryClass *klass)
 I7Story *
 i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author)
 {
-	/* Building all the WebkitWebViews can take more than a second */
+	/* Can take a while for old versions of WebKit */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
-	i7_app_set_busy(app, FALSE);
 
 	i7_document_set_path(I7_DOCUMENT(story), filename);
 
@@ -896,6 +895,8 @@ i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar 
 
 	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
+
+	i7_app_set_busy(app, FALSE);
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
@@ -915,19 +916,21 @@ i7_story_new_from_file(I7App *app, const gchar *filename)
 		return NULL;
 	}
 
-	/* Building all the WebkitWebViews can take more than a second */
+	/* Loading a large story file can take a while */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
-	i7_app_set_busy(app, FALSE);
 	if(!i7_story_open(story, fullpath)) {
 		g_free(fullpath);
 		g_object_unref(story);
+		i7_app_set_busy(app, FALSE);
 		return NULL;
 	}
 	g_free(fullpath);
 
 	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
+
+	i7_app_set_busy(app, FALSE);
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
