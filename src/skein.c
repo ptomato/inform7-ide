@@ -1093,6 +1093,43 @@ i7_skein_schedule_draw(I7Skein *self, GooCanvas *canvas)
 	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)idle_draw, draw_data, (GDestroyNotify)destroy_draw_data);
 }
 
+/* Remove all the rows from the tree model, in preparation for a complicated
+ * modification */
+static void
+remove_all_from_model(I7Skein *self)
+{
+	int nrows = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self), NULL);
+	int count;
+	for(count = nrows - 1; count >= 0; count--) {
+		GtkTreePath *path = gtk_tree_path_new_from_indices(count, -1);
+		gtk_tree_model_row_deleted(GTK_TREE_MODEL(self), path);
+		gtk_tree_path_free(path);
+	}
+}
+
+/* Put all the rows of the current thread back in the tree model, after
+ * finishing a complicated modification */
+static void
+reinstate_all_in_model(I7Skein *self)
+{
+	I7_SKEIN_USE_PRIVATE;
+	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
+	GNode *gnode = priv->root->gnode;
+	while(gnode) {
+		int depth = g_node_depth(gnode) - 1;
+		GtkTreePath *path = gtk_tree_path_new_from_indices(depth, -1);
+		GtkTreeIter iter = { priv->stamp, gnode->data };
+		gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
+		gtk_tree_path_free(path);
+
+		/* Advance to the next node in the thread */
+		for(gnode = gnode->children; gnode; gnode = gnode->next) {
+			if(i7_node_in_thread(gnode->data, last))
+				break;
+		}
+	}
+}
+
 /* Add a new node with the given command, under the played node. Unless there
  is already a node with that command. In either case, return a pointer to that
  node. */
@@ -1106,14 +1143,16 @@ i7_skein_new_command(I7Skein *self, const gchar *command)
 
 	I7Node *node = i7_node_find_child(priv->played, node_command);
 	if(node == NULL) {
-		/* Move the current node back to the root node */
-		if(i7_skein_is_node_in_current_thread(self, priv->played))
-		   i7_skein_set_current_node(self, priv->root);
-
 		/* Wasn't found, create new node */
 		node = i7_node_new(node_command, "", "", "", TRUE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 		node_listen(self, node);
+
+		gboolean remove = i7_skein_is_node_in_current_thread(self, priv->played);
+		if(remove)
+		   remove_all_from_model(self);
 		g_node_append(priv->played->gnode, node->gnode);
+		if(remove)
+			reinstate_all_in_model(self);
 		node_added = TRUE;
 	}
 	g_free(node_command);
@@ -1217,19 +1256,12 @@ i7_skein_get_command_from_history(I7Skein *self, gchar **command, int history)
 I7Node *
 i7_skein_add_new(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
-	
 	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, newnode);
-	g_node_append(node->gnode, newnode->gnode);
 
-	/* Notify Transcript if the new node is in the current thread */
-	if(i7_skein_is_node_in_current_thread(self, newnode)) {
-		GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(newnode->gnode) - 1, -1);
-		GtkTreeIter iter = { priv->stamp, newnode };
-		gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-		gtk_tree_path_free(path);
-	}
+	remove_all_from_model(self);
+	g_node_append(node->gnode, newnode->gnode);
+	reinstate_all_in_model(self);
 
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
@@ -1240,21 +1272,14 @@ i7_skein_add_new(I7Skein *self, I7Node *node)
 I7Node *
 i7_skein_add_new_parent(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
-	
 	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, newnode);
+
+	remove_all_from_model(self);
 	g_node_insert(node->gnode->parent, g_node_child_position(node->gnode->parent, node->gnode), newnode->gnode);
 	g_node_unlink(node->gnode);
 	g_node_append(newnode->gnode, node->gnode);
-
-	/* Notify Transcript if the new node is in the current thread */
-	if(i7_skein_is_node_in_current_thread(self, newnode)) {
-		GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(newnode->gnode) - 1, -1);
-		GtkTreeIter iter = { priv->stamp, newnode };
-		gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-		gtk_tree_path_free(path);
-	}
+	reinstate_all_in_model(self);
 
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
@@ -1262,6 +1287,7 @@ i7_skein_add_new_parent(I7Skein *self, I7Node *node)
 	return newnode;
 }
 
+/* Remove @node and all nodes below it */
 gboolean
 i7_skein_remove_all(I7Skein *self, I7Node *node)
 {
@@ -1274,46 +1300,11 @@ i7_skein_remove_all(I7Skein *self, I7Node *node)
 		i7_skein_set_played_node(self, priv->root);
 	if(i7_skein_is_node_in_current_thread(self, node))
 		i7_skein_set_current_node(self, priv->root);
-	/* Notify the Transcript that some rows will be erased if the node is still
-	 in the current thread */
-	if(i7_skein_is_node_in_current_thread(self, node)) {
-		I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-		GNode *gnode = last->gnode;
-		int depth = g_node_depth(gnode) - 1;
-
-		for( ; gnode != node->gnode; gnode = gnode->parent) {
-			GtkTreePath *path = gtk_tree_path_new_from_indices(depth--, -1);
-			gtk_tree_model_row_deleted(GTK_TREE_MODEL(self), path);
-			gtk_tree_path_free(path);
-		}
-		/* And the node itself */
-		GtkTreePath *path = gtk_tree_path_new_from_indices(depth, -1);
-		gtk_tree_model_row_deleted(GTK_TREE_MODEL(self), path);
-		gtk_tree_path_free(path);
-	}
-	I7Node *old_last = i7_skein_get_thread_bottom(self, priv->current);
 	
+	remove_all_from_model(self);
 	g_node_unlink(node->gnode);
 	g_node_traverse(node->gnode, G_POST_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)remove_node_from_canvas, self);
-
-	/* If the only sibling of a node is removed, then the current thread may
-	 extend down through the remaining sibling. Notify the transcript that
-	 some rows will be added. */
-	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-	if(old_last != last) {
-		GNode *gnode = old_last->gnode;
-		int depth = g_node_depth(gnode) - 1;
-		while(gnode != last->gnode) {
-			for(gnode = gnode->children; gnode; gnode = gnode->next) {
-				if(i7_node_in_thread(gnode->data, last))
-					break;
-			}
-			GtkTreePath *path = gtk_tree_path_new_from_indices(++depth, -1);
-			GtkTreeIter iter = { priv->stamp, gnode->data };
-			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-			gtk_tree_path_free(path);
-		}
-	}	
+	reinstate_all_in_model(self);
 	
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
@@ -1332,15 +1323,8 @@ i7_skein_remove_single(I7Skein *self, I7Node *node)
 		i7_skein_set_played_node(self, priv->root);
 	if(i7_skein_is_node_in_current_thread(self, node))
 		i7_skein_set_current_node(self, priv->root);
-	/* Notify the Transcript that a row will be erased if the node is still in
-	 the current thread */
-	if(i7_skein_is_node_in_current_thread(self, node)) {
-		GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(node->gnode) - 1, -1);
-		gtk_tree_model_row_deleted(GTK_TREE_MODEL(self), path);
-		gtk_tree_path_free(path);
-	}
-	I7Node *old_last = i7_skein_get_thread_bottom(self, priv->current);
 
+	remove_all_from_model(self);
 	if(!G_NODE_IS_LEAF(node->gnode)) {
 		int i;
 		for(i = g_node_n_children(node->gnode) - 1; i >= 0; i--) {
@@ -1351,25 +1335,7 @@ i7_skein_remove_single(I7Skein *self, I7Node *node)
 	}
 	g_node_unlink(node->gnode);
 	remove_node_from_canvas(node->gnode, self);
-
-	/* If the only sibling of a node is removed, then the current thread may
-	 extend down through the remaining sibling. Notify the transcript that
-	 some rows will be added. */
-	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-	if(old_last != last) {
-		GNode *gnode = old_last->gnode;
-		int depth = g_node_depth(gnode) - 1;
-		while(gnode != last->gnode) {
-			for(gnode = gnode->children; gnode; gnode = gnode->next) {
-				if(i7_node_in_thread(gnode->data, last))
-					break;
-			}
-			GtkTreePath *path = gtk_tree_path_new_from_indices(++depth, -1);
-			GtkTreeIter iter = { priv->stamp, gnode->data };
-			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-			gtk_tree_path_free(path);
-		}
-	}
+	reinstate_all_in_model(self);
 	
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
