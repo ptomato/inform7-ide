@@ -424,6 +424,14 @@ i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *v
 	}
 }
 
+/* Invalidate an iter on this model */
+static void
+invalidate_iter(GtkTreeIter *iter)
+{
+	iter->stamp = 0;
+	iter->user_data = NULL;
+}
+
 static gboolean
 i7_skein_iter_next(GtkTreeModel *model, GtkTreeIter *iter)
 {
@@ -435,8 +443,7 @@ i7_skein_iter_next(GtkTreeModel *model, GtkTreeIter *iter)
 	/* Don't go beyond the bottom of "current" node's thread (end of the list) */
 	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
 	if(iter->user_data == last) {
-		iter->stamp = 0; /* invalidate */
-		iter->user_data = NULL;
+		invalidate_iter(iter);
 		return FALSE;
 	}
 	
@@ -457,8 +464,7 @@ i7_skein_iter_children(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *pare
 {
 	/* This is a list, nodes have no children */
 	if(parent) {
-		iter->stamp = 0; /* invalidate */
-		iter->user_data = NULL;
+		invalidate_iter(iter);
 		return FALSE;
 	}
 
@@ -497,8 +503,7 @@ i7_skein_iter_nth_child(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *par
 {
 	/* This is a list, nodes have no children */
 	if(parent) {
-		iter->stamp = 0; /* invalidate */
-		iter->user_data = NULL;
+		invalidate_iter(iter);
 		return FALSE;
 	}
 
@@ -512,8 +517,7 @@ i7_skein_iter_nth_child(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *par
 	/* g_node_depth returns 0 for NULL and 1 for the root node */
 	
 	if(n > thread_depth) {
-		iter->stamp = 0; /* invalidate */
-		iter->user_data = NULL;
+		invalidate_iter(iter);
 		return FALSE;
 	}
 
@@ -542,8 +546,7 @@ static gboolean
 i7_skein_iter_parent(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *child)
 {
 	/* This is a list, nodes have no parents */
-	iter->stamp = 0;
-	iter->user_data = NULL;
+	invalidate_iter(iter);
 	return FALSE;
 }
 
