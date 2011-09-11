@@ -1106,18 +1106,15 @@ i7_skein_new_command(I7Skein *self, const gchar *command)
 
 	I7Node *node = i7_node_find_child(priv->played, node_command);
 	if(node == NULL) {
+		/* Move the current node back to the root node */
+		if(i7_skein_is_node_in_current_thread(self, priv->played))
+		   i7_skein_set_current_node(self, priv->root);
+
 		/* Wasn't found, create new node */
 		node = i7_node_new(node_command, "", "", "", TRUE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 		node_listen(self, node);
 		g_node_append(priv->played->gnode, node->gnode);
 		node_added = TRUE;
-
-		if(i7_skein_is_node_in_current_thread(self, node)) {
-			GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(node->gnode) - 1, -1);
-			GtkTreeIter iter = { priv->stamp, node };
-			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-			gtk_tree_path_free(path);
-		}
 	}
 	g_free(node_command);
 
