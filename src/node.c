@@ -158,12 +158,11 @@ i7_node_set_expected_text(I7Node *self, const gchar *text)
 		g_strfreev(lines);
 	}
 	priv->expected_text = g_strdelimit(priv->expected_text, "\r", '\n');
-
-	if(strlen(priv->expected_text) == 0)
-		priv->blessed = FALSE;
+	priv->blessed = !(strlen(priv->expected_text) == 0);
 
 	transcript_modified(self);
 
+	g_object_notify(G_OBJECT(self), "blessed");
 	g_object_notify(G_OBJECT(self), "expected-text");
 }
 

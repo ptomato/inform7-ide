@@ -333,6 +333,8 @@ i7_skein_get_column_type(GtkTreeModel *model, int ncol)
 		case I7_SKEIN_COLUMN_CURRENT:
 		case I7_SKEIN_COLUMN_PLAYED:
 			return G_TYPE_BOOLEAN;
+		case I7_SKEIN_COLUMN_NODE_PTR:
+			return I7_TYPE_NODE;
 		default:
 			g_assert_not_reached();
 	}
@@ -418,6 +420,10 @@ i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *v
 		case I7_SKEIN_COLUMN_PLAYED:
 			g_value_init(value, G_TYPE_BOOLEAN);
 			g_value_set_boolean(value, priv->played == iter->user_data);
+			break;
+		case I7_SKEIN_COLUMN_NODE_PTR:
+			g_value_init(value, I7_TYPE_NODE);
+			g_value_set_object(value, iter->user_data);
 			break;
 		default:
 			g_assert_not_reached();

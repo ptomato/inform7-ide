@@ -232,6 +232,7 @@ i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason w
 	switch(why) {
 		case I7_REASON_COMMAND:
 		case I7_REASON_USER_ACTION:
+		case I7_REASON_TRANSCRIPT:
 		{
 			I7Skein *skein = i7_skein_view_get_skein(self);
 			gdouble vspacing, x, y, width, height;
@@ -251,8 +252,6 @@ i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason w
 
 			goo_canvas_scroll_to(GOO_CANVAS(self), x - width * 0.5, y - height * 0.5);
 		}
-			break;
-		case I7_REASON_TRANSCRIPT:
 			break;
 		default:
 			g_assert_not_reached();
