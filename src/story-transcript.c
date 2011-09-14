@@ -28,3 +28,17 @@ on_transcript_size_allocate(GtkTreeView *view, GtkAllocation *allocation, I7Pane
 		gtk_tree_view_column_queue_resize(panel->transcript_column);
 	}
 }
+
+/* Pop up a context menu when right-clicking on the Transcript */
+gboolean
+on_transcript_button_press(GtkTreeView *view, GdkEventButton *event, I7Panel *panel)
+{
+	/* Only react to right-clicks */
+	if(event->type != GDK_BUTTON_PRESS)
+		return FALSE; /* didn't handle event */
+	if(event->button != 3)
+		return FALSE; /* propagate event */
+
+	gtk_menu_popup(GTK_MENU(panel->transcript_menu), NULL, NULL, NULL, NULL, 3, event->time);
+	return TRUE; /* handled event */
+}

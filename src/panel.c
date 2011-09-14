@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -376,6 +376,8 @@ i7_panel_init(I7Panel *self)
 	LOAD_WIDGET(nobble_rng);
 	LOAD_WIDGET(debugging_scrolledwindow);
 	LOAD_WIDGET(inform6_scrolledwindow);
+	LOAD_WIDGET(transcript_menu);
+	g_object_ref(self->transcript_menu);
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
@@ -453,6 +455,7 @@ i7_panel_finalize(GObject *self)
 	history_free_queue(I7_PANEL(self));
 	JSClassRelease(priv->js_class);
 	g_object_unref(priv->ui_manager);
+	g_object_unref(I7_PANEL(self)->transcript_menu);
 
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }
