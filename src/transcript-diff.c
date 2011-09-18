@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <glib.h>
 
 /* Prerequisites for including Gnulib's diffseq algorithm */
@@ -40,6 +41,8 @@
 			(ctxt)->actual_diffs = g_list_prepend((ctxt)->actual_diffs, GSIZE_TO_POINTER((yoff))); \
 		} \
 	} G_STMT_END
+#define USE_HEURISTIC
+#define lint /* To suppress GCC warnings */
 
 #include "diffseq.h"
 
@@ -85,6 +88,7 @@ word_diff(const char *expected, const char *actual, GList **expected_diffs, GLis
 	ctxt.bdiag = work_buffer + expected_limit + actual_limit + 3;
 	ctxt.expected_diffs = *expected_diffs;
 	ctxt.actual_diffs = *actual_diffs;
+	ctxt.heuristic = TRUE;
 	compareseq(0, expected_limit, 0, actual_limit, FALSE, &ctxt);
 
 	g_strfreev(expected_words);
