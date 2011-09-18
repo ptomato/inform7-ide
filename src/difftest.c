@@ -21,10 +21,10 @@ print_diffs(const char *expected, const char *actual)
 		return;
 	}
 	g_print("Not exactly alike!\n");
-	buf = pango_markup_string(expected, expected_diffs);
+	buf = make_pango_markup_string(expected, expected_diffs);
 	g_print(" Expected: '%s'\n", buf);
 	g_free(buf);
-	buf = pango_markup_string(actual, actual_diffs);
+	buf = make_pango_markup_string(actual, actual_diffs);
 	g_print(" Actual: '%s'\n", buf);
 	g_free(buf);
 }

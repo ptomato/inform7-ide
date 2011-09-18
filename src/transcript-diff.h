@@ -17,4 +17,4 @@
 #include <glib.h>
 
 gboolean word_diff(const char *expected, const char *actual, GList **expected_diffs, GList **actual_diffs);
-char *pango_markup_string(const char *string, GList *diffs);
+char *make_pango_markup_string(const char *string, GList *diffs);

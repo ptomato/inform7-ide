@@ -98,7 +98,7 @@ word_diff(const char *expected, const char *actual, GList **expected_diffs, GLis
 }
 
 char *
-pango_markup_string(const char *string, GList *diffs)
+make_pango_markup_string(const char *string, GList *diffs)
 {
 	if(diffs == NULL)
 		return g_strdup(string);
