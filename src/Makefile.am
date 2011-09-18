@@ -292,6 +292,11 @@ gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
 #skeintest_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
 #skeintest_LDADD = @INFORM7_LIBS@
 
+#noinst_PROGRAMS = difftest
+#difftest_SOURCES = difftest.c transcript-diff.c transcript-diff.h diffseq.h
+#difftest_CFLAGS = @INFORM7_CFLAGS@ $(AM_FLAGS)
+#difftest_LDADD = @INFORM7_LIBS@
+
 GITIGNOREFILES = $(noinst_LIBRARIES)
 
 -include $(top_srcdir)/git.mk
