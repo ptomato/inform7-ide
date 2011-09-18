@@ -24,6 +24,7 @@
 
 #include "node.h"
 #include "skein.h"
+#include "transcript-diff.h"
 
 #define DIFFERS_BADGE_RADIUS 8.0
 
@@ -49,6 +50,12 @@ enum {
 };
 #define SELECT_PATTERN(played,blessed) (((played? 1:0) << 1) | (blessed? 1:0))
 
+typedef enum {
+	I7_NODE_NO_MATCH,
+	I7_NODE_NEAR_MATCH,
+	I7_NODE_EXACT_MATCH
+} I7NodeMatchType;
+
 typedef struct _I7NodePrivate {
 	gchar *id;
 	gchar *command;
@@ -60,6 +67,13 @@ typedef struct _I7NodePrivate {
 	gboolean played;
 	gboolean locked;
 	gint score;
+
+	/* Diffs */
+	I7NodeMatchType match;
+	GList *transcript_diffs;
+	GList *expected_diffs;
+	char *transcript_pango_string;
+	char *expected_pango_string;
 
 	/* Graphical goodness */
 	cairo_pattern_t *label_pattern;
@@ -97,6 +111,48 @@ update_node_background(I7Node *self)
 }
 
 static void
+clear_diffs(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+	
+	g_free(priv->transcript_pango_string);
+	g_free(priv->expected_pango_string);
+	g_list_free(priv->transcript_diffs);
+	g_list_free(priv->expected_diffs);
+	
+	priv->match = I7_NODE_NO_MATCH;
+	priv->transcript_diffs = NULL;
+	priv->transcript_pango_string = NULL;
+	priv->expected_diffs = NULL;
+	priv->expected_pango_string = NULL;
+}
+
+static void
+calculate_diffs(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+	
+	clear_diffs(self);
+
+	if(!word_diff(priv->expected_text, priv->transcript_text, &priv->expected_diffs, &priv->transcript_diffs))
+	{
+		if(priv->expected_diffs && priv->transcript_diffs)
+			priv->match = I7_NODE_NO_MATCH;
+		else
+			priv->match = I7_NODE_NEAR_MATCH;
+	} else
+		priv->match = I7_NODE_EXACT_MATCH;
+
+	if(priv->match == I7_NODE_NO_MATCH) {
+		priv->transcript_pango_string = make_pango_markup_string(priv->transcript_text, priv->transcript_diffs);
+		priv->expected_pango_string = make_pango_markup_string(priv->expected_text, priv->expected_diffs);
+	} else {
+		priv->transcript_pango_string = g_strdup(priv->transcript_text);
+		priv->expected_pango_string = g_strdup(priv->expected_text);
+	}
+}
+
+static void
 transcript_modified(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
@@ -107,10 +163,9 @@ transcript_modified(I7Node *self)
 	if(priv->changed != old_changed_status)
 		g_object_notify(G_OBJECT(self), "changed");
 
-	/* TODO clear diffs */
-
+	clear_diffs(self);
 	if(priv->changed && priv->expected_text && strlen(priv->expected_text))
-		/* TODO new diffs */;
+		calculate_diffs(self);
 
 	update_node_background(self);
 }
@@ -190,7 +245,11 @@ i7_node_init(I7Node *self)
 	self->tree_item = NULL;
 	self->tree_points = goo_canvas_points_new(4);
 
-	/* TODO diffs */
+	priv->match = I7_NODE_NO_MATCH;
+	priv->transcript_diffs = NULL;
+	priv->transcript_pango_string = NULL;
+	priv->expected_diffs = NULL;
+	priv->expected_pango_string = NULL;
 
 	/* Create the cairo gradients */
 	/* Label */
@@ -326,8 +385,12 @@ i7_node_finalize(GObject *self)
 	g_free(priv->label);
 	g_free(priv->transcript_text);
 	g_free(priv->expected_text);
+	g_free(priv->transcript_pango_string);
+	g_free(priv->expected_pango_string);
 	g_free(priv->id);
 	goo_canvas_points_unref(I7_NODE(self)->tree_points);
+	g_list_free(priv->transcript_diffs);
+	g_list_free(priv->expected_diffs);
 
 	/* recurse */
 	g_node_children_foreach(I7_NODE(self)->gnode, G_TRAVERSE_ALL, (GNodeForeachFunc)unref_node, NULL);
@@ -491,6 +554,28 @@ i7_node_get_expected_text(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
 	return g_strdup(priv->expected_text);
+}
+
+const char *
+i7_node_get_transcript_pango_string(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->transcript_pango_string)
+		calculate_diffs(self);
+	
+	return priv->transcript_pango_string;
+}
+
+const char *
+i7_node_get_expected_pango_string(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->expected_pango_string)
+		calculate_diffs(self);
+	
+	return priv->expected_pango_string;
 }
 
 gboolean

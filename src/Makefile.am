@@ -242,6 +242,7 @@ gnome_inform7_SOURCES = \
 	builder.c builder.h \
 	colorscheme.c colorscheme.h \
 	configfile.c configfile.h \
+	diffseq.h \
 	document.c document.h document-private.h \
 	document-search.c \
 	elastic.c elastic.h \
@@ -265,6 +266,7 @@ gnome_inform7_SOURCES = \
 	story.c story.h story-private.h \
 	story-source.c story-errors.c story-index.c story-settings.c \
 	story-compile.c story-game.c story-skein.c story-transcript.c \
+	transcript-diff.c transcript-diff.h \
 	transcript-renderer.c transcript-renderer.h \
 	welcomedialog.c welcomedialog.h \
 	main.c
