@@ -96,12 +96,54 @@ G_DEFINE_TYPE(I7Node, i7_node, GOO_TYPE_CANVAS_GROUP_MODEL);
 /* STATIC FUNCTIONS */
 
 static void
+draw_differs_badge(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+	if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
+		/* if the differs badge hasn't been drawn yet, draw it */
+		g_object_set(priv->badge_item, "data",
+		"M 1.0,0.0 0.691,0.112 0.949,0.317 0.62,0.325 0.799,0.601 "
+		"0.485,0.505 0.568,0.823 0.3,0.632 0.278,0.961 0.084,0.695 -0.04,0.999 "
+		"-0.14,0.686 -0.355,0.935 -0.35,0.606 -0.632,0.775 -0.524,0.464 "
+		"-0.845,0.534 -0.644,0.274 -0.971,0.239 -0.698,0.056 -0.997,-0.08 "
+		"-0.68,-0.168 -0.92,-0.392 -0.592,-0.374 -0.749,-0.663 -0.443,-0.542 "
+		"-0.5,-0.866 -0.248,-0.655 -0.2,-0.98 -0.028,-0.699 0.121,-0.993 "
+		"0.195,-0.672 0.429,-0.903 0.398,-0.576 0.693,-0.721 0.56,-0.421 "
+		"0.885,-0.465 0.664,-0.222 0.987,-0.16 0.7,-0.0 Z",
+		"visibility", GOO_CANVAS_ITEM_VISIBLE,
+		NULL);
+		/* That SVG code is generated with this Python code:
+		import numpy as N
+		angles = N.linspace(0, 2 * N.pi, 40)
+		radii = N.ones_like(angles)
+		radii[1::2] *= 0.7
+		xs = radii * N.cos(angles)
+		ys = radii * N.sin(angles)
+		print "M",
+		for x, y in zip(xs, ys):
+			print "{0:.3},{1:.3}".format(round(x, 3), round(y, 3)),
+		print "Z" */
+		g_object_set_data(G_OBJECT(priv->badge_item), "path-drawn", GINT_TO_POINTER(1));
+		/* Have to resize the badge after drawing it */
+		g_object_set(priv->badge_item,
+		    "width", DIFFERS_BADGE_RADIUS * 2,
+			"height", DIFFERS_BADGE_RADIUS * 2,
+			NULL);
+	}
+	g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_VISIBLE, NULL);
+}
+
+static void
 update_node_background(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
 	g_object_set(priv->command_shape_item,
 		"fill-pattern", priv->node_pattern[SELECT_PATTERN(priv->played, priv->blessed)],
 		NULL);
+	if(priv->changed)
+		draw_differs_badge(self);
+	else
+		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
 }
 
 static void
@@ -152,10 +194,14 @@ transcript_modified(I7Node *self)
 	I7_NODE_USE_PRIVATE;
 
 	gboolean old_changed_status = priv->changed;
-	priv->changed = (strcmp(priv->transcript_text? priv->transcript_text : "",
-							priv->expected_text? priv->expected_text : "") != 0);
-	if(priv->changed != old_changed_status)
+	if(!priv->expected_text || *priv->expected_text == '\0')
+		priv->changed = FALSE;
+	else
+		priv->changed = (strcmp(priv->transcript_text? priv->transcript_text : "",
+								priv->expected_text) != 0);
+	if(priv->changed != old_changed_status) {
 		g_object_notify(G_OBJECT(self), "changed");
+	}
 
 	clear_diffs(self);
 	if(priv->changed && priv->expected_text && strlen(priv->expected_text))
@@ -859,40 +905,6 @@ redraw_label(I7Node *self, double width, double height)
 	priv->label_height = height;
 }
 
-static void
-draw_differs_badge(I7Node *self)
-{
-	I7_NODE_USE_PRIVATE;
-	
-	if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
-		/* if the differs badge hasn't been drawn yet, draw it */
-		g_object_set(priv->badge_item, "data",
-		"M 1.0,0.0 0.691,0.112 0.949,0.317 0.62,0.325 0.799,0.601 "
-		"0.485,0.505 0.568,0.823 0.3,0.632 0.278,0.961 0.084,0.695 -0.04,0.999 "
-		"-0.14,0.686 -0.355,0.935 -0.35,0.606 -0.632,0.775 -0.524,0.464 "
-		"-0.845,0.534 -0.644,0.274 -0.971,0.239 -0.698,0.056 -0.997,-0.08 "
-		"-0.68,-0.168 -0.92,-0.392 -0.592,-0.374 -0.749,-0.663 -0.443,-0.542 "
-		"-0.5,-0.866 -0.248,-0.655 -0.2,-0.98 -0.028,-0.699 0.121,-0.993 "
-		"0.195,-0.672 0.429,-0.903 0.398,-0.576 0.693,-0.721 0.56,-0.421 "
-		"0.885,-0.465 0.664,-0.222 0.987,-0.16 0.7,-0.0 Z",
-		"visibility", GOO_CANVAS_ITEM_VISIBLE,
-		NULL);
-		/* That SVG code is generated with this Python code:
-		import numpy as N
-		angles = N.linspace(0, 2 * N.pi, 40)
-		radii = N.ones_like(angles)
-		radii[1::2] *= 0.7
-		xs = radii * N.cos(angles)
-		ys = radii * N.sin(angles)
-		print "M",
-		for x, y in zip(xs, ys):
-			print "{0:.3},{1:.3}".format(round(x, 3), round(y, 3)),
-		print "Z" */
-		g_object_set_data(G_OBJECT(priv->badge_item), "path-drawn", GINT_TO_POINTER(1));
-	} else
-		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_VISIBLE, NULL);
-}
-
 void
 i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas)
 {
@@ -946,19 +958,13 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 			NULL);
 	}
 
-	/* Show or hide the differs badge */
-	if(priv->changed && priv->expected_text && *priv->expected_text) {
-		draw_differs_badge(self);
-		
-		if(command_width_changed || command_height_changed)
-			g_object_set(priv->badge_item, 
-				"x", command_width / 2,
-				"y", command_height / 2 - DIFFERS_BADGE_RADIUS,
-				"width", DIFFERS_BADGE_RADIUS * 2,
-				"height", DIFFERS_BADGE_RADIUS * 2,
-				NULL);
-	} else
-		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
+	/* Move the differs badge */
+	g_object_set(priv->badge_item, 
+		"x", command_width / 2,
+		"y", command_height / 2 - DIFFERS_BADGE_RADIUS,
+		"width", DIFFERS_BADGE_RADIUS * 2,
+		"height", DIFFERS_BADGE_RADIUS * 2,
+		NULL);
 }
 
 void

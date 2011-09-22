@@ -130,6 +130,7 @@ node_listen(I7Skein *self, I7Node *node)
 	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_other_notify), self);
 	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_transcript_notify), self);
 	g_signal_connect(node, "notify::locked", G_CALLBACK(on_node_layout_notify), self);
+	g_signal_connect(node, "notify::changed", G_CALLBACK(on_node_layout_notify), self);
 }
 
 /* TYPE SYSTEM */
