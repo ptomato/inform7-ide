@@ -361,8 +361,9 @@ i7_panel_init(I7Panel *self)
 	gtk_tree_view_column_pack_start(self->transcript_column, self->transcript_cell, TRUE);
 	gtk_tree_view_column_set_attributes(self->transcript_column, self->transcript_cell,
 	    "command", I7_SKEIN_COLUMN_COMMAND,
-	    "transcript_text", I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
-	    "expected_text", I7_SKEIN_COLUMN_EXPECTED_TEXT,
+	    "transcript-text", I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
+	    "expected-text", I7_SKEIN_COLUMN_EXPECTED_TEXT,
+	    "match-type", I7_SKEIN_COLUMN_MATCH_TYPE,
 	    "current", I7_SKEIN_COLUMN_CURRENT,
 	    "played", I7_SKEIN_COLUMN_PLAYED,
 	    NULL);

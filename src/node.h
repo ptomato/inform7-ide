@@ -50,6 +50,12 @@ typedef enum {
 	I7_NODE_PART_DIFFERS_BADGE
 } I7NodePart;
 
+typedef enum {
+	I7_NODE_NO_MATCH,
+	I7_NODE_NEAR_MATCH,
+	I7_NODE_EXACT_MATCH
+} I7NodeMatchType;
+
 GType i7_node_get_type(void) G_GNUC_CONST;
 I7Node *i7_node_new(const gchar *line, const gchar *label, const gchar *transcript,
 	const gchar *expected, gboolean played, gboolean locked, int score,
@@ -66,6 +72,7 @@ void i7_node_set_transcript_text(I7Node *self, const gchar *transcript);
 gchar *i7_node_get_expected_text(I7Node *self);
 const char *i7_node_get_transcript_pango_string(I7Node *self);
 const char *i7_node_get_expected_pango_string(I7Node *self);
+I7NodeMatchType i7_node_get_match_type(I7Node *self);
 gboolean i7_node_get_changed(I7Node *self);
 gboolean i7_node_get_locked(I7Node *self);
 void i7_node_set_locked(I7Node *self, gboolean locked);

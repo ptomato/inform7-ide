@@ -117,12 +117,16 @@ make_pango_markup_string(const char *string, GList *diffs)
 		while(isspace(*string))
 			g_string_append_c(result, *string++);
 
+		char *escaped_word = g_markup_escape_text(*word, -1);
+
 		if(diffs && count == (ssize_t)(GPOINTER_TO_SIZE(diffs->data))) {
 			diffs = g_list_next(diffs);
-			g_string_append_printf(result, "<u>%s</u>", *word);
+			g_string_append_printf(result, "<u>%s</u>", escaped_word);
 		} else {
-			g_string_append(result, *word);
+			g_string_append(result, escaped_word);
 		}
+
+		g_free(escaped_word);
 
 		string += strlen(*word);
 	}

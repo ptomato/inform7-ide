@@ -50,12 +50,6 @@ enum {
 };
 #define SELECT_PATTERN(played,blessed) (((played? 1:0) << 1) | (blessed? 1:0))
 
-typedef enum {
-	I7_NODE_NO_MATCH,
-	I7_NODE_NEAR_MATCH,
-	I7_NODE_EXACT_MATCH
-} I7NodeMatchType;
-
 typedef struct _I7NodePrivate {
 	gchar *id;
 	gchar *command;
@@ -147,8 +141,8 @@ calculate_diffs(I7Node *self)
 		priv->transcript_pango_string = make_pango_markup_string(priv->transcript_text, priv->transcript_diffs);
 		priv->expected_pango_string = make_pango_markup_string(priv->expected_text, priv->expected_diffs);
 	} else {
-		priv->transcript_pango_string = g_strdup(priv->transcript_text);
-		priv->expected_pango_string = g_strdup(priv->expected_text);
+		priv->transcript_pango_string = g_markup_escape_text(priv->transcript_text, -1);
+		priv->expected_pango_string = g_markup_escape_text(priv->expected_text, -1);
 	}
 }
 
@@ -576,6 +570,17 @@ i7_node_get_expected_pango_string(I7Node *self)
 		calculate_diffs(self);
 	
 	return priv->expected_pango_string;
+}
+
+I7NodeMatchType
+i7_node_get_match_type(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->expected_pango_string || !priv->transcript_pango_string)
+		calculate_diffs(self);
+
+	return priv->match;
 }
 
 gboolean

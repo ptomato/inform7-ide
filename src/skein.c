@@ -330,6 +330,8 @@ i7_skein_get_column_type(GtkTreeModel *model, int ncol)
 		case I7_SKEIN_COLUMN_TRANSCRIPT_TEXT:
 		case I7_SKEIN_COLUMN_EXPECTED_TEXT:
 			return G_TYPE_STRING;
+		case I7_SKEIN_COLUMN_MATCH_TYPE:
+			return G_TYPE_UINT;
 		case I7_SKEIN_COLUMN_CURRENT:
 		case I7_SKEIN_COLUMN_PLAYED:
 			return G_TYPE_BOOLEAN;
@@ -407,11 +409,15 @@ i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *v
 			break;
 		case I7_SKEIN_COLUMN_TRANSCRIPT_TEXT:
 			g_value_init(value, G_TYPE_STRING);
-			g_value_take_string(value, i7_node_get_transcript_text(iter->user_data));
+			g_value_set_string(value, i7_node_get_transcript_pango_string(iter->user_data));
 			break;
 		case I7_SKEIN_COLUMN_EXPECTED_TEXT:
 			g_value_init(value, G_TYPE_STRING);
-			g_value_take_string(value, i7_node_get_expected_text(iter->user_data));
+			g_value_set_string(value, i7_node_get_expected_pango_string(iter->user_data));
+			break;
+		case I7_SKEIN_COLUMN_MATCH_TYPE:
+			g_value_init(value, G_TYPE_UINT);
+			g_value_set_uint(value, i7_node_get_match_type(iter->user_data));
 			break;
 		case I7_SKEIN_COLUMN_CURRENT:
 			g_value_init(value, G_TYPE_BOOLEAN);

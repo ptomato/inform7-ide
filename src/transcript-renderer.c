@@ -72,6 +72,9 @@ struct _I7CellRendererTranscriptPrivate
 	char *command;
 	char *transcript_text;
 	char *expected_text;
+	/* Match type of the transcript and expected text;
+	 * 0 = no match, 1 = near match, 2 = exact match */
+	unsigned match_type;
 	/* Which borders to render */
 	gboolean current;
 	gboolean played;
@@ -87,6 +90,7 @@ enum  {
 	PROP_COMMAND,
 	PROP_TRANSCRIPT_TEXT,
 	PROP_EXPECTED_TEXT,
+	PROP_MATCH_TYPE,
 	PROP_CURRENT,
 	PROP_PLAYED
 };
@@ -105,6 +109,7 @@ i7_cell_renderer_transcript_init(I7CellRendererTranscript *self)
 	priv->command = NULL;
 	priv->transcript_text = NULL;
 	priv->expected_text = NULL;
+	priv->match_type = 2;
 	priv->current = FALSE;
 	priv->played = FALSE;
 }
@@ -136,6 +141,10 @@ i7_cell_renderer_transcript_set_property(GObject *self, unsigned prop_id, const 
 			g_free(priv->expected_text);
 			priv->expected_text = g_strdup(g_value_get_string(value));
 			g_object_notify(self, "expected-text");
+			break;
+		case PROP_MATCH_TYPE:
+			priv->match_type = g_value_get_uint(value);
+			g_object_notify(self, "match-type");
 			break;
 		case PROP_CURRENT:
 			priv->current = g_value_get_boolean(value);
@@ -169,6 +178,9 @@ i7_cell_renderer_transcript_get_property(GObject *self, guint prop_id, GValue *v
 			break;
 		case PROP_EXPECTED_TEXT:
 			g_value_set_string(value, priv->expected_text);
+			break;
+		case PROP_MATCH_TYPE:
+			g_value_set_uint(value, priv->match_type);
 			break;
 		case PROP_CURRENT:
 			g_value_set_boolean(value, priv->current);
@@ -317,7 +329,8 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	    (double)(width / 2), 
 	    (double)(height - command_rect.height - priv->text_padding * 2));
 	cairo_fill(cr);
-	layout = gtk_widget_create_pango_layout(widget, priv->transcript_text);
+	layout = gtk_widget_create_pango_layout(widget, NULL);
+	pango_layout_set_markup(layout, priv->transcript_text, -1);
 	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL, 
@@ -327,10 +340,12 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	g_object_unref(layout);
 	
 	/* Draw the expected text */
-	if(priv->expected_text == NULL)
+	if(priv->expected_text == NULL || *priv->expected_text == '\0')
 		set_rgb_style(cr, STYLE_NO_EXPECTED);
-	else if(strcmp(priv->transcript_text, priv->expected_text) != 0)
+	else if(priv->match_type == 0)
 		set_rgb_style(cr, STYLE_NO_MATCH);
+	else if(priv->match_type == 1)
+		set_rgb_style(cr, STYLE_NEAR_MATCH);
 	else
 		set_rgb_style(cr, STYLE_EXACT_MATCH);
 
@@ -340,7 +355,8 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	    (double)(width / 2), 
 	    (double)(height - command_rect.height - priv->text_padding * 2));
 	cairo_fill(cr);
-	layout = gtk_widget_create_pango_layout(widget, priv->expected_text);
+	layout = gtk_widget_create_pango_layout(widget, NULL);
+	pango_layout_set_markup(layout, priv->expected_text, -1);
 	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL,
@@ -411,6 +427,10 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 		g_param_spec_string("expected-text", _("Expected text"), 
 			_("Expected text from the Skein"), 
 			NULL, G_PARAM_READWRITE | flags));
+	g_object_class_install_property(object_class, PROP_MATCH_TYPE,
+	    g_param_spec_uint("match-type", _("Match type"),
+		    _("0 = no match, 1 = near match, 2 = exact match"),
+		    0, 2, 2, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_CURRENT,
 	    g_param_spec_boolean("current", _("Current"),
 		    _("Whether to render the node as the currently highlighted node"),
