@@ -1511,6 +1511,14 @@ i7_skein_has_labels(I7Skein *self)
 	return has_labels(priv->root);
 }
 
+/*
+ * i7_skein_bless:
+ * @self: the skein
+ * @node: the node to bless
+ * @all: whether to bless all of @node's ancestors too
+ *
+ * Blesses @node, and optionally all of its ancestors. (Modifies the skein.)
+ */
 void
 i7_skein_bless(I7Skein *self, I7Node *node, gboolean all)
 {

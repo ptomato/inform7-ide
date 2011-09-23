@@ -259,6 +259,53 @@ action_contents(GtkAction *action, I7Panel *panel)
 	g_free(docs);
 }
 
+/*
+ * action_bless_all:
+ * @action: not used
+ * @panel: the panel that this action was triggered on
+ * 
+ * Signal handler for the action connected to the "Bless All" button in the
+ * panel toolbar when the Transcript panel is displayed. Blesses all the nodes
+ * currently shown in the transcript. (From the skein's "current node" up to
+ * the root node.)
+ */
+void
+action_bless_all(GtkAction *action, I7Panel *panel)
+{
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	I7Skein *skein = i7_story_get_skein(story);
+
+	/* Display a confirmation dialog (as this can't be undone. Well, not easily) */
+	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story),
+	    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+	    GTK_MESSAGE_QUESTION,
+	    GTK_BUTTONS_YES_NO,
+	    _("Are you sure you want to bless all the items in the transcript?"));
+	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+	    _("This will 'Bless' all the items currently in the transcript so that "
+		"they appear as the 'expected' text in the right-hand column. This "
+		"operation cannot be undone."));
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+		i7_skein_bless(skein, i7_skein_get_current_node(skein), TRUE);
+	}
+	gtk_widget_destroy(dialog);
+}
+
+void
+action_panel_previous_difference(GtkAction *action, I7Panel *panel)
+{
+}
+
+void
+action_panel_next_difference(GtkAction *action, I7Panel *panel)
+{
+}
+
+void
+action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
+{
+}
+
 /* TYPE SYSTEM */
 
 enum _I7PanelSignalType {
