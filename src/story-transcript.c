@@ -140,21 +140,18 @@ i7_story_previous_difference(I7Story *story)
 	GtkTreeIter iter;
 
 	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
-		/* Can do nothing if there's no selected item */
-		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		/* Start at the top if no selected item */
+		i7_story_next_difference(story);
 		return;
 	}
 
 	/* Find the previous item */
 	gboolean found = FALSE;
-	while(_gtk_tree_model_iter_previous(skein, &iter)) {
+	while(!found && _gtk_tree_model_iter_previous(skein, &iter)) {
 		I7Node *node = NULL;
 		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
-		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node)) {
+		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node))
 			found = TRUE;
-			g_object_unref(node);
-			break;
-		}
 		g_object_unref(node);
 	}
 	
@@ -178,7 +175,8 @@ i7_story_previous_difference(I7Story *story)
  * 
  * Moves the current selection in the Transcript panel to the next blessed node
  * that is different from its expected text. If the Transcript panel is not
- * currently displayed, displays it.
+ * currently displayed, displays it. If there is no current selection, starts at
+ * the first node.
  */
 void
 i7_story_next_difference(I7Story *story)
@@ -187,23 +185,22 @@ i7_story_next_difference(I7Story *story)
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(transcript);
 	GtkTreeModel *skein;
 	GtkTreeIter iter;
+	gboolean found = FALSE;
 
 	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
-		/* Can do nothing if there's no selected item */
-		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
-		return;
+		/* Start at the top if no selected item */
+		g_assert(gtk_tree_model_get_iter_first(skein, &iter));
+
+		/* If the top node is a difference, just use it */
+		found = TRUE;
 	}
 
 	/* Find the next item */
-	gboolean found = FALSE;
-	while(gtk_tree_model_iter_next(skein, &iter)) {
+	while(!found && gtk_tree_model_iter_next(skein, &iter)) {
 		I7Node *node = NULL;
 		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
-		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node)) {
+		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node))
 			found = TRUE;
-			g_object_unref(node);
-			break;
-		}
 		g_object_unref(node);
 	}
 	
