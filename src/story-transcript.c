@@ -19,6 +19,7 @@
 #include "node.h"
 #include "panel.h"
 #include "skein.h"
+#include "story.h"
 
 void
 on_transcript_size_allocate(GtkTreeView *view, GtkAllocation *allocation, I7Panel *panel)
@@ -58,7 +59,8 @@ get_selected_node(I7Panel *panel)
 	GtkTreeIter iter;
 	I7Node *node;
 
-	gtk_tree_selection_get_selected(selection, &skein, &iter);
+	if(!gtk_tree_selection_get_selected(selection, &skein, &iter))
+		return NULL;
 	gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
 
 	return node;
@@ -92,4 +94,134 @@ on_transcript_menu_show_knot(GtkMenuItem *item, I7Panel *panel)
 
 	g_signal_emit_by_name(skein, "show-node", I7_REASON_TRANSCRIPT, node);
 	g_object_unref(node);
+}
+
+/*
+ * display_and_return_transcript:
+ * @story: the story
+ * 
+ * Internal function. Picks a panel to show the Transcript pane in, & shows it.
+ * Returns: a pointer to the Transcript tree view.
+ */
+static GtkTreeView *
+display_and_return_transcript(I7Story *story)
+{
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_TRANSCRIPT);
+	I7Panel *panel = story->panel[side];
+	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
+	return GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]);
+}
+
+/* Hard to believe this function was only added in GTK 3.0 FIXME */
+static gboolean
+_gtk_tree_model_iter_previous(GtkTreeModel *model, GtkTreeIter *iter)
+{
+	GtkTreePath *path = gtk_tree_model_get_path(model, iter);
+	gboolean retval = gtk_tree_path_prev(path);
+	g_assert(gtk_tree_model_get_iter(model, iter, path));
+	gtk_tree_path_free(path);
+	return retval;
+}
+
+/*
+ * i7_story_previous_difference:
+ * @story: the story
+ * 
+ * Moves the current selection in the Transcript panel to the previous blessed
+ * node that is different from its expected text. If the Transcript panel is not
+ * currently displayed, displays it.
+ */
+void
+i7_story_previous_difference(I7Story *story)
+{
+	GtkTreeView *transcript = display_and_return_transcript(story);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(transcript);
+	GtkTreeModel *skein;
+	GtkTreeIter iter;
+
+	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
+		/* Can do nothing if there's no selected item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+
+	/* Find the previous item */
+	gboolean found = FALSE;
+	while(_gtk_tree_model_iter_previous(skein, &iter)) {
+		I7Node *node = NULL;
+		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
+		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node)) {
+			found = TRUE;
+			g_object_unref(node);
+			break;
+		}
+		g_object_unref(node);
+	}
+	
+	if(!found) {
+		/* No previous item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+	
+	/* Move to the previous item */
+	gtk_tree_selection_select_iter(selection, &iter);
+	GtkTreePath *path = gtk_tree_model_get_path(skein, &iter);
+	gtk_tree_view_scroll_to_cell(transcript, path, NULL, FALSE, 0.0, 0.0);
+
+	gtk_tree_path_free(path);
+}
+
+/*
+ * i7_story_next_difference:
+ * @story: the story
+ * 
+ * Moves the current selection in the Transcript panel to the next blessed node
+ * that is different from its expected text. If the Transcript panel is not
+ * currently displayed, displays it.
+ */
+void
+i7_story_next_difference(I7Story *story)
+{
+	GtkTreeView *transcript = display_and_return_transcript(story);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(transcript);
+	GtkTreeModel *skein;
+	GtkTreeIter iter;
+
+	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
+		/* Can do nothing if there's no selected item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+
+	/* Find the next item */
+	gboolean found = FALSE;
+	while(gtk_tree_model_iter_next(skein, &iter)) {
+		I7Node *node = NULL;
+		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
+		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node)) {
+			found = TRUE;
+			g_object_unref(node);
+			break;
+		}
+		g_object_unref(node);
+	}
+	
+	if(!found) {
+		/* No next item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+	
+	/* Move to the next item */
+	gtk_tree_selection_select_iter(selection, &iter);
+	GtkTreePath *path = gtk_tree_model_get_path(skein, &iter);
+	gtk_tree_view_scroll_to_cell(transcript, path, NULL, FALSE, 0.0, 0.0);
+
+	gtk_tree_path_free(path);
+}
+
+void
+i7_story_next_difference_skein(I7Story *story)
+{
 }

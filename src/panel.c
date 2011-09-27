@@ -291,19 +291,49 @@ action_bless_all(GtkAction *action, I7Panel *panel)
 	gtk_widget_destroy(dialog);
 }
 
+/*
+ * action_panel_previous_difference:
+ * @action: not used
+ * @panel: panel this action was triggered on
+ *
+ * Signal handler for the action connected to the "Previous Difference" button
+ * in the panel toolbar when the Transcript panel is displayed.
+ */
 void
 action_panel_previous_difference(GtkAction *action, I7Panel *panel)
 {
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_previous_difference(story);
 }
 
+/*
+ * action_panel_next_difference:
+ * @action: not used
+ * @panel: panel this action was triggered on
+ *
+ * Signal handler for the action connected to the "Next Difference" button in
+ * the panel toolbar when the Transcript panel is displayed.
+ */
 void
 action_panel_next_difference(GtkAction *action, I7Panel *panel)
 {
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_next_difference(story);
 }
 
+/*
+ * action_panel_next_difference_skein:
+ * @action: not used
+ * @panel: panel this action was triggered on
+ *
+ * Signal handler for the action connected to the "Next Difference in Skein"
+ * button in the panel toolbar when the Transcript panel is displayed.
+ */
 void
 action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
 {
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_next_difference_skein(story);
 }
 
 /* TYPE SYSTEM */

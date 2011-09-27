@@ -1034,21 +1034,21 @@ action_next_changed_command(GtkAction *action, I7Story *story)
 void
 action_previous_difference(GtkAction *action, I7Story *story)
 {
-
+	i7_story_previous_difference(story);
 }
 
 /* Replay->Find Next Difference */
 void
 action_next_difference(GtkAction *action, I7Story *story)
 {
-
+	i7_story_next_difference(story);
 }
 
 /* Replay->Show Next Difference in Skein */
 void
 action_next_difference_skein(GtkAction *action, I7Story *story)
 {
-
+	i7_story_next_difference_skein(story);
 }
 
 /* Release->Release... (which was a 1978 song by Yes) */
