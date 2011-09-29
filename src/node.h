@@ -87,6 +87,8 @@ void i7_node_set_score(I7Node *self, gint score);
 gboolean i7_node_in_thread(I7Node *self, I7Node *endnode);
 gboolean i7_node_is_root(I7Node *self);
 I7Node *i7_node_find_child(I7Node *self, const gchar *command);
+I7Node *i7_node_get_next_difference_below(I7Node *node);
+I7Node *i7_node_get_next_difference(I7Node *node);
 
 /* Serialization */
 const gchar *i7_node_get_unique_id(I7Node *self);

@@ -221,4 +221,50 @@ i7_story_next_difference(I7Story *story)
 void
 i7_story_next_difference_skein(I7Story *story)
 {
+	GtkTreeView *transcript = display_and_return_transcript(story);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(transcript);
+	GtkTreeModel *skein;
+	GtkTreeIter iter;
+	I7Node *current_node;
+
+	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
+		/* Start at the top if no selected item */
+		g_assert(gtk_tree_model_get_iter_first(skein, &iter));
+	}
+
+	gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &current_node, -1);
+
+	/* Find the next item */
+	I7Node *next_node = i7_node_get_next_difference(current_node);
+	if(!next_node)
+		next_node = i7_node_get_next_difference(i7_skein_get_root_node(I7_SKEIN(skein)));
+	if(!next_node) {
+		/* No next item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+	g_object_unref(current_node);
+
+	/* display transcript to item, invalidates iter */
+	i7_skein_set_current_node(I7_SKEIN(skein), next_node);
+
+	/* scroll to transcript item */
+	gboolean found = FALSE;
+	g_assert(gtk_tree_model_get_iter_first(skein, &iter));
+	do {
+		I7Node *node = NULL;
+		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
+		if(node == next_node)
+			found = TRUE;
+		g_object_unref(node);
+	} while(!found && gtk_tree_model_iter_next(skein, &iter));
+	GtkTreePath *path = gtk_tree_model_get_path(skein, &iter);
+	gtk_tree_view_scroll_to_cell(transcript, path, NULL, FALSE, 0.0, 0.0);
+
+	/* select transcript item */
+	gtk_tree_selection_select_path(selection, path);
+	gtk_tree_path_free(path);
+
+	/* scroll to skein knot */
+	g_signal_emit_by_name(skein, "show-node", I7_REASON_TRANSCRIPT, next_node);
 }

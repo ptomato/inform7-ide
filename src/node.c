@@ -757,6 +757,97 @@ i7_node_find_child(I7Node *self, const gchar *command)
 	return node;
 }
 
+/*
+ * i7_node_get_next_difference_below:
+ * @node: reference node to get next difference from
+ *
+ * Finds the next difference below @node in the skein.
+ * Returns: pointer to next different node.
+ */
+I7Node *
+i7_node_get_next_difference_below(I7Node *node) {
+	GNode *child = node->gnode->children;
+
+	if(!child)
+		return NULL;
+
+	do {
+		I7Node *child_node = I7_NODE(child->data);
+		if(i7_node_get_blessed(child_node)) {
+			I7NodeMatchType compare = i7_node_get_match_type(child_node);
+			if(compare == I7_NODE_NO_MATCH || compare == I7_NODE_NEAR_MATCH)
+				return child_node;
+		}
+
+		I7Node *child_diff = i7_node_get_next_difference_below(child_node);
+		if(child_diff)
+			return child_diff;
+	} while((child = child->next));
+
+	return NULL;
+}
+
+/*
+ * i7_node_get_next_difference:
+ * @node: reference node to get next difference from
+ *
+ * Finds the next difference (either below @node, or to the right in the skein).
+ * Returns: pointer to next different node.
+ */
+I7Node *
+i7_node_get_next_difference(I7Node *node)
+{
+	I7Node *diff_below;
+	if((diff_below = i7_node_get_next_difference_below(node)) != NULL)
+		return diff_below;
+
+	/* Iterate up from this point */
+	GNode *top, *our_branch;
+	top = node->gnode;
+
+	while(top) {
+		our_branch = top;
+		top = top->parent;
+
+		while(top && g_node_n_children(top) <= 1) {
+			our_branch = top;
+			top = top->parent;
+		}
+
+		if(!top)
+			return NULL;
+
+		/* Find the item to the right */
+		gboolean found_branch = FALSE;
+		GNode *child = top->children;
+		do {
+			if(child == our_branch) {
+				found_branch = TRUE;
+				break;
+			}
+		} while((child = child->next));
+
+		if(!found_branch)
+			return FALSE;
+
+		/* See if we can find any differences there */
+		while((child = child->next)) {
+			I7Node *child_node = I7_NODE(child->data);
+			if(i7_node_get_blessed(child_node)) {
+				I7NodeMatchType compare = i7_node_get_match_type(child_node);
+				if(compare == I7_NODE_NO_MATCH || compare == I7_NODE_NEAR_MATCH)
+					return child_node;
+			}
+
+			I7Node *child_diff = i7_node_get_next_difference_below(child_node);
+			if(child_diff)
+				return child_diff;
+		}
+	}
+
+	return NULL;
+}
+
 static void
 write_child_pointer(GNode *gnode, GString *string)
 {
