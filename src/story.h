@@ -147,5 +147,6 @@ I7Skein *i7_story_get_skein(I7Story *story);
 void i7_story_previous_difference(I7Story *story);
 void i7_story_next_difference(I7Story *story);
 void i7_story_next_difference_skein(I7Story *story);
+void i7_story_show_node_in_transcript(I7Story *story, I7Node *node);
 
 #endif

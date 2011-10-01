@@ -1004,7 +1004,9 @@ action_play_all_blessed(GtkAction *action, I7Story *story)
 void
 action_show_last_command(GtkAction *action, I7Story *story)
 {
-
+	I7Skein *skein = i7_story_get_skein(story);
+	i7_story_show_node_in_transcript(story, i7_skein_get_played_node(skein));
+	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
 }
 
 /* Replay->Show Last Command in Skein */
