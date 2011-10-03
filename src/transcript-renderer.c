@@ -39,6 +39,13 @@ typedef enum  {
 	STYLE_LAST
 } I7TranscriptStyle;
 
+typedef enum {
+	CANT_COMPARE = -1,
+	NO_MATCH,
+	NEAR_MATCH,
+	EXACT_MATCH
+} I7TranscriptMatchType; /* copy of I7NodeMatchType */
+
 typedef struct {
 	double r;
 	double g;
@@ -72,12 +79,12 @@ struct _I7CellRendererTranscriptPrivate
 	char *command;
 	char *transcript_text;
 	char *expected_text;
-	/* Match type of the transcript and expected text;
-	 * 0 = no match, 1 = near match, 2 = exact match */
-	unsigned match_type;
+	/* Match type of the transcript and expected text (I7NodeMatchType); */
+	int match_type;
 	/* Which borders to render */
 	gboolean current;
 	gboolean played;
+	gboolean changed;
 };
 
 #define I7_CELL_RENDERER_TRANSCRIPT_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_CELL_RENDERER_TRANSCRIPT, I7CellRendererTranscriptPrivate))
@@ -92,7 +99,8 @@ enum  {
 	PROP_EXPECTED_TEXT,
 	PROP_MATCH_TYPE,
 	PROP_CURRENT,
-	PROP_PLAYED
+	PROP_PLAYED,
+	PROP_CHANGED
 };
 
 G_DEFINE_TYPE(I7CellRendererTranscript, i7_cell_renderer_transcript, GTK_TYPE_CELL_RENDERER);
@@ -109,9 +117,10 @@ i7_cell_renderer_transcript_init(I7CellRendererTranscript *self)
 	priv->command = NULL;
 	priv->transcript_text = NULL;
 	priv->expected_text = NULL;
-	priv->match_type = 2;
+	priv->match_type = CANT_COMPARE;
 	priv->current = FALSE;
 	priv->played = FALSE;
+	priv->changed = FALSE;
 }
 
 static void 
@@ -143,7 +152,7 @@ i7_cell_renderer_transcript_set_property(GObject *self, unsigned prop_id, const 
 			g_object_notify(self, "expected-text");
 			break;
 		case PROP_MATCH_TYPE:
-			priv->match_type = g_value_get_uint(value);
+			priv->match_type = g_value_get_int(value);
 			g_object_notify(self, "match-type");
 			break;
 		case PROP_CURRENT:
@@ -153,6 +162,10 @@ i7_cell_renderer_transcript_set_property(GObject *self, unsigned prop_id, const 
 		case PROP_PLAYED:
 			priv->played = g_value_get_boolean(value);
 			g_object_notify(self, "played");
+			break;
+		case PROP_CHANGED:
+			priv->changed = g_value_get_boolean(value);
+			g_object_notify(self, "changed");
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -180,13 +193,16 @@ i7_cell_renderer_transcript_get_property(GObject *self, guint prop_id, GValue *v
 			g_value_set_string(value, priv->expected_text);
 			break;
 		case PROP_MATCH_TYPE:
-			g_value_set_uint(value, priv->match_type);
+			g_value_set_int(value, priv->match_type);
 			break;
 		case PROP_CURRENT:
 			g_value_set_boolean(value, priv->current);
 			break;
 		case PROP_PLAYED:
 			g_value_set_boolean(value, priv->played);
+			break;
+		case PROP_CHANGED:
+			g_value_set_boolean(value, priv->changed);
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -318,7 +334,7 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 
 	/* Draw the transcript text */
 	transcript_width = priv->default_width / 2 - xpad;
-	if(priv->expected_text && strcmp(priv->transcript_text, priv->expected_text) != 0)
+	if(priv->changed)
 		set_rgb_style(cr, STYLE_CHANGED);
 	else
 		set_rgb_style(cr, STYLE_UNCHANGED);
@@ -340,14 +356,21 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	g_object_unref(layout);
 	
 	/* Draw the expected text */
-	if(priv->expected_text == NULL || *priv->expected_text == '\0')
-		set_rgb_style(cr, STYLE_NO_EXPECTED);
-	else if(priv->match_type == 0)
-		set_rgb_style(cr, STYLE_NO_MATCH);
-	else if(priv->match_type == 1)
-		set_rgb_style(cr, STYLE_NEAR_MATCH);
-	else
-		set_rgb_style(cr, STYLE_EXACT_MATCH);
+	switch(priv->match_type) {
+		case CANT_COMPARE:
+			set_rgb_style(cr, STYLE_NO_EXPECTED);
+			break;
+		case NO_MATCH:
+			set_rgb_style(cr, STYLE_NO_MATCH);
+			break;
+		case NEAR_MATCH:
+			set_rgb_style(cr, STYLE_NEAR_MATCH);
+			break;
+		case EXACT_MATCH:
+		default:
+			set_rgb_style(cr, STYLE_EXACT_MATCH);
+			break;
+	}
 
 	cairo_rectangle(cr, 
 	    (double)(x + width / 2), 
@@ -428,9 +451,9 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 			_("Expected text from the Skein"), 
 			NULL, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_MATCH_TYPE,
-	    g_param_spec_uint("match-type", _("Match type"),
-		    _("0 = no match, 1 = near match, 2 = exact match"),
-		    0, 2, 2, G_PARAM_READWRITE | flags));
+	    g_param_spec_int("match-type", _("Match type"),
+		    _("-1 = no comparison, 0 = no match, 1 = near match, 2 = exact match"),
+		    -1, 2, -1, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_CURRENT,
 	    g_param_spec_boolean("current", _("Current"),
 		    _("Whether to render the node as the currently highlighted node"),
@@ -438,6 +461,10 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 	g_object_class_install_property(object_class, PROP_PLAYED,
 	    g_param_spec_boolean("played", _("Played"),
 		    _("Whether to render the node as the latest played node"),
+		    FALSE, G_PARAM_READWRITE | flags));
+	g_object_class_install_property(object_class, PROP_CHANGED,
+	    g_param_spec_boolean("changed", _("Changed"),
+		    _("Whether to render the node as having been changed since it was last played"),
 		    FALSE, G_PARAM_READWRITE | flags));
 	
 	/* Add private data */

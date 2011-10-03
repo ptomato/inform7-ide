@@ -332,9 +332,10 @@ i7_skein_get_column_type(GtkTreeModel *model, int ncol)
 		case I7_SKEIN_COLUMN_EXPECTED_TEXT:
 			return G_TYPE_STRING;
 		case I7_SKEIN_COLUMN_MATCH_TYPE:
-			return G_TYPE_UINT;
+			return G_TYPE_INT;
 		case I7_SKEIN_COLUMN_CURRENT:
 		case I7_SKEIN_COLUMN_PLAYED:
+		case I7_SKEIN_COLUMN_CHANGED:
 			return G_TYPE_BOOLEAN;
 		case I7_SKEIN_COLUMN_NODE_PTR:
 			return I7_TYPE_NODE;
@@ -417,8 +418,8 @@ i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *v
 			g_value_set_string(value, i7_node_get_expected_pango_string(iter->user_data));
 			break;
 		case I7_SKEIN_COLUMN_MATCH_TYPE:
-			g_value_init(value, G_TYPE_UINT);
-			g_value_set_uint(value, i7_node_get_match_type(iter->user_data));
+			g_value_init(value, G_TYPE_INT);
+			g_value_set_int(value, i7_node_get_match_type(iter->user_data));
 			break;
 		case I7_SKEIN_COLUMN_CURRENT:
 			g_value_init(value, G_TYPE_BOOLEAN);
@@ -427,6 +428,10 @@ i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *v
 		case I7_SKEIN_COLUMN_PLAYED:
 			g_value_init(value, G_TYPE_BOOLEAN);
 			g_value_set_boolean(value, priv->played == iter->user_data);
+			break;
+		case I7_SKEIN_COLUMN_CHANGED:
+			g_value_init(value, G_TYPE_BOOLEAN);
+			g_value_set_boolean(value, i7_node_get_changed(iter->user_data));
 			break;
 		case I7_SKEIN_COLUMN_NODE_PTR:
 			g_value_init(value, I7_TYPE_NODE);

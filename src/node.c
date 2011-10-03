@@ -38,7 +38,8 @@ enum {
 	PROP_BLESSED,
 	PROP_LOCKED,
 	PROP_PLAYED,
-	PROP_SCORE
+	PROP_SCORE,
+	PROP_MATCH
 };
 
 enum {
@@ -51,16 +52,16 @@ enum {
 #define SELECT_PATTERN(played,blessed) (((played? 1:0) << 1) | (blessed? 1:0))
 
 typedef struct _I7NodePrivate {
-	gchar *id;
-	gchar *command;
-	gchar *label;
-	gchar *transcript_text;
-	gchar *expected_text;
-	gboolean changed;
-	gboolean blessed;
-	gboolean played;
-	gboolean locked;
-	gint score;
+	gchar *id; /* Unique ID string for use in saving */
+	gchar *command; /* Game command that this knot represents */
+	gchar *label; /* Author's annotation that appears above this knot */
+	gchar *transcript_text; /* Response produced by the game to this command */
+	gchar *expected_text; /* Response the author thinks should be produced */
+	gboolean changed; /* Whether the response changed since last time this knot was played */
+	gboolean blessed; /* Whether this knot has an expected response */
+	gboolean played; /* Whether this knot is currently in the thread being played */
+	gboolean locked; /* Whether this knot is protected from automatic trimming */
+	gint score; /* The inverse likelihood of this knot being trimmed */
 
 	/* Diffs */
 	I7NodeMatchType match;
@@ -140,7 +141,7 @@ update_node_background(I7Node *self)
 	g_object_set(priv->command_shape_item,
 		"fill-pattern", priv->node_pattern[SELECT_PATTERN(priv->played, priv->blessed)],
 		NULL);
-	if(priv->changed)
+	if(i7_node_get_different(self))
 		draw_differs_badge(self);
 	else
 		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
@@ -156,7 +157,7 @@ clear_diffs(I7Node *self)
 	g_list_free(priv->transcript_diffs);
 	g_list_free(priv->expected_diffs);
 	
-	priv->match = I7_NODE_NO_MATCH;
+	priv->match = I7_NODE_CANT_COMPARE;
 	priv->transcript_diffs = NULL;
 	priv->transcript_pango_string = NULL;
 	priv->expected_diffs = NULL;
@@ -167,11 +168,14 @@ static void
 calculate_diffs(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
+
+	I7NodeMatchType old_match_status = priv->match;
 	
 	clear_diffs(self);
 
-	if(!word_diff(priv->expected_text, priv->transcript_text, &priv->expected_diffs, &priv->transcript_diffs))
-	{
+	if(!i7_node_get_blessed(self))
+		priv->match = I7_NODE_CANT_COMPARE;
+	else if(!word_diff(priv->expected_text, priv->transcript_text, &priv->expected_diffs, &priv->transcript_diffs)) {
 		if(priv->expected_diffs && priv->transcript_diffs)
 			priv->match = I7_NODE_NO_MATCH;
 		else
@@ -183,30 +187,18 @@ calculate_diffs(I7Node *self)
 		priv->transcript_pango_string = make_pango_markup_string(priv->transcript_text, priv->transcript_diffs);
 		priv->expected_pango_string = make_pango_markup_string(priv->expected_text, priv->expected_diffs);
 	} else {
-		priv->transcript_pango_string = g_markup_escape_text(priv->transcript_text, -1);
-		priv->expected_pango_string = g_markup_escape_text(priv->expected_text, -1);
+		priv->transcript_pango_string = g_markup_escape_text(priv->transcript_text? priv->transcript_text : "", -1);
+		priv->expected_pango_string = g_markup_escape_text(priv->expected_text? priv->expected_text : "", -1);
 	}
+
+	if(old_match_status != priv->match)
+		g_object_notify(G_OBJECT(self), "match");
 }
 
 static void
 transcript_modified(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
-
-	gboolean old_changed_status = priv->changed;
-	if(!priv->expected_text || *priv->expected_text == '\0')
-		priv->changed = FALSE;
-	else
-		priv->changed = (strcmp(priv->transcript_text? priv->transcript_text : "",
-								priv->expected_text) != 0);
-	if(priv->changed != old_changed_status) {
-		g_object_notify(G_OBJECT(self), "changed");
-	}
-
-	clear_diffs(self);
-	if(priv->changed && priv->expected_text && strlen(priv->expected_text))
-		calculate_diffs(self);
-
+	calculate_diffs(self);
 	update_node_background(self);
 }
 
@@ -261,6 +253,26 @@ i7_node_set_expected_text(I7Node *self, const gchar *text)
 	g_object_notify(G_OBJECT(self), "expected-text");
 }
 
+/*
+ * i7_node_set_changed:
+ * @self: the knot
+ * @changed: the new changed status
+ *
+ * Private setter. The "changed" status should only be set when the transcript
+ * text is set.
+ */
+static void
+i7_node_set_changed(I7Node *self, gboolean changed)
+{
+	I7_NODE_USE_PRIVATE;
+
+	gboolean old_changed_status = priv->changed;
+	priv->changed = changed;
+
+	if(old_changed_status != changed)
+		g_object_notify(G_OBJECT(self), "changed");
+}
+
 /* GENERAL STATIC FUNCTIONS */
 
 static cairo_pattern_t *
@@ -285,7 +297,8 @@ i7_node_init(I7Node *self)
 	self->tree_item = NULL;
 	self->tree_points = goo_canvas_points_new(4);
 
-	priv->match = I7_NODE_NO_MATCH;
+	priv->blessed = FALSE;
+	priv->match = I7_NODE_CANT_COMPARE;
 	priv->transcript_diffs = NULL;
 	priv->transcript_pango_string = NULL;
 	priv->expected_diffs = NULL;
@@ -400,6 +413,9 @@ i7_node_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *ps
 		case PROP_SCORE:
 			g_value_set_int(value, priv->score);
 			break;
+		case PROP_MATCH:
+			g_value_set_int(value, i7_node_get_match_type(I7_NODE(self)));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
 	}
@@ -468,7 +484,7 @@ i7_node_class_init(I7NodeClass *klass)
 			"", flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_CHANGED,
 		g_param_spec_boolean("changed", _("Changed"),
-			_("Whether the transcript text and expected text differ in this node"),
+			_("Whether the transcript text has changed since the last time this node was played"),
 			FALSE, flags | G_PARAM_READABLE));
 	g_object_class_install_property(object_class, PROP_BLESSED,
 		g_param_spec_boolean("blessed", _("Blessed"),
@@ -486,6 +502,10 @@ i7_node_class_init(I7NodeClass *klass)
 		g_param_spec_int("score", _("Score"),
 			_("This node's score, used for cleaning up the skein"),
 			G_MININT16, G_MAXINT16, 0, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property(object_class, PROP_MATCH,
+	    g_param_spec_int("match", _("Match type"),
+		    _("How this node's transcript and expected text differ"),
+		    -1, 2, -1, flags | G_PARAM_READABLE));
 
 	/* Private data */
 	g_type_class_add_private(klass, sizeof(I7NodePrivate));
@@ -572,6 +592,9 @@ void
 i7_node_set_transcript_text(I7Node *self, const gchar *transcript)
 {
 	I7_NODE_USE_PRIVATE;
+
+	char *old_transcript_text = g_strdup(priv->transcript_text? priv->transcript_text : "");
+
 	g_free(priv->transcript_text);
 	priv->transcript_text = g_strdup(transcript? transcript : ""); /* silently accept NULL */
 
@@ -583,6 +606,12 @@ i7_node_set_transcript_text(I7Node *self, const gchar *transcript)
 		g_strfreev(lines);
 	}
 	priv->transcript_text = g_strdelimit(priv->transcript_text, "\r", '\n');
+
+	if(strcmp(old_transcript_text, priv->transcript_text) != 0)
+		i7_node_set_changed(self, TRUE);
+	else
+		i7_node_set_changed(self, FALSE);
+	g_free(old_transcript_text);
 
 	transcript_modified(self);
 
@@ -627,6 +656,28 @@ i7_node_get_match_type(I7Node *self)
 		calculate_diffs(self);
 
 	return priv->match;
+}
+
+/*
+ * i7_node_get_different:
+ * @self: the knot.
+ *
+ * Computes the differences between the transcript text and expected text, and
+ * returns %TRUE if they do not match. Returns %FALSE if they do match, or if
+ * there is no expected text.
+ *
+ * Returns: %TRUE if transcript text and expected text differ, %FALSE if not
+ * or if there is no expected text.
+ */
+gboolean
+i7_node_get_different(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->expected_pango_string || !priv->transcript_pango_string)
+		calculate_diffs(self);
+
+	return (priv->match == I7_NODE_NEAR_MATCH || priv->match == I7_NODE_NO_MATCH);
 }
 
 gboolean
@@ -773,11 +824,8 @@ i7_node_get_next_difference_below(I7Node *node) {
 
 	do {
 		I7Node *child_node = I7_NODE(child->data);
-		if(i7_node_get_blessed(child_node)) {
-			I7NodeMatchType compare = i7_node_get_match_type(child_node);
-			if(compare == I7_NODE_NO_MATCH || compare == I7_NODE_NEAR_MATCH)
-				return child_node;
-		}
+		if(i7_node_get_different(child_node))
+			return child_node;
 
 		I7Node *child_diff = i7_node_get_next_difference_below(child_node);
 		if(child_diff)
@@ -833,11 +881,8 @@ i7_node_get_next_difference(I7Node *node)
 		/* See if we can find any differences there */
 		while((child = child->next)) {
 			I7Node *child_node = I7_NODE(child->data);
-			if(i7_node_get_blessed(child_node)) {
-				I7NodeMatchType compare = i7_node_get_match_type(child_node);
-				if(compare == I7_NODE_NO_MATCH || compare == I7_NODE_NEAR_MATCH)
-					return child_node;
-			}
+			if(i7_node_get_different(child_node))
+				return child_node;
 
 			I7Node *child_diff = i7_node_get_next_difference_below(child_node);
 			if(child_diff)

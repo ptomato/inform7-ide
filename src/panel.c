@@ -443,6 +443,7 @@ i7_panel_init(I7Panel *self)
 	    "match-type", I7_SKEIN_COLUMN_MATCH_TYPE,
 	    "current", I7_SKEIN_COLUMN_CURRENT,
 	    "played", I7_SKEIN_COLUMN_PLAYED,
+	    "changed", I7_SKEIN_COLUMN_CHANGED,
 	    NULL);
 	
 	/* Save public pointers to specific widgets */
