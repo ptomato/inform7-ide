@@ -124,12 +124,110 @@ _gtk_tree_model_iter_previous(GtkTreeModel *model, GtkTreeIter *iter)
 }
 
 /*
+ * i7_story_previous_changed:
+ * @story: the story
+ *
+ * Moves the current selection in the Transcript panel to the previous node with
+ * "changed" status, whose transcript text differs from the last run. If the
+ * Transcript panel is not currently displayed, displays it. If there is no
+ * current selection, displays the next changed node starting from the first
+ * node.
+ */
+void
+i7_story_previous_changed(I7Story *story)
+{
+	GtkTreeView *transcript = display_and_return_transcript(story);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(transcript);
+	GtkTreeModel *skein;
+	GtkTreeIter iter;
+
+	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
+		/* Start at the top if no selected item */
+		i7_story_next_changed(story);
+		return;
+	}
+
+	/* Find the previous item */
+	gboolean found = FALSE;
+	while(!found && _gtk_tree_model_iter_previous(skein, &iter)) {
+		I7Node *node = NULL;
+		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
+		if(i7_node_get_changed(node))
+			found = TRUE;
+		g_object_unref(node);
+	}
+
+	if(!found) {
+		/* No previous item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+
+	/* Move to the previous item */
+	gtk_tree_selection_select_iter(selection, &iter);
+	GtkTreePath *path = gtk_tree_model_get_path(skein, &iter);
+	gtk_tree_view_scroll_to_cell(transcript, path, NULL, FALSE, 0.0, 0.0);
+
+	gtk_tree_path_free(path);
+}
+
+/*
+ * i7_story_next_changed:
+ * @story: the story
+ *
+ * Moves the current selection in the Transcript panel to the next node with
+ * "changed" status, whose transcript text differs from the last run. If the
+ * Transcript panel is not currently displayed, displays it. If there is no
+ * current selection, starts at the first node.
+ */
+void
+i7_story_next_changed(I7Story *story)
+{
+	GtkTreeView *transcript = display_and_return_transcript(story);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(transcript);
+	GtkTreeModel *skein;
+	GtkTreeIter iter;
+	gboolean found = FALSE;
+
+	if(!gtk_tree_selection_get_selected(selection, &skein, &iter)) {
+		/* Start at the top if no selected item */
+		g_assert(gtk_tree_model_get_iter_first(skein, &iter));
+
+		/* If the top node is changed, just use it */
+		found = i7_node_get_changed(i7_skein_get_root_node(I7_SKEIN(skein)));
+	}
+
+	/* Find the next item */
+	while(!found && gtk_tree_model_iter_next(skein, &iter)) {
+		I7Node *node = NULL;
+		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
+		if(i7_node_get_changed(node))
+			found = TRUE;
+		g_object_unref(node);
+	}
+
+	if(!found) {
+		/* No next item */
+		gdk_window_beep(gtk_widget_get_window(GTK_WIDGET(story)));
+		return;
+	}
+
+	/* Move to the next item */
+	gtk_tree_selection_select_iter(selection, &iter);
+	GtkTreePath *path = gtk_tree_model_get_path(skein, &iter);
+	gtk_tree_view_scroll_to_cell(transcript, path, NULL, FALSE, 0.0, 0.0);
+
+	gtk_tree_path_free(path);
+}
+
+/*
  * i7_story_previous_difference:
  * @story: the story
  * 
  * Moves the current selection in the Transcript panel to the previous blessed
  * node that is different from its expected text. If the Transcript panel is not
- * currently displayed, displays it.
+ * currently displayed, displays it. If there is no current selection, displays
+ * the next blessed node starting from the first node.
  */
 void
 i7_story_previous_difference(I7Story *story)

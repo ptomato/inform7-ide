@@ -1022,14 +1022,14 @@ action_show_last_command_skein(GtkAction *action, I7Story *story)
 void
 action_previous_changed_command(GtkAction *action, I7Story *story)
 {
-
+	i7_story_previous_changed(story);
 }
 
 /* Replay->Find Next Changed Command */
 void
 action_next_changed_command(GtkAction *action, I7Story *story)
 {
-
+	i7_story_next_changed(story);
 }
 
 /* Replay->Find Previous Difference */
