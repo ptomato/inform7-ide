@@ -127,10 +127,9 @@ node_listen(I7Skein *self, I7Node *node)
 	g_signal_connect(node, "notify::label", G_CALLBACK(on_node_label_notify), self);
 	g_signal_connect(node, "notify::transcript-text", G_CALLBACK(on_node_other_notify), self);
 	g_signal_connect(node, "notify::transcript-text", G_CALLBACK(on_node_transcript_notify), self);
-	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_other_notify), self);
+	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_layout_notify), self);
 	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_transcript_notify), self);
 	g_signal_connect(node, "notify::locked", G_CALLBACK(on_node_layout_notify), self);
-	g_signal_connect(node, "notify::changed", G_CALLBACK(on_node_layout_notify), self);
 }
 
 /* TYPE SYSTEM */
@@ -139,7 +138,7 @@ static void
 i7_skein_init(I7Skein *self)
 {
 	I7_SKEIN_USE_PRIVATE;
-	priv->root = i7_node_new(_("- start -"), "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
+	priv->root = i7_node_new(_("- start -"), "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, priv->root);
 	priv->current = priv->root;
 	priv->played = priv->root;
@@ -810,7 +809,7 @@ i7_skein_load(I7Skein *self, const gchar *filename, GError **error)
 		else if(xmlStrEqual(item->name, (xmlChar *)"item")) {
 			gchar *id, *command = NULL, *label = NULL;
 			gchar *transcript = NULL, *expected = NULL;
-			gboolean unlocked = TRUE;
+			gboolean unlocked = TRUE, changed = FALSE;
 			int score = 0;
 
 			xmlNode *child;
@@ -824,6 +823,8 @@ i7_skein_load(I7Skein *self, const gchar *filename, GError **error)
 					transcript = get_text_content_from_node(child);
 				else if(xmlStrEqual(child->name, (xmlChar *)"commentary"))
 					expected = get_text_content_from_node(child);
+				else if(xmlStrEqual(child->name, (xmlChar *)"changed"))
+					changed = get_boolean_from_content(child, FALSE);
 				else if(xmlStrEqual(child->name, (xmlChar *)"temporary")) {
 					unlocked = get_boolean_from_content(child, TRUE);
 					gchar *trash = get_property_from_node(child, "score");
@@ -833,7 +834,7 @@ i7_skein_load(I7Skein *self, const gchar *filename, GError **error)
 			}
 			id = get_property_from_node(item, "nodeId"); /* freed by table */
 
-			I7Node *skein_node = i7_node_new(command, label, transcript, expected, FALSE, !unlocked, score, GOO_CANVAS_ITEM_MODEL(self));
+			I7Node *skein_node = i7_node_new(command, label, transcript, expected, FALSE, !unlocked, changed, score, GOO_CANVAS_ITEM_MODEL(self));
 			node_listen(self, skein_node);
 			g_hash_table_insert(nodetable, id, skein_node);
 			g_free(command);
@@ -951,7 +952,7 @@ i7_skein_import(I7Skein *self, const gchar *filename, GError **error)
 			I7Node *newnode = i7_node_find_child(node, node_command);
 			if(!newnode) {
 				/* Wasn't found, create new node */
-				newnode = i7_node_new(node_command, "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
+				newnode = i7_node_new(node_command, "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 				node_listen(self, newnode);
 				g_node_append(node->gnode, newnode->gnode);
 				added = TRUE;
@@ -1162,7 +1163,7 @@ i7_skein_new_command(I7Skein *self, const gchar *command)
 	I7Node *node = i7_node_find_child(priv->played, node_command);
 	if(node == NULL) {
 		/* Wasn't found, create new node */
-		node = i7_node_new(node_command, "", "", "", TRUE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
+		node = i7_node_new(node_command, "", "", "", TRUE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 		node_listen(self, node);
 
 		gboolean remove = i7_skein_is_node_in_current_thread(self, priv->played);
@@ -1274,7 +1275,7 @@ i7_skein_get_command_from_history(I7Skein *self, gchar **command, int history)
 I7Node *
 i7_skein_add_new(I7Skein *self, I7Node *node)
 {
-	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
+	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, newnode);
 
 	remove_all_from_model(self);
@@ -1290,7 +1291,7 @@ i7_skein_add_new(I7Skein *self, I7Node *node)
 I7Node *
 i7_skein_add_new_parent(I7Skein *self, I7Node *node)
 {
-	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
+	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, newnode);
 
 	remove_all_from_model(self);

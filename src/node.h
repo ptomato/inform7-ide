@@ -59,8 +59,8 @@ typedef enum {
 
 GType i7_node_get_type(void) G_GNUC_CONST;
 I7Node *i7_node_new(const gchar *line, const gchar *label, const gchar *transcript,
-	const gchar *expected, gboolean played, gboolean locked, int score,
-	GooCanvasItemModel *skein);
+	const gchar *expected, gboolean played, gboolean locked, gboolean changed,
+    int score, GooCanvasItemModel *skein);
 
 /* Properties */
 gchar *i7_node_get_command(I7Node *self);

@@ -371,6 +371,9 @@ i7_node_set_property(GObject *self, guint prop_id, const GValue *value, GParamSp
 		case PROP_PLAYED:
 			i7_node_set_played(I7_NODE(self), g_value_get_boolean(value));
 			break;
+		case PROP_CHANGED: /* Construct only */
+			i7_node_set_changed(I7_NODE(self), g_value_get_boolean(value));
+			break;
 		case PROP_SCORE: /* Construct only */
 			priv->score = g_value_get_int(value);
 			g_object_notify(self, "score");
@@ -485,7 +488,7 @@ i7_node_class_init(I7NodeClass *klass)
 	g_object_class_install_property(object_class, PROP_CHANGED,
 		g_param_spec_boolean("changed", _("Changed"),
 			_("Whether the transcript text has changed since the last time this node was played"),
-			FALSE, flags | G_PARAM_READABLE));
+			FALSE, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property(object_class, PROP_BLESSED,
 		g_param_spec_boolean("blessed", _("Blessed"),
 			_("Whether this node has expected text"),
@@ -513,8 +516,8 @@ i7_node_class_init(I7NodeClass *klass)
 
 I7Node *
 i7_node_new(const gchar *command, const gchar *label, const gchar *transcript,
-	const gchar *expected, gboolean played, gboolean locked, int score,
-	GooCanvasItemModel *skein)
+	const gchar *expected, gboolean played, gboolean locked, gboolean changed,
+    int score, GooCanvasItemModel *skein)
 {
 	I7Node *self = g_object_new(I7_TYPE_NODE,
 		"command", command,
@@ -523,6 +526,7 @@ i7_node_new(const gchar *command, const gchar *label, const gchar *transcript,
 		"expected-text", expected,
 		"locked", locked,
 		"played", played,
+	    "changed", changed,
 		"score", score,
 		NULL);
 	g_object_set(self, "parent", skein, NULL);
