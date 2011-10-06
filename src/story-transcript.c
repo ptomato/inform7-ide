@@ -248,7 +248,7 @@ i7_story_previous_difference(I7Story *story)
 	while(!found && _gtk_tree_model_iter_previous(skein, &iter)) {
 		I7Node *node = NULL;
 		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
-		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node))
+		if(i7_node_get_blessed(node) && i7_node_get_different(node))
 			found = TRUE;
 		g_object_unref(node);
 	}
@@ -290,14 +290,15 @@ i7_story_next_difference(I7Story *story)
 		g_assert(gtk_tree_model_get_iter_first(skein, &iter));
 
 		/* If the top node is a difference, just use it */
-		found = TRUE;
+		I7Node *root = i7_skein_get_root_node(I7_SKEIN(skein));
+		found = (i7_node_get_blessed(root) && i7_node_get_different(root));
 	}
 
 	/* Find the next item */
 	while(!found && gtk_tree_model_iter_next(skein, &iter)) {
 		I7Node *node = NULL;
 		gtk_tree_model_get(skein, &iter, I7_SKEIN_COLUMN_NODE_PTR, &node, -1);
-		if(i7_node_get_match_type(node) != I7_NODE_EXACT_MATCH && i7_node_get_blessed(node))
+		if(i7_node_get_blessed(node) && i7_node_get_different(node))
 			found = TRUE;
 		g_object_unref(node);
 	}
