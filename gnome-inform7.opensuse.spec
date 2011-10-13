@@ -1,142 +1,113 @@
 # 
 # Spec file for GNOME Inform 7 on OpenSUSE. Rename to gnome-inform7.spec.
 #
+# Copyright (c) 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
 
-Name: gnome-inform7
-Version: 6F95
-Release: 1
+# Please submit bugfixes or comments via http://bugs.opensuse.org/
+#
 
-URL: http://inform7.com/
-License: GPLv3
-
-Group: Development/Languages
-Source: I7_%{version}_GNOME_Source.tar.gz
-# Packager: P. F. Chimento <philip.chimento@gmail.com>
-
-# Build requirements
-# For building manuals
-BuildRequires: texlive, texlive-bin
-BuildRequires: graphviz
-# Extra build tools
-BuildRequires: intltool
-BuildRequires: pkg-config
-BuildRequires: lzma
-# Library devel packages
-BuildRequires: libuuid-devel
-BuildRequires: glib2-devel
-BuildRequires: gtk2-devel
-BuildRequires: gtksourceview-devel
-BuildRequires: gtkspell-devel
-BuildRequires: gtkhtml2-devel
-BuildRequires: dbus-1-glib-devel
-%if 0%{?suse_version} >= 1120
-BuildRequires: libSDL_sound-devel, libSDL_mixer-devel
-%else
-BuildRequires: SDL_sound-devel, SDL_mixer-devel
-%endif
-BuildRoot: %{_tmppath}/%{name}-%{version}-build
-
-%gconf_schemas_prereq
-
-Summary: An IDE for the Inform 7 interactive fiction programming language
+Name:           gnome-inform7
+Version:        6G60
+Release:        0
+License:        GPL-3.0
+Summary:        Inform 7 interactive fiction programming language IDE
+Url:            http://inform7.com/
+Group:          Development/Languages/Other
+Source0:        http://voxel.dl.sourceforge.net/project/gnome-inform7/gnome-inform7/6G60/I7_6G60_GNOME_Source.tar.gz
+Source1:        http://inform7.com/download/content/6G60/I7_6G60_Linux_all.tar.gz
+BuildRequires:  fdupes
+BuildRequires:  goocanvas-devel
+BuildRequires:  graphviz
+BuildRequires:  gtksourceview-devel
+BuildRequires:  gtkspell-devel
+BuildRequires:  intltool
+BuildRequires:  libwebkitgtk-devel
+BuildRequires:  lzma
+BuildRequires:  pkgconfig
+BuildRequires:  texlive
+BuildRequires:  update-desktop-files
+BuildRequires:  pkgconfig(gconf-2.0)
+BuildRequires:  pkgconfig(gtk+-2.0)
+BuildRequires:  pkgconfig(libxml-2.0)
+Recommends:     %{name}-lang = %{version}
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+%lang_package
 
 %description
-GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
-development environment for Inform 7. Inform 7 is a "natural" programming
-language for writing interactive fiction (also known as text adventures.)
+GNOME Inform 7 is a port of the Mac OS X and Windows versions of the
+integrated development environment for Inform 7. Inform 7 is a "natural"
+programming language for writing interactive fiction (also known as text
+adventures.).
 
 %prep
 %setup -q
+%setup -T -D -a 1
+cd inform7-%{version}
+%ifarch x86_64
+tar xvf inform7-compilers_%{version}_x86_64.tar.gz
+cp share/inform7/Compilers/ni ../src/ni/
+%else
+tar xvf inform7-compilers_%{version}_i386.tar.gz
+cp share/inform7/Compilers/ni ../src/ni/
+%endif
+cd ..
 
 %build
 %configure --enable-manuals
-make %{?_smp_mflags}
+make CFLAGS="$CFLAGS -fno-strict-aliasing " %{?_smp_mflags}
+
+%install
+%make_install
+find %{buildroot} -type f -name "*.la" -delete -print
+%suse_update_desktop_file %{buildroot}%{_datadir}/applications/gnome-inform7.desktop
+%find_lang %{name}
+%find_gconf_schemas
+cat %{name}.schemas_list >%{name}.lst
+%fdupes %{buildroot}
 
 %pre -f %{name}.schemas_pre
 
-%install
-%makeinstall
-%find_gconf_schemas
-
-%preun -f %{name}.schemas_preun
+%post
+%desktop_database_post
+%icon_theme_cache_post
 
 %posttrans -f %{name}.schemas_posttrans
 
+%postun
+%desktop_database_postun
+%icon_theme_cache_post
+
+%preun -f %{name}.schemas_preun
+
 %clean
-rm -rf %{buildroot}
+%{?buildroot:rm -rf %{buildroot}}
 
-%files -f %{name}.schemas_list
+%files -f %{name}.lst
+%defattr(-,root,root)
+%{_bindir}/%{name}
+%{_libdir}/%{name}
+%ifarch x86_64
+%{_prefix}/lib/%{name}
+%endif
+%{_datadir}/applications/gnome-inform7.desktop
+%doc %{_datadir}/doc/%{name}
+%{_datadir}/%{name}
+%{_datadir}/icons/hicolor/*/*
 
-%files
-%defattr(-,root,root,-)
-%define pkgdatadir %{_datadir}/%{name}
-%define pkgdocdir %{_datadir}/doc/%{name}
-%define pkglibexecdir %{_libexecdir}/%{name}
-%docdir %{pkgdocdir}
-%docdir %{pkgdatadir}/Documentation
-%{_datadir}/applications/%{name}.desktop
-%{pkgdocdir}/AUTHORS 
-%{pkgdocdir}/ChangeLog 
-%{pkgdocdir}/COPYING 
-%{pkgdocdir}/NEWS 
-%{pkgdocdir}/README 
-%{pkgdocdir}/THANKS 
-%{pkgdocdir}/TODO
-%{pkgdatadir}/uninstall_manifest.txt
-%{pkgdatadir}/Documentation/*.html
-%{pkgdatadir}/Documentation/*.png
-%{pkgdatadir}/Documentation/*.gif
-%{pkgdatadir}/Documentation/manifest.txt
-%{pkgdatadir}/Documentation/doc_images/*.png
-%{pkgdatadir}/Documentation/doc_images/*.jpg
-%{pkgdatadir}/Documentation/doc_images/*.tif
-%{pkgdatadir}/Documentation/map_icons/*.png
-%{pkgdatadir}/Documentation/scene_icons/*.png
-%{pkgdatadir}/Documentation/Sections/*.html
-%{pkgdatadir}/Extensions/David*Fisher/English.i7x
-%{pkgdatadir}/Extensions/Emily*Short/*.i7x
-%{pkgdatadir}/Extensions/Eric*Eve/Epistemology.i7x
-%{pkgdatadir}/Extensions/Graham*Nelson/*.i7x
-%{pkgdatadir}/Extensions/Reserved/*.i6t
-%{pkgdatadir}/Extensions/Reserved/*.jpg
-%{pkgdatadir}/Extensions/Reserved/*.html
-%{pkgdatadir}/Extensions/Reserved/IntroductionToIF.pdf
-%{pkgdatadir}/Extensions/Reserved/Templates/Classic/*.html
-%{pkgdatadir}/Extensions/Reserved/Templates/Standard/*.html
-%{pkgdatadir}/Extensions/Reserved/Templates/Standard/style.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/*.js
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/parchment.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/(manifest).txt
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.js
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/waiting.gif
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/(manifest).txt
-%{pkgdatadir}/languages/*.lang
-%{pkgdatadir}/Documentation/licenses/*.html
-%{pkgdatadir}/styles/*.xml
-%{_datadir}/pixmaps/Inform.png
-%{_datadir}/pixmaps/%{name}/*.png
-%lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
-%{_bindir}/gnome-inform7
-%{pkglibexecdir}/cBlorb
-%{pkgdocdir}/cBlorb/Complete.pdf
-%{pkglibexecdir}/gtkterp-frotz
-%{pkgdocdir}/frotz/AUTHORS
-%{pkgdocdir}/frotz/COPYING
-%{pkgdocdir}/frotz/README
-%{pkgdocdir}/frotz/TODO
-%config(noreplace) %{_sysconfdir}/gtkterp.ini
-%{pkgdocdir}/garglk/*.txt
-%{pkgdocdir}/garglk/TODO
-%{pkglibexecdir}/gtkterp-git
-%{pkgdocdir}/git/README.txt
-%{pkglibexecdir}/gtkterp-glulxe
-%{pkgdocdir}/glulxe/README
-%{pkglibexecdir}/inform-6.31-biplatform
-%{pkgdocdir}/inform6/readme.txt
-%{pkglibexecdir}/ni
+%files lang -f %{name}.lang
 
 %changelog
+* Mon Oct 10 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>
+- Rewrote spec file.
 * Mon Nov 1 2010 P.F. Chimento <philip.chimento@gmail.com>
 - Updated OpenSUSE version of spec file.
 * Tue Oct 26 2010 P.F. Chimento <philip.chimento@gmail.com>
