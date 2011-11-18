@@ -5,19 +5,12 @@ ACLOCAL_AMFLAGS = -I m4
 desktopdir = $(datadir)/applications
 dist_desktop_DATA = gnome-inform7.desktop
 
-schemadir = @GCONF_SCHEMA_FILE_DIR@
-dist_schema_DATA = gnome-inform7.schemas
+gsettings_SCHEMAS = apps.gnome-inform7.gschema.xml
+
+@GSETTINGS_RULES@
 
 docdir = $(datadir)/doc/$(PACKAGE)
 dist_doc_DATA = AUTHORS ChangeLog COPYING NEWS README THANKS TODO
-
-install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-	$(GCONFTOOL) --makefile-install-rule $(srcdir)/$(dist_schema_DATA)
-
-uninstall-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
-	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(dist_schema_DATA)
 
 EXTRA_DIST = \
 	INSTALL \
@@ -25,7 +18,8 @@ EXTRA_DIST = \
 	intltool-update.in \
 	intltool-extract.in \
 	intltool-merge.in \
-	gnome-inform7.spec.in
+	gnome-inform7.spec.in \
+        $(gsettings_SCHEMAS)
 
 if BUILDING_RPM
 EXTRA_DIST += gnome-inform7.spec

@@ -315,7 +315,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 void
 on_font_set_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_file_set_enum(PREFS_FONT_SET, gtk_combo_box_get_active(combobox), font_set_lookup_table);
+	config_file_set_enum(PREFS_FONT_SET, gtk_combo_box_get_active(combobox));
 }
 
 void
@@ -327,7 +327,7 @@ on_custom_font_font_set(GtkFontButton *button, I7App *app)
 void
 on_font_size_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_file_set_enum(PREFS_FONT_SIZE, gtk_combo_box_get_active(combobox), font_size_lookup_table);
+	config_file_set_enum(PREFS_FONT_SIZE, gtk_combo_box_get_active(combobox));
 }
 
 void

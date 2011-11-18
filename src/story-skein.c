@@ -298,8 +298,8 @@ on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Panel *p
 void
 on_skein_spacing_use_defaults_clicked(GtkButton *button, I7Story *story)
 {
-	config_file_set_to_default(PREFS_HORIZONTAL_SPACING);
-	config_file_set_to_default(PREFS_VERTICAL_SPACING);
+	config_file_set_int(PREFS_HORIZONTAL_SPACING, DEFAULT_HORIZONTAL_SPACING);
+	config_file_set_int(PREFS_VERTICAL_SPACING, DEFAULT_VERTICAL_SPACING);
 }
 
 void
