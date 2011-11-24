@@ -164,9 +164,20 @@ i7_story_run_commands_from_node(I7Story *story, I7Node *node)
 	g_slist_free(commands);
 }
 
+/*
+ * i7_story_run_compiler_output_and_entire_skein:
+ * @story: the story
+ *
+ * Callback for when compiling is finished. Plays through as many threads as
+ * necessary to visit each blessed knot in the skein at least once.
+ */
 void
 i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 {
+	I7_STORY_USE_PRIVATE(story, priv);
+	
+	GSList *blessed_nodes = i7_skein_get_blessed_thread_ends(priv->skein);
+	...
 }
 
 static void

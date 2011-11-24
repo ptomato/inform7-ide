@@ -1574,10 +1574,19 @@ i7_skein_get_thread_bottom(I7Skein *self, I7Node *node)
 }
 
 /*
-i7_skein_get_blessed_thread_ends(I7Skein *skein, ...
-
-void save_transcript(I7Skein *skein, GNode *node, const gchar *path)
-*/
+ * i7_skein_get_blessed_thread_ends:
+ * @skein: the skein_command
+ *
+ * Makes a list of all the thread ends that need to be played through in order
+ * to have played through every blessed knot in the skein at least once.
+ *
+ * Returns: singly-linked list of knots at the end of the threads.
+ */
+GSList *
+i7_skein_get_blessed_thread_ends(I7Skein *skein)
+{
+	...
+}
 
 /* Returns whether the skein was modified since last save or load */
 gboolean
