@@ -246,9 +246,21 @@ action_trim(GtkAction *action, I7Panel *panel)
 	}
 }
 
+/*
+ * action_play_all:
+ * @action: not used
+ * @panel: the panel that this action was triggered on
+ *
+ * Signal handler for the action connected to the "Play All" button in the panel
+ * toolbar when the Skein panel is displayed. Plays all the nodes currently
+ * blessed in the Skein.
+ */
 void
 action_play_all(GtkAction *action, I7Panel *panel)
 {
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
+	i7_story_compile(story, FALSE, FALSE);
 }
 
 void
