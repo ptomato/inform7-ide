@@ -659,12 +659,9 @@ i7_story_init(I7Story *self)
 
 	/* Make the action groups */
 	priv->story_action_group = GTK_ACTION_GROUP(load_object(builder, "story_actions"));
-	/* Temporary "unimplemented" group */
-	priv->unimplemented_action_group = GTK_ACTION_GROUP(load_object(builder, "unimplemented_actions"));
 	
 	/* Build the menus and toolbars from the GtkUIManager file */
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->story_action_group, 0);
-	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->unimplemented_action_group, 0);
 	filename = i7_app_get_datafile_path(theapp, "ui/story.uimanager.xml");
 	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, filename, &error);
 	g_free(filename);
