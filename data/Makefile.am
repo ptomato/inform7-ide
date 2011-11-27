@@ -2,20 +2,18 @@ SUBDIRS = . licenses languages styles ui
 
 INFORMTARBALL = Inform_@PACKAGE_VERSION@_data.tar.lz
 
-dist_pkgdata_DATA = $(INFORMTARBALL)
+EXTRA_DIST = $(INFORMTARBALL)
 
 install-data-hook:
 	cd $(DESTDIR)$(pkgdatadir); \
-	$(CAT) $(INFORMTARBALL) | $(UNLZMA) | $(TAR) --list > uninstall_manifest.txt; \
-	$(CAT) $(INFORMTARBALL) | $(UNLZMA) | $(TAR) --no-same-owner --extract; \
-	rm --force $(INFORMTARBALL); \
-	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/^\|$$/"/g' \
+	$(UNLZMA) < $(srcdir)/$(INFORMTARBALL) | $(TAR) -t > uninstall_manifest.txt; \
+	$(UNLZMA) < $(srcdir)/$(INFORMTARBALL) | $(TAR) --no-same-owner -x; \
+	$(SED) -e 's/^\|$$/"/g' < uninstall_manifest.txt \
 		| $(XARGS) $(CHMOD) a=rX,u+w
 
 uninstall-local:
 	cd $(DESTDIR)$(pkgdatadir); \
-	$(CAT) uninstall_manifest.txt | $(SED) --expression='s/ /\\ /g' \
-		| $(XARGS) rm --force; \
-	rm --force uninstall_manifest.txt
+	$(SED) -e 's/ /\\ /g' < uninstall_manifest.txt | $(XARGS) rm -f; \
+	rm -f uninstall_manifest.txt
 
 -include $(top_srcdir)/git.mk
