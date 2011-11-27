@@ -398,11 +398,8 @@ i7_panel_init(I7Panel *self)
 	/* Update the web settings for this panel */
 	priv->websettings = WEBKIT_WEB_SETTINGS(load_object(builder, "websettings"));
 	/* Parse the font descriptions */
-	gchar *font = config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
-	PangoFontDescription *stdfont = pango_font_description_from_string(font);
-	g_free(font);
-	font = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
-	PangoFontDescription *monofont = pango_font_description_from_string(font);
+	PangoFontDescription *stdfont = get_desktop_standard_font();
+	PangoFontDescription *monofont = get_desktop_monospace_font();
 	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
 	gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
 	g_object_set(priv->websettings,
@@ -838,11 +835,8 @@ void
 i7_panel_update_font_sizes(I7Panel *self)
 {
 	WebKitWebSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
-	gchar *font = config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
-	PangoFontDescription *stdfont = pango_font_description_from_string(font);
-	g_free(font);
-	font = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
-	PangoFontDescription *monofont = pango_font_description_from_string(font);
+	PangoFontDescription *stdfont = get_desktop_standard_font();
+	PangoFontDescription *monofont = get_desktop_monospace_font();
 	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
 	gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
 	g_object_set(G_OBJECT(settings),
@@ -850,4 +844,6 @@ i7_panel_update_font_sizes(I7Panel *self)
 		"default-monospace-font-size", monosize,
 		"minimum-font-size", MIN(stdsize, monosize),
 		NULL);
+	pango_font_description_free(stdfont);
+	pango_font_description_free(monofont);
 }

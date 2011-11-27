@@ -767,9 +767,7 @@ i7_story_init(I7Story *self)
 	priv->i6_source = create_inform6_source_buffer();
 
 	/* Create a monospace font description for the Errors/Progress views */
-	gchar *family = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
-	PangoFontDescription *font = pango_font_description_from_string(family);
-	g_free(family);
+	PangoFontDescription *font = get_desktop_monospace_font();
 	pango_font_description_set_size(font, get_font_size(font));
 
 	/* Do panel-specific stuff to the left and then the right panel */

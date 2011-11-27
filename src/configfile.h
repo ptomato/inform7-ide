@@ -68,9 +68,6 @@
 #define PREFS_HORIZONTAL_SPACING	PREFS_SKEIN_PATH "HorizontalSpacing"
 #define PREFS_VERTICAL_SPACING		PREFS_SKEIN_PATH "VerticalSpacing"
 
-#define DESKTOP_PREFS_STANDARD_FONT	"/desktop/gnome/interface/document_font_name"
-#define DESKTOP_PREFS_MONOSPACE_FONT "/desktop/gnome/interface/monospace_font_name"
-
 /* Three options for editor font */
 typedef enum {
 	FONT_STANDARD,
@@ -114,7 +111,8 @@ gint config_file_get_enum(const gchar *key, GConfEnumStringPair lookup_table[]);
 void config_file_set_to_default(const gchar *key);
 void init_config_file(GtkBuilder *builder);
 void trigger_config_file(void);
-gchar *get_font_family(void);
+PangoFontDescription *get_desktop_standard_font(void);
+PangoFontDescription *get_desktop_monospace_font(void);
 gint get_font_size(PangoFontDescription *font);
 PangoFontDescription *get_font_description(void);
 
