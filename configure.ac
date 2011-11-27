@@ -119,7 +119,6 @@ LT_PREREQ([2.2.6])
 # Other tools used in this package's various make scripts
 AC_PATH_PROG([PERL], [perl])      # Perl
 AC_PATH_PROG([TAR], [tar gtar])   # tar
-AC_PATH_PROG([UNLZMA], [unlzma])  # unlzma (nonGNU tar doesn't have --lzma)
 AC_PATH_PROG([XARGS], [xargs])    # xargs
 AC_PATH_PROG([CHMOD], [chmod])    # chmod
 AC_PATH_PROG([CAT], [cat])        # cat
@@ -133,6 +132,11 @@ IT_PROG_INTLTOOL([0.35.0])        # Intltool
 PKG_PROG_PKG_CONFIG               # pkg_config
 AM_GCONF_SOURCE_2                 # GConf
 AC_PATH_PROG([GCONFTOOL], [gconftool-2]) # GConf-Tool
+
+AC_PATH_PROG([UNLZMA], [unlzma], [notfound]) # nonGNU tar doesn't have --lzma
+AS_IF([$TEST "x$UNLZMA" = xnotfound],
+	[AC_MSG_ERROR([The unlzma program is required to install Inform 7.
+	Try installing it from your package manager.])])
 
 ### INTERNATIONALIZATION #######################################################
 
@@ -156,6 +160,13 @@ PKG_CHECK_EXISTS([uuid],
 # Also, check which header is used
 AC_CHECK_HEADERS([uuid.h ossp/uuid.h uuid/uuid.h])
 
+# If webkit-1.0 is a later version than 1.6.0, then we need to pull in
+# javascriptcoregtk-1.0 as well
+PKG_CHECK_EXISTS([webkit-1.0 >= 1.6.0],
+	[JAVASCRIPTCORE_MODULE=javascriptcoregtk-1.0],
+	[JAVASCRIPTCORE_MODULE=]
+)
+
 # Libraries for main program
 PKG_CHECK_MODULES([INFORM7], [
 	gdk-2.0 >= 2.2
@@ -165,6 +176,7 @@ PKG_CHECK_MODULES([INFORM7], [
 	gconf-2.0 >= 2.4
 	gtksourceview-2.0 >= 2.2
 	webkit-1.0 >= 1.0
+	$JAVASCRIPTCORE_MODULE
 	gtkspell-2.0
 	libxml-2.0
 	goocanvas
