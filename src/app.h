@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,11 +33,10 @@
 #define I7_APP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), I7_TYPE_APP, I7AppClass))
 
 enum _I7AppRegices {
-	I7_APP_REGEX_HEADINGS,
-	I7_APP_REGEX_UNICODE_ESCAPE,
-	I7_APP_REGEX_IMAGES_REPLACE,
-	I7_APP_REGEX_EXTENSION,
-	I7_APP_REGEX_EXTENSION_FILE_NAME,
+	I7_APP_REGEX_HEADINGS, /* Matches story headings in the source text */
+	I7_APP_REGEX_UNICODE_ESCAPE, /* Matches Unicode escapes in Javascript paste code */
+	I7_APP_REGEX_EXTENSION, /* Matches the title of an extension in the proper format */
+	I7_APP_REGEX_EXAMPLE_FILE_NAME, /* Link must be an example page if title matches */
 	I7_APP_NUM_REGICES
 };
 

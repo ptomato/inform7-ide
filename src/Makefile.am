@@ -12,8 +12,6 @@ libosxcart_a_SOURCES = \
 	osxcart/osxcart/init.h \
 	osxcart/osxcart/plist.c \
 	osxcart/osxcart/plist.h \
-	osxcart/osxcart/plist-common.c \
-	osxcart/osxcart/plist-common.h \
 	osxcart/osxcart/plist-write.c \
 	osxcart/osxcart/plist-parser.c \
 	osxcart/osxcart/rtf.c \
@@ -280,7 +278,8 @@ gnome_inform7_CFLAGS = -g @INFORM7_CFLAGS@ $(AM_CFLAGS)
 gnome_inform7_LDADD = \
 	@INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 	$(INTLLIBS) \
-	libosxcart.a
+	libosxcart.a \
+	-lm
 # The following mystical incantation is needed because the Glk programs, which
 # are dynamically loaded, reference symbols from the Glk API in libchimara.a
 # which are not referenced by the main program. The default behavior of ld is
@@ -288,6 +287,9 @@ gnome_inform7_LDADD = \
 # product. This tells ld to link in all object files in libchimara.a.
 gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
 	-Wl,--whole-archive,libchimara.a,--no-whole-archive
+# The gnome-inform7 executable must also depend on libchimara.a; because of the
+# trickery above, Automake doesn't realize that.
+gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a
 
 #noinst_PROGRAMS = skeintest
 #skeintest_SOURCES = skeintest.c skein.c skein.h node.c node.h skein-view.c skein-view.h

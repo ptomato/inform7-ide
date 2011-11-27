@@ -1,6 +1,5 @@
 uidir = $(pkgdatadir)/ui
 dist_ui_DATA = \
-	aboutwindow.ui \
 	document.ui \
 	extension.uimanager.xml \
 	gnome-inform7.ui \

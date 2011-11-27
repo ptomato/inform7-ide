@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <webkit/webkit.h>
 #include <gtksourceview/gtksourceprintcompositor.h>
+#include <config.h>
 
 #include "app.h"
 #include "builder.h"
@@ -1198,13 +1199,53 @@ action_report_bug(GtkAction *action, I7App *app)
 void
 action_about(GtkAction *action, I7App *app)
 {
-	gchar *filename = i7_app_get_datafile_path(app, "ui/aboutwindow.ui");
-	GtkBuilder *builder = create_new_builder(filename, NULL);
-	g_free(filename);
-	GtkWindow *aboutwindow = GTK_WINDOW(load_object(builder, "aboutwindow"));
+	/* TRANSLATORS: %s is the copyright year. */
+	char *copyright = g_strdup_printf(_("Copyright 2006\xE2\x80\x93%s " /* UTF8 en-dash */
+		"P. F. Chimento (front end),\n"
+	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
+	char *authors[] = {
+		N_("Inform written by:\n"
+		"    Graham Nelson\n"
+		"Glulx compiler written by:\n"
+		"    Graham Nelson and Andrew Plotkin\n"
+		"Inform front-end written by:\n"
+		"    P. F. Chimento\n"
+		"Contributions by:\n"
+		"    Adam Thornton\n"
+		"    Daniel Nilsson\n"
+		"    Evil Tabby Cat\n"
+		"    Eric Forgeot\n"
+		"    Jonathan Liu\n"
+		"    Zachary Amsden\n"
+		"    David Leverton\n"
+		"Contributions to the compiler:\n"
+		"    Emily Short\n"
+		"    Gunther Schmidl\n"
+		"    Andrew Plotkin\n"
+		"    Jason Penney\n"
+		"    Joe Mason\n"
+		"    Cedric Knight\n"
+		"    David Kinder\n"
+		"    Roger Firth\n"
+		"    Michael Coyne\n"
+		"    David Cornelson\n"
+		"    Neil Cerutti\n"
+		"    Kevin Bracey"),
+		NULL
+	};
+
 	GtkWindow *parent = get_toplevel_for_action(action);
-	gtk_window_set_transient_for(aboutwindow, parent);
-	gtk_window_set_position(aboutwindow, GTK_WIN_POS_CENTER_ON_PARENT);
-	gtk_window_present(aboutwindow);
-	g_object_unref(builder);
+	gtk_show_about_dialog(parent,
+		"program-name", _("Inform"),
+		"copyright", copyright,
+		"comments", "Inform (1.2 6.32N/" PACKAGE_VERSION ")",
+		"website", "http://inform7.com",
+		"website-label", "inform7.com",
+		"license", _("See Help\xE2\x86\x92License for licensing information."), /* UTF8 right arrow */
+	    "authors", authors,
+		"translator-credits", _("\xC3\x81ngel Eduardo (Spanish)"), /* UTF8 capital A acute accent */
+		"logo-icon-name", "inform7",
+		"title", _("About Inform"),
+		NULL);
+	g_free(copyright);
 }

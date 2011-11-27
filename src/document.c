@@ -593,6 +593,8 @@ get_heading_from_string(gchar *text)
 	return retval;
 }
 
+/* Re-scan the source code and rebuild the tree model of headings for the
+ * contents view */
 void
 i7_document_reindex_headings(I7Document *document)
 {
@@ -601,7 +603,9 @@ i7_document_reindex_headings(I7Document *document)
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 	GtkTreeStore *tree = priv->headings;
 	gtk_tree_store_clear(tree);
+	/* These keep track of where in the tree the last instance of that section type occurred */
 	GtkTreeIter title, volume, book, part, chapter, section, current;
+	/* These keep track of where to put the next encountered subsection */
 	gboolean volume_used = FALSE, book_used = FALSE, part_used = FALSE, chapter_used = FALSE;
 
 	GtkTextIter lastline, thisline, nextline, end;
@@ -649,16 +653,19 @@ i7_document_reindex_headings(I7Document *document)
 					gtk_tree_store_append(tree, &volume, &title);
 					current = volume;
 					volume_used = TRUE;
+					book_used = part_used = chapter_used = FALSE;
 					break;
 				case I7_HEADING_BOOK:
 					gtk_tree_store_append(tree, &book, volume_used? &volume : &title);
 					current = book;
 					book_used = TRUE;
+					part_used = chapter_used = FALSE;
 					break;
 				case I7_HEADING_PART:
 					gtk_tree_store_append(tree, &part, book_used? &book : volume_used? &volume : &title);
 					current = part;
 					part_used = TRUE;
+					chapter_used = FALSE;
 					break;
 				case I7_HEADING_CHAPTER:
 					gtk_tree_store_append(tree, &chapter, part_used? &part : book_used? &book : volume_used? &volume : &title);

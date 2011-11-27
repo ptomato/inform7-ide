@@ -115,7 +115,7 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 			GMatchInfo *match;
 			I7App *theapp = i7_app_get();
 			/* Jump to the proper example */
-			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXTENSION_FILE_NAME], filename, 0, &match)) {
+			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXAMPLE_FILE_NAME], filename, 0, &match)) {
 				gchar *number = g_match_info_fetch_named(match, "number");
 				gchar *anchor = g_strconcat("e", number, NULL);
 				g_free(number);

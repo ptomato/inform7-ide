@@ -114,7 +114,6 @@ i7_app_init(I7App *self)
 	I7AppRegexInfo regex_info[] = {
 		{ "^(?P<level>volume|book|part|chapter|section)\\s+(?P<secnum>.*?)(\\s+-\\s+(?P<sectitle>.*))?$", TRUE },
 		{ "\\[=0x([0-9A-F]{4})=\\]", FALSE },
-		{ "src=(['\"]?)inform:/(.*?\\.png)\\1(\\s|>)", FALSE },
 		{ "^\\s*(?:version\\s.+\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */
 		  "(?P<title>.+)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)?" /* <title> [(for X only)] */
 		  "by\\s+(?P<author>.+)\\s+" /* by <author> */

@@ -26,6 +26,15 @@
 #include "error.h"
 #include "story.h"
 
+/* Standard Gnome GConf keys for desktop font names */
+#define DESKTOP_PREFS_STANDARD_FONT	"/desktop/gnome/interface/document_font_name"
+#define DESKTOP_PREFS_MONOSPACE_FONT "/desktop/gnome/interface/monospace_font_name"
+
+/* Fallback values for Gnome 3 systems, where the desktop fonts are not defined
+in GConf anymore. */
+#define STANDARD_FONT_FALLBACK "Sans 11"
+#define MONOSPACE_FONT_FALLBACK "Monospace 11"
+
 /* Enum-to-string lookup tables */
 GConfEnumStringPair font_set_lookup_table[] = {
 	{ FONT_STANDARD, "Standard" },
@@ -396,23 +405,65 @@ trigger_config_file(void)
 	g_object_unref(client);
 }
 
-/* Return a string of font families for the font setting. String must be freed*/
-gchar *
+/*
+ * get_desktop_standard_font:
+ *
+ * Return the Gnome desktop document font as a font description. Must be freed.
+ */
+PangoFontDescription *
+get_desktop_standard_font(void)
+{
+	PangoFontDescription *retval;
+	char *font = config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
+	if(!font)
+		return pango_font_description_from_string(STANDARD_FONT_FALLBACK);
+	retval = pango_font_description_from_string(font);
+	g_free(font);
+	return retval;
+}
+
+/*
+ * get_desktop_monospace_font:
+ *
+ * Return the Gnome desktop monospace font as a font description. Must be freed.
+ */
+PangoFontDescription *
+get_desktop_monospace_font(void)
+{
+	PangoFontDescription *retval;
+	char *font = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
+	if(!font)
+		return pango_font_description_from_string(MONOSPACE_FONT_FALLBACK);
+	retval = pango_font_description_from_string(font);
+	g_free(font);
+	return retval;
+}
+
+/*
+ * get_font_family:
+ *
+ * Return a font description for the font setting. Must be freed.
+ */
+static PangoFontDescription *
 get_font_family(void)
 {
-	gchar *customfont;
 	switch(config_file_get_enum(PREFS_FONT_SET, font_set_lookup_table)) {
 		case FONT_MONOSPACE:
-			return config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
+			return get_desktop_monospace_font();
 		case FONT_CUSTOM:
-			customfont = config_file_get_string(PREFS_CUSTOM_FONT);
-			if(customfont)
-				return customfont;
+		{
+			char *font = config_file_get_string(PREFS_CUSTOM_FONT);
+			if(font) {
+				PangoFontDescription *retval = pango_font_description_from_string(font);
+				g_free(font);
+				return retval;
+			}
 			/* else fall through */
+		}
 		default:
 			;
 	}
-	return config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
+	return get_desktop_standard_font();
 }
 
 /* Return the font size in Pango units for the font size setting */
@@ -446,9 +497,7 @@ Must be freed with pango_font_description_free. */
 PangoFontDescription *
 get_font_description(void)
 {
-	gchar *fontfamily = get_font_family();
-	PangoFontDescription *font = pango_font_description_from_string(fontfamily);
-	g_free(fontfamily);
+	PangoFontDescription *font = get_font_family();
 	pango_font_description_set_size(font, get_font_size(font));
 	return font;
 }

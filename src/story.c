@@ -765,9 +765,7 @@ i7_story_init(I7Story *self)
 	priv->i6_source = create_inform6_source_buffer();
 
 	/* Create a monospace font description for the Errors/Progress views */
-	gchar *family = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
-	PangoFontDescription *font = pango_font_description_from_string(family);
-	g_free(family);
+	PangoFontDescription *font = get_desktop_monospace_font();
 	pango_font_description_set_size(font, get_font_size(font));
 
 	/* Do panel-specific stuff to the left and then the right panel */
@@ -808,6 +806,10 @@ i7_story_init(I7Story *self)
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
 	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
 
+	/* Make the Skein dialogs transient */
+	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));
+	gtk_window_set_transient_for(GTK_WINDOW(self->skein_trim_dialog), GTK_WINDOW(self));
+	
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_storywindow_delete_event), NULL);
 }
@@ -818,6 +820,10 @@ i7_story_finalize(GObject *self)
 	I7_STORY_USE_PRIVATE(self, priv);
 	g_free(priv->copyblorbto);
 	g_free(priv->compiler_output);
+	if(priv->settings)
+		plist_object_free(priv->settings);
+	if(priv->manifest)
+		plist_object_free(priv->manifest);
 	G_OBJECT_CLASS(i7_story_parent_class)->finalize(self);
 }
 
@@ -873,10 +879,9 @@ i7_story_class_init(I7StoryClass *klass)
 I7Story *
 i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author)
 {
-	/* Building all the WebkitWebViews can take more than a second */
+	/* Can take a while for old versions of WebKit */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
-	i7_app_set_busy(app, FALSE);
 
 	i7_document_set_path(I7_DOCUMENT(story), filename);
 
@@ -886,6 +891,8 @@ i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar 
 
 	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
+
+	i7_app_set_busy(app, FALSE);
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
@@ -905,19 +912,21 @@ i7_story_new_from_file(I7App *app, const gchar *filename)
 		return NULL;
 	}
 
-	/* Building all the WebkitWebViews can take more than a second */
+	/* Loading a large story file can take a while */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
-	i7_app_set_busy(app, FALSE);
 	if(!i7_story_open(story, fullpath)) {
 		g_free(fullpath);
 		g_object_unref(story);
+		i7_app_set_busy(app, FALSE);
 		return NULL;
 	}
 	g_free(fullpath);
 
 	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
+
+	i7_app_set_busy(app, FALSE);
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
