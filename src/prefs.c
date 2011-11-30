@@ -108,7 +108,7 @@ on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
 		gchar *id;
 		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
-		config_file_set_string(PREFS_STYLE_SCHEME, id);
+		config_set_style_scheme(id);
 		gtk_widget_set_sensitive(app->prefs->style_remove, id && is_user_scheme(id));
 		g_free(id);
 	} else
@@ -160,7 +160,7 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 	}
 
 	populate_schemes_list(app->prefs->schemes_list);
-	config_file_set_string(PREFS_STYLE_SCHEME, scheme_id);
+	config_set_style_scheme(scheme_id);
 }
 
 void
@@ -213,7 +213,7 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 				new_id = g_strdup("inform");
 
 			populate_schemes_list(app->prefs->schemes_list);
-			config_file_set_string(PREFS_STYLE_SCHEME, new_id);
+			config_set_style_scheme(new_id);
 			g_free(new_id);
 		}
 		g_free(id);
@@ -315,25 +315,25 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 void
 on_font_set_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_file_set_enum(PREFS_FONT_SET, gtk_combo_box_get_active(combobox));
+	config_set_font_set(gtk_combo_box_get_active(combobox));
 }
 
 void
 on_custom_font_font_set(GtkFontButton *button, I7App *app)
 {
-	config_file_set_string(PREFS_CUSTOM_FONT, gtk_font_button_get_font_name(button));
+	config_set_custom_font(gtk_font_button_get_font_name(button));
 }
 
 void
 on_font_size_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_file_set_enum(PREFS_FONT_SIZE, gtk_combo_box_get_active(combobox));
+	config_set_font_size(gtk_combo_box_get_active(combobox));
 }
 
 void
 on_tab_ruler_value_changed(GtkRange *range, I7App *app)
 {
-	config_file_set_int(PREFS_TAB_WIDTH, (int)gtk_range_get_value(range));
+	config_set_tab_width((gint)gtk_range_get_value(range));
 }
 
 gchar*
@@ -448,55 +448,55 @@ on_extensions_remove_clicked(GtkButton *button, I7App *app)
 void
 on_enable_highlighting_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_SYNTAX_HIGHLIGHTING, gtk_toggle_button_get_active(togglebutton));
+	config_set_syntax_highlighting(gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_follow_symbols_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_INTELLIGENCE, gtk_toggle_button_get_active(togglebutton));
+	config_set_intelligence(gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_auto_indent_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_AUTO_INDENT, gtk_toggle_button_get_active(togglebutton));
+	config_set_auto_indent(gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_auto_number_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_AUTO_NUMBER_SECTIONS, gtk_toggle_button_get_active(togglebutton));
+	config_set_auto_number_sections(gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_author_name_changed(GtkEditable *editable, I7App *app)
 {
-	config_file_set_string(PREFS_AUTHOR_NAME, gtk_entry_get_text(GTK_ENTRY(editable)));
+	config_set_author_name(gtk_entry_get_text(GTK_ENTRY(editable)));
 }
 
 void
 on_glulx_combo_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_file_set_bool(PREFS_USE_GIT, gtk_combo_box_get_active(combobox) == 1);
+	config_get_use_git(gtk_combo_box_get_active(combobox) == 1);
 }
 
 void
 on_clean_build_files_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_CLEAN_BUILD_FILES, gtk_toggle_button_get_active(togglebutton));
+	config_set_clean_build_files(gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_clean_index_files_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_CLEAN_INDEX_FILES, gtk_toggle_button_get_active(togglebutton));
+	config_set_clean_index_files(gtk_toggle_button_get_active(togglebutton));
 }
 
 void
 on_show_debug_tabs_toggled(GtkToggleButton *togglebutton, I7App *app)
 {
-	config_file_set_bool(PREFS_DEBUG_LOG_VISIBLE, gtk_toggle_button_get_active(togglebutton));
+	config_set_debug_log_visible(gtk_toggle_button_get_active(togglebutton));
 }
 
 
@@ -523,7 +523,7 @@ update_font(GtkWidget *widget)
 gboolean
 update_tabs(GtkSourceView *view)
 {
-	gint spaces = config_file_get_int(PREFS_TAB_WIDTH);
+	int spaces = config_get_tab_width();
 	if(spaces == 0)
 		spaces = DEFAULT_TAB_WIDTH;
 	gtk_source_view_set_tab_width(view, spaces);

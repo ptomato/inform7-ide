@@ -22,54 +22,8 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-/* The slashes below are not directory separators, so they should be slashes! */
-#define PREFS_BASE_PATH    "/apps/gnome-inform7/"
-#define PREFS_APP_PATH     PREFS_BASE_PATH "app/"
-#define PREFS_IDE_PATH     PREFS_BASE_PATH "ide/"
-#define PREFS_EDITOR_PATH  PREFS_BASE_PATH "editor/"
-#define PREFS_SYNTAX_PATH  PREFS_BASE_PATH "syntax/"
-#define PREFS_WINDOW_PATH  PREFS_BASE_PATH "window/"
-#define PREFS_SKEIN_PATH   PREFS_BASE_PATH "skein/"
-
-#define PREFS_AUTHOR_NAME  PREFS_APP_PATH "AuthorName"
-
-#define PREFS_SPELL_CHECK_DEFAULT       PREFS_IDE_PATH "spell-check-default"
-#define PREFS_CLEAN_BUILD_FILES         PREFS_IDE_PATH "clean-build-files"
-#define PREFS_CLEAN_INDEX_FILES         PREFS_IDE_PATH "clean-index-files"
-#define PREFS_DEBUG_LOG_VISIBLE         PREFS_IDE_PATH "debug-log-visible"
-#define PREFS_TOOLBAR_VISIBLE           PREFS_IDE_PATH "toolbar-default"
-#define PREFS_STATUSBAR_VISIBLE         PREFS_IDE_PATH "statusbar-default"
-#define PREFS_NOTEPAD_VISIBLE           PREFS_IDE_PATH "notepad-default"
-#define PREFS_USE_GIT                   PREFS_IDE_PATH "use-git"
-#define PREFS_ELASTIC_TABSTOPS_DEFAULT  PREFS_IDE_PATH "elastic-tabs-default"
-
-#define PREFS_FONT_SET                  PREFS_EDITOR_PATH "font-set"
-#define PREFS_CUSTOM_FONT               PREFS_EDITOR_PATH "custom-font"
-#define PREFS_FONT_SIZE                 PREFS_EDITOR_PATH "font-size"
-#define PREFS_STYLE_SCHEME              PREFS_EDITOR_PATH "style-scheme"
-#define PREFS_TAB_WIDTH                 PREFS_EDITOR_PATH "tab-width"
-#define PREFS_ELASTIC_TABSTOPS_PADDING  PREFS_EDITOR_PATH "elastic-tab-padding"
-
-#define PREFS_SYNTAX_HIGHLIGHTING   PREFS_SYNTAX_PATH "syntax-highlighting"
-#define PREFS_AUTO_INDENT           PREFS_SYNTAX_PATH "auto-indent"
-#define PREFS_INTELLIGENCE          PREFS_SYNTAX_PATH "intelligence"
-#define PREFS_AUTO_NUMBER_SECTIONS  PREFS_SYNTAX_PATH "auto-number-sections"
-
-#define PREFS_APP_WINDOW_WIDTH   PREFS_WINDOW_PATH "app-window-width"
-#define PREFS_APP_WINDOW_HEIGHT  PREFS_WINDOW_PATH "app-window-height"
-#define PREFS_SLIDER_POSITION    PREFS_WINDOW_PATH "slider-position"
-#define PREFS_EXT_WINDOW_WIDTH   PREFS_WINDOW_PATH "ext-window-width"
-#define PREFS_EXT_WINDOW_HEIGHT  PREFS_WINDOW_PATH "ext-window-height"
-#define PREFS_NOTEPAD_X          PREFS_WINDOW_PATH "notepad-pos-x"
-#define PREFS_NOTEPAD_Y          PREFS_WINDOW_PATH "notepad-pos-y"
-#define PREFS_NOTEPAD_WIDTH      PREFS_WINDOW_PATH "notepad-width"
-#define PREFS_NOTEPAD_HEIGHT     PREFS_WINDOW_PATH "notepad-height"
-
-#define PREFS_HORIZONTAL_SPACING  PREFS_SKEIN_PATH "horizontal-spacing"
-#define PREFS_VERTICAL_SPACING    PREFS_SKEIN_PATH "vertical-spacing"
-
-#define DESKTOP_PREFS_STANDARD_FONT   "/org/gnome/desktop/interface/font-name"
-#define DESKTOP_PREFS_MONOSPACE_FONT  "/org/gnome/desktop/interface/monospace-font-name"
+#define STANDARD_FONT_FALLBACK "Sans 11"
+#define MONOSPACE_FONT_FALLBACK "Monospace 11"
 
 /* Three options for editor font */
 typedef enum {
@@ -99,14 +53,62 @@ typedef enum {
 #define DEFAULT_HORIZONTAL_SPACING 40
 #define DEFAULT_VERTICAL_SPACING 75
 
-void config_file_set_string(const gchar *key, const gchar *value);
-gchar *config_file_get_string(const gchar *key);
-void config_file_set_int(const gchar *key, const gint value);
-gint config_file_get_int(const gchar *key);
-void config_file_set_bool(const gchar *key, const gboolean value);
-gboolean config_file_get_bool(const gchar *key);
-void config_file_set_enum(const gchar *key, const gint value);
-gint config_file_get_enum(const gchar *key);
+/* Generates a series of method definitions you can
+  use of the form:
+    * type get_name()
+    * void set_name(type value)
+ */
+#define getter_and_setter(type, name) \
+  type config_get_##name(); \
+  void config_set_##name(const type v);
+
+getter_and_setter(gboolean, spell_check_default);
+getter_and_setter(gboolean, clean_build_files);
+getter_and_setter(gboolean, clean_index_files);
+getter_and_setter(gboolean, debug_log_visible);
+getter_and_setter(gboolean, toolbar_visible);
+getter_and_setter(gboolean, statusbar_visible);
+getter_and_setter(gboolean, notepad_visible);
+getter_and_setter(gboolean, use_git);
+getter_and_setter(gboolean, elastic_tabstops_default);
+
+getter_and_setter(int, horizontal_spacing);
+getter_and_setter(int, vertical_spacing);
+
+getter_and_setter(int, app_window_width);
+getter_and_setter(int, app_window_height);
+getter_and_setter(int, ext_window_width);
+getter_and_setter(int, ext_window_height);
+getter_and_setter(int, notepad_x);
+getter_and_setter(int, notepad_y);
+getter_and_setter(int, notepad_width);
+getter_and_setter(int, notepad_height);
+getter_and_setter(int, slider_position);
+
+getter_and_setter(gboolean, spell_check_default);
+getter_and_setter(gboolean, clean_build_files);
+getter_and_setter(gboolean, clean_index_files);
+getter_and_setter(gboolean, debug_log_visible);
+getter_and_setter(gboolean, toolbar_visible);
+getter_and_setter(gboolean, statusbar_visible);
+getter_and_setter(gboolean, use_git);
+getter_and_setter(gboolean, elastic_tabs_default);
+
+getter_and_setter(gboolean, syntax_highlighting);
+getter_and_setter(gboolean, auto_indent);
+getter_and_setter(gboolean, intelligence);
+getter_and_setter(gboolean, auto_number_sections);
+
+getter_and_setter(int, font_set);
+getter_and_setter(int, font_size);
+getter_and_setter(char *, custom_font);
+getter_and_setter(char *, style_scheme);
+getter_and_setter(int, tab_width);
+getter_and_setter(int, elastic_tabstops_padding);
+
+getter_and_setter(char *, author_name);
+
+
 void init_config_file(GtkBuilder *builder);
 void trigger_config_file(void);
 PangoFontDescription *get_desktop_standard_font(void);

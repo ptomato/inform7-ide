@@ -272,7 +272,7 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	g_signal_connect(print, "end-print", G_CALLBACK(on_end_print), compositor);
 
 	/* Design our printed page */
-	guint tabwidth = (guint)config_file_get_int(PREFS_TAB_WIDTH);
+	unsigned tabwidth = (unsigned)config_get_tab_width();
 	if(tabwidth == 0)
 		tabwidth = DEFAULT_TAB_WIDTH;
 	gtk_source_print_compositor_set_tab_width(compositor, tabwidth);
@@ -519,7 +519,7 @@ action_autocheck_spelling_toggle(GtkToggleAction *action, I7Document *document)
 {
 	gboolean value = gtk_toggle_action_get_active(action);
 	/* Use this value as the default for new windows */
-	config_file_set_bool(PREFS_SPELL_CHECK_DEFAULT, value);
+	config_set_spell_check_default(value);
 	gtk_action_set_sensitive(document->check_spelling, value);
 	i7_document_set_spellcheck(document, value);
 }
@@ -540,7 +540,7 @@ action_view_toolbar_toggled(GtkToggleAction *action, I7Document *document)
 		gtk_widget_show(document->toolbar);
 	else
 		gtk_widget_hide(document->toolbar);
-	config_file_set_bool(PREFS_TOOLBAR_VISIBLE, show);
+	config_set_toolbar_visible(show);
 }
 
 /* View->Statusbar */
@@ -552,7 +552,7 @@ action_view_statusbar_toggled(GtkToggleAction *action, I7Document *document)
 		gtk_widget_show(document->statusline);
 	else
 		gtk_widget_hide(document->statusline);
-	config_file_set_bool(PREFS_STATUSBAR_VISIBLE, show);
+	config_set_statusbar_visible(show);
 }
 
 /* View->Notepad */
@@ -564,7 +564,7 @@ action_view_notepad_toggled(GtkToggleAction *action, I7Story *story)
 		gtk_widget_show(story->notes_window);
 	else
 		gtk_widget_hide(story->notes_window);
-	config_file_set_bool(PREFS_NOTEPAD_VISIBLE, show);
+	config_set_notepad_visible(show);
 }
 
 /* View->Show Tab->Source */
@@ -950,7 +950,7 @@ action_enable_elastic_tabstops_toggled(GtkToggleAction *action, I7Document *docu
 {
 	gboolean value = gtk_toggle_action_get_active(action);
 	/* Use this value as the default for new windows */
-	config_file_set_bool(PREFS_ELASTIC_TABSTOPS_DEFAULT, value);
+	config_set_elastic_tabstops_default(value);
 	i7_document_set_elastic_tabstops(document, value);
 }
 

@@ -25,80 +25,125 @@
 #include "error.h"
 #include "story.h"
 
-/* These functions are wrappers for GSettings setting and getting functions. */
+/* The slashes below are not directory separators, so they should be slashes! */
+#define PREFS_BASE_PATH    "/apps/gnome-inform7/"
+#define PREFS_APP_PATH     PREFS_BASE_PATH "app/"
+#define PREFS_IDE_PATH     PREFS_BASE_PATH "ide/"
+#define PREFS_EDITOR_PATH  PREFS_BASE_PATH "editor/"
+#define PREFS_SYNTAX_PATH  PREFS_BASE_PATH "syntax/"
+#define PREFS_WINDOW_PATH  PREFS_BASE_PATH "window/"
+#define PREFS_SKEIN_PATH   PREFS_BASE_PATH "skein/"
 
-void
-config_file_set_string(const gchar *key, const gchar *value)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	g_settings_set_string(settings, key, value);
-	g_object_unref(settings);
+#define PREFS_AUTHOR_NAME  PREFS_APP_PATH "AuthorName"
+
+#define PREFS_SPELL_CHECK_DEFAULT       PREFS_IDE_PATH "spell-check-default"
+#define PREFS_CLEAN_BUILD_FILES         PREFS_IDE_PATH "clean-build-files"
+#define PREFS_CLEAN_INDEX_FILES         PREFS_IDE_PATH "clean-index-files"
+#define PREFS_DEBUG_LOG_VISIBLE         PREFS_IDE_PATH "debug-log-visible"
+#define PREFS_TOOLBAR_VISIBLE           PREFS_IDE_PATH "toolbar-default"
+#define PREFS_STATUSBAR_VISIBLE         PREFS_IDE_PATH "statusbar-default"
+#define PREFS_NOTEPAD_VISIBLE           PREFS_IDE_PATH "notepad-default"
+#define PREFS_USE_GIT                   PREFS_IDE_PATH "use-git"
+#define PREFS_ELASTIC_TABSTOPS_DEFAULT  PREFS_IDE_PATH "elastic-tabs-default"
+
+#define PREFS_FONT_SET                  PREFS_EDITOR_PATH "font-set"
+#define PREFS_CUSTOM_FONT               PREFS_EDITOR_PATH "custom-font"
+#define PREFS_FONT_SIZE                 PREFS_EDITOR_PATH "font-size"
+#define PREFS_STYLE_SCHEME              PREFS_EDITOR_PATH "style-scheme"
+#define PREFS_TAB_WIDTH                 PREFS_EDITOR_PATH "tab-width"
+#define PREFS_ELASTIC_TABSTOPS_PADDING  PREFS_EDITOR_PATH "elastic-tab-padding"
+
+#define PREFS_SYNTAX_HIGHLIGHTING   PREFS_SYNTAX_PATH "syntax-highlighting"
+#define PREFS_AUTO_INDENT           PREFS_SYNTAX_PATH "auto-indent"
+#define PREFS_INTELLIGENCE          PREFS_SYNTAX_PATH "intelligence"
+#define PREFS_AUTO_NUMBER_SECTIONS  PREFS_SYNTAX_PATH "auto-number-sections"
+
+#define PREFS_APP_WINDOW_WIDTH   PREFS_WINDOW_PATH "app-window-width"
+#define PREFS_APP_WINDOW_HEIGHT  PREFS_WINDOW_PATH "app-window-height"
+#define PREFS_SLIDER_POSITION    PREFS_WINDOW_PATH "slider-position"
+#define PREFS_EXT_WINDOW_WIDTH   PREFS_WINDOW_PATH "ext-window-width"
+#define PREFS_EXT_WINDOW_HEIGHT  PREFS_WINDOW_PATH "ext-window-height"
+#define PREFS_NOTEPAD_X          PREFS_WINDOW_PATH "notepad-pos-x"
+#define PREFS_NOTEPAD_Y          PREFS_WINDOW_PATH "notepad-pos-y"
+#define PREFS_NOTEPAD_WIDTH      PREFS_WINDOW_PATH "notepad-width"
+#define PREFS_NOTEPAD_HEIGHT     PREFS_WINDOW_PATH "notepad-height"
+
+#define PREFS_HORIZONTAL_SPACING  PREFS_SKEIN_PATH "horizontal-spacing"
+#define PREFS_VERTICAL_SPACING    PREFS_SKEIN_PATH "vertical-spacing"
+
+#define DESKTOP_PREFS_STANDARD_FONT   "/org/gnome/desktop/interface/font-name"
+#define DESKTOP_PREFS_MONOSPACE_FONT  "/org/gnome/desktop/interface/monospace-font-name"
+
+struct Schemas {
+	GSettings *editor, *syntax, *app, *window, *ide, *skein, *desktop;
+};
+
+static struct Schemas schemas;
+
+static void initialize_schemas() {
+	schemas.editor = g_settings_new(PREFS_EDITOR_PATH);
+	schemas.syntax = g_settings_new(PREFS_SYNTAX_PATH);
+	schemas.app = g_settings_new(PREFS_APP_PATH);
+	schemas.window = g_settings_new(PREFS_WINDOW_PATH);
+	schemas.ide = g_settings_new(PREFS_IDE_PATH);
+	schemas.skein = g_settings_new(PREFS_SKEIN_PATH);
+	schemas.desktop = g_settings_new(DESKTOP_PREFS_PATH);
 }
 
-void
-config_file_set_int(const gchar *key, const gint value)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	g_settings_set_int(settings, key, value);
-	g_object_unref(settings);
-}
+#define getter_and_setter_for(type, gsettings_fun, function_name, schema, key) \
+  type config_get_##function_name() { return g_settings_get_##gsettings_fun(schemas.schema, key); } \
+  void config_set_##function_name(const type v) { g_settings_set_##gsettings_fun(schemas.schema, key, v); }  
 
-void
-config_file_set_bool(const gchar *key, const gboolean value)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	g_settings_set_boolean(settings, key, value);
-	g_object_unref(settings);
-}
+#define boolean_getter_and_setter_for(function_name, schema, key) \
+  getter_and_setter_for(gboolean, boolean, function_name, schema, key)
+#define string_getter_and_setter_for(function_name, schema, key) \
+  getter_and_setter_for(gchar *, string, function_name, schema, key)
+#define integer_getter_and_setter_for(function_name, schema, key) \
+  getter_and_setter_for(gint, int, function_name, schema, key)
+#define enum_getter_and_setter_for(function_name, schema, key) \
+  getter_and_setter_for(gint, enum, function_name, schema, key)
 
-void
-config_file_set_enum(const gchar *key, const int value)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	g_settings_set_enum(settings, key, value);
-	g_object_unref(settings);
-}
+integer_getter_and_setter_for(horizontal_spacing, skein, PREFS_HORIZONTAL_SPACING);
+integer_getter_and_setter_for(vertical_spacing, skein, PREFS_VERTICAL_SPACING);
 
-/* The string must be freed afterward. */
-gchar *
-config_file_get_string(const gchar *key)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	char *retval = g_settings_get_string(settings, key);
-	g_object_unref(settings);
-	return retval;
-}
+integer_getter_and_setter_for(app_window_width, window, PREFS_APP_WINDOW_WIDTH);
+integer_getter_and_setter_for(app_window_height, window, PREFS_APP_WINDOW_HEIGHT);
+integer_getter_and_setter_for(ext_window_width, window, PREFS_EXT_WINDOW_WIDTH);
+integer_getter_and_setter_for(ext_window_height, window, PREFS_EXT_WINDOW_HEIGHT);
+integer_getter_and_setter_for(notepad_x, window, PREFS_NOTEPAD_X);
+integer_getter_and_setter_for(notepad_y, window, PREFS_NOTEPAD_Y);
+integer_getter_and_setter_for(notepad_width, window, PREFS_NOTEPAD_WIDTH);
+integer_getter_and_setter_for(notepad_height, window, PREFS_NOTEPAD_HEIGHT);
+integer_getter_and_setter_for(slider_position, window, PREFS_SLIDER_POSITION);
 
-gint
-config_file_get_int(const gchar *key)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	int retval = g_settings_get_int(settings, key);
-	g_object_unref(settings);
-	return retval;
-}
+boolean_getter_and_setter_for(spell_check_default, ide, PREFS_SPELL_CHECK_DEFAULT);
+boolean_getter_and_setter_for(clean_build_files, ide, PREFS_CLEAN_BUILD_FILES);
+boolean_getter_and_setter_for(clean_index_files, ide, PREFS_CLEAN_INDEX_FILES);
+boolean_getter_and_setter_for(debug_log_visible, ide, PREFS_DEBUG_LOG_VISIBLE);
+boolean_getter_and_setter_for(toolbar_visible, ide, PREFS_TOOLBAR_VISIBLE);
+boolean_getter_and_setter_for(statusbar_visible, ide, PREFS_STATUSBAR_VISIBLE);
+boolean_getter_and_setter_for(notepad_visible, ide, PREFS_NOTEPAD_VISIBLE);
+boolean_getter_and_setter_for(use_git, ide, PREFS_USE_GIT);
+boolean_getter_and_setter_for(elastic_tabstops_default, ide, PREFS_ELASTIC_TABSTOPS_DEFAULT);
 
-gboolean
-config_file_get_bool(const gchar *key)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	gboolean retval = g_settings_get_boolean(settings, key);
-	g_object_unref(settings);
-	return retval;
-}
+boolean_getter_and_setter_for(syntax_highlighting, syntax, PREFS_SYNTAX_HIGHLIGHTING);
+boolean_getter_and_setter_for(auto_indent, syntax, PREFS_AUTO_INDENT);
+boolean_getter_and_setter_for(intelligence, syntax, PREFS_INTELLIGENCE);
+boolean_getter_and_setter_for(auto_number_sections, syntax, PREFS_AUTO_NUMBER_SECTIONS);
 
-gint
-config_file_get_enum(const gchar *key)
-{
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
-	int retval = g_settings_get_enum(settings, key);
-	g_object_unref(settings);
-	return retval;
-}
+enum_getter_and_setter_for(font_set, editor, PREFS_FONT_SET);
+enum_getter_and_setter_for(font_size, editor, PREFS_FONT_SIZE);
+string_getter_and_setter_for(custom_font, editor, PREFS_CUSTOM_FONT);
+string_getter_and_setter_for(style_scheme, editor, PREFS_STYLE_SCHEME);
+integer_getter_and_setter_for(tab_width, editor, PREFS_TAB_WIDTH);
+integer_getter_and_setter_for(elastic_tabstops_padding, editor, PREFS_ELASTIC_TABSTOPS_PADDING);
 
+string_getter_and_setter_for(author_name, app, PREFS_AUTHOR_NAME);
+
+/* ---------  Events from now on:   ------------ */
 
 static void
-on_config_font_set_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *combobox)
+on_config_font_set_changed(GSettings *settings, const char *key, GtkWidget *combobox)
 {
 	int newvalue = g_settings_get_enum(settings, key);
 
@@ -111,7 +156,7 @@ on_config_font_set_changed(GSettings *settings, guint id, const gchar *key, GtkW
 }
 
 static void
-on_config_custom_font_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *fontbutton)
+on_config_custom_font_changed(GSettings *settings, const char *key, GtkWidget *fontbutton)
 {
 	char *newvalue = g_settings_get_string(settings, key);
 	/* TODO: validate new value? */
@@ -119,7 +164,7 @@ on_config_custom_font_changed(GSettings *settings, guint id, const gchar *key, G
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
 	gtk_font_button_set_font_name(GTK_FONT_BUTTON(fontbutton), newvalue);
-	if(config_file_get_enum(PREFS_FONT_SET) == FONT_CUSTOM) {
+	if(config_get_font_set() == FONT_CUSTOM) {
 		update_font(GTK_WIDGET(theapp->prefs->source_example));
 		update_font(GTK_WIDGET(theapp->prefs->tab_example));
 		i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
@@ -129,7 +174,7 @@ on_config_custom_font_changed(GSettings *settings, guint id, const gchar *key, G
 }
 
 static void
-on_config_font_size_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *combobox)
+on_config_font_size_changed(GSettings *settings, const char *key, GtkWidget *combobox)
 {
 	gint newvalue = g_settings_get_enum(settings, key);
 
@@ -143,7 +188,7 @@ on_config_font_size_changed(GSettings *settings, guint id, const gchar *key, Gtk
 }
 
 static void
-on_config_style_scheme_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *list)
+on_config_style_scheme_changed(GSettings *settings, const char *key, GtkWidget *list)
 {
 	I7App *theapp = i7_app_get();
 
@@ -160,7 +205,7 @@ on_config_style_scheme_changed(GSettings *settings, guint id, const gchar *key, 
 }
 
 static void
-on_config_tab_width_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *range)
+on_config_tab_width_changed(GSettings *settings, const char *key, GtkWidget *range)
 {
 	gint newvalue = g_settings_get_int(settings, key);
 	/* validate new value */
@@ -180,7 +225,7 @@ on_config_tab_width_changed(GSettings *settings, guint id, const gchar *key, Gtk
 }
 
 static void
-on_config_syntax_highlighting_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *toggle)
+on_config_syntax_highlighting_changed(GSettings *settings, const char *key, GtkWidget *toggle)
 {
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
@@ -191,7 +236,7 @@ on_config_syntax_highlighting_changed(GSettings *settings, guint id, const gchar
 }
 
 static void
-on_config_intelligence_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *toggle)
+on_config_intelligence_changed(GSettings *settings, const char *key, GtkWidget *toggle)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
@@ -202,7 +247,7 @@ on_config_intelligence_changed(GSettings *settings, guint id, const gchar *key, 
 }
 
 static void
-on_config_elastic_tabstops_padding_changed(GSettings *settings, guint id, const gchar *key)
+on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key, gpointer data)
 {
 	gint newvalue = g_settings_get_int(settings, key);
 	/* validate new value */
@@ -217,7 +262,7 @@ on_config_elastic_tabstops_padding_changed(GSettings *settings, guint id, const 
 }
 
 static void
-on_config_author_name_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *editable)
+on_config_author_name_changed(GSettings *settings, const char *key, GtkWidget *editable)
 {
 	gchar *newvalue = g_settings_get_string(settings, key);
 	/* update application to reflect new value */
@@ -233,7 +278,7 @@ set_glulx_interpreter(I7Document *document, gpointer data)
 }
 
 static void
-on_config_use_git_changed(GSettings *settings, guint id, const gchar *key, GtkComboBox *box)
+on_config_use_git_changed(GSettings *settings, const char *key, GtkComboBox *box)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
@@ -242,7 +287,7 @@ on_config_use_git_changed(GSettings *settings, guint id, const gchar *key, GtkCo
 }
 
 static void
-on_config_clean_build_files_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *toggle)
+on_config_clean_build_files_changed(GSettings *settings, const gchar *key, GtkWidget *toggle)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
@@ -253,7 +298,7 @@ on_config_clean_build_files_changed(GSettings *settings, guint id, const gchar *
 }
 
 static void
-on_config_debug_log_visible_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *toggle)
+on_config_debug_log_visible_changed(GSettings *settings, const char *key, GtkWidget *toggle)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
@@ -267,8 +312,8 @@ update_skein_spacing(I7Document *document)
 	if(!I7_IS_STORY(document))
 		return;
 
-	gdouble horizontal = (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING);
-	gdouble vertical = (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING);
+	double horizontal = (double)config_get_horizontal_spacing();
+	double vertical = (double)config_get_vertical_spacing();
 
 	I7Story *story = I7_STORY(document);
 	g_object_set(i7_story_get_skein(story),
@@ -280,79 +325,79 @@ update_skein_spacing(I7Document *document)
 }
 
 static void
-on_config_skein_spacing_changed(GSettings *settings, guint id, const gchar *key)
+on_config_skein_spacing_changed(GSettings *settings, const char *key)
 {
 	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)update_skein_spacing, NULL);
 }
 
 static void
-on_config_generic_bool_changed(GSettings *settings, guint id, const gchar *key, GtkWidget *toggle)
+on_config_generic_bool_changed(GSettings *settings, const char *key, GtkWidget *toggle)
 {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), g_settings_get_boolean(settings, key));
 }
 
 struct KeyToMonitor {
-	const gchar *name, *widgetname;
+	GSettings **schema;
+	const char *key, *widgetname;
 	void (*callback)();
 };
 
 static struct KeyToMonitor keys_to_monitor[] = {
-	{ PREFS_FONT_SET, "font_set", on_config_font_set_changed },
-	{ PREFS_CUSTOM_FONT, "custom_font", on_config_custom_font_changed },
-	{ PREFS_FONT_SIZE, "font_size",	on_config_font_size_changed },
-	{ PREFS_STYLE_SCHEME, "schemes_view", on_config_style_scheme_changed },
-	{ PREFS_TAB_WIDTH, "tab_ruler", on_config_tab_width_changed },
-	{ PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", on_config_syntax_highlighting_changed },
-	{ PREFS_AUTO_INDENT, "auto_indent", on_config_generic_bool_changed },
-	{ PREFS_INTELLIGENCE, "follow_symbols", on_config_intelligence_changed },
-	{ PREFS_AUTO_NUMBER_SECTIONS, "auto_number", on_config_generic_bool_changed },
-	{ PREFS_AUTHOR_NAME, "author_name", on_config_author_name_changed },
-	{ PREFS_CLEAN_BUILD_FILES, "clean_build_files", on_config_clean_build_files_changed },
-	{ PREFS_CLEAN_INDEX_FILES, "clean_index_files", on_config_generic_bool_changed },
-	{ PREFS_DEBUG_LOG_VISIBLE, "show_debug_tabs", on_config_debug_log_visible_changed },
-	{ PREFS_USE_GIT, "glulx_combo", on_config_use_git_changed },
-	{ PREFS_ELASTIC_TABSTOPS_PADDING, NULL, on_config_elastic_tabstops_padding_changed },
-	{ PREFS_HORIZONTAL_SPACING, NULL, on_config_skein_spacing_changed },
-	{ PREFS_VERTICAL_SPACING, NULL, on_config_skein_spacing_changed }
+	{ &schemas.editor, PREFS_FONT_SET, "font_set", on_config_font_set_changed },
+	{ &schemas.editor, PREFS_CUSTOM_FONT, "custom_font", on_config_custom_font_changed },
+	{ &schemas.editor, PREFS_FONT_SIZE, "font_size",	on_config_font_size_changed },
+	{ &schemas.editor, PREFS_STYLE_SCHEME, "schemes_view", on_config_style_scheme_changed },
+	{ &schemas.editor, PREFS_TAB_WIDTH, "tab_ruler", on_config_tab_width_changed },
+	{ &schemas.syntax, PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", on_config_syntax_highlighting_changed },
+	{ &schemas.syntax, PREFS_AUTO_INDENT, "auto_indent", on_config_generic_bool_changed },
+	{ &schemas.syntax, PREFS_INTELLIGENCE, "follow_symbols", on_config_intelligence_changed },
+	{ &schemas.syntax, PREFS_AUTO_NUMBER_SECTIONS, "auto_number", on_config_generic_bool_changed },
+	{ &schemas.app, PREFS_AUTHOR_NAME, "author_name", on_config_author_name_changed },
+	{ &schemas.ide, PREFS_CLEAN_BUILD_FILES, "clean_build_files", on_config_clean_build_files_changed },
+	{ &schemas.ide, PREFS_CLEAN_INDEX_FILES, "clean_index_files", on_config_generic_bool_changed },
+	{ &schemas.ide, PREFS_DEBUG_LOG_VISIBLE, "show_debug_tabs", on_config_debug_log_visible_changed },
+	{ &schemas.ide, PREFS_USE_GIT, "glulx_combo", on_config_use_git_changed },
+	{ &schemas.editor, PREFS_ELASTIC_TABSTOPS_PADDING, NULL, on_config_elastic_tabstops_padding_changed },
+	{ &schemas.skein, PREFS_HORIZONTAL_SPACING, NULL, on_config_skein_spacing_changed },
+	{ &schemas.skein, PREFS_VERTICAL_SPACING, NULL, on_config_skein_spacing_changed }
 };
 
 /* Check if the config keys exist and if not, set them to defaults. */
 void
 init_config_file(GtkBuilder *builder)
 {
-	/* Initialize the GConf client */
-	GSettings *settings = g_settings_new(PREFS_BASE_PATH);
+	initialize_schemas();
 
 	/* Add listeners to specific keys and pass them their associated widgets as data */
 	int i;
 	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
 	{
-		char *signal = g_strconcat("changed::", keys_to_monitor[i].name, NULL);
-		g_signal_connect(settings, signal, G_CALLBACK(keys_to_monitor[i].callback),
+		GSettings *settings = *keys_to_monitor[i].schema;
+		char *signal = g_strconcat("changed::", keys_to_monitor[i].key, NULL);
+		g_signal_connect(G_OBJECT(settings), signal, G_CALLBACK(keys_to_monitor[i].callback),
 			(keys_to_monitor[i].widgetname)? GTK_WIDGET(load_object(builder, keys_to_monitor[i].widgetname)) : NULL);
 		g_free(signal);
 	}
-
-	g_object_unref(settings);
 }
 
 /* Notify every config key so that the preferences dialog picks it up */
 void
 trigger_config_file(void)
 {
-	/* Initialize the GConf client */
-	GSettings *settings = g_settings_new (PREFS_BASE_PATH);
+	unsigned changed_signal = g_signal_lookup ("changed", G_TYPE_SETTINGS);
 	/* Trigger all the keys for which we have listeners */
 	int i;
 	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
 	{
-		char *signal = g_strconcat("changed::", keys_to_monitor[i].name, NULL);
-		g_signal_emit_by_name (settings, signal, keys_to_monitor[i].name);
-		g_free (signal);
+		const char *key = keys_to_monitor[i].key;
+		GSettings *settings = *keys_to_monitor[i].schema;
+		GQuark detail = g_quark_from_string(key);
+		g_signal_emit (G_OBJECT(settings), changed_signal, detail, key, NULL);
+		g_object_unref(settings);
 	}
-
-	g_object_unref(settings);
 }
+
+/* Desktop preferences stuff: */
 
 /*
  * get_desktop_standard_font:
@@ -363,7 +408,7 @@ PangoFontDescription *
 get_desktop_standard_font(void)
 {
 	PangoFontDescription *retval;
-	char *font = config_file_get_string(DESKTOP_PREFS_STANDARD_FONT);
+	char *font = g_settings_get_string(schemas.desktop, DESKTOP_PREFS_STANDARD_FONT);
 	if(!font)
 		return pango_font_description_from_string(STANDARD_FONT_FALLBACK);
 	retval = pango_font_description_from_string(font);
@@ -380,7 +425,7 @@ PangoFontDescription *
 get_desktop_monospace_font(void)
 {
 	PangoFontDescription *retval;
-	char *font = config_file_get_string(DESKTOP_PREFS_MONOSPACE_FONT);
+	char *font = g_settings_get_string(schemas.desktop, DESKTOP_PREFS_MONOSPACE_FONT);
 	if(!font)
 		return pango_font_description_from_string(MONOSPACE_FONT_FALLBACK);
 	retval = pango_font_description_from_string(font);
@@ -396,20 +441,15 @@ get_desktop_monospace_font(void)
 static PangoFontDescription *
 get_font_family(void)
 {
-	gchar *customfont;
-	switch(config_file_get_enum(PREFS_FONT_SET)) {
+	char *customfont;
+	switch(config_get_font_set()) {
 		case FONT_MONOSPACE:
 			return get_desktop_monospace_font();
 		case FONT_CUSTOM:
-		{
-			char *font = config_file_get_string(PREFS_CUSTOM_FONT);
-			if(font) {
-				PangoFontDescription *retval = pango_font_description_from_string(font);
-				g_free(font);
-				return retval;
-			}
+			customfont = config_get_custom_font();
+			if(customfont)
+				return pango_font_description_from_string(customfont);
 			/* else fall through */
-		}
 		default:
 			;
 	}
@@ -426,9 +466,9 @@ get_font_size(PangoFontDescription *font)
 	if(size == 0.0)
 		size = DEFAULT_SIZE_STANDARD * PANGO_SCALE;
 
-	switch(config_file_get_enum(PREFS_FONT_SIZE)) {
+	switch(config_get_font_size()) {
 		case FONT_SIZE_MEDIUM:
-			size *= RELATIVE_SIZE_MEDIUM  ;
+			size *= RELATIVE_SIZE_MEDIUM;
 			break;
 		case FONT_SIZE_LARGE:
 			size *= RELATIVE_SIZE_LARGE;
@@ -451,3 +491,4 @@ get_font_description(void)
 	pango_font_description_set_size(font, get_font_size(font));
 	return font;
 }
+

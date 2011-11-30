@@ -298,20 +298,20 @@ on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Panel *p
 void
 on_skein_spacing_use_defaults_clicked(GtkButton *button, I7Story *story)
 {
-	config_file_set_int(PREFS_HORIZONTAL_SPACING, DEFAULT_HORIZONTAL_SPACING);
-	config_file_set_int(PREFS_VERTICAL_SPACING, DEFAULT_VERTICAL_SPACING);
+	config_set_horizontal_spacing(DEFAULT_HORIZONTAL_SPACING);
+	config_set_vertical_spacing(DEFAULT_VERTICAL_SPACING);
 }
 
 void
 on_skein_spacing_vertical_value_changed(GtkRange *range)
 {
-	config_file_set_int(PREFS_VERTICAL_SPACING, (gint)gtk_range_get_value(range));
+	config_set_vertical_spacing((gint)gtk_range_get_value(range));
 }
 
 void
 on_skein_spacing_horizontal_value_changed(GtkRange *range)
 {
-	config_file_set_int(PREFS_HORIZONTAL_SPACING, (gint)gtk_range_get_value(range));
+	config_set_horizontal_spacing((gint)gtk_range_get_value(range));
 }
 
 I7Skein *

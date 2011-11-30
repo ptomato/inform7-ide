@@ -26,7 +26,7 @@ on_notes_window_delete_event(GtkWidget *window, GdkEvent *event, I7Story *story)
 	I7_STORY_USE_PRIVATE(story, priv);
 
 	gtk_widget_hide(window);
-	config_file_set_bool(PREFS_NOTEPAD_VISIBLE, FALSE);
+	config_set_notepad_visible(FALSE);
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), FALSE);
 	return TRUE; /* Block event */
 }

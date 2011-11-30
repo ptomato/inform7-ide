@@ -280,7 +280,7 @@ GtkSourceStyleScheme *
 get_style_scheme(void)
 {
 	GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
-	gchar *scheme_name = config_file_get_string(PREFS_STYLE_SCHEME);
+	char *scheme_name = config_get_style_scheme();
 	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, scheme_name);
 	g_free(scheme_name);
 	return scheme;

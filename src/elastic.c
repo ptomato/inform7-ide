@@ -56,7 +56,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 
 	/* initialize tab widths to minimum */
 	for(current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++)
-		max_widths[current_tab_num] = config_file_get_int(PREFS_TAB_WIDTH);
+		max_widths[current_tab_num] = config_get_tab_width();
 
 	/* get width of text in cells */
 	g_assert(gtk_text_iter_starts_line(block_start));
@@ -96,7 +96,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 	int acc_tabstop = 0;
 	PangoTabArray *tab_array = pango_tab_array_new(max_tabs, TRUE);
 	for (current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++) {
-		acc_tabstop += max_widths[current_tab_num] + config_file_get_int(PREFS_ELASTIC_TABSTOPS_PADDING);
+		acc_tabstop += max_widths[current_tab_num] + config_get_elastic_tabstops_padding();
 		pango_tab_array_set_tab(tab_array, current_tab_num, PANGO_TAB_LEFT, acc_tabstop);
 	}
 	g_object_set(tag,

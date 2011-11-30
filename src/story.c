@@ -83,16 +83,16 @@ save_storywindow_size(I7Story *story)
 {
 	gint w, h, x, y;
 	gtk_window_get_size(GTK_WINDOW(story), &w, &h);
-	config_file_set_int(PREFS_APP_WINDOW_WIDTH, w);
-	config_file_set_int(PREFS_APP_WINDOW_HEIGHT, h);
-	config_file_set_int(PREFS_SLIDER_POSITION, gtk_paned_get_position(GTK_PANED(story->facing_pages)));
+	config_set_app_window_width(w);
+	config_set_app_window_height(h);
+	config_set_slider_position(gtk_paned_get_position(GTK_PANED(story->facing_pages)));
 	/* Also save the notepad window */
 	gtk_window_get_size(GTK_WINDOW(story->notes_window), &w, &h);
 	gtk_window_get_position(GTK_WINDOW(story->notes_window), &x, &y);
-	config_file_set_int(PREFS_NOTEPAD_WIDTH, w);
-	config_file_set_int(PREFS_NOTEPAD_HEIGHT, h);
-	config_file_set_int(PREFS_NOTEPAD_X, x);
-	config_file_set_int(PREFS_NOTEPAD_Y, y);
+	config_set_notepad_width(w);
+	config_set_notepad_height(h);
+	config_set_notepad_x(x);
+	config_set_notepad_y(y);
 }
 
 static gboolean
@@ -723,8 +723,8 @@ i7_story_init(I7Story *self)
 	g_object_unref(builder);
 
 	/* Set the last saved window size and slider position */
-	gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_APP_WINDOW_WIDTH), config_file_get_int(PREFS_APP_WINDOW_HEIGHT));
-	gtk_paned_set_position(GTK_PANED(self->facing_pages), config_file_get_int(PREFS_SLIDER_POSITION));
+	gtk_window_resize(GTK_WINDOW(self), config_get_app_window_width(), config_get_app_window_height());
+	gtk_paned_set_position(GTK_PANED(self->facing_pages), config_get_slider_position());
 
 	/* Create the private properties */
 	priv->notes = gtk_text_buffer_new(NULL);
@@ -745,16 +745,16 @@ i7_story_init(I7Story *self)
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
 	g_signal_connect(priv->skein, "differs-badge-activate", G_CALLBACK(on_differs_badge_activate), self);
 	g_signal_connect(priv->skein, "modified", G_CALLBACK(on_skein_modified), self);
-	gtk_range_set_value(GTK_RANGE(self->skein_spacing_horizontal), (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING));
-	gtk_range_set_value(GTK_RANGE(self->skein_spacing_vertical), (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING));
+	gtk_range_set_value(GTK_RANGE(self->skein_spacing_horizontal), (gdouble)config_get_horizontal_spacing());
+	gtk_range_set_value(GTK_RANGE(self->skein_spacing_vertical), (gdouble)config_get_vertical_spacing());
 
 	/* Set up the Notes window */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(self->notes_view), priv->notes);
 	gtk_window_set_keep_above(GTK_WINDOW(self->notes_window), TRUE);
-	gtk_window_resize(GTK_WINDOW(self->notes_window), config_file_get_int(PREFS_NOTEPAD_WIDTH), config_file_get_int(PREFS_NOTEPAD_HEIGHT));
-	gtk_window_move(GTK_WINDOW(self->notes_window), config_file_get_int(PREFS_NOTEPAD_X), config_file_get_int(PREFS_NOTEPAD_Y));
+	gtk_window_resize(GTK_WINDOW(self->notes_window), config_get_notepad_width(), config_get_notepad_height());
+	gtk_window_move(GTK_WINDOW(self->notes_window), config_get_notepad_x(), config_get_notepad_y());
 	/* Toggling the action will show the window if appropriate */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), config_file_get_bool(PREFS_NOTEPAD_VISIBLE));
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), config_get_notepad_visible());
 
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
@@ -790,7 +790,7 @@ i7_story_init(I7Story *self)
 	gtk_action_set_sensitive(I7_DOCUMENT(self)->next_section, FALSE);
 
 	/* Add extra pages in "Errors" if the user has them turned on */
-	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE))
+	if(config_get_debug_log_visible())
 		i7_story_add_debug_tabs(I7_DOCUMENT(self));
 
 	/* Do the default settings */
@@ -805,8 +805,8 @@ i7_story_init(I7Story *self)
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
 	/* Set spell checking */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_get_spell_check_default());
+	i7_document_set_spellcheck(I7_DOCUMENT(self), config_get_spell_check_default());
 
 	/* Make the Skein dialogs transient */
 	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));

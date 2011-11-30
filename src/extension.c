@@ -57,8 +57,8 @@ save_extwindow_size(GtkWindow *window)
 {
 	gint w, h;
 	gtk_window_get_size(window, &w, &h);
-	config_file_set_int(PREFS_EXT_WINDOW_WIDTH, w);
-	config_file_set_int(PREFS_EXT_WINDOW_HEIGHT, h);
+	config_set_ext_window_width(w);
+	config_set_ext_window_height(h);
 }
 
 static gboolean
@@ -408,7 +408,7 @@ i7_extension_init(I7Extension *self)
 	i7_app_update_extensions_menu(i7_app_get());
 
 	/* Set the last saved window size */
-	gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_EXT_WINDOW_WIDTH), config_file_get_int(PREFS_EXT_WINDOW_HEIGHT));
+	gtk_window_resize(GTK_WINDOW(self), config_get_ext_window_width(), config_get_ext_window_height());
 
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
@@ -443,9 +443,9 @@ i7_extension_init(I7Extension *self)
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
 	/* Set spell checking and elastic tabstops */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	priv->elastic = config_file_get_bool(PREFS_ELASTIC_TABSTOPS_DEFAULT);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_get_spell_check_default());
+	i7_document_set_spellcheck(I7_DOCUMENT(self), config_get_spell_check_default());
+	priv->elastic = config_get_elastic_tabstops_default();
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->enable_elastic_tabstops), priv->elastic);
 
 	/* Create a callback for the delete event */

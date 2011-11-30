@@ -201,7 +201,7 @@ start_ni_compiler(CompilerData *data)
 	args = g_slist_prepend(args, g_strdup(data->input_file));
 	if(!data->use_debug_flags)
 		args = g_slist_prepend(args, g_strdup("-release")); /* Omit "not for relase" material */
-	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE))
+	if(config_get_debug_log_visible())
 		args = g_slist_prepend(args, g_strdup("-log"));
 	if(i7_story_get_nobble_rng(data->story))
 		args = g_slist_prepend(args, g_strdup("-rng"));
@@ -262,7 +262,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);
 	g_free(problems_url);
 
-	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE)) {
+	if(config_get_debug_log_visible()) {
 		/* Update */
 		gdk_threads_enter();
 		while(gtk_events_pending())

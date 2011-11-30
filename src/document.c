@@ -162,7 +162,7 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
 	LOAD_ACTION(priv->document_action_group, check_spelling);
 	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")), config_file_get_bool(PREFS_STATUSBAR_VISIBLE));
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")), config_get_statusbar_visible());
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
 	g_object_unref(builder);
@@ -247,7 +247,7 @@ i7_document_add_menus_and_findbar(I7Document *document)
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_entry_container, 0);
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_close, -1);
 
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_toolbar")), config_file_get_bool(PREFS_TOOLBAR_VISIBLE));
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_toolbar")), config_get_toolbar_visible());
 
 	/* Connect the accelerators */
 	priv->accels = gtk_ui_manager_get_accel_group(document->ui_manager);
@@ -544,7 +544,7 @@ void
 i7_document_update_source_highlight(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_file_get_bool(PREFS_SYNTAX_HIGHLIGHTING));
+	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_get_syntax_highlighting());
 }
 
 /* Recalculate the document's elastic tabstops */

@@ -184,7 +184,7 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 	gchar *text;
 	switch(gtk_assistant_get_current_page(assistant)) {
 		case 1:
-			text = g_strstrip(config_file_get_string(PREFS_AUTHOR_NAME));
+			text = g_strstrip(config_get_author_name());
 			gtk_entry_set_text(GTK_ENTRY(options->author_box), (text && strlen(text))? text : g_get_real_name());
 			if(text)
 				g_free(text);
@@ -215,7 +215,7 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 	gchar *file, *path;
 
 	/* Save the author name to the config file */
-	config_file_set_string(PREFS_AUTHOR_NAME, options->author);
+	config_set_author_name(options->author);
 
 	switch(options->type) {
 		case I7_NEW_PROJECT_INFORM7_STORY:

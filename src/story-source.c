@@ -29,7 +29,7 @@
 void
 after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
 {
-	if(!config_file_get_bool(PREFS_INTELLIGENCE))
+	if(!config_get_intelligence())
 		return;
 	/* Reindex the section headings anytime text is deleted, because running after
 	the default signal handler means we have no access to the deleted text. */
@@ -43,7 +43,7 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 	/* If the inserted text ended in a newline, then do auto-indenting */
 	/* We could use gtk_source_view_set_auto_indent(), but that auto-indents
 	  leading spaces as well as tabs, and we don't want that */
-	if(g_str_has_suffix(text, "\n") && config_file_get_bool(PREFS_AUTO_INDENT)) {
+	if(g_str_has_suffix(text, "\n") && config_get_auto_indent()) {
 		int tab_count = 0;
 		GtkTextIter prev_line = *location;
 		gtk_text_iter_backward_line(&prev_line);
@@ -60,7 +60,7 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 	}
 
 	/* Return after that if we are not doing intelligent symbol following */
-	if(!config_file_get_bool(PREFS_INTELLIGENCE))
+	if(!config_get_intelligence())
 		return;
 
 	/* For any text, a section heading might have been entered or changed, so
