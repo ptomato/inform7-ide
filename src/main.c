@@ -71,7 +71,6 @@ main(int argc, char *argv[])
 	/* TRANSLATORS: this is the human-readable application name */
 	g_set_application_name(_("Inform 7"));
 	I7App *theapp = i7_app_get();
-	trigger_config_file();
 
 	/* Open any project files specified on the command line */
 	if(remaining_args) {

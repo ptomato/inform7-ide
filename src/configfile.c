@@ -43,7 +43,7 @@
 #define PREFS_TOOLBAR_VISIBLE           PREFS_IDE_PATH "toolbar-default"
 #define PREFS_STATUSBAR_VISIBLE         PREFS_IDE_PATH "statusbar-default"
 #define PREFS_NOTEPAD_VISIBLE           PREFS_IDE_PATH "notepad-default"
-#define PREFS_USE_GIT                   PREFS_IDE_PATH "use-git"
+#define PREFS_USE_INTERPRETER           PREFS_IDE_PATH "use-interpreter"
 #define PREFS_ELASTIC_TABSTOPS_DEFAULT  PREFS_IDE_PATH "elastic-tabs-default"
 
 #define PREFS_FONT_SET                  PREFS_EDITOR_PATH "font-set"
@@ -123,7 +123,7 @@ boolean_getter_and_setter_for(debug_log_visible, ide, PREFS_DEBUG_LOG_VISIBLE);
 boolean_getter_and_setter_for(toolbar_visible, ide, PREFS_TOOLBAR_VISIBLE);
 boolean_getter_and_setter_for(statusbar_visible, ide, PREFS_STATUSBAR_VISIBLE);
 boolean_getter_and_setter_for(notepad_visible, ide, PREFS_NOTEPAD_VISIBLE);
-boolean_getter_and_setter_for(use_git, ide, PREFS_USE_GIT);
+enum_getter_and_setter_for(interpreter, ide, PREFS_INTERPRETER);
 boolean_getter_and_setter_for(elastic_tabstops_default, ide, PREFS_ELASTIC_TABSTOPS_DEFAULT);
 
 boolean_getter_and_setter_for(syntax_highlighting, syntax, PREFS_SYNTAX_HIGHLIGHTING);
@@ -143,27 +143,20 @@ string_getter_and_setter_for(author_name, app, PREFS_AUTHOR_NAME);
 /* ---------  Events from now on:   ------------ */
 
 static void
-on_config_font_set_changed(GSettings *settings, const char *key, GtkWidget *combobox)
+on_config_font_set_changed(GSettings *settings, const char *key)
 {
-	int newvalue = g_settings_get_enum(settings, key);
-
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), newvalue);
 	update_font(GTK_WIDGET(theapp->prefs->source_example));
 	update_font(GTK_WIDGET(theapp->prefs->tab_example));
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 }
 
 static void
-on_config_custom_font_changed(GSettings *settings, const char *key, GtkWidget *fontbutton)
+on_config_custom_font_changed(GSettings *settings, const char *key)
 {
-	char *newvalue = g_settings_get_string(settings, key);
-	/* TODO: validate new value? */
-
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gtk_font_button_set_font_name(GTK_FONT_BUTTON(fontbutton), newvalue);
 	if(config_get_font_set() == FONT_CUSTOM) {
 		update_font(GTK_WIDGET(theapp->prefs->source_example));
 		update_font(GTK_WIDGET(theapp->prefs->tab_example));
@@ -174,13 +167,10 @@ on_config_custom_font_changed(GSettings *settings, const char *key, GtkWidget *f
 }
 
 static void
-on_config_font_size_changed(GSettings *settings, const char *key, GtkWidget *combobox)
+on_config_font_size_changed(GSettings *settings, const char *key)
 {
-	gint newvalue = g_settings_get_enum(settings, key);
-
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), newvalue);
 	update_font(GTK_WIDGET(theapp->prefs->source_example));
 	update_font(GTK_WIDGET(theapp->prefs->tab_example));
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
@@ -196,7 +186,7 @@ on_config_style_scheme_changed(GSettings *settings, const char *key, GtkWidget *
 	/* TODO: validate new value? */
 
 	/* update application to reflect new value */
-	select_style_scheme(GTK_TREE_VIEW(list), newvalue);
+	// select_style_scheme(GTK_TREE_VIEW(list), newvalue); // TODO: check me
 	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_styles, NULL);
@@ -205,7 +195,7 @@ on_config_style_scheme_changed(GSettings *settings, const char *key, GtkWidget *
 }
 
 static void
-on_config_tab_width_changed(GSettings *settings, const char *key, GtkWidget *range)
+on_config_tab_width_changed(GSettings *settings, const char *key)
 {
 	gint newvalue = g_settings_get_int(settings, key);
 	/* validate new value */
@@ -218,36 +208,32 @@ on_config_tab_width_changed(GSettings *settings, const char *key, GtkWidget *ran
 
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gtk_range_set_value(GTK_RANGE(range), (gdouble)newvalue);
 	update_tabs(theapp->prefs->tab_example);
 	update_tabs(theapp->prefs->source_example);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
 }
 
 static void
-on_config_syntax_highlighting_changed(GSettings *settings, const char *key, GtkWidget *toggle)
+on_config_syntax_highlighting_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gboolean newvalue = g_settings_get_boolean(settings, key);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_source_highlight, NULL);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 }
 
 static void
-on_config_intelligence_changed(GSettings *settings, const char *key, GtkWidget *toggle)
+on_config_intelligence_changed(GSettings *settings, const char *key)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
 	/* make the other checkboxes dependent on this checkbox active or inactive*/
 	gtk_widget_set_sensitive(theapp->prefs->auto_number, newvalue);
 }
 
 static void
-on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key, gpointer data)
+on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key)
 {
 	gint newvalue = g_settings_get_int(settings, key);
 	/* validate new value */
@@ -262,15 +248,6 @@ on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key,
 }
 
 static void
-on_config_author_name_changed(GSettings *settings, const char *key, GtkWidget *editable)
-{
-	gchar *newvalue = g_settings_get_string(settings, key);
-	/* update application to reflect new value */
-	gtk_entry_set_text(GTK_ENTRY(editable), newvalue);
-	g_free(newvalue);
-}
-
-static void
 set_glulx_interpreter(I7Document *document, gpointer data)
 {
 	if(I7_IS_STORY(document))
@@ -278,31 +255,27 @@ set_glulx_interpreter(I7Document *document, gpointer data)
 }
 
 static void
-on_config_use_git_changed(GSettings *settings, const char *key, GtkComboBox *box)
+on_config_use_interpreter_changed(GSettings *settings, const char *key)
 {
-	gboolean newvalue = g_settings_get_boolean(settings, key);
-	/* update application to reflect new value */
-	gtk_combo_box_set_active(box, newvalue? TRUE : FALSE);
+	int newvalue = g_settings_get_enum(settings, key);
 	i7_app_foreach_document(i7_app_get(), set_glulx_interpreter, GINT_TO_POINTER(newvalue));
 }
 
 static void
-on_config_clean_build_files_changed(GSettings *settings, const gchar *key, GtkWidget *toggle)
+on_config_clean_build_files_changed(GSettings *settings, const gchar *key)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
 	/* make the other checkboxes dependent on this checkbox active or inactive*/
 	gtk_widget_set_sensitive(theapp->prefs->clean_index_files, newvalue);
 }
 
 static void
-on_config_debug_log_visible_changed(GSettings *settings, const char *key, GtkWidget *toggle)
+on_config_debug_log_visible_changed(GSettings *settings, const char *key)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
 	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)(newvalue? i7_story_add_debug_tabs : i7_story_remove_debug_tabs), NULL);
 }
 
@@ -330,12 +303,6 @@ on_config_skein_spacing_changed(GSettings *settings, const char *key)
 	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)update_skein_spacing, NULL);
 }
 
-static void
-on_config_generic_bool_changed(GSettings *settings, const char *key, GtkWidget *toggle)
-{
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), g_settings_get_boolean(settings, key));
-}
-
 struct KeyToMonitor {
 	GSettings **schema;
 	const char *key, *widgetname;
@@ -349,18 +316,40 @@ static struct KeyToMonitor keys_to_monitor[] = {
 	{ &schemas.editor, PREFS_STYLE_SCHEME, "schemes_view", on_config_style_scheme_changed },
 	{ &schemas.editor, PREFS_TAB_WIDTH, "tab_ruler", on_config_tab_width_changed },
 	{ &schemas.syntax, PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", on_config_syntax_highlighting_changed },
-	{ &schemas.syntax, PREFS_AUTO_INDENT, "auto_indent", on_config_generic_bool_changed },
+	{ &schemas.syntax, PREFS_AUTO_INDENT, "auto_indent", NULL },
 	{ &schemas.syntax, PREFS_INTELLIGENCE, "follow_symbols", on_config_intelligence_changed },
-	{ &schemas.syntax, PREFS_AUTO_NUMBER_SECTIONS, "auto_number", on_config_generic_bool_changed },
-	{ &schemas.app, PREFS_AUTHOR_NAME, "author_name", on_config_author_name_changed },
+	{ &schemas.syntax, PREFS_AUTO_NUMBER_SECTIONS, "auto_number", NULL },
+	{ &schemas.app, PREFS_AUTHOR_NAME, "author_name", NULL },
 	{ &schemas.ide, PREFS_CLEAN_BUILD_FILES, "clean_build_files", on_config_clean_build_files_changed },
-	{ &schemas.ide, PREFS_CLEAN_INDEX_FILES, "clean_index_files", on_config_generic_bool_changed },
+	{ &schemas.ide, PREFS_CLEAN_INDEX_FILES, "clean_index_files", NULL },
 	{ &schemas.ide, PREFS_DEBUG_LOG_VISIBLE, "show_debug_tabs", on_config_debug_log_visible_changed },
-	{ &schemas.ide, PREFS_USE_GIT, "glulx_combo", on_config_use_git_changed },
+	{ &schemas.ide, PREFS_INTERPRETER, "glulx_combo", on_config_use_interpreter_changed },
 	{ &schemas.editor, PREFS_ELASTIC_TABSTOPS_PADDING, NULL, on_config_elastic_tabstops_padding_changed },
 	{ &schemas.skein, PREFS_HORIZONTAL_SPACING, NULL, on_config_skein_spacing_changed },
 	{ &schemas.skein, PREFS_VERTICAL_SPACING, NULL, on_config_skein_spacing_changed }
 };
+
+static void
+bind_widget(GtkWidget *widget, GSettings *settings, const char *key)
+{
+	if (widget == NULL) return;
+	const char *property = NULL;
+	if(GTK_IS_ENTRY(widget))
+		property = "text";
+	else if(GTK_IS_TOGGLE_BUTTON(widget))
+		property = "active";
+	else if(GTK_IS_COMBO_BOX(widget))
+		property = "active"; // behaves incorrectly. why?
+	else if(GTK_IS_RULER(widget))
+		property = "position";
+	else if(GTK_IS_FONT_BUTTON(widget))
+		property = "font-name";
+
+	// GTK_TREE_VIEW // TODO: requires custom mapping functions.
+
+	g_settings_bind(settings, key, widget, property, G_SETTINGS_BIND_DEFAULT);
+}
+
 
 /* Check if the config keys exist and if not, set them to defaults. */
 void
@@ -373,27 +362,17 @@ init_config_file(GtkBuilder *builder)
 	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
 	{
 		GSettings *settings = *keys_to_monitor[i].schema;
-		char *signal = g_strconcat("changed::", keys_to_monitor[i].key, NULL);
-		g_signal_connect(G_OBJECT(settings), signal, G_CALLBACK(keys_to_monitor[i].callback),
-			(keys_to_monitor[i].widgetname)? GTK_WIDGET(load_object(builder, keys_to_monitor[i].widgetname)) : NULL);
-		g_free(signal);
-	}
-}
 
-/* Notify every config key so that the preferences dialog picks it up */
-void
-trigger_config_file(void)
-{
-	unsigned changed_signal = g_signal_lookup ("changed", G_TYPE_SETTINGS);
-	/* Trigger all the keys for which we have listeners */
-	int i;
-	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
-	{
-		const char *key = keys_to_monitor[i].key;
-		GSettings *settings = *keys_to_monitor[i].schema;
-		GQuark detail = g_quark_from_string(key);
-		g_signal_emit (G_OBJECT(settings), changed_signal, detail, key, NULL);
-		g_object_unref(settings);
+		if(keys_to_monitor[i].widgetname != NULL) {
+			GtkWidget *widget = GTK_WIDGET(load_object(builder, keys_to_monitor[i].widgetname));
+			bind_widget(widget, settings, keys_to_monitor[i].key);
+		}
+
+		if (keys_to_monitor[i].callback != NULL) {
+			char *signal = g_strconcat("changed::", keys_to_monitor[i].key, NULL);
+			g_signal_connect(G_OBJECT(settings), signal, G_CALLBACK(keys_to_monitor[i].callback), NULL);
+			g_free(signal);
+		}
 	}
 }
 

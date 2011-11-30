@@ -32,13 +32,18 @@ typedef enum {
 	FONT_CUSTOM = 2
 } I7PrefsFont;
 
-/* Four different text size options, ratios have a 10x factor */
+/* Four different text size options */
 typedef enum {
-	FONT_SIZE_STANDARD = 10,
-	FONT_SIZE_MEDIUM = 12,
-	FONT_SIZE_LARGE = 14,
-	FONT_SIZE_HUGE = 18
+	FONT_SIZE_STANDARD = 0,
+	FONT_SIZE_MEDIUM = 1,
+	FONT_SIZE_LARGE = 2,
+	FONT_SIZE_HUGE = 3
 } I7PrefsFontSize;
+
+typedef enum {
+  INTERPRETER_GLULXE = 0,
+  INTERPRETER_GIT = 1
+} I7PrefsInterpreter;
 
 /* Pango point sizes of text size options */
 #define DEFAULT_SIZE_STANDARD	12
@@ -69,8 +74,8 @@ getter_and_setter(gboolean, debug_log_visible);
 getter_and_setter(gboolean, toolbar_visible);
 getter_and_setter(gboolean, statusbar_visible);
 getter_and_setter(gboolean, notepad_visible);
-getter_and_setter(gboolean, use_git);
-getter_and_setter(gboolean, elastic_tabstops_default);
+getter_and_setter(int, interpreter);
+getter_and_setter(gboolean, elastic_tabs_default);
 
 getter_and_setter(int, horizontal_spacing);
 getter_and_setter(int, vertical_spacing);
@@ -84,15 +89,6 @@ getter_and_setter(int, notepad_y);
 getter_and_setter(int, notepad_width);
 getter_and_setter(int, notepad_height);
 getter_and_setter(int, slider_position);
-
-getter_and_setter(gboolean, spell_check_default);
-getter_and_setter(gboolean, clean_build_files);
-getter_and_setter(gboolean, clean_index_files);
-getter_and_setter(gboolean, debug_log_visible);
-getter_and_setter(gboolean, toolbar_visible);
-getter_and_setter(gboolean, statusbar_visible);
-getter_and_setter(gboolean, use_git);
-getter_and_setter(gboolean, elastic_tabs_default);
 
 getter_and_setter(gboolean, syntax_highlighting);
 getter_and_setter(gboolean, auto_indent);

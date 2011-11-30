@@ -478,7 +478,7 @@ on_author_name_changed(GtkEditable *editable, I7App *app)
 void
 on_glulx_combo_changed(GtkComboBox *combobox, I7App *app)
 {
-	config_get_use_git(gtk_combo_box_get_active(combobox) == 1);
+	config_set_interpreter(gtk_combo_box_get_active(combobox));
 }
 
 void
