@@ -55,9 +55,9 @@ typedef enum {
 #define DEFAULT_TAB_WIDTH 8
 
 /* Schemas */
-#define SCHEMA_PREFERENCES "apps.gnome-inform7.preferences"
-#define SCHEMA_SKEIN "apps.gnome-inform7.preferences.skein"
-#define SCHEMA_STATE "apps.gnome-inform7.state"
+#define SCHEMA_PREFERENCES "com.inform7.GUI.preferences"
+#define SCHEMA_SKEIN "com.inform7.GUI.preferences.skein"
+#define SCHEMA_STATE "com.inform7.GUI.state"
 
 /* Keys */
 #define PREFS_AUTHOR_NAME          "author-name"

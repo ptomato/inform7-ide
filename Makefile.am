@@ -5,7 +5,7 @@ ACLOCAL_AMFLAGS = -I m4
 desktopdir = $(datadir)/applications
 dist_desktop_DATA = gnome-inform7.desktop
 
-gsettings_SCHEMAS = apps.gnome-inform7.gschema.xml
+gsettings_SCHEMAS = com.inform7.GUI.gschema.xml
 
 @GSETTINGS_RULES@
 
@@ -19,7 +19,7 @@ EXTRA_DIST = \
 	intltool-extract.in \
 	intltool-merge.in \
 	gnome-inform7.spec.in \
-        $(gsettings_SCHEMAS)
+	$(gsettings_SCHEMAS)
 
 if BUILDING_RPM
 EXTRA_DIST += gnome-inform7.spec
