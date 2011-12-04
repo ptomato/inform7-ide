@@ -1211,6 +1211,7 @@ action_about(GtkAction *action, I7App *app)
 		"    Jonathan Liu\n"
 		"    Zachary Amsden\n"
 		"    David Leverton\n"
+		"    Matteo Settenvini\n"
 		"Contributions to the compiler:\n"
 		"    Emily Short\n"
 		"    Gunther Schmidl\n"
