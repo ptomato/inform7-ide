@@ -159,15 +159,6 @@ on_config_tab_width_changed(GSettings *settings, const char *key)
 }
 
 static void
-on_config_syntax_highlighting_changed(GSettings *settings, const char *key)
-{
-	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_source_highlight, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-}
-
-static void
 on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
@@ -207,7 +198,6 @@ static struct KeyToMonitor keys_to_monitor[] = {
 	{ "font-size", on_config_font_size_changed },
 	{ "style-scheme", on_config_style_scheme_changed },
 	{ "tab-width", on_config_tab_width_changed },
-	{ "syntax-highlighting", on_config_syntax_highlighting_changed },
 	{ "show-debug-log", on_config_debug_log_visible_changed },
 	{ "use-interpreter", on_config_use_interpreter_changed },
 	{ "elastic-tabstops-padding",on_config_elastic_tabstops_padding_changed }

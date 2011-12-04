@@ -78,6 +78,8 @@ i7_document_init(I7Document *self)
 {
 	I7_DOCUMENT_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	GSettings *state = i7_app_get_state(theapp);
 
 	/* Set the icon */
 	gtk_window_set_icon_name(GTK_WINDOW(self), "inform7");
@@ -164,9 +166,12 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
+	/* Bind settings one-way to some properties */
+	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
+		priv->buffer, "highlight-syntax",
+		G_SETTINGS_BIND_GET | G_SETTINGS_BIND_NO_SENSITIVITY);
 	/* Bind some actions one-way to GSettings settings;
 	this will make it use the last-set value as default for new windows */
-	GSettings *state = i7_app_get_state(theapp);
 	g_settings_bind(state, PREFS_STATE_ELASTIC_TABSTOPS,
 		self->enable_elastic_tabstops, "active",
 		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
@@ -554,17 +559,6 @@ void
 i7_document_update_font_styles(I7Document *document)
 {
 	g_idle_add((GSourceFunc)update_style, I7_DOCUMENT_PRIVATE(document)->buffer);
-}
-
-/* Turn source highlighting on or off in this document's source buffer */
-void
-i7_document_update_source_highlight(I7Document *document)
-{
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	gtk_source_buffer_set_highlight_syntax(priv->buffer, g_settings_get_boolean(prefs, PREFS_SYNTAX_HIGHLIGHTING));
 }
 
 /* Recalculate the document's elastic tabstops */
