@@ -77,10 +77,11 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	/* Bind widgets to GSettings */
 #define BIND(key, obj, property) \
 	g_settings_bind(prefs, key, load_object(builder, obj), property, \
-		G_SETTINGS_BIND_DEFAULT)
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY)
 #define BIND_COMBO_BOX(key, obj, enum_values) \
 	g_settings_bind_with_mapping(prefs, key, \
-		load_object(builder, obj), "active", G_SETTINGS_BIND_DEFAULT, \
+		load_object(builder, obj), "active", \
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY, \
 		(GSettingsBindGetMapping)settings_enum_get_mapping, \
 		(GSettingsBindSetMapping)settings_enum_set_mapping, \
 		enum_values, NULL)
@@ -90,8 +91,10 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	BIND(PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", "active");
 	BIND(PREFS_AUTO_INDENT, "auto_indent", "active");
 	BIND(PREFS_INTELLIGENCE, "follow_symbols", "active");
+	BIND(PREFS_INTELLIGENCE, "auto_number", "sensitive");
 	BIND(PREFS_AUTO_NUMBER, "auto_number", "active");
 	BIND(PREFS_CLEAN_BUILD_FILES, "clean_build_files", "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, "clean_index_files", "sensitive");
 	BIND(PREFS_CLEAN_INDEX_FILES, "clean_index_files", "active");
 	BIND(PREFS_SHOW_DEBUG_LOG, "show_debug_tabs", "active");
 	BIND_COMBO_BOX(PREFS_FONT_SET, "font_set", font_set_enum);

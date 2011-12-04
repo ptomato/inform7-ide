@@ -169,16 +169,16 @@ i7_document_init(I7Document *self)
 	GSettings *state = i7_app_get_state(theapp);
 	g_settings_bind(state, PREFS_STATE_ELASTIC_TABSTOPS,
 		self->enable_elastic_tabstops, "active",
-		G_SETTINGS_BIND_SET);
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 	g_settings_bind(state, PREFS_STATE_SPELL_CHECK,
 		self->autocheck_spelling, "active",
-		G_SETTINGS_BIND_SET);
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 	g_settings_bind(state, PREFS_STATE_SHOW_TOOLBAR,
 		load_object(builder, "view_toolbar"), "active",
-		G_SETTINGS_BIND_SET);
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 	g_settings_bind(state, PREFS_STATE_SHOW_STATUSBAR,
 		load_object(builder, "view_statusbar"), "active",
-		G_SETTINGS_BIND_SET);
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
 	/* Show statusbar if necessary */
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")),

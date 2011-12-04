@@ -168,16 +168,6 @@ on_config_syntax_highlighting_changed(GSettings *settings, const char *key)
 }
 
 static void
-on_config_intelligence_changed(GSettings *settings, const char *key)
-{
-	gboolean newvalue = g_settings_get_boolean(settings, key);
-	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
-	/* make the other checkboxes dependent on this checkbox active or inactive*/
-	gtk_widget_set_sensitive(theapp->prefs->auto_number, newvalue);
-}
-
-static void
 on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
@@ -196,16 +186,6 @@ on_config_use_interpreter_changed(GSettings *settings, const char *key)
 {
 	int newvalue = g_settings_get_enum(settings, key);
 	i7_app_foreach_document(i7_app_get(), set_glulx_interpreter, GINT_TO_POINTER(newvalue));
-}
-
-static void
-on_config_clean_build_files_changed(GSettings *settings, const gchar *key)
-{
-	gboolean newvalue = g_settings_get_boolean(settings, key);
-	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
-	/* make the other checkboxes dependent on this checkbox active or inactive*/
-	gtk_widget_set_sensitive(theapp->prefs->clean_index_files, newvalue);
 }
 
 static void
@@ -228,8 +208,6 @@ static struct KeyToMonitor keys_to_monitor[] = {
 	{ "style-scheme", on_config_style_scheme_changed },
 	{ "tab-width", on_config_tab_width_changed },
 	{ "syntax-highlighting", on_config_syntax_highlighting_changed },
-	{ "intelligence", on_config_intelligence_changed },
-	{ "clean-build-files", on_config_clean_build_files_changed },
 	{ "show-debug-log", on_config_debug_log_visible_changed },
 	{ "use-interpreter", on_config_use_interpreter_changed },
 	{ "elastic-tabstops-padding",on_config_elastic_tabstops_padding_changed }

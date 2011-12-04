@@ -711,7 +711,7 @@ i7_story_init(I7Story *self)
 	this will make it use the last-set value as default for new windows */
 	g_settings_bind(state, "show-notepad",
 		load_object(builder, "view_notepad"), "active",
-		G_SETTINGS_BIND_SET);
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
 	/* Set up the signals to do the menu hints in the statusbar */
 	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
