@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include "elastic.h"
 
+#include "app.h"
 #include "configfile.h"
 
 /* calculate the width of the text between @start and @end */
@@ -49,6 +50,8 @@ find_tab(gunichar ch)
 static void
 stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, GtkTextIter *block_start, GtkTextIter *block_end)
 {
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 	GtkTextIter cell_start, current_pos, line_end;
 	guint max_tabs = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(tag), "elastictabstops-numtabs"));
 	int max_widths[max_tabs];
@@ -56,7 +59,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 
 	/* initialize tab widths to minimum */
 	for(current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++)
-		max_widths[current_tab_num] = config_get_tab_width();
+		max_widths[current_tab_num] = g_settings_get_uint(prefs, PREFS_TAB_WIDTH);
 
 	/* get width of text in cells */
 	g_assert(gtk_text_iter_starts_line(block_start));
@@ -96,7 +99,7 @@ stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, 
 	int acc_tabstop = 0;
 	PangoTabArray *tab_array = pango_tab_array_new(max_tabs, TRUE);
 	for (current_tab_num = 0; current_tab_num < max_tabs; current_tab_num++) {
-		acc_tabstop += max_widths[current_tab_num] + config_get_elastic_tabstops_padding();
+		acc_tabstop += max_widths[current_tab_num] + g_settings_get_uint(prefs, PREFS_TABSTOPS_PADDING);
 		pango_tab_array_set_tab(tab_array, current_tab_num, PANGO_TAB_LEFT, acc_tabstop);
 	}
 	g_object_set(tag,

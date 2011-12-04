@@ -1,33 +1,32 @@
 <schemalist>
 
-  <enum id="apps.gnome-inform7.editor.font-set-enum">
+  <enum id="apps.gnome-inform7.preferences.font-set-enum">
     <value nick="Standard" value="0" />
     <value nick="Monospace" value="1" />
     <value nick="Custom" value="2" />
   </enum>
 
-  <enum id="apps.gnome-inform7.editor.font-size-enum">
+  <enum id="apps.gnome-inform7.preferences.font-size-enum">
     <value nick="Standard" value="0" />
     <value nick="Medium" value="1" />
     <value nick="Large" value="2" />
     <value nick="Huge" value="3" />
   </enum>
 
-  <enum id="apps.gnome-inform7.editor.interpreter-enum">
+  <enum id="apps.gnome-inform7.preferences.interpreter-enum">
     <value nick="Glulxe (default)" value="0" />
-    <value nick="git" value="1" />
+    <value nick="Git" value="1" />
   </enum>
 
   <schema id="apps.gnome-inform7" path="/apps/gnome-inform7/">
-    <child name="app" schema="apps.gnome-inform7.app"/>
-    <child name="ide" schema="apps.gnome-inform7.ide"/>
-    <child name="editor" schema="apps.gnome-inform7.editor"/>
-    <child name="syntax" schema="apps.gnome-inform7.syntax"/>
-    <child name="window" schema="apps.gnome-inform7.window"/>
-    <child name="skein" schema="apps.gnome-inform7.skein"/>
+    <child name="preferences" schema="apps.gnome-inform7.preferences"/>
+    <child name="state" schema="apps.gnome-inform7.state"/>
   </schema>
 
-  <schema id="apps.gnome-inform7.app" path="/apps/gnome-inform7/app/">
+  <schema id="apps.gnome-inform7.preferences"
+    path="/apps/gnome-inform7/preferences/">
+    <child name="skein" schema="apps.gnome-inform7.preferences.skein"/>
+
     <key name="author-name" type="s">
       <default>''</default>
       <summary>Preferred author's name for Inform 7 projects</summary>
@@ -36,16 +35,93 @@
       that you can always change the name you are writing under after you have
       created the project.</description>
     </key>
-  </schema>
 
-  <schema id="apps.gnome-inform7.ide" path="/apps/gnome-inform7/ide/">
-    <key name="spell-check-default" type="b">
-      <default>true</default>
-      <summary>Spell check the Source</summary>
-      <description>Default setting for spell checking when opening a new
-      window.</description>
+    <key name="font-set"
+      enum="apps.gnome-inform7.preferences.font-set-enum">
+      <default>'Standard'</default>
+      <summary>Font set to use in the Source panel</summary>
+      <description>Font set to use in the Source panel. Allowed values are
+      "Standard", "Monospace", and "Custom". The first two look for the default
+      proportional and monospace fonts from your desktop theme, respectively,
+      and the latter uses the custom font you select yourself (see
+      custom-font).</description>
     </key>
-    <key name="use-" enum="apps.gnome-inform7.editor.interpreter-enum">
+
+    <key name="custom-font" type="s">
+      <default>'Sans 11'</default>
+      <summary>Custom font to use in the Source panel</summary>
+      <description>Font to use in the Source panel if font-set (q.v.) is set to
+      "Custom".</description>
+    </key>
+
+    <key name="font-size" enum="apps.gnome-inform7.preferences.font-size-enum">
+      <default>'Standard'</default>
+      <summary>Font size to use in the application</summary>
+      <description>Font size to use in the application. Allowed values are
+      "Standard", "Medium", "Large", and "Huge". These correspond to multipliers
+      of 1.0, 1.2, 1.4, and 1.8, respectively.</description>
+    </key>
+
+    <key name="style-scheme" type="s">
+      <default>'inform'</default>
+      <summary>Style scheme to use in the application</summary>
+      <description>Name of the style scheme to use in the application. The style
+      scheme defines the colors and styles of all of the different highlighting
+      possibilities of the Natural Inform language.</description>
+    </key>
+
+    <key name="tab-width" type="u">
+      <default>0</default>
+      <summary>Tab width to use in the Source panel</summary>
+      <description>Tab width, in spaces, to use in the Source panel. A value of
+      0 means use the default tab width.</description>
+    </key>
+
+    <key name="elastic-tabstops-padding" type="u">
+      <default>16</default>
+      <range min="1" max="999"/> <!-- no obvious max -->
+      <summary>Number of pixels of padding between elastic tabstops</summary>
+      <description>If elastic tabstops are turned on, there will be this many
+      pixels of padding inserted between the tabstops.</description>
+    </key>
+
+    <key name="syntax-highlighting" type="b">
+      <default>true</default>
+      <summary>Use syntax highlighting in the Source panel</summary>
+      <description>Syntax highlighting will automatically color and style your
+      source code to indicate what different parts do. If you  have a slow
+      computer, you may see a performance benefit by turning this
+      off.</description>
+    </key>
+
+    <key name="auto-indent" type="b">
+      <default>true</default>
+      <summary>Use auto-indenting in the Source panel</summary>
+      <description>If this option is selected, Inform will track the number of
+      tabs at the beginning of the last line and automatically indent the next
+      line accordingly when you insert a new line by pressing
+      return.</description>
+    </key>
+
+    <key name="intelligence" type="b">
+      <default>true</default>
+      <summary>Use intelligent symbol following in the Source panel</summary>
+      <description>Inform can keep track of important items in your source files
+      as you type. Enabling this option will allow it to automatically track
+      sections in Natural Inform files.</description>
+    </key>
+
+    <key name="auto-number" type="b">
+      <default>false</default>
+      <summary>Auto-number sections as you type</summary>
+      <description>If you check this option, Inform will automatically renumber
+      sections when you insert a new one. It will also automatically insert a
+      section number as you type: if you type "Part ", Inform will insert "2 - "
+      and renumber the previous Part 2 to Part 3 and so on.</description>
+    </key>
+
+    <key name="interpreter"
+      enum="apps.gnome-inform7.preferences.interpreter-enum">
       <default>'Glulxe (default)'</default>
       <summary>Use the Git interpreter for Glulx story files</summary>
       <description>This setting determines the interpreter to use in the Game
@@ -53,6 +129,7 @@
       used Glulxe, which is still the default, but in the future Git may become
       standard.</description>
     </key>
+
     <key name="clean-build-files" type="b">
       <default>true</default>
       <summary>Clean build files from projects before closing</summary>
@@ -62,6 +139,7 @@
       (many times the size of your source code), so deleting them is a good idea
       if you are planning to send a project to someone else.</description>
     </key>
+
     <key name="clean-index-files" type="b">
       <default>false</default>
       <summary>Clean index files from projects before closing</summary>
@@ -70,7 +148,8 @@
       compiler and can be safely deleted, though they may be useful the next
       time you open the project.</description>
     </key>
-    <key name="debug-log-visible" type="b">
+
+    <key name="show-debug-log" type="b">
       <default>false</default>
       <summary>Show debugging log and Inform 6 intermediate code</summary>
       <description>This option places two extra tabs in the Errors panel,
@@ -80,189 +159,103 @@
       code may be of interest to especially advanced extension
       authors.</description>
     </key>
-    <key name="toolbar-default" type="b">
+
+  </schema>
+
+  <schema id="apps.gnome-inform7.state" path="/apps/gnome-inform7/state/">
+
+    <key name="spell-check" type="b">
+      <default>true</default>
+      <summary>Spell check the Source</summary>
+      <description>Default setting for spell checking when opening a new
+      window.</description>
+    </key>
+
+    <key name="show-toolbar" type="b">
       <default>true</default>
       <summary>Show the toolbar</summary>
       <description>Default setting for showing the toolbar when opening a new
       window.</description>
     </key>
-    <key name="statusbar-default" type="b">
+
+    <key name="show-statusbar" type="b">
       <default>true</default>
       <summary>Show the status bar</summary>
       <description>Default setting for showing the status bar when opening a new
       window.</description>
     </key>
-    <key name="notepad-default" type="b">
+
+    <key name="show-notepad" type="b">
       <default>false</default>
       <summary>Show the notepad</summary>
       <description>Default setting for showing the notepad when opening a new
       window.</description>
     </key>
-    <key name="elastic-tabs-default" type="b">
+
+    <key name="elastic-tabstops" type="b">
       <default>false</default>
       <summary>Use elastic tabstops</summary>
       <description>Default setting for using elastic tabstops when opening a new
       window.</description>
     </key>
-  </schema>
 
-  <schema id="apps.gnome-inform7.editor" path="/apps/gnome-inform7/editor/">
-    <key name="font-set" enum="apps.gnome-inform7.editor.font-set-enum">
-      <default>'Standard'</default>
-      <summary>Font set to use in the Source panel</summary>
-      <description>Font set to use in the Source panel. Allowed values are
-      "Standard", "Monospace", and "Custom". The first two look for the default
-      proportional and monospace fonts from your desktop theme, respectively,
-      and the latter uses the custom font you select yourself (see
-      custom-font).</description>
-    </key>
-    <key name="custom-font" type="s">
-      <default>'Sans 11'</default>
-      <summary>Custom font to use in the Source panel</summary>
-      <description>Font to use in the Source panel if font-set (q.v.) is set to
-      "Custom".</description>
-    </key>
-    <key name="font-size" enum="apps.gnome-inform7.editor.font-size-enum">
-      <default>'Standard'</default>
-      <summary>Font size to use in the application</summary>
-      <description>Font size to use in the application. Allowed values are
-      "Standard", "Medium", "Large", and "Huge". These correspond to multipliers
-      of 1.0, 1.2, 1.4, and 1.8, respectively.</description>
-    </key>
-    <key name="style-scheme" type="s">
-      <default>'inform'</default>
-      <summary>Style scheme to use in the application</summary>
-      <description>Name of the style scheme to use in the application. The style
-      scheme defines the colors and styles of all of the different highlighting
-      possibilities of the Natural Inform language.</description>
-    </key>
-    <key name="tab-width" type="i">
-      <default>0</default>
-      <summary>Tab width to use in the Source panel</summary>
-      <description>Tab width, in spaces, to use in the Source panel. A value of
-      0 means use the default tab width.</description>
-    </key>
-    <key name="elastic-tab-padding" type="i">
-      <default>16</default>
-      <summary>Number of pixels of padding between elastic tabstops</summary>
-      <description>If elastic tabstops are turned on, there will be this many
-      pixels of padding inserted between the tabstops.</description>
-    </key>
-  </schema>
-
-  <schema id="apps.gnome-inform7.syntax" path="/apps/gnome-inform7/syntax/">
-    <key name="syntax-highlighting" type="b">
-      <default>true</default>
-      <summary>Use syntax highlighting in the Source panel</summary>
-      <description>Syntax highlighting will automatically color and style your
-      source code to indicate what different parts do. If you  have a slow
-      computer, you may see a performance benefit by turning this
-      off.</description>
-    </key>
-    <key name="auto-indent" type="b">
-      <default>true</default>
-      <summary>Use auto-indenting in the Source panel</summary>
-      <description>If this option is selected, Inform will track the number of
-      tabs at the beginning of the last line and automatically indent the next
-      line accordingly when you insert a new line by pressing
-      return.</description>
-    </key>
-    <key name="intelligence" type="b">
-      <default>true</default>
-      <summary>Use intelligent symbol following in the Source panel</summary>
-      <description>Inform can keep track of important items in your source files
-      as you type. Enabling this option will allow it to automatically track
-      sections in Natural Inform files.</description>
-    </key>
-    <key name="intelligent-headings" type="b">
-      <default>true</default>
-      <summary>Use intelligent headings display</summary>
-      <description>If this option is checked, the contents tab will show a
-      real-time display of the sections in your source file. If it is unchecked,
-      it will display the last index calculated by the Natural Inform compiler,
-      i.e. the state of the index at the last time you compiled or ran the
-      story.</description>
-    </key>
-    <key name="auto-number-sections" type="b">
-      <default>false</default>
-      <summary>Auto-number sections as you type</summary>
-      <description>If you check this option, Inform will automatically renumber
-      sections when you insert a new one. It will also automatically insert a
-      section number as you type: if you type "Part ", Inform will insert "2 - "
-      and renumber the previous Part 2 to Part 3 and so on.</description>
-    </key>
-  </schema>
-
-  <schema id="apps.gnome-inform7.window" path="/apps/gnome-inform7/window/">
-    <key name="app-window-width" type="i">
-      <default>1000</default>
-      <summary>Default width of application window</summary>
-      <description>Width, in pixels, for newly-created application
+    <key name="app-window-size" type="(ii)">
+      <default>(1000, 800)</default>
+      <summary>Default size of application window</summary>
+      <description>Width and height, in pixels, for newly-created application
       windows.</description>
     </key>
-    <key name="app-window-height" type="i">
-      <default>800</default>
-      <summary>Default height of application window</summary>
-      <description>Height, in pixels, for newly-created application
-      windows.</description>
-    </key>
-    <key name="slider-position" type="i">
+
+    <key name="divider-position" type="i">
       <default>500</default>
       <summary>Position of divider between the two pages</summary>
       <description>Position of the divider between the two halves of the
       application window, in pixels, for newly-created application
       windows.</description>
     </key>
-    <key name="ext-window-width" type="i">
-      <default>500</default>
-      <summary>Default width of extension window</summary>
-      <description>Width, in pixels, for newly-created extension
+
+    <key name="ext-window-size" type="(ii)">
+      <default>(500, 650)</default>
+      <summary>Default size of extension window</summary>
+      <description>Width and height, in pixels, for newly-created extension
       windows.</description>
     </key>
-    <key name="ext-window-height" type="i">
-      <default>650</default>
-      <summary>Default height of extension window</summary>
-      <description>Height, in pixels, for newly-created extension
-      windows.</description>
+
+    <key name="notepad-position" type="(ii)">
+      <default>(0, 0)</default>
+      <summary>Default position of notepad window</summary>
+      <description>Position, in pixels, at which the notepad window will be
+      placed when it is shown.</description>
     </key>
-    <key name="notepad-pos-x" type="i">
-      <default>0</default>
-      <summary>Default horizontal position of notepad window</summary>
-      <description>Horizontal position, in pixels, at which the notepad window
-      will be placed when it is shown.</description>
+
+    <key name="notepad-size" type="(ii)">
+      <default>(300, 300)</default>
+      <summary>Default size of notepad window</summary>
+      <description>Width and height, in pixels, of the notepad
+      window.</description>
     </key>
-    <key name="notepad-pos-y" type="i">
-      <default>0</default>
-      <summary>Default vertical position of notepad window</summary>
-      <description>Vertical position, in pixels, at which the notepad window
-      will be placed when it is shown.</description>
-    </key>
-    <key name="notepad-width" type="i">
-      <default>300</default>
-      <summary>Default width of notepad window</summary>
-      <description>Width, in pixels, of the notepad window.</description>
-    </key>
-    <key name="notepad-height" type="i">
-      <default>300</default>
-      <summary>Default height of notepad window</summary>
-      <description>Height, in pixels, of the notepad window.</description>
-    </key>
+
   </schema>
 
-  <schema id="apps.gnome-inform7.skein" path="/apps/gnome-inform7/skein/">
-    <key name="horizontal-spacing" type="i">
+  <schema id="apps.gnome-inform7.preferences.skein"
+    path="/apps/gnome-inform7/preferences/skein/">
+
+    <key name="horizontal-spacing" type="d">
       <default>40</default>
       <range min="0" max="100"/>
       <summary>Horizontal spacing between Skein branches</summary>
       <description>Approximate horizontal spacing, in pixels, between branches
-      in the Skein tab. Allowed values: 0-100.</description>
+      in the Skein tab.</description>
     </key>
-    <key name="vertical-spacing" type="i">
+
+    <key name="vertical-spacing" type="d">
       <default>75</default>
       <range min="0" max="200"/>
       <summary>Vertical spacing between Skein branches</summary>
       <description>Approximate vertical spacing, in pixels, between branches in
-      the Skein tab. Allowed values: 0-200.</description>
+      the Skein tab.</description>
     </key>
+
   </schema>
+
 </schemalist>

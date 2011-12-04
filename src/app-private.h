@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,10 @@ typedef struct {
 	/* Current print settings */
 	GtkPrintSettings *print_settings;
 	GtkPageSetup *page_setup;
-	/* New project settings */
+	/* Preferences settings */
+	GSettings *prefs_settings;
+	GSettings *state_settings;
+	GSettings *desktop_settings;
 } I7AppPrivate;
 
 #define I7_APP_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_APP, I7AppPrivate))

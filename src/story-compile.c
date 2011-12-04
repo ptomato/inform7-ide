@@ -193,6 +193,8 @@ start_ni_compiler(CompilerData *data)
 	/* Build the command line */
 	GSList *args = NULL;
 	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
 	args = g_slist_prepend(args, i7_app_get_binary_path(theapp, "ni"));
 	args = g_slist_prepend(args, g_strdup("-rules"));
 	args = g_slist_prepend(args, i7_app_get_datafile_path(theapp, "Extensions"));
@@ -201,7 +203,7 @@ start_ni_compiler(CompilerData *data)
 	args = g_slist_prepend(args, g_strdup(data->input_file));
 	if(!data->use_debug_flags)
 		args = g_slist_prepend(args, g_strdup("-release")); /* Omit "not for relase" material */
-	if(config_get_debug_log_visible())
+	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
 		args = g_slist_prepend(args, g_strdup("-log"));
 	if(i7_story_get_nobble_rng(data->story))
 		args = g_slist_prepend(args, g_strdup("-rng"));
@@ -233,6 +235,8 @@ static void
 finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 {
 	I7_STORY_USE_PRIVATE(data->story, priv);
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	/* Clear the progress indicator */
 	gdk_threads_enter();
@@ -250,7 +254,6 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		 code should one occur, display the compiler's generated Problems.html*/
 		problems_url = g_build_filename(data->input_file, PROBLEMS_FILE, NULL);
 	} else {
-		I7App *theapp = i7_app_get();
 		gchar *file = g_strdup_printf("Error%i.html", exit_code);
 		problems_url = i7_app_check_datafile_va(theapp, "Documentation", "Sections", file, NULL);
 		g_free(file);
@@ -262,7 +265,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);
 	g_free(problems_url);
 
-	if(config_get_debug_log_visible()) {
+	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG)) {
 		/* Update */
 		gdk_threads_enter();
 		while(gtk_events_pending())

@@ -101,4 +101,8 @@ void i7_app_present_prefs_window(I7App *app);
 
 void i7_app_set_busy(I7App *app, gboolean busy);
 
+GSettings *i7_app_get_state(I7App *app);
+GSettings *i7_app_get_prefs(I7App *app);
+GSettings *i7_app_get_desktop_settings(I7App *app);
+
 #endif /* _APP_H_ */

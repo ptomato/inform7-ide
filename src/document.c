@@ -162,8 +162,27 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
 	LOAD_ACTION(priv->document_action_group, check_spelling);
 	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")), config_get_statusbar_visible());
 	gtk_container_add(GTK_CONTAINER(self), self->box);
+
+	/* Bind some actions one-way to GSettings settings;
+	this will make it use the last-set value as default for new windows */
+	GSettings *state = i7_app_get_state(theapp);
+	g_settings_bind(state, PREFS_STATE_ELASTIC_TABSTOPS,
+		self->enable_elastic_tabstops, "active",
+		G_SETTINGS_BIND_SET);
+	g_settings_bind(state, PREFS_STATE_SPELL_CHECK,
+		self->autocheck_spelling, "active",
+		G_SETTINGS_BIND_SET);
+	g_settings_bind(state, PREFS_STATE_SHOW_TOOLBAR,
+		load_object(builder, "view_toolbar"), "active",
+		G_SETTINGS_BIND_SET);
+	g_settings_bind(state, PREFS_STATE_SHOW_STATUSBAR,
+		load_object(builder, "view_statusbar"), "active",
+		G_SETTINGS_BIND_SET);
+
+	/* Show statusbar if necessary */
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")),
+		g_settings_get_boolean(state, PREFS_STATE_SHOW_STATUSBAR));
 
 	g_object_unref(builder);
 }
@@ -246,8 +265,6 @@ i7_document_add_menus_and_findbar(I7Document *document)
 	gtk_widget_show_all(GTK_WIDGET(findbar_entry_container));
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_entry_container, 0);
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_close, -1);
-
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_toolbar")), config_get_toolbar_visible());
 
 	/* Connect the accelerators */
 	priv->accels = gtk_ui_manager_get_accel_group(document->ui_manager);
@@ -544,7 +561,10 @@ void
 i7_document_update_source_highlight(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_get_syntax_highlighting());
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
+	gtk_source_buffer_set_highlight_syntax(priv->buffer, g_settings_get_boolean(prefs, PREFS_SYNTAX_HIGHLIGHTING));
 }
 
 /* Recalculate the document's elastic tabstops */

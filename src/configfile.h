@@ -19,8 +19,7 @@
 #define CONFIG_FILE_H
 
 #include <glib.h>
-#include <gtk/gtk.h>
-#include <gio/gio.h>
+#include <pango/pango.h>
 
 #define STANDARD_FONT_FALLBACK "Sans 11"
 #define MONOSPACE_FONT_FALLBACK "Monospace 11"
@@ -53,60 +52,49 @@ typedef enum {
 #define RELATIVE_SIZE_HUGE 1.8
 
 /* Other various settings */
-#define DEFAULT_TAB_WIDTH			8
-#define DEFAULT_ELASTIC_TAB_PADDING 16
-#define DEFAULT_HORIZONTAL_SPACING 40
-#define DEFAULT_VERTICAL_SPACING 75
+#define DEFAULT_TAB_WIDTH 8
 
-/* Generates a series of method definitions you can
-  use of the form:
-    * type get_name()
-    * void set_name(type value)
- */
-#define getter_and_setter(type, name) \
-  type config_get_##name(); \
-  void config_set_##name(const type v);
+/* Schemas */
+#define SCHEMA_PREFERENCES "apps.gnome-inform7.preferences"
+#define SCHEMA_SKEIN "apps.gnome-inform7.preferences.skein"
+#define SCHEMA_STATE "apps.gnome-inform7.state"
 
-getter_and_setter(gboolean, spell_check_default);
-getter_and_setter(gboolean, clean_build_files);
-getter_and_setter(gboolean, clean_index_files);
-getter_and_setter(gboolean, debug_log_visible);
-getter_and_setter(gboolean, toolbar_visible);
-getter_and_setter(gboolean, statusbar_visible);
-getter_and_setter(gboolean, notepad_visible);
-getter_and_setter(int, interpreter);
-getter_and_setter(gboolean, elastic_tabs_default);
+/* Keys */
+#define PREFS_AUTHOR_NAME          "author-name"
+#define PREFS_FONT_SET             "font-set"
+#define PREFS_CUSTOM_FONT          "custom-font"
+#define PREFS_FONT_SIZE            "font-size"
+#define PREFS_STYLE_SCHEME         "style-scheme"
+#define PREFS_TAB_WIDTH            "tab-width"
+#define PREFS_TABSTOPS_PADDING     "elastic-tabstops-padding"
+#define PREFS_SYNTAX_HIGHLIGHTING  "syntax-highlighting"
+#define PREFS_AUTO_INDENT          "auto-indent"
+#define PREFS_INTELLIGENCE         "intelligence"
+#define PREFS_AUTO_NUMBER          "auto-number"
+#define PREFS_INTERPRETER          "interpreter"
+#define PREFS_CLEAN_BUILD_FILES    "clean-build-files"
+#define PREFS_CLEAN_INDEX_FILES    "clean-index-files"
+#define PREFS_SHOW_DEBUG_LOG       "show-debug-log"
 
-getter_and_setter(int, horizontal_spacing);
-getter_and_setter(int, vertical_spacing);
+#define PREFS_STATE_SPELL_CHECK       "spell-check"
+#define PREFS_STATE_SHOW_TOOLBAR      "show-toolbar"
+#define PREFS_STATE_SHOW_STATUSBAR    "show-statusbar"
+#define PREFS_STATE_SHOW_NOTEPAD      "show-notepad"
+#define PREFS_STATE_ELASTIC_TABSTOPS  "elastic-tabstops"
+#define PREFS_STATE_WINDOW_SIZE       "app-window-size"
+#define PREFS_STATE_DIVIDER_POS       "divider-position"
+#define PREFS_STATE_EXT_WINDOW_SIZE   "ext-window-size"
+#define PREFS_STATE_NOTEPAD_POS       "notepad-position"
+#define PREFS_STATE_NOTEPAD_SIZE      "notepad-size"
 
-getter_and_setter(int, app_window_width);
-getter_and_setter(int, app_window_height);
-getter_and_setter(int, ext_window_width);
-getter_and_setter(int, ext_window_height);
-getter_and_setter(int, notepad_x);
-getter_and_setter(int, notepad_y);
-getter_and_setter(int, notepad_width);
-getter_and_setter(int, notepad_height);
-getter_and_setter(int, slider_position);
+#define PREFS_SKEIN_HORIZONTAL_SPACING  "horizontal-spacing"
+#define PREFS_SKEIN_VERTICAL_SPACING    "vertical-spacing"
 
-getter_and_setter(gboolean, syntax_highlighting);
-getter_and_setter(gboolean, auto_indent);
-getter_and_setter(gboolean, intelligence);
-getter_and_setter(gboolean, auto_number_sections);
+extern const char *font_set_enum[], *font_size_enum[], *interpreter_enum[];
 
-getter_and_setter(int, font_set);
-getter_and_setter(int, font_size);
-getter_and_setter(char *, custom_font);
-getter_and_setter(char *, style_scheme);
-getter_and_setter(int, tab_width);
-getter_and_setter(int, elastic_tabstops_padding);
-
-getter_and_setter(char *, author_name);
-
-
-void init_config_file(GtkBuilder *builder);
-void trigger_config_file(void);
+GVariant *settings_enum_set_mapping(const GValue *property_value, const GVariantType *expected_type, char **enum_values);
+gboolean settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum_values);
+void init_config_file(GSettings *prefs);
 PangoFontDescription *get_desktop_standard_font(void);
 PangoFontDescription *get_desktop_monospace_font(void);
 gint get_font_size(PangoFontDescription *font);

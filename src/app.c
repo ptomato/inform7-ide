@@ -64,6 +64,10 @@ i7_app_init(I7App *self)
 	I7_APP_USE_PRIVATE(self, priv);
 	GError *error = NULL;
 
+	priv->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
+	priv->state_settings = g_settings_new(SCHEMA_STATE);
+	priv->desktop_settings = g_settings_new("org.gnome.desktop.interface");
+
 	/* Retrieve data directories if set externally */
 	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
 	priv->datadir = env? g_strdup(env) : g_build_filename(PACKAGE_DATA_DIR, "gnome-inform7", NULL);
@@ -128,12 +132,10 @@ i7_app_init(I7App *self)
 			ERROR(_("Could not compile regex"), error);
 	}
 
-	self->prefs = create_prefs_window(builder);
+	self->prefs = create_prefs_window(priv->prefs_settings, builder);
 
-	/* Check the application settings and set all the controls to their current
-	values according to GConf. If the keys aren't set in GConf, set them to
-	their default values. */
-	init_config_file(builder);
+	/* Set up signals for GSettings keys. */
+	init_config_file(priv->prefs_settings);
 
 	g_object_unref(builder);
 }
@@ -150,6 +152,8 @@ i7_app_finalize(GObject *self)
 		g_slice_free(I7PrefsWidgets, I7_APP(self)->prefs);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->app_action_group);
+	g_object_unref(priv->state_settings);
+	g_object_unref(priv->prefs_settings);
 
 	int i;
 	for(i = 0; i < I7_APP_NUM_REGICES; i++)
@@ -985,4 +989,50 @@ i7_app_set_busy(I7App *app, gboolean busy)
 		g_list_foreach(windows, (GFunc)set_cursor, NULL);
 	gdk_flush();
 	g_list_free(windows);
+}
+
+/*
+ * i7_app_get_prefs:
+ * @app: the application singleton
+ *
+ * Gets the #GSettings object for the application preferences.
+ *
+ * Returns: #GSettings
+ */
+GSettings *
+i7_app_get_prefs(I7App *app)
+{
+	I7_APP_USE_PRIVATE(app, priv);
+	return priv->prefs_settings;
+}
+
+/*
+ * i7_app_get_state:
+ * @app: the application singleton
+ *
+ * Gets the #GSettings object for the application state that is saved between
+ * runs.
+ *
+ * Returns: #GSettings
+ */
+GSettings *
+i7_app_get_state(I7App *app)
+{
+	I7_APP_USE_PRIVATE(app, priv);
+	return priv->state_settings;
+}
+
+/*
+ * i7_app_get_desktop_settings:
+ * @app: the application singleton
+ *
+ * Gets the #GSettings object for the desktop-wide Gnome preferences.
+ *
+ * Returns: #GSettings for org.gnome.desktop.interface
+ */
+GSettings *
+i7_app_get_desktop_settings(I7App *app)
+{
+	I7_APP_USE_PRIVATE(app, priv);
+	return priv->desktop_settings;
 }

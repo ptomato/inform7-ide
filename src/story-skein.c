@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -298,20 +298,9 @@ on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Panel *p
 void
 on_skein_spacing_use_defaults_clicked(GtkButton *button, I7Story *story)
 {
-	config_set_horizontal_spacing(DEFAULT_HORIZONTAL_SPACING);
-	config_set_vertical_spacing(DEFAULT_VERTICAL_SPACING);
-}
-
-void
-on_skein_spacing_vertical_value_changed(GtkRange *range)
-{
-	config_set_vertical_spacing((gint)gtk_range_get_value(range));
-}
-
-void
-on_skein_spacing_horizontal_value_changed(GtkRange *range)
-{
-	config_set_horizontal_spacing((gint)gtk_range_get_value(range));
+	I7_STORY_USE_PRIVATE(story, priv);
+	g_settings_reset(priv->skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING);
+	g_settings_reset(priv->skein_settings, PREFS_SKEIN_VERTICAL_SPACING);
 }
 
 I7Skein *

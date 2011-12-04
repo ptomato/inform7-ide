@@ -40,6 +40,8 @@ typedef struct _I7SkeinPrivate
 
 	GooCanvasLineDash *locked_dash;
 	GooCanvasLineDash *unlocked_dash;
+
+	GSettings *settings; /* skein settings */
 } I7SkeinPrivate;
 
 #define I7_SKEIN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), I7_TYPE_SKEIN, I7SkeinPrivate))
@@ -120,10 +122,12 @@ i7_skein_init(I7Skein *self)
 	priv->locked_dash = goo_canvas_line_dash_new(0);
 	priv->unlocked_dash = goo_canvas_line_dash_new(2, 5.0, 5.0);
 
-	priv->hspacing = 40.0;
-	priv->vspacing = 40.0;
 	gdk_color_parse("black", &priv->locked);
 	gdk_color_parse("black", &priv->unlocked);
+
+	priv->settings = g_settings_new("apps.gnome-inform7.preferences.skein");
+	g_settings_bind(priv->settings, "horizontal-spacing", self, "horizontal-spacing", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(priv->settings, "vertical-spacing", self, "vertical-spacing", G_SETTINGS_BIND_DEFAULT);
 }
 
 static void

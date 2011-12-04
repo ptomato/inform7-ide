@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -279,8 +279,10 @@ not be unref'd. */
 GtkSourceStyleScheme *
 get_style_scheme(void)
 {
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 	GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
-	char *scheme_name = config_get_style_scheme();
+	char *scheme_name = g_settings_get_string(prefs, PREFS_STYLE_SCHEME);
 	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, scheme_name);
 	g_free(scheme_name);
 	return scheme;

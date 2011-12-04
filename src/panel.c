@@ -224,10 +224,11 @@ void
 action_layout(GtkAction *action, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	GSettings *skein_settings = g_settings_new(SCHEMA_SKEIN);
 
 	/* Save old values in case the user decides to cancel */
-	g_object_set_data(G_OBJECT(story->skein_spacing_dialog), "old-horizontal-spacing", GINT_TO_POINTER(config_get_horizontal_spacing()));
-	g_object_set_data(G_OBJECT(story->skein_spacing_dialog), "old-vertical-spacing", GINT_TO_POINTER(config_get_vertical_spacing()));
+	double old_horizontal_spacing = g_settings_get_double(skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING);
+	double old_vertical_spacing = g_settings_get_double(skein_settings, PREFS_SKEIN_VERTICAL_SPACING);
 
 	int response = 1; /* 1 = "Use defaults" */
 	while(response == 1)
@@ -236,8 +237,8 @@ action_layout(GtkAction *action, I7Panel *panel)
 	gtk_widget_hide(story->skein_spacing_dialog);
 
 	if(response != GTK_RESPONSE_OK) {
-		config_set_horizontal_spacing(GPOINTER_TO_INT(g_object_get_data(G_OBJECT(story->skein_spacing_dialog), "old-horizontal-spacing")));
-		config_set_vertical_spacing(GPOINTER_TO_INT(g_object_get_data(G_OBJECT(story->skein_spacing_dialog), "old-vertical-spacing")));
+		g_settings_set_double(skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING, old_horizontal_spacing);
+		g_settings_set_double(skein_settings, PREFS_SKEIN_VERTICAL_SPACING, old_vertical_spacing);
 	}
 }
 
@@ -292,6 +293,7 @@ i7_panel_init(I7Panel *self)
 	GError *error = NULL;
 	I7_PANEL_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 	int foo;
 
 	/* Initialize the history system */
@@ -363,7 +365,7 @@ i7_panel_init(I7Panel *self)
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z6, CHIMARA_IF_INTERPRETER_FROTZ);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z8, CHIMARA_IF_INTERPRETER_FROTZ);
 	ChimaraIFInterpreter glulx_interpreter =
-	    config_get_interpreter() == INTERPRETER_GIT ? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
+	    g_settings_get_enum(prefs, PREFS_INTERPRETER) == INTERPRETER_GIT ? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_GLULX, glulx_interpreter);
 	chimara_glk_set_interactive(CHIMARA_GLK(game), TRUE);
 	chimara_glk_set_protect(CHIMARA_GLK(game), FALSE);

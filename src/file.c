@@ -191,7 +191,10 @@ from the project directory */
 void
 delete_build_files(I7Story *story)
 {
-	if(config_get_clean_build_files()) {
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
+	if(g_settings_get_boolean(prefs, PREFS_CLEAN_BUILD_FILES)) {
 		i7_document_display_status_message(I7_DOCUMENT(story), _("Cleaning out build files..."), FILE_OPERATIONS);
 
 		gchar *storyname = i7_document_get_path(I7_DOCUMENT(story));
@@ -211,7 +214,7 @@ delete_build_files(I7Story *story)
 		delete_from_project_dir(story, storyname, "Build", "temporary file 2.inf");
 		delete_from_project_dir(story, storyname, "Build", "StatusCblorb.html");
 
-		if(config_get_clean_index_files()) {
+		if(g_settings_get_boolean(prefs, PREFS_CLEAN_INDEX_FILES)) {
 			delete_from_project_dir(story, storyname, "Index", "Actions.html");
 			delete_from_project_dir(story, storyname, "Index", "Contents.html");
 			delete_from_project_dir(story, storyname, "Index", "Headings.xml");
