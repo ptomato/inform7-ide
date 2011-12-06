@@ -121,6 +121,7 @@ void i7_skein_bless(I7Skein *self, I7Node *node, gboolean all);
 gboolean i7_skein_can_bless(I7Skein *self, I7Node *node, gboolean all);
 I7Node *i7_skein_get_thread_top(I7Skein *self, I7Node *node);
 I7Node *i7_skein_get_thread_bottom(I7Skein *self, I7Node *node);
+GSList *i7_skein_get_blessed_thread_ends(I7Skein *self);
 gboolean i7_skein_get_modified(I7Skein *self);
 void i7_skein_set_font(I7Skein *self, PangoFontDescription *font);
 

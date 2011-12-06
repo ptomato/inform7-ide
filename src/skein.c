@@ -1573,6 +1573,35 @@ i7_skein_get_thread_bottom(I7Skein *self, I7Node *node)
 	}
 }
 
+/* Helper function: recursive function for i7_skein_get_blessed_thread_ends().
+Start it at the root node. Prepends to @node_list a list of all the thread ends
+under @node that need to be played through in order to have played through every
+blessed knot in the skein at least once. Returns %TRUE if anything was prepended
+to @node_list, %FALSE if not. */
+static gboolean
+get_blessed_thread_ends_recurse(GSList **node_list, I7Node *node)
+{
+	gboolean filled = FALSE;
+
+	/* See if any of this node's children adds a node to the list */
+	GNode *gnode = node->gnode;
+	for(gnode = node->gnode->children; gnode; gnode = gnode->next) {
+		if(get_blessed_thread_ends_recurse(node_list, (I7Node *)gnode->data))
+			filled = TRUE;
+	}
+
+	/* If this node caused something to get filled, then return TRUE */
+	if(filled)
+		return TRUE;
+
+	/* If this node has expected text, then add it to the list */
+	if(i7_node_get_blessed(node)) {
+		*node_list = g_slist_prepend(*node_list, node);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 /*
  * i7_skein_get_blessed_thread_ends:
  * @skein: the skein_command
@@ -1580,12 +1609,16 @@ i7_skein_get_thread_bottom(I7Skein *self, I7Node *node)
  * Makes a list of all the thread ends that need to be played through in order
  * to have played through every blessed knot in the skein at least once.
  *
- * Returns: singly-linked list of knots at the end of the threads.
+ * Returns: singly-linked list of knots at the end of the threads. Free the
+ * list using g_slist_free(), but not its contents.
  */
 GSList *
-i7_skein_get_blessed_thread_ends(I7Skein *skein)
+i7_skein_get_blessed_thread_ends(I7Skein *self)
 {
-	...
+	GSList *retval = NULL;
+	get_blessed_thread_ends_recurse(&retval, i7_skein_get_root_node(self));
+	retval = g_slist_reverse(retval);
+	return retval;
 }
 
 /* Returns whether the skein was modified since last save or load */
