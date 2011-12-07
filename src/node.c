@@ -310,14 +310,14 @@ i7_node_init(I7Node *self)
 	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 1.0, 0.0, 0.33, 0.0, 0.3);
 	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.67, 0.73, 0.84, 0.73, 0.1);
 	cairo_pattern_add_color_stop_rgba(priv->label_pattern, 0.0, 0.5, 0.85, 0.5, 0.0);
-	/* Node, unplayed, without blessed transcript text */
-	priv->node_pattern[NODE_UNPLAYED_UNBLESSED] = create_node_pattern(0.26, 0.56, 0.26);
-	/* Node, unplayed, with blessed transcript text */
-	priv->node_pattern[NODE_UNPLAYED_BLESSED] = create_node_pattern(0.33, 0.7, 0.33);
-	/* Node, played, without blessed transcript text */
-	priv->node_pattern[NODE_PLAYED_UNBLESSED] = create_node_pattern(0.56, 0.51, 0.17);
-	/* Node, played, with blessed transcript text */
-	priv->node_pattern[NODE_PLAYED_BLESSED] = create_node_pattern(0.72, 0.64, 0.21);
+	/* Node, unplayed, without blessed transcript text: Tango Chameleon 3 */
+	priv->node_pattern[NODE_UNPLAYED_UNBLESSED] = create_node_pattern(0.31, 0.60, 0.02);
+	/* Node, unplayed, with blessed transcript text: Tango Chameleon 1 */
+	priv->node_pattern[NODE_UNPLAYED_BLESSED] = create_node_pattern(0.54, 0.87, 0.2);
+	/* Node, played, without blessed transcript text: Tango Butter 3 */
+	priv->node_pattern[NODE_PLAYED_UNBLESSED] = create_node_pattern(0.77, 0.63, 0.0);
+	/* Node, played, with blessed transcript text: Tango Butter 1 */
+	priv->node_pattern[NODE_PLAYED_BLESSED] = create_node_pattern(0.99, 0.91, 0.31);
 
 	/* Create the canvas items, though some of them can't be drawn yet */
 	priv->command_shape_item = goo_canvas_path_model_new(GOO_CANVAS_ITEM_MODEL(self), "",
