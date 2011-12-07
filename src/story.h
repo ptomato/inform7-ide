@@ -143,4 +143,12 @@ void i7_story_set_use_git(I7Story *story, gboolean use_git);
 /* Skein pane, story-skein.c */
 I7Skein *i7_story_get_skein(I7Story *story);
 
+/* Transcript pane, story-transcript.c */
+void i7_story_previous_changed(I7Story *story);
+void i7_story_next_changed(I7Story *story);
+void i7_story_previous_difference(I7Story *story);
+void i7_story_next_difference(I7Story *story);
+void i7_story_next_difference_skein(I7Story *story);
+void i7_story_show_node_in_transcript(I7Story *story, I7Node *node);
+
 #endif

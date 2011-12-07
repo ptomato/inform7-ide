@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.20"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkActionGroup" id="story_actions">
+    <child>
+      <object class="GtkAction" id="show_transcript">
+        <property name="label">_Transcript</property>
+        <property name="short_label" translatable="yes">_Transcript</property>
+        <property name="tooltip">Show the Transcript pane</property>
+        <signal name="activate" handler="action_show_transcript" swapped="no"/>
+      </object>
+      <accelerator key="F6" modifiers="GDK_CONTROL_MASK"/>
+    </child>
     <child>
       <object class="GtkAction" id="help_recipe_book">
         <property name="label">_Recipe Book</property>
@@ -233,6 +242,15 @@
       <accelerator key="q" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
     </child>
     <child>
+      <object class="GtkAction" id="show_last_command">
+        <property name="label">Show _Last Command</property>
+        <property name="short_label" translatable="yes">Show _Last Command</property>
+        <property name="tooltip">Show the last command</property>
+        <signal name="activate" handler="action_show_last_command" swapped="no"/>
+      </object>
+      <accelerator key="l" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
+    </child>
+    <child>
       <object class="GtkAction" id="show_last_command_skein">
         <property name="label">Show Last Command in _Skein</property>
         <property name="short_label" translatable="yes">Show Last Command in _Skein</property>
@@ -306,27 +324,6 @@
         <signal name="activate" handler="action_import_into_skein" swapped="no"/>
       </object>
     </child>
-  </object>
-  <object class="GtkActionGroup" id="unimplemented_actions">
-    <property name="sensitive">False</property>
-    <property name="visible">False</property>
-    <child>
-      <object class="GtkAction" id="play_all_blessed">
-        <property name="label">Re_play Commands Blessed in Transcript</property>
-        <property name="short_label" translatable="yes">Re_play Commands Blessed in Transcript</property>
-        <property name="tooltip">Play through all the blessed nodes in the entire Skein</property>
-        <signal name="activate" handler="action_play_all_blessed" swapped="no"/>
-      </object>
-      <accelerator key="r" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="next_difference_skein">
-        <property name="label">Show Next _Difference in Skein</property>
-        <property name="short_label" translatable="yes">Show Next _Difference in Skein</property>
-        <property name="tooltip">Go to the next difference in the Skein</property>
-        <signal name="activate" handler="action_next_difference_skein" swapped="no"/>
-      </object>
-    </child>
     <child>
       <object class="GtkAction" id="next_difference">
         <property name="label">Find Ne_xt Difference</property>
@@ -341,6 +338,14 @@
         <property name="short_label" translatable="yes">Find Pre_vious Difference</property>
         <property name="tooltip">Go to the previous difference</property>
         <signal name="activate" handler="action_previous_difference" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="next_difference_skein">
+        <property name="label">Show Next _Difference in Skein</property>
+        <property name="short_label" translatable="yes">Show Next _Difference in Skein</property>
+        <property name="tooltip">Go to the next difference in the Skein</property>
+        <signal name="activate" handler="action_next_difference_skein" swapped="no"/>
       </object>
     </child>
     <child>
@@ -360,22 +365,13 @@
       </object>
     </child>
     <child>
-      <object class="GtkAction" id="show_last_command">
-        <property name="label">Show _Last Command</property>
-        <property name="short_label" translatable="yes">Show _Last Command</property>
-        <property name="tooltip">Show the last command</property>
-        <signal name="activate" handler="action_show_last_command" swapped="no"/>
+      <object class="GtkAction" id="play_all_blessed">
+        <property name="label">Re_play Commands Blessed in Transcript</property>
+        <property name="short_label" translatable="yes">Re_play Commands Blessed in Transcript</property>
+        <property name="tooltip">Play through all the blessed nodes in the entire Skein</property>
+        <signal name="activate" handler="action_play_all_blessed" swapped="no"/>
       </object>
-      <accelerator key="l" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="show_transcript">
-        <property name="label">_Transcript</property>
-        <property name="short_label" translatable="yes">_Transcript</property>
-        <property name="tooltip">Show the Transcript pane</property>
-        <signal name="activate" handler="action_show_transcript" swapped="no"/>
-      </object>
-      <accelerator key="F6" modifiers="GDK_CONTROL_MASK"/>
+      <accelerator key="r" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
     </child>
   </object>
   <object class="GtkHPaned" id="facing_pages">
@@ -397,9 +393,11 @@
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <property name="stock">gtk-revert-to-saved</property>
   </object>
   <object class="GtkWindow" id="notes_window">
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Notepad</property>
     <property name="default_width">300</property>
     <property name="default_height">300</property>
@@ -425,6 +423,7 @@
     </child>
   </object>
   <object class="GtkDialog" id="skein_spacing_dialog">
+    <property name="can_focus">False</property>
     <property name="border_width">12</property>
     <property name="title" translatable="yes">Skein spacing options</property>
     <property name="icon_name">inform7</property>
@@ -432,10 +431,72 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="skein_spacing_use_defaults">
+                <property name="label" translatable="yes">_Use defaults</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="image">image1</property>
+                <property name="use_underline">True</property>
+                <signal name="clicked" handler="on_skein_spacing_use_defaults_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button1">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="label" translatable="yes">&lt;b&gt;Edit the spacing for items in the skein&lt;/b&gt;</property>
             <property name="use_markup">True</property>
@@ -449,6 +510,7 @@
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="border_width">6</property>
             <property name="n_rows">2</property>
             <property name="n_columns">2</property>
@@ -486,6 +548,7 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Horizontal spacing</property>
                 <property name="use_underline">True</property>
@@ -498,6 +561,7 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Vertical spacing</property>
                 <property name="use_underline">True</property>
@@ -511,62 +575,9 @@
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area1">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="skein_spacing_use_defaults">
-                <property name="label" translatable="yes">_Use defaults</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="image">image1</property>
-                <property name="use_underline">True</property>
-                <signal name="clicked" handler="on_skein_spacing_use_defaults_clicked" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button2">
-                <property name="label">gtk-cancel</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button1">
-                <property name="label">gtk-ok</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
           </packing>
         </child>
       </object>
@@ -578,6 +589,7 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="skein_trim_dialog">
+    <property name="can_focus">False</property>
     <property name="border_width">12</property>
     <property name="title" translatable="yes">Trim the skein</property>
     <property name="icon_name">inform7</property>
@@ -585,16 +597,63 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="button5">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button4">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">This will remove nodes from the skein and transcript that have not been visited recently, and which have not been locked. Drag the slider to the right to increase the number of nodes that will be deleted.
 
 This operation cannot be undone.</property>
             <property name="wrap">True</property>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="padding">6</property>
             <property name="position">1</property>
           </packing>
@@ -602,24 +661,31 @@ This operation cannot be undone.</property>
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">_Trim a little</property>
                 <property name="use_underline">True</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Trim a lot</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -642,45 +708,6 @@ This operation cannot be undone.</property>
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">3</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area2">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="button5">
-                <property name="label">gtk-cancel</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button4">
-                <property name="label">gtk-ok</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
           </packing>
         </child>
       </object>

@@ -31,6 +31,18 @@ typedef enum {
 	I7_REASON_USER_ACTION
 } I7SkeinShowNodeReason;
 
+enum {
+	I7_SKEIN_COLUMN_COMMAND,
+	I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
+	I7_SKEIN_COLUMN_EXPECTED_TEXT,
+	I7_SKEIN_COLUMN_MATCH_TYPE,
+	I7_SKEIN_COLUMN_CURRENT,
+	I7_SKEIN_COLUMN_PLAYED,
+	I7_SKEIN_COLUMN_CHANGED,
+	I7_SKEIN_COLUMN_NODE_PTR,
+	I7_SKEIN_NUM_COLUMNS
+};
+
 G_BEGIN_DECLS
 
 #define I7_TYPE_SKEIN             (i7_skein_get_type ())
@@ -109,6 +121,7 @@ void i7_skein_bless(I7Skein *self, I7Node *node, gboolean all);
 gboolean i7_skein_can_bless(I7Skein *self, I7Node *node, gboolean all);
 I7Node *i7_skein_get_thread_top(I7Skein *self, I7Node *node);
 I7Node *i7_skein_get_thread_bottom(I7Skein *self, I7Node *node);
+GSList *i7_skein_get_blessed_thread_ends(I7Skein *self);
 gboolean i7_skein_get_modified(I7Skein *self);
 void i7_skein_set_font(I7Skein *self, PangoFontDescription *font);
 

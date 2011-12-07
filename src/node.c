@@ -24,6 +24,7 @@
 
 #include "node.h"
 #include "skein.h"
+#include "transcript-diff.h"
 
 #define DIFFERS_BADGE_RADIUS 8.0
 
@@ -37,7 +38,8 @@ enum {
 	PROP_BLESSED,
 	PROP_LOCKED,
 	PROP_PLAYED,
-	PROP_SCORE
+	PROP_SCORE,
+	PROP_MATCH
 };
 
 enum {
@@ -50,16 +52,23 @@ enum {
 #define SELECT_PATTERN(played,blessed) (((played? 1:0) << 1) | (blessed? 1:0))
 
 typedef struct _I7NodePrivate {
-	gchar *id;
-	gchar *command;
-	gchar *label;
-	gchar *transcript_text;
-	gchar *expected_text;
-	gboolean changed;
-	gboolean blessed;
-	gboolean played;
-	gboolean locked;
-	gint score;
+	gchar *id; /* Unique ID string for use in saving */
+	gchar *command; /* Game command that this knot represents */
+	gchar *label; /* Author's annotation that appears above this knot */
+	gchar *transcript_text; /* Response produced by the game to this command */
+	gchar *expected_text; /* Response the author thinks should be produced */
+	gboolean changed; /* Whether the response changed since last time this knot was played */
+	gboolean blessed; /* Whether this knot has an expected response */
+	gboolean played; /* Whether this knot is currently in the thread being played */
+	gboolean locked; /* Whether this knot is protected from automatic trimming */
+	gint score; /* The inverse likelihood of this knot being trimmed */
+
+	/* Diffs */
+	I7NodeMatchType match;
+	GList *transcript_diffs;
+	GList *expected_diffs;
+	char *transcript_pango_string;
+	char *expected_pango_string;
 
 	/* Graphical goodness */
 	cairo_pattern_t *label_pattern;
@@ -88,30 +97,108 @@ G_DEFINE_TYPE(I7Node, i7_node, GOO_TYPE_CANVAS_GROUP_MODEL);
 /* STATIC FUNCTIONS */
 
 static void
+draw_differs_badge(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+	if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
+		/* if the differs badge hasn't been drawn yet, draw it */
+		g_object_set(priv->badge_item, "data",
+		"M 1.0,0.0 0.691,0.112 0.949,0.317 0.62,0.325 0.799,0.601 "
+		"0.485,0.505 0.568,0.823 0.3,0.632 0.278,0.961 0.084,0.695 -0.04,0.999 "
+		"-0.14,0.686 -0.355,0.935 -0.35,0.606 -0.632,0.775 -0.524,0.464 "
+		"-0.845,0.534 -0.644,0.274 -0.971,0.239 -0.698,0.056 -0.997,-0.08 "
+		"-0.68,-0.168 -0.92,-0.392 -0.592,-0.374 -0.749,-0.663 -0.443,-0.542 "
+		"-0.5,-0.866 -0.248,-0.655 -0.2,-0.98 -0.028,-0.699 0.121,-0.993 "
+		"0.195,-0.672 0.429,-0.903 0.398,-0.576 0.693,-0.721 0.56,-0.421 "
+		"0.885,-0.465 0.664,-0.222 0.987,-0.16 0.7,-0.0 Z",
+		"visibility", GOO_CANVAS_ITEM_VISIBLE,
+		NULL);
+		/* That SVG code is generated with this Python code:
+		import numpy as N
+		angles = N.linspace(0, 2 * N.pi, 40)
+		radii = N.ones_like(angles)
+		radii[1::2] *= 0.7
+		xs = radii * N.cos(angles)
+		ys = radii * N.sin(angles)
+		print "M",
+		for x, y in zip(xs, ys):
+			print "{0:.3},{1:.3}".format(round(x, 3), round(y, 3)),
+		print "Z" */
+		g_object_set_data(G_OBJECT(priv->badge_item), "path-drawn", GINT_TO_POINTER(1));
+		/* Have to resize the badge after drawing it */
+		g_object_set(priv->badge_item,
+		    "width", DIFFERS_BADGE_RADIUS * 2,
+			"height", DIFFERS_BADGE_RADIUS * 2,
+			NULL);
+	}
+	g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_VISIBLE, NULL);
+}
+
+static void
 update_node_background(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
 	g_object_set(priv->command_shape_item,
 		"fill-pattern", priv->node_pattern[SELECT_PATTERN(priv->played, priv->blessed)],
 		NULL);
+	if(i7_node_get_different(self))
+		draw_differs_badge(self);
+	else
+		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
+}
+
+static void
+clear_diffs(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+	
+	g_free(priv->transcript_pango_string);
+	g_free(priv->expected_pango_string);
+	g_list_free(priv->transcript_diffs);
+	g_list_free(priv->expected_diffs);
+	
+	priv->match = I7_NODE_CANT_COMPARE;
+	priv->transcript_diffs = NULL;
+	priv->transcript_pango_string = NULL;
+	priv->expected_diffs = NULL;
+	priv->expected_pango_string = NULL;
+}
+
+static void
+calculate_diffs(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	I7NodeMatchType old_match_status = priv->match;
+	
+	clear_diffs(self);
+
+	if(!i7_node_get_blessed(self))
+		priv->match = I7_NODE_CANT_COMPARE;
+	else if(!word_diff(priv->expected_text, priv->transcript_text, &priv->expected_diffs, &priv->transcript_diffs)) {
+		if(priv->expected_diffs || priv->transcript_diffs)
+			priv->match = I7_NODE_NO_MATCH;
+		else
+			priv->match = I7_NODE_NEAR_MATCH;
+	} else
+		priv->match = I7_NODE_EXACT_MATCH;
+
+	if(priv->match == I7_NODE_NO_MATCH) {
+		priv->transcript_pango_string = make_pango_markup_string(priv->transcript_text, priv->transcript_diffs);
+		priv->expected_pango_string = make_pango_markup_string(priv->expected_text, priv->expected_diffs);
+	} else {
+		priv->transcript_pango_string = g_markup_escape_text(priv->transcript_text? priv->transcript_text : "", -1);
+		priv->expected_pango_string = g_markup_escape_text(priv->expected_text? priv->expected_text : "", -1);
+	}
+
+	if(old_match_status != priv->match)
+		g_object_notify(G_OBJECT(self), "match");
 }
 
 static void
 transcript_modified(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
-
-	gboolean old_changed_status = priv->changed;
-	priv->changed = (strcmp(priv->transcript_text? priv->transcript_text : "",
-							priv->expected_text? priv->expected_text : "") != 0);
-	if(priv->changed != old_changed_status)
-		g_object_notify(G_OBJECT(self), "changed");
-
-	/* TODO clear diffs */
-
-	if(priv->changed && priv->expected_text && strlen(priv->expected_text))
-		/* TODO new diffs */;
-
+	calculate_diffs(self);
 	update_node_background(self);
 }
 
@@ -158,13 +245,32 @@ i7_node_set_expected_text(I7Node *self, const gchar *text)
 		g_strfreev(lines);
 	}
 	priv->expected_text = g_strdelimit(priv->expected_text, "\r", '\n');
-
-	if(strlen(priv->expected_text) == 0)
-		priv->blessed = FALSE;
+	priv->blessed = !(strlen(priv->expected_text) == 0);
 
 	transcript_modified(self);
 
+	g_object_notify(G_OBJECT(self), "blessed");
 	g_object_notify(G_OBJECT(self), "expected-text");
+}
+
+/*
+ * i7_node_set_changed:
+ * @self: the knot
+ * @changed: the new changed status
+ *
+ * Private setter. The "changed" status should only be set when the transcript
+ * text is set.
+ */
+static void
+i7_node_set_changed(I7Node *self, gboolean changed)
+{
+	I7_NODE_USE_PRIVATE;
+
+	gboolean old_changed_status = priv->changed;
+	priv->changed = changed;
+
+	if(old_changed_status != changed)
+		g_object_notify(G_OBJECT(self), "changed");
 }
 
 /* GENERAL STATIC FUNCTIONS */
@@ -191,7 +297,12 @@ i7_node_init(I7Node *self)
 	self->tree_item = NULL;
 	self->tree_points = goo_canvas_points_new(4);
 
-	/* TODO diffs */
+	priv->blessed = FALSE;
+	priv->match = I7_NODE_CANT_COMPARE;
+	priv->transcript_diffs = NULL;
+	priv->transcript_pango_string = NULL;
+	priv->expected_diffs = NULL;
+	priv->expected_pango_string = NULL;
 
 	/* Create the cairo gradients */
 	/* Label */
@@ -260,6 +371,9 @@ i7_node_set_property(GObject *self, guint prop_id, const GValue *value, GParamSp
 		case PROP_PLAYED:
 			i7_node_set_played(I7_NODE(self), g_value_get_boolean(value));
 			break;
+		case PROP_CHANGED: /* Construct only */
+			i7_node_set_changed(I7_NODE(self), g_value_get_boolean(value));
+			break;
 		case PROP_SCORE: /* Construct only */
 			priv->score = g_value_get_int(value);
 			g_object_notify(self, "score");
@@ -302,6 +416,9 @@ i7_node_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *ps
 		case PROP_SCORE:
 			g_value_set_int(value, priv->score);
 			break;
+		case PROP_MATCH:
+			g_value_set_int(value, i7_node_get_match_type(I7_NODE(self)));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
 	}
@@ -327,8 +444,12 @@ i7_node_finalize(GObject *self)
 	g_free(priv->label);
 	g_free(priv->transcript_text);
 	g_free(priv->expected_text);
+	g_free(priv->transcript_pango_string);
+	g_free(priv->expected_pango_string);
 	g_free(priv->id);
 	goo_canvas_points_unref(I7_NODE(self)->tree_points);
+	g_list_free(priv->transcript_diffs);
+	g_list_free(priv->expected_diffs);
 
 	/* recurse */
 	g_node_children_foreach(I7_NODE(self)->gnode, G_TRAVERSE_ALL, (GNodeForeachFunc)unref_node, NULL);
@@ -366,8 +487,8 @@ i7_node_class_init(I7NodeClass *klass)
 			"", flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_CHANGED,
 		g_param_spec_boolean("changed", _("Changed"),
-			_("Whether the transcript text and expected text differ in this node"),
-			FALSE, flags | G_PARAM_READABLE));
+			_("Whether the transcript text has changed since the last time this node was played"),
+			FALSE, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property(object_class, PROP_BLESSED,
 		g_param_spec_boolean("blessed", _("Blessed"),
 			_("Whether this node has expected text"),
@@ -384,6 +505,10 @@ i7_node_class_init(I7NodeClass *klass)
 		g_param_spec_int("score", _("Score"),
 			_("This node's score, used for cleaning up the skein"),
 			G_MININT16, G_MAXINT16, 0, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property(object_class, PROP_MATCH,
+	    g_param_spec_int("match", _("Match type"),
+		    _("How this node's transcript and expected text differ"),
+		    -1, 2, -1, flags | G_PARAM_READABLE));
 
 	/* Private data */
 	g_type_class_add_private(klass, sizeof(I7NodePrivate));
@@ -391,8 +516,8 @@ i7_node_class_init(I7NodeClass *klass)
 
 I7Node *
 i7_node_new(const gchar *command, const gchar *label, const gchar *transcript,
-	const gchar *expected, gboolean played, gboolean locked, int score,
-	GooCanvasItemModel *skein)
+	const gchar *expected, gboolean played, gboolean locked, gboolean changed,
+    int score, GooCanvasItemModel *skein)
 {
 	I7Node *self = g_object_new(I7_TYPE_NODE,
 		"command", command,
@@ -401,6 +526,7 @@ i7_node_new(const gchar *command, const gchar *label, const gchar *transcript,
 		"expected-text", expected,
 		"locked", locked,
 		"played", played,
+	    "changed", changed,
 		"score", score,
 		NULL);
 	g_object_set(self, "parent", skein, NULL);
@@ -470,6 +596,9 @@ void
 i7_node_set_transcript_text(I7Node *self, const gchar *transcript)
 {
 	I7_NODE_USE_PRIVATE;
+
+	char *old_transcript_text = g_strdup(priv->transcript_text? priv->transcript_text : "");
+
 	g_free(priv->transcript_text);
 	priv->transcript_text = g_strdup(transcript? transcript : ""); /* silently accept NULL */
 
@@ -482,6 +611,12 @@ i7_node_set_transcript_text(I7Node *self, const gchar *transcript)
 	}
 	priv->transcript_text = g_strdelimit(priv->transcript_text, "\r", '\n');
 
+	if(strcmp(old_transcript_text, priv->transcript_text) != 0)
+		i7_node_set_changed(self, TRUE);
+	else
+		i7_node_set_changed(self, FALSE);
+	g_free(old_transcript_text);
+
 	transcript_modified(self);
 
 	g_object_notify(G_OBJECT(self), "transcript-text");
@@ -492,6 +627,61 @@ i7_node_get_expected_text(I7Node *self)
 {
 	I7_NODE_USE_PRIVATE;
 	return g_strdup(priv->expected_text);
+}
+
+const char *
+i7_node_get_transcript_pango_string(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->transcript_pango_string)
+		calculate_diffs(self);
+	
+	return priv->transcript_pango_string;
+}
+
+const char *
+i7_node_get_expected_pango_string(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->expected_pango_string)
+		calculate_diffs(self);
+	
+	return priv->expected_pango_string;
+}
+
+I7NodeMatchType
+i7_node_get_match_type(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->expected_pango_string || !priv->transcript_pango_string)
+		calculate_diffs(self);
+
+	return priv->match;
+}
+
+/*
+ * i7_node_get_different:
+ * @self: the knot.
+ *
+ * Computes the differences between the transcript text and expected text, and
+ * returns %TRUE if they do not match. Returns %FALSE if they do match, or if
+ * there is no expected text.
+ *
+ * Returns: %TRUE if transcript text and expected text differ, %FALSE if not
+ * or if there is no expected text.
+ */
+gboolean
+i7_node_get_different(I7Node *self)
+{
+	I7_NODE_USE_PRIVATE;
+
+	if(!priv->expected_pango_string || !priv->transcript_pango_string)
+		calculate_diffs(self);
+
+	return (priv->match == I7_NODE_NEAR_MATCH || priv->match == I7_NODE_NO_MATCH);
 }
 
 gboolean
@@ -620,6 +810,91 @@ i7_node_find_child(I7Node *self, const gchar *command)
 	}
 
 	return node;
+}
+
+/*
+ * i7_node_get_next_difference_below:
+ * @node: reference node to get next difference from
+ *
+ * Finds the next difference below @node in the skein.
+ * Returns: pointer to next different node.
+ */
+I7Node *
+i7_node_get_next_difference_below(I7Node *node) {
+	GNode *child = node->gnode->children;
+
+	if(!child)
+		return NULL;
+
+	do {
+		I7Node *child_node = I7_NODE(child->data);
+		if(i7_node_get_different(child_node))
+			return child_node;
+
+		I7Node *child_diff = i7_node_get_next_difference_below(child_node);
+		if(child_diff)
+			return child_diff;
+	} while((child = child->next));
+
+	return NULL;
+}
+
+/*
+ * i7_node_get_next_difference:
+ * @node: reference node to get next difference from
+ *
+ * Finds the next difference (either below @node, or to the right in the skein).
+ * Returns: pointer to next different node.
+ */
+I7Node *
+i7_node_get_next_difference(I7Node *node)
+{
+	I7Node *diff_below;
+	if((diff_below = i7_node_get_next_difference_below(node)) != NULL)
+		return diff_below;
+
+	/* Iterate up from this point */
+	GNode *top, *our_branch;
+	top = node->gnode;
+
+	while(top) {
+		our_branch = top;
+		top = top->parent;
+
+		while(top && g_node_n_children(top) <= 1) {
+			our_branch = top;
+			top = top->parent;
+		}
+
+		if(!top)
+			return NULL;
+
+		/* Find the item to the right */
+		gboolean found_branch = FALSE;
+		GNode *child = top->children;
+		do {
+			if(child == our_branch) {
+				found_branch = TRUE;
+				break;
+			}
+		} while((child = child->next));
+
+		if(!found_branch)
+			return FALSE;
+
+		/* See if we can find any differences there */
+		while((child = child->next)) {
+			I7Node *child_node = I7_NODE(child->data);
+			if(i7_node_get_different(child_node))
+				return child_node;
+
+			I7Node *child_diff = i7_node_get_next_difference_below(child_node);
+			if(child_diff)
+				return child_diff;
+		}
+	}
+
+	return NULL;
 }
 
 static void
@@ -770,40 +1045,6 @@ redraw_label(I7Node *self, double width, double height)
 	priv->label_height = height;
 }
 
-static void
-draw_differs_badge(I7Node *self)
-{
-	I7_NODE_USE_PRIVATE;
-	
-	if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
-		/* if the differs badge hasn't been drawn yet, draw it */
-		g_object_set(priv->badge_item, "data",
-		"M 1.0,0.0 0.691,0.112 0.949,0.317 0.62,0.325 0.799,0.601 "
-		"0.485,0.505 0.568,0.823 0.3,0.632 0.278,0.961 0.084,0.695 -0.04,0.999 "
-		"-0.14,0.686 -0.355,0.935 -0.35,0.606 -0.632,0.775 -0.524,0.464 "
-		"-0.845,0.534 -0.644,0.274 -0.971,0.239 -0.698,0.056 -0.997,-0.08 "
-		"-0.68,-0.168 -0.92,-0.392 -0.592,-0.374 -0.749,-0.663 -0.443,-0.542 "
-		"-0.5,-0.866 -0.248,-0.655 -0.2,-0.98 -0.028,-0.699 0.121,-0.993 "
-		"0.195,-0.672 0.429,-0.903 0.398,-0.576 0.693,-0.721 0.56,-0.421 "
-		"0.885,-0.465 0.664,-0.222 0.987,-0.16 0.7,-0.0 Z",
-		"visibility", GOO_CANVAS_ITEM_VISIBLE,
-		NULL);
-		/* That SVG code is generated with this Python code:
-		import numpy as N
-		angles = N.linspace(0, 2 * N.pi, 40)
-		radii = N.ones_like(angles)
-		radii[1::2] *= 0.7
-		xs = radii * N.cos(angles)
-		ys = radii * N.sin(angles)
-		print "M",
-		for x, y in zip(xs, ys):
-			print "{0:.3},{1:.3}".format(round(x, 3), round(y, 3)),
-		print "Z" */
-		g_object_set_data(G_OBJECT(priv->badge_item), "path-drawn", GINT_TO_POINTER(1));
-	} else
-		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_VISIBLE, NULL);
-}
-
 void
 i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas)
 {
@@ -818,6 +1059,7 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	/* Calculate the bounds of the command text and label text */
 	item = goo_canvas_get_item(canvas, priv->command_item);
 	goo_canvas_item_get_bounds(item, &size);
+
 	command_width = size.x2 - size.x1;
 	command_height = size.y2 - size.y1;
 
@@ -856,19 +1098,13 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 			NULL);
 	}
 
-	/* Show or hide the differs badge */
-	if(priv->changed && priv->expected_text && *priv->expected_text) {
-		draw_differs_badge(self);
-		
-		if(command_width_changed || command_height_changed)
-			g_object_set(priv->badge_item, 
-				"x", command_width / 2,
-				"y", command_height / 2 - DIFFERS_BADGE_RADIUS,
-				"width", DIFFERS_BADGE_RADIUS * 2,
-				"height", DIFFERS_BADGE_RADIUS * 2,
-				NULL);
-	} else
-		g_object_set(priv->badge_item, "visibility", GOO_CANVAS_ITEM_HIDDEN, NULL);
+	/* Move the differs badge */
+	g_object_set(priv->badge_item, 
+		"x", command_width / 2,
+		"y", command_height / 2 - DIFFERS_BADGE_RADIUS,
+		"width", DIFFERS_BADGE_RADIUS * 2,
+		"height", DIFFERS_BADGE_RADIUS * 2,
+		NULL);
 }
 
 void

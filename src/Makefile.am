@@ -240,6 +240,7 @@ gnome_inform7_SOURCES = \
 	builder.c builder.h \
 	colorscheme.c colorscheme.h \
 	configfile.c configfile.h \
+	diffseq.h \
 	document.c document.h document-private.h \
 	document-search.c \
 	elastic.c elastic.h \
@@ -262,7 +263,9 @@ gnome_inform7_SOURCES = \
 	spawn.c spawn.h \
 	story.c story.h story-private.h \
 	story-source.c story-errors.c story-index.c story-settings.c \
-	story-compile.c story-game.c story-skein.c \
+	story-compile.c story-game.c story-skein.c story-transcript.c \
+	transcript-diff.c transcript-diff.h \
+	transcript-renderer.c transcript-renderer.h \
 	welcomedialog.c welcomedialog.h \
 	main.c
 gnome_inform7_CPPFLAGS = \
@@ -292,6 +295,11 @@ gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a
 #skeintest_SOURCES = skeintest.c skein.c skein.h node.c node.h skein-view.c skein-view.h
 #skeintest_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
 #skeintest_LDADD = @INFORM7_LIBS@
+
+#noinst_PROGRAMS = difftest
+#difftest_SOURCES = difftest.c transcript-diff.c transcript-diff.h diffseq.h
+#difftest_CFLAGS = @INFORM7_CFLAGS@ $(AM_FLAGS)
+#difftest_LDADD = @INFORM7_LIBS@
 
 GITIGNOREFILES = $(noinst_LIBRARIES)
 

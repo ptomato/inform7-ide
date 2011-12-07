@@ -633,7 +633,8 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_DEBUGGING]), priv->debug_log);
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
-
+	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
+	
 	/* Set the Errors/Progress to a monospace font */
 	gtk_widget_modify_font(GTK_WIDGET(panel->errors_tabs[I7_ERRORS_TAB_PROGRESS]), font);
 
@@ -663,12 +664,9 @@ i7_story_init(I7Story *self)
 
 	/* Make the action groups */
 	priv->story_action_group = GTK_ACTION_GROUP(load_object(builder, "story_actions"));
-	/* Temporary "unimplemented" group */
-	priv->unimplemented_action_group = GTK_ACTION_GROUP(load_object(builder, "unimplemented_actions"));
 	
 	/* Build the menus and toolbars from the GtkUIManager file */
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->story_action_group, 0);
-	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->unimplemented_action_group, 0);
 	filename = i7_app_get_datafile_path(theapp, "ui/story.uimanager.xml");
 	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, filename, &error);
 	g_free(filename);
@@ -747,7 +745,7 @@ i7_story_init(I7Story *self)
 	priv->compiler_output = NULL;
 	priv->test_me = FALSE;
 	priv->manifest = NULL;
-
+	
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
 	g_object_set(priv->skein,
@@ -1090,6 +1088,13 @@ i7_story_choose_panel(I7Story *story, I7PanelPane newpane)
 	int left = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[LEFT]->notebook));
 	if(left == newpane)
 		return LEFT;
+	/* If the Skein is showing, use the other side for the Transcript */
+	if(newpane == I7_PANE_TRANSCRIPT) {
+		if(right == I7_PANE_SKEIN)
+			return LEFT;
+		if(left == I7_PANE_SKEIN)
+			return RIGHT;
+	}
 	/* Always try to use the left panel for source */
 	if(newpane == I7_PANE_SOURCE)
 		return LEFT;

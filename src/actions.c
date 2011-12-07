@@ -1000,7 +1000,9 @@ action_play_all_blessed(GtkAction *action, I7Story *story)
 void
 action_show_last_command(GtkAction *action, I7Story *story)
 {
-
+	I7Skein *skein = i7_story_get_skein(story);
+	i7_story_show_node_in_transcript(story, i7_skein_get_played_node(skein));
+	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
 }
 
 /* Replay->Show Last Command in Skein */
@@ -1016,35 +1018,35 @@ action_show_last_command_skein(GtkAction *action, I7Story *story)
 void
 action_previous_changed_command(GtkAction *action, I7Story *story)
 {
-
+	i7_story_previous_changed(story);
 }
 
 /* Replay->Find Next Changed Command */
 void
 action_next_changed_command(GtkAction *action, I7Story *story)
 {
-
+	i7_story_next_changed(story);
 }
 
 /* Replay->Find Previous Difference */
 void
 action_previous_difference(GtkAction *action, I7Story *story)
 {
-
+	i7_story_previous_difference(story);
 }
 
 /* Replay->Find Next Difference */
 void
 action_next_difference(GtkAction *action, I7Story *story)
 {
-
+	i7_story_next_difference(story);
 }
 
 /* Replay->Show Next Difference in Skein */
 void
 action_next_difference_skein(GtkAction *action, I7Story *story)
 {
-
+	i7_story_next_difference_skein(story);
 }
 
 /* Release->Release... (which was a 1978 song by Yes) */

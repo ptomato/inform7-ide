@@ -35,6 +35,7 @@
 #include "history.h"
 #include "html.h"
 #include "skein-view.h"
+#include "transcript-renderer.h"
 
 /* Forward declarations */
 gboolean on_documentation_scrollbar_policy_changed(WebKitWebFrame *frame);
@@ -260,9 +261,21 @@ action_trim(GtkAction *action, I7Panel *panel)
 	}
 }
 
+/*
+ * action_play_all:
+ * @action: not used
+ * @panel: the panel that this action was triggered on
+ *
+ * Signal handler for the action connected to the "Play All" button in the panel
+ * toolbar when the Skein panel is displayed. Plays all the nodes currently
+ * blessed in the Skein.
+ */
 void
 action_play_all(GtkAction *action, I7Panel *panel)
 {
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
+	i7_story_compile(story, FALSE, FALSE);
 }
 
 void
@@ -271,6 +284,83 @@ action_contents(GtkAction *action, I7Panel *panel)
 	gchar *docs = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "index.html", NULL);
 	html_load_file(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), docs);
 	g_free(docs);
+}
+
+/*
+ * action_bless_all:
+ * @action: not used
+ * @panel: the panel that this action was triggered on
+ * 
+ * Signal handler for the action connected to the "Bless All" button in the
+ * panel toolbar when the Transcript panel is displayed. Blesses all the nodes
+ * currently shown in the transcript. (From the skein's "current node" up to
+ * the root node.)
+ */
+void
+action_bless_all(GtkAction *action, I7Panel *panel)
+{
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	I7Skein *skein = i7_story_get_skein(story);
+
+	/* Display a confirmation dialog (as this can't be undone. Well, not easily) */
+	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story),
+	    GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+	    GTK_MESSAGE_QUESTION,
+	    GTK_BUTTONS_YES_NO,
+	    _("Are you sure you want to bless all the items in the transcript?"));
+	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+	    _("This will 'Bless' all the items currently in the transcript so that "
+		"they appear as the 'expected' text in the right-hand column. This "
+		"operation cannot be undone."));
+	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_YES) {
+		i7_skein_bless(skein, i7_skein_get_current_node(skein), TRUE);
+	}
+	gtk_widget_destroy(dialog);
+}
+
+/*
+ * action_panel_previous_difference:
+ * @action: not used
+ * @panel: panel this action was triggered on
+ *
+ * Signal handler for the action connected to the "Previous Difference" button
+ * in the panel toolbar when the Transcript panel is displayed.
+ */
+void
+action_panel_previous_difference(GtkAction *action, I7Panel *panel)
+{
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_previous_difference(story);
+}
+
+/*
+ * action_panel_next_difference:
+ * @action: not used
+ * @panel: panel this action was triggered on
+ *
+ * Signal handler for the action connected to the "Next Difference" button in
+ * the panel toolbar when the Transcript panel is displayed.
+ */
+void
+action_panel_next_difference(GtkAction *action, I7Panel *panel)
+{
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_next_difference(story);
+}
+
+/*
+ * action_panel_next_difference_skein:
+ * @action: not used
+ * @panel: panel this action was triggered on
+ *
+ * Signal handler for the action connected to the "Next Difference in Skein"
+ * button in the panel toolbar when the Transcript panel is displayed.
+ */
+void
+action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
+{
+	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_story_next_difference_skein(story);
 }
 
 /* TYPE SYSTEM */
@@ -370,21 +460,39 @@ i7_panel_init(I7Panel *self)
 	chimara_glk_set_interactive(CHIMARA_GLK(game), TRUE);
 	chimara_glk_set_protect(CHIMARA_GLK(game), FALSE);
 
+	/* Add the transcript cell renderer */
+	self->transcript_cell = GTK_CELL_RENDERER(i7_cell_renderer_transcript_new());
+	gtk_cell_renderer_set_padding(self->transcript_cell, 4, 4);
+	self->transcript_column = GTK_TREE_VIEW_COLUMN(load_object(builder, "transcript_column"));
+	gtk_tree_view_column_pack_start(self->transcript_column, self->transcript_cell, TRUE);
+	gtk_tree_view_column_set_attributes(self->transcript_column, self->transcript_cell,
+	    "command", I7_SKEIN_COLUMN_COMMAND,
+	    "transcript-text", I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
+	    "expected-text", I7_SKEIN_COLUMN_EXPECTED_TEXT,
+	    "match-type", I7_SKEIN_COLUMN_MATCH_TYPE,
+	    "current", I7_SKEIN_COLUMN_CURRENT,
+	    "played", I7_SKEIN_COLUMN_PLAYED,
+	    "changed", I7_SKEIN_COLUMN_CHANGED,
+	    NULL);
+	
 	/* Save public pointers to specific widgets */
-	self->z5 = GTK_WIDGET(load_object(builder, "z5"));
-	self->z8 = GTK_WIDGET(load_object(builder, "z8"));
-	self->z6 = GTK_WIDGET(load_object(builder, "z6"));
-	self->glulx = GTK_WIDGET(load_object(builder, "glulx"));
-	self->blorb = GTK_WIDGET(load_object(builder, "blorb"));
-	self->nobble_rng = GTK_WIDGET(load_object(builder, "nobble_rng"));
-	self->debugging_scrolledwindow = GTK_WIDGET(load_object(builder, "debugging_scrolledwindow"));
-	self->inform6_scrolledwindow = GTK_WIDGET(load_object(builder, "inform6_scrolledwindow"));
+	LOAD_WIDGET(z5);
+	LOAD_WIDGET(z8);
+	LOAD_WIDGET(z6);
+	LOAD_WIDGET(glulx);
+	LOAD_WIDGET(blorb);
+	LOAD_WIDGET(nobble_rng);
+	LOAD_WIDGET(debugging_scrolledwindow);
+	LOAD_WIDGET(inform6_scrolledwindow);
+	LOAD_WIDGET(transcript_menu);
+	g_object_ref(self->transcript_menu);
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
 	self->tabs[I7_PANE_ERRORS] = GTK_WIDGET(load_object(builder, "errors_notebook"));
 	self->tabs[I7_PANE_INDEX] = GTK_WIDGET(load_object(builder, "index_notebook"));
 	self->tabs[I7_PANE_SKEIN] = skeinview;
+	self->tabs[I7_PANE_TRANSCRIPT] = GTK_WIDGET(load_object(builder, "transcript"));
 	self->tabs[I7_PANE_GAME] = game;
 	self->tabs[I7_PANE_DOCUMENTATION] = GTK_WIDGET(load_object(builder, "documentation"));
 	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));
@@ -452,6 +560,7 @@ i7_panel_finalize(GObject *self)
 	history_free_queue(I7_PANEL(self));
 	JSClassRelease(priv->js_class);
 	g_object_unref(priv->ui_manager);
+	g_object_unref(I7_PANEL(self)->transcript_menu);
 
 	G_OBJECT_CLASS(parent_class)->finalize(self);
 }

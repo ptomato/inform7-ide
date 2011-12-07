@@ -181,12 +181,125 @@ i7_story_run_commands_from_node(I7Story *story, I7Node *node)
 	g_slist_free(commands);
 }
 
-/* Compile finished action: run every branch in the Skein, to make sure the
- * transcripts still match. */
+/* One-off data structure for passing variables to the handlers below */
+struct RunSkeinData {
+	I7Story *story;
+	I7Skein *skein;
+	ChimaraGlk *glk;
+	const char *file_to_run;
+
+	GSList *commands;
+	unsigned long started_handler, waiting_handler;
+	gboolean finished; /* don't have to use a GCond because this communication
+	is within the same thread and only one way? */
+};
+
+/* Helper function: stop the interpreter when forced input is done processing;
+this signal is set up in run_entire_skein_loop() because the interpreter
+processes the commands you feed it asynchronously. */
+static void
+on_waiting_stop_interpreter(ChimaraGlk *glk, struct RunSkeinData *data)
+{
+	if(!chimara_glk_is_line_input_pending(glk)) {
+		/* Stop the interpreter */
+		chimara_glk_stop(glk);
+		data->finished = TRUE;
+
+		/* Disconnect this handler */
+		g_signal_handler_disconnect(data->glk, data->waiting_handler);
+	}
+}
+
+/* Helper function: feed the commands to the interpreter after the game has
+started; this signal is set up in run_entire_skein_loop() because it's not clear
+how soon the game is ready to accept input after the call to
+chimara_if_run_game(). */
+static void
+on_started_feed_commands(ChimaraGlk *glk, struct RunSkeinData *data)
+{
+	/* Display the interpreter */
+	i7_story_show_pane(data->story, I7_PANE_GAME);
+
+	/* Feed the commands into the interpreter */
+	GSList *iter;
+	for(iter = data->commands; iter; iter = g_slist_next(iter)) {
+		chimara_glk_feed_line_input(glk, (char *)iter->data);
+	}
+
+	/* Disconnect this handler */
+	g_signal_handler_disconnect(data->glk, data->started_handler);
+}
+
+/* Helper function: Run the compiler output and feed the commands from the
+Skein up to a certain knot @node. Wait until the interpreter is done and stop
+it in preparation for the next knot. */
+static void
+run_entire_skein_loop(I7Node *node, struct RunSkeinData *data)
+{
+	GError *err = NULL;
+
+	data->commands = i7_skein_get_commands_to_node(data->skein, i7_skein_get_root_node(data->skein), node);
+
+	i7_skein_reset(data->skein, TRUE);
+
+	/* Set up signals to finish the actions when the input is done being
+	processed */
+	data->started_handler = g_signal_connect_after(data->glk, "started",
+	    G_CALLBACK(on_started_feed_commands), data);
+	data->waiting_handler = g_signal_connect_after(data->glk, "waiting",
+	    G_CALLBACK(on_waiting_stop_interpreter), data);
+	data->finished = FALSE;
+
+	/* Start the interpreter */
+	if(!chimara_if_run_game(CHIMARA_IF(data->glk), data->file_to_run, &err)) {
+		error_dialog(GTK_WINDOW(data->story), err, _("Could not load interpreter: "));
+		g_signal_handler_disconnect(data->glk, data->waiting_handler);
+		g_signal_handler_disconnect(data->glk, data->started_handler);
+		goto finally;
+	}
+
+	/* This will run until all the line input forced in
+	on_started_feed_commands() is finished processing */
+	while(!data->finished)
+		gtk_main_iteration_do(FALSE); /* don't block */
+
+	/* This should block on the chimara_glk_stop() call in
+	on_waiting_stop_interpreter() */
+	chimara_glk_wait(data->glk);
+
+finally:
+	g_slist_foreach(data->commands, (GFunc)g_free, NULL);
+	g_slist_free(data->commands);
+}
+
+/*
+ * i7_story_run_compiler_output_and_entire_skein:
+ * @story: the story
+ *
+ * Callback for when compiling is finished. Plays through as many threads as
+ * necessary to visit each blessed knot in the skein at least once.
+ */
 void
 i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 {
-	/* TODO */
+	I7_STORY_USE_PRIVATE(story, priv);
+
+	struct RunSkeinData *data = g_slice_new0(struct RunSkeinData);
+	data->story = story;
+	data->skein = priv->skein;
+	data->file_to_run = priv->compiler_output;
+
+	/* Make sure the interpreter is non-interactive */
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
+	data->glk = CHIMARA_GLK(story->panel[side]->tabs[I7_PANE_GAME]);
+	chimara_glk_set_interactive(data->glk, FALSE);
+	
+	GSList *blessed_nodes = i7_skein_get_blessed_thread_ends(data->skein);
+	g_slist_foreach(blessed_nodes, (GFunc)run_entire_skein_loop, data);
+	g_slist_free(blessed_nodes);
+
+	chimara_glk_set_interactive(data->glk, TRUE);
+	g_slice_free(struct RunSkeinData, data);
 }
 
 /* Helper function: stop the game in @panel if it is running */
