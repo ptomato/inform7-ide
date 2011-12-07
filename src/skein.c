@@ -294,11 +294,11 @@ i7_skein_class_init(I7SkeinClass *klass)
 	g_object_class_install_property(object_class, PROP_HORIZONTAL_SPACING,
 		g_param_spec_double("horizontal-spacing", _("Horizontal spacing"),
 			_("Pixels of horizontal space between skein branches"),
-			20.0, 100.0, 40.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | flags));
+			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_VERTICAL_SPACING,
 		g_param_spec_double("vertical-spacing", _("Vertical spacing"),
 			_("Pixels of vertical space between skein items"),
-			20.0, 100.0, 40.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | flags));
+			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_LOCKED_COLOR,
 		g_param_spec_string("locked-color", _("Locked color"),
 			_("Color of locked threads"),
