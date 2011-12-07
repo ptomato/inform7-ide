@@ -176,7 +176,7 @@ calculate_diffs(I7Node *self)
 	if(!i7_node_get_blessed(self))
 		priv->match = I7_NODE_CANT_COMPARE;
 	else if(!word_diff(priv->expected_text, priv->transcript_text, &priv->expected_diffs, &priv->transcript_diffs)) {
-		if(priv->expected_diffs && priv->transcript_diffs)
+		if(priv->expected_diffs || priv->transcript_diffs)
 			priv->match = I7_NODE_NO_MATCH;
 		else
 			priv->match = I7_NODE_NEAR_MATCH;
