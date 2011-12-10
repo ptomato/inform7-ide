@@ -86,7 +86,6 @@ GFile *i7_app_get_data_file(I7App *app, const gchar *filename);
 GFile *i7_app_get_data_file_va(I7App *app, const gchar *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_check_data_file(I7App *app, const char *filename);
 GFile *i7_app_check_data_file_va(I7App *app, const char *path1, ...) G_GNUC_NULL_TERMINATED;
-GFile *i7_app_get_pixmap_file(I7App *app, const gchar *filename);
 GFile *i7_app_get_binary_file(I7App *app, const gchar *filename);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *app);

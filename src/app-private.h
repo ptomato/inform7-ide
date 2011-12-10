@@ -29,7 +29,6 @@ typedef struct {
 	GSList *document_list;
 	/* Application directories */
 	GFile *datadir;
-	GFile *pixmapdir;
 	GFile *libexecdir;
 	/* File monitor for extension directory */
 	GFileMonitor *extension_dir_monitor;
