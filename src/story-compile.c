@@ -193,9 +193,11 @@ start_ni_compiler(CompilerData *data)
 	/* Build the command line */
 	GSList *args = NULL;
 	I7App *theapp = i7_app_get();
-	args = g_slist_prepend(args, i7_app_get_binary_path(theapp, "ni"));
+	GFile *ni_compiler = i7_app_get_binary_file(theapp, "ni");
+	GFile *extensions_dir = i7_app_get_data_file(theapp, "Extensions");
+	args = g_slist_prepend(args, g_file_get_path(ni_compiler));
 	args = g_slist_prepend(args, g_strdup("-rules"));
-	args = g_slist_prepend(args, i7_app_get_datafile_path(theapp, "Extensions"));
+	args = g_slist_prepend(args, g_file_get_path(extensions_dir));
 	args = g_slist_prepend(args, g_strconcat("-extension=", i7_story_get_extension(data->story), NULL));
 	args = g_slist_prepend(args, g_strdup("-package"));
 	args = g_slist_prepend(args, g_strdup(data->input_file));
@@ -206,6 +208,10 @@ start_ni_compiler(CompilerData *data)
 	if(i7_story_get_nobble_rng(data->story))
 		args = g_slist_prepend(args, g_strdup("-rng"));
 	args = g_slist_reverse(args);
+
+	g_object_unref(ni_compiler);
+	g_object_unref(extensions_dir);
+
 	gchar **commandline = g_new0(gchar *, g_slist_length(args) + 1);
 	GSList *iter;
 	gchar **arg;
@@ -244,23 +250,27 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
 
 	/* Display the appropriate HTML error or success page */
-	gchar *problems_url;
+	GFile *problems_file = NULL;
 	if(exit_code <= 1) {
 		/* In the case of success or a "normal" failure, or a negative error
 		 code should one occur, display the compiler's generated Problems.html*/
-		problems_url = g_build_filename(data->input_file, PROBLEMS_FILE, NULL);
+		char *problems_path = g_build_filename(data->input_file, PROBLEMS_FILE, NULL);
+		problems_file = g_file_new_for_path(problems_path);
+		g_free(problems_path);
 	} else {
 		I7App *theapp = i7_app_get();
 		gchar *file = g_strdup_printf("Error%i.html", exit_code);
-		problems_url = i7_app_check_datafile_va(theapp, "Documentation", "Sections", file, NULL);
+		problems_file = i7_app_check_data_file_va(theapp, "Documentation", "Sections", file, NULL);
 		g_free(file);
-		if(!problems_url)
-			problems_url = i7_app_get_datafile_path_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
+		if(!problems_file)
+			problems_file = i7_app_get_data_file_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
 	}
 
+	char *problems_url = g_file_get_path(problems_file); // FIXME
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);
 	g_free(problems_url);
+	g_object_unref(problems_file);
 
 	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE)) {
 		/* Update */
@@ -395,9 +405,11 @@ start_i6_compiler(CompilerData *data)
 {
 	I7_STORY_USE_PRIVATE(data->story, priv);
 
+	GFile *i6_compiler = i7_app_get_binary_file(i7_app_get(), "inform-6.32-biplatform");
+
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 6);
-	commandline[0] = i7_app_get_binary_path(i7_app_get(), "inform-6.32-biplatform");
+	commandline[0] = g_file_get_path(i6_compiler);
 	commandline[1] = get_i6_compiler_switches(data->use_debug_flags, i7_story_get_story_format(data->story));
 	commandline[2] = g_strdup("$huge");
 	commandline[3] = g_strdup("auto.inf");
@@ -405,6 +417,8 @@ start_i6_compiler(CompilerData *data)
 	commandline[4] = g_build_filename(data->input_file, "Build", i6out, NULL);
 	g_free(i6out);
 	commandline[5] = NULL;
+
+	g_object_unref(i6_compiler);
 
 	GPid child_pid = run_command_hook(data->directory, commandline,
 		priv->progress, (IOHookFunc *)display_i6_status, data->story, TRUE, TRUE);
@@ -443,7 +457,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 
 	GtkTextIter start, end;
 	int line;
-	gchar *loadfile = NULL;
+	GFile *loadfile = NULL;
 
 	/* Display the appropriate HTML error pages */
 	gdk_threads_enter();
@@ -455,17 +469,13 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 		msg = gtk_text_iter_get_text(&start, &end);
 		if(strstr(msg, "rror:")) { /* "Error:", "Fatal error:" */
 			if(strstr(msg, "The memory setting ") && strstr(msg, " has been exceeded."))
-				loadfile = i7_app_get_datafile_path_va(i7_app_get(),
-					"Documentation", "Sections", "ErrorI6MemorySetting.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6MemorySetting.html", NULL);
 			else if(strstr(msg, "This program has overflowed the maximum readable-memory size of the "))
-				loadfile = i7_app_get_datafile_path_va(i7_app_get(),
-					"Documentation", "Sections", "ErrorI6Readable.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6Readable.html", NULL);
 			else if(strstr(msg, "The story file exceeds "))
-				loadfile = i7_app_get_datafile_path_va(i7_app_get(),
-					"Documentation", "Sections", "ErrorI6TooBig.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6TooBig.html", NULL);
 			else
-				loadfile = i7_app_get_datafile_path_va(i7_app_get(),
-					"Documentation", "Sections", "ErrorI6.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
 			g_free(msg);
 			break;
 		}
@@ -473,14 +483,17 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	}
 	gdk_threads_leave();
 	if(!loadfile && exit_code != 0)
-		loadfile = i7_app_get_datafile_path_va(i7_app_get(),
-			"Documentation", "Sections", "ErrorI6.html", NULL);
+		loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
 	if(loadfile) {
+		char *path = g_file_get_path(loadfile); // FIXME
+
 		gdk_threads_enter();
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), loadfile);
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), loadfile);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), path);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), path);
 		gdk_threads_leave();
-		g_free(loadfile);
+
+		g_object_unref(loadfile);
+		g_free(path);
 	}
 
 	/* Stop here and show the Errors/Problems tab if there was an error */
@@ -534,13 +547,17 @@ start_cblorb_compiler(CompilerData *data)
 {
 	I7_STORY_USE_PRIVATE(data->story, priv);
 
+	GFile *cblorb = i7_app_get_binary_file(i7_app_get(), "cBlorb");
+
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 5);
-	commandline[0] = i7_app_get_binary_path(i7_app_get(), "cBlorb");
+	commandline[0] = g_file_get_path(cblorb);
 	commandline[1] = g_strdup("-unix");
 	commandline[2] = g_strdup("Release.blurb");
 	commandline[3] = g_strdup(data->output_file);
 	commandline[4] = NULL;
+
+	g_object_unref(cblorb);
 
 	GPid child_pid = run_command_hook(data->input_file, commandline,
 		priv->progress, (IOHookFunc *)parse_cblorb_output, data->story, TRUE, FALSE);

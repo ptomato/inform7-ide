@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ typedef struct {
 	/* List of open documents */
 	GSList *document_list;
 	/* Application directories */
-	gchar *datadir;
-	gchar *pixmapdir;
-	gchar *libexecdir;
+	GFile *datadir;
+	GFile *pixmapdir;
+	GFile *libexecdir;
 	/* File monitor for extension directory */
 	GFileMonitor *extension_dir_monitor;
 	/* Tree of installed extensions */

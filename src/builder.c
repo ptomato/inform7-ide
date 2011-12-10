@@ -30,14 +30,17 @@
 /* Create a new GtkBuilder from an interface definition file and connect its
  signals */
 GtkBuilder *
-create_new_builder(const gchar *filename, gpointer data)
+create_new_builder(GFile *file, gpointer data)
 {
 	GError *error = NULL;
 	GtkBuilder *builder;
 
 	builder = gtk_builder_new();
-	if(!gtk_builder_add_from_file(builder, filename, &error))
+	char *path = g_file_get_path(file);
+	if(!gtk_builder_add_from_file(builder, path, &error))
 		ERROR(_("Error while building interface"), error);
+	g_free(path);
+
 	gtk_builder_connect_signals(builder, data);
 
 	return builder;

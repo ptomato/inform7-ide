@@ -52,9 +52,9 @@ i7_source_view_init(I7SourceView *self)
 	priv->spell = NULL;
 
 	/* Build the interface */
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/source.ui");
-	GtkBuilder *builder = create_new_builder(filename, self);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "source.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, self);
+	g_object_unref(file);
 
 	/* Make our base-class frame invisible */
 	gtk_frame_set_label(GTK_FRAME(self), NULL);

@@ -21,7 +21,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-GtkBuilder *create_new_builder(const gchar *filename, gpointer data);
+GtkBuilder *create_new_builder(GFile *file, gpointer data);
 GObject *load_object(GtkBuilder *builder, const gchar *name);
 
 /* Shortcuts for loading public widget and action pointers in _init() functions.

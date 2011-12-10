@@ -280,9 +280,11 @@ action_play_all(GtkAction *action, I7Panel *panel)
 void
 action_contents(GtkAction *action, I7Panel *panel)
 {
-	gchar *docs = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "index.html", NULL);
+	GFile *docs_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "index.html", NULL);
+	char *docs = g_file_get_path(docs_file); // FIXME
 	html_load_file(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), docs);
 	g_free(docs);
+	g_object_unref(docs_file);
 }
 
 /*
@@ -393,9 +395,9 @@ i7_panel_init(I7Panel *self)
 	priv->current = 0;
 
 	/* Build the interface */
-	gchar *filename = i7_app_get_datafile_path(theapp, "ui/panel.ui");
-	GtkBuilder *builder = create_new_builder(filename, self);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(theapp, "ui", "panel.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, self);
+	g_object_unref(file);
 	
 	/* Make the action groups */
 	priv->common_action_group = GTK_ACTION_GROUP(load_object(builder, "panel_actions"));
@@ -409,9 +411,11 @@ i7_panel_init(I7Panel *self)
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->skein_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->transcript_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->documentation_action_group, 0);
-	filename = i7_app_get_datafile_path(theapp, "ui/panel.uimanager.xml");
-	gtk_ui_manager_add_ui_from_file(priv->ui_manager, filename, &error);
-	g_free(filename);
+	file = i7_app_get_data_file_va(theapp, "ui", "panel.uimanager.xml", NULL);
+	char *path = g_file_get_path(file);
+	gtk_ui_manager_add_ui_from_file(priv->ui_manager, path, &error);
+	g_free(path);
+	g_object_unref(file);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	self->toolbar = gtk_ui_manager_get_widget(priv->ui_manager, "/PanelToolbar");
@@ -544,9 +548,11 @@ i7_panel_init(I7Panel *self)
 	priv->js_class = JSClassCreate(&project_class_definition);
 
 	/* Load the documentation page */
-	filename = i7_app_get_datafile_path(theapp, "Documentation/index.html");
-	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), filename);
-	g_free(filename);
+	file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
+	path = g_file_get_path(file); // FIXME
+	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), path);
+	g_free(path);
+	g_object_unref(file);
 }
 
 static void
@@ -695,20 +701,20 @@ find_real_filename_for_inform_protocol(const char *uri)
 	g_strfreev(elements);
 
 	char *tryloc = g_build_filename("Documentation", "doc_images", tail, NULL);
-	char *real_filename = i7_app_check_datafile(theapp, tryloc);
-	if(real_filename)
+	GFile *real_file = i7_app_check_data_file(theapp, tryloc);
+	if(real_file)
 		goto finally;
 	tryloc = g_build_filename("Documentation", "Sections", tail, NULL);
-	real_filename = i7_app_check_datafile(theapp, tryloc);
-	if(real_filename)
+	real_file = i7_app_check_data_file(theapp, tryloc);
+	if(real_file)
 		goto finally;
 	tryloc = g_build_filename("Documentation", tail, NULL);
-	real_filename = i7_app_check_datafile(theapp, tryloc);
-	if(real_filename)
+	real_file = i7_app_check_data_file(theapp, tryloc);
+	if(real_file)
 		goto finally;
 	tryloc = g_build_filename(g_get_home_dir(), "Inform", "Documentation", tail, NULL);
 	if(g_file_test(tryloc, G_FILE_TEST_EXISTS)) {
-		real_filename = tryloc;
+		real_file = g_file_new_for_path(tryloc);
 		goto finally2;
 	}
 	g_free(tryloc);
@@ -721,6 +727,8 @@ finally:
 	g_free(tryloc);
 finally2:
 	g_free(tail);
+	char *real_filename = g_file_get_path(real_file);
+	g_object_unref(real_file);
 	return real_filename;
 }
 
@@ -789,9 +797,11 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 			gchar *realpath = get_case_insensitive_extension(uri_path);
 			g_free(uri_path);
 			/* Check if we need to open the extension read-only */
-			gchar *userpath = i7_app_get_extension_path(i7_app_get(), NULL, NULL);
+			GFile *user_file = i7_app_get_extension_file(i7_app_get(), NULL, NULL);
+			char *userpath = g_file_get_path(user_file); // FIXME
 			gboolean readonly = !strstr(realpath, userpath);
 			g_free(userpath);
+			g_object_unref(user_file);
 
 			I7Extension *ext = i7_extension_new_from_file(i7_app_get(), realpath, readonly);
 			if(ext != NULL) {

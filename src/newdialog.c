@@ -255,9 +255,9 @@ create_new_dialog(void)
 	I7NewProjectOptions *options = g_slice_new0(I7NewProjectOptions);
 	options->type = I7_NEW_PROJECT_INFORM7_STORY;
 
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/newdialog.ui");
-	GtkBuilder *builder = create_new_builder(filename, options);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "newdialog.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, options);
+	g_object_unref(file);
 	options->assistant = GTK_WIDGET(load_object(builder, "newdialog"));
 	options->label = GTK_WIDGET(load_object(builder, "project_type_description"));
 	options->author_box = GTK_WIDGET(load_object(builder, "new_author"));

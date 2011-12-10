@@ -141,7 +141,9 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		break;
 	case I7_RESULT_TYPE_EXTENSION:
 	{
-		I7Document *ext = i7_app_get_already_open(i7_app_get(), filename);
+		GFile *file = g_file_new_for_path(filename); // FIXME
+		I7Document *ext = i7_app_get_already_open(i7_app_get(), file);
+		g_object_unref(file);
 		if(ext == NULL)
 			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), filename, FALSE));
 		i7_document_jump_to_line(ext, lineno);
@@ -250,9 +252,9 @@ i7_search_window_init(I7SearchWindow *self)
 	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
 
 	/* Build the interface from the builder file */
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/searchwindow.ui");
-	GtkBuilder *builder = create_new_builder(filename, self);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "searchwindow.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, self);
+	g_object_unref(file);
 
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
@@ -555,7 +557,9 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
 		gboolean example = FALSE;
-		gchar *docpath = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "Sections", NULL);
+		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", NULL);
+		char *docpath = g_file_get_path(doc_file); // FIXME
+		g_object_unref(doc_file);
 
 		GDir *docdir;
 		if((docdir = g_dir_open(docpath, 0, &err)) == NULL) {
@@ -662,7 +666,9 @@ i7_search_window_search_extensions(I7SearchWindow *self)
 {
 	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
 	GError *err = NULL;
-	gchar *extension_dir = i7_app_get_extension_path(i7_app_get(), NULL, NULL);
+	GFile *extension_file = i7_app_get_extension_file(i7_app_get(), NULL, NULL);
+	char *extension_dir = g_file_get_path(extension_file); // FIXME
+	g_object_unref(extension_file);
 	GDir *extensions = g_dir_open(extension_dir, 0, &err);
 	g_free(extension_dir);
 	if(err) {
@@ -673,7 +679,9 @@ i7_search_window_search_extensions(I7SearchWindow *self)
 	const gchar *dir_entry;
 	while((dir_entry = g_dir_read_name(extensions)) != NULL && strcmp(dir_entry, "Reserved") != 0) {
 		/* Read each extension dir, but skip "Reserved" */
-		gchar *author_dir = i7_app_get_extension_path(i7_app_get(), dir_entry, NULL);
+		GFile *author_file = i7_app_get_extension_file(i7_app_get(), dir_entry, NULL);
+		char *author_dir = g_file_get_path(author_file); // FIXME
+		g_object_unref(author_file);
 		GDir *author = g_dir_open(author_dir, 0, &err);
 		g_free(author_dir);
 		if(err) {
@@ -682,7 +690,8 @@ i7_search_window_search_extensions(I7SearchWindow *self)
 		}
 		const gchar *author_entry;
 		while((author_entry = g_dir_read_name(author)) != NULL) {
-			gchar *filename = i7_app_get_extension_path(i7_app_get(), dir_entry, author_entry);
+			GFile *file = i7_app_get_extension_file(i7_app_get(), dir_entry, author_entry);
+			char *filename = g_file_get_path(file);
 			gchar *contents;
 			if(!g_file_get_contents(filename, &contents, NULL, &err)) {
 				error_dialog(GTK_WINDOW(self), err,

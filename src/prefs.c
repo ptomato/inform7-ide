@@ -292,14 +292,19 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 				while((dir_entry = g_dir_read_name(dir)) != NULL)
 					if(!g_file_test(dir_entry, G_FILE_TEST_IS_DIR)) {
 						gchar *entry_with_path = g_build_filename(filename, dir_entry, NULL);
-						i7_app_install_extension(i7_app_get(), entry_with_path);
+						GFile *extension_file = g_file_new_for_path(entry_with_path);
+						i7_app_install_extension(i7_app_get(), extension_file);
+						g_object_unref(extension_file);
 						g_free(entry_with_path);
 					}
 				g_dir_close(dir);
 
-			} else
+			} else {
 				/* just install it */
-				i7_app_install_extension(i7_app_get(), filename);
+				GFile *extension_file = g_file_new_for_path(filename);
+				i7_app_install_extension(i7_app_get(), extension_file);
+				g_object_unref(extension_file);
+			}
 
 			g_free(filename);
 		}
@@ -368,7 +373,9 @@ on_extensions_view_cursor_changed(GtkTreeView *view, I7App *app)
 static void
 install_extensions(const gchar *filename, I7App *app)
 {
-	i7_app_install_extension(app, filename);
+	GFile *file = g_file_new_for_path(filename); // FIXME
+	i7_app_install_extension(app, file);
+	g_object_unref(file);
 }
 
 void

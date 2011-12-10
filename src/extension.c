@@ -381,9 +381,11 @@ i7_extension_init(I7Extension *self)
 	priv->readonly = FALSE;
 
 	/* Build the menus and toolbars from the GtkUIManager file */
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/extension.uimanager.xml");
-	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, filename, &error);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "extension.uimanager.xml", NULL);
+	char *path = g_file_get_path(file);
+	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, path, &error);
+	g_free(path);
+	g_object_unref(file);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/ExtensionMenubar");
@@ -509,7 +511,9 @@ I7Extension *
 i7_extension_new_from_file(I7App *app, const gchar *filename, gboolean readonly)
 {
 	gchar *fullpath = expand_initial_tilde(filename);
-	I7Document *dupl = i7_app_get_already_open(app, filename);
+	GFile *file = g_file_new_for_path(fullpath); // FIXME
+	I7Document *dupl = i7_app_get_already_open(app, file);
+	g_object_unref(file);
 	if(dupl && I7_IS_EXTENSION(dupl)) {
 		gtk_window_present(GTK_WINDOW(dupl));
 		g_free(fullpath);

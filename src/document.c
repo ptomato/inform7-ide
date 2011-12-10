@@ -87,9 +87,9 @@ i7_document_init(I7Document *self)
 	gtk_widget_set_size_request(GTK_WIDGET(self), 200, 100);
 
 	/* Build the interface */
-	gchar *filename = i7_app_get_datafile_path(theapp, "ui/document.ui");
-	GtkBuilder *builder = create_new_builder(filename, self);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(theapp, "ui", "document.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, self);
+	g_object_unref(file);
 
 	/* Create the private properties */
 	priv->filename = NULL;
@@ -224,9 +224,11 @@ i7_document_add_menus_and_findbar(I7Document *document)
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
 	GError *error = NULL;
 
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/gnome-inform7.uimanager.xml");
-	gtk_ui_manager_add_ui_from_file(document->ui_manager, filename, &error);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "gnome-inform7.uimanager.xml", NULL);
+	char *path = g_file_get_path(file);
+	gtk_ui_manager_add_ui_from_file(document->ui_manager, path, &error);
+	g_free(path);
+	g_object_unref(file);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 

@@ -44,7 +44,7 @@ enum _I7AppExtensionsColumns {
 	I7_APP_EXTENSION_TEXT,
 	I7_APP_EXTENSION_READ_ONLY,
 	I7_APP_EXTENSION_ICON,
-	I7_APP_EXTENSION_PATH,
+	I7_APP_EXTENSION_FILE,
 	I7_APP_NUM_EXTENSION_COLUMNS
 };
 
@@ -65,29 +65,29 @@ typedef struct {
 
 GType i7_app_get_type(void) G_GNUC_CONST;
 I7App *i7_app_get(void);
-void i7_app_open(I7App *app, const gchar *filename);
+void i7_app_open(I7App *app, GFile *file);
 void i7_app_insert_action_groups(I7App *app, GtkUIManager *manager);
 
 void i7_app_register_document(I7App *app, I7Document *document);
 void i7_app_remove_document(I7App *app, I7Document *document);
-I7Document *i7_app_get_already_open(I7App *app, const gchar *filename);
+I7Document *i7_app_get_already_open(I7App *app, const GFile *file);
 gint i7_app_get_num_open_documents(I7App *app);
 void i7_app_close_all_documents(I7App *app);
 void i7_app_foreach_document(I7App *app, I7DocumentForeachFunc func, gpointer data);
 
 void i7_app_monitor_extensions_directory(I7App *app);
 void i7_app_stop_monitoring_extensions_directory(I7App *app);
-void i7_app_install_extension(I7App *app, const gchar *filename);
+void i7_app_install_extension(I7App *app, GFile *file);
 void i7_app_delete_extension(I7App *app, gchar *author, gchar *extname);
 void i7_app_run_census(I7App *app, gboolean wait);
 
-gchar *i7_app_get_extension_path(I7App *app, const gchar *author, const gchar *extname);
-gchar *i7_app_get_datafile_path(I7App *app, const gchar *filename);
-gchar *i7_app_get_datafile_path_va(I7App *app, const gchar *path1, ...);
-char *i7_app_check_datafile(I7App *app, const char *filename);
-char *i7_app_check_datafile_va(I7App *app, const char *path1, ...);
-gchar *i7_app_get_pixmap_path(I7App *app, const gchar *filename);
-gchar *i7_app_get_binary_path(I7App *app, const gchar *filename);
+GFile *i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname);
+GFile *i7_app_get_data_file(I7App *app, const gchar *filename);
+GFile *i7_app_get_data_file_va(I7App *app, const gchar *path1, ...) G_GNUC_NULL_TERMINATED;
+GFile *i7_app_check_data_file(I7App *app, const char *filename);
+GFile *i7_app_check_data_file_va(I7App *app, const char *path1, ...) G_GNUC_NULL_TERMINATED;
+GFile *i7_app_get_pixmap_file(I7App *app, const gchar *filename);
+GFile *i7_app_get_binary_file(I7App *app, const gchar *filename);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *app);
 void i7_app_update_extensions_menu(I7App *app);

@@ -653,18 +653,20 @@ i7_story_init(I7Story *self)
 	GError *error = NULL;
 
 	/* Build the interface */
-	gchar *filename = i7_app_get_datafile_path(theapp, "ui/story.ui");
-	GtkBuilder *builder = create_new_builder(filename, self);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(theapp, "ui", "story.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, self);
+	g_object_unref(file);
 
 	/* Make the action groups */
 	priv->story_action_group = GTK_ACTION_GROUP(load_object(builder, "story_actions"));
 	
 	/* Build the menus and toolbars from the GtkUIManager file */
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->story_action_group, 0);
-	filename = i7_app_get_datafile_path(theapp, "ui/story.uimanager.xml");
-	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, filename, &error);
-	g_free(filename);
+	file = i7_app_get_data_file_va(theapp, "ui", "story.uimanager.xml", NULL);
+	char *path = g_file_get_path(file);
+	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, path, &error);
+	g_free(path);
+	g_object_unref(file);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/StoryMenubar");
@@ -709,10 +711,12 @@ i7_story_init(I7Story *self)
 	/* Build the two panels */
 	self->panel[LEFT] = I7_PANEL(i7_panel_new());
 	self->panel[RIGHT] = I7_PANEL(i7_panel_new());
-	gchar *docs = i7_app_get_datafile_path(theapp, "Documentation/index.html");
+	GFile *docs_file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
+	path = g_file_get_path(docs_file); // FIXME
 	i7_panel_reset_queue(self->panel[LEFT], I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_SOURCE, NULL);
-	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, docs);
-	g_free(docs);
+	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, path);
+	g_free(path);
+	g_object_unref(docs_file);
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
 	gtk_paned_pack2(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[RIGHT]), TRUE, FALSE);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), self->facing_pages, TRUE, TRUE, 0);
@@ -904,7 +908,9 @@ I7Story *
 i7_story_new_from_file(I7App *app, const gchar *filename)
 {
 	gchar *fullpath = expand_initial_tilde(filename);
-	I7Document *dupl = i7_app_get_already_open(app, fullpath);
+	GFile *file = g_file_new_for_path(fullpath); // FIXME
+	I7Document *dupl = i7_app_get_already_open(app, file);
+	g_object_unref(file);
 
 	if(dupl && I7_IS_STORY(dupl)) {
 		gtk_window_present(GTK_WINDOW(dupl));

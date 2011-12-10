@@ -1133,24 +1133,29 @@ action_export_ifiction_record(GtkAction *action, I7Story *story)
 void
 action_help_contents(GtkAction *action, I7Story *story)
 {
-	gchar *file = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "index.html", NULL);
-	i7_story_show_docpage(story, file);
-	g_free(file);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "index.html", NULL);
+	char *path = g_file_get_path(file); // FIXME
+	i7_story_show_docpage(story, path);
+	g_free(path);
+	g_object_unref(file);
 }
 
 /* Help->License */
 void
 action_help_license(GtkAction *action, I7Story *story)
 {
-	gchar *file = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "licenses", "license.html", NULL);
-	i7_story_show_docpage(story, file);
-	g_free(file);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "licenses", "license.html", NULL);
+	char *path = g_file_get_path(file); // FIXME
+	i7_story_show_docpage(story, path);
+	g_free(path);
+	g_object_unref(file);
 }
 
 /* Help->Help on Installed Extensions */
 void
 action_help_extensions(GtkAction *action, I7Story *story)
 {
+	// FIXME
 	gchar *file = g_build_filename(g_get_home_dir(), "Inform", "Documentation", "Extensions.html", NULL);
 	i7_story_show_docpage(story, file);
 	g_free(file);
@@ -1160,9 +1165,11 @@ action_help_extensions(GtkAction *action, I7Story *story)
 void
 action_help_recipe_book(GtkAction *action, I7Story *story)
 {
-	gchar *file = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "Rindex.html", NULL);
-	i7_story_show_docpage(story, file);
-	g_free(file);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Rindex.html", NULL);
+	char *path = g_file_get_path(file); // FIXME
+	i7_story_show_docpage(story, path);
+	g_free(path);
+	g_object_unref(file);
 }
 
 /* Internal function: open a page in a browser and show error dialog if fail */

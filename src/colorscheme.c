@@ -51,9 +51,11 @@ get_style_scheme_manager(void)
 	if(!scheme_manager) {
 		scheme_manager = gtk_source_style_scheme_manager_new();
 		/* Add the built-in styles directory */
-		gchar *dir = i7_app_get_datafile_path_va(i7_app_get(), "styles", NULL);
+		GFile *styles_dir = i7_app_get_data_file(i7_app_get(), "styles");
+		char *dir = g_file_get_path(styles_dir);
 		gtk_source_style_scheme_manager_append_search_path(scheme_manager, dir);
 		g_free(dir);
+		g_object_unref(styles_dir);
 		/* Add the user styles directory */
 		dir = get_user_styles_dir();
 		if(dir) {
