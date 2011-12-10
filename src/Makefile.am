@@ -5,7 +5,9 @@ AM_CFLAGS = -Wall
 # This line won't be necessary anymore in Automake 1.10a
 pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
-noinst_LIBRARIES = libosxcart.a libchimara.a
+# We build libeverything.a to link to the regular binary
+# as well as the test binary
+noinst_LIBRARIES = libosxcart.a libchimara.a libeverything.a
 
 libosxcart_a_SOURCES = \
 	osxcart/osxcart/init.c \
@@ -233,8 +235,7 @@ dist_gitdoc_DATA = chimara/interpreters/git/README.txt
 
 CLEANFILES = chimara/interpreters/git/version.h
 
-bin_PROGRAMS = gnome-inform7
-gnome_inform7_SOURCES = \
+libeverything_a_SOURCES = \
 	actions.c actions.h \
 	app.c app.h app-private.h \
 	builder.c builder.h \
@@ -266,40 +267,43 @@ gnome_inform7_SOURCES = \
 	story-compile.c story-game.c story-skein.c story-transcript.c \
 	transcript-diff.c transcript-diff.h \
 	transcript-renderer.c transcript-renderer.h \
-	welcomedialog.c welcomedialog.h \
-	main.c
-gnome_inform7_CPPFLAGS = \
+	welcomedialog.c welcomedialog.h
+libeverything_a_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-I$(srcdir)/osxcart \
 	-I$(srcdir)/chimara
-gnome_inform7_CFLAGS = -g @INFORM7_CFLAGS@ $(AM_CFLAGS)
-gnome_inform7_LDADD = \
-	@INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
+libeverything_a_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
+
+bin_PROGRAMS = gnome-inform7
+gnome_inform7_SOURCES = main.c
+gnome_inform7_CPPFLAGS = -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+gnome_inform7_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
+gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 	$(INTLLIBS) \
 	libosxcart.a \
 	-lm
-# The following mystical incantation is needed because the Glk programs, which
-# are dynamically loaded, reference symbols from the Glk API in libchimara.a
-# which are not referenced by the main program. The default behavior of ld is
-# not to include object files with no referenced symbols in the final binary
-# product. This tells ld to link in all object files in libchimara.a.
+# The following mystical incantation is needed because the default behavior of
+# ld is not to include object files with no referenced symbols in the final
+# binary product. But the Glk programs, which are dynamically loaded, reference
+# symbols from the Glk API in libchimara.a, and the GtkBuilder references
+# symbols in libeverything.a, which are not referenced by the main program. This
+# tells ld to link in all object files in libchimara.a and libeverything.a.
 gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
-	-Wl,--whole-archive,libchimara.a,--no-whole-archive
+	-Wl,--whole-archive,libeverything.a,libchimara.a,--no-whole-archive
 # The gnome-inform7 executable must also depend on libchimara.a; because of the
 # trickery above, Automake doesn't realize that.
-gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a
+gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libeverything.a
 
-#noinst_PROGRAMS = skeintest
-#skeintest_SOURCES = skeintest.c skein.c skein.h node.c node.h skein-view.c skein-view.h
-#skeintest_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
-#skeintest_LDADD = @INFORM7_LIBS@
-
-#noinst_PROGRAMS = difftest
-#difftest_SOURCES = difftest.c transcript-diff.c transcript-diff.h diffseq.h
-#difftest_CFLAGS = @INFORM7_CFLAGS@ $(AM_FLAGS)
-#difftest_LDADD = @INFORM7_LIBS@
+# Build the test suite as well, in the same way
+check_PROGRAMS = test
+test_SOURCES = tests/test.c \
+	tests/app-test.c tests/app-test.h
+test_CPPFLAGS = $(gnome_inform7_CPPFLAGS)
+test_CFLAGS = $(gnome_inform7_CFLAGS)
+test_LDADD = $(gnome_inform7_LDADD)
+test_LDFLAGS = $(gnome_inform7_LDFLAGS)
+test_DEPENDENCIES = $(gnome_inform7_DEPENDENCIES)
 
 GITIGNOREFILES = $(noinst_LIBRARIES)
 
