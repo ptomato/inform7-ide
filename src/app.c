@@ -67,8 +67,6 @@ i7_app_init(I7App *self)
 	/* Retrieve data directories if set externally */
 	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
 	priv->datadir = env? g_strdup(env) : g_build_filename(PACKAGE_DATA_DIR, "gnome-inform7", NULL);
-	env = g_getenv("GNOME_INFORM_PIXMAP_DIR");
-	priv->pixmapdir = env? g_strdup(env) : g_build_filename(PACKAGE_DATA_DIR, "pixmaps", "gnome-inform7", NULL);
 	env = g_getenv("GNOME_INFORM_LIBEXEC_DIR");
 	priv->libexecdir = env? g_strdup(env) : g_strdup(PACKAGE_LIBEXEC_DIR);
 
@@ -100,10 +98,6 @@ i7_app_init(I7App *self)
 	gchar *extensions_dir = i7_app_get_extension_path(self, NULL, NULL);
 	g_mkdir_with_parents(extensions_dir, 0777);
 	g_free(extensions_dir);
-
-	/* Add icons to theme */
-	GtkIconTheme *theme = gtk_icon_theme_get_default();
-	gtk_icon_theme_append_search_path(theme, priv->pixmapdir);
 
 	/* Set up monitor for extensions directory */
 	i7_app_run_census(self, FALSE);
@@ -143,7 +137,6 @@ i7_app_finalize(GObject *self)
 {
 	I7_APP_USE_PRIVATE(self, priv);
 	g_free(priv->datadir);
-	g_free(priv->pixmapdir);
 	g_free(priv->libexecdir);
 	i7_app_stop_monitoring_extensions_directory(I7_APP(self));
 	if(I7_APP(self)->prefs)
@@ -831,19 +824,6 @@ i7_app_check_datafile_va(I7App *app, const char *path1, ...)
 		return NULL;
 	}
 	return path;
-}
-
-/* Returns the path to filename in the application pixmap directory. Free string
- afterwards. */
-gchar *
-i7_app_get_pixmap_path(I7App *app, const gchar *filename)
-{
-	gchar *path = g_build_filename(I7_APP_PRIVATE(app)->pixmapdir, filename, NULL);
-	if(g_file_test(path, G_FILE_TEST_EXISTS))
-		return path;
-	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
-		"Please reinstall Inform 7."), filename);
-	return NULL;
 }
 
 /* Returns the path to filename in the application libexec directory. Free
