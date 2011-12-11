@@ -254,66 +254,81 @@ on_extensions_view_drag_drop(GtkWidget *widget, GdkDragContext *drag_context, gi
 void
 on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *selectiondata, guint info, guint time)
 {
-	gboolean dnd_success = TRUE;
+	GFile *file;
+	GFileInfo *file_info;
 	gchar *type_name = NULL;
 
 	/* Check that we got data from source */
 	if((selectiondata == NULL) || (selectiondata->length < 0))
-		dnd_success = FALSE;
+		goto fail;
 
 	/* Check that we got the format we can use */
-	else if(strcmp((type_name = gdk_atom_name(selectiondata->type)), "text/uri-list"))
-		dnd_success = FALSE;
+	type_name = gdk_atom_name(selectiondata->type);
+	if(strcmp(type_name, "text/uri-list") != 0)
+		goto fail;
 
-	else {
-		/* Do stuff with the data */
-		gchar **extension_files = g_uri_list_extract_uris((gchar *)selectiondata->data);
-		int foo;
-		/* Get a list of URIs to the dropped files */
-		for(foo = 0; extension_files[foo] != NULL; foo++) {
-			GError *err = NULL;
-			gchar *filename = g_filename_from_uri(extension_files[foo], NULL, &err);
-			if(!filename) {
-				WARN(_("Invalid URI"), err);
-				g_error_free(err);
-				continue;
-			}
-
-			/* Check whether a directory was dropped. if so, install contents */
-			/* NOTE: not recursive (that would be kind of silly anyway) */
-			if(g_file_test(filename, G_FILE_TEST_IS_DIR)) {
-				GDir *dir = g_dir_open(filename, 0, &err);
-				if(err) {
-					error_dialog(NULL, err, _("Error opening directory %s: "), filename);
-					g_free(filename);
-					return;
-				}
-				const gchar *dir_entry;
-				while((dir_entry = g_dir_read_name(dir)) != NULL)
-					if(!g_file_test(dir_entry, G_FILE_TEST_IS_DIR)) {
-						gchar *entry_with_path = g_build_filename(filename, dir_entry, NULL);
-						GFile *extension_file = g_file_new_for_path(entry_with_path);
-						i7_app_install_extension(i7_app_get(), extension_file);
-						g_object_unref(extension_file);
-						g_free(entry_with_path);
-					}
-				g_dir_close(dir);
-
-			} else {
-				/* just install it */
-				GFile *extension_file = g_file_new_for_path(filename);
-				i7_app_install_extension(i7_app_get(), extension_file);
-				g_object_unref(extension_file);
-			}
-
-			g_free(filename);
+	/* Do stuff with the data */
+	char **extension_files = g_uri_list_extract_uris((char *)selectiondata->data);
+	int foo;
+	/* Get a list of URIs to the dropped files */
+	for(foo = 0; extension_files[foo] != NULL; foo++) {
+		GError *err = NULL;
+		file = g_file_new_for_uri(extension_files[foo]);
+		file_info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, NULL, &err);
+		if(!file_info) {
+			IO_ERROR_DIALOG(NULL, file, err, _("accessing a URI"));
+			goto fail2;
 		}
-		g_strfreev(extension_files);
+
+		/* Check whether a directory was dropped. if so, install contents */
+		/* NOTE: not recursive (that would be kind of silly anyway) */
+		if(g_file_info_get_file_type(file_info) == G_FILE_TYPE_DIRECTORY) {
+
+			GFileEnumerator *dir = g_file_enumerate_children(file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err);
+			if(!dir) {
+				IO_ERROR_DIALOG(NULL, file, err, _("opening a directory"));
+				goto fail3;
+			}
+
+			GFileInfo *entry_info;
+			while((entry_info = g_file_enumerator_next_file(dir, NULL, &err)) != NULL) {
+				if(g_file_info_get_file_type(entry_info) != G_FILE_TYPE_DIRECTORY) {
+					GFile *extension_file = g_file_get_child(file, g_file_info_get_name(entry_info));
+					i7_app_install_extension(i7_app_get(), extension_file);
+					g_object_unref(extension_file);
+				}
+				g_object_unref(entry_info);
+			}
+			g_file_enumerator_close(dir, NULL, &err);
+			g_object_unref(dir);
+
+			if(err) {
+				IO_ERROR_DIALOG(NULL, file, err, _("reading a directory"));
+				goto fail3;
+			}
+
+		} else {
+			/* just install it */
+			i7_app_install_extension(i7_app_get(), file);
+		}
+
+		g_object_unref(file_info);
+		g_object_unref(file);
 	}
 
-	if(type_name)
-		g_free(type_name);
-	gtk_drag_finish(drag_context, dnd_success, FALSE, time);
+	g_strfreev(extension_files);
+	g_free(type_name);
+	gtk_drag_finish(drag_context, TRUE, FALSE, time);
+	return;
+
+fail3:
+	g_object_unref(file_info);
+fail2:
+	g_object_unref(file);
+	g_strfreev(extension_files);
+fail:
+	g_free(type_name);
+	gtk_drag_finish(drag_context, FALSE, FALSE, time);
 }
 
 
@@ -371,11 +386,9 @@ on_extensions_view_cursor_changed(GtkTreeView *view, I7App *app)
 
 /* Convenience function */
 static void
-install_extensions(const gchar *filename, I7App *app)
+install_extensions(GFile *file, I7App *app)
 {
-	GFile *file = g_file_new_for_path(filename); // FIXME
 	i7_app_install_extension(app, file);
-	g_object_unref(file);
 }
 
 void
@@ -403,11 +416,11 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	}
 
 	/* Install each selected extension */
-	GSList *extlist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
+	GSList *extlist = gtk_file_chooser_get_files(GTK_FILE_CHOOSER(dialog));
 	g_slist_foreach(extlist, (GFunc)install_extensions, app);
 
 	/* Free stuff */
-	g_slist_foreach(extlist, (GFunc)g_free, NULL);
+	g_slist_foreach(extlist, (GFunc)g_object_unref, NULL);
 	g_slist_free(extlist);
 	gtk_widget_destroy(dialog);
 }
