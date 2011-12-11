@@ -15,6 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+#include <glib.h>
 #include "app-test.h"
 #include "app.h"
 #include "colorscheme.h"
@@ -65,6 +67,46 @@ test_app_files(void)
 	g_assert(i7_app_check_data_file_va(theapp, "nonexistent", "nonexistent", NULL) == NULL);
 
 	/* TODO: How to test the functions that open an error dialog when they fail? */
+}
+
+void
+test_app_extensions_install_remove(void)
+{
+	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	I7App *theapp = i7_app_get();
+	GError *err = NULL;
+	char *contents;
+
+	/* Directory of installed extensions */
+	char *path = g_build_filename(g_get_home_dir(), "Inform", "Documentation", "Extensions.html", NULL);
+	GFile *exts = g_file_new_for_path(path);
+	g_free(path);
+
+	/* Test installing */
+	i7_app_install_extension(theapp, file);
+	g_object_unref(file);
+	GFile *installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	check_file(installed_file, "Lickable Wallpaper.i7x");
+
+	/* Make sure it is listed in the directory */
+	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
+	g_assert_no_error(err);
+	g_assert(strstr(contents, "Regera Dowdy"));
+	g_assert(strstr(contents, "Lickable Wallpaper"));
+	g_free(contents);
+
+	/* Test removing */
+	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	g_assert(g_file_query_exists(installed_file, NULL) == FALSE);
+	g_object_unref(installed_file);
+
+	/* Make sure it is not listed in the directory anymore */
+	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
+	g_assert_no_error(err);
+	g_assert(!strstr(contents, "Regera Dowdy"));
+	g_assert(!strstr(contents, "Lickable Wallpaper"));
+	g_free(contents);
 }
 
 void

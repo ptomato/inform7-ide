@@ -27,6 +27,7 @@ main(int argc, char **argv)
 	
 	g_test_add_func("/app/create", test_app_create);
 	g_test_add_func("/app/files", test_app_files);
+	g_test_add_func("/app/extensions/install-remove", test_app_extensions_install_remove);
 	g_test_add_func("/app/colorscheme/install-remove", test_app_colorscheme_install_remove);
 	
 	I7App *theapp = i7_app_get();
