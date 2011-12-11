@@ -25,6 +25,7 @@ G_BEGIN_DECLS
 
 void test_app_create(void);
 void test_app_files(void);
+void test_app_colorscheme_install_remove(void);
 
 G_END_DECLS
 

@@ -16,7 +16,8 @@
  */
 
 #include "app-test.h"
-#include <app.h>
+#include "app.h"
+#include "colorscheme.h"
 
 void
 test_app_create(void)
@@ -64,4 +65,31 @@ test_app_files(void)
 	g_assert(i7_app_check_data_file_va(theapp, "nonexistent", "nonexistent", NULL) == NULL);
 
 	/* TODO: How to test the functions that open an error dialog when they fail? */
+}
+
+void
+test_app_colorscheme_install_remove(void)
+{
+	GFile *file = g_file_new_for_path("tests/test_color_scheme.xml");
+
+	/* Test installing */
+	const char *id = install_scheme(file);
+	g_object_unref(file);
+	g_assert_cmpstr(id, ==, "test_color_scheme");
+
+	/* Check if the file is really installed */
+	char *installed_path = g_build_filename(g_get_user_config_dir(), "inform7", "styles", "test_color_scheme.xml", NULL);
+	GFile *installed_file = g_file_new_for_path(installed_path);
+	g_free(installed_path);
+	g_assert(g_file_query_exists(installed_file, NULL));
+
+	g_assert(is_user_scheme(id));
+
+	/* Test uninstalling */
+	g_assert(uninstall_scheme(id));
+
+	/* Check if file is really uninstalled */
+	g_assert(g_file_query_exists(installed_file, NULL) == FALSE);
+
+	g_object_unref(installed_file);
 }
