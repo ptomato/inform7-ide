@@ -145,14 +145,14 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 		return;
 	}
 
-	gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
-	if(!filename)
+	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(chooser));
+	if(!file)
 		return;
 
 	gtk_widget_destroy(chooser);
 
-	const gchar *scheme_id = install_scheme(filename);
-	g_free(filename);
+	const char *scheme_id = install_scheme(file);
+	g_object_unref(file);
 
 	if(!scheme_id) {
 		error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("The selected color scheme cannot be installed."));

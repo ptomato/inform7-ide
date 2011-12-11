@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ enum {
 
 GSList *get_style_schemes_sorted(void);
 gboolean is_user_scheme(const gchar *scheme_id);
-const gchar *install_scheme(const gchar *fname);
+const char *install_scheme(GFile *file);
 gboolean uninstall_scheme(const gchar *id);
 GtkSourceStyleScheme *get_style_scheme(void);
 void set_highlight_styles(GtkSourceBuffer *buffer);
