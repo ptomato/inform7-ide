@@ -266,10 +266,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 			problems_file = i7_app_get_data_file_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
 	}
 
-	char *problems_url = g_file_get_path(problems_file); // FIXME
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_url);
-	g_free(problems_url);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_file);
 	g_object_unref(problems_file);
 
 	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE)) {
@@ -485,15 +483,12 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	if(!loadfile && exit_code != 0)
 		loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
 	if(loadfile) {
-		char *path = g_file_get_path(loadfile); // FIXME
-
 		gdk_threads_enter();
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), path);
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), path);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), loadfile);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), loadfile);
 		gdk_threads_leave();
 
 		g_object_unref(loadfile);
-		g_free(path);
 	}
 
 	/* Stop here and show the Errors/Problems tab if there was an error */
@@ -584,10 +579,12 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 
 	/* Display the appropriate HTML page */
 	gchar *file = g_build_filename(data->input_file, "Build", "StatusCblorb.html", NULL);
+	GFile *gfile = g_file_new_for_path(file); // FIXME
 	gdk_threads_enter();
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), gfile);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), gfile);
 	gdk_threads_leave();
+	g_object_unref(gfile);
 	g_free(file);
 
 	/* Stop here and show the Errors/Problems tab if there was an error */

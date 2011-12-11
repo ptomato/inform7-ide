@@ -281,9 +281,7 @@ void
 action_contents(GtkAction *action, I7Panel *panel)
 {
 	GFile *docs_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "index.html", NULL);
-	char *docs = g_file_get_path(docs_file); // FIXME
-	html_load_file(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), docs);
-	g_free(docs);
+	html_load_file(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), docs_file);
 	g_object_unref(docs_file);
 }
 
@@ -549,9 +547,7 @@ i7_panel_init(I7Panel *self)
 
 	/* Load the documentation page */
 	file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
-	path = g_file_get_path(file); // FIXME
-	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), path);
-	g_free(path);
+	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file);
 	g_object_unref(file);
 }
 
@@ -768,7 +764,9 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		}
 
 		gchar *real_filename = find_real_filename_for_inform_protocol(uri);
-		html_load_file(webview, real_filename);
+		GFile *file = g_file_new_for_path(real_filename); // FIXME
+		html_load_file(webview, file);
+		g_object_unref(file);
 		g_free(real_filename);
 
 	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
@@ -890,13 +888,17 @@ i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, gint tab, const gchar *pag
 void
 i7_panel_goto_docpage(I7Panel *self, const gchar *file)
 {
-	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file);
+	GFile *gfile = g_file_new_for_path(file); // FIXME
+	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), gfile);
+	g_object_unref(gfile);
 }
 
 void
 i7_panel_goto_docpage_at_anchor(I7Panel *self, const gchar *file, const gchar *anchor)
 {
-	html_load_file_at_anchor(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file, anchor);
+	GFile *gfile = g_file_new_for_path(file); // FIXME
+	html_load_file_at_anchor(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), gfile, anchor);
+	g_object_unref(gfile);
 }
 
 void

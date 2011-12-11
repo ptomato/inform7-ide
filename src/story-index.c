@@ -36,8 +36,10 @@ load_index_file(I7Story *story, int counter)
 	gchar *filename = g_build_filename(name, "Index", index_names[counter], NULL);
 	g_free(name);
 	if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-		html_load_file(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]), filename);
-		html_load_file(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]), filename);
+		GFile *file = g_file_new_for_path(filename); // FIXME
+		html_load_file(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]), file);
+		html_load_file(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]), file);
+		g_object_unref(file);
 	} else {
 		html_load_blank(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]));
 		html_load_blank(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]));

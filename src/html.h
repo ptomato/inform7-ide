@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 #include <glib.h>
 #include <webkit/webkit.h>
 
-void html_load_file(WebKitWebView *html, const gchar *filename);
-void html_load_file_at_anchor(WebKitWebView *html, const gchar *file, const gchar *anchor);
+void html_load_file(WebKitWebView *html, GFile *filename);
+void html_load_file_at_anchor(WebKitWebView *html, GFile *file, const char *anchor);
 void html_load_blank(WebKitWebView *html);
 
 #endif
