@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ enum {
 
 typedef struct {
 	I7NewProjectType type;
-	gchar *directory;
+	GFile *directory;
 	gchar *name;
 	gchar *author;
 
@@ -83,7 +83,7 @@ new_project_options_free(I7NewProjectOptions *options)
 {
 	if(options) {
 		if(options->directory)
-			g_free(options->directory);
+			g_object_unref(options->directory);
 		if(options->name)
 			g_free(options->name);
 		if(options->author)
@@ -116,24 +116,26 @@ static void
 check_page_finished(I7NewProjectOptions *options)
 {
 	GtkWidget *page = gtk_assistant_get_nth_page(GTK_ASSISTANT(options->assistant), 1);
-	if(options->directory && strlen(options->directory)
+	if(options->directory
 		&& options->name && strlen(options->name)
 		&& options->author && strlen(options->author))
 	{
-		gchar *file = g_strconcat(options->name, ".inform", NULL);
-		gchar *directory = g_build_filename(options->directory, file, NULL);
-		g_free(file);
+		char *filename = g_strconcat(options->name, ".inform", NULL);
+		GFile *file = g_file_get_child(options->directory, filename);
+		g_free(filename);
 
-		if(!g_file_test(directory, G_FILE_TEST_EXISTS)) {
+		if(!g_file_query_exists(file, NULL)) {
 			gtk_assistant_set_page_complete(GTK_ASSISTANT(options->assistant), page, TRUE);
-			g_free(directory);
+			g_object_unref(file);
 			return;
 		}
 
-		g_free(directory);
+		g_object_unref(file);
+		char *dirpath = g_file_get_path(options->directory);
 		error_dialog(NULL, NULL, _("The story \"%s\" already exists in the "
 			"directory %s. Please choose another title or directory."),
-			options->name, options->directory);
+			options->name, dirpath);
+		g_free(dirpath);
 	}
 	gtk_assistant_set_page_complete(GTK_ASSISTANT(options->assistant), page, FALSE);
 }
@@ -142,8 +144,8 @@ void
 on_new_directory_current_folder_changed(GtkFileChooser *chooser, I7NewProjectOptions *options)
 {
 	if(options->directory)
-		g_free(options->directory);
-	options->directory = gtk_file_chooser_get_filename(chooser);
+		g_object_unref(options->directory);
+	options->directory = gtk_file_chooser_get_file(chooser);
 	check_page_finished(options);
 }
 
@@ -181,7 +183,7 @@ file and put it in the "new_author" text entry automatically */
 void
 on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptions *options)
 {
-	gchar *text;
+	char *text, *dirpath;
 	switch(gtk_assistant_get_current_page(assistant)) {
 		case 1:
 			text = g_strstrip(config_file_get_string(PREFS_AUTHOR_NAME));
@@ -191,12 +193,14 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 			on_new_directory_current_folder_changed(GTK_FILE_CHOOSER(options->chooser), options);
 			break;
 		case 2:
+			dirpath = g_file_get_path(options->directory);
 			text = g_strdup_printf("<big><b>%s</b>\nby %s</big>\n\n"
 				"Project Type: %s\nDirectory to create project in: %s\n",
 				options->name, options->author,
 				(options->type == I7_NEW_PROJECT_INFORM7_EXTENSION)?
 				"Inform 7 Extension" : "Inform 7 Story",
-				options->directory);
+				dirpath);
+			g_free(dirpath);
 			gtk_label_set_markup(GTK_LABEL(page), text);
 			g_free(text);
 			gtk_assistant_set_page_complete(assistant, page, TRUE);
@@ -212,28 +216,33 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 void
 on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
-	gchar *file, *path;
+	char *filename, *path;
+	GFile *file;
 
 	/* Save the author name to the config file */
 	config_file_set_string(PREFS_AUTHOR_NAME, options->author);
 
 	switch(options->type) {
 		case I7_NEW_PROJECT_INFORM7_STORY:
-			file = g_strconcat(options->name, ".inform", NULL);
-			path = g_build_filename(options->directory, file, NULL);
+			filename = g_strconcat(options->name, ".inform", NULL);
+			file = g_file_get_child(options->directory, filename);
+			path = g_file_get_path(file); // FIXME
 			i7_story_new(i7_app_get(), path, options->name, options->author);
+			g_free(path);
 			break;
 		case I7_NEW_PROJECT_INFORM7_EXTENSION:
-			file = g_strconcat(options->name, ".i7x", NULL);
-			path = g_build_filename(options->directory, file, NULL);
+			filename = g_strconcat(options->name, ".i7x", NULL);
+			file = g_file_get_child(options->directory, filename);
+			path = g_file_get_path(file); // FIXME
 			i7_extension_new(i7_app_get(), path, options->name, options->author);
+			g_free(path);
 			break;
 		default:
 			on_newdialog_cancel(assistant, options);
 			return;
 	}
-	g_free(file);
-	g_free(path);
+	g_free(filename);
+	g_object_unref(file);
 
 	new_project_options_free(options);
 	gtk_widget_destroy(GTK_WIDGET(assistant));
