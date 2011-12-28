@@ -390,19 +390,23 @@ i7_story_save_as(I7Document *document, gchar *directory)
 
 	/* Save the notes */
 	filename = g_build_filename(directory, "notes.rtf", NULL);
-	if(!rtf_text_buffer_export(priv->notes, filename, &err)) {
+	gfile = g_file_new_for_path(filename); // FIXME
+	if(!rtf_text_buffer_export_file(priv->notes, gfile, NULL, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the Notepad. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
 	gtk_text_buffer_set_modified(priv->notes, FALSE);
+	g_object_unref(gfile);
 	g_free(filename);
 
 	/* Save the project settings */
 	filename = g_build_filename(directory, "Settings.plist", NULL);
-	if(!plist_write(priv->settings, filename, &err)) {
+	gfile = g_file_new_for_path(filename); // FIXME
+	if(!plist_write_file(priv->settings, gfile, NULL, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the project settings. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
+	g_object_unref(gfile);
 	g_free(filename);
 
 	/* Delete the build files from the project directory */
@@ -1029,10 +1033,12 @@ i7_story_open(I7Story *story, const gchar *directory)
 
 	/* Read the notes */
 	filename = g_build_filename(directory, "notes.rtf", NULL);
-	if(!rtf_text_buffer_import(priv->notes, filename, NULL)) {
+	gfile = g_file_new_for_path(filename); // FIXME
+	if(!rtf_text_buffer_import_file(priv->notes, gfile, NULL, NULL)) {
 		/* Don't fail if the file is unreadable, instead just make some blank notes */
 		gtk_text_buffer_set_text(priv->notes, "", -1);
 	}
+	g_object_unref(gfile);
 	g_free(filename);
 	/* Remove all the formatting tags, we don't do formatting in this editor */
 	GtkTextIter start, end;
@@ -1042,14 +1048,16 @@ i7_story_open(I7Story *story, const gchar *directory)
 
 	/* Read the settings */
 	filename = g_build_filename(directory, "Settings.plist", NULL);
+	gfile = g_file_new_for_path(filename); // FIXME
 	plist_object_free(priv->settings);
-	priv->settings = plist_read(filename, &err);
+	priv->settings = plist_read_file(gfile, NULL, &err);
 	if(!priv->settings) {
 		priv->settings = create_default_settings();
 		error_dialog(GTK_WINDOW(story), err,
 			_("Could not open the project's settings file, '%s'. "
 			"Using default settings."), filename);
 	}
+	g_object_unref(gfile);
 	g_free(filename);
 	/* Update the GUI with the new settings */
 	on_notify_story_format(story);
