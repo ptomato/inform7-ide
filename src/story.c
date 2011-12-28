@@ -712,10 +712,8 @@ i7_story_init(I7Story *self)
 	self->panel[LEFT] = I7_PANEL(i7_panel_new());
 	self->panel[RIGHT] = I7_PANEL(i7_panel_new());
 	GFile *docs_file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
-	path = g_file_get_path(docs_file); // FIXME
 	i7_panel_reset_queue(self->panel[LEFT], I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_SOURCE, NULL);
-	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, path);
-	g_free(path);
+	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, docs_file);
 	g_object_unref(docs_file);
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
 	gtk_paned_pack2(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[RIGHT]), TRUE, FALSE);
@@ -1115,7 +1113,9 @@ void
 i7_story_show_docpage(I7Story *story, const gchar *file)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_DOCUMENTATION);
-	i7_panel_goto_docpage(story->panel[side], file);
+	GFile *gfile = g_file_new_for_path(file); // FIXME
+	i7_panel_goto_docpage(story->panel[side], gfile);
+	g_object_unref(gfile);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
@@ -1123,7 +1123,9 @@ void
 i7_story_show_docpage_at_anchor(I7Story *story, const gchar *file, const gchar *anchor)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_DOCUMENTATION);
-	i7_panel_goto_docpage_at_anchor(story->panel[side], file, anchor);
+	GFile *gfile = g_file_new_for_path(file);
+	i7_panel_goto_docpage_at_anchor(story->panel[side], gfile, anchor);
+	g_object_unref(gfile);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
