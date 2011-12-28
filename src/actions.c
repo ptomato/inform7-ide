@@ -150,19 +150,18 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 		return;
 	}
 	
-	gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
 	gtk_widget_destroy(dialog);
-	if(!filename)
+	if(!file)
 		return; /* Fail silently */
 
 	/* Provide some visual feedback that the command did something */
-	if(!i7_skein_import(i7_story_get_skein(story), filename, &err))
-		error_dialog(GTK_WINDOW(story), err, _("Failed to import file '%s' into"
-			" skein: "), filename);
+	if(!i7_skein_import(i7_story_get_skein(story), file, &err))
+		error_dialog_file_operation(GTK_WINDOW(story), file, err, I7_FILE_ERROR_OPEN, NULL);
 	else
 		i7_story_show_pane(story, I7_PANE_SKEIN);
 	
-	g_free(filename);
+	g_object_unref(file);
 }
 
 /* File->Save */

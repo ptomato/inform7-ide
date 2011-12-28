@@ -379,10 +379,12 @@ i7_story_save_as(I7Document *document, gchar *directory)
 
 	/* Save the skein */
 	filename = g_build_filename(directory, "Skein.skein", NULL);
-	if(!i7_skein_save(priv->skein, filename, &err)) {
+	GFile *gfile = g_file_new_for_path(filename); // FIXME
+	if(!i7_skein_save(priv->skein, gfile, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the Skein. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
+	g_object_unref(gfile);
 	g_free(filename);
 	/* skein_save(thestory->theskein, directory);*/
 
@@ -1017,10 +1019,12 @@ i7_story_open(I7Story *story, const gchar *directory)
 
 	/* Read the skein */
 	filename = g_build_filename(directory, "Skein.skein", NULL);
-	if(!i7_skein_load(priv->skein, filename, &err)) {
+	GFile *gfile = g_file_new_for_path(filename); // FIXME
+	if(!i7_skein_load(priv->skein, gfile, &err)) {
 		error_dialog(GTK_WINDOW(story), err, _("This project's Skein was not found, or it was unreadable."));
 		err = NULL;
 	}
+	g_object_unref(gfile);
 	g_free(filename);
 
 	/* Read the notes */
