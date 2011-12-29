@@ -263,7 +263,7 @@ i7_story_extract_title(I7Document *document, gchar *text)
 		if(found)
 			return g_strndup(text, (gsize)(++found - text));
 	}
-	return g_strdup("Untitled");
+	return g_strdup(_("Untitled"));
 }
 
 /* Save story, in the previous location if it exists, otherwise ask for a new

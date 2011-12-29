@@ -88,6 +88,7 @@ action_open_recent(GtkAction *action, I7App *app)
 	else if(gtk_recent_info_has_group(item, "inform7_builtin"))
 		i7_extension_new_from_uri(app, gtk_recent_info_get_uri(item), TRUE);
 	else
+		/* TRANSLATORS: File->Open Recent submenu */
 		g_warning(_("Recent manager file does not have tag"));
 	gtk_recent_info_unref(item);
 }
@@ -129,6 +130,7 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 	GError *err = NULL;
 	
 	/* Ask the user for a file to import */
+	/* TRANSLATORS: File->Import Into Skein... */
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(
 	  _("Select the file to import into the skein"),
 	  GTK_WINDOW(story),
@@ -211,6 +213,7 @@ action_revert(GtkAction *action, I7Document *document)
 		return; /* Not changed since last save */
 
 	/* Ask if the user is sure */
+	/* TRANSLATORS: File->Revert */
 	GtkWidget *revert_dialog = gtk_message_dialog_new(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
 		_("Are you sure you want to revert to the last saved version?"));
@@ -319,6 +322,7 @@ action_print_preview(GtkAction *action, I7Document *document)
 	if(result == GTK_PRINT_OPERATION_RESULT_APPLY)
 		i7_app_set_print_settings(theapp, g_object_ref(gtk_print_operation_get_print_settings(print)));
 	else if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
+		/* TRANSLATORS: File->Print Preview... */
 		error_dialog(GTK_WINDOW(document), error, _("There was an error printing: "));
 	g_object_unref(print);
 }
@@ -340,7 +344,7 @@ action_print(GtkAction *action, I7Document *document)
 	GtkPrintOperationResult result = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, GTK_WINDOW(document), &error);
 	if(result == GTK_PRINT_OPERATION_RESULT_APPLY)
 		i7_app_set_print_settings(theapp, g_object_ref(gtk_print_operation_get_print_settings(print)));
-	else if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
+	else if(result == GTK_PRINT_OPERATION_RESULT_ERROR) /* TRANSLATORS: File->Print... */
 		error_dialog(GTK_WINDOW(document), error, _("There was an error printing: "));
 	g_object_unref(print);
 }
@@ -1058,6 +1062,7 @@ action_next_difference_skein(GtkAction *action, I7Story *story)
 void
 action_release(GtkAction *action, I7Story *story)
 {
+	/* TRANSLATORS: Release->Release... */
 	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_save_compiler_output, _("Save the game for release"));
 	i7_story_compile(story, TRUE, FALSE);
 }
@@ -1066,6 +1071,7 @@ action_release(GtkAction *action, I7Story *story)
 void
 action_save_debug_build(GtkAction *action, I7Story *story)
 {
+	/* TRANSLATORS: Release->Release for Testing... */
 	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_save_compiler_output, _("Save debug build"));
 	i7_story_compile(story, FALSE, FALSE);
 }
@@ -1080,6 +1086,7 @@ action_open_materials_folder(GtkAction *action, I7Story *story)
 
 	/* Prompt the user to create the folder if it doesn't exist */
 	if(!g_file_test(materialspath, G_FILE_TEST_EXISTS)) {
+		/* TRANSLATORS: Release->Open Materials Folder */
 		GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story),
 			GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
 			GTK_BUTTONS_OK_CANCEL, _("Could not find Materials folder"));
@@ -1171,6 +1178,7 @@ open_page_in_browser(const gchar *uri)
 {
 	GError *err = NULL;
 	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &err))
+		/* TRANSLATORS: open_page_in_browser */
 		error_dialog(NULL, err, _("The page \"%s\" should have opened in your browser:"), uri);
 }
 
@@ -1199,7 +1207,7 @@ action_report_bug(GtkAction *action, I7App *app)
 void
 action_about(GtkAction *action, I7App *app)
 {
-	/* TRANSLATORS: %s is the copyright year. */
+	/* TRANSLATORS: Help->About ; %s is the copyright year. */
 	char *copyright = g_strdup_printf(_("Copyright 2006\xE2\x80\x93%s " /* UTF8 en-dash */
 		"P. F. Chimento (front end),\n"
 	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
@@ -1236,14 +1244,16 @@ action_about(GtkAction *action, I7App *app)
 
 	GtkWindow *parent = get_toplevel_for_action(action);
 	gtk_show_about_dialog(parent,
-		"program-name", _("Inform"),
+		"program-name", "Inform",
 		"copyright", copyright,
 		"comments", "Inform (1.2 6.32N/" PACKAGE_VERSION ")",
 		"website", "http://inform7.com",
 		"website-label", "inform7.com",
-		"license", _("See Help\xE2\x86\x92License for licensing information."), /* UTF8 right arrow */
-	    "authors", authors,
-		"translator-credits", _("\xC3\x81ngel Eduardo (Spanish)"), /* UTF8 capital A acute accent */
+		/* TRANSLATORS: Caution, UTF8 right arrow */
+		"license", _("See Help\xE2\x86\x92License for licensing information."),
+		"authors", authors,
+		/* TRANSLATORS: Caution, UTF8 capital A acute accent */
+		"translator-credits", _("\xC3\x81ngel Eduardo (Spanish)"),
 		"logo-icon-name", "inform7",
 		"title", _("About Inform"),
 		NULL);

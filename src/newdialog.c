@@ -191,11 +191,11 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 			on_new_directory_current_folder_changed(GTK_FILE_CHOOSER(options->chooser), options);
 			break;
 		case 2:
-			text = g_strdup_printf("<big><b>%s</b>\nby %s</big>\n\n"
-				"Project Type: %s\nDirectory to create project in: %s\n",
+			text = g_strdup_printf(_("<big><b>%s</b>\nby %s</big>\n\n"
+				"Project Type: %s\nDirectory to create project in: %s\n"),
 				options->name, options->author,
 				(options->type == I7_NEW_PROJECT_INFORM7_EXTENSION)?
-				"Inform 7 Extension" : "Inform 7 Story",
+				_("Inform 7 Extension") : _("Inform 7 Story"),
 				options->directory);
 			gtk_label_set_markup(GTK_LABEL(page), text);
 			g_free(text);

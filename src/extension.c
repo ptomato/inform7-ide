@@ -119,13 +119,13 @@ i7_extension_extract_title(I7Document *document, gchar *text)
 
 	if(!g_regex_match(app->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
 		g_match_info_free(match);
-		return g_strdup("Untitled");
+		return g_strdup(_("Untitled"));
 	}
 
 	gchar *title = g_match_info_fetch_named(match, "title");
 	g_match_info_free(match);
 	if(!title)
-		return g_strdup("Untitled");
+		return g_strdup(_("Untitled"));
 	return title;
 }
 
