@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,10 +42,9 @@ typedef struct {
 } I7Extension;
 
 GType i7_extension_get_type(void) G_GNUC_CONST;
-I7Extension *i7_extension_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author);
-I7Extension *i7_extension_new_from_file(I7App *app, const gchar *filename, gboolean readonly);
-I7Extension *i7_extension_new_from_uri(I7App *app, const gchar *uri, gboolean readonly);
-gboolean i7_extension_open(I7Extension *extension, const gchar *filename, gboolean readonly);
+I7Extension *i7_extension_new(I7App *app, GFile *file, const char *title, const char *author);
+I7Extension *i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly);
+gboolean i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly);
 void i7_extension_set_read_only(I7Extension *extension, gboolean readonly);
 
 #endif /* _EXTENSION_H_ */

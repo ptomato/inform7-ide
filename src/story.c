@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -105,8 +105,12 @@ on_storywindow_delete_event(GtkWidget *window, GdkEvent *event)
 
 	gtk_widget_destroy(I7_STORY(window)->notes_window);
 	i7_story_stop_running_game(I7_STORY(window));
-	if(i7_document_get_path(I7_DOCUMENT(window)))
+
+	GFile *file = i7_document_get_file(I7_DOCUMENT(window));
+	if(file) {
 		delete_build_files(I7_STORY(window));
+		g_object_unref(file);
+	}
 
 	return FALSE;
 }
@@ -271,66 +275,69 @@ location */
 static gboolean
 i7_story_save(I7Document *document)
 {
-	gchar *filename = i7_document_get_path(document);
-	if(filename && g_file_test(filename, G_FILE_TEST_EXISTS)
-		&& g_file_test(filename, G_FILE_TEST_IS_DIR))
-		i7_document_save_as(document, filename);
-	else {
-		gchar *newname = get_filename_from_save_dialog(document, filename);
-		if(!newname)
+	GFile *file = i7_document_get_file(document);
+	if(file && g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
+		i7_document_save_as(document, file);
+		g_object_unref(file);
+	} else {
+		GFile *new_file = get_file_from_save_dialog(document, file);
+		if(!new_file)
 			return FALSE;
-		i7_document_set_path(document, newname);
-		i7_document_save_as(document, newname);
-		g_free(newname);
+		i7_document_set_file(document, new_file);
+		i7_document_save_as(document, new_file);
+		g_object_unref(new_file);
 	}
-	if(filename)
-		g_free(filename);
 	return TRUE;
 }
 
 /* Update the list of recently used files */
 static void
-update_recent_story_file(I7Story *story, gchar *filename, const gchar *directory)
+update_recent_story_file(I7Story *story, GFile *file)
 {
-	GError *err = NULL;
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
+
 	/* Add story.ni as the actual file to open, in case any other application
 	wants to open it, and set the display name to the project directory */
-	gchar *file_uri;
-	if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
-		/* fail discreetly */
-		WARN(_("Cannot convert project filename to URI"), err);
-		g_error_free(err);
-		err = NULL; /* clear error */
-	} else {
-		/* We use the groups "inform7_project", "inform7_extension", and
-		 "inform7_builtin" to determine how to open a file from the recent manager */
-		gchar *groups[] = { "inform7_project", NULL };
-		GtkRecentData recent_data = {
-			NULL, NULL, "text/x-natural-inform", "GNOME Inform 7",
-			"gnome-inform7 %f", NULL, FALSE
-		};
-		recent_data.display_name = g_filename_display_basename(directory);
-		/* Use the story title and author as the description,
-		retrieved from the first line of the text */
-		GtkTextIter start, end;
-		GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(story)));
-		gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
-		gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
-		gtk_text_iter_forward_to_line_end(&end);
-		recent_data.description = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+	GFile *source_file = g_file_get_child(file, "Source");
+	GFile *story_file = g_file_get_child(file, "story.ni");
+	g_object_unref(source_file);
+	char *uri = g_file_get_uri(story_file);
+	g_object_unref(story_file);
 
-		recent_data.groups = groups;
-		gtk_recent_manager_add_full(manager, file_uri, &recent_data);
-		g_free(recent_data.display_name);
-		g_free(recent_data.description);
-	}
-	g_free(file_uri);
+	/* We use the groups "inform7_project", "inform7_extension", and
+	 "inform7_builtin" to determine how to open a file from the recent manager */
+	char *groups[] = { "inform7_project", NULL };
+	GtkRecentData recent_data = {
+		NULL, NULL, "text/x-natural-inform", "Inform 7",
+		"gnome-inform7 %f", NULL, FALSE
+	};
+
+	GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	if(info)
+		recent_data.display_name = g_strdup(g_file_info_get_display_name(info));
+	else
+		recent_data.display_name = g_file_get_basename(file);
+
+	/* Use the story title and author as the description,
+	retrieved from the first line of the text */
+	GtkTextIter start, end;
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(story)));
+	gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
+	gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
+	gtk_text_iter_forward_to_line_end(&end);
+	recent_data.description = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+
+	recent_data.groups = groups;
+	gtk_recent_manager_add_full(manager, uri, &recent_data);
+
+	g_free(recent_data.display_name);
+	g_free(recent_data.description);
+	g_free(uri);
 }
 
 /* Save story in the given directory  */
 static void
-i7_story_save_as(I7Document *document, gchar *directory)
+i7_story_save_as(I7Document *document, GFile *file)
 {
 	I7StoryPrivate *priv = I7_STORY_PRIVATE(document);
 	GError *err = NULL;
@@ -340,74 +347,69 @@ i7_story_save_as(I7Document *document, gchar *directory)
 	i7_document_stop_file_monitor(document);
 
 	/* Create the project directory if it does not already exist */
-	gchar *build_dir = g_build_filename(directory, "Build", NULL);
-	gchar *index_dir = g_build_filename(directory, "Index", NULL);
-	gchar *source_dir = g_build_filename(directory, "Source", NULL);
-	if(g_mkdir_with_parents(directory, 0777)
-		|| g_mkdir_with_parents(build_dir, 0777)
-		|| g_mkdir_with_parents(index_dir, 0777)
-		|| g_mkdir_with_parents(source_dir, 0777))
+	GFile *build_file = g_file_get_child(file, "Build");
+	GFile *index_file = g_file_get_child(file, "Index");
+	GFile *source_file = g_file_get_child(file, "Source");
+	if(!make_directory_unless_exists(file, NULL, &err)
+		|| !make_directory_unless_exists(build_file, NULL, &err)
+		|| !make_directory_unless_exists(index_file, NULL, &err)
+		|| !make_directory_unless_exists(source_file, NULL, &err))
 	{
-		error_dialog(GTK_WINDOW(document), NULL, _("Error creating project directory: %s"), g_strerror(errno));
-		g_free(build_dir);
-		g_free(index_dir);
-		g_free(source_dir);
+		IO_ERROR_DIALOG(GTK_WINDOW(document), file, err, "creating project directory");
+		g_object_unref(build_file);
+		g_object_unref(index_file);
+		g_object_unref(source_file);
 		return;
 	}
-	g_free(build_dir);
-	g_free(index_dir);
+	g_object_unref(build_file);
+	g_object_unref(index_file);
 
 	/* Save the source */
 	gchar *text = i7_document_get_source_text(document);
 	/* Write text to file */
-	gchar *filename = g_build_filename(source_dir, "story.ni", NULL);
-	g_free(source_dir);
-	if(!g_file_set_contents(filename, text, -1, &err)) {
-		error_dialog(GTK_WINDOW(document), err, _("Error saving file '%s': "), filename);
-		g_free(filename);
+	GFile *story_file = g_file_get_child(source_file, "story.ni");
+	g_object_unref(source_file);
+
+	if(!g_file_replace_contents(story_file, text, strlen(text), NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &err)) {
+		error_dialog_file_operation(GTK_WINDOW(document), story_file, err, I7_FILE_ERROR_SAVE, NULL);
+		g_object_unref(story_file);
 		g_free(text);
 		return;
 	}
-	gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(i7_document_get_buffer(document)), FALSE);
 	g_free(text);
 
-	update_recent_story_file(I7_STORY(document), filename, directory);
+	gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(i7_document_get_buffer(document)), FALSE);
+
+	update_recent_story_file(I7_STORY(document), file);
 
 	/* Start file monitoring again */
-	i7_document_monitor_file(document, filename);
-	g_free(filename);
+	i7_document_monitor_file(document, story_file);
+	g_object_unref(story_file);
 
 	/* Save the skein */
-	filename = g_build_filename(directory, "Skein.skein", NULL);
-	GFile *gfile = g_file_new_for_path(filename); // FIXME
-	if(!i7_skein_save(priv->skein, gfile, &err)) {
+	GFile *skein_file = g_file_get_child(file, "Skein.skein");
+	if(!i7_skein_save(priv->skein, skein_file, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the Skein. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
-	g_object_unref(gfile);
-	g_free(filename);
-	/* skein_save(thestory->theskein, directory);*/
+	g_object_unref(skein_file);
 
 	/* Save the notes */
-	filename = g_build_filename(directory, "notes.rtf", NULL);
-	gfile = g_file_new_for_path(filename); // FIXME
-	if(!rtf_text_buffer_export_file(priv->notes, gfile, NULL, &err)) {
+	GFile *notes_file = g_file_get_child(file, "notes.rtf");
+	if(!rtf_text_buffer_export_file(priv->notes, notes_file, NULL, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the Notepad. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
 	gtk_text_buffer_set_modified(priv->notes, FALSE);
-	g_object_unref(gfile);
-	g_free(filename);
+	g_object_unref(notes_file);
 
 	/* Save the project settings */
-	filename = g_build_filename(directory, "Settings.plist", NULL);
-	gfile = g_file_new_for_path(filename); // FIXME
-	if(!plist_write_file(priv->settings, gfile, NULL, &err)) {
+	GFile *settings_file = g_file_get_child(file, "Settings.plist");
+	if(!plist_write_file(priv->settings, settings_file, NULL, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the project settings. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
-	g_object_unref(gfile);
-	g_free(filename);
+	g_object_unref(settings_file);
 
 	/* Delete the build files from the project directory */
 	delete_build_files(I7_STORY(document));
@@ -737,8 +739,8 @@ i7_story_init(I7Story *self)
 	priv->last_focused = GTK_WIDGET(self->panel[LEFT]);
 	priv->compile_finished_callback = NULL;
 	priv->compile_finished_callback_data = NULL;
-	priv->copyblorbto = NULL;
-	priv->compiler_output = NULL;
+	priv->copy_blorb_dest_file = NULL;
+	priv->compiler_output_file = NULL;
 	priv->test_me = FALSE;
 	priv->manifest = NULL;
 	
@@ -826,8 +828,10 @@ static void
 i7_story_finalize(GObject *self)
 {
 	I7_STORY_USE_PRIVATE(self, priv);
-	g_free(priv->copyblorbto);
-	g_free(priv->compiler_output);
+	if(priv->copy_blorb_dest_file)
+		g_object_unref(priv->copy_blorb_dest_file);
+	if(priv->compiler_output_file)
+		g_object_unref(priv->compiler_output_file);
 	if(priv->settings)
 		plist_object_free(priv->settings);
 	if(priv->manifest)
@@ -885,13 +889,13 @@ i7_story_class_init(I7StoryClass *klass)
 /* PUBLIC FUNCTIONS */
 
 I7Story *
-i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author)
+i7_story_new(I7App *app, GFile *file, const char *title, const char *author)
 {
 	/* Can take a while for old versions of WebKit */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
 
-	i7_document_set_path(I7_DOCUMENT(story), filename);
+	i7_document_set_file(I7_DOCUMENT(story), file);
 
 	gchar *text = g_strconcat("\"", title, "\" by \"", author, "\"\n", NULL);
 	i7_document_set_source_text(I7_DOCUMENT(story), text);
@@ -909,29 +913,36 @@ i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar 
 }
 
 I7Story *
-i7_story_new_from_file(I7App *app, const gchar *filename)
+i7_story_new_from_file(I7App *app, GFile *file)
 {
-	gchar *fullpath = expand_initial_tilde(filename);
-	GFile *file = g_file_new_for_path(fullpath); // FIXME
-	I7Document *dupl = i7_app_get_already_open(app, file);
-	g_object_unref(file);
+	GFile *real_file;
+
+	/* Make sure the GFile doesn't refer to story.ni */
+	char *basename = g_file_get_basename(file);
+	if(strcmp(basename, "story.ni") == 0) {
+		real_file = g_file_resolve_relative_path(file, "../..");
+	} else {
+		real_file = g_object_ref(file);
+	}
+	g_free(basename);
+
+	I7Document *dupl = i7_app_get_already_open(app, real_file);
 
 	if(dupl && I7_IS_STORY(dupl)) {
 		gtk_window_present(GTK_WINDOW(dupl));
-		g_free(fullpath);
+		g_object_unref(real_file);
 		return NULL;
 	}
 
 	/* Loading a large story file can take a while */
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
-	if(!i7_story_open(story, fullpath)) {
-		g_free(fullpath);
+	if(!i7_story_open(story, real_file)) {
 		g_object_unref(story);
+		g_object_unref(real_file);
 		i7_app_set_busy(app, FALSE);
 		return NULL;
 	}
-	g_free(fullpath);
 
 	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(story));
@@ -941,6 +952,8 @@ i7_story_new_from_file(I7App *app, const gchar *filename)
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
 	gtk_window_present(GTK_WINDOW(story));
+
+	g_object_unref(real_file);
 
 	return story;
 }
@@ -962,84 +975,58 @@ i7_story_new_from_dialog(I7App *app)
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), filter);
 
 	if(gtk_dialog_run(GTK_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) {
-		gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(chooser));
-		story = i7_story_new_from_file(app, filename);
-		g_free(filename);
+		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(chooser));
+		story = i7_story_new_from_file(app, file);
+		g_object_unref(file);
 	}
 
 	gtk_widget_destroy(chooser);
 	return story;
 }
 
-I7Story *
-i7_story_new_from_uri(I7App *app, const gchar *uri)
-{
-	GError *error = NULL;
-	I7Story *story = NULL;
-
-	gchar *filename;
-	if((filename = g_filename_from_uri(uri, NULL, &error)) == NULL) {
-		WARN_S(_("Cannot get filename from URI"), uri, error);
-		g_error_free(error);
-		return NULL;
-	}
-
-	gchar *trash = g_path_get_dirname(filename); /* Remove "story.ni" */
-	gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
-	g_free(trash);
-	story = i7_story_new_from_file(app, projectdir);
-	g_free(projectdir);
-	return story;
-}
-
 /* Read a project directory, loading all the appropriate files into story and
 returning success */
 gboolean
-i7_story_open(I7Story *story, const gchar *directory)
+i7_story_open(I7Story *story, GFile *file)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
 	GError *err = NULL;
 
-	gchar *source_dir = g_build_filename(directory, "Source", NULL);
-
-	i7_document_set_path(I7_DOCUMENT(story), directory);
+	i7_document_set_file(I7_DOCUMENT(story), file);
 
 	/* Read the source */
-	gchar *filename = g_build_filename(source_dir, "story.ni", NULL);
-	g_free(source_dir);
-	gchar *text = read_source_file(filename);
+	GFile *source_file = g_file_get_child(file, "Source");
+	GFile *story_file = g_file_get_child(source_file, "story.ni");
+	g_object_unref(source_file);
+	char *text = read_source_file(story_file);
 	if(!text)
 		return FALSE;
 
-	update_recent_story_file(story, filename, directory);
+	update_recent_story_file(story, file);
 
 	/* Watch for changes to the source file */
-	i7_document_monitor_file(I7_DOCUMENT(story), filename);
-	g_free(filename);
+	i7_document_monitor_file(I7_DOCUMENT(story), story_file);
+	g_object_unref(story_file);
 
 	/* Write the source to the source buffer, clearing the undo history */
 	i7_document_set_source_text(I7_DOCUMENT(story), text);
 	g_free(text);
 
 	/* Read the skein */
-	filename = g_build_filename(directory, "Skein.skein", NULL);
-	GFile *gfile = g_file_new_for_path(filename); // FIXME
-	if(!i7_skein_load(priv->skein, gfile, &err)) {
+	GFile *skein_file = g_file_get_child(file, "Skein.skein");
+	if(!i7_skein_load(priv->skein, skein_file, &err)) {
 		error_dialog(GTK_WINDOW(story), err, _("This project's Skein was not found, or it was unreadable."));
 		err = NULL;
 	}
-	g_object_unref(gfile);
-	g_free(filename);
+	g_object_unref(skein_file);
 
 	/* Read the notes */
-	filename = g_build_filename(directory, "notes.rtf", NULL);
-	gfile = g_file_new_for_path(filename); // FIXME
-	if(!rtf_text_buffer_import_file(priv->notes, gfile, NULL, NULL)) {
+	GFile *notes_file = g_file_get_child(file, "notes.rtf");
+	if(!rtf_text_buffer_import_file(priv->notes, notes_file, NULL, NULL)) {
 		/* Don't fail if the file is unreadable, instead just make some blank notes */
 		gtk_text_buffer_set_text(priv->notes, "", -1);
 	}
-	g_object_unref(gfile);
-	g_free(filename);
+	g_object_unref(notes_file);
 	/* Remove all the formatting tags, we don't do formatting in this editor */
 	GtkTextIter start, end;
 	gtk_text_buffer_get_bounds(priv->notes, &start, &end);
@@ -1047,18 +1034,16 @@ i7_story_open(I7Story *story, const gchar *directory)
 	gtk_text_buffer_set_modified(priv->notes, FALSE);
 
 	/* Read the settings */
-	filename = g_build_filename(directory, "Settings.plist", NULL);
-	gfile = g_file_new_for_path(filename); // FIXME
+	GFile *settings_file = g_file_get_child(file, "Settings.plist");
 	plist_object_free(priv->settings);
-	priv->settings = plist_read_file(gfile, NULL, &err);
+	priv->settings = plist_read_file(settings_file, NULL, &err);
 	if(!priv->settings) {
 		priv->settings = create_default_settings();
 		error_dialog(GTK_WINDOW(story), err,
-			_("Could not open the project's settings file, '%s'. "
-			"Using default settings."), filename);
+			_("Could not open the project's settings file. "
+			"Using default settings."));
 	}
-	g_object_unref(gfile);
-	g_free(filename);
+	g_object_unref(settings_file);
 	/* Update the GUI with the new settings */
 	on_notify_story_format(story);
 	on_notify_create_blorb(story);
@@ -1122,46 +1107,49 @@ i7_story_show_tab(I7Story *story, I7PanelPane pane, gint tab)
 }
 
 void
-i7_story_show_docpage(I7Story *story, const gchar *file)
+i7_story_show_docpage(I7Story *story, GFile *file)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_DOCUMENTATION);
-	GFile *gfile = g_file_new_for_path(file); // FIXME
-	i7_panel_goto_docpage(story->panel[side], gfile);
-	g_object_unref(gfile);
+	i7_panel_goto_docpage(story->panel[side], file);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
 void
-i7_story_show_docpage_at_anchor(I7Story *story, const gchar *file, const gchar *anchor)
+i7_story_show_docpage_at_anchor(I7Story *story, GFile *file, const char *anchor)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_DOCUMENTATION);
-	GFile *gfile = g_file_new_for_path(file);
-	i7_panel_goto_docpage_at_anchor(story->panel[side], gfile, anchor);
-	g_object_unref(gfile);
+	i7_panel_goto_docpage_at_anchor(story->panel[side], file, anchor);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
-/* Work out the location of the Materials folder, adapted from OS X source.
- Free string when done. */
-gchar *
-i7_story_get_materials_path(I7Story *story)
+/**
+ * i7_story_get_materials_file:
+ * @story: the story
+ *
+ * Work out the location of the Materials folder, adapted from OS X source.
+ *
+ * Returns: (transfer full): a #GFile pointing to the Materials folder. Unref
+ * when done.
+ */
+GFile *
+i7_story_get_materials_file(I7Story *story)
 {
-	gchar *projectpath = i7_document_get_path(I7_DOCUMENT(story));
-	gchar *base = g_path_get_basename(projectpath);
+	GFile *project_file = i7_document_get_file(I7_DOCUMENT(story));
+	char *base = g_file_get_basename(project_file);
 	g_assert(g_str_has_suffix(base, ".inform"));
 	gchar *projectname = g_strndup(base, strlen(base) - 7); /* lose extension */
 	g_free(base);
 
 	gchar *materialsname = g_strconcat(projectname, " Materials", NULL);
-	gchar *materialsdir = g_path_get_dirname(projectpath);
-	gchar *materialspath = g_build_filename(materialsdir, materialsname, NULL);
+	GFile *parent = g_file_get_parent(project_file);
+	GFile *materials_file = g_file_get_child(parent, materialsname);
 
-	g_free(projectpath);
+	g_object_unref(parent);
+	g_object_unref(project_file);
 	g_free(projectname);
 	g_free(materialsname);
-	g_free(materialsdir);
 
-	return materialspath;
+	return materials_file;
 }
 
 /* Return the extension of the output file of this story.

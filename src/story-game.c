@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ i7_story_run_compiler_output(I7Story *story)
 	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
 
 	/* Load and start the interpreter */
-	if(!chimara_if_run_game(glk, priv->compiler_output, &err)) {
+	if(!chimara_if_run_game_file(glk, priv->compiler_output_file, &err)) {
 		error_dialog(GTK_WINDOW(story), err, _("Could not load interpreter: "));
 	}
 
@@ -65,7 +65,7 @@ i7_story_test_compiler_output(I7Story *story)
 	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
 
 	/* Load and start the interpreter */
-	if(!chimara_if_run_game(glk, priv->compiler_output, &err)) {
+	if(!chimara_if_run_game_file(glk, priv->compiler_output_file, &err)) {
 		error_dialog(GTK_WINDOW(story), err, _("Could not load interpreter: "));
 	}
 
@@ -117,7 +117,7 @@ play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 
 	/* Load and start the interpreter */
 	if(start_interpreter) {
-		if(!chimara_if_run_game(glk, priv->compiler_output, &err)) {
+		if(!chimara_if_run_game_file(glk, priv->compiler_output_file, &err)) {
 			error_dialog(GTK_WINDOW(story), err, _("Could not load interpreter: "));
 		}
 		i7_skein_reset(priv->skein, TRUE);
@@ -186,7 +186,7 @@ struct RunSkeinData {
 	I7Story *story;
 	I7Skein *skein;
 	ChimaraGlk *glk;
-	const char *file_to_run;
+	GFile *file_to_run;
 
 	GSList *commands;
 	unsigned long started_handler, waiting_handler;
@@ -213,7 +213,7 @@ on_waiting_stop_interpreter(ChimaraGlk *glk, struct RunSkeinData *data)
 /* Helper function: feed the commands to the interpreter after the game has
 started; this signal is set up in run_entire_skein_loop() because it's not clear
 how soon the game is ready to accept input after the call to
-chimara_if_run_game(). */
+chimara_if_run_game_file(). */
 static void
 on_started_feed_commands(ChimaraGlk *glk, struct RunSkeinData *data)
 {
@@ -251,7 +251,7 @@ run_entire_skein_loop(I7Node *node, struct RunSkeinData *data)
 	data->finished = FALSE;
 
 	/* Start the interpreter */
-	if(!chimara_if_run_game(CHIMARA_IF(data->glk), data->file_to_run, &err)) {
+	if(!chimara_if_run_game_file(CHIMARA_IF(data->glk), data->file_to_run, &err)) {
 		error_dialog(GTK_WINDOW(data->story), err, _("Could not load interpreter: "));
 		g_signal_handler_disconnect(data->glk, data->waiting_handler);
 		g_signal_handler_disconnect(data->glk, data->started_handler);
@@ -287,7 +287,7 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 	struct RunSkeinData *data = g_slice_new0(struct RunSkeinData);
 	data->story = story;
 	data->skein = priv->skein;
-	data->file_to_run = priv->compiler_output;
+	data->file_to_run = g_object_ref(priv->compiler_output_file);
 
 	/* Make sure the interpreter is non-interactive */
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
@@ -299,6 +299,8 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 	g_slist_free(blessed_nodes);
 
 	chimara_glk_set_interactive(data->glk, TRUE);
+
+	g_object_unref(data->file_to_run);
 	g_slice_free(struct RunSkeinData, data);
 }
 
@@ -370,12 +372,15 @@ load_blorb_resource(ChimaraResourceType usage, guint32 resnum, I7Story *story)
 
 	/* Build the full path */
 	gchar *filename = g_strdup(manifest_entry->string.val);
-	gchar *materials = i7_story_get_materials_path(story);
-	gchar *fullpath = g_build_filename(materials, filename, NULL);
+	GFile *materials_file = i7_story_get_materials_file(story);
+	GFile *resource_file = g_file_get_child(materials_file, filename);
 	g_free(filename);
-	g_free(materials);
+	g_object_unref(materials_file);
 
-	return fullpath;
+	char *retval = g_file_get_path(resource_file);
+	g_object_unref(resource_file);
+
+	return retval;
 }
 
 /* SIGNAL HANDLERS */

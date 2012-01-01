@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -797,18 +797,14 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		} else {
 			GFile *file = g_file_new_for_path(path);
 			/* Else it's a link to an extension, open it in a new window */
-			char *realpath = get_case_insensitive_extension(path); // FIXME
-			GFile *real_file = g_file_new_for_path(realpath);
-			g_free(realpath);
+			GFile *real_file = get_case_insensitive_extension(file);
 			g_object_unref(file);
 			/* Check if we need to open the extension read-only */
 			GFile *user_file = i7_app_get_extension_file(i7_app_get(), NULL, NULL);
 			gboolean readonly = !g_file_has_prefix(real_file, user_file);
 			g_object_unref(user_file);
 
-			realpath = g_file_get_path(real_file); // FIXME
-			I7Extension *ext = i7_extension_new_from_file(i7_app_get(), realpath, readonly);
-			g_free(realpath);
+			I7Extension *ext = i7_extension_new_from_file(i7_app_get(), real_file, readonly);
 			if(ext != NULL) {
 				if(sscanf(anchor, "#line%u", &line))
 					i7_source_view_jump_to_line(ext->sourceview, line);

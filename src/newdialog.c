@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -216,7 +216,7 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 void
 on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
-	char *filename, *path;
+	char *filename;
 	GFile *file;
 
 	/* Save the author name to the config file */
@@ -226,16 +226,12 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 		case I7_NEW_PROJECT_INFORM7_STORY:
 			filename = g_strconcat(options->name, ".inform", NULL);
 			file = g_file_get_child(options->directory, filename);
-			path = g_file_get_path(file); // FIXME
-			i7_story_new(i7_app_get(), path, options->name, options->author);
-			g_free(path);
+			i7_story_new(i7_app_get(), file, options->name, options->author);
 			break;
 		case I7_NEW_PROJECT_INFORM7_EXTENSION:
 			filename = g_strconcat(options->name, ".i7x", NULL);
 			file = g_file_get_child(options->directory, filename);
-			path = g_file_get_path(file); // FIXME
-			i7_extension_new(i7_app_get(), path, options->name, options->author);
-			g_free(path);
+			i7_extension_new(i7_app_get(), file, options->name, options->author);
 			break;
 		default:
 			on_newdialog_cancel(assistant, options);

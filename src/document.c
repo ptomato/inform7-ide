@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ i7_document_init(I7Document *self)
 	g_object_unref(file);
 
 	/* Create the private properties */
-	priv->filename = NULL;
+	priv->file = NULL;
 	priv->monitor = NULL;
 	priv->accels = NULL;
 	priv->buffer = GTK_SOURCE_BUFFER(load_object(builder, "buffer"));
@@ -174,8 +174,8 @@ i7_document_finalize(GObject *self)
 	I7_DOCUMENT_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
 
-	if(priv->filename)
-		g_free(priv->filename);
+	if(priv->file)
+		g_object_unref(priv->file);
 	if(priv->monitor) {
 		g_file_monitor_cancel(priv->monitor);
 		g_object_unref(priv->monitor);
@@ -274,20 +274,27 @@ i7_document_refresh_title(I7Document *document)
 }
 
 void
-i7_document_set_path(I7Document *document, const gchar *filename)
+i7_document_set_file(I7Document *document, GFile *file)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	if(priv->filename)
-		g_free(priv->filename);
-	priv->filename = g_strdup(filename);
+	if(priv->file)
+		g_object_unref(priv->file);
+	priv->file = g_object_ref(file);
 	i7_document_refresh_title(document);
 }
 
-/* Returns a newly-allocated string containing the full path to this document */
-gchar *
-i7_document_get_path(const I7Document *document)
+/**
+ * i7_document_get_file:
+ * @document: the document
+ *
+ * Gets the full path to this document.
+ *
+ * Returns: (transfer full): a #GFile. Unref when done.
+ */
+GFile *
+i7_document_get_file(const I7Document *document)
 {
-	return g_strdup(I7_DOCUMENT_PRIVATE(document)->filename);
+	return g_object_ref(I7_DOCUMENT_PRIVATE(document)->file);
 }
 
 /* Returns a newly-allocated string containing the filename of this document
@@ -296,7 +303,20 @@ i7_document_get_path(const I7Document *document)
 gchar *
 i7_document_get_display_name(I7Document *document)
 {
-	return g_filename_display_basename(I7_DOCUMENT_PRIVATE(document)->filename);
+	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	char *retval;
+
+	GFileInfo *info = g_file_query_info(priv->file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	if(!info) {
+		/* Query failed; try something else */
+		char *path = g_file_get_path(priv->file);
+		retval = g_filename_display_basename(path);
+		g_free(path);
+		return retval;
+	}
+	retval = g_strdup(g_file_info_get_display_name(info));
+	g_object_unref(info);
+	return retval;
 }
 
 GtkSourceBuffer *
@@ -383,9 +403,7 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 			gdk_threads_leave();
 			gtk_widget_destroy(dialog);
 			if(response == GTK_RESPONSE_YES) {
-				gchar *filename = g_file_get_path(file);
-				gchar *text = read_source_file(filename);
-				g_free(filename);
+				char *text = read_source_file(file);
 				if(text) {
 					i7_document_set_source_text(document, text);
 					g_free(text);
@@ -404,16 +422,16 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 }
 
 void
-i7_document_monitor_file(I7Document *document, const gchar *filename)
+i7_document_monitor_file(I7Document *document, GFile *file)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
 
 	GError *error = NULL;
-	GFile *handle = g_file_new_for_path(filename);
-	priv->monitor = g_file_monitor_file(handle,	G_FILE_MONITOR_NONE, NULL, &error);
-	g_object_unref(handle);
+	priv->monitor = g_file_monitor_file(file, G_FILE_MONITOR_NONE, NULL, &error);
 	if(!priv->monitor) {
+		char *filename = g_file_get_path(file);
 		WARN_S(_("Could not start file monitor"), filename, error);
+		g_free(filename);
 		g_error_free(error);
 		return;
 	}
@@ -431,6 +449,7 @@ i7_document_stop_file_monitor(I7Document *document)
 		priv->monitor = NULL;
 	}
 }
+
 gboolean
 i7_document_save(I7Document *document)
 {
@@ -438,9 +457,9 @@ i7_document_save(I7Document *document)
 }
 
 void
-i7_document_save_as(I7Document *document, const gchar *filename)
+i7_document_save_as(I7Document *document, GFile *file)
 {
-	I7_DOCUMENT_GET_CLASS(document)->save_as(document, filename);
+	I7_DOCUMENT_GET_CLASS(document)->save_as(document, file);
 }
 
 /* If the document is not saved, ask the user whether he/she wants to save it.

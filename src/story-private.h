@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ typedef struct {
 	/* Compiling */
 	CompileActionFunc compile_finished_callback;
 	gpointer compile_finished_callback_data;
-	gchar *copyblorbto;
-	gchar *compiler_output;
+	GFile *copy_blorb_dest_file;
+	GFile *compiler_output_file;
 	/* Skein / running */
 	I7Skein *skein;
 	gboolean test_me;

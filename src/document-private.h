@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2012 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ typedef struct {
 	GtkActionGroup *selection_action_group;
 	GtkActionGroup *copy_action_group;
 	GtkAccelGroup *accels;
-	/* This document's filename */
-	gchar *filename;
+	/* The file this document refers to */
+	GFile *file;
 	/* Whether it was modified since the last save*/
 	gboolean modified;
 	/* File monitor */

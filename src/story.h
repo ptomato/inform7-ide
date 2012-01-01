@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -75,17 +75,16 @@ typedef void (*CompileActionFunc)(I7Story *, gpointer);
 typedef void (*I7PanelForeachFunc)(I7Story *, I7Panel *, gpointer);
 
 GType i7_story_get_type(void) G_GNUC_CONST;
-I7Story *i7_story_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author);
-I7Story *i7_story_new_from_file(I7App *app, const gchar *filename);
+I7Story *i7_story_new(I7App *app, GFile *file, const char *title, const char *author);
+I7Story *i7_story_new_from_file(I7App *app, GFile *file);
 I7Story *i7_story_new_from_dialog(I7App *app);
-I7Story *i7_story_new_from_uri(I7App *app, const gchar *uri);
-gboolean i7_story_open(I7Story *story, const gchar *directory);
+gboolean i7_story_open(I7Story *story, GFile *file);
 I7StoryPanel i7_story_choose_panel(I7Story *story, I7PanelPane newtab);
 void i7_story_show_pane(I7Story *story, I7PanelPane pane);
 void i7_story_show_tab(I7Story *story, I7PanelPane pane, gint tab);
-void i7_story_show_docpage(I7Story *story, const gchar *file);
-void i7_story_show_docpage_at_anchor(I7Story *story, const gchar *file, const gchar *anchor);
-gchar *i7_story_get_materials_path(I7Story *story);
+void i7_story_show_docpage(I7Story *story, GFile *file);
+void i7_story_show_docpage_at_anchor(I7Story *story, GFile *file, const gchar *anchor);
+GFile *i7_story_get_materials_file(I7Story *story);
 const gchar *i7_story_get_extension(I7Story *story);
 void i7_story_foreach_panel(I7Story *story, I7PanelForeachFunc func, gpointer data);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -114,17 +114,17 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		if(I7_IS_STORY(priv->document)) {
 			GMatchInfo *match;
 			I7App *theapp = i7_app_get();
-			char *path = g_file_get_path(file); // FIXME
 
 			/* Jump to the proper example */
-			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXAMPLE_FILE_NAME], path, 0, &match)) {
+			char *filepath = g_file_get_path(file);
+			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXAMPLE_FILE_NAME], filepath, 0, &match)) {
 				gchar *number = g_match_info_fetch_named(match, "number");
 				gchar *anchor = g_strconcat("e", number, NULL);
 				g_free(number);
-				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), path, anchor);
+				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), file, anchor);
 				g_free(anchor);
 			} else
-				i7_story_show_docpage(I7_STORY(priv->document), path);
+				i7_story_show_docpage(I7_STORY(priv->document), file);
 
 			g_free(path);
 			g_match_info_free(match);
@@ -144,9 +144,7 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 	{
 		I7Document *ext = i7_app_get_already_open(i7_app_get(), file);
 		if(ext == NULL) {
-			char *path = g_file_get_path(file); // FIXME
-			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), path, FALSE));
-			g_free(path);
+			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), file, FALSE));
 		}
 		i7_document_jump_to_line(ext, lineno);
 	}
@@ -657,8 +655,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 		/* Make a sort string */
 		gchar *sort = g_strdup_printf("%04i", lineno);
 		/* Put the full path to the project in */
-		gchar *filename = i7_document_get_path(priv->document);
-		GFile *file = g_file_new_for_path(filename); // FIXME
+		GFile *file = i7_document_get_file(priv->document);
 
 		gtk_list_store_append(priv->results, &result);
 		gtk_list_store_set(priv->results, &result,
@@ -670,7 +667,6 @@ i7_search_window_search_project(I7SearchWindow *self)
 			-1);
 		g_free(context);
 		g_free(sort);
-		g_free(filename);
 		g_object_unref(file);
 	}
 

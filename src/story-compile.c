@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,16 +45,14 @@
 #include "html.h"
 #include "spawn.h"
 
-#define PROBLEMS_FILE "Build", "Problems.html"
-
 typedef struct _CompilerData {
 	I7Story *story;
 	gboolean create_blorb;
 	gboolean use_debug_flags;
 	gboolean refresh_only;
-	gchar *input_file;
-	gchar *output_file;
-	gchar *directory;
+	GFile *input_file;
+	GFile *output_file;
+	GFile *builddir_file;
 } CompilerData;
 
 /* Declare these functions static so they can stay in this order */
@@ -86,10 +84,14 @@ i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
 
 	i7_document_save(I7_DOCUMENT(story));
 	i7_story_stop_running_game(story);
-	g_free(priv->copyblorbto);
-	priv->copyblorbto = NULL;
-	g_free(priv->compiler_output);
-	priv->compiler_output = NULL;
+	if(priv->copy_blorb_dest_file) {
+		g_object_unref(priv->copy_blorb_dest_file);
+		priv->copy_blorb_dest_file = NULL;
+	}
+	if(priv->compiler_output_file) {
+		g_object_unref(priv->compiler_output_file);
+		priv->compiler_output_file = NULL;
+	}
 
 	/* Set up the compiler */
 	CompilerData *data = g_slice_new0(CompilerData);
@@ -107,10 +109,10 @@ i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
 	} else {
 		filename = g_strconcat("output.", i7_story_get_extension(story), NULL);
 	}
-	data->input_file = i7_document_get_path(I7_DOCUMENT(story));
-	data->output_file = g_build_filename(data->input_file, "Build", filename, NULL);
+	data->input_file = i7_document_get_file(I7_DOCUMENT(story));
+	data->builddir_file = g_file_get_child(data->input_file, "Build");
+	data->output_file = g_file_get_child(data->builddir_file, filename);
 	g_free(filename);
-	data->directory = g_build_filename(data->input_file, "Build", NULL);
 
 	prepare_ni_compiler(data);
 	start_ni_compiler(data);
@@ -130,8 +132,8 @@ prepare_ni_compiler(CompilerData *data)
 	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]));
 
 	/* Create the UUID file if needed */
-	gchar *uuid_file = g_build_filename(data->input_file, "uuid.txt", NULL);
-	if(!g_file_test(uuid_file, G_FILE_TEST_EXISTS)) {
+	GFile *uuid_file = g_file_get_child(data->input_file, "uuid.txt");
+	if(!g_file_query_exists(uuid_file, NULL)) {
 #ifdef E2FS_UUID /* code for e2fsprogs uuid */
 		uuid_t uuid;
 		gchar uuid_string[37];
@@ -147,20 +149,20 @@ prepare_ni_compiler(CompilerData *data)
 			&& (uuid_export(uuid, UUID_FMT_STR, (void **)&uuid_string, NULL) == UUID_RC_OK)
 			&& (uuid_destroy(uuid) == UUID_RC_OK))) {
 			error_dialog(GTK_WINDOW(data->story), NULL, _("Error creating UUID."));
-			g_free(uuid_file);
+			g_object_unref(uuid_file);
 			return;
 		}
 #endif /* UUID conditional */
-		if(!g_file_set_contents(uuid_file, uuid_string, -1, &err)) {
-			error_dialog(GTK_WINDOW(data->story), err, _("Error creating UUID file: "));
-			g_free(uuid_file);
+		if(!g_file_replace_contents(uuid_file, uuid_string, strlen(uuid_string), NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &err)) {
+			IO_ERROR_DIALOG(GTK_WINDOW(data->story), uuid_file, err, _("creating UUID file"));
+			g_object_unref(uuid_file);
 			return;
 		}
 #ifndef E2FS_UUID /* Only OSSP UUID */
 		free(uuid_string);
 #endif /* !OSSP_UUID */
 	}
-	g_free(uuid_file);
+	g_object_unref(uuid_file);
 
 	/* Display status message */
 	i7_document_display_status_message(I7_DOCUMENT(data->story), _("Compiling Inform 7 to Inform 6"), COMPILE_OPERATIONS);
@@ -200,7 +202,7 @@ start_ni_compiler(CompilerData *data)
 	args = g_slist_prepend(args, g_file_get_path(extensions_dir));
 	args = g_slist_prepend(args, g_strconcat("-extension=", i7_story_get_extension(data->story), NULL));
 	args = g_slist_prepend(args, g_strdup("-package"));
-	args = g_slist_prepend(args, g_strdup(data->input_file));
+	args = g_slist_prepend(args, g_file_get_path(data->input_file));
 	if(!data->use_debug_flags)
 		args = g_slist_prepend(args, g_strdup("-release")); /* Omit "not for relase" material */
 	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE))
@@ -223,7 +225,7 @@ start_ni_compiler(CompilerData *data)
 	/* Run the command and pipe its output to the text buffer. Also pipe stderr
 	through a function that analyzes the progress messages and puts them in the
 	progress bar. */
-	GPid pid = run_command_hook(data->directory, commandline, priv->progress,
+	GPid pid = run_command_hook(data->builddir_file, commandline, priv->progress,
 								(IOHookFunc *)display_ni_status, data->story,
 								FALSE, TRUE);
 	/* set up a watch for the exit status */
@@ -254,9 +256,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	if(exit_code <= 1) {
 		/* In the case of success or a "normal" failure, or a negative error
 		 code should one occur, display the compiler's generated Problems.html*/
-		char *problems_path = g_build_filename(data->input_file, PROBLEMS_FILE, NULL);
-		problems_file = g_file_new_for_path(problems_path);
-		g_free(problems_path);
+		problems_file = g_file_get_child(data->builddir_file, "Problems.html");
 	} else {
 		I7App *theapp = i7_app_get();
 		gchar *file = g_strdup_printf("Error%i.html", exit_code);
@@ -279,25 +279,25 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 
 		/* Refresh the debug log */
 		gchar *text;
-		gchar *filename = g_build_filename(data->input_file, "Build", "Debug log.txt", NULL);
+		GFile *debug_file = g_file_get_child(data->builddir_file, "Debug log.txt");
 		/* Ignore errors, just don't show it if it's not there */
-		if(g_file_get_contents(filename, &text, NULL, NULL)) {
+		if(g_file_load_contents(debug_file, NULL, &text, NULL, NULL, NULL)) {
 			gdk_threads_enter();
 			gtk_text_buffer_set_text(priv->debug_log, text, -1);
 			gdk_threads_leave();
 		}
 		g_free(text);
-		g_free(filename);
+		g_object_unref(debug_file);
 
 		/* Refresh the I6 code */
-		filename = g_build_filename(data->input_file, "Build", "auto.inf", NULL);
-		if(g_file_get_contents(filename, &text, NULL, NULL)) {
+		GFile *i6_file = g_file_get_child(data->builddir_file, "auto.inf");
+		if(g_file_load_contents(i6_file, NULL, &text, NULL, NULL, NULL)) {
 			gdk_threads_enter();
 			gtk_text_buffer_set_text(GTK_TEXT_BUFFER(priv->i6_source), text, -1);
 			gdk_threads_leave();
 		}
 		g_free(text);
-		g_free(filename);
+		g_object_unref(i6_file);
 	}
 
 	/* Stop here and show the Errors/Problems tab if there was an error */
@@ -310,11 +310,11 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	i7_story_reload_index_tabs(data->story, FALSE);
 
 	/* Read in the Blorb manifest */
-	gchar *path = i7_document_get_path(I7_DOCUMENT(data->story));
-	gchar *manifest_filename = g_build_filename(path, "manifest.plist", NULL);
-	g_free(path);
-	PlistObject *manifest = plist_read(manifest_filename, NULL);
-	g_free(manifest_filename);
+	GFile *file = i7_document_get_file(I7_DOCUMENT(data->story));
+	GFile *manifest_file = g_file_get_child(file, "manifest.plist");
+	g_object_unref(file);
+	PlistObject *manifest = plist_read_file(manifest_file, NULL, NULL);
+	g_object_unref(manifest_file);
 	/* If that failed, then silently keep the old manifest */
 	if(manifest) {
 		plist_object_free(priv->manifest);
@@ -404,6 +404,9 @@ start_i6_compiler(CompilerData *data)
 	I7_STORY_USE_PRIVATE(data->story, priv);
 
 	GFile *i6_compiler = i7_app_get_binary_file(i7_app_get(), "inform-6.32-biplatform");
+	char *i6out = g_strconcat("output.", i7_story_get_extension(data->story), NULL);
+	GFile *i6_output = g_file_get_child(data->builddir_file, i6out);
+	g_free(i6out);
 
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 6);
@@ -411,14 +414,13 @@ start_i6_compiler(CompilerData *data)
 	commandline[1] = get_i6_compiler_switches(data->use_debug_flags, i7_story_get_story_format(data->story));
 	commandline[2] = g_strdup("$huge");
 	commandline[3] = g_strdup("auto.inf");
-	gchar *i6out = g_strconcat("output.", i7_story_get_extension(data->story), NULL);
-	commandline[4] = g_build_filename(data->input_file, "Build", i6out, NULL);
-	g_free(i6out);
+	commandline[4] = g_file_get_path(i6_output);
 	commandline[5] = NULL;
 
 	g_object_unref(i6_compiler);
+	g_object_unref(i6_output);
 
-	GPid child_pid = run_command_hook(data->directory, commandline,
+	GPid child_pid = run_command_hook(data->builddir_file, commandline,
 		priv->progress, (IOHookFunc *)display_i6_status, data->story, TRUE, TRUE);
 	/* set up a watch for the exit status */
 	g_child_watch_add(child_pid, (GChildWatchFunc)finish_i6_compiler, data);
@@ -529,9 +531,13 @@ parse_cblorb_output(I7Story *story, gchar *text)
 	I7_STORY_USE_PRIVATE(story, priv);
 	gchar *ptr = strstr(text, "Copy blorb to: [[");
 	if(ptr) {
-		g_free(priv->copyblorbto);
-		priv->copyblorbto = g_strdup(ptr + 17);
-		*(strstr(priv->copyblorbto, "]]")) = '\0';
+		char *copy_blorb_path = g_strdup(ptr + 17);
+		*(strstr(copy_blorb_path, "]]")) = '\0';
+
+		if(priv->copy_blorb_dest_file)
+			g_object_unref(priv->copy_blorb_dest_file);
+		priv->copy_blorb_dest_file = g_file_new_for_path(copy_blorb_path);
+		g_free(copy_blorb_path);
 	}
 }
 
@@ -549,7 +555,7 @@ start_cblorb_compiler(CompilerData *data)
 	commandline[0] = g_file_get_path(cblorb);
 	commandline[1] = g_strdup("-unix");
 	commandline[2] = g_strdup("Release.blurb");
-	commandline[3] = g_strdup(data->output_file);
+	commandline[3] = g_file_get_path(data->output_file);
 	commandline[4] = NULL;
 
 	g_object_unref(cblorb);
@@ -578,14 +584,12 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 	int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
 
 	/* Display the appropriate HTML page */
-	gchar *file = g_build_filename(data->input_file, "Build", "StatusCblorb.html", NULL);
-	GFile *gfile = g_file_new_for_path(file); // FIXME
+	GFile *file = g_file_get_child(data->builddir_file, "StatusCblorb.html");
 	gdk_threads_enter();
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), gfile);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), gfile);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), file);
 	gdk_threads_leave();
-	g_object_unref(gfile);
-	g_free(file);
+	g_object_unref(file);
 
 	/* Stop here and show the Errors/Problems tab if there was an error */
 	if(exit_code != 0) {
@@ -623,12 +627,12 @@ finish_compiling(gboolean success, CompilerData *data)
 	i7_story_show_tab(data->story, I7_PANE_ERRORS, I7_ERRORS_TAB_PROBLEMS);
 	gdk_threads_leave();
 
-	/* Store the compiler output filename */
-	priv->compiler_output = data->output_file;
+	/* Store the compiler output filename (the I7Story now owns the reference) */
+	priv->compiler_output_file = data->output_file;
 
 	/* Free the compiler data object */
-	g_free(data->input_file);
-	g_free(data->directory);
+	g_object_unref(data->input_file);
+	g_object_unref(data->builddir_file);
 	g_slice_free(CompilerData, data);
 
 	/* Update */
@@ -644,11 +648,11 @@ void
 i7_story_save_ifiction(I7Story *story)
 {
 	/* Work out where the file should be */
-	gchar *path = i7_document_get_path(I7_DOCUMENT(story));
-	gchar *ifiction_path = g_build_filename(path, "Metadata.iFiction", NULL);
+	GFile *project_file = i7_document_get_file(I7_DOCUMENT(story));
+	GFile *ifiction_file = g_file_get_child(project_file, "Metadata.iFiction");
 
 	/* Prompt user to save iFiction file if it exists */
-	if(g_file_test(ifiction_path, G_FILE_TEST_EXISTS))
+	if(g_file_query_exists(ifiction_file, NULL))
 	{
 		/* Make a file filter */
 		GtkFileFilter *filter = gtk_file_filter_new();
@@ -670,24 +674,24 @@ i7_story_save_ifiction(I7Story *story)
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
 		g_free(filename);
-		gchar *directory = g_path_get_dirname(path);
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), directory);
-		g_free(directory);
+
+		GFile *parent_file = g_file_get_parent(project_file);
+		/* Ignore error */
+		gtk_file_chooser_set_current_folder_file(GTK_FILE_CHOOSER(dialog), parent_file, NULL);
+		g_object_unref(parent_file);
+
 		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
 		/* Copy the finished file to the chosen location */
 		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-			filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-
-			/* Poor man's copy */
-			gchar *text;
+			GFile *dest_file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
 			GError *error = NULL;
-			if(!g_file_get_contents(ifiction_path, &text, NULL, &error)
-			  || !g_file_set_contents(filename, text, -1, &error)) {
-				error_dialog(GTK_WINDOW(story), error,
-				  _("Error copying iFiction record to '%s': "), filename);
+
+			if(!g_file_copy(ifiction_file, dest_file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error)) {
+				IO_ERROR_DIALOG(GTK_WINDOW(story), dest_file, error, _("copying iFiction record"));
 			}
-			g_free(filename);
+
+			g_object_unref(dest_file);
 		}
 		gtk_widget_destroy(dialog);
 	}
@@ -696,8 +700,8 @@ i7_story_save_ifiction(I7Story *story)
 			_("The compiler failed to create an iFiction record; check the "
 			"errors page to see why."));
 
-	g_free(path);
-	g_free(ifiction_path);
+	g_object_unref(ifiction_file);
+	g_object_unref(project_file);
 }
 
 /* Finish up the user's Release command by choosing a location to store the
@@ -708,8 +712,8 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
 
-	gchar *filename = NULL;
-	if(priv->copyblorbto == NULL) {
+	GFile *file = NULL;
+	if(priv->copy_blorb_dest_file == NULL) {
 		/* ask the user for a release file name if cBlorb didn't provide one */
 
 		/* Create a file chooser */
@@ -729,7 +733,7 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 			NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
-		gchar *curfilename = g_path_get_basename(priv->compiler_output);
+		char *curfilename = g_file_get_basename(priv->compiler_output_file);
 		gchar *title = i7_document_get_display_name(I7_DOCUMENT(story));
 		*(strrchr(title, '.')) = '\0';
 		gchar *suggestname = g_strconcat(title, strrchr(curfilename, '.'), NULL);
@@ -740,39 +744,19 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
 		if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-			filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+			file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
 
 		gtk_widget_destroy(dialog);
 	} else {
-		filename = g_strdup(priv->copyblorbto);
+		file = g_object_ref(priv->copy_blorb_dest_file);
 	}
 
-	if(filename) {
-		/* Copy the finished file to the release location */
-
-		/* try to copy the file */
-		if(g_rename(priv->compiler_output, filename)) {
-			if(errno == EXDEV) {
-				/* Can't rename across devices, so physically copy the file */
-				gchar *contents;
-				gsize length;
-				GError *err = NULL;
-				if(!g_file_get_contents(priv->compiler_output, &contents, &length, &err)
-				   || !g_file_set_contents(filename, contents, length, &err)) {
-					error_dialog(GTK_WINDOW(story), err,
-					  /* TRANSLATORS: Error copying OLDFILE to NEWFILE */
-					  _("Error copying file '%s' to '%s': "), priv->compiler_output, filename);
-					goto finally;
-				}
-			} else {
-				error_dialog(GTK_WINDOW(story), NULL,
-				  /* TRANSLATORS: Error copying OLDFILE to NEWFILE: ERROR_MESSAGE */
-				  _("Error copying file '%s' to '%s': %s"), priv->compiler_output, filename, g_strerror(errno));
-				goto finally;
-			}
+	if(file) {
+		/* Move the finished file to the release location */
+		GError *err = NULL;
+		if(!g_file_move(priv->compiler_output_file, file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &err)) {
+			IO_ERROR_DIALOG(GTK_WINDOW(story), file, err, _("copying compiler output"));
 		}
+		g_object_unref(file);
 	}
-
-finally:
-	g_free(filename);
 }

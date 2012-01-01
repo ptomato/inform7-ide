@@ -1,4 +1,4 @@
-/*  Copyright (C) 2007, 2008, 2009, 2010, 2011 P. F. Chimento
+/*  Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -208,9 +208,7 @@ i7_app_open(I7App *app, GFile *file)
 
 	if(g_file_query_exists(file, NULL)) {
 		if(g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
-			char *path = g_file_get_path(file); // TODO
-			i7_story_new_from_file(app, path);
-			g_free(path);
+			i7_story_new_from_file(app, file);
 			/* TODO make sure story.ni exists */
 		} /* else */
 			/* TODO Use is_valid_extension to check if they're extensions and then open them */
@@ -245,9 +243,7 @@ i7_app_get_already_open() below */
 static gboolean
 document_compare_file(const I7Document *document, GFile *file)
 {
-	char *name = i7_document_get_path(document); // TODO
-	GFile *document_file = g_file_new_for_path(name);
-	g_free(name);
+	GFile *document_file = i7_document_get_file(document);
 
 	gboolean equal = g_file_equal(file, document_file);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,19 +32,20 @@ static gchar *index_names[] = {
 static void
 load_index_file(I7Story *story, int counter)
 {
-	gchar *name = i7_document_get_path(I7_DOCUMENT(story));
-	gchar *filename = g_build_filename(name, "Index", index_names[counter], NULL);
-	g_free(name);
-	if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-		GFile *file = g_file_new_for_path(filename); // FIXME
+	GFile *parent = i7_document_get_file(I7_DOCUMENT(story));
+	GFile *child1 = g_file_get_child(parent, "Index");
+	GFile *file = g_file_get_child(child1, index_names[counter]);
+	g_object_unref(parent);
+	g_object_unref(child1);
+
+	if(g_file_query_exists(file, NULL)) {
 		html_load_file(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]), file);
 		html_load_file(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]), file);
-		g_object_unref(file);
 	} else {
 		html_load_blank(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]));
 		html_load_blank(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]));
 	}
-	g_free(filename);
+	g_object_unref(file);
 }
 
 /* Idle function to check whether an index file exists and to load it, or a

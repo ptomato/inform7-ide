@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 
 typedef void IOHookFunc(gpointer, gchar *);
 
-GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output);
-GPid run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
+GPid run_command(GFile *wd_file, char **argv, GtkTextBuffer *output);
+GPid run_command_hook(GFile *wd_file, char **argv, GtkTextBuffer *output,
 					  IOHookFunc *callback, gpointer data, gboolean get_out,
 					  gboolean get_err);
 

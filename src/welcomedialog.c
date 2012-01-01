@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -76,15 +76,16 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 	}
 
 	g_assert(lastproject); /* Button not sensitive if no last project */
-	gchar *uri = g_strdup(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
+
+	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
 	/* Do not free the string from gtk_recent_info_get_uri */
 
 	/* free the list */
 	g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
 	g_list_free(recent);
 
-	I7Story *story = i7_story_new_from_uri(app, uri);
-	g_free(uri);
+	I7Story *story = i7_story_new_from_file(app, file);
+	g_object_unref(file);
 
 	if(story)
 		gtk_widget_destroy(welcomedialog);
