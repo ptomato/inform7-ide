@@ -1,4 +1,4 @@
-/*  Copyright (C) 2011 P. F. Chimento
+/*  Copyright (C) 2011, 2012 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ G_BEGIN_DECLS
 void test_app_create(void);
 void test_app_files(void);
 void test_app_extensions_install_remove(void);
+void test_app_extensions_case_insensitive(void);
 void test_app_colorscheme_install_remove(void);
 
 G_END_DECLS

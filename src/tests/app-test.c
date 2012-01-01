@@ -1,4 +1,4 @@
-/*  Copyright (C) 2011 P. F. Chimento
+/*  Copyright (C) 2011, 2012 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 #include "app-test.h"
 #include "app.h"
 #include "colorscheme.h"
+#include "file.h"
 
 void
 test_app_create(void)
@@ -107,6 +108,68 @@ test_app_extensions_install_remove(void)
 	g_assert(!strstr(contents, "Regera Dowdy"));
 	g_assert(!strstr(contents, "Lickable Wallpaper"));
 	g_free(contents);
+}
+
+void
+test_app_extensions_case_insensitive(void)
+{
+	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	I7App *theapp = i7_app_get();
+
+	/* Install test extension */
+	i7_app_install_extension(theapp, file);
+	g_object_unref(file);
+
+	GFile *extensions_file = i7_app_get_extension_file(theapp, NULL, NULL);
+	GFile *child1 = g_file_get_child(extensions_file, "Regera Dowdy");
+	GFile *child2 = g_file_get_child(extensions_file, "regera dowdy");
+	GFile *child3 = g_file_get_child(extensions_file, "Ogdred Weary");
+	GFile *test1 = g_file_get_child(child1, "Lickable Wallpaper.i7x");
+	GFile *test2 = g_file_get_child(child1, "lickable wallpaper.i7x");
+	GFile *test3 = g_file_get_child(child2, "Lickable Wallpaper.i7x");
+	GFile *test4 = g_file_get_child(child2, "lickable wallpaper.i7x");
+	GFile *test5 = g_file_get_child(child1, "Square Candies.i7x");
+	GFile *test6 = g_file_get_child(child2, "Square Candies.i7x");
+	GFile *test7 = g_file_get_child(child3, "Square Candies.i7x");
+	g_object_unref(extensions_file);
+	g_object_unref(child1);
+	g_object_unref(child2);
+	g_object_unref(child3);
+
+	GFile *result1 = get_case_insensitive_extension(test1);
+	GFile *result2 = get_case_insensitive_extension(test2);
+	GFile *result3 = get_case_insensitive_extension(test3);
+	GFile *result4 = get_case_insensitive_extension(test4);
+	GFile *result5 = get_case_insensitive_extension(test5);
+	GFile *result6 = get_case_insensitive_extension(test6);
+	GFile *result7 = get_case_insensitive_extension(test7);
+
+	g_assert(result1);
+	g_assert(result2);
+	g_assert(result3);
+	g_assert(result4);
+	g_assert(result1 == test1);
+	g_assert(g_file_equal(result1, result2));
+	g_assert(g_file_equal(result1, result3));
+	g_assert(g_file_equal(result1, result4));
+	g_assert(result5 == NULL);
+	g_assert(result6 == NULL);
+	g_assert(result7 == NULL);
+
+	g_object_unref(test1);
+	g_object_unref(test2);
+	g_object_unref(test3);
+	g_object_unref(test4);
+	g_object_unref(test5);
+	g_object_unref(test6);
+	g_object_unref(test7);
+	g_object_unref(result1);
+	g_object_unref(result2);
+	g_object_unref(result3);
+	g_object_unref(result4);
+
+	/* Remove test extension */
+	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 }
 
 void

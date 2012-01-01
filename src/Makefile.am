@@ -299,7 +299,7 @@ gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libeverything.a
 check_PROGRAMS = test
 test_SOURCES = tests/test.c \
 	tests/app-test.c tests/app-test.h
-test_CPPFLAGS = $(gnome_inform7_CPPFLAGS)
+test_CPPFLAGS = $(gnome_inform7_CPPFLAGS) -I$(srcdir)/osxcart
 test_CFLAGS = $(gnome_inform7_CFLAGS)
 test_LDADD = $(gnome_inform7_LDADD)
 test_LDFLAGS = $(gnome_inform7_LDFLAGS)
