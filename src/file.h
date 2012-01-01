@@ -23,7 +23,6 @@
 #include "story.h"
 #include "document.h"
 
-gchar *expand_initial_tilde(const gchar *path);
 char *read_source_file(GFile *file);
 void set_source_text(GtkSourceBuffer *buffer, gchar *text);
 GFile *get_file_from_save_dialog(I7Document *document, GFile *default_file);
