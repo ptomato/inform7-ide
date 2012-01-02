@@ -158,7 +158,7 @@ i7_extension_save(I7Document *document)
 	}
 
 	GFile *file = i7_document_get_file(document);
-	if(file && g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) != G_FILE_TYPE_DIRECTORY)
+	if(file && g_file_query_exists(file, NULL))
 		i7_document_save_as(document, file);
 	else {
 		GFile *newfile = get_file_from_save_dialog(document, file);

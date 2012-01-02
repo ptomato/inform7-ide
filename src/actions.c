@@ -209,7 +209,7 @@ action_revert(GtkAction *action, I7Document *document)
 	GFile *file = i7_document_get_file(document);
 	if(!file)
 		return; /* No saved version to revert to */
-	if(!(g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) != G_FILE_TYPE_DIRECTORY))
+	if(!file_exists_and_is_dir(file))
 		goto finally; /* No saved version to revert to */
 	if(!i7_document_get_modified(document))
 		goto finally; /* Not changed since last save */

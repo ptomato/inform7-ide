@@ -529,18 +529,12 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 	g_object_unref(file_lc);
 
 	/* Only do this if the symlink actually exists */
-	if(g_file_query_exists(file_lc_noext, NULL)) {
-		GFileInfo *info = g_file_query_info(file_lc_noext, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-		/* ignore error in query */
-		if(info && g_file_info_get_is_symlink(info)) {
-			if(!g_file_delete(file_lc_noext, NULL, &err)) {
-				error_dialog_file_operation(NULL, file, err, I7_FILE_ERROR_OTHER, _("deleting an old symlink"));
-				g_object_unref(file_lc_noext);
-				g_object_unref(info);
-				goto finally;
-			}
+	if(file_exists_and_is_symlink(file_lc_noext)) {
+		if(!g_file_delete(file_lc_noext, NULL, &err)) {
+			error_dialog_file_operation(NULL, file, err, I7_FILE_ERROR_OTHER, _("deleting an old symlink"));
+			g_object_unref(file_lc_noext);
+			goto finally;
 		}
-		g_object_unref(info);
 	}
 	g_object_unref(file_lc_noext);
 
@@ -563,15 +557,10 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 	author_dir_lc = i7_app_get_extension_file(app, author_lc, NULL);
 	g_free(author_lc);
 	/* Only do this if the symlink actually exists */
-	if(g_file_query_exists(author_dir_lc, NULL)) {
-		GFileInfo *info = g_file_query_info(author_dir_lc, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-		/* ignore error in query */
-		if(info && g_file_info_get_is_symlink(info)) {
-			if(!g_file_delete(author_dir_lc, NULL, &err)) {
-				error_dialog_file_operation(NULL, author_dir_lc, err, I7_FILE_ERROR_OTHER, _("deleting an old symlink"));
-			}
+	if(file_exists_and_is_symlink(author_dir_lc)) {
+		if(!g_file_delete(author_dir_lc, NULL, &err)) {
+			error_dialog_file_operation(NULL, author_dir_lc, err, I7_FILE_ERROR_OTHER, _("deleting an old symlink"));
 		}
-		g_object_unref(info);
 	}
 	g_object_unref(author_dir_lc);
 

@@ -363,3 +363,33 @@ make_directory_unless_exists(GFile *file, GCancellable *cancellable, GError **er
 	}
 	return retval;
 }
+
+/**
+ * file_exists_and_is_dir:
+ * @file: a #GFile.
+ *
+ * Figures out whether @file points to a real on-disk directory. Ignores errors
+ * and cannot be canceled. (This is a convenience function.)
+ *
+ * Returns: %TRUE if @file exists and is a directory, %FALSE if not.
+ */
+gboolean
+file_exists_and_is_dir(GFile *file)
+{
+	return g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY;
+}
+
+/**
+ * file_exists_and_is_symlink:
+ * @file: a #GFile.
+ *
+ * Figures out whether @file points to a real on-disk symbolic link. Ignores
+ * errors and cannot be canceled. (This is a convenience function.)
+ *
+ * Returns: %TRUE if @file exists and is a symlink, %FALSE if not.
+ */
+gboolean
+file_exists_and_is_symlink(GFile *file)
+{
+	return g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL) == G_FILE_TYPE_SYMBOLIC_LINK;
+}
