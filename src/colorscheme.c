@@ -153,13 +153,11 @@ install_scheme(GFile *file)
 	if(!g_file_has_parent(file, styles_dir)) {
 
 		/* Make sure USER_STYLES_DIR exists */
-		if(!g_file_make_directory_with_parents(styles_dir, NULL, &error)) {
-			if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-				g_object_unref(styles_dir);
-				WARN(_("Cannot create user styles directory"), error);
-				g_error_free(error);
-				return NULL;
-			}
+		if(!make_directory_unless_exists(styles_dir, NULL, &error)) {
+			g_object_unref(styles_dir);
+			WARN(_("Cannot create user styles directory"), error);
+			g_error_free(error);
+			return NULL;
 		}
 
 		char *basename = g_file_get_basename(file);

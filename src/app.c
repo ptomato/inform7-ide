@@ -103,12 +103,8 @@ i7_app_init(I7App *self)
 
 	/* Create the Gnome Inform7 dir if it doesn't already exist */
 	GFile *extensions_dir = i7_app_get_extension_file(self, NULL, NULL);
-	if(!g_file_make_directory_with_parents(extensions_dir, NULL, &error)) {
-		if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-			IO_ERROR_DIALOG(NULL, extensions_dir, error, _("creating the Inform directory"));
-		} else {
-			g_clear_error(&error);
-		}
+	if(!make_directory_unless_exists(extensions_dir, NULL, &error)) {
+		IO_ERROR_DIALOG(NULL, extensions_dir, error, _("creating the Inform directory"));
 	}
 	g_object_unref(extensions_dir);
 
@@ -403,17 +399,13 @@ i7_app_install_extension(I7App *app, GFile *file)
 	/* Create the directory for that author if it does not exist already */
 	GFile *dir = i7_app_get_extension_file(app, author, NULL);
 
-	if(!g_file_query_exists(dir, NULL)) {
-		if(!g_file_make_directory_with_parents(dir, NULL, &err)) {
-			if(!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-				error_dialog_file_operation(NULL, dir, err, I7_FILE_ERROR_OTHER, _("creating a directory"));
-				g_free(name);
-				g_free(author);
-				g_object_unref(dir);
-				i7_app_monitor_extensions_directory(app);
-				return;
-			}
-		}
+	if(!make_directory_unless_exists(dir, NULL, &err)) {
+		error_dialog_file_operation(NULL, dir, err, I7_FILE_ERROR_OTHER, _("creating a directory"));
+		g_free(name);
+		g_free(author);
+		g_object_unref(dir);
+		i7_app_monitor_extensions_directory(app);
+		return;
 	}
 
 	char *canonical_name = g_strconcat(name, ".i7x", NULL);
