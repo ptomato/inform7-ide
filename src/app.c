@@ -382,12 +382,13 @@ i7_app_install_extension(I7App *app, GFile *file)
 	gchar *name = NULL;
 	gchar *author = NULL;
 	if(!is_valid_extension(app, text, &name, &author)) {
-		GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+		char *display_name = file_get_display_name(file);
 		error_dialog(NULL, NULL, _("The file '%s' does not seem to be an "
 		  "extension. Extensions should be saved as UTF-8 text format files, "
 		  "and should start with a line of one of these forms:\n\n<Extension> "
 		  "by <Author> begins here.\nVersion <Version> of <Extension> by "
-		  "<Author> begins here."), g_file_info_get_display_name(info));
+		  "<Author> begins here."), display_name);
+		g_free(display_name);
 		g_free(text);
 		return;
 	}

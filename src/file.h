@@ -31,5 +31,6 @@ GFile *get_case_insensitive_extension(GFile *file);
 gboolean make_directory_unless_exists(GFile *file, GCancellable *cancellable, GError **error);
 gboolean file_exists_and_is_dir(GFile *file);
 gboolean file_exists_and_is_symlink(GFile *file);
+char *file_get_display_name(GFile *file);
 
 #endif

@@ -393,3 +393,33 @@ file_exists_and_is_symlink(GFile *file)
 {
 	return g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL) == G_FILE_TYPE_SYMBOLIC_LINK;
 }
+
+/**
+ * file_get_display_name:
+ * @file: a #GFile.
+ *
+ * Gets @file's display name, or provides a fallback value if not available.
+ * Ignores errors and cannot be canceled. (This is a convenience function.)
+ *
+ * Returns: (transfer full): a string containing @file's display name in UTF-8
+ * or at least Latin-1 if an error occurred. Free when done.
+ */
+char *
+file_get_display_name(GFile *file)
+{
+	char *retval;
+	GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+
+	/* If everything was OK */
+	if(info) {
+		retval = g_file_info_get_display_name(info); /* cannot return NULL (?) */
+		g_object_unref(info);
+		return retval;
+	}
+
+	/* If not, provide a fallback */
+	char *path = g_file_get_path(file);
+	retval = g_filename_display_basename(path);
+	g_free(path);
+	return retval;
+}

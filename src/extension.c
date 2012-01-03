@@ -189,11 +189,7 @@ update_recent_extension_file(I7Extension *extension, GFile *file, gboolean reado
 		"gnome-inform7", NULL, FALSE
 	};
 
-	GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	if(info)
-		recent_data.display_name = g_strdup(g_file_info_get_display_name(info));
-	else
-		recent_data.display_name = g_file_get_basename(file);
+	recent_data.display_name = file_get_display_name(file);
 
 	/* Use the "begins here" line as the description,
 	 retrieved from the first line of the text */

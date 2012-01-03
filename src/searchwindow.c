@@ -191,12 +191,7 @@ location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeMode
 		case I7_RESULT_TYPE_EXTENSION:
 		{
 			/* Get the file's display name */
-			GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-			if(info)
-				filename = g_strdup(g_file_info_get_display_name(info));
-			else
-				filename = g_file_get_basename(file);
-			g_object_unref(info);
+			filename = file_get_display_name(file);
 
 			text = g_strdup_printf(
 				  /* TRANSLATORS: EXTENSION_NAME, line NUMBER */

@@ -303,20 +303,7 @@ i7_document_get_file(const I7Document *document)
 gchar *
 i7_document_get_display_name(I7Document *document)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	char *retval;
-
-	GFileInfo *info = g_file_query_info(priv->file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	if(!info) {
-		/* Query failed; try something else */
-		char *path = g_file_get_path(priv->file);
-		retval = g_filename_display_basename(path);
-		g_free(path);
-		return retval;
-	}
-	retval = g_strdup(g_file_info_get_display_name(info));
-	g_object_unref(info);
-	return retval;
+	return file_get_display_name(I7_DOCUMENT_PRIVATE(document)->file);
 }
 
 GtkSourceBuffer *

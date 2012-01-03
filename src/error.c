@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -139,50 +139,38 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 static char *
 what_failed_on_file_operation_failure(GFile *file, gboolean transient, I7FileErrorWhat what)
 {
-	char *displayname, *what_failed;
-	GFileInfo *info;
+	char *displayname, *what_failed, *path;
+	GFile *parent;
 
-	g_return_val_if_fail(file, NULL);
+	g_return_val_if_fail(file || G_IS_FILE(file), NULL);
 
-	info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-	if(info) {
-		displayname = g_strdup(g_file_info_get_display_name(info));
+	displayname = file_get_display_name(file);
+
+	parent = g_file_get_parent(file);
+	path = g_file_get_path(parent);
+	g_object_unref(parent);
+
+	if(what == I7_FILE_ERROR_OTHER) {
+		/* Generic file error */
+		what_failed = g_strdup_printf(_("Inform got an error while accessing \"%s\" from %s."), displayname, path);
+	} else if(transient) {
+		/* A "what failed" message when the failure is likely to be
+		permanent; this URI won't be accessible */
+		if(what == I7_FILE_ERROR_OPEN)
+			what_failed = g_strdup_printf(_("Inform cannot read \"%s\" from %s."), displayname, path);
+		else
+			what_failed = g_strdup_printf(_("Inform cannot save \"%s\" to %s."), displayname, path);
 	} else {
-		displayname = g_file_get_basename(file);
-	}
-	g_object_unref(info);
-
-	if(displayname) {
-		GFile *parent = g_file_get_parent(file);
-		char *path = g_file_get_path(parent);
-		g_object_unref(parent);
-
-		if(what == I7_FILE_ERROR_OTHER) {
-			/* Generic file error */
-			what_failed = g_strdup_printf(_("Inform got an error while accessing \"%s\" from %s."), displayname, path);
-		} else if(transient) {
-			/* A "what failed" message when the failure is likely to be
-			permanent; this URI won't be accessible */
-			if(what == I7_FILE_ERROR_OPEN)
-				what_failed = g_strdup_printf(_("Inform cannot read \"%s\" from %s."), displayname, path);
-			else
-				what_failed = g_strdup_printf(_("Inform cannot save \"%s\" to %s."), displayname, path);
-		} else {
-			/* A "what failed" message when the failure is likely to be
-			transient; this URI might be accessible on subsequent attempts, or
-			with some troubleshooting. */
-			if(what == I7_FILE_ERROR_OPEN)
-				what_failed = g_strdup_printf(_("Inform could not read \"%s\" from %s."), displayname, path);
-			else
-				what_failed = g_strdup_printf(_("Inform could not save \"%s\" to %s."), displayname, path);
-		}
-
-		g_free(path);
-	} else {
-		/* The file name can't be displayed. */
-		what_failed = g_strdup(_("Inform cannot access the file."));
+		/* A "what failed" message when the failure is likely to be
+		transient; this URI might be accessible on subsequent attempts, or
+		with some troubleshooting. */
+		if(what == I7_FILE_ERROR_OPEN)
+			what_failed = g_strdup_printf(_("Inform could not read \"%s\" from %s."), displayname, path);
+		else
+			what_failed = g_strdup_printf(_("Inform could not save \"%s\" to %s."), displayname, path);
 	}
 
+	g_free(path);
 	g_free(displayname);
 
 	return what_failed;
