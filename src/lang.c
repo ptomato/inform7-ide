@@ -49,7 +49,9 @@ set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 		mypaths[i] = g_strdup(paths[i]);
 
 	/* Get data dir */
-	mypaths[i++] = i7_app_get_datafile_path(i7_app_get(), "languages");
+	GFile *languages_dir = i7_app_get_data_file(i7_app_get(), "languages");
+	mypaths[i++] = g_file_get_path(languages_dir);
+	g_object_unref(languages_dir);
 	mypaths[i] = NULL;
 	gtk_source_language_manager_set_search_path(lmanager, mypaths);
 

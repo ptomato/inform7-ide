@@ -768,13 +768,16 @@ remove_node_from_canvas(GNode *gnode, I7Skein *self)
 }
 
 gboolean
-i7_skein_load(I7Skein *self, const gchar *filename, GError **error)
+i7_skein_load(I7Skein *self, GFile *file, GError **error)
 {
 	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail(file, FALSE);
 
 	I7_SKEIN_USE_PRIVATE;
 
+	char *filename = g_file_get_path(file);
 	xmlDoc *xmldoc = xmlParseFile(filename);
+	g_free(filename);
 	if(!xmldoc) {
 		xmlErrorPtr xml_error = xmlGetLastError();
 		if(error)
@@ -887,31 +890,28 @@ fail:
 	return FALSE;
 }
 
-gboolean
-node_write_xml(GNode *gnode, FILE *fp)
+static gboolean
+node_write_xml(GNode *gnode, GDataOutputStream *stream)
 {
 	gchar *xml = i7_node_get_xml(I7_NODE(gnode->data));
-	fprintf(fp, xml);
+	g_data_output_stream_put_string(stream, xml, NULL, NULL);
 	g_free(xml);
 	return FALSE; /* Do not stop the traversal */
 }
 
 gboolean
-i7_skein_save(I7Skein *self, const gchar *filename, GError **error)
+i7_skein_save(I7Skein *self, GFile *file, GError **error)
 {
 	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
 
 	I7_SKEIN_USE_PRIVATE;
 
-	FILE *skeinfile = fopen(filename, "w");
-	if(!skeinfile) {
-		if(error)
-			*error = g_error_new(G_FILE_ERROR, g_file_error_from_errno(errno),
-				_("Error saving file '%s': %s"), filename, g_strerror(errno));
+	GFileOutputStream *fstream = g_file_replace(file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, error);
+	if(!fstream)
 		return FALSE;
-	}
+	GDataOutputStream *skein_stream = g_data_output_stream_new(G_OUTPUT_STREAM(fstream));
 
-	fprintf(skeinfile,
+	char *header = g_strdup_printf(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 			"<Skein rootNode=\"%s\" "
 			"xmlns=\"http://www.logicalshift.org.uk/IF/Skein\">\n"
@@ -919,9 +919,17 @@ i7_skein_save(I7Skein *self, const gchar *filename, GError **error)
 			"  <activeNode nodeId=\"%s\"/>\n",
 			i7_node_get_unique_id(priv->root),
 			i7_node_get_unique_id(priv->current));
-	g_node_traverse(priv->root->gnode, G_PRE_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)node_write_xml, skeinfile);
-	fprintf(skeinfile, "</Skein>\n");
-	fclose(skeinfile);
+	if(!g_data_output_stream_put_string(skein_stream, header, NULL, error))
+		return FALSE;
+
+	g_node_traverse(priv->root->gnode, G_PRE_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)node_write_xml, skein_stream);
+
+	if(!g_data_output_stream_put_string(skein_stream, "</Skein>\n", NULL, error))
+		return FALSE;
+
+	g_object_unref(skein_stream);
+	g_object_unref(fstream);
+
 	priv->modified = FALSE;
 
 	return TRUE;
@@ -929,19 +937,19 @@ i7_skein_save(I7Skein *self, const gchar *filename, GError **error)
 
 /* Imports a list of commands into the Skein */
 gboolean
-i7_skein_import(I7Skein *self, const gchar *filename, GError **error)
+i7_skein_import(I7Skein *self, GFile *file, GError **error)
 {
 	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail(file, FALSE);
 	
 	I7_SKEIN_USE_PRIVATE;
 	
 	I7Node *node = priv->root;
 	gboolean added = FALSE;
 
-	GFile *importfile = g_file_new_for_path(filename);
-	GFileInputStream *istream = g_file_read(importfile, NULL, error);
+	GFileInputStream *istream = g_file_read(file, NULL, error);
 	if(!istream)
-		goto fail;
+		return FALSE;
 	GDataInputStream *stream = g_data_input_stream_new(G_INPUT_STREAM(istream));
 
 	gchar *line;
@@ -964,7 +972,7 @@ i7_skein_import(I7Skein *self, const gchar *filename, GError **error)
 	}
 
 	if(*error)
-		goto fail1;
+		goto fail;
 
 	if(added) {
 		g_signal_emit_by_name(self, "needs-layout");
@@ -973,14 +981,11 @@ i7_skein_import(I7Skein *self, const gchar *filename, GError **error)
 
 	g_object_unref(stream);
 	g_object_unref(istream);
-	g_object_unref(importfile);
 	return TRUE;
 
-fail1:
+fail:
 	g_object_unref(stream);
 	g_object_unref(istream);
-fail:
-	g_object_unref(importfile);
 	return FALSE;
 }
 

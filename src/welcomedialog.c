@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -76,15 +76,16 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 	}
 
 	g_assert(lastproject); /* Button not sensitive if no last project */
-	gchar *uri = g_strdup(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
+
+	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
 	/* Do not free the string from gtk_recent_info_get_uri */
 
 	/* free the list */
 	g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
 	g_list_free(recent);
 
-	I7Story *story = i7_story_new_from_uri(app, uri);
-	g_free(uri);
+	I7Story *story = i7_story_new_from_file(app, file);
+	g_object_unref(file);
 
 	if(story)
 		gtk_widget_destroy(welcomedialog);
@@ -94,15 +95,16 @@ GtkWidget *
 create_welcome_dialog(void)
 {
 	I7App *theapp = i7_app_get();
-	gchar *filename = i7_app_get_datafile_path(theapp, "ui/welcomedialog.ui");
-	GtkBuilder *builder = create_new_builder(filename, theapp);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(theapp, "ui", "welcomedialog.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, theapp);
+	g_object_unref(file);
 	GtkWidget *retval = GTK_WIDGET(load_object(builder, "welcomedialog"));
 
 	/* Set the background pixmap for this window */
 	GtkRcStyle *newstyle = gtk_widget_get_modifier_style(retval);
-	filename = i7_app_get_datafile_path_va(theapp, "Documentation", "Welcome Background.png", NULL);
-	newstyle->bg_pixmap_name[GTK_STATE_NORMAL] = filename; /* take ownership */
+	file = i7_app_get_data_file_va(theapp, "Documentation", "Welcome Background.png", NULL);
+	newstyle->bg_pixmap_name[GTK_STATE_NORMAL] = g_file_get_path(file); /* take ownership */
+	g_object_unref(file);
 	gtk_widget_modify_style(retval, newstyle);
 
 	/* Set the font size to 12 pixels for the widgets in this window */

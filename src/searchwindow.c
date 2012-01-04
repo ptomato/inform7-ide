@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 #include "builder.h"
 #include "document.h"
 #include "error.h"
+#include "file.h"
 #include "extension.h"
 #include "story.h"
 
@@ -41,7 +42,7 @@ typedef struct {
 	gchar *title;
 	gchar *sort;
 	gchar *body;
-	gchar *file;
+	GFile *file;
 } DocText;
 
 
@@ -96,10 +97,10 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 
 	if(!(gtk_tree_model_get_iter(model, &iter, path)))
 		return;
-	gchar *filename;
+	GFile *file;
 	int result_type, lineno;
 	gtk_tree_model_get(model, &iter,
-		I7_RESULT_FILE_COLUMN, &filename,
+		I7_RESULT_FILE_COLUMN, &file,
 		I7_RESULT_RESULT_TYPE_COLUMN, &result_type,
 		I7_RESULT_LINE_NUMBER_COLUMN, &lineno,
 		-1);
@@ -114,25 +115,26 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		if(I7_IS_STORY(priv->document)) {
 			GMatchInfo *match;
 			I7App *theapp = i7_app_get();
+
 			/* Jump to the proper example */
-			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXAMPLE_FILE_NAME], filename, 0, &match)) {
+			char *filepath = g_file_get_path(file);
+			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXAMPLE_FILE_NAME], filepath, 0, &match)) {
 				gchar *number = g_match_info_fetch_named(match, "number");
 				gchar *anchor = g_strconcat("e", number, NULL);
 				g_free(number);
-				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), filename, anchor);
+				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), file, anchor);
 				g_free(anchor);
 			} else
-				i7_story_show_docpage(I7_STORY(priv->document), filename);
+				i7_story_show_docpage(I7_STORY(priv->document), file);
+
+			g_free(path);
 			g_match_info_free(match);
 		} else {
 			GError *err = NULL;
-			gchar *uri = g_filename_to_uri(filename, NULL, &err);
-			if(!uri) {
-				WARN_S(_("Could not convert filename to URI"), filename, err);
-				break;
-			}
+			char *uri = g_file_get_uri(file);
 			if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &err))
 				error_dialog(GTK_WINDOW(self), err, _("The page \"%s\" should have opened in your browser:"), uri);
+			g_free(uri);
 		}
 	}
 		break;
@@ -141,16 +143,17 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		break;
 	case I7_RESULT_TYPE_EXTENSION:
 	{
-		I7Document *ext = i7_app_get_already_open(i7_app_get(), filename);
-		if(ext == NULL)
-			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), filename, FALSE));
+		I7Document *ext = i7_app_get_already_open(i7_app_get(), file);
+		if(ext == NULL) {
+			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), file, FALSE));
+		}
 		i7_document_jump_to_line(ext, lineno);
 	}
 		break;
 	default:
 		g_assert_not_reached();
 	}
-	g_free(filename);
+	g_object_unref(file);
 }
 
 static gboolean
@@ -166,12 +169,13 @@ location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeMode
 
 	I7ResultType type;
 	guint lineno;
-	gchar *text = NULL, *path, *filename, *location;
+	GFile *file;
+	char *text = NULL, *filename, *location;
 
 	gtk_tree_model_get(model, iter,
 		I7_RESULT_RESULT_TYPE_COLUMN, &type,
 		I7_RESULT_LINE_NUMBER_COLUMN, &lineno,
-		I7_RESULT_FILE_COLUMN, &path,
+		I7_RESULT_FILE_COLUMN, &file,
 		I7_RESULT_LOCATION_COLUMN, &location,
 		-1);
 
@@ -186,11 +190,15 @@ location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeMode
 			}
 			break;
 		case I7_RESULT_TYPE_EXTENSION:
-			filename = g_filename_display_basename(path);
+		{
+			/* Get the file's display name */
+			filename = file_get_display_name(file);
+
 			text = g_strdup_printf(
 				  /* TRANSLATORS: EXTENSION_NAME, line NUMBER */
 				  _("%s, line %d"), filename, lineno);
 			g_free(filename);
+		}
 			break;
 		case I7_RESULT_TYPE_DOCUMENTATION:
 		case I7_RESULT_TYPE_RECIPE_BOOK:
@@ -200,7 +208,7 @@ location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeMode
 	}
 
 	g_object_set(cell, "text", text, NULL);
-	g_free(path);
+	g_object_unref(file);
 	g_free(text);
 }
 
@@ -250,9 +258,9 @@ i7_search_window_init(I7SearchWindow *self)
 	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
 
 	/* Build the interface from the builder file */
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/searchwindow.ui");
-	GtkBuilder *builder = create_new_builder(filename, self);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "searchwindow.ui", NULL);
+	GtkBuilder *builder = create_new_builder(file, self);
+	g_object_unref(file);
 
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
@@ -315,7 +323,7 @@ free_doc_index()
 		g_free(text->title);
 		g_free(text->sort);
 		g_free(text->body);
-		g_free(text->file);
+		g_object_unref(text->file);
 		g_slice_free(DocText, text);
 	}
 	g_list_free(doc_index);
@@ -421,7 +429,7 @@ xmlSAXHandler i7_html_sax = {
 };
 
 static DocText *
-html_to_ascii(const gchar *filename, gboolean is_example, gboolean is_recipebook)
+html_to_ascii(GFile *file, gboolean is_example, gboolean is_recipebook)
 {
 	Ctxt *ctxt = g_slice_new0(Ctxt);
 	ctxt->chars = g_string_new("");
@@ -430,9 +438,11 @@ html_to_ascii(const gchar *filename, gboolean is_example, gboolean is_recipebook
 	doctext->is_recipebook = is_recipebook;
 	ctxt->doctext = doctext;
 
-	htmlSAXParseFile(filename, NULL, &i7_html_sax, ctxt);
+	char *path = g_file_get_path(file);
+	htmlSAXParseFile(path, NULL, &i7_html_sax, ctxt);
+	g_free(path);
 
-	doctext->file = g_strdup(filename);
+	doctext->file = g_object_ref(file);
 	doctext->body = g_string_free(ctxt->chars, FALSE);
 	g_slice_free(Ctxt, ctxt);
 	return doctext;
@@ -555,39 +565,42 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
 		gboolean example = FALSE;
-		gchar *docpath = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "Sections", NULL);
+		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", NULL);
 
-		GDir *docdir;
-		if((docdir = g_dir_open(docpath, 0, &err)) == NULL) {
-			error_dialog(GTK_WINDOW(self), err, _("Could not open documentation directory: "));
-			g_free(docpath);
+		GFileEnumerator *docdir;
+		if((docdir = g_file_enumerate_children(doc_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err)) == NULL) {
+			IO_ERROR_DIALOG(GTK_WINDOW(self), doc_file, err, _("opening documentation directory"));
+			g_object_unref(doc_file);
 			return;
 		}
 
 		start_spinner(self);
 
-		const gchar *filename;
-		while((filename = g_dir_read_name(docdir)) != NULL) {
-			if(!g_str_has_suffix(filename, ".html"))
+		GFileInfo *info;
+		while((info = g_file_enumerator_next_file(docdir, NULL, &err)) != NULL) {
+			const char *basename = g_file_info_get_name(info);
+			const char *displayname = g_file_info_get_display_name(info);
+
+			if(!g_str_has_suffix(basename, ".html"))
 				continue;
 
-			if(g_str_has_prefix(filename, "doc") || g_str_has_prefix(filename, "Rdoc"))
+			if(g_str_has_prefix(basename, "doc") || g_str_has_prefix(basename, "Rdoc"))
 				example = FALSE;
-			else if(g_str_has_prefix(filename, "ex") || g_str_has_prefix(filename, "Rex"))
+			else if(g_str_has_prefix(basename, "ex") || g_str_has_prefix(basename, "Rex"))
 				example = TRUE;
 			else
 				continue;
 
-			gchar *label = g_strdup_printf(_("Please be patient, indexing %s..."), filename);
+			char *label = g_strdup_printf(_("Please be patient, indexing %s..."), displayname);
 			gtk_label_set_text(GTK_LABEL(self->search_text), label);
 			g_free(label);
 
 			while(gtk_events_pending())
 				gtk_main_iteration();
 
-			gchar *path = g_build_filename(docpath, filename, NULL);
-			DocText *doctext = html_to_ascii(path, example, g_str_has_prefix(filename, "R"));
-			g_free(path);
+			GFile *file = g_file_get_child(doc_file, basename);
+			DocText *doctext = html_to_ascii(file, example, g_str_has_prefix(basename, "R"));
+			g_object_unref(file);
 			if(doctext) {
 				/* Append the entry to the documentation index and
 				 search it right now while we're at it */
@@ -595,7 +608,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 				search_documentation(doctext, self);
 			}
 		}
-		g_free(docpath);
+		g_object_unref(doc_file);
 
 		stop_spinner(self);
 		update_label(self);
@@ -638,106 +651,107 @@ i7_search_window_search_project(I7SearchWindow *self)
 		/* Make a sort string */
 		gchar *sort = g_strdup_printf("%04i", lineno);
 		/* Put the full path to the project in */
-		gchar *filename = i7_document_get_path(priv->document);
+		GFile *file = i7_document_get_file(priv->document);
 
 		gtk_list_store_append(priv->results, &result);
 		gtk_list_store_set(priv->results, &result,
 			I7_RESULT_CONTEXT_COLUMN, context,
 			I7_RESULT_SORT_STRING_COLUMN, sort,
-			I7_RESULT_FILE_COLUMN, filename,
+			I7_RESULT_FILE_COLUMN, file,
 			I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_PROJECT,
 			I7_RESULT_LINE_NUMBER_COLUMN, lineno,
 			-1);
 		g_free(context);
 		g_free(sort);
-		g_free(filename);
+		g_object_unref(file);
 	}
 
 	stop_spinner(self);
 }
 
-/* Search the user-installed extensions for the string 'text' */
-void
-i7_search_window_search_extensions(I7SearchWindow *self)
+static void
+extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
 {
 	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
 	GError *err = NULL;
-	gchar *extension_dir = i7_app_get_extension_path(i7_app_get(), NULL, NULL);
-	GDir *extensions = g_dir_open(extension_dir, 0, &err);
-	g_free(extension_dir);
-	if(err) {
-		error_dialog(GTK_WINDOW(self), err, _("Error opening extensions directory: "));
+	const char *basename = g_file_info_get_name(info);
+	GFile *file = g_file_get_child(parent, basename);
+	char *contents;
+	GtkTextBuffer *buffer;
+	GtkTreeIter result;
+	GtkTextIter search_from, match_start, match_end;
+
+	if(!g_file_load_contents(file, NULL, &contents, NULL, NULL, &err)) {
+		char *author_display_name = file_get_display_name(parent);
+		const char *ext_display_name = g_file_info_get_display_name(info);
+
+		error_dialog_file_operation(GTK_WINDOW(self), file, err, I7_FILE_ERROR_OTHER,
+		  /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
+		  _("Error opening extension '%s' by '%s':"), author_display_name, ext_display_name);
+
+		g_free(author_display_name);
+		g_object_unref(file);
 		return;
 	}
 
-	const gchar *dir_entry;
-	while((dir_entry = g_dir_read_name(extensions)) != NULL && strcmp(dir_entry, "Reserved") != 0) {
-		/* Read each extension dir, but skip "Reserved" */
-		gchar *author_dir = i7_app_get_extension_path(i7_app_get(), dir_entry, NULL);
-		GDir *author = g_dir_open(author_dir, 0, &err);
-		g_free(author_dir);
-		if(err) {
-			error_dialog(GTK_WINDOW(self), err, _("Error opening extensions directory: "));
-			return;
-		}
-		const gchar *author_entry;
-		while((author_entry = g_dir_read_name(author)) != NULL) {
-			gchar *filename = i7_app_get_extension_path(i7_app_get(), dir_entry, author_entry);
-			gchar *contents;
-			if(!g_file_get_contents(filename, &contents, NULL, &err)) {
-				error_dialog(GTK_WINDOW(self), err,
-				  /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
-				  _("Error opening extension '%s' by '%s':"), author_entry, dir_entry);
-				g_free(filename);
-				return;
-			}
+	buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
+	gtk_text_buffer_set_text(buffer, contents, -1);
+	g_free(contents);
 
-			GtkTextBuffer *buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
-			gtk_text_buffer_set_text(buffer, contents, -1);
-			g_free(contents);
+	gtk_text_buffer_get_start_iter(buffer, &search_from);
 
-			GtkTreeIter result;
-			GtkTextIter search_from, match_start, match_end;
-			gtk_text_buffer_get_start_iter(buffer, &search_from);
+	start_spinner(self);
 
-			start_spinner(self);
+	while(find_no_wrap(&search_from, priv->text, TRUE,
+		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		priv->algorithm, &match_start, &match_end))
+	{
+		unsigned lineno;
+		char *sort, *context;
 
-			while(find_no_wrap(&search_from, priv->text, TRUE,
-				GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-				priv->algorithm, &match_start, &match_end))
-			{
-				while(gtk_events_pending())
-					gtk_main_iteration();
+		while(gtk_events_pending())
+			gtk_main_iteration();
 
-				search_from = match_end;
+		search_from = match_end;
 
-				/* Get the line number (counted from 0) */
-				guint lineno = gtk_text_iter_get_line(&match_start) + 1;
+		/* Get the line number (counted from 0) */
+		lineno = gtk_text_iter_get_line(&match_start) + 1;
 
-				gchar *context = extract_context(buffer, &match_start, &match_end);
+		context = extract_context(buffer, &match_start, &match_end);
 
-				/* Make a sort string */
-				gchar *sort = g_strdup_printf("%s %04i", author_entry, lineno);
+		/* Make a sort string */
+		sort = g_strdup_printf("%s %04i", basename, lineno);
 
-				gtk_list_store_append(priv->results, &result);
-				gtk_list_store_set(priv->results, &result,
-					I7_RESULT_CONTEXT_COLUMN, context,
-					I7_RESULT_SORT_STRING_COLUMN, sort,
-					I7_RESULT_FILE_COLUMN, filename,
-					I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_EXTENSION,
-					I7_RESULT_LINE_NUMBER_COLUMN, lineno,
-					-1);
-				g_free(context);
-				g_free(sort);
-			}
+		gtk_list_store_append(priv->results, &result);
+		gtk_list_store_set(priv->results, &result,
+			I7_RESULT_CONTEXT_COLUMN, context,
+			I7_RESULT_SORT_STRING_COLUMN, sort,
+			I7_RESULT_FILE_COLUMN, file,
+			I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_EXTENSION,
+			I7_RESULT_LINE_NUMBER_COLUMN, lineno,
+			-1);
 
-			stop_spinner(self);
-			g_object_unref(buffer);
-			g_free(filename);
-		}
-		g_dir_close(author);
+		g_free(context);
+		g_free(sort);
 	}
-	g_dir_close(extensions);
+
+	stop_spinner(self);
+
+	g_object_unref(buffer);
+	g_object_unref(file);
+}
+
+/**
+ * i7_search_window_search_extensions:
+ * @self: self
+ *
+ * Search the user-installed extensions for the search window's search text.
+ */
+void
+i7_search_window_search_extensions(I7SearchWindow *self)
+{
+	i7_app_foreach_installed_extension(i7_app_get(), FALSE, NULL, NULL,
+	    (I7AppExtensionFunc)extension_search_result, self, NULL);
 }
 
 /* Notify the window that no more searches will be done, so it is allowed to

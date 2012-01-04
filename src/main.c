@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -75,9 +75,12 @@ main(int argc, char *argv[])
 
 	/* Open any project files specified on the command line */
 	if(remaining_args) {
-		gchar **file;
-		for(file = remaining_args; *file; file++)
-			i7_app_open(theapp, *file);
+		char **filename;
+		for(filename = remaining_args; *filename; filename++) {
+			GFile *file = g_file_new_for_commandline_arg(*filename);
+			i7_app_open(theapp, file);
+			g_object_unref(file);
+		}
 		g_strfreev(remaining_args);
 	}
 

@@ -44,7 +44,7 @@ enum _I7AppExtensionsColumns {
 	I7_APP_EXTENSION_TEXT,
 	I7_APP_EXTENSION_READ_ONLY,
 	I7_APP_EXTENSION_ICON,
-	I7_APP_EXTENSION_PATH,
+	I7_APP_EXTENSION_FILE,
 	I7_APP_NUM_EXTENSION_COLUMNS
 };
 
@@ -63,30 +63,53 @@ typedef struct {
 	GRegex *regices[I7_APP_NUM_REGICES];
 } I7App;
 
+/**
+ * I7AppAuthorFunc:
+ * @info: the #GFileInfo for the author directory.
+ * @data: user data to pass to the callback.
+ *
+ * Callback for enumerating installed extensions, called for each author
+ * directory. May return a result, which is passed to #I7AppExtensionFunc for
+ * each extension file found in that author directory.
+ */
+typedef gpointer (*I7AppAuthorFunc)(GFileInfo *info, gpointer data);
+/**
+ * I7AppExtensionFunc:
+ * @parent: the #GFile for the extension file's parent.
+ * @info: the #GFileInfo for the extension file.
+ * @author_result: the return value of the #I7AppAuthorFunc for the parent.
+ * @data: user data to pass to the callback.
+ *
+ * Callback for enumerating installed extensions, called for each author
+ * directory.
+ */
+typedef void (*I7AppExtensionFunc)(GFile *parent, GFileInfo *info, gpointer author_result, gpointer data);
+
 GType i7_app_get_type(void) G_GNUC_CONST;
 I7App *i7_app_get(void);
-void i7_app_open(I7App *app, const gchar *filename);
+void i7_app_open(I7App *app, GFile *file);
 void i7_app_insert_action_groups(I7App *app, GtkUIManager *manager);
 
 void i7_app_register_document(I7App *app, I7Document *document);
 void i7_app_remove_document(I7App *app, I7Document *document);
-I7Document *i7_app_get_already_open(I7App *app, const gchar *filename);
+I7Document *i7_app_get_already_open(I7App *app, const GFile *file);
 gint i7_app_get_num_open_documents(I7App *app);
 void i7_app_close_all_documents(I7App *app);
 void i7_app_foreach_document(I7App *app, I7DocumentForeachFunc func, gpointer data);
 
 void i7_app_monitor_extensions_directory(I7App *app);
 void i7_app_stop_monitoring_extensions_directory(I7App *app);
-void i7_app_install_extension(I7App *app, const gchar *filename);
+void i7_app_install_extension(I7App *app, GFile *file);
 void i7_app_delete_extension(I7App *app, gchar *author, gchar *extname);
+void i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc author_func, gpointer author_func_data, I7AppExtensionFunc extension_func, gpointer extension_func_data, GDestroyNotify free_author_result);
 void i7_app_run_census(I7App *app, gboolean wait);
 
-gchar *i7_app_get_extension_path(I7App *app, const gchar *author, const gchar *extname);
-gchar *i7_app_get_datafile_path(I7App *app, const gchar *filename);
-gchar *i7_app_get_datafile_path_va(I7App *app, const gchar *path1, ...);
-char *i7_app_check_datafile(I7App *app, const char *filename);
-char *i7_app_check_datafile_va(I7App *app, const char *path1, ...);
-gchar *i7_app_get_binary_path(I7App *app, const gchar *filename);
+GFile *i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname);
+GFile *i7_app_get_data_file(I7App *app, const gchar *filename);
+GFile *i7_app_get_data_file_va(I7App *app, const gchar *path1, ...) G_GNUC_NULL_TERMINATED;
+GFile *i7_app_check_data_file(I7App *app, const char *filename);
+GFile *i7_app_check_data_file_va(I7App *app, const char *path1, ...) G_GNUC_NULL_TERMINATED;
+GFile *i7_app_get_binary_file(I7App *app, const gchar *filename);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *app);
 void i7_app_update_extensions_menu(I7App *app);

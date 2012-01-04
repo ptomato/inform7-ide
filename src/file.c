@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,54 +29,24 @@
 
 /* HELPER FUNCTIONS */
 
-/* From gnome-vfs-utils.c */
-gchar *
-expand_initial_tilde(const gchar *path)
-{
-	char *slash_after_user_name, *user_name;
-	struct passwd *passwd_file_entry;
-
-	g_return_val_if_fail(path != NULL, NULL);
-
-	if(path[0] != '~')
-		return g_strdup(path);
-
-	if(path[1] == '/' || path[1] == '\0')
-		return g_strconcat(g_get_home_dir(), &path[1], NULL);
-
-	slash_after_user_name = strchr(&path[1], '/');
-	if(slash_after_user_name == NULL)
-		user_name = g_strdup(&path[1]);
-	else
-		user_name = g_strndup(&path[1], slash_after_user_name - &path[1]);
-
-	passwd_file_entry = getpwnam(user_name);
-	g_free(user_name);
-
-	if(passwd_file_entry == NULL || passwd_file_entry->pw_dir == NULL)
-		return g_strdup(path);
-
-	return g_strconcat(passwd_file_entry->pw_dir, slash_after_user_name, NULL);
-}
-
 /* Read a source file into a string. Allocates a new string */
 gchar *
-read_source_file(const gchar *filename)
+read_source_file(GFile *file)
 {
 	GError *error = NULL;
 	gchar *text;
 
 	gsize num_bytes;
-	if(!g_file_get_contents(filename, &text, &num_bytes, &error)) {
-		error_dialog(NULL, error, _("Could not open the file '%s'.\n\n"
-			"Make sure that this file has not been deleted or renamed."), filename);
+	if(!g_file_load_contents(file, NULL, &text, &num_bytes, NULL, &error)) {
+		error_dialog_file_operation(NULL, file, error, I7_FILE_ERROR_OPEN, NULL);
 		return NULL;
 	}
 
 	/* Make sure the file wasn't binary or something */
 	if(!g_utf8_validate(text, num_bytes, NULL)) {
-		error_dialog(NULL, NULL,
-		_("The file '%s' could not be read because it contained invalid UTF-8 text."), filename);
+		char *filename = g_file_get_path(file);
+		error_dialog(NULL, NULL, _("The file '%s' could not be read because it contained invalid UTF-8 text."), filename);
+		g_free(filename);
 		g_free(text);
 		return NULL;
 	}
@@ -97,8 +67,8 @@ read_source_file(const gchar *filename)
  * FUNCTIONS FOR SAVING AND LOADING STUFF
  */
 
-gchar *
-get_filename_from_save_dialog(I7Document *document, const gchar *default_filename)
+GFile *
+get_file_from_save_dialog(I7Document *document, GFile *default_file)
 {
 	/* Create a file chooser */
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,
@@ -107,15 +77,8 @@ get_filename_from_save_dialog(I7Document *document, const gchar *default_filenam
 		NULL);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
-	if(default_filename) {
-		gchar *path = g_path_get_dirname(default_filename);
-		gchar *file = g_path_get_basename(default_filename);
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), path);
-		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), file);
-		g_free(path);
-		g_free(file);
-	} else {
-		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), _("Untitled document"));
+	if(default_file) {
+		gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), default_file, NULL); /* ignore errors */
 	}
 
 	GtkFileFilter *filter = gtk_file_filter_new();
@@ -123,9 +86,23 @@ get_filename_from_save_dialog(I7Document *document, const gchar *default_filenam
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
 	if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-		gchar *path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-		gchar *filename = g_str_has_suffix(path, ".inform")? g_strdup(path) : g_strconcat(path, ".inform", NULL);
-		g_free(path);
+		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
+		char *basename = g_file_get_basename(file);
+
+		/* Make sure it has a .inform suffix */
+		if(!g_str_has_suffix(basename, ".inform")) {
+			char *newbasename = g_strconcat(basename, ".inform", NULL);
+			GFile *parent = g_file_get_parent(file);
+
+			g_object_unref(file);
+			file = g_file_get_child(parent, newbasename);
+
+			g_free(basename);
+			basename = newbasename;
+
+			g_object_unref(parent);
+		}
+
 		gtk_widget_destroy(dialog);
 
 		/* For "Select folder" mode, we must do our own confirmation */
@@ -133,13 +110,12 @@ get_filename_from_save_dialog(I7Document *document, const gchar *default_filenam
 		/* Sourcefile is a workaround: if you type a new folder into the file
 		selection dialog, GTK will create that folder automatically and it
 		will then already exist */
-		gchar *sourcefile = g_build_filename(filename, "Source", NULL);
-		if(g_file_test(filename, G_FILE_TEST_EXISTS)
-			&& g_file_test(sourcefile, G_FILE_TEST_EXISTS))
+		GFile *sourcefile = g_file_get_child(file, "Source");
+		if(g_file_query_exists(file, NULL) && g_file_query_exists(sourcefile, NULL))
 		{
 			dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
-				_("A project named \"%s\" already exists. Do you want to replace it?"), filename);
+				_("A project named \"%s\" already exists. Do you want to replace it?"), basename);
 			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
 				_("Replacing it will overwrite its contents."));
 			gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
@@ -155,14 +131,17 @@ get_filename_from_save_dialog(I7Document *document, const gchar *default_filenam
 
 			int response = gtk_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
+
 			if(response != GTK_RESPONSE_ACCEPT) {
-				g_free(filename);
-				g_free(sourcefile);
-				return get_filename_from_save_dialog(document, default_filename);
+				g_free(basename);
+				g_object_unref(sourcefile);
+				return get_file_from_save_dialog(document, default_file);
 			}
 		}
-		g_free(sourcefile);
-		return filename;
+
+		g_free(basename);
+		g_object_unref(sourcefile);
+		return file;
 	} else {
 		gtk_widget_destroy(dialog);
 		return NULL;
@@ -172,17 +151,20 @@ get_filename_from_save_dialog(I7Document *document, const gchar *default_filenam
 /* Helper function to delete a file relative to the project path; does nothing
 if file does not exist */
 static void
-delete_from_project_dir(I7Story *story, gchar *storyname, gchar *subdir, gchar *filename)
+delete_from_project_dir(I7Story *story, GFile *root_file, const char *subdir, const char *filename)
 {
-	gchar *pathname;
+	GFile *file_to_delete;
 
-	if(subdir)
-		pathname = g_build_filename(storyname, subdir, filename, NULL);
-	else
-		pathname = g_build_filename(storyname, filename, NULL);
+	if(subdir) {
+		GFile *child = g_file_get_child(root_file, subdir);
+		file_to_delete = g_file_get_child(child, filename);
+		g_object_unref(child);
+	} else
+		file_to_delete = g_file_get_child(root_file, filename);
 
-	g_remove(pathname);
-	g_free(pathname);
+	g_file_delete(file_to_delete, NULL, NULL); /* ignore errors */
+
+	g_object_unref(file_to_delete);
 	i7_document_display_progress_busy(I7_DOCUMENT(story));
 }
 
@@ -194,7 +176,7 @@ delete_build_files(I7Story *story)
 	if(config_file_get_bool(PREFS_CLEAN_BUILD_FILES)) {
 		i7_document_display_status_message(I7_DOCUMENT(story), _("Cleaning out build files..."), FILE_OPERATIONS);
 
-		gchar *storyname = i7_document_get_path(I7_DOCUMENT(story));
+		GFile *storyname = i7_document_get_file(I7_DOCUMENT(story));
 
 		delete_from_project_dir(story, storyname, NULL, "Metadata.iFiction");
 		delete_from_project_dir(story, storyname, NULL, "Release.blurb");
@@ -220,125 +202,224 @@ delete_build_files(I7Story *story)
 			delete_from_project_dir(story, storyname, "Index", "Rules.html");
 			delete_from_project_dir(story, storyname, "Index", "Scenes.html");
 			delete_from_project_dir(story, storyname, "Index", "World.html");
+
 			/* Delete the "Details" subdirectory */
-			gchar *details_dir = g_build_filename(storyname, "Index", "Details", NULL);
-			GDir *details = g_dir_open(details_dir, 0, NULL);
-			if(details) {
-				const gchar *dir_entry;
-				while((dir_entry = g_dir_read_name(details)) != NULL) {
-					gchar *filename = g_build_filename(storyname, "Index", "Details", dir_entry, NULL);
-					g_remove(filename);
+
+			GFile *temp = g_file_get_child(storyname, "Index");
+			GFile *details_file = g_file_get_child(temp, "Details");
+			g_object_unref(temp);
+			g_object_unref(storyname);
+
+			/* Remove each file in the directory */
+			GFileEnumerator *details_dir = g_file_enumerate_children(details_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+			if(details_dir) {
+				GFileInfo *info;
+				while((info = g_file_enumerator_next_file(details_dir, NULL, NULL)) != NULL) {
+					const char *child_name = g_file_info_get_name(info);
+					GFile *child = g_file_get_child(details_file, child_name);
+					g_file_delete(child, NULL, NULL);
+					g_object_unref(child);
+					g_object_unref(info);
 					i7_document_display_progress_busy(I7_DOCUMENT(story));
 				}
-				g_dir_close(details);
-				g_remove(details_dir);
+				g_file_enumerator_close(details_dir, NULL, NULL);
+				g_object_unref(details_dir);
 			}
-			g_free(details_dir);
-		}
 
-		g_free(storyname);
+			/* Remove the directory */
+			g_file_delete(details_file, NULL, NULL);
+			g_object_unref(details_file);
+		}
 	}
 	i7_document_remove_status_message(I7_DOCUMENT(story), FILE_OPERATIONS);
 	i7_document_display_progress_percentage(I7_DOCUMENT(story), 0.0);
 }
 
-/* Helper function: return the first match within directory @d */
-static gchar *
-get_match_within_directory(GDir *d, const gchar *name)
+/*
+ * get_match_within_directory:
+ * @d: a #GFileEnumerator for the directory to search
+ * @name: a string to search case-insensitively for
+ *
+ * Helper function: return the first match within directory @d which matches
+ * @name case-insensitively.
+ *
+ * Returns: (transfer full): a #GFile
+ */
+static GFile *
+get_match_within_directory(GFileEnumerator *d, const char *name)
 {
-	const gchar *dirp;
-	while((dirp = g_dir_read_name(d)) != NULL) {
-		if(strcasecmp(name, dirp) == 0)
-			return g_strdup(dirp);
+	GFileInfo *info;
+	while((info = g_file_enumerator_next_file(d, NULL, NULL)) != NULL) {
+		const char *basename = g_file_info_get_name(info);
+		if(strcasecmp(name, basename) == 0) {
+			GFile *retval = g_file_get_child(g_file_enumerator_get_container(d), basename);
+			g_object_unref(info);
+			return retval;
+		}
+		g_object_unref(info);
 	}
 	return NULL;
 }
 
-/* Helper function: find the on-disk filename of @path, whose last two
- components may have incorrect casing. Adapted from Sec. 2/cifn of Inform
- source, which was written by Adam Thornton. Returns a newly-allocated string
- containing the on-disk filename, or NULL on failure. */
-gchar *
-get_case_insensitive_extension(const gchar *path)
+/**
+ * get_case_insensitive_extension:
+ * @file: a #GFile
+ *
+ * Helper function: find the on-disk filename of @file, whose last two
+ * components may have incorrect casing. Adapted from Sec. 2/cifn of Inform
+ * source, which was written by Adam Thornton.
+ *
+ * Returns: (transfer full): a #GFile containing the on-disk filename, or %NULL
+ * on failure.
+ */
+GFile *
+get_case_insensitive_extension(GFile *file)
 {
-	gchar *cistring, *retval;
+	GFile *retval;
+
+	g_return_val_if_fail(file, NULL);
 
 	/* For efficiency's sake, though it's logically equivalent, we try... */
-	if(g_file_test(path, G_FILE_TEST_EXISTS))
-		return g_strdup(path);
+	if(g_file_query_exists(file, NULL))
+		return g_object_ref(file);
 
-	/* Find the length of the path, giving an error if it is empty or NULL */
-	size_t length = 0;
-	if(path)
-		length = strlen(path);
-	if(length < 1)
-		return NULL;
-
-	/* Parse the path to break it into topdirpath, extension directory and
+	/* Parse the path to break it into top directory, extension directory, and
 	 leafname */
-	gchar *p = strrchr(path, G_DIR_SEPARATOR);
-	size_t extindex = (size_t)(p - path);
-	size_t namelen = length - extindex - 1;
-	gchar *ciextname = g_strndup(path + extindex + 1, namelen);
-	gchar *workstring = g_strndup(path, extindex - 1);
+	GFile *extdir_file = g_file_get_parent(file);
+	GFile *topdir_file = g_file_get_parent(extdir_file);
+	char *ciextdir_basename = g_file_get_basename(extdir_file);
+	char *cileaf_basename = g_file_get_basename(file);
 
-	p = strrchr(workstring, G_DIR_SEPARATOR);
-	size_t extdirindex = (size_t)(p - workstring);
-	gchar *topdirpath = g_strndup(path, extdirindex);
+	/* topdir is assumed case-correct */
+	if(!g_file_query_exists(extdir_file, NULL)) {
+		g_object_unref(extdir_file);
+		GFileEnumerator *topdir = g_file_enumerate_children(topdir_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+		if(!topdir)
+			goto fail;
 
-	size_t dirlen = extindex - extdirindex - 1;
-	gchar *ciextdirpath = g_strndup(path + extdirindex + 1, dirlen);
-
-	GDir *topdir = g_dir_open(topdirpath, 0, NULL);
-	/* pathname is assumed case-correct */
-	if(!topdir)
-		goto fail; /* ... so that failure is fatal */
-
-	g_free(workstring);
-	workstring = g_build_filename(topdirpath, ciextdirpath, NULL);
-	GDir *extdir = g_dir_open(workstring, 0, NULL);
-	if(!extdir) {
 		/* Try to find a unique insensitively matching directory name in topdir */
-		g_free(workstring);
-		if((workstring = get_match_within_directory(topdir, ciextdirpath))) {
-			cistring = g_build_filename(topdirpath, workstring, NULL);
-			extdir = g_dir_open(cistring, 0, NULL);
-			if(!extdir)
-				goto fail1;
-		} else
-			goto fail1;
-	} else
-		cistring = g_strdup(workstring);
+		extdir_file = get_match_within_directory(topdir, ciextdir_basename);
 
-	retval = g_build_filename(cistring, ciextname, NULL);
-	if(g_file_test(retval, G_FILE_TEST_EXISTS))
-		goto success;
-	g_free(retval);
+		g_file_enumerator_close(topdir, NULL, NULL);
+		g_object_unref(topdir);
 
-	/* Try to find a unique insensitively matching entry in extdir */
-	g_free(workstring);
-	if((workstring = get_match_within_directory(extdir, ciextname))) {
-		retval = g_build_filename(cistring, workstring, NULL);
-		if(g_file_test(retval, G_FILE_TEST_EXISTS))
-			goto success;
-		g_free(retval);
+		if(!extdir_file)
+			goto fail;
 	}
 
-	g_dir_close(extdir);
+	retval = g_file_get_child(extdir_file, cileaf_basename);
+	if(g_file_query_exists(retval, NULL))
+		goto finally;
+	g_object_unref(retval);
+
+	/* Try to find a unique insensitively matching entry in extdir */
+	GFileEnumerator *extdir = g_file_enumerate_children(extdir_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	if(!extdir)
+		goto fail1;
+
+	retval = get_match_within_directory(extdir, cileaf_basename);
+
+	g_file_enumerator_close(extdir, NULL, NULL);
+	g_object_unref(extdir);
+
+	if(!retval)
+		goto fail1;
+
+finally:
+	g_object_unref(extdir_file);
+	g_object_unref(topdir_file);
+	g_free(ciextdir_basename);
+	g_free(cileaf_basename);
+	return retval;
 fail1:
-	g_dir_close(topdir);
+	g_object_unref(extdir_file);
 fail:
-	g_free(topdirpath);
-	g_free(ciextdirpath);
-	g_free(ciextname);
-	g_free(workstring);
+	g_object_unref(topdir_file);
+	g_free(ciextdir_basename);
+	g_free(cileaf_basename);
 	return NULL;
-success:
-	g_dir_close(topdir);
-	g_dir_close(extdir);
-	g_free(topdirpath);
-	g_free(ciextdirpath);
-	g_free(ciextname);
-	g_free(workstring);
+}
+
+/**
+ * make_directory_unless_exists:
+ * @file: a #GFile pointing to the directory to create.
+ * @cancellable: a #GCancellable, or %NULL.
+ * @error: return location for an error, or %NULL.
+ *
+ * Does the same thing as g_file_make_directory_with_parents(), except that it
+ * doesn't fail if the directory already exists.
+ *
+ * Returns: %TRUE on success, %FALSE if @error was set.
+ */
+gboolean
+make_directory_unless_exists(GFile *file, GCancellable *cancellable, GError **error)
+{
+	gboolean retval;
+
+	retval = g_file_make_directory_with_parents(file, cancellable, error);
+	if(!retval && g_error_matches(*error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+		retval = TRUE;
+		g_clear_error(error);
+	}
+	return retval;
+}
+
+/**
+ * file_exists_and_is_dir:
+ * @file: a #GFile.
+ *
+ * Figures out whether @file points to a real on-disk directory. Ignores errors
+ * and cannot be canceled. (This is a convenience function.)
+ *
+ * Returns: %TRUE if @file exists and is a directory, %FALSE if not.
+ */
+gboolean
+file_exists_and_is_dir(GFile *file)
+{
+	return g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY;
+}
+
+/**
+ * file_exists_and_is_symlink:
+ * @file: a #GFile.
+ *
+ * Figures out whether @file points to a real on-disk symbolic link. Ignores
+ * errors and cannot be canceled. (This is a convenience function.)
+ *
+ * Returns: %TRUE if @file exists and is a symlink, %FALSE if not.
+ */
+gboolean
+file_exists_and_is_symlink(GFile *file)
+{
+	return g_file_query_exists(file, NULL) && g_file_query_file_type(file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL) == G_FILE_TYPE_SYMBOLIC_LINK;
+}
+
+/**
+ * file_get_display_name:
+ * @file: a #GFile.
+ *
+ * Gets @file's display name, or provides a fallback value if not available.
+ * Ignores errors and cannot be canceled. (This is a convenience function.)
+ *
+ * Returns: (transfer full): a string containing @file's display name in UTF-8
+ * or at least Latin-1 if an error occurred. Free when done.
+ */
+char *
+file_get_display_name(GFile *file)
+{
+	char *retval;
+	GFileInfo *info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+
+	/* If everything was OK */
+	if(info) {
+		retval = g_strdup(g_file_info_get_display_name(info)); /* cannot return NULL (?) */
+		g_object_unref(info);
+		return retval;
+	}
+
+	/* If not, provide a fallback */
+	char *path = g_file_get_path(file);
+	retval = g_filename_display_basename(path);
+	g_free(path);
 	return retval;
 }

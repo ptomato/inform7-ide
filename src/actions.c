@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -81,15 +81,19 @@ action_open_recent(GtkAction *action, I7App *app)
 	GtkRecentInfo *item = gtk_recent_chooser_get_current_item(GTK_RECENT_CHOOSER(action));
 	g_assert(gtk_recent_info_has_application(item, "GNOME Inform 7"));
 
+	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri(item));
+
 	if(gtk_recent_info_has_group(item, "inform7_project"))
-		i7_story_new_from_uri(app, gtk_recent_info_get_uri(item));
+		i7_story_new_from_file(app, file);
 	else if(gtk_recent_info_has_group(item, "inform7_extension"))
-		i7_extension_new_from_uri(app, gtk_recent_info_get_uri(item), FALSE);
+		i7_extension_new_from_file(app, file, FALSE);
 	else if(gtk_recent_info_has_group(item, "inform7_builtin"))
-		i7_extension_new_from_uri(app, gtk_recent_info_get_uri(item), TRUE);
+		i7_extension_new_from_file(app, file, TRUE);
 	else
 		/* TRANSLATORS: File->Open Recent submenu */
 		g_warning(_("Recent manager file does not have tag"));
+
+	g_object_unref(file);
 	gtk_recent_info_unref(item);
 }
 
@@ -110,17 +114,17 @@ action_install_extension(GtkAction *action, I7App *app)
 /* Callback for when one of the items from the File->Open Extension submenu
  is selected, and it is a built-in extension */
 void
-on_open_extension_readonly_activate(GtkMenuItem *menuitem, gchar *path)
+on_open_extension_readonly_activate(GtkMenuItem *menuitem, GFile *file)
 {
-	i7_extension_new_from_file(i7_app_get(), path, TRUE);
+	i7_extension_new_from_file(i7_app_get(), file, TRUE);
 }
 
 /* Callback for when one of the items from the File->Open Extension submenu
  is selected, and it is a user-installed extension */
 void
-on_open_extension_activate(GtkMenuItem *menuitem, gchar *path)
+on_open_extension_activate(GtkMenuItem *menuitem, GFile *file)
 {
-	i7_extension_new_from_file(i7_app_get(), path, FALSE);
+	i7_extension_new_from_file(i7_app_get(), file, FALSE);
 }
 
 /* File->Import Into Skein... */
@@ -152,19 +156,18 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 		return;
 	}
 	
-	gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
 	gtk_widget_destroy(dialog);
-	if(!filename)
+	if(!file)
 		return; /* Fail silently */
 
 	/* Provide some visual feedback that the command did something */
-	if(!i7_skein_import(i7_story_get_skein(story), filename, &err))
-		error_dialog(GTK_WINDOW(story), err, _("Failed to import file '%s' into"
-			" skein: "), filename);
+	if(!i7_skein_import(i7_story_get_skein(story), file, &err))
+		error_dialog_file_operation(GTK_WINDOW(story), file, err, I7_FILE_ERROR_OPEN, NULL);
 	else
 		i7_story_show_pane(story, I7_PANE_SKEIN);
 	
-	g_free(filename);
+	g_object_unref(file);
 }
 
 /* File->Save */
@@ -178,15 +181,15 @@ action_save(GtkAction *action, I7Document *document)
 void
 action_save_as(GtkAction *action, I7Document *document)
 {
-	gchar *filename = get_filename_from_save_dialog(document, NULL);
-	if(filename) {
-		i7_document_set_path(document, filename);
+	GFile *file = get_file_from_save_dialog(document, NULL);
+	if(file) {
+		i7_document_set_file(document, file);
 		/* This hack is convenient so that if you save a built-in (read-only)
 		extension to another file name, it's not read-only anymore */
 		if(I7_IS_EXTENSION(document))
 			i7_extension_set_read_only(I7_EXTENSION(document), FALSE);
-		i7_document_save_as(document, filename);
-		g_free(filename);
+		i7_document_save_as(document, file);
+		g_object_unref(file);
 	}
 }
 
@@ -194,10 +197,10 @@ action_save_as(GtkAction *action, I7Document *document)
 void
 action_save_copy(GtkAction *action, I7Document *document)
 {
-	gchar *filename = get_filename_from_save_dialog(document, NULL);
-	if(filename) {
-		i7_document_save_as(document, filename);
-		g_free(filename);
+	GFile *file = get_file_from_save_dialog(document, NULL);
+	if(file) {
+		i7_document_save_as(document, file);
+		g_object_unref(file);
 	}
 }
 
@@ -205,12 +208,13 @@ action_save_copy(GtkAction *action, I7Document *document)
 void
 action_revert(GtkAction *action, I7Document *document)
 {
-	gchar *filename = i7_document_get_path(document);
-	if(!(filename && g_file_test(filename, G_FILE_TEST_EXISTS)
-		&& g_file_test(filename, G_FILE_TEST_IS_DIR)))
+	GFile *file = i7_document_get_file(document);
+	if(!file)
 		return; /* No saved version to revert to */
+	if(!file_exists_and_is_dir(file))
+		goto finally; /* No saved version to revert to */
 	if(!i7_document_get_modified(document))
-		return; /* Not changed since last save */
+		goto finally; /* Not changed since last save */
 
 	/* Ask if the user is sure */
 	/* TRANSLATORS: File->Revert */
@@ -226,12 +230,14 @@ action_revert(GtkAction *action, I7Document *document)
 	gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
 	gtk_widget_destroy(revert_dialog);
 	if(result != GTK_RESPONSE_OK)
-		return; /* Only go on if the user clicked revert */
+		goto finally; /* Only go on if the user clicked revert */
 
 	/* Close the window and reopen it */
 	g_object_unref(document);
-	document = I7_DOCUMENT(i7_story_new_from_file(i7_app_get(), filename));
-	g_free(filename);
+	document = I7_DOCUMENT(i7_story_new_from_file(i7_app_get(), file));
+
+finally:
+	g_object_unref(file);
 }
 
 /* File->Page Setup... */
@@ -1082,10 +1088,10 @@ action_open_materials_folder(GtkAction *action, I7Story *story)
 {
 	GError *error = NULL;
 	gchar *uri;
-	gchar *materialspath = i7_story_get_materials_path(story);
+	GFile *materials_file = i7_story_get_materials_file(story);
 
 	/* Prompt the user to create the folder if it doesn't exist */
-	if(!g_file_test(materialspath, G_FILE_TEST_EXISTS)) {
+	if(!g_file_query_exists(materials_file, NULL)) {
 		/* TRANSLATORS: Release->Open Materials Folder */
 		GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story),
 			GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
@@ -1098,34 +1104,31 @@ action_open_materials_folder(GtkAction *action, I7Story *story)
 		gint response = gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
 		if(response == GTK_RESPONSE_OK) {
-			if(g_mkdir_with_parents(materialspath, 0777) == -1) {
-				error_dialog(GTK_WINDOW(story), NULL, _("Error creating Materials folder: %s"), g_strerror(errno));
+			if(!g_file_make_directory_with_parents(materials_file, NULL, &error)) {
+				/* shouldn't already exist, so don't ignore G_IO_ERROR_EXISTS */
+				IO_ERROR_DIALOG(GTK_WINDOW(story), materials_file, error, _("creating Materials folder"));
 				goto finally;
 			}
 		} else
 			goto finally;
 	}
 
-	if(!g_file_test(materialspath, G_FILE_TEST_IS_DIR)) {
+	if(g_file_query_file_type(materials_file, G_FILE_QUERY_INFO_NONE, NULL) != G_FILE_TYPE_DIRECTORY) {
 		/* Odd; the Materials folder is a file. We open the containing path so
 		 the user can see this and correct it if they like. */
-		gchar *materialsdir = g_path_get_dirname(materialspath);
-		uri = g_filename_to_uri(materialsdir, NULL, &error);
-		g_free(materialsdir);
+		GFile *parent = g_file_get_parent(materials_file);
+		uri = g_file_get_uri(parent);
+		g_object_unref(parent);
 	} else {
-		uri = g_filename_to_uri(materialspath, NULL, &error);
+		uri = g_file_get_uri(materials_file);
 	}
 
-	if(!uri) {
-		error_dialog(GTK_WINDOW(story), error, _("Error converting '%s' to URI: "), materialspath);
-		goto finally;
-	}
 	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
 		error_dialog(GTK_WINDOW(story), error, _("Error opening external viewer for %s: "), uri);
 
 	g_free(uri);
 finally:
-	g_free(materialspath);
+	g_object_unref(materials_file);
 }
 
 /* Release->Export iFiction Record... */
@@ -1140,36 +1143,43 @@ action_export_ifiction_record(GtkAction *action, I7Story *story)
 void
 action_help_contents(GtkAction *action, I7Story *story)
 {
-	gchar *file = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "index.html", NULL);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "index.html", NULL);
 	i7_story_show_docpage(story, file);
-	g_free(file);
+	g_object_unref(file);
 }
 
 /* Help->License */
 void
 action_help_license(GtkAction *action, I7Story *story)
 {
-	gchar *file = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "licenses", "license.html", NULL);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "licenses", "license.html", NULL);
 	i7_story_show_docpage(story, file);
-	g_free(file);
+	g_object_unref(file);
 }
 
 /* Help->Help on Installed Extensions */
 void
 action_help_extensions(GtkAction *action, I7Story *story)
 {
-	gchar *file = g_build_filename(g_get_home_dir(), "Inform", "Documentation", "Extensions.html", NULL);
+	GFile *home_file = g_file_new_for_path(g_get_home_dir());
+	GFile *child1 = g_file_get_child(home_file, "Inform");
+	GFile *child2 = g_file_get_child(child1, "Documentation");
+	GFile *file = g_file_get_child(child2, "Extensions.html");
+	g_object_unref(home_file);
+	g_object_unref(child1);
+	g_object_unref(child2);
+
 	i7_story_show_docpage(story, file);
-	g_free(file);
+	g_object_unref(file);
 }
 
 /* Help->Recipe Book */
 void
 action_help_recipe_book(GtkAction *action, I7Story *story)
 {
-	gchar *file = i7_app_get_datafile_path_va(i7_app_get(), "Documentation", "Rindex.html", NULL);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Rindex.html", NULL);
 	i7_story_show_docpage(story, file);
-	g_free(file);
+	g_object_unref(file);
 }
 
 /* Internal function: open a page in a browser and show error dialog if fail */

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -157,63 +157,59 @@ i7_extension_save(I7Document *document)
 		return FALSE;
 	}
 
-	gchar *filename = i7_document_get_path(document);
-	if(filename && g_file_test(filename, G_FILE_TEST_EXISTS) && !g_file_test(filename, G_FILE_TEST_IS_DIR))
-		i7_document_save_as(document, filename);
+	GFile *file = i7_document_get_file(document);
+	if(file && g_file_query_exists(file, NULL))
+		i7_document_save_as(document, file);
 	else {
-		gchar *newname = get_filename_from_save_dialog(document, filename);
-		if(!newname)
+		GFile *newfile = get_file_from_save_dialog(document, file);
+		if(!newfile)
 			return FALSE;
-		i7_document_set_path(document, newname);
-		i7_document_save_as(document, newname);
-		g_free(newname);
+		i7_document_set_file(document, newfile);
+		i7_document_save_as(document, newfile);
+		g_object_unref(newfile);
 	}
-	if(filename)
-		g_free(filename);
+	if(file)
+		g_object_unref(file);
 	return TRUE;
 }
 
 /* Update the list of recently used files */
 static void
-update_recent_extension_file(I7Extension *extension, const gchar *filename, gboolean readonly)
+update_recent_extension_file(I7Extension *extension, GFile *file, gboolean readonly)
 {
-	GError *err = NULL;
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
-	gchar *file_uri;
-	if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
-		/* fail discreetly */
-		WARN(_("Cannot convert project filename to URI"), err);
-		g_error_free(err);
-		err = NULL; /* clear error */
-	} else {
-		/* We use the groups "inform7_project", "inform7_extension", and
-		 "inform7_builtin" to determine how to open a file from the recent manager */
-		gchar *groups_readonly[] = { "inform7_builtin", NULL };
-		gchar *groups_regular[] = { "inform7_extension", NULL };
-		GtkRecentData recent_data = {
-			NULL, NULL, "text/x-natural-inform", "GNOME Inform 7",
-			"gnome-inform7", NULL, FALSE
-		};
-		recent_data.display_name = g_filename_display_basename(filename);
-		/* Use the "begins here" line as the description,
-		retrieved from the first line of the text */
-		GtkTextIter start, end;
-		GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
-		gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
-		gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
-		gtk_text_iter_forward_to_line_end(&end);
-		recent_data.description = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-		recent_data.groups = readonly? groups_readonly : groups_regular;
-		gtk_recent_manager_add_full(manager, file_uri, &recent_data);
-		g_free(recent_data.display_name);
-		g_free(recent_data.description);
-	}
-	g_free(file_uri);
+	char *uri = g_file_get_uri(file);
+
+	/* We use the groups "inform7_project", "inform7_extension", and
+	 "inform7_builtin" to determine how to open a file from the recent manager */
+	char *groups_readonly[] = { "inform7_builtin", NULL };
+	char *groups_regular[] = { "inform7_extension", NULL };
+	GtkRecentData recent_data = {
+		NULL, NULL, "text/x-natural-inform", "Inform 7",
+		"gnome-inform7", NULL, FALSE
+	};
+
+	recent_data.display_name = file_get_display_name(file);
+
+	/* Use the "begins here" line as the description,
+	 retrieved from the first line of the text */
+	GtkTextIter start, end;
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
+	gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
+	gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
+	gtk_text_iter_forward_to_line_end(&end);
+	recent_data.description = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+	recent_data.groups = readonly? groups_readonly : groups_regular;
+	gtk_recent_manager_add_full(manager, uri, &recent_data);
+
+	g_free(recent_data.display_name);
+	g_free(recent_data.description);
+	g_free(uri);
 }
 
 /* Save extension in the given directory  */
 static void
-i7_extension_save_as(I7Document *document, gchar *filename)
+i7_extension_save_as(I7Document *document, GFile *file)
 {
 	GError *err = NULL;
 
@@ -224,17 +220,17 @@ i7_extension_save_as(I7Document *document, gchar *filename)
 	/* Save the source */
 	gchar *text = i7_document_get_source_text(document);
 	/* Write text to file */
-	if(!g_file_set_contents(filename, text, -1, &err)) {
-		error_dialog(GTK_WINDOW(document), err, _("Error saving file '%s': "), filename);
+	if(!g_file_replace_contents(file, text, strlen(text), NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &err)) {
+		error_dialog_file_operation(GTK_WINDOW(document), file, err, I7_FILE_ERROR_SAVE, NULL);
 		g_free(text);
 		return;
 	}
 	g_free(text);
 
-	update_recent_extension_file(I7_EXTENSION(document), filename, FALSE);
+	update_recent_extension_file(I7_EXTENSION(document), file, FALSE);
 
 	/* Start file monitoring again */
-	i7_document_monitor_file(document, filename);
+	i7_document_monitor_file(document, file);
 
 	i7_document_set_modified(document, FALSE);
 
@@ -381,9 +377,11 @@ i7_extension_init(I7Extension *self)
 	priv->readonly = FALSE;
 
 	/* Build the menus and toolbars from the GtkUIManager file */
-	gchar *filename = i7_app_get_datafile_path(i7_app_get(), "ui/extension.uimanager.xml");
-	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, filename, &error);
-	g_free(filename);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "extension.uimanager.xml", NULL);
+	char *path = g_file_get_path(file);
+	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, path, &error);
+	g_free(path);
+	g_object_unref(file);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/ExtensionMenubar");
@@ -486,11 +484,11 @@ i7_extension_class_init(I7ExtensionClass *klass)
 /* PUBLIC FUNCTIONS */
 
 I7Extension *
-i7_extension_new(I7App *app, const gchar *filename, const gchar *title, const gchar *author)
+i7_extension_new(I7App *app, GFile *file, const char *title, const char *author)
 {
 	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION, NULL));
 
-	i7_document_set_path(I7_DOCUMENT(extension), filename);
+	i7_document_set_file(I7_DOCUMENT(extension), file);
 
 	gchar *text = g_strconcat(title, " by ", author, " begins here.\n\n", title, " ends here.\n", NULL);
 	i7_document_set_source_text(I7_DOCUMENT(extension), text);
@@ -506,23 +504,19 @@ i7_extension_new(I7App *app, const gchar *filename, const gchar *title, const gc
 }
 
 I7Extension *
-i7_extension_new_from_file(I7App *app, const gchar *filename, gboolean readonly)
+i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 {
-	gchar *fullpath = expand_initial_tilde(filename);
-	I7Document *dupl = i7_app_get_already_open(app, filename);
+	I7Document *dupl = i7_app_get_already_open(app, file);
 	if(dupl && I7_IS_EXTENSION(dupl)) {
 		gtk_window_present(GTK_WINDOW(dupl));
-		g_free(fullpath);
 		return NULL;
 	}
 
 	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION, NULL));
-	if(!i7_extension_open(extension, fullpath, readonly)) {
-		g_free(fullpath);
+	if(!i7_extension_open(extension, file, readonly)) {
 		g_object_unref(extension);
 		return NULL;
 	}
-	g_free(fullpath);
 
 	/* Add document to global list */
 	i7_app_register_document(app, I7_DOCUMENT(extension));
@@ -533,41 +527,33 @@ i7_extension_new_from_file(I7App *app, const gchar *filename, gboolean readonly)
 	return extension;
 }
 
-I7Extension *
-i7_extension_new_from_uri(I7App *app, const gchar *uri, gboolean readonly)
-{
-	GError *error = NULL;
-	I7Extension *extension = NULL;
-
-	gchar *filename;
-	if((filename = g_filename_from_uri(uri, NULL, &error)) == NULL) {
-		WARN_S(_("Cannot get filename from URI"), uri, error);
-		g_error_free(error);
-		return NULL;
-	}
-
-	extension = i7_extension_new_from_file(app, filename, readonly);
-	return extension;
-}
-
-/* Opens the extension from filename, and returns success. */
+/**
+ * i7_extension_open:
+ * @extension: the extension object
+ * @file: a #GFile to open
+ * @readonly: whether to open @file as a built-in extension or not
+ *
+ * Opens the extension from @file, and returns success.
+ *
+ * Returns: %TRUE if successful, %FALSE if not.
+ */
 gboolean
-i7_extension_open(I7Extension *extension, const gchar *filename, gboolean readonly)
+i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly)
 {
-	i7_document_set_path(I7_DOCUMENT(extension), filename);
+	i7_document_set_file(I7_DOCUMENT(extension), file);
 
 	/* If it was a built-in extension, set it read-only */
 	i7_extension_set_read_only(extension, readonly);
 
 	/* Read the source */
-	gchar *text = read_source_file(filename);
+	char *text = read_source_file(file);
 	if(!text)
 		return FALSE;
 
-	update_recent_extension_file(extension, filename, readonly);
+	update_recent_extension_file(extension, file, readonly);
 
 	/* Watch for changes to the source file */
-	i7_document_monitor_file(I7_DOCUMENT(extension), filename);
+	i7_document_monitor_file(I7_DOCUMENT(extension), file);
 
 	/* Write the source to the source buffer, clearing the undo history */
 	i7_document_set_source_text(I7_DOCUMENT(extension), text);

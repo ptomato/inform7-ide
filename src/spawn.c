@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -124,14 +124,26 @@ echo_invocation_to_output(gchar **argv, GtkTextBuffer *output)
 	g_free(invocation);
 }
 
-/* Runs a command (in argv[0]) with working directory wd, and pipes the output
-to a GtkTextBuffer */
+/**
+ * run_command:
+ * @wd_file: a #GFile pointing to the working directory for the command.
+ * @argv: an array of strings with the command line arguments.
+ * @output: a #GtkTextBuffer in which to place the command's output.
+ *
+ * Runs a command (in @argv[0]) asynchronously with working directory @wd_file,
+ * and pipes the output to @output.
+ *
+ * Returns: a #GPid for the process.
+ */
 GPid
-run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output)
+run_command(GFile *wd_file, char **argv, GtkTextBuffer *output)
 {
 	GError *err = NULL;
 	GPid child_pid;
 	gint stdout_fd, stderr_fd;
+	char *wd;
+
+	wd = g_file_get_path(wd_file);
 
 	echo_invocation_to_output(argv, output);
 
@@ -149,8 +161,10 @@ run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output)
 	  output? &stderr_fd : NULL,   /* where to put stderr file descriptor */
 	  &err)) {
 		error_dialog(NULL, err, _("Could not spawn process: "));
+		g_free(wd);
 		return (GPid)0;
 	}
+	g_free(wd);
 
 	/* Now use GIOChannels to monitor stdout and stderr */
 	if(output != NULL) {
@@ -182,16 +196,32 @@ set_up_io_channel_hook(gint fd, GtkTextBuffer *output, IOHookFunc *callback,
 	g_io_channel_unref(ioc);
 }
 
-/* Runs a command (in argv[0]) with working directory wd, pipes the output
-to a GtkTextBuffer, and also to a hook function */
+/**
+ * run_command:
+ * @wd_file: a #GFile pointing to the working directory for the command.
+ * @argv: an array of strings with the command line arguments.
+ * @output: a #GtkTextBuffer in which to place the command's output.
+ * @callback: an #IOHookFunc to call with the command's output.
+ * @data: arbitrary data to pass to @callback.
+ * @get_out: whether to send the process's #stdout to @callback.
+ * @get_err: whether to send the process's #stderr to @callback.
+ *
+ * Runs a command (in @argv[0]) asynchronously with working directory @wd_file,
+ * and pipes the output to @output, and also to a hook function @callback.
+ *
+ * Returns: a #GPid for the process.
+ */
 GPid
-run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
+run_command_hook(GFile *wd_file, char **argv, GtkTextBuffer *output,
 				 IOHookFunc *callback, gpointer data, gboolean get_out,
 				 gboolean get_err)
 {
 	GError *err = NULL;
 	GPid child_pid;
 	gint stdout_fd, stderr_fd;
+	char *wd;
+
+	wd = g_file_get_path(wd_file);
 
 	echo_invocation_to_output(argv, output);
 
@@ -209,8 +239,10 @@ run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
 	  output? &stderr_fd : NULL,   /* where to put stderr file descriptor */
 	  &err)) {
 		error_dialog(NULL, err, _("Could not spawn process: "));
+		g_free(wd);
 		return (GPid)0;
 	}
+	g_free(wd);
 
 	/* Now use GIOChannels to monitor stdout and stderr */
 	if(output != NULL) {

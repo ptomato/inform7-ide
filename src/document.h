@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -130,9 +130,9 @@ typedef enum {
 
 GType i7_document_get_type(void) G_GNUC_CONST;
 void i7_document_add_menus_and_findbar(I7Document *document);
-gchar *i7_document_get_path(const I7Document *document);
+GFile *i7_document_get_file(const I7Document *document);
 gchar *i7_document_get_display_name(I7Document *document);
-void i7_document_set_path(I7Document *document, const gchar *filename);
+void i7_document_set_file(I7Document *document, GFile *file);
 GtkSourceBuffer *i7_document_get_buffer(I7Document *document);
 GtkTextView *i7_document_get_default_view(I7Document *document);
 void i7_document_set_source_text(I7Document *document, gchar *text);
@@ -142,10 +142,10 @@ void i7_document_set_modified(I7Document *document, gboolean modified);
 GtkTreeModel *i7_document_get_headings(I7Document *document);
 GtkTreePath *i7_document_get_child_path(I7Document *document, GtkTreePath *path);
 
-void i7_document_monitor_file(I7Document *document, const gchar *filename);
+void i7_document_monitor_file(I7Document *document, GFile *file);
 void i7_document_stop_file_monitor(I7Document *document);
 gboolean i7_document_save(I7Document *document);
-void i7_document_save_as(I7Document *document, const gchar *filename);
+void i7_document_save_as(I7Document *document, GFile *file);
 gboolean i7_document_verify_save(I7Document *document);
 void i7_document_close(I7Document *document);
 void i7_document_scroll_to_selection(I7Document *document);

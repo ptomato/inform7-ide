@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,11 +23,14 @@
 #include "story.h"
 #include "document.h"
 
-gchar *expand_initial_tilde(const gchar *path);
-gchar *read_source_file(const gchar *filename);
+char *read_source_file(GFile *file);
 void set_source_text(GtkSourceBuffer *buffer, gchar *text);
-gchar *get_filename_from_save_dialog(I7Document *document, const gchar *default_filename);
+GFile *get_file_from_save_dialog(I7Document *document, GFile *default_file);
 void delete_build_files(I7Story *story);
-gchar *get_case_insensitive_extension(const gchar *path);
+GFile *get_case_insensitive_extension(GFile *file);
+gboolean make_directory_unless_exists(GFile *file, GCancellable *cancellable, GError **error);
+gboolean file_exists_and_is_dir(GFile *file);
+gboolean file_exists_and_is_symlink(GFile *file);
+char *file_get_display_name(GFile *file);
 
 #endif

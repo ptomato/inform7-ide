@@ -1,4 +1,4 @@
-/*  Copyright (C) 2007, 2008, 2009, 2010, 2011 P. F. Chimento
+/*  Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -66,13 +66,20 @@ i7_app_init(I7App *self)
 
 	/* Retrieve data directories if set externally */
 	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
-	priv->datadir = env? g_strdup(env) : g_build_filename(PACKAGE_DATA_DIR, "gnome-inform7", NULL);
-	env = g_getenv("GNOME_INFORM_LIBEXEC_DIR");
-	priv->libexecdir = env? g_strdup(env) : g_strdup(PACKAGE_LIBEXEC_DIR);
+	if(env) {
+		priv->datadir = g_file_new_for_path(env);
+	} else {
+		char *path = g_build_filename(PACKAGE_DATA_DIR, "gnome-inform7", NULL);
+		priv->datadir = g_file_new_for_path(path);
+		g_free(path);
+	}
 
-	gchar *builderfilename = i7_app_get_datafile_path(self, "ui/gnome-inform7.ui");
-	GtkBuilder *builder = create_new_builder(builderfilename, self);
-	g_free(builderfilename);
+	env = g_getenv("GNOME_INFORM_LIBEXEC_DIR");
+	priv->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
+
+	GFile *builderfile = i7_app_get_data_file(self, "ui/gnome-inform7.ui");
+	GtkBuilder *builder = create_new_builder(builderfile, self);
+	g_object_unref(builderfile);
 
 	/* Make the action group and ref it so that it won't be owned by whatever
 	UI manager it's inserted into */
@@ -95,9 +102,11 @@ i7_app_init(I7App *self)
 	priv->page_setup = gtk_page_setup_new();
 
 	/* Create the Gnome Inform7 dir if it doesn't already exist */
-	gchar *extensions_dir = i7_app_get_extension_path(self, NULL, NULL);
-	g_mkdir_with_parents(extensions_dir, 0777);
-	g_free(extensions_dir);
+	GFile *extensions_file = i7_app_get_extension_file(self, NULL, NULL);
+	if(!make_directory_unless_exists(extensions_file, NULL, &error)) {
+		IO_ERROR_DIALOG(NULL, extensions_file, error, _("creating the Inform directory"));
+	}
+	g_object_unref(extensions_file);
 
 	/* Set up monitor for extensions directory */
 	i7_app_run_census(self, FALSE);
@@ -111,7 +120,7 @@ i7_app_init(I7App *self)
 		{ "^\\s*(?:version\\s.+\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */
 		  "(?P<title>.+)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)?" /* <title> [(for X only)] */
 		  "by\\s+(?P<author>.+)\\s+" /* by <author> */
-		  "begins?\\s+here\\.?\\s*\n", /* begins here[.] */
+		  "begins?\\s+here\\.?\\s*$", /* begins here[.] */
 		  TRUE },
 		{ "R?ex(?P<number>[0-9]+).html$", FALSE }
 	};
@@ -136,8 +145,8 @@ static void
 i7_app_finalize(GObject *self)
 {
 	I7_APP_USE_PRIVATE(self, priv);
-	g_free(priv->datadir);
-	g_free(priv->libexecdir);
+	g_object_unref(priv->datadir);
+	g_object_unref(priv->libexecdir);
 	i7_app_stop_monitoring_extensions_directory(I7_APP(self));
 	if(I7_APP(self)->prefs)
 		g_slice_free(I7PrefsWidgets, I7_APP(self)->prefs);
@@ -185,21 +194,19 @@ i7_app_get(void)
 /* Detect the type of document represented by @filename and open it. If that
  document is already open, then bring its window to the front. */
 void
-i7_app_open(I7App *app, const gchar *filename)
+i7_app_open(I7App *app, GFile *file)
 {
-	gchar *fullpath = expand_initial_tilde(filename);
-	I7Document *dupl = i7_app_get_already_open(app, fullpath);
+	I7Document *dupl = i7_app_get_already_open(app, file);
 	if(dupl) {
 		gtk_window_present(GTK_WINDOW(dupl));
-		g_free(fullpath);
 		return;
 	}
 
-	if(g_file_test(fullpath, G_FILE_TEST_EXISTS)) {
-		if(g_file_test(fullpath, G_FILE_TEST_IS_DIR))
-			i7_story_new_from_file(app, fullpath);
+	if(g_file_query_exists(file, NULL)) {
+		if(g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
+			i7_story_new_from_file(app, file);
 			/* TODO make sure story.ni exists */
-		/* else */
+		} /* else */
 			/* TODO Use is_valid_extension to check if they're extensions and then open them */
 	}
 }
@@ -229,23 +236,32 @@ i7_app_remove_document(I7App *app, I7Document *document)
 
 /* Custom search function for invocation of g_slist_find_custom() in
 i7_app_get_already_open() below */
-static gint
-document_compare_name(const I7Document *document, const gchar *filename)
+static gboolean
+document_compare_file(const I7Document *document, GFile *file)
 {
-	gchar *name = i7_document_get_path(document);
-	gint retval = strcmp(name, filename);
-	g_free(name);
-	return retval;
+	GFile *document_file = i7_document_get_file(document);
+
+	gboolean equal = g_file_equal(file, document_file);
+
+	g_object_unref(document_file);
+	return equal? 0 : 1;
 }
 
-/* Check to see if @filename is already open in this instance of the
- application. Return the corresponding I7Document object if so, or NULL
- otherwise. */
+/**
+ * i7_app_get_already_open:
+ * @app: the application
+ * @file: a #GFile
+ *
+ * Check to see if @file is already open in this instance of the application.
+ *
+ * Returns: the corresponding #I7Document object if file is open, or %NULL
+ * otherwise.
+ */
 I7Document *
-i7_app_get_already_open(I7App *app, const gchar *filename)
+i7_app_get_already_open(I7App *app, const GFile *file)
 {
 	I7_APP_USE_PRIVATE(app, priv);
-	GSList *node = g_slist_find_custom(priv->document_list, filename, (GCompareFunc)document_compare_name);
+	GSList *node = g_slist_find_custom(priv->document_list, file, (GCompareFunc)document_compare_file);
 	if(node)
 		return node->data;
 	return NULL;
@@ -295,9 +311,7 @@ i7_app_monitor_extensions_directory(I7App *app)
 	I7_APP_USE_PRIVATE(app, priv);
 	GError *error = NULL;
 	if(!I7_APP_PRIVATE(app)->extension_dir_monitor) {
-		gchar *extpath = i7_app_get_extension_path(app, NULL, NULL);
-		GFile *extdir = g_file_new_for_path(extpath);
-		g_free(extpath);
+		GFile *extdir = i7_app_get_extension_file(app, NULL, NULL);
 		priv->extension_dir_monitor = g_file_monitor_directory(extdir, G_FILE_MONITOR_NONE, NULL, &error);
 		g_object_unref(extdir);
 	}
@@ -342,14 +356,25 @@ is_valid_extension(I7App *app, const gchar *text, gchar **thename, gchar **theau
 	return TRUE;
 }
 
-/* Install the extension at @filename into the user's extensions dir */
+/**
+ * i7_app_install_extension:
+ * @app: the application
+ * @file: a #GFile
+ *
+ * Install the extension @file into the user's extensions directory.
+ */
 void
-i7_app_install_extension(I7App *app, const gchar *filename)
+i7_app_install_extension(I7App *app, GFile *file)
 {
-	g_return_if_fail(filename != NULL);
+	g_return_if_fail(file);
 	GError *err = NULL;
 
-	gchar *text = read_source_file(filename);
+	/* Read the first line of the file */
+	GFileInputStream *file_stream = g_file_read(file, NULL, &err);
+	if(!file_stream)
+		return;
+	GDataInputStream *stream = g_data_input_stream_new(G_INPUT_STREAM(file_stream));
+	char *text = g_data_input_stream_read_line_utf8(stream, NULL, NULL, &err);
 	if(!text)
 		return;
 
@@ -357,145 +382,182 @@ i7_app_install_extension(I7App *app, const gchar *filename)
 	gchar *name = NULL;
 	gchar *author = NULL;
 	if(!is_valid_extension(app, text, &name, &author)) {
+		char *display_name = file_get_display_name(file);
 		error_dialog(NULL, NULL, _("The file '%s' does not seem to be an "
 		  "extension. Extensions should be saved as UTF-8 text format files, "
 		  "and should start with a line of one of these forms:\n\n<Extension> "
 		  "by <Author> begins here.\nVersion <Version> of <Extension> by "
-		  "<Author> begins here."), filename);
+		  "<Author> begins here."), display_name);
+		g_free(display_name);
 		g_free(text);
 		return;
 	}
+	g_free(text);
 
 	/* Turn off the file monitor */
 	i7_app_stop_monitoring_extensions_directory(app);
 
 	/* Create the directory for that author if it does not exist already */
-	gchar *dir = i7_app_get_extension_path(app, author, NULL);
+	GFile *dir = i7_app_get_extension_file(app, author, NULL);
 
-	if(!g_file_test(dir, G_FILE_TEST_EXISTS)) {
-		if(g_mkdir_with_parents(dir, 0777) == -1) {
-			error_dialog(NULL, NULL, _("Error creating directory '%s'."), dir);
-			g_free(name);
-			g_free(author);
-			g_free(dir);
-			g_free(text);
-			i7_app_monitor_extensions_directory(app);
-			return;
-		}
+	if(!make_directory_unless_exists(dir, NULL, &err)) {
+		error_dialog_file_operation(NULL, dir, err, I7_FILE_ERROR_OTHER, _("creating a directory"));
+		g_free(name);
+		g_free(author);
+		g_object_unref(dir);
+		i7_app_monitor_extensions_directory(app);
+		return;
 	}
 
-	gchar *targetname = g_build_filename(dir, name, NULL);
-	gchar *canonicaltarget = g_strconcat(targetname, ".i7x", NULL);
-	g_free(dir);
+	char *canonical_name = g_strconcat(name, ".i7x", NULL);
+	GFile *target = g_file_get_child(dir, name);
+	GFile *canonical_target = g_file_get_child(dir, canonical_name);
+	g_free(canonical_name);
+	g_object_unref(dir);
 
 	/* Check if the extension is already installed */
-	if(g_file_test(targetname, G_FILE_TEST_EXISTS) || g_file_test(canonicaltarget, G_FILE_TEST_EXISTS))
+	if(g_file_query_exists(target, NULL) || g_file_query_exists(canonical_target, NULL))
 	{
 		GtkWidget *dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
 		  _("A version of the extension %s by %s is already installed. Do you "
 		  "want to overwrite the installed extension with this new one?"), name, author);
 		if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES) {
 			gtk_widget_destroy(dialog);
-			g_free(targetname);
-			g_free(canonicaltarget);
+			g_object_unref(target);
+			g_object_unref(canonical_target);
 			g_free(name);
 			g_free(author);
-			g_free(text);
 			i7_app_monitor_extensions_directory(app);
 			return;
 		}
 		gtk_widget_destroy(dialog);
 	}
 
-	/* Copy the extension file to the user's extensions dir */
-	if(!g_file_set_contents(canonicaltarget, text, -1, &err)) {
-		error_dialog(NULL, NULL, _("Error copying file '%s' to '%s': "), filename, canonicaltarget);
-		g_free(text);
-		g_free(targetname);
-		g_free(canonicaltarget);
-		g_free(name);
-		g_free(author);
-		i7_app_monitor_extensions_directory(app);
-		return;
-	}
-
-	g_free(text);
-	g_free(canonicaltarget);
 	g_free(name);
 	g_free(author);
 
+	/* Copy the extension file to the user's extensions dir */
+	if(!g_file_copy(file, canonical_target, G_FILE_COPY_OVERWRITE | G_FILE_COPY_TARGET_DEFAULT_PERMS, NULL, NULL, NULL, &err)) {
+		error_dialog_file_operation(NULL, canonical_target, err, I7_FILE_ERROR_OTHER, _("copying a file"));
+		g_object_unref(target);
+		g_object_unref(canonical_target);
+		i7_app_monitor_extensions_directory(app);
+		return;
+	}
+	g_object_unref(canonical_target);
+
 	/* If a version without *.i7x is still residing in that directory, delete
 	it now */
-	if(g_file_test(targetname, G_FILE_TEST_EXISTS)) {
-		if(g_remove(targetname) == -1)
-			error_dialog(NULL, NULL, _("There was an error removing the old file '%s'."), targetname);
+	if(g_file_query_exists(target, NULL)) {
+		if(!g_file_delete(target, NULL, &err) == -1)
+			error_dialog_file_operation(NULL, target, err, I7_FILE_ERROR_OTHER, _("removing an old extension file"));
 	}
-	g_free(targetname);
+
+	g_object_unref(target);
 	i7_app_monitor_extensions_directory(app);
 
 	/* Index the new extensions, in the foreground */
 	i7_app_run_census(app, TRUE);
 }
 
+/*
+ * remove_i7x_from_file:
+ * @file: a #GFile reference.
+ *
+ * Removes the extension (in this case, it should be .i7x, but it doesn't really
+ * matter) from the file and creates a new file reference.
+ *
+ * Returns: (transfer full): a new #GFile, unref when done; or %NULL if @file
+ * didn't have an extension.
+ */
+static GFile *
+remove_i7x_from_file(GFile *file)
+{
+	GFile *parent = g_file_get_parent(file);
+	char *basename = g_file_get_basename(file);
+	char *dot = strrchr(basename, '.');
+	GFile *retval;
+
+	if(dot) {
+		*dot = '\0';
+		retval = g_file_get_child(parent, basename);
+	} else {
+		retval = NULL;
+	}
+
+	g_object_unref(parent);
+	g_free(basename);
+	return retval;
+}
+
 /* Delete extension and remove author dir if empty */
 void
 i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 {
+	GFile *file, *file_lc, *file_noext, *file_lc_noext, *author_dir, *author_dir_lc;
+	char *extname_lc;
+	GError *err = NULL;
+
 	i7_app_stop_monitoring_extensions_directory(app);
 
+	/* Get references to the various possible versions of this filename */
+	file = i7_app_get_extension_file(app, author, extname);
+	file_noext = remove_i7x_from_file(file);
+
 	/* Remove extension, try versions with and without .i7x */
-	gchar *filename = i7_app_get_extension_path(app, author, extname);
-	gchar *canonicalname = g_strconcat(filename, ".i7x", NULL);
-	if(g_remove(filename) == -1 && g_remove(canonicalname) == -1) {
-		error_dialog(NULL, NULL, _("There was an error removing %s."), filename);
-		g_free(filename);
-		i7_app_monitor_extensions_directory(app);
-		return;
+	if(!g_file_delete(file, NULL, &err) && !g_file_delete(file_noext, NULL, &err)) {
+		error_dialog_file_operation(NULL, file, err, I7_FILE_ERROR_OTHER, _("deleting the file with or without extension"));
+		g_object_unref(file);
+		g_object_unref(file_noext);
+		goto finally;
 	}
-	g_free(filename);
+	g_object_unref(file);
+	g_object_unref(file_noext);
 
 	/* Remove lowercase symlink to extension (holdover from previous versions
 	of Inform) */
-	gchar *extname_lc = g_utf8_strdown(extname, -1);
-	filename = i7_app_get_extension_path(app, author, extname_lc);
-	g_free(extname_lc);
+	extname_lc = g_utf8_strdown(extname, -1);
+	file_lc = i7_app_get_extension_file(app, author, extname_lc);
+	file_lc_noext = remove_i7x_from_file(file_lc);
+	g_object_unref(file_lc);
+
 	/* Only do this if the symlink actually exists */
-	if(g_file_test(filename, G_FILE_TEST_IS_SYMLINK)) {
-		if(g_remove(filename) == -1) {
-			error_dialog(NULL, NULL, _("There was an error removing %s."), filename);
-			g_free(filename);
-			i7_app_monitor_extensions_directory(app);
-			return;
+	if(file_exists_and_is_symlink(file_lc_noext)) {
+		if(!g_file_delete(file_lc_noext, NULL, &err)) {
+			error_dialog_file_operation(NULL, file, err, I7_FILE_ERROR_OTHER, _("deleting an old symlink"));
+			g_object_unref(file_lc_noext);
+			goto finally;
 		}
 	}
-	g_free(filename);
+	g_object_unref(file_lc_noext);
 
 	/* Remove author directory if empty */
-	filename = i7_app_get_extension_path(app, author, NULL);
-	if(g_rmdir(filename) == -1) {
-		/* if there were other extensions, continue; but if it failed for any
+	author_dir = i7_app_get_extension_file(app, author, NULL);
+	if(!g_file_delete(author_dir, NULL, &err)) {
+		/* if the directory isn't empty, continue; but if it failed for any
 		other reason, display an error */
-		if(errno != ENOTEMPTY) {
-			error_dialog(NULL, NULL, _("There was an error removing %s."), filename);
-			g_free(filename);
-			i7_app_monitor_extensions_directory(app);
-			return;
+		if(!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_NOT_EMPTY)) {
+			error_dialog_file_operation(NULL, author_dir, err, I7_FILE_ERROR_OTHER, _("deleting an empty directory"));
+			g_object_unref(author_dir);
+			goto finally;
 		}
 	}
-	g_free(filename);
+	g_object_unref(author_dir);
 
 	/* Remove lowercase symlink to author directory (holdover from previous
 	versions of Inform) */
 	gchar *author_lc = g_utf8_strdown(author, -1);
-	filename = i7_app_get_extension_path(app, author_lc, NULL);
+	author_dir_lc = i7_app_get_extension_file(app, author_lc, NULL);
 	g_free(author_lc);
 	/* Only do this if the symlink actually exists */
-	if(g_file_test(filename, G_FILE_TEST_IS_SYMLINK)) {
-		if(g_remove(filename) == -1)
-			error_dialog(NULL, NULL, _("There was an error removing %s."), filename);
+	if(file_exists_and_is_symlink(author_dir_lc)) {
+		if(!g_file_delete(author_dir_lc, NULL, &err)) {
+			error_dialog_file_operation(NULL, author_dir_lc, err, I7_FILE_ERROR_OTHER, _("deleting an old symlink"));
+		}
 	}
-	g_free(filename);
+	g_object_unref(author_dir_lc);
 
+finally:
 	i7_app_monitor_extensions_directory(app);
 
 	/* Index the new extensions, in the foreground */
@@ -505,185 +567,248 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 /* Return the full path to the built-in Inform extension represented by @author
  and @extname, if not NULL; return the author directory if @extname is NULL;
  return the built-in extensions path if both are NULL. */
-static gchar *
-get_builtin_extension_path(I7App *app, const gchar *author,
+static GFile *
+get_builtin_extension_file(I7App *app, const gchar *author,
 	const gchar *extname)
 {
 	if(!author)
-		return i7_app_get_datafile_path_va(app, "Extensions", NULL);
+		return i7_app_get_data_file_va(app, "Extensions", NULL);
 	if(!extname)
-		return i7_app_get_datafile_path_va(app, "Extensions", author, NULL);
-	return i7_app_get_datafile_path_va(app, "Extensions", author, extname, NULL);
+		return i7_app_get_data_file_va(app, "Extensions", author, NULL);
+	return i7_app_get_data_file_va(app, "Extensions", author, extname, NULL);
 }
 
-/* Look in the user's extensions directory and list all the extensions there in
-the application's extensions tree */
+/**
+ * i7_app_foreach_installed_extension:
+ * @app: the app
+ * @builtin: whether to iterate over the built-in extensions or the
+ * user-installed ones
+ * @author_func: (allow-none) (scope call): a function to call for each author
+ * directory found, which may return a result
+ * @author_func_data: (allow-none): data to pass to @author_func
+ * @extension_func: (allow-none) (scope call): a function to call for each
+ * extension file found in each author directory
+ * @extension_func_data: (allow-none): data to pass to @extension_func
+ * @free_author_result: (allow-none): function to free the return value of
+ * @author_func
+ *
+ * Iterates over the installed extensions (the built-in ones if @builtin is
+ * %TRUE, or the user-installed ones if %FALSE), calling functions for each
+ * author directory and each installed extension in each author directory.
+ *
+ * @author_func may return a result, which is passed to the @extension_func when
+ * called for extensions in that author directory. After the author directory
+ * has been traversed, @free_author_result is called on the return value of
+ * @author_func, if both of them are not %NULL.
+ */
+void
+i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc author_func, gpointer author_func_data, I7AppExtensionFunc extension_func, gpointer extension_func_data, GDestroyNotify free_author_result)
+{
+	GError *err = NULL;
+	GFile *root_file;
+	GFileEnumerator *root_dir;
+	GFileInfo *author_info;
+	gpointer author_result;
+
+	if(builtin)
+		root_file = get_builtin_extension_file(app, NULL, NULL);
+	else
+		root_file = i7_app_get_extension_file(app, NULL, NULL);
+
+	root_dir = g_file_enumerate_children(root_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err);
+	if(!root_dir) {
+		error_dialog_file_operation(NULL, root_file, err, I7_FILE_ERROR_OTHER, _("opening extensions directory"));
+		g_object_unref(root_file);
+		return;
+	}
+
+	while((author_info = g_file_enumerator_next_file(root_dir, NULL, NULL)) != NULL) {
+		const char *author_name = g_file_info_get_name(author_info);
+		GFile *author_file;
+		GFileEnumerator *author_dir;
+		GFileInfo *extension_info;
+
+		/* Read each extension dir, but skip "Reserved" and nondirs */
+		if(strcmp(author_name, "Reserved") == 0)
+			continue;
+		if(g_file_info_get_file_type(author_info) != G_FILE_TYPE_DIRECTORY)
+			continue;
+
+		if(author_func)
+			author_result = author_func(author_info, author_func_data);
+		else
+			author_result = NULL;
+
+		/* Descend into each author directory */
+		author_file = g_file_get_child(root_file, author_name);
+		author_dir = g_file_enumerate_children(author_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err);
+		if(!author_dir) {
+			error_dialog_file_operation(NULL, author_file, err, I7_FILE_ERROR_OTHER, _("opening extensions directory"));
+			g_object_unref(author_file);
+			return;
+		}
+
+		while((extension_info = g_file_enumerator_next_file(author_dir, NULL, NULL)) != NULL) {
+
+			/* Read each file, but skip symlinks */
+			if(g_file_info_get_is_symlink(extension_info))
+				continue;
+
+			if(extension_func)
+				extension_func(author_file, extension_info, author_result, extension_func_data);
+
+			g_object_unref(extension_info);
+		}
+
+		if(free_author_result && author_result)
+			free_author_result(author_result);
+
+		/* Finished enumerating author directory */
+		if(err) {
+			error_dialog_file_operation(NULL, author_file, err, I7_FILE_ERROR_OTHER, _("reading extensions directory"));
+		}
+		g_object_unref(author_file);
+		g_file_enumerator_close(author_dir, NULL, NULL); /* ignore error */
+		g_object_unref(author_dir);
+		g_object_unref(author_info);
+	}
+
+	/* Finished enumerating user extensions directory */
+	if(err) {
+		error_dialog_file_operation(NULL, root_file, err, I7_FILE_ERROR_OTHER, _("reading extensions directory"));
+	}
+	g_object_unref(root_file);
+	g_file_enumerator_close(root_dir, NULL, NULL); /* ignore error */
+	g_object_unref(root_dir);
+}
+
+/* Helper function: Add author to tree store callback */
+static GtkTreeIter *
+add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
+{
+	GtkTreeIter parent_iter;
+	const char *author_display_name = g_file_info_get_display_name(info);
+	gboolean found = FALSE;
+
+	/* If the author directory was already indexed before, add the extension
+	to it instead of making a new entry */
+	if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &parent_iter)) {
+		do {
+			char *author;
+			gtk_tree_model_get(GTK_TREE_MODEL(store), &parent_iter, I7_APP_EXTENSION_TEXT, &author, -1);
+			if(strcmp(author_display_name, author) == 0)
+				found = TRUE;
+			g_free(author);
+			if(found)
+				break;
+		} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &parent_iter));
+	}
+
+	if(!found) {
+		gtk_tree_store_append(store, &parent_iter, NULL);
+		gtk_tree_store_set(store, &parent_iter,
+			I7_APP_EXTENSION_TEXT, author_display_name,
+			I7_APP_EXTENSION_READ_ONLY, TRUE,
+			I7_APP_EXTENSION_ICON, NULL,
+			I7_APP_EXTENSION_FILE, NULL,
+			-1);
+	}
+
+	return gtk_tree_iter_copy(&parent_iter);
+}
+
+/* Helper function: add extension to tree store as a non-built-in extension */
+static void
+add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+{
+	const char *extension_name = g_file_info_get_name(info);
+	GFile *extension_file = g_file_get_child(parent, extension_name);
+	const char *display_name = g_file_info_get_display_name(info);
+	GtkTreeIter child_iter;
+
+	/* Remove .i7x from the filename, if it is there */
+	char *i7_display_name;
+	if(g_str_has_suffix(display_name, ".i7x"))
+		i7_display_name = g_strndup(display_name, strlen(display_name) - 4);
+	else
+		i7_display_name = g_strdup(display_name);
+
+	gtk_tree_store_append(store, &child_iter, parent_iter);
+	gtk_tree_store_set(store, &child_iter,
+		I7_APP_EXTENSION_TEXT, i7_display_name, /* copies */
+		I7_APP_EXTENSION_READ_ONLY, FALSE,
+		I7_APP_EXTENSION_ICON, NULL,
+		I7_APP_EXTENSION_FILE, extension_file, /* references */
+		-1);
+
+	g_object_unref(extension_file);
+	g_free(i7_display_name);
+}
+
+/* Helper function: add extension to tree store as a built-in extension. Makes
+ * sure that user-installed extensions override the built-in ones. */
+static void
+add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+{
+	const char *extension_name = g_file_info_get_name(info);
+	const char *display_name = g_file_info_get_display_name(info);
+	GFile *extension_file = g_file_get_child(parent, extension_name);
+	GtkTreeIter child_iter;
+	gboolean found;
+
+	/* Remove .i7x from the filename, if it is there */
+	char *i7_display_name;
+	if(g_str_has_suffix(display_name, ".i7x"))
+		i7_display_name = g_strndup(display_name, strlen(display_name) - 4);
+	else
+		i7_display_name = g_strdup(display_name);
+
+	/* Only add it if it is not overridden by a user-installed extension */
+	found = FALSE;
+	if(gtk_tree_model_iter_children(GTK_TREE_MODEL(store), &child_iter, parent_iter)) {
+		do {
+			char *name;
+			gtk_tree_model_get(GTK_TREE_MODEL(store), &child_iter,
+				I7_APP_EXTENSION_TEXT, &name,
+				-1);
+			if(strcmp(i7_display_name, name) == 0)
+				found = TRUE;
+			g_free(name);
+			if(found)
+				break;
+		} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &child_iter));
+	}
+
+	if(!found) {
+		gtk_tree_store_append(store, &child_iter, parent_iter);
+		gtk_tree_store_set(store, &child_iter,
+			I7_APP_EXTENSION_TEXT, i7_display_name,
+			I7_APP_EXTENSION_READ_ONLY, TRUE,
+			I7_APP_EXTENSION_ICON, "inform7-builtin",
+			I7_APP_EXTENSION_FILE, extension_file,
+			-1);
+	}
+
+	g_object_unref(extension_file);
+	g_free(i7_display_name);
+}
+
+/* Helper function: look in the user's extensions directory and the built-in one
+ and list all the extensions there in the application's extensions tree */
 static gboolean
 update_installed_extensions_tree(I7App *app)
 {
-	GError *err = NULL;
-
 	GtkTreeStore *store = I7_APP_PRIVATE(app)->installed_extensions;
 	gtk_tree_store_clear(store);
-	GtkTreeIter parent_iter, child_iter;
 
-	gchar *extension_dir = i7_app_get_extension_path(app, NULL, NULL);
-	GDir *extensions = g_dir_open(extension_dir, 0, &err);
-	g_free(extension_dir);
-	if(err) {
-		error_dialog(NULL, err, _("Error opening extensions directory: "));
-		return FALSE;
-	}
-
-	const gchar *dir_entry;
-	while((dir_entry = g_dir_read_name(extensions)) != NULL) {
-		if(!strcmp(dir_entry, "Reserved"))
-			continue;
-		gchar *author_dir = i7_app_get_extension_path(app, dir_entry, NULL);
-		if(g_file_test(author_dir, G_FILE_TEST_IS_SYMLINK) || !g_file_test(author_dir, G_FILE_TEST_IS_DIR))
-		{
-			g_free(author_dir);
-			continue;
-		}
-		/* Read each extension dir, but skip "Reserved", symlinks and nondirs*/
-		gtk_tree_store_append(store, &parent_iter, NULL);
-		gtk_tree_store_set(store, &parent_iter,
-			I7_APP_EXTENSION_TEXT, dir_entry,
-			I7_APP_EXTENSION_READ_ONLY, TRUE,
-			I7_APP_EXTENSION_ICON, NULL,
-			I7_APP_EXTENSION_PATH, NULL,
-			-1);
-
-		/* Descend into each author directory */
-		GDir *author = g_dir_open(author_dir, 0, &err);
-		g_free(author_dir);
-		if(err) {
-			error_dialog(NULL, err, _("Error opening extensions directory: "));
-			return FALSE;
-		}
-		const gchar *author_entry;
-		while((author_entry = g_dir_read_name(author)) != NULL) {
-			gchar *extname = i7_app_get_extension_path(app, dir_entry, author_entry);
-			if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
-				g_free(extname);
-				continue;
-			}
-			/* Read each file, but skip symlinks */
-			/* Remove .i7x from the filename, if it is there */
-			gchar *displayname;
-			if(g_str_has_suffix(author_entry, ".i7x"))
-				displayname = g_strndup(author_entry, strlen(author_entry) - 4);
-			else
-				displayname = g_strdup(author_entry);
-			gtk_tree_store_append(store, &child_iter, &parent_iter);
-			gtk_tree_store_set(store, &child_iter,
-				I7_APP_EXTENSION_TEXT, displayname,
-				I7_APP_EXTENSION_READ_ONLY, FALSE,
-				I7_APP_EXTENSION_ICON, NULL,
-				I7_APP_EXTENSION_PATH, extname,
-				-1);
-			g_free(extname);
-			g_free(displayname);
-		}
-		g_dir_close(author);
-	}
-	g_dir_close(extensions);
-
-	/* Do it again for the built-in extensions directory */
-	extension_dir = get_builtin_extension_path(app, NULL, NULL);
-	extensions = g_dir_open(extension_dir, 0, &err);
-	g_free(extension_dir);
-	if(err) {
-		error_dialog(NULL, err, _("Error opening built-in extensions directory: "));
-		return FALSE;
-	}
-
-	while((dir_entry = g_dir_read_name(extensions)) != NULL) {
-		if(!strcmp(dir_entry, "Reserved"))
-			continue;
-		gchar *author_dir = get_builtin_extension_path(app, dir_entry, NULL);
-		if(g_file_test(author_dir, G_FILE_TEST_IS_SYMLINK) || !g_file_test(author_dir, G_FILE_TEST_IS_DIR))
-		{
-			g_free(author_dir);
-			continue;
-		}
-		/* Read each extension dir, but skip "Reserved", symlinks and nondirs.
-		If the author directory was already indexed before, add the extension
-		to it instead of making a new entry */
-
-		gboolean found = FALSE;
-		if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &parent_iter)) {
-			do {
-				gchar *author;
-				gtk_tree_model_get(GTK_TREE_MODEL(store), &parent_iter, I7_APP_EXTENSION_TEXT, &author, -1);
-				if(strcmp(dir_entry, author) == 0) {
-					found = TRUE;
-					break;
-				}
-			} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &parent_iter));
-		}
-		if(!found) {
-			gtk_tree_store_prepend(store, &parent_iter, NULL);
-			gtk_tree_store_set(store, &parent_iter,
-				I7_APP_EXTENSION_TEXT, dir_entry,
-				I7_APP_EXTENSION_READ_ONLY, TRUE,
-				I7_APP_EXTENSION_ICON, NULL,
-				I7_APP_EXTENSION_PATH, NULL,
-				-1);
-		}
-
-		/* Descend into each author directory */
-		GDir *author = g_dir_open(author_dir, 0, &err);
-		g_free(author_dir);
-		if(err) {
-			error_dialog(NULL, err, _("Error opening built-in extensions directory: "));
-			return FALSE;
-		}
-		const gchar *author_entry;
-		while((author_entry = g_dir_read_name(author)) != NULL) {
-			gchar *extname = get_builtin_extension_path(app, dir_entry, author_entry);
-			if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
-				g_free(extname);
-				continue;
-			}
-			/* Read each file, but skip symlinks */
-			/* Remove .i7x from the filename, if it is there */
-			gchar *displayname;
-			if(g_str_has_suffix(author_entry, ".i7x"))
-				displayname = g_strndup(author_entry, strlen(author_entry) - 4);
-			else
-				displayname = g_strdup(author_entry);
-
-			/* Only add it if it is not overridden by a user-installed extension */
-			found = FALSE;
-			if(gtk_tree_model_iter_children(GTK_TREE_MODEL(store), &child_iter, &parent_iter)) {
-				do {
-					gchar *name;
-					gtk_tree_model_get(GTK_TREE_MODEL(store), &child_iter,
-						I7_APP_EXTENSION_TEXT, &name,
-						-1);
-					if(strcmp(displayname, name) == 0) {
-						found = TRUE;
-						break;
-					}
-				} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &child_iter));
-			}
-			if(!found) {
-				gtk_tree_store_prepend(store, &child_iter, &parent_iter);
-				gtk_tree_store_set(store, &child_iter,
-					I7_APP_EXTENSION_TEXT, displayname,
-					I7_APP_EXTENSION_READ_ONLY, TRUE,
-					I7_APP_EXTENSION_ICON, "inform7-builtin",
-					I7_APP_EXTENSION_PATH, extname,
-					-1);
-			}
-
-			g_free(extname);
-			g_free(displayname);
-		}
-		g_dir_close(author);
-	}
-	g_dir_close(extensions);
+	i7_app_foreach_installed_extension(app, FALSE,
+	    (I7AppAuthorFunc)add_author_to_tree_store, store,
+	    (I7AppExtensionFunc)add_extension_to_tree_store, store,
+	    (GDestroyNotify)gtk_tree_iter_free);
+	i7_app_foreach_installed_extension(app, TRUE,
+	    (I7AppAuthorFunc)add_author_to_tree_store, store,
+	    (I7AppExtensionFunc)add_builtin_extension_to_tree_store, store,
+	    (GDestroyNotify)gtk_tree_iter_free);
 
 	/* Rebuild the Open Extension menus */
 	i7_app_update_extensions_menu(app);
@@ -696,13 +821,19 @@ update_installed_extensions_tree(I7App *app)
 void
 i7_app_run_census(I7App *app, gboolean wait)
 {
+	GFile *ni_binary = i7_app_get_binary_file(app, "ni");
+	GFile *builtin_extensions = get_builtin_extension_file(app, NULL, NULL);
+
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 5);
-	commandline[0] = i7_app_get_binary_path(app, "ni");
+	commandline[0] = g_file_get_path(ni_binary);
 	commandline[1] = g_strdup("--rules");
-	commandline[2] = get_builtin_extension_path(app, NULL, NULL);
+	commandline[2] = g_file_get_path(builtin_extensions);
 	commandline[3] = g_strdup("--census");
 	commandline[4] = NULL;
+
+	g_object_unref(ni_binary);
+	g_object_unref(builtin_extensions);
 
 	/* Run the census */
 	if(wait) {
@@ -720,120 +851,189 @@ i7_app_run_census(I7App *app, gboolean wait)
 	g_strfreev(commandline);
 }
 
-/* Returns the directory for installed extensions, with the author and name path
-components tacked on if they are not NULL. Returns an allocated string which
-must be freed. */
-gchar *
-i7_app_get_extension_path(I7App *app, const gchar *author, const gchar *extname)
+/**
+ * i7_app_get_extension_file:
+ * @app: the application
+ * @author: (allow-none): the extension author
+ * @extname: (allow-none): the extensions name, with or without .i7x
+ *
+ * Returns the directory for user-installed extensions, with the @author and
+ * @extname path components tacked on if they are not %NULL. Does not check
+ * whether the file exists.
+ *
+ * Returns: (transfer full): a new #GFile.
+ */
+GFile *
+i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname)
 {
-	if(!author)
-		return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, NULL);
-	if(!extname)
-		return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author, NULL);
-	return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author,	extname, NULL);
+	char *path;
+
+	if(!author) {
+		path = g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, NULL);
+	} else if(!extname) {
+		path = g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author, NULL);
+	} else {
+		char *extname_ext;
+		if(g_str_has_suffix(extname, ".i7x"))
+			extname_ext = g_strdup(extname);
+		else
+			extname_ext = g_strconcat(extname, ".i7x", NULL);
+
+		path = g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author,	extname_ext, NULL);
+		g_free(extname_ext);
+	}
+
+	GFile *retval = g_file_new_for_path(path);
+	g_free(path);
+	return retval;
 }
 
-/* Returns the path to filename in the application data directory. Free string
- afterwards. */
-gchar *
-i7_app_get_datafile_path(I7App *app, const gchar *filename)
+/**
+ * i7_app_get_data_file:
+ * @app: the app
+ * @filename: the basename of the data file
+ *
+ * Locates @filename in the application data directory. If it is not found,
+ * displays an error dialog asking the user to reinstall the application.
+ *
+ * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
+ * found.
+ */
+GFile *
+i7_app_get_data_file(I7App *app, const char *filename)
 {
-	gchar *path = g_build_filename(I7_APP_PRIVATE(app)->datadir, filename, NULL);
-	if(g_file_test(path, G_FILE_TEST_EXISTS))
-		return path;
+	GFile *retval = g_file_get_child(I7_APP_PRIVATE(app)->datadir, filename);
+
+	if(g_file_query_exists(retval, NULL))
+		return retval;
+
+	g_object_unref(retval);
 	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
 		"Please reinstall Inform 7."), filename);
 	return NULL;
 }
 
-/* Concatenates the path elements and returns the path to the filename in the
-application data directory. Must end with NULL. Free string afterwards. */
-gchar *
-i7_app_get_datafile_path_va(I7App *app, const gchar *path1, ...)
+/**
+ * i7_app_get_data_file_va:
+ * @app: the app
+ * @path1: first component of the path
+ * @...: subsequent path components, ending with %NULL.
+ *
+ * Locates a file in a subdirectory of the application data directory. If it is
+ * not found, displays an error dialog asking the user to reinstall the
+ * application.
+ *
+ * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
+ * found.
+ */
+GFile *
+i7_app_get_data_file_va(I7App *app, const char *path1, ...)
 {
 	va_list ap;
+	GFile *retval, *previous;
+	char *arg, *lastarg = NULL;
 
-	int num_args = 0;
+	retval = previous = g_file_get_child(I7_APP_PRIVATE(app)->datadir, path1);
+
 	va_start(ap, path1);
-	do
-		num_args++;
-	while(va_arg(ap, gchar *) != NULL);
-	va_end(ap);
-
-	gchar **args = g_new(gchar *, num_args + 2);
-	args[0] = g_strdup(I7_APP_PRIVATE(app)->datadir);
-	args[1] = g_strdup(path1);
-	int i;
-	va_start(ap, path1);
-	for(i = 2; i < num_args + 2; i++)
-		args[i] = g_strdup(va_arg(ap, gchar *));
-	va_end(ap);
-
-	gchar *path = g_build_filenamev(args);
-	if(g_file_test(path, G_FILE_TEST_EXISTS)) {
-		g_strfreev(args);
-		return path;
+	while((arg = va_arg(ap, char *)) != NULL) {
+		retval = g_file_get_child(previous, arg);
+		g_object_unref(previous);
+		previous = retval;
+		lastarg = arg;
 	}
+	va_end(ap);
+
+	if(g_file_query_exists(retval, NULL))
+		return retval;
+
+	g_object_unref(retval);
 	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
-		"Please reinstall Inform 7."), args[num_args]); /* argument before NULL */
-	g_strfreev(args);
+		"Please reinstall Inform 7."), lastarg); /* argument before NULL */
 	return NULL;
 }
 
-/* Returns the full path to filename in a newly-allocated string, if it exists 
- in the data directory, otherwise NULL. Used when we do not necessarily want to
- return an error if it does not exist. */
-char *
-i7_app_check_datafile(I7App *app, const char *filename)
+/**
+ * i7_app_check_data_file:
+ * @app: the app
+ * @filename: the basename of the data file
+ *
+ * Locates @filename in the application data directory. Used when we do not
+ * necessarily want to display an error if it does not exist.
+ *
+ * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
+ * found.
+ */
+GFile *
+i7_app_check_data_file(I7App *app, const char *filename)
 {
-	char *path = g_build_filename(I7_APP_PRIVATE(app)->datadir, filename, NULL);
-	if(!g_file_test(path, G_FILE_TEST_EXISTS)) {
-		g_free(path);
+	GFile *retval = g_file_get_child(I7_APP_PRIVATE(app)->datadir, filename);
+
+	if(!g_file_query_exists(retval, NULL)) {
+		g_object_unref(retval);
 		return NULL;
 	}
-	return path;
+
+	return retval;
 }
 
-/* Varargs variant of check_datafile. Must end with NULL. */
-char *
-i7_app_check_datafile_va(I7App *app, const char *path1, ...)
+/**
+ * i7_app_check_data_file_va:
+ * @app: the app
+ * @path1: first component of the path
+ * @...: subsequent path components, ending with %NULL.
+ *
+ * Locates a file in a subdirectory of the application data directory. Used when
+ * we do not necessarily want to display an error if it does not exist.
+ *
+ * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
+ * found.
+ */
+GFile *
+i7_app_check_data_file_va(I7App *app, const char *path1, ...)
 {
 	va_list ap;
+	GFile *retval, *previous;
+	char *arg;
 
-	int num_args = 0;
+	retval = previous = g_file_get_child(I7_APP_PRIVATE(app)->datadir, path1);
+
 	va_start(ap, path1);
-	do
-		num_args++;
-	while(va_arg(ap, gchar *) != NULL);
+	while((arg = va_arg(ap, char *)) != NULL) {
+		retval = g_file_get_child(previous, arg);
+		g_object_unref(previous);
+		previous = retval;
+	}
 	va_end(ap);
 
-	gchar **args = g_new(gchar *, num_args + 2);
-	args[0] = g_strdup(I7_APP_PRIVATE(app)->datadir);
-	args[1] = g_strdup(path1);
-	int i;
-	va_start(ap, path1);
-	for(i = 2; i < num_args + 2; i++)
-		args[i] = g_strdup(va_arg(ap, gchar *));
-	va_end(ap);
-
-	gchar *path = g_build_filenamev(args);
-	g_strfreev(args);
-	
-	if(!g_file_test(path, G_FILE_TEST_EXISTS)) {
-		g_free(path);
+	if(!g_file_query_exists(retval, NULL)) {
+		g_object_unref(retval);
 		return NULL;
 	}
-	return path;
+
+	return retval;
 }
 
-/* Returns the path to filename in the application libexec directory. Free
- string afterwards. */
-gchar *
-i7_app_get_binary_path(I7App *app, const gchar *filename)
+/**
+ * i7_app_get_binary_file:
+ * @app: the app
+ * @filename: the basename of the file
+ *
+ * Locates @filename in the application libexec directory. If it is not found,
+ * displays an error dialog asking the user to reinstall the application.
+ *
+ * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
+ * found.
+ */
+GFile *
+i7_app_get_binary_file(I7App *app, const char *filename)
 {
-	gchar *path = g_build_filename(I7_APP_PRIVATE(app)->libexecdir, filename, NULL);
-	if(g_file_test(path, G_FILE_TEST_EXISTS))
-		return path;
+	GFile *retval = g_file_get_child(I7_APP_PRIVATE(app)->libexecdir, filename);
+
+	if(g_file_query_exists(retval, NULL))
+		return retval;
+
+	g_object_unref(retval);
 	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
 		"Please reinstall Inform 7."), filename);
 	return NULL;
@@ -865,25 +1065,30 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *app)
 		g_assert(gtk_tree_model_iter_children(model, &title, &author));
 		GtkWidget *extmenu = gtk_menu_new();
 		do {
-			gchar *extname, *path;
+			char *extname;
+			GFile *extension_file;
 			gboolean readonly;
 			gtk_tree_model_get(model, &title,
 				I7_APP_EXTENSION_TEXT, &extname,
 				I7_APP_EXTENSION_READ_ONLY, &readonly,
-				I7_APP_EXTENSION_PATH, &path,
+				I7_APP_EXTENSION_FILE, &extension_file,
 				-1);
 			GtkWidget *extitem;
 			if(readonly) {
 				extitem = gtk_image_menu_item_new_with_label(extname);
 				GtkWidget *image = gtk_image_new_from_icon_name("inform7-builtin", GTK_ICON_SIZE_MENU);
 				gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(extitem), image);
-				g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), path);
+				g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), extension_file);
 			} else {
 				extitem = gtk_menu_item_new_with_label(extname);
-				g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), path);
+				g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), extension_file);
 			}
 			gtk_widget_show(extitem);
 			gtk_menu_shell_append(GTK_MENU_SHELL(extmenu), extitem);
+
+			g_free(extname);
+			g_object_unref(extension_file);
+
 		} while(gtk_tree_model_iter_next(model, &title));
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), extmenu);
 	} while(gtk_tree_model_iter_next(model, &author));

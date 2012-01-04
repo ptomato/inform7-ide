@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,45 +15,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
 #include <glib.h>
-#include <glib/gi18n.h>
 #include <webkit/webkit.h>
 #include "html.h"
-#include "error.h"
 
-/* Have the html widget display the HTML file in filename */
+/**
+ * html_load_file:
+ * @html: a #WebKitWebView
+ * @file: a #GFile
+ *
+ * Have @html display the HTML file referenced by @file.
+ */
 void
-html_load_file(WebKitWebView *html, const gchar *filename)
+html_load_file(WebKitWebView *html, GFile *file)
 {
 	g_return_if_fail(html);
-	g_return_if_fail(filename || strlen(filename));
+	g_return_if_fail(file);
 
-	GError *error = NULL;
-	gchar *uri = g_filename_to_uri(filename, NULL, &error);
-	if(!uri) {
-		WARN_S(_("Could not convert filename to URI"), filename, error);
-		return;
-	}
+	char *uri = g_file_get_uri(file);
 	webkit_web_view_load_uri(html, uri);
 	g_free(uri);
 }
 
-/* Have the html widget display the HTML file and jump to the anchor */
+/**
+ * html_load_file_at_anchor:
+ * @html: a #WebKitWebView
+ * @file: a #GFile
+ * @anchor: a tag on the page
+ *
+ * Have @html display the HTML file referenced by @file, and jump to the tag
+ * specified by @anchor.
+ */
 void
-html_load_file_at_anchor(WebKitWebView *html, const gchar *file, const gchar *anchor)
+html_load_file_at_anchor(WebKitWebView *html, GFile *file, const char *anchor)
 {
 	g_return_if_fail(html);
-	g_return_if_fail(file || strlen(file));
+	g_return_if_fail(file);
 	g_return_if_fail(anchor);
 
-	GError *error = NULL;
-	gchar *uri = g_filename_to_uri(file, NULL, &error);
-	if(!uri) {
-		WARN_S(_("Could not convert filename to URI"), file, error);
-		return;
-	}
-	gchar *real_uri = g_strconcat(uri, "#", anchor, NULL);
+	char *uri = g_file_get_uri(file);
+	char *real_uri = g_strconcat(uri, "#", anchor, NULL);
 	g_free(uri);
 	webkit_web_view_load_uri(html, real_uri);
 	g_free(real_uri);

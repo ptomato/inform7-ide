@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,6 +29,17 @@
 #define ERROR_S(msg,str,err) g_error("%s: (%s) %s: %s", __func__, (str), \
 	(msg), (err)->message)
 
-void error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...);
+#define IO_ERROR_DIALOG(parent,file,err,msg) \
+	error_dialog_file_operation(parent, file, err, I7_FILE_ERROR_OTHER, \
+	"%s (at %s:%d)", msg, __FILE__, __LINE__)
+
+typedef enum {
+	I7_FILE_ERROR_OPEN,
+	I7_FILE_ERROR_SAVE,
+	I7_FILE_ERROR_OTHER
+} I7FileErrorWhat;
+
+void error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...) G_GNUC_PRINTF(3, 4);
+void error_dialog_file_operation(GtkWindow *parent, GFile *file, GError *error, I7FileErrorWhat what, const char *msg, ...) G_GNUC_PRINTF(5, 6);
 
 #endif
