@@ -412,7 +412,7 @@ file_get_display_name(GFile *file)
 
 	/* If everything was OK */
 	if(info) {
-		retval = g_file_info_get_display_name(info); /* cannot return NULL (?) */
+		retval = g_strdup(g_file_info_get_display_name(info)); /* cannot return NULL (?) */
 		g_object_unref(info);
 		return retval;
 	}

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@
 #include "app.h"
 #include "configfile.h"
 #include "error.h"
+#include "file.h"
 
 static GtkSourceStyleSchemeManager *scheme_manager = NULL;
 

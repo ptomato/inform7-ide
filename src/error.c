@@ -21,6 +21,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include "error.h"
+#include "file.h"
 
 /* Create and display an error dialog box, with parent window parent, and
 message format string msg. If err is not NULL, tack the error message on to the
