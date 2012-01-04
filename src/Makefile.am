@@ -5,9 +5,9 @@ AM_CFLAGS = -Wall
 # This line won't be necessary anymore in Automake 1.10a
 pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
-# We build libeverything.a to link to the regular binary
+# We build libinform7gui.a to link to the regular binary
 # as well as the test binary
-noinst_LIBRARIES = libosxcart.a libchimara.a libeverything.a
+noinst_LIBRARIES = libosxcart.a libchimara.a libinform7gui.a
 
 libosxcart_a_SOURCES = \
 	osxcart/osxcart/init.c \
@@ -235,7 +235,7 @@ dist_gitdoc_DATA = chimara/interpreters/git/README.txt
 
 CLEANFILES = chimara/interpreters/git/version.h
 
-libeverything_a_SOURCES = \
+libinform7gui_a_SOURCES = \
 	actions.c actions.h \
 	app.c app.h app-private.h \
 	builder.c builder.h \
@@ -268,12 +268,12 @@ libeverything_a_SOURCES = \
 	transcript-diff.c transcript-diff.h \
 	transcript-renderer.c transcript-renderer.h \
 	welcomedialog.c welcomedialog.h
-libeverything_a_CPPFLAGS = \
+libinform7gui_a_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \
 	-I$(srcdir)/osxcart \
 	-I$(srcdir)/chimara
-libeverything_a_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
+libinform7gui_a_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
 
 bin_PROGRAMS = gnome-inform7
 gnome_inform7_SOURCES = main.c
@@ -290,10 +290,10 @@ gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 # symbols in libeverything.a, which are not referenced by the main program. This
 # tells ld to link in all object files in libchimara.a and libeverything.a.
 gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
-	-Wl,--whole-archive,libeverything.a,libchimara.a,--no-whole-archive
+	-Wl,--whole-archive,libinform7gui.a,libchimara.a,--no-whole-archive
 # The gnome-inform7 executable must also depend on libchimara.a; because of the
 # trickery above, Automake doesn't realize that.
-gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libeverything.a
+gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libinform7gui.a
 
 # Build the test suite as well, in the same way
 check_PROGRAMS = test
