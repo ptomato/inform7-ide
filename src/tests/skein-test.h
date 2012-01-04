@@ -1,4 +1,4 @@
-/*  Copyright (C) 2011, 2012 P. F. Chimento
+/*  Copyright (C) 2012 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -15,29 +15,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef SKEIN_TEST_H
+#define SKEIN_TEST_H
+
 #include <glib.h>
-#include <gtk/gtk.h>
-#include "app.h"
-#include "app-test.h"
-#include "skein-test.h"
+#include <skein.h>
 
-int
-main(int argc, char **argv)
-{
-	gtk_test_init(&argc, &argv);
-	
-	g_test_add_func("/app/create", test_app_create);
-	g_test_add_func("/app/files", test_app_files);
-	g_test_add_func("/app/extensions/install-remove", test_app_extensions_install_remove);
-	g_test_add_func("/app/extensions/case-insensitive", test_app_extensions_case_insensitive);
-	g_test_add_func("/app/colorscheme/install-remove", test_app_colorscheme_install_remove);
+G_BEGIN_DECLS
 
-	g_test_add_func("/skein/import", test_skein_import);
-	
-	I7App *theapp = i7_app_get();
-	int retval = g_test_run();
-	g_object_unref(theapp);
+void test_skein_import(void);
 
-	return retval;
-}
-	
+G_END_DECLS
+
+#endif /* SKEIN_TEST_H */

@@ -298,7 +298,7 @@ gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libeverything.a
 # Build the test suite as well, in the same way
 check_PROGRAMS = test
 test_SOURCES = tests/test.c \
-	tests/app-test.c tests/app-test.h
+	tests/app-test.c tests/app-test.h tests/skein-test.c tests/skein-test.h
 test_CPPFLAGS = $(gnome_inform7_CPPFLAGS) -I$(srcdir)/osxcart
 test_CFLAGS = $(gnome_inform7_CFLAGS)
 test_LDADD = $(gnome_inform7_LDADD)
