@@ -27,6 +27,7 @@
 #include "builder.h"
 #include "document.h"
 #include "error.h"
+#include "file.h"
 #include "extension.h"
 #include "story.h"
 
@@ -668,108 +669,89 @@ i7_search_window_search_project(I7SearchWindow *self)
 	stop_spinner(self);
 }
 
-/* Search the user-installed extensions for the string 'text' */
-void
-i7_search_window_search_extensions(I7SearchWindow *self)
+static void
+extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
 {
 	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
 	GError *err = NULL;
-	GFile *extension_file = i7_app_get_extension_file(i7_app_get(), NULL, NULL);
-	GFileEnumerator *extension_dir = g_file_enumerate_children(extension_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, NULL, &err);
+	const char *basename = g_file_info_get_name(info);
+	GFile *file = g_file_get_child(parent, basename);
+	char *contents;
+	GtkTextBuffer *buffer;
+	GtkTreeIter result;
+	GtkTextIter search_from, match_start, match_end;
 
-	if(!extension_dir) {
-		IO_ERROR_DIALOG(GTK_WINDOW(self), extension_file, err, _("opening extensions directory"));
-		g_object_unref(extension_file);
+	if(!g_file_load_contents(file, NULL, &contents, NULL, NULL, &err)) {
+		char *author_display_name = file_get_display_name(parent);
+		const char *ext_display_name = g_file_info_get_display_name(info);
+
+		error_dialog_file_operation(GTK_WINDOW(self), file, err, I7_FILE_ERROR_OTHER,
+		  /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
+		  _("Error opening extension '%s' by '%s':"), author_display_name, ext_display_name);
+
+		g_free(author_display_name);
+		g_object_unref(file);
 		return;
 	}
-	g_object_unref(extension_file);
 
-	GFileInfo *info;
-	while((info = g_file_enumerator_next_file(extension_dir, NULL, &err)) != NULL) {
-		const char *basename = g_file_info_get_name(info);
+	buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
+	gtk_text_buffer_set_text(buffer, contents, -1);
+	g_free(contents);
 
-		/* Read each extension dir, but skip "Reserved" */
-		if(strcmp(basename, "Reserved") == 0) {
-			g_object_unref(info);
-			continue;
-		}
+	gtk_text_buffer_get_start_iter(buffer, &search_from);
 
-		GFile *author_file = i7_app_get_extension_file(i7_app_get(), basename, NULL);
-		g_object_unref(info);
+	start_spinner(self);
 
-		GFileEnumerator *author_dir = g_file_enumerate_children(author_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, NULL, &err);
+	while(find_no_wrap(&search_from, priv->text, TRUE,
+		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		priv->algorithm, &match_start, &match_end))
+	{
+		unsigned lineno;
+		char *sort, *context;
 
-		if(!author_dir) {
-			IO_ERROR_DIALOG(GTK_WINDOW(self), author_file, err, _("opening extensions directory"));
-			g_object_unref(author_file);
-			return;
-		}
-		g_object_unref(author_file);
+		while(gtk_events_pending())
+			gtk_main_iteration();
 
-		GFileInfo *author_info;
-		while((author_info = g_file_enumerator_next_file(author_dir, NULL, &err)) != NULL) {
-			const char *ext_basename = g_file_info_get_name(author_info);
+		search_from = match_end;
 
-			GFile *file = i7_app_get_extension_file(i7_app_get(), basename, ext_basename);
-			gchar *contents;
-			if(!g_file_load_contents(file, NULL, &contents, NULL, NULL, &err)) {
-				error_dialog_file_operation(GTK_WINDOW(self), file, err, I7_FILE_ERROR_OTHER,
-				  /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
-				  _("Error opening extension '%s' by '%s':"), basename, ext_basename);
-				g_object_unref(file);
-				g_object_unref(author_info);
-				return;
-			}
+		/* Get the line number (counted from 0) */
+		lineno = gtk_text_iter_get_line(&match_start) + 1;
 
-			GtkTextBuffer *buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
-			gtk_text_buffer_set_text(buffer, contents, -1);
-			g_free(contents);
+		context = extract_context(buffer, &match_start, &match_end);
 
-			GtkTreeIter result;
-			GtkTextIter search_from, match_start, match_end;
-			gtk_text_buffer_get_start_iter(buffer, &search_from);
+		/* Make a sort string */
+		sort = g_strdup_printf("%s %04i", basename, lineno);
 
-			start_spinner(self);
+		gtk_list_store_append(priv->results, &result);
+		gtk_list_store_set(priv->results, &result,
+			I7_RESULT_CONTEXT_COLUMN, context,
+			I7_RESULT_SORT_STRING_COLUMN, sort,
+			I7_RESULT_FILE_COLUMN, file,
+			I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_EXTENSION,
+			I7_RESULT_LINE_NUMBER_COLUMN, lineno,
+			-1);
 
-			while(find_no_wrap(&search_from, priv->text, TRUE,
-				GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-				priv->algorithm, &match_start, &match_end))
-			{
-				while(gtk_events_pending())
-					gtk_main_iteration();
-
-				search_from = match_end;
-
-				/* Get the line number (counted from 0) */
-				guint lineno = gtk_text_iter_get_line(&match_start) + 1;
-
-				gchar *context = extract_context(buffer, &match_start, &match_end);
-
-				/* Make a sort string */
-				gchar *sort = g_strdup_printf("%s %04i", ext_basename, lineno);
-
-				gtk_list_store_append(priv->results, &result);
-				gtk_list_store_set(priv->results, &result,
-					I7_RESULT_CONTEXT_COLUMN, context,
-					I7_RESULT_SORT_STRING_COLUMN, sort,
-					I7_RESULT_FILE_COLUMN, file,
-					I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_EXTENSION,
-					I7_RESULT_LINE_NUMBER_COLUMN, lineno,
-					-1);
-				g_free(context);
-				g_free(sort);
-				g_object_unref(author_info);
-			}
-
-			stop_spinner(self);
-			g_object_unref(buffer);
-			g_object_unref(file);
-		}
-		g_file_enumerator_close(author_dir, NULL, NULL);
-		g_object_unref(author_dir);
+		g_free(context);
+		g_free(sort);
 	}
-	g_file_enumerator_close(extension_dir, NULL, NULL);
-	g_object_unref(extension_dir);
+
+	stop_spinner(self);
+
+	g_object_unref(buffer);
+	g_object_unref(file);
+}
+
+/**
+ * i7_search_window_search_extensions:
+ * @self: self
+ *
+ * Search the user-installed extensions for the search window's search text.
+ */
+void
+i7_search_window_search_extensions(I7SearchWindow *self)
+{
+	i7_app_foreach_installed_extension(i7_app_get(), FALSE, NULL, NULL,
+	    (I7AppExtensionFunc)extension_search_result, self, NULL);
 }
 
 /* Notify the window that no more searches will be done, so it is allowed to

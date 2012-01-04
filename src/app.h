@@ -63,6 +63,28 @@ typedef struct {
 	GRegex *regices[I7_APP_NUM_REGICES];
 } I7App;
 
+/**
+ * I7AppAuthorFunc:
+ * @info: the #GFileInfo for the author directory.
+ * @data: user data to pass to the callback.
+ *
+ * Callback for enumerating installed extensions, called for each author
+ * directory. May return a result, which is passed to #I7AppExtensionFunc for
+ * each extension file found in that author directory.
+ */
+typedef gpointer (*I7AppAuthorFunc)(GFileInfo *info, gpointer data);
+/**
+ * I7AppExtensionFunc:
+ * @parent: the #GFile for the extension file's parent.
+ * @info: the #GFileInfo for the extension file.
+ * @author_result: the return value of the #I7AppAuthorFunc for the parent.
+ * @data: user data to pass to the callback.
+ *
+ * Callback for enumerating installed extensions, called for each author
+ * directory.
+ */
+typedef void (*I7AppExtensionFunc)(GFile *parent, GFileInfo *info, gpointer author_result, gpointer data);
+
 GType i7_app_get_type(void) G_GNUC_CONST;
 I7App *i7_app_get(void);
 void i7_app_open(I7App *app, GFile *file);
@@ -79,6 +101,7 @@ void i7_app_monitor_extensions_directory(I7App *app);
 void i7_app_stop_monitoring_extensions_directory(I7App *app);
 void i7_app_install_extension(I7App *app, GFile *file);
 void i7_app_delete_extension(I7App *app, gchar *author, gchar *extname);
+void i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc author_func, gpointer author_func_data, I7AppExtensionFunc extension_func, gpointer extension_func_data, GDestroyNotify free_author_result);
 void i7_app_run_census(I7App *app, gboolean wait);
 
 GFile *i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname);
