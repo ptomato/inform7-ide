@@ -934,7 +934,7 @@ i7_story_new_from_file(I7App *app, GFile *file)
 	i7_app_set_busy(app, TRUE);
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
 	if(!i7_story_open(story, real_file)) {
-		g_object_unref(story);
+		gtk_widget_destroy(GTK_WIDGET(story));
 		g_object_unref(real_file);
 		i7_app_set_busy(app, FALSE);
 		return NULL;
