@@ -988,15 +988,64 @@ i7_story_open(I7Story *story, GFile *file)
 	I7_STORY_USE_PRIVATE(story, priv);
 	GError *err = NULL;
 
-	i7_document_set_file(I7_DOCUMENT(story), file);
-
-	/* Read the source */
 	GFile *source_file = g_file_get_child(file, "Source");
 	GFile *story_file = g_file_get_child(source_file, "story.ni");
 	g_object_unref(source_file);
+
+	g_object_ref(file);
+
+	/* Make sure that the file has the proper extension */
+	char *display_name = file_get_display_name(file);
+	if(!g_str_has_suffix(display_name, ".inform")) {
+
+		if(g_file_query_exists(story_file, NULL)) {
+			/* This seems to be an Inform project, but with the wrong extension */
+			GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			    GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
+			    _("This project doesn't have a .inform extension."));
+			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+			    _("This extension is required for Inform story files to work "
+				    "on all platforms. The project will be renamed."));
+			gtk_dialog_run(GTK_DIALOG(dialog));
+			gtk_widget_destroy(dialog);
+
+			/* Rename the file */
+			char *new_name = g_strconcat(display_name, ".inform", NULL);
+			GFile *old_file = file;
+			file = g_file_set_display_name(file, new_name, NULL, &err);
+			if(file == NULL) {
+				IO_ERROR_DIALOG(GTK_WINDOW(story), old_file, err, _("renaming the project file to a .inform extension"));
+				file = old_file;
+				goto fail;
+			}
+			g_object_unref(old_file);
+			g_free(new_name);
+
+			g_object_unref(story_file);
+			source_file = g_file_get_child(file, "Source");
+			story_file = g_file_get_child(source_file, "story.ni");
+			g_object_unref(source_file);
+
+		} else {
+			/* This doesn't seem to be an Inform project */
+			GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			    GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+			    _("The file \"%s\" doesn't seem to be an Inform story file."), display_name);
+			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+			    _("Make sure you are opening the correct file."));
+			gtk_dialog_run(GTK_DIALOG(dialog));
+			gtk_widget_destroy(dialog);
+			goto fail;
+		}
+	}
+	g_free(display_name);
+
+	i7_document_set_file(I7_DOCUMENT(story), file);
+
+	/* Read the source */
 	char *text = read_source_file(story_file);
 	if(!text)
-		return FALSE;
+		goto fail2;
 
 	update_recent_story_file(story, file);
 
@@ -1055,7 +1104,14 @@ i7_story_open(I7Story *story, GFile *file)
 
 	i7_document_set_modified(I7_DOCUMENT(story), FALSE);
 
+	g_object_unref(file);
 	return TRUE;
+
+fail:
+	g_free(display_name);
+fail2:
+	g_object_unref(file);
+	return FALSE;
 }
 
 /* Chooses an appropriate pane to display tab number newtab in. (From the
