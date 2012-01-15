@@ -371,41 +371,43 @@ i7_document_get_child_path(I7Document *document, GtkTreePath *path)
 	return real_path;
 }
 
+/* Internal function: callback for when the source text has changed outside of
+ * Inform. */
 static void
 on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFileMonitorEvent event_type, I7Document *document)
 {
+	gdk_threads_enter(); /* this isn't a GTK callback */
+
 	switch(event_type) {
 		case G_FILE_MONITOR_EVENT_CREATED:
 		case G_FILE_MONITOR_EVENT_CHANGED:
-		/* g_file_set_contents works by deleting and creating */
 		{
-			GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
-				_("The source code has been modified from outside Inform.\n"
-				"Do you want to reload it?"));
-			/* This is a non-GTK callback, so we have to hold the GTK lock to
-			 * start a GTK main loop (which is what gtk_dialog_run() does) */
-			gdk_threads_enter();
-			int response = gtk_dialog_run(GTK_DIALOG(dialog));
-			gdk_threads_leave();
-			gtk_widget_destroy(dialog);
-			if(response == GTK_RESPONSE_YES) {
-				char *text = read_source_file(file);
-				if(text) {
-					i7_document_set_source_text(document, text);
-					g_free(text);
-				}
+			/* g_file_set_contents works by deleting and creating, so both of
+			these options mean the source text has been modified. Don't ask for
+			confirmation - just read in the new source text. (See mantis #681
+			and http://inform7.uservoice.com/forums/57320/suggestions/1220683 )*/
+			char *text = read_source_file(file);
+			if(text) {
+				i7_document_set_source_text(document, text);
+				g_free(text);
+				i7_document_flash_status_message(document, _("Source code reloaded."), FILE_OPERATIONS);
+				i7_document_set_modified(document, FALSE);
+				break;
 			}
-		}
-			break;
+			/* else fall through - that means that our copy of the document
+			isn't current with what's on disk anymore, but we weren't able to
+			reload it. So treat the situation as if the file had been deleted. */
+	    }
 		case G_FILE_MONITOR_EVENT_DELETED:
 		case G_FILE_MONITOR_EVENT_UNMOUNTED:
-		/* If the file is removed, quietly make sure the user gets a chance to
-		save it before exiting */
+			/* If the file is removed, quietly make sure the user gets a chance
+			to save it before exiting */
 			i7_document_set_modified(document, TRUE);
 		default:
 			;
 	}
+
+	gdk_threads_leave();
 }
 
 void
