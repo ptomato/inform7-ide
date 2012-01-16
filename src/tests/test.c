@@ -31,6 +31,7 @@ main(int argc, char **argv)
 	g_test_add_func("/app/extensions/install-remove", test_app_extensions_install_remove);
 	g_test_add_func("/app/extensions/case-insensitive", test_app_extensions_case_insensitive);
 	g_test_add_func("/app/colorscheme/install-remove", test_app_colorscheme_install_remove);
+	g_test_add_func("/app/colorscheme/get-current", test_app_colorscheme_get_current);
 
 	g_test_add_func("/skein/import", test_skein_import);
 	

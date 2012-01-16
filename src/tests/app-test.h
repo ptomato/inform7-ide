@@ -28,6 +28,7 @@ void test_app_files(void);
 void test_app_extensions_install_remove(void);
 void test_app_extensions_case_insensitive(void);
 void test_app_colorscheme_install_remove(void);
+void test_app_colorscheme_get_current(void);
 
 G_END_DECLS
 

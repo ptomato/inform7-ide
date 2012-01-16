@@ -19,7 +19,7 @@
 #include <glib.h>
 #include "app-test.h"
 #include "app.h"
-#include "colorscheme.h"
+#include "configfile.h"
 #include "file.h"
 
 void
@@ -172,13 +172,21 @@ test_app_extensions_case_insensitive(void)
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 }
 
+static void
+find_test_color_scheme(GtkSourceStyleScheme *scheme, gboolean *found)
+{
+	if(strcmp(gtk_source_style_scheme_get_id(scheme), "test_color_scheme") == 0)
+		*found = TRUE;
+}
+
 void
 test_app_colorscheme_install_remove(void)
 {
+	I7App *theapp = i7_app_get();
 	GFile *file = g_file_new_for_path("tests/test_color_scheme.xml");
 
 	/* Test installing */
-	const char *id = install_scheme(file);
+	const char *id = i7_app_install_color_scheme(theapp, file);
 	g_object_unref(file);
 	g_assert_cmpstr(id, ==, "test_color_scheme");
 
@@ -188,13 +196,30 @@ test_app_colorscheme_install_remove(void)
 	g_free(installed_path);
 	g_assert(g_file_query_exists(installed_file, NULL));
 
-	g_assert(is_user_scheme(id));
+	/* Test that the scheme is detected as a user-installed scheme */
+	g_assert(i7_app_color_scheme_is_user_scheme(theapp, id));
+
+	/* Test whether the scheme is in the list of installed schemes */
+	gboolean found = FALSE;
+	i7_app_foreach_color_scheme(theapp, (GFunc)find_test_color_scheme, &found);
+	g_assert(found);
 
 	/* Test uninstalling */
-	g_assert(uninstall_scheme(id));
+	g_assert(i7_app_uninstall_color_scheme(theapp, id));
 
 	/* Check if file is really uninstalled */
 	g_assert(g_file_query_exists(installed_file, NULL) == FALSE);
 
 	g_object_unref(installed_file);
+}
+
+void
+test_app_colorscheme_get_current(void)
+{
+	I7App *theapp = i7_app_get();
+
+	GtkSourceStyleScheme *scheme = i7_app_get_current_color_scheme(theapp);
+	char *id = config_file_get_string(PREFS_STYLE_SCHEME);
+	g_assert_cmpstr(gtk_source_style_scheme_get_id(scheme), ==, id);
+	g_free(id);
 }
