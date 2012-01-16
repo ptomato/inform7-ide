@@ -1040,6 +1040,24 @@ i7_app_get_binary_file(I7App *app, const char *filename)
 	return NULL;
 }
 
+/**
+ * i7_app_get_config_dir:
+ * @self: the app
+ *
+ * Gets the location of the directory for user-specific configuration files.
+ *
+ * Returns: (transfer full): a #GFile pointing to the config dir
+ */
+GFile *
+i7_app_get_config_dir(I7App *self)
+{
+	const char *config = g_get_user_config_dir();
+	char *path = g_build_filename(config, "inform7", NULL);
+	GFile *retval = g_file_new_for_path(path);
+	g_free(path);
+	return retval;
+}
+
 /* Getter function for installed extensions tree */
 GtkTreeStore *
 i7_app_get_installed_extensions_tree(I7App *app)

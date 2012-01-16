@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -110,6 +110,7 @@ GFile *i7_app_get_data_file_va(I7App *app, const gchar *path1, ...) G_GNUC_NULL_
 GFile *i7_app_check_data_file(I7App *app, const char *filename);
 GFile *i7_app_check_data_file_va(I7App *app, const char *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_get_binary_file(I7App *app, const gchar *filename);
+GFile *i7_app_get_config_dir(I7App *self);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *app);
 void i7_app_update_extensions_menu(I7App *app);
