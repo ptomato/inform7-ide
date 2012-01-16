@@ -79,7 +79,7 @@ void
 action_open_recent(GtkAction *action, I7App *app)
 {
 	GtkRecentInfo *item = gtk_recent_chooser_get_current_item(GTK_RECENT_CHOOSER(action));
-	g_assert(gtk_recent_info_has_application(item, "GNOME Inform 7"));
+	g_assert(gtk_recent_info_has_application(item, "Inform 7"));
 
 	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri(item));
 

@@ -299,7 +299,7 @@ update_recent_story_file(I7Story *story, GFile *file)
 	/* Add story.ni as the actual file to open, in case any other application
 	wants to open it, and set the display name to the project directory */
 	GFile *source_file = g_file_get_child(file, "Source");
-	GFile *story_file = g_file_get_child(file, "story.ni");
+	GFile *story_file = g_file_get_child(source_file, "story.ni");
 	g_object_unref(source_file);
 	char *uri = g_file_get_uri(story_file);
 	g_object_unref(story_file);
@@ -1028,11 +1028,14 @@ i7_story_open(I7Story *story, GFile *file)
 
 		} else {
 			/* This doesn't seem to be an Inform project */
+			char *path = g_file_get_path(file);
 			GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(story), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			    GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
 			    _("The file \"%s\" doesn't seem to be an Inform story file."), display_name);
 			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-			    _("Make sure you are opening the correct file."));
+			    _("Make sure you are opening the correct file. This file was "
+				"located at: %s"), path);
+			g_free(path);
 			gtk_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
 			goto fail;

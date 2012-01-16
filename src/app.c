@@ -90,7 +90,8 @@ i7_app_init(I7App *self)
 	building GtkRecentFilters) */
 	GtkAction *recent = GTK_ACTION(load_object(builder, "open_recent"));
 	GtkRecentFilter *filter = gtk_recent_filter_new();
-	gtk_recent_filter_add_application(filter, "GNOME Inform 7");
+	gtk_recent_filter_add_group(filter, "inform7_project");
+	gtk_recent_filter_add_group(filter, "inform7_extension");
 	gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent), filter);
 
 	priv->document_list = NULL;

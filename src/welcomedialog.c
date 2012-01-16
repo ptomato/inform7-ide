@@ -64,8 +64,8 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 	for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
 		GtkRecentInfo *info = gtk_recent_info_ref(
 		  (GtkRecentInfo *)iter->data);
-		if(gtk_recent_info_has_application(info, "GNOME Inform 7")
-			&& gtk_recent_info_get_application_info(info, "GNOME Inform 7", NULL, NULL, &timestamp)
+		if(gtk_recent_info_has_application(info, "Inform 7")
+			&& gtk_recent_info_get_application_info(info, "Inform 7", NULL, NULL, &timestamp)
 			&& gtk_recent_info_has_group(info, "inform7_project")
 			&& (latest == 0 || difftime(timestamp, latest) > 0))
 		{
@@ -118,7 +118,7 @@ create_welcome_dialog(void)
 	GList *recent = gtk_recent_manager_get_items(manager);
 	GList *iter;
 	for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
-		if(gtk_recent_info_has_application((GtkRecentInfo *)(iter->data), "GNOME Inform 7")
+		if(gtk_recent_info_has_application((GtkRecentInfo *)(iter->data), "Inform 7")
 			&& gtk_recent_info_has_group((GtkRecentInfo *)(iter->data), "inform7_project"))
 		{
 			gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
