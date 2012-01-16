@@ -55,34 +55,8 @@ void
 on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 {
 	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	GtkRecentManager *manager = gtk_recent_manager_get_default();
-	GList *recent = gtk_recent_manager_get_items(manager);
-	GList *iter;
-	time_t timestamp, latest = 0;
-	GList *lastproject = NULL;
-
-	for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
-		GtkRecentInfo *info = gtk_recent_info_ref(
-		  (GtkRecentInfo *)iter->data);
-		if(gtk_recent_info_has_application(info, "Inform 7")
-			&& gtk_recent_info_get_application_info(info, "Inform 7", NULL, NULL, &timestamp)
-			&& gtk_recent_info_has_group(info, "inform7_project")
-			&& (latest == 0 || difftime(timestamp, latest) > 0))
-		{
-			latest = timestamp;
-			lastproject = iter;
-		}
-		gtk_recent_info_unref(info);
-	}
-
-	g_assert(lastproject); /* Button not sensitive if no last project */
-
-	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
-	/* Do not free the string from gtk_recent_info_get_uri */
-
-	/* free the list */
-	g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
-	g_list_free(recent);
+	GFile *file = i7_app_get_last_opened_project(app);
+	g_assert(file); /* Button not sensitive if no last project */
 
 	I7Story *story = i7_story_new_from_file(app, file);
 	g_object_unref(file);
@@ -114,20 +88,10 @@ create_welcome_dialog(void)
 	pango_font_description_free(font);
 
 	/* If there is no "last project", make the reopen button inactive */
-	GtkRecentManager *manager = gtk_recent_manager_get_default();
-	GList *recent = gtk_recent_manager_get_items(manager);
-	GList *iter;
-	for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
-		if(gtk_recent_info_has_application((GtkRecentInfo *)(iter->data), "Inform 7")
-			&& gtk_recent_info_has_group((GtkRecentInfo *)(iter->data), "inform7_project"))
-		{
-			gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
-			break;
-		}
-	}
-	/* free the list */
-	g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
-	g_list_free(recent);
+	GFile *last_project = i7_app_get_last_opened_project(theapp);
+	if(last_project)
+		gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
+	g_object_unref(last_project);
 
 	g_object_unref(builder);
 

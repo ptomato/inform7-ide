@@ -123,4 +123,6 @@ void i7_app_present_prefs_window(I7App *app);
 
 void i7_app_set_busy(I7App *app, gboolean busy);
 
+GFile *i7_app_get_last_opened_project(I7App *app);
+
 #endif /* _APP_H_ */

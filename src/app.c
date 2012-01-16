@@ -1172,3 +1172,48 @@ i7_app_set_busy(I7App *app, gboolean busy)
 	gdk_flush();
 	g_list_free(windows);
 }
+
+/**
+ * i7_app_get_last_opened_project:
+ * @app: the app
+ *
+ * Looks for the story (not extension file) that was last opened.
+ *
+ * Returns: (allow-none) (transfer full): a #GFile pointing to the story, or
+ * %NULL if there is no story in the history (e.g., if the application is newly
+ * installed, or the recent documents history has been cleared.)
+ */
+GFile *
+i7_app_get_last_opened_project(I7App *app)
+{
+	GtkRecentManager *manager = gtk_recent_manager_get_default();
+	GList *recent = gtk_recent_manager_get_items(manager);
+	GList *iter;
+	time_t timestamp, latest = 0;
+	GList *lastproject = NULL;
+	GFile *retval = NULL;
+
+	for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
+		GtkRecentInfo *info = gtk_recent_info_ref((GtkRecentInfo *)iter->data);
+		if(gtk_recent_info_has_application(info, "Inform 7")
+			&& gtk_recent_info_get_application_info(info, "Inform 7", NULL, NULL, &timestamp)
+			&& gtk_recent_info_has_group(info, "inform7_project")
+			&& (latest == 0 || difftime(timestamp, latest) > 0))
+		{
+			latest = timestamp;
+			lastproject = iter;
+		}
+		gtk_recent_info_unref(info);
+	}
+
+	if(lastproject) {
+		retval = g_file_new_for_uri(gtk_recent_info_get_uri((GtkRecentInfo *)lastproject->data));
+		/* Do not free the string from gtk_recent_info_get_uri */
+	}
+
+	/* free the list */
+	g_list_foreach(recent, (GFunc)gtk_recent_info_unref, NULL);
+	g_list_free(recent);
+
+	return retval;
+}
