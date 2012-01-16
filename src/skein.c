@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -915,7 +915,7 @@ i7_skein_save(I7Skein *self, GFile *file, GError **error)
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 			"<Skein rootNode=\"%s\" "
 			"xmlns=\"http://www.logicalshift.org.uk/IF/Skein\">\n"
-			"  <generator>GNOME Inform 7</generator>\n"
+			"  <generator>Inform 7</generator>\n"
 			"  <activeNode nodeId=\"%s\"/>\n",
 			i7_node_get_unique_id(priv->root),
 			i7_node_get_unique_id(priv->current));
