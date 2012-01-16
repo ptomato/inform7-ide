@@ -20,6 +20,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <gtksourceview/gtksourcestyleschememanager.h>
 #include "app.h"
 
 typedef struct {
@@ -37,7 +38,8 @@ typedef struct {
 	/* Current print settings */
 	GtkPrintSettings *print_settings;
 	GtkPageSetup *page_setup;
-	/* New project settings */
+	/* Color scheme manager */
+	GtkSourceStyleSchemeManager *color_scheme_manager;
 } I7AppPrivate;
 
 #define I7_APP_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_APP, I7AppPrivate))

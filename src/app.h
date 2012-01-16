@@ -22,6 +22,7 @@
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <gtksourceview/gtksourcestylescheme.h>
 #include "document.h"
 #include "prefs.h"
 
@@ -125,5 +126,13 @@ void i7_app_present_prefs_window(I7App *app);
 void i7_app_set_busy(I7App *app, gboolean busy);
 
 GFile *i7_app_get_last_opened_project(I7App *app);
+
+/* Color scheme functions, in app-colorscheme.c */
+
+void i7_app_foreach_color_scheme(I7App *self, GFunc callback, gpointer data);
+gboolean i7_app_color_scheme_is_user_scheme(I7App *self, const char *id);
+const char *i7_app_install_color_scheme(I7App *self, GFile *file);
+gboolean i7_app_uninstall_color_scheme(I7App *self, const char *id);
+GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
 
 #endif /* _APP_H_ */

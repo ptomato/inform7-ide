@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@
 #include "prefs.h"
 #include "app.h"
 #include "builder.h"
-#include "colorscheme.h"
 #include "configfile.h"
 #include "error.h"
 
@@ -33,27 +32,28 @@ enum SchemesListColumns {
 	NUM_SCHEMES_LIST_COLUMNS
 };
 
+/* Helper function: enumeration callback for each color scheme */
+static void
+store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
+{
+	const char *id = gtk_source_style_scheme_get_id(scheme);
+	const char *name = gtk_source_style_scheme_get_name(scheme);
+	const char *description = gtk_source_style_scheme_get_description(scheme);
+
+	GtkTreeIter iter;
+	gtk_list_store_append(list, &iter);
+	gtk_list_store_set(list, &iter,
+		ID_COLUMN, id,
+		NAME_COLUMN, name,
+		DESC_COLUMN, description,
+		-1);
+}
+
 void
 populate_schemes_list(GtkListStore *list)
 {
 	gtk_list_store_clear(list);
-	GSList *schemes = get_style_schemes_sorted();
-	GSList *l = schemes;
-	for(l = schemes; l != NULL; l = g_slist_next(l)) {
-		GtkSourceStyleScheme *scheme = GTK_SOURCE_STYLE_SCHEME(l->data);
-		const gchar *id = gtk_source_style_scheme_get_id(scheme);
-		const gchar *name = gtk_source_style_scheme_get_name(scheme);
-		const gchar *description = gtk_source_style_scheme_get_description(scheme);
-
-		GtkTreeIter iter;
-		gtk_list_store_append(list, &iter);
-		gtk_list_store_set(list, &iter,
-			ID_COLUMN, id,
-			NAME_COLUMN, name,
-			DESC_COLUMN, description,
-			-1);
-	}
-	g_slist_free(schemes);
+	i7_app_foreach_color_scheme(i7_app_get(), (GFunc)store_color_scheme, list);
 }
 
 I7PrefsWidgets *
@@ -109,7 +109,7 @@ on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 		gchar *id;
 		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
 		config_file_set_string(PREFS_STYLE_SCHEME, id);
-		gtk_widget_set_sensitive(app->prefs->style_remove, id && is_user_scheme(id));
+		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(i7_app_get(), id));
 		g_free(id);
 	} else
 		; /* Do nothing; no selection */
@@ -151,7 +151,7 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 
 	gtk_widget_destroy(chooser);
 
-	const char *scheme_id = install_scheme(file);
+	const char *scheme_id = i7_app_install_color_scheme(app, file);
 	g_object_unref(file);
 
 	if(!scheme_id) {
@@ -177,7 +177,7 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 			NAME_COLUMN, &name,
 			-1);
 
-		if(!uninstall_scheme(id))
+		if(!i7_app_uninstall_color_scheme(app, id))
 			error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("Could not remove color scheme \"%s\"."), name);
 		else {
 			gchar *new_id = NULL;
@@ -524,7 +524,7 @@ on_show_debug_tabs_toggled(GtkToggleButton *togglebutton, I7App *app)
 gboolean
 update_style(GtkSourceBuffer *buffer)
 {
-	set_highlight_styles(buffer);
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(i7_app_get()));
 	return FALSE; /* one-shot idle function */
 }
 

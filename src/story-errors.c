@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2010 P. F. Chimento
+/* Copyright (C) 2007-2009, 2010, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagemanager.h>
 #include "story.h"
-#include "colorscheme.h"
 #include "document.h"
 #include "lang.h"
 
@@ -56,7 +55,7 @@ create_inform6_source_buffer()
 	GtkSourceBuffer *i6buffer = gtk_source_buffer_new(NULL);
 
 	set_buffer_language(i6buffer, "inform");
-	set_highlight_styles(i6buffer);
+	gtk_source_buffer_set_style_scheme(i6buffer, i7_app_get_current_color_scheme(i7_app_get()));
 	gtk_source_buffer_set_highlight_syntax(i6buffer, TRUE);
 	return i6buffer;
 }

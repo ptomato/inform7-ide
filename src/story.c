@@ -29,7 +29,6 @@
 #include "story-private.h"
 #include "app.h"
 #include "builder.h"
-#include "colorscheme.h"
 #include "configfile.h"
 #include "document.h"
 #include "error.h"
@@ -763,7 +762,7 @@ i7_story_init(I7Story *self)
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
 	set_buffer_language(buffer, "inform7");
-	set_highlight_styles(buffer);
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 
 	/* Create a text buffer for the Progress, Debugging and I6 text views */
 	priv->progress = gtk_text_buffer_new(NULL);

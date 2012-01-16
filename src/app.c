@@ -24,11 +24,11 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <gtksourceview/gtksourcestyleschememanager.h>
 #include "app.h"
 #include "app-private.h"
 #include "actions.h"
 #include "builder.h"
-#include "colorscheme.h"
 #include "configfile.h"
 #include "error.h"
 #include "file.h"
@@ -57,6 +57,37 @@ typedef struct {
 	gchar *regex;
 	gboolean caseless;
 } I7AppRegexInfo;
+
+/* Helper function: call gtk_source_style_scheme_manager_append_search_path()
+with a #GFile */
+static void
+scheme_manager_append_search_path_gfile(GtkSourceStyleSchemeManager *manager, GFile *file)
+{
+	char *path = g_file_get_path(file);
+	gtk_source_style_scheme_manager_append_search_path(manager, path);
+	g_free(path);
+}
+
+/* Helper function: create the application's color scheme manager (transfer full) */
+static GtkSourceStyleSchemeManager *
+create_color_scheme_manager(I7App *self)
+{
+	GtkSourceStyleSchemeManager *manager = gtk_source_style_scheme_manager_new();
+
+	/* Add the built-in styles directory */
+	GFile *styles_dir = i7_app_get_data_file(self, "styles");
+	scheme_manager_append_search_path_gfile(manager, styles_dir);
+	g_object_unref(styles_dir);
+
+	/* Add the user styles directory */
+	GFile *config_dir = i7_app_get_config_dir(self);
+	styles_dir = g_file_get_child(config_dir, "styles");
+	g_object_unref(config_dir);
+	scheme_manager_append_search_path_gfile(manager, styles_dir);
+	g_object_unref(styles_dir);
+
+	return manager;
+}
 
 static void
 i7_app_init(I7App *self)
@@ -140,6 +171,9 @@ i7_app_init(I7App *self)
 	init_config_file(builder);
 
 	g_object_unref(builder);
+
+	/* Create the color scheme manager (must be run after priv->datadir is set) */
+	priv->color_scheme_manager = create_color_scheme_manager(self);
 }
 
 static void
@@ -153,6 +187,7 @@ i7_app_finalize(GObject *self)
 		g_slice_free(I7PrefsWidgets, I7_APP(self)->prefs);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->app_action_group);
+	g_object_unref(priv->color_scheme_manager);
 
 	int i;
 	for(i = 0; i < I7_APP_NUM_REGICES; i++)
@@ -186,7 +221,7 @@ i7_app_get(void)
 		/* Set up Natural Inform highlighting on the example buffer */
 		GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example)));
 		set_buffer_language(buffer, "inform7");
-		set_highlight_styles(buffer);
+		gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 	}
 
 	return theapp;

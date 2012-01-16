@@ -238,8 +238,8 @@ CLEANFILES = chimara/interpreters/git/version.h
 libinform7gui_a_SOURCES = \
 	actions.c actions.h \
 	app.c app.h app-private.h \
+	app-colorscheme.c \
 	builder.c builder.h \
-	colorscheme.c colorscheme.h \
 	configfile.c configfile.h \
 	diffseq.h \
 	document.c document.h document-private.h \

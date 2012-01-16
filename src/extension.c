@@ -21,7 +21,6 @@
 #include <gtksourceview/gtksourceiter.h>
 #include "extension.h"
 #include "app.h"
-#include "colorscheme.h"
 #include "configfile.h"
 #include "document.h"
 #include "error.h"
@@ -373,6 +372,7 @@ i7_extension_init(I7Extension *self)
 {
 	I7_EXTENSION_USE_PRIVATE(self, priv);
 	GError *error = NULL;
+	I7App *theapp = i7_app_get();
 
 	priv->readonly = FALSE;
 
@@ -403,7 +403,7 @@ i7_extension_init(I7Extension *self)
 	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
 
 	/* Build the Open Extensions menu */
-	i7_app_update_extensions_menu(i7_app_get());
+	i7_app_update_extensions_menu(theapp);
 
 	/* Set the last saved window size */
 	gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_EXT_WINDOW_WIDTH), config_file_get_int(PREFS_EXT_WINDOW_HEIGHT));
@@ -411,7 +411,7 @@ i7_extension_init(I7Extension *self)
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
 	set_buffer_language(buffer, "inform7x");
-	set_highlight_styles(buffer);
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 
 	/* Connect other signals */
 	g_signal_connect(self->sourceview->heading_depth, "value-changed", G_CALLBACK(on_heading_depth_value_changed), self);
