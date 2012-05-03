@@ -409,6 +409,13 @@ i7_story_save_as(I7Document *document, GFile *file)
 	/* Delete the build files from the project directory */
 	delete_build_files(I7_STORY(document));
 
+	/* Set the folder icon to be the Inform 7 project icon */
+	if(!g_file_set_attribute_string(file, "metadata::custom-icon-name", "application-x-inform", G_FILE_QUERY_INFO_NONE, NULL, &err)) {
+		g_warning(_("Error setting custom icon on project folder: %s"), err->message);
+		/* Not a serious error, so just continue */
+		g_clear_error(&err);
+	}
+
 	i7_document_set_modified(document, FALSE);
 
 	i7_document_remove_status_message(document, FILE_OPERATIONS);
