@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 P. F. Chimento
+/* Copyright (C) 2011, 2012 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <glib.h>
+#include <sys/types.h>
 
 /* Prerequisites for including Gnulib's diffseq algorithm */
 #include <limits.h>
