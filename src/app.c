@@ -392,6 +392,25 @@ is_valid_extension(I7App *app, const gchar *text, gchar **thename, gchar **theau
 	return TRUE;
 }
 
+/* Replacement for g_data_input_stream_read_line_utf8() on old GLib versions */
+#if !GLIB_CHECK_VERSION(2, 30, 0)
+char *
+g_data_input_stream_read_line_utf8(GDataInputStream *stream, gsize *length, GCancellable *cancellable, GError **error)
+{
+    char *res = g_data_input_stream_read_line(stream, length, cancellable, error);
+    if(!res)
+        return NULL;
+
+    if(!g_utf8_validate(res, -1, NULL))
+    {
+        g_set_error_literal(error, G_CONVERT_ERROR, G_CONVERT_ERROR_ILLEGAL_SEQUENCE, "Invalid byte sequence in conversion input");
+        g_free(res);
+        return NULL;
+    }
+    return res;
+}
+#endif /* GLib < 2.30 */
+
 /**
  * i7_app_install_extension:
  * @app: the application
