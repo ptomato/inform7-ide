@@ -78,7 +78,16 @@ get_file_from_save_dialog(I7Document *document, GFile *default_file)
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
 	if(default_file) {
-		gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), default_file, NULL); /* ignore errors */
+	    if(g_file_query_exists(default_file, NULL)) {
+		    gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), default_file, NULL); /* ignore errors */
+		} else {
+		    /* gtk_file_chooser_set_file() doesn't set the name if the file
+		    doesn't exist, i.e. the user created a new document */
+		    gtk_file_chooser_set_current_folder_file(GTK_FILE_CHOOSER(dialog), default_file, NULL); /* ignore errors */
+		    char *display_name = file_get_display_name(default_file);
+		    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), display_name);
+		    g_free(display_name);
+		}
 	}
 
 	GtkFileFilter *filter = gtk_file_filter_new();
