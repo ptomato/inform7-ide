@@ -285,8 +285,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 			gdk_threads_enter();
 			gtk_text_buffer_set_text(priv->debug_log, text, -1);
 			gdk_threads_leave();
+			g_free(text);
 		}
-		g_free(text);
 		g_object_unref(debug_file);
 
 		/* Refresh the I6 code */
@@ -295,8 +295,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 			gdk_threads_enter();
 			gtk_text_buffer_set_text(GTK_TEXT_BUFFER(priv->i6_source), text, -1);
 			gdk_threads_leave();
+			g_free(text);
 		}
-		g_free(text);
 		g_object_unref(i6_file);
 	}
 
