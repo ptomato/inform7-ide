@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1219,23 +1219,42 @@ action_about(GtkAction *action, I7App *app)
 {
 	/* TRANSLATORS: Help->About ; %s is the copyright year. */
 	char *copyright = g_strdup_printf(_("Copyright 2006\xE2\x80\x93%s " /* UTF8 en-dash */
-		"P. F. Chimento (front end),\n"
+		"Philip Chimento (front end),\n"
 	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
 	char *authors[] = {
 		N_("Inform written by:\n"
-		"    Graham Nelson\n"
+		"    Graham Nelson\n\n"
 		"Glulx compiler written by:\n"
-		"    Graham Nelson and Andrew Plotkin\n"
+		"    Graham Nelson\n"
+		"    Andrew Plotkin\n\n"
 		"Inform front-end written by:\n"
-		"    P. F. Chimento\n"
+		"    Philip Chimento\n\n"
 		"Contributions by:\n"
 		"    Adam Thornton\n"
 		"    Daniel Nilsson\n"
 		"    Evil Tabby Cat\n"
 		"    Eric Forgeot\n"
+		"    Alan De Smet\n"
 		"    Jonathan Liu\n"
 		"    Zachary Amsden\n"
 		"    David Leverton\n"
+		"    Leandro Ribeiro\n"
+		"    Matteo Settenvini\n"
+		"In addition, Andrew Hunter's OS X version\n"
+		"and David Kinder's Windows version\n"
+		"proved invaluable.\n\n"
+		"Interface designed by:\n"
+		"    Graham Nelson\n"
+		"    Andrew Hunter\n\n"
+		"Chimara written by:\n"
+		"    Philip Chimento\n"
+		"    Marijn van Vliet\n\n"
+		"Gargoyle originally written by:\n"
+		"    Tor Andersson\n"
+		"Updated by:\n"
+		"    Ben Cressey et al.\n\n"
+		"Elastic tabstops invented by:\n"
+		"    Nick Gravgaard\n\n"
 		"Contributions to the compiler:\n"
 		"    Emily Short\n"
 		"    Gunther Schmidl\n"
@@ -1262,8 +1281,13 @@ action_about(GtkAction *action, I7App *app)
 		/* TRANSLATORS: Caution, UTF8 right arrow */
 		"license", _("See Help\xE2\x86\x92License for licensing information."),
 		"authors", authors,
-		/* TRANSLATORS: Caution, UTF8 capital A acute accent */
-		"translator-credits", _("\xC3\x81ngel Eduardo (Spanish)"),
+		/* TRANSLATORS: Caution, C381 = UTF8 capital A acute accent; C3AD = UTF8
+	     lowercase I acute accent; C3A9 = UTF8 lowercase E acute accent */
+		"translator-credits", _(
+		    "\xC3\x81ngel Eduardo Garc\xC3\xAD""a (Spanish)\n"
+		    "Jhames Bolumbero (Spanish)\n"
+			"St\xC3\xA9phane Aulery (French)\n"
+		    ),
 		"logo-icon-name", "inform7",
 		"title", _("About Inform"),
 		NULL);
