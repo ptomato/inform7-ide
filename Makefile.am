@@ -14,10 +14,12 @@ dist_doc_DATA = AUTHORS ChangeLog COPYING NEWS README THANKS TODO
 install-data-local:
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
 	$(GCONFTOOL) --makefile-install-rule $(srcdir)/$(dist_schema_DATA)
+	killall -HUP gconfd-2  # Refresh gconfd for all users, not just root
 
 uninstall-local:
 	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
 	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(dist_schema_DATA)
+	killall -HUP gconfd-2
 
 EXTRA_DIST = \
 	INSTALL \
