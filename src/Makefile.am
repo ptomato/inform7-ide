@@ -66,8 +66,6 @@ libchimara_a_SOURCES = \
 	chimara/libchimara/garglk.c \
 	chimara/libchimara/garglk.h \
 	chimara/libchimara/gestalt.c \
-	chimara/libchimara/graphics.c \
-	chimara/libchimara/graphics.h \
 	chimara/libchimara/gi_blorb.c \
 	chimara/libchimara/gi_blorb.h \
 	chimara/libchimara/gi_dispa.c \
@@ -77,6 +75,8 @@ libchimara_a_SOURCES = \
 	chimara/libchimara/glkstart.h \
 	chimara/libchimara/glkunix.c \
 	chimara/libchimara/glkunix.h \
+	chimara/libchimara/graphics.c \
+	chimara/libchimara/graphics.h \
 	chimara/libchimara/hyperlink.c \
 	chimara/libchimara/hyperlink.h \
 	chimara/libchimara/init.c \
@@ -113,10 +113,11 @@ libchimara_a_CFLAGS = @CHIMARA_CFLAGS@ $(AM_CFLAGS)
 
 BUILT_SOURCES = chimara-marshallers.c chimara-marshallers.h
 chimara-marshallers.c: chimara/libchimara/chimara-marshallers.txt
-	glib-genmarshal --body --prefix=_chimara_marshal $< > $@
+	$(AM_V_GEN)glib-genmarshal --body --prefix=_chimara_marshal $< > $@
 
 chimara-marshallers.h: chimara/libchimara/chimara-marshallers.txt
-	glib-genmarshal --header --prefix=_chimara_marshal $< > $@
+	$(AM_V_GEN)glib-genmarshal --header --prefix=_chimara_marshal $< > $@
+
 EXTRA_DIST = chimara/libchimara/chimara-marshallers.txt
 
 pkglib_LTLIBRARIES = frotz.la glulxe.la git.la
@@ -195,10 +196,10 @@ GIT_MAJOR = 1
 GIT_MINOR = 2
 GIT_PATCH = 8
 chimara/interpreters/git/version.h: Makefile.am
-	echo "// Automatically generated file -- do not edit!" > $@
-	echo "#define GIT_MAJOR" $(GIT_MAJOR) >> $@
-	echo "#define GIT_MINOR" $(GIT_MINOR) >> $@
-	echo "#define GIT_PATCH" $(GIT_PATCH) >> $@
+	$(AM_V_GEN)echo "// Automatically generated file -- do not edit!" > $@
+	@echo "#define GIT_MAJOR" $(GIT_MAJOR) >> $@
+	@echo "#define GIT_MINOR" $(GIT_MINOR) >> $@
+	@echo "#define GIT_PATCH" $(GIT_PATCH) >> $@
 
 BUILT_SOURCES += chimara/interpreters/git/version.h
 git_la_SOURCES = \
@@ -225,7 +226,7 @@ git_la_SOURCES = \
     chimara/interpreters/git/terp.c \
     chimara/interpreters/git/accel.c
 git_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara
-git_la_CFLAGS = -DGARGLK -DUSE_INLINE -Wno-pointer-sign \
+git_la_CFLAGS = -DGARGLK -DCHIMARA_EXTENSIONS -DUSE_INLINE -Wno-pointer-sign \
 	-Wno-unused-but-set-variable -Wno-strict-aliasing \
 	-Wno-implicit-function-declaration $(AM_CFLAGS)
 git_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
