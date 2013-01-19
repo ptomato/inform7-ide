@@ -156,6 +156,7 @@ void i7_document_update_fonts(I7Document *document);
 void i7_document_update_font_sizes(I7Document *document);
 void i7_document_update_font_styles(I7Document *document);
 void i7_document_refresh_elastic_tabstops(I7Document *document);
+void i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, GtkTextIter *orig_end);
 
 void i7_document_expand_headings_view(I7Document *document);
 void i7_document_set_headings_filter_level(I7Document *document, gint depth);

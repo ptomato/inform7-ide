@@ -578,6 +578,110 @@ i7_document_refresh_elastic_tabstops(I7Document *document)
 	elastic_recalculate_view(i7_document_get_default_view(document));
 }
 
+/* Predicate for gtk_text_iter_forward_find_char: return TRUE if the character
+ * is not a tab, and keep track of the number of tabs found so far in
+ * *pointer_to_num_tabs. */
+static gboolean
+true_if_non_tab(gunichar ch, int *pointer_to_num_tabs)
+{
+	if(ch != '\t')
+		return TRUE;
+	(*pointer_to_num_tabs)++;
+	return FALSE;
+}
+
+/* Helper function: remove any hanging indent tags from a range of text, by
+ * names of tags: from indent-1 to indent-(max) */
+static void
+remove_indent_tags(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, unsigned max_tabs)
+{
+	int count;
+	for(count = 1; count <= max_tabs; count++) {
+		char *tag_name = g_strdup_printf("indent-%d", count);
+		gtk_text_buffer_remove_tag_by_name(buffer, tag_name, start, end);
+		g_free(tag_name);
+	}
+}
+
+/*
+ * i7_document_update_indent_tags:
+ * @self: the document
+ * @orig_start: (allow-none): an iter pointing to the start of a range of text
+ * to be recalculated, or %NULL for the start of the text
+ * @orig_end: (allow-none): an iter pointing to the end of the range, or %NULL
+ * for the end of the text
+ *
+ * Recalculates the hanging indent text tags in a range of text. @orig_start and
+ * @orig_end do not have to be at the start and end of a line, respectively.
+ */
+void
+i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, GtkTextIter *orig_end)
+{
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(I7_DOCUMENT_PRIVATE(document)->buffer);
+	GtkTextTagTable *table = gtk_text_buffer_get_tag_table(buffer);
+	GtkTextIter start, end;
+	static unsigned max_tab_tag_created = 0;
+
+	if(orig_start != NULL) {
+		start = *orig_start;
+		gtk_text_iter_set_line_index(&start, 0); /* backward to line start */
+	} else {
+		gtk_text_buffer_get_start_iter(buffer, &start);
+	}
+	if(orig_end != NULL) {
+		end = *orig_end;
+		gtk_text_iter_forward_to_line_end(&end);
+	} else {
+		gtk_text_buffer_get_end_iter(buffer, &end);
+	}
+
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	if(!g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {
+		remove_indent_tags(buffer, &start, &end, max_tab_tag_created);
+		return;
+	}
+	unsigned spaces = g_settings_get_uint(prefs, PREFS_TAB_WIDTH);
+	if(spaces == 0)
+		spaces = DEFAULT_TAB_WIDTH;
+
+	while(gtk_text_iter_compare(&start, &end) < 0) {
+		GtkTextIter first_non_tab = start, line_end = start;
+		int num_tabs = 0;
+
+		gtk_text_iter_forward_to_line_end(&line_end);
+		gtk_text_iter_backward_char(&first_non_tab); /* forward_find_char advances before searching, so counteract that */
+		gtk_text_iter_forward_find_char(&first_non_tab, (GtkTextCharPredicate)true_if_non_tab, &num_tabs, &line_end);
+
+		if(num_tabs != 0) {
+			GtkTextTag *indent_tag;
+			char *indent_tag_name = g_strdup_printf("indent-%d", num_tabs);
+			indent_tag = gtk_text_tag_table_lookup(table, indent_tag_name);
+			if(indent_tag == NULL) {
+				/* The background color is for debugging purposes: */
+				/* char *background_color = g_strdup_printf("#f%xf",
+					15 - num_tabs); */
+				indent_tag = gtk_text_buffer_create_tag(buffer, indent_tag_name,
+					/* "background", background_color, */
+					"indent", -(4 * num_tabs + 2) * spaces,
+					NULL);
+				/* g_free(background_color); */
+				if(max_tab_tag_created < num_tabs)
+					max_tab_tag_created = num_tabs;
+			}
+			g_free(indent_tag_name);
+
+			if(!gtk_text_iter_has_tag(&start, indent_tag)) {
+				remove_indent_tags(buffer, &start, &line_end, max_tab_tag_created);
+				gtk_text_buffer_apply_tag(buffer, indent_tag, &start, &line_end);
+			}
+		} else {
+			remove_indent_tags(buffer, &start, &line_end, max_tab_tag_created);
+		}
+		gtk_text_iter_forward_line(&start);
+	}
+}
+
 void
 i7_document_expand_headings_view(I7Document *document)
 {

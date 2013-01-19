@@ -166,6 +166,7 @@ on_config_indent_wrapped_changed(GSettings *settings, const char *key)
 	update_tabs(theapp->prefs->tab_example);
 	update_tabs(theapp->prefs->source_example);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
+	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_indent_tags, NULL);
 }
 
 static void
