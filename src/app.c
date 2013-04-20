@@ -1163,39 +1163,42 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *app)
 	do {
 		gchar *authorname;
 		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);
-		GtkWidget *authoritem = gtk_menu_item_new_with_label(authorname);
-		gtk_widget_show(authoritem);
-		gtk_menu_shell_append(GTK_MENU_SHELL(authormenu), authoritem);
 
-		g_assert(gtk_tree_model_iter_children(model, &title, &author));
-		GtkWidget *extmenu = gtk_menu_new();
-		do {
-			char *extname;
-			GFile *extension_file;
-			gboolean readonly;
-			gtk_tree_model_get(model, &title,
-				I7_APP_EXTENSION_TEXT, &extname,
-				I7_APP_EXTENSION_READ_ONLY, &readonly,
-				I7_APP_EXTENSION_FILE, &extension_file,
-				-1);
-			GtkWidget *extitem;
-			if(readonly) {
-				extitem = gtk_image_menu_item_new_with_label(extname);
-				GtkWidget *image = gtk_image_new_from_icon_name("inform7-builtin", GTK_ICON_SIZE_MENU);
-				gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(extitem), image);
-				g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), extension_file);
-			} else {
-				extitem = gtk_menu_item_new_with_label(extname);
-				g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), extension_file);
-			}
-			gtk_widget_show(extitem);
-			gtk_menu_shell_append(GTK_MENU_SHELL(extmenu), extitem);
+		if(gtk_tree_model_iter_children(model, &title, &author))
+		{
+			GtkWidget *authoritem = gtk_menu_item_new_with_label(authorname);
+			gtk_widget_show(authoritem);
+			gtk_menu_shell_append(GTK_MENU_SHELL(authormenu), authoritem);
 
-			g_free(extname);
-			g_object_unref(extension_file);
+			GtkWidget *extmenu = gtk_menu_new();
+			do {
+				char *extname;
+				GFile *extension_file;
+				gboolean readonly;
+				gtk_tree_model_get(model, &title,
+					I7_APP_EXTENSION_TEXT, &extname,
+					I7_APP_EXTENSION_READ_ONLY, &readonly,
+					I7_APP_EXTENSION_FILE, &extension_file,
+					-1);
+				GtkWidget *extitem;
+				if(readonly) {
+					extitem = gtk_image_menu_item_new_with_label(extname);
+					GtkWidget *image = gtk_image_new_from_icon_name("inform7-builtin", GTK_ICON_SIZE_MENU);
+					gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(extitem), image);
+					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), extension_file);
+				} else {
+					extitem = gtk_menu_item_new_with_label(extname);
+					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), extension_file);
+				}
+				gtk_widget_show(extitem);
+				gtk_menu_shell_append(GTK_MENU_SHELL(extmenu), extitem);
 
-		} while(gtk_tree_model_iter_next(model, &title));
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), extmenu);
+				g_free(extname);
+				g_object_unref(extension_file);
+
+			} while(gtk_tree_model_iter_next(model, &title));
+			gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), extmenu);
+		}
 	} while(gtk_tree_model_iter_next(model, &author));
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(parent_item), authormenu);
 }
