@@ -126,6 +126,7 @@ i7_app_init(I7App *self)
 	gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent), filter);
 
 	priv->document_list = NULL;
+	priv->splash_screen_active = TRUE;
 	priv->installed_extensions = GTK_TREE_STORE(load_object(builder, "installed_extensions_store"));
 	g_object_ref(priv->installed_extensions);
 	/* Set print settings to NULL, since they are not remembered across
@@ -329,6 +330,37 @@ i7_app_foreach_document(I7App *app, I7DocumentForeachFunc func, gpointer data)
 {
 	I7_APP_USE_PRIVATE(app, priv);
 	g_slist_foreach(priv->document_list, (GFunc)func, data);
+}
+
+/**
+ * i7_app_get_splash_screen_active:
+ * @app: the app
+ *
+ * Gets whether the splash screen (welcome dialog) is currently displaying. If
+ * it is, the program should not quit even if all document windows are closed.
+ *
+ * Returns: %TRUE if splash screen is active, %FALSE otherwise.
+ */
+gboolean
+i7_app_get_splash_screen_active(I7App *app)
+{
+	I7AppPrivate *priv = I7_APP_PRIVATE(app);
+	return priv->splash_screen_active;
+}
+
+/**
+ * i7_app_set_splash_screen_active:
+ * @app: the app
+ * @active: %TRUE if splash screen should be active, %FALSE otherwise.
+ *
+ * Sets whether the splash screen (welcome dialog) is currently displaying. If
+ * it is, the program should not quit even if all document windows are closed.
+ */
+void
+i7_app_set_splash_screen_active(I7App *app, gboolean active)
+{
+	I7AppPrivate *priv = I7_APP_PRIVATE(app);
+	priv->splash_screen_active = active;
 }
 
 /* Callback for file monitor on extensions directory; run the census if a file

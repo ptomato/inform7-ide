@@ -97,6 +97,8 @@ I7Document *i7_app_get_already_open(I7App *app, const GFile *file);
 gint i7_app_get_num_open_documents(I7App *app);
 void i7_app_close_all_documents(I7App *app);
 void i7_app_foreach_document(I7App *app, I7DocumentForeachFunc func, gpointer data);
+gboolean i7_app_get_splash_screen_active(I7App *app);
+void i7_app_set_splash_screen_active(I7App *app, gboolean active);
 
 void i7_app_monitor_extensions_directory(I7App *app);
 void i7_app_stop_monitoring_extensions_directory(I7App *app);

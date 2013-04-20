@@ -188,7 +188,7 @@ i7_document_finalize(GObject *self)
 
 	G_OBJECT_CLASS(i7_document_parent_class)->finalize(self);
 
-	if(i7_app_get_num_open_documents(theapp) == 0)
+	if(i7_app_get_num_open_documents(theapp) == 0 && !i7_app_get_splash_screen_active(theapp))
 		gtk_main_quit();
 }
 

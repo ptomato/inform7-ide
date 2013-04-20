@@ -28,6 +28,8 @@ typedef struct {
 	GtkActionGroup *app_action_group;
 	/* List of open documents */
 	GSList *document_list;
+	/* Whether the splash screen is currently displaying */
+	gboolean splash_screen_active;
 	/* Application directories */
 	GFile *datadir;
 	GFile *libexecdir;

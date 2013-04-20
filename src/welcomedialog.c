@@ -31,6 +31,7 @@ on_welcome_new_button_clicked(GtkButton *button, I7App *app)
 	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
 	GtkWidget *newdialog = create_new_dialog();
 	gtk_widget_destroy(welcomedialog);
+	i7_app_set_splash_screen_active(app, FALSE);
 	gtk_widget_show(newdialog);
 }
 
@@ -49,6 +50,7 @@ on_welcome_open_button_clicked(GtkButton *button, I7App *app)
 	}
 
 	gtk_widget_destroy(welcomedialog);
+	i7_app_set_splash_screen_active(app, FALSE);
 }
 
 void
@@ -61,8 +63,10 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 	I7Story *story = i7_story_new_from_file(app, file);
 	g_object_unref(file);
 
-	if(story)
+	if(story) {
 		gtk_widget_destroy(welcomedialog);
+		i7_app_set_splash_screen_active(app, FALSE);
+	}
 }
 
 GtkWidget *
