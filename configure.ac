@@ -115,6 +115,7 @@ AM_PROG_CC_C_O                    # Automake requires this for per-target CFLAGS
 AC_PROG_INSTALL                   # Install
 AC_PROG_SED                       # Sed
 AC_PROG_MKDIR_P                   # mkdir -p
+AM_PROG_AR                        # ar
 LT_INIT([dlopen])                 # Libtool 2.2.6 and up
 LT_PREREQ([2.2.6])
 
