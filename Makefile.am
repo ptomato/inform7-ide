@@ -46,7 +46,7 @@ DISTCLEANFILES = \
 MAINTAINERCLEANFILES = ABOUT-NLS INSTALL aclocal.m4 compile config.guess \
         config.h.in config.rpath config.sub depcomp install-sh \
         intltool-extract.in intltool-merge.in intltool-update.in ltmain.sh \
-        missing autom4te.cache m4
+        missing m4
 
 if BUILDING_RPM
 RPMDIR=`$(RPM) --eval %_rpmdir`
