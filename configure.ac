@@ -28,7 +28,8 @@ AC_CHECK_FILE([${srcdir}/src/ni/ni], [NI=${srcdir}/src/ni/ni], [
 	AC_MSG_ERROR([ni not found in ${srcdir}/src/ni.
 	IMPORTANT NOTE! You must download version $VERSION of the appropriate
 	compiler package from inform7.org and put the file `ni' into the
-	directory `${srcdir}/src/ni'.])
+	directory `${srcdir}/src/ni'.
+	(Try http://inform7.com/download/content/$VERSION/I7_${VERSION}_Linux_all.tar.gz)])
 ])
 AC_MSG_CHECKING([the version of ${NI}])
 AS_IF([${NI} | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
@@ -36,8 +37,9 @@ AS_IF([${NI} | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
 	[$(${NI} | $EGREP -o '[0-9][A-Z][0-9]{2}')] of ni in src/ni. This version of Inform 7 will only work with
 	version $VERSION.
 	IMPORTANT NOTE! You must download version $VERSION of the appropriate
-	compiler package from inform7.org and put the file `ni' into the
-	directory `${srcdir}/src/ni'.])
+	compiler package from inform7.com and put the file `ni' into the
+	directory `${srcdir}/src/ni'.
+	(Try http://inform7.com/download/content/$VERSION/I7_${VERSION}_Linux_all.tar.gz)])
 ])
 
 ### DECLARE OPTIONS ############################################################
