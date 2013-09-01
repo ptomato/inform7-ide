@@ -194,12 +194,12 @@ dist_glulxedoc_DATA = chimara/interpreters/glulxe/README
 # Automatically generate version.h
 GIT_MAJOR = 1
 GIT_MINOR = 2
-GIT_PATCH = 8
+GIT_PATCH = 9
 chimara/interpreters/git/version.h: Makefile.am
 	$(AM_V_GEN)echo "// Automatically generated file -- do not edit!" > $@
-	@echo "#define GIT_MAJOR" $(GIT_MAJOR) >> $@
-	@echo "#define GIT_MINOR" $(GIT_MINOR) >> $@
-	@echo "#define GIT_PATCH" $(GIT_PATCH) >> $@
+	$(AM_V_at)echo "#define GIT_MAJOR" $(GIT_MAJOR) >> $@
+	$(AM_V_at)echo "#define GIT_MINOR" $(GIT_MINOR) >> $@
+	$(AM_V_at)echo "#define GIT_PATCH" $(GIT_PATCH) >> $@
 
 BUILT_SOURCES += chimara/interpreters/git/version.h
 git_la_SOURCES = \
