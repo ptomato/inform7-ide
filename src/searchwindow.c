@@ -32,7 +32,8 @@
 #include "story.h"
 
 /* An index of the text of the documentation and example pages. Only built
-the first time someone does a documentation search, and freed atexit. */
+the first time someone does a documentation search, and freed at the end of the
+main program. */
 static GList *doc_index = NULL;
 
 typedef struct {
@@ -309,25 +310,6 @@ update_label(I7SearchWindow *self)
 	gchar *label = g_strdup_printf(_("Search results for: \"%s\""), priv->text);
 	gtk_label_set_text(GTK_LABEL(self->search_text), label);
 	g_free(label);
-}
-
-/* Free the internal private documentation index. No need to call this function;
-it is connected to atexit. */
-static void
-free_doc_index()
-{
-	GList *iter;
-	for(iter = doc_index; iter != NULL; iter = g_list_next(iter)) {
-		DocText *text = (DocText *)(iter->data);
-		g_free(text->section);
-		g_free(text->title);
-		g_free(text->sort);
-		g_free(text->body);
-		g_object_unref(text->file);
-		g_slice_free(DocText, text);
-	}
-	g_list_free(doc_index);
-	doc_index = NULL;
 }
 
 /* Expand only the standard entities (gt, lt, amp, apos, quot) */
@@ -612,8 +594,6 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 
 		stop_spinner(self);
 		update_label(self);
-
-		g_atexit(free_doc_index);
 	} else {
 		start_spinner(self);
 		g_list_foreach(doc_index, (GFunc)search_documentation, self);
@@ -760,4 +740,30 @@ void
 i7_search_window_done_searching(I7SearchWindow *self)
 {
 	g_signal_handlers_disconnect_by_func(self, on_search_window_delete_event, NULL);
+}
+
+/**
+ * i7_search_window_free_index:
+ *
+ * Free the documentation index, if one has been created. Should be called at
+ * the end of the main program.
+ */
+void
+i7_search_window_free_index(void)
+{
+	if(doc_index == NULL)
+		return;
+
+	GList *iter;
+	for(iter = doc_index; iter != NULL; iter = g_list_next(iter)) {
+		DocText *text = (DocText *)(iter->data);
+		g_free(text->section);
+		g_free(text->title);
+		g_free(text->sort);
+		g_free(text->body);
+		g_object_unref(text->file);
+		g_slice_free(DocText, text);
+	}
+	g_list_free(doc_index);
+	doc_index = NULL;
 }

@@ -25,6 +25,7 @@
 #include "app.h"
 #include "configfile.h"
 #include "error.h"
+#include "searchwindow.h"
 #include "welcomedialog.h"
 
 int
@@ -36,8 +37,7 @@ main(int argc, char *argv[])
 	textdomain(GETTEXT_PACKAGE);
 #endif
 
-/*    g_mem_set_vtable(glib_mem_profiler_table);
-	g_atexit(g_mem_profile);*/
+	/* g_mem_set_vtable(glib_mem_profiler_table); */
 
 	GError *error = NULL;
 
@@ -96,5 +96,7 @@ main(int argc, char *argv[])
 	gdk_threads_leave();
 
 	g_object_unref(theapp);
+	i7_search_window_free_index();
+	/* g_mem_profile();*/
 	return 0;
 }

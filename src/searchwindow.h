@@ -49,4 +49,6 @@ void i7_search_window_search_project(I7SearchWindow *self);
 void i7_search_window_search_extensions(I7SearchWindow *self);
 void i7_search_window_done_searching(I7SearchWindow *self);
 
+void i7_search_window_free_index(void);
+
 #endif /* _SEARCHWINDOW_H */
