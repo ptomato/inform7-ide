@@ -149,8 +149,8 @@ frotz_la_CPPFLAGS = \
 	-I$(srcdir)/chimara/interpreters/frotz \
 	-I$(srcdir)/chimara/libchimara \
 	-I$(srcdir)/chimara
-frotz_la_CFLAGS = -Wno-pointer-sign -Wno-implicit-function-declaration \
-	-Wno-unused-variable -Wno-unused-but-set-variable $(AM_CFLAGS)
+frotz_la_CFLAGS = $(AM_CFLAGS) -Wno-pointer-sign -Wno-unused-variable \
+	-Wno-implicit-function-declaration -Wno-unused-but-set-variable
 frotz_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 frotzdocdir = $(datadir)/doc/$(PACKAGE)/frotz
@@ -182,10 +182,8 @@ glulxe_la_SOURCES = \
     chimara/interpreters/glulxe/unixstrt.c \
     chimara/interpreters/glulxe/vm.c 
 glulxe_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara -DOS_UNIX
-glulxe_la_CFLAGS = -Wall -Wmissing-prototypes -Wstrict-prototypes \
-	-Wno-unused-value -Wno-strict-aliasing -Wno-uninitialized \
-	-Wno-unused-variable -Wno-unused-function -Wno-unused-but-set-variable \
-	$(AM_CFLAGS)
+glulxe_la_CFLAGS = $(AM_CFLAGS) -Wall -Wmissing-prototypes -Wstrict-prototypes \
+	-Wno-unused -Wno-strict-aliasing -Wno-maybe-uninitialized
 glulxe_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 glulxedocdir = $(datadir)/doc/$(PACKAGE)/glulxe
@@ -226,9 +224,8 @@ git_la_SOURCES = \
     chimara/interpreters/git/terp.c \
     chimara/interpreters/git/accel.c
 git_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara
-git_la_CFLAGS = -DGARGLK -DCHIMARA_EXTENSIONS -DUSE_INLINE -Wno-pointer-sign \
-	-Wno-unused-but-set-variable -Wno-strict-aliasing \
-	-Wno-implicit-function-declaration $(AM_CFLAGS)
+git_la_CFLAGS = -DCHIMARA_EXTENSIONS -DUSE_INLINE $(AM_CFLAGS) \
+	-Wno-pointer-sign -Wno-unused-but-set-variable -Wno-strict-aliasing
 git_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 gitdocdir = $(datadir)/doc/$(PACKAGE)/git
