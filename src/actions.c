@@ -49,7 +49,7 @@ get_toplevel_for_action(GtkAction *action)
 		GtkWidget *toplevel = gtk_widget_get_toplevel((GtkWidget *)list->data);
 		if(GTK_IS_MENU(toplevel))
 			toplevel = gtk_widget_get_toplevel(gtk_menu_get_attach_widget(GTK_MENU(toplevel)));
-		if(toplevel && GTK_WIDGET_TOPLEVEL(toplevel)) {
+		if(toplevel && gtk_widget_is_toplevel(toplevel)) {
 			parent = toplevel;
 			break;
 		}
