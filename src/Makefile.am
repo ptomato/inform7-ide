@@ -285,8 +285,8 @@ gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 # ld is not to include object files with no referenced symbols in the final
 # binary product. But the Glk programs, which are dynamically loaded, reference
 # symbols from the Glk API in libchimara.a, and the GtkBuilder references
-# symbols in libeverything.a, which are not referenced by the main program. This
-# tells ld to link in all object files in libchimara.a and libeverything.a.
+# symbols in libinform7gui.a, which are not referenced by the main program. This
+# tells ld to link in all object files in libchimara.a and libinform7gui.a.
 gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
 	-Wl,--whole-archive,libinform7gui.a,libchimara.a,--no-whole-archive
 # The gnome-inform7 executable must also depend on libchimara.a; because of the
