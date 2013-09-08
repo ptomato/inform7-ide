@@ -227,7 +227,7 @@ on_extensions_view_drag_drop(GtkWidget *widget, GdkDragContext *drag_context, gi
 	/* Iterate through the list of target types provided by the source */
 	GdkAtom target_type = NULL;
 	GList *iter;
-	for(iter = drag_context->targets; iter != NULL; iter = g_list_next(iter)) {
+	for(iter = gdk_drag_context_list_targets(drag_context); iter != NULL; iter = g_list_next(iter)) {
 		gchar *type_name = gdk_atom_name(GDK_POINTER_TO_ATOM(iter->data));
 		/* Select 'text/uri-list' from the list of available targets */
 		if(!strcmp(type_name, "text/uri-list")) {
@@ -259,16 +259,16 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 	gchar *type_name = NULL;
 
 	/* Check that we got data from source */
-	if((selectiondata == NULL) || (selectiondata->length < 0))
+	if(selectiondata == NULL || gtk_selection_data_get_length(selectiondata) < 0)
 		goto fail;
 
 	/* Check that we got the format we can use */
-	type_name = gdk_atom_name(selectiondata->type);
+	type_name = gdk_atom_name(gtk_selection_data_get_data_type(selectiondata));
 	if(strcmp(type_name, "text/uri-list") != 0)
 		goto fail;
 
 	/* Do stuff with the data */
-	char **extension_files = g_uri_list_extract_uris((char *)selectiondata->data);
+	char **extension_files = g_uri_list_extract_uris((char *)gtk_selection_data_get_data(selectiondata));
 	int foo;
 	/* Get a list of URIs to the dropped files */
 	for(foo = 0; extension_files[foo] != NULL; foo++) {
