@@ -594,7 +594,7 @@ i7_panel_class_init(I7PanelClass *klass)
 /* SIGNAL HANDLERS */
 
 void
-on_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
+on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
 
@@ -622,7 +622,7 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page
 }
 
 void
-after_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
+after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
 {
 	switch(page_num) {
 		case I7_PANE_SOURCE:
@@ -646,21 +646,21 @@ after_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint p
 }
 
 void
-after_source_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
+after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_SOURCE)
 		history_push_tab(panel, I7_PANE_SOURCE, page_num);
 }
 
 void
-after_errors_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
+after_errors_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_ERRORS)
 		history_push_tab(panel, I7_PANE_ERRORS, page_num);
 }
 
 void
-after_index_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Panel *panel)
+after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_INDEX)
 		history_push_tab(panel, I7_PANE_INDEX, page_num);

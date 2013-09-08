@@ -129,7 +129,7 @@ on_panel_display_docpage(I7Panel *panel, gchar *uri, I7Story *story)
 }
 
 static void
-on_source_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Story *story)
+on_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Story *story)
 {
 	if(page_num != I7_SOURCE_VIEW_TAB_CONTENTS)
 		return;

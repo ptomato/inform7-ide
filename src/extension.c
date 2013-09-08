@@ -71,7 +71,7 @@ on_extensionwindow_delete_event(GtkWidget *window, GdkEvent *event)
 }
 
 static void
-on_notebook_switch_page(GtkNotebook *notebook, GtkNotebookPage *page, guint page_num, I7Extension *extension)
+on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Extension *extension)
 {
 	if(page_num != I7_SOURCE_VIEW_TAB_CONTENTS)
 		return;
