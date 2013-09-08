@@ -270,7 +270,7 @@ create_new_dialog(void)
 
 	/* Set default button by illegally accessing GtkAssistant struct
 	(FIXME, this is naughty) */
-	GTK_WIDGET_SET_FLAGS(GTK_ASSISTANT(options->assistant)->forward, GTK_CAN_DEFAULT);
+	gtk_widget_set_can_default(GTK_ASSISTANT(options->assistant)->forward, TRUE);
 	gtk_window_set_default(GTK_WINDOW(options->assistant), GTK_ASSISTANT(options->assistant)->forward);
 
 	/* Create a tree store with one column, with a string in it, and have two

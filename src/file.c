@@ -129,7 +129,7 @@ get_file_from_save_dialog(I7Document *document, GFile *default_file)
 				_("Replacing it will overwrite its contents."));
 			gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 			GtkWidget *button = gtk_button_new_with_mnemonic(_("_Replace"));
-			GTK_WIDGET_SET_FLAGS(button, GTK_CAN_DEFAULT);
+			gtk_widget_set_can_default(button, TRUE);
 			gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_stock(GTK_STOCK_SAVE_AS, GTK_ICON_SIZE_BUTTON));
 			gtk_widget_show(button);
 			gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);

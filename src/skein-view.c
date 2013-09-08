@@ -277,7 +277,7 @@ popup_edit_window(GtkWidget *parent, gint x, gint y, const gchar *text)
 
 	GtkWidget *edit_popup = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	/* stackoverflow.com/questions/1925568/how-to-give-keyboard-focus-to-a-pop-up-gtk-window */
-	GTK_WIDGET_SET_FLAGS(edit_popup, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(edit_popup, TRUE);
 	gtk_window_set_decorated(GTK_WINDOW(edit_popup), FALSE);
 	gtk_window_set_has_frame(GTK_WINDOW(edit_popup), FALSE);
 	gtk_window_set_type_hint(GTK_WINDOW(edit_popup), GDK_WINDOW_TYPE_HINT_POPUP_MENU);
