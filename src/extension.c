@@ -423,8 +423,8 @@ i7_extension_init(I7Extension *self)
 	gtk_tree_view_set_model(GTK_TREE_VIEW(self->sourceview->headings), i7_document_get_headings(I7_DOCUMENT(self)));
 
 	/* Connect the Previous Section and Next Section actions to the up and down buttons */
-	gtk_action_connect_proxy(I7_DOCUMENT(self)->previous_section, self->sourceview->previous);
-	gtk_action_connect_proxy(I7_DOCUMENT(self)->next_section, self->sourceview->next);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(self->sourceview->previous), I7_DOCUMENT(self)->previous_section);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(self->sourceview->next), I7_DOCUMENT(self)->next_section);
 
 	/* We don't need to keep a reference to the buffer and model anymore */
 	g_object_unref(buffer);

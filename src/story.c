@@ -648,8 +648,8 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_widget_modify_font(GTK_WIDGET(panel->errors_tabs[I7_ERRORS_TAB_PROGRESS]), font);
 
 	/* Connect the Previous Section and Next Section actions to the up and down buttons */
-	gtk_action_connect_proxy(I7_DOCUMENT(self)->previous_section, panel->sourceview->previous);
-	gtk_action_connect_proxy(I7_DOCUMENT(self)->next_section, panel->sourceview->next);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->previous), I7_DOCUMENT(self)->previous_section);
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->next), I7_DOCUMENT(self)->next_section);
 
 	/* Set the Blorb resource-loading callback */
 	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_GAME]), (ChimaraResourceLoadFunc)load_blorb_resource, self, NULL);

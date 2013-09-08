@@ -426,7 +426,7 @@ i7_panel_init(I7Panel *self)
 	self->labels_menu = gtk_menu_new();
 	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self->labels), self->labels_menu);
 	self->labels_action = gtk_action_group_get_action(priv->skein_action_group, "labels");
-	gtk_action_connect_proxy(self->labels_action, GTK_WIDGET(self->labels));
+	gtk_activatable_set_related_action(GTK_ACTIVATABLE(self->labels), self->labels_action);
 
 	/* Reparent the widgets into our new VBox */
 	self->notebook = GTK_WIDGET(load_object(builder, "panel"));

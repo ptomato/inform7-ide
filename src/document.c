@@ -1008,7 +1008,9 @@ static void
 on_menu_item_select(GtkItem *item, GtkStatusbar *statusbar)
 {
 	gchar *hint = NULL;
-	g_object_get(gtk_widget_get_action(GTK_WIDGET(item)), "tooltip", &hint, NULL);
+	g_object_get(gtk_activatable_get_related_action(GTK_ACTIVATABLE(item)),
+		"tooltip", &hint,
+		NULL);
 	if(hint) {
 		guint id = gtk_statusbar_get_context_id(statusbar, "MenuItemHints");
 		gtk_statusbar_push(statusbar, id, hint);
