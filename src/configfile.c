@@ -126,7 +126,7 @@ on_config_font_size_changed(GSettings *settings, const char *key)
 }
 
 static void
-on_config_style_scheme_changed(GSettings *settings, const char *key, GtkWidget *list)
+on_config_style_scheme_changed(GSettings *settings, const char *key)
 {
 	I7App *theapp = i7_app_get();
 
@@ -134,7 +134,7 @@ on_config_style_scheme_changed(GSettings *settings, const char *key, GtkWidget *
 	/* TODO: validate new value? */
 
 	/* update application to reflect new value */
-	select_style_scheme(GTK_TREE_VIEW(list), newvalue); // TODO: check me
+	select_style_scheme(theapp->prefs->schemes_view, newvalue);
 	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_styles, NULL);

@@ -52,8 +52,11 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 void
 populate_schemes_list(GtkListStore *list)
 {
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 	gtk_list_store_clear(list);
-	i7_app_foreach_color_scheme(i7_app_get(), (GFunc)store_color_scheme, list);
+	i7_app_foreach_color_scheme(theapp, (GFunc)store_color_scheme, list);
+	select_style_scheme(theapp->prefs->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 }
 
 I7PrefsWidgets *
@@ -87,7 +90,6 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 		enum_values, NULL)
 	BIND(PREFS_AUTHOR_NAME, "author_name", "text");
 	BIND(PREFS_CUSTOM_FONT, "custom_font", "font-name");
-	//BIND(PREFS_STYLE_SCHEME, "schemes_view", ...); FIXME
 	BIND(PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", "active");
 	BIND(PREFS_AUTO_INDENT, "auto_indent", "active");
 	BIND(PREFS_INTELLIGENCE, "follow_symbols", "active");
@@ -122,6 +124,7 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
 	select = gtk_tree_view_get_selection(self->schemes_view);
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_BROWSE);
+	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 
 	return self;
 }
