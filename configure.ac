@@ -12,11 +12,10 @@ AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR(src/main.c)
 # Tell where to put the libtool macros
 AC_CONFIG_MACRO_DIR([m4])
-# Initialize automake; $(MKDIR_P) was introduced in 1.10
-AM_INIT_AUTOMAKE([1.10 -Wall])
+# Initialize automake; pkglibexecdir and silent rules introduced in 1.11
+AM_INIT_AUTOMAKE([1.11 -Wall])
 # Configure with --enable-silent-rules to cut down on clutter
-# Requires automake 1.11
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+AM_SILENT_RULES([yes])
 
 ### CHECK FOR PROPER NI EXECUTABLE #############################################
 

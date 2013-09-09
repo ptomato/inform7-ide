@@ -2,9 +2,6 @@ SUBDIRS = inweb cBlorb inform6 ni
 
 AM_CFLAGS = -Wall
 
-# This line won't be necessary anymore in Automake 1.10a
-pkglibexecdir = $(libexecdir)/$(PACKAGE)
-
 # We build libinform7gui.a to link to the regular binary
 # as well as the test binary
 noinst_LIBRARIES = libosxcart.a libchimara.a libinform7gui.a

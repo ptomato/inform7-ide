@@ -1,6 +1,3 @@
-# This line won't be necessary anymore in Automake 1.10a
-pkglibexecdir = $(libexecdir)/$(PACKAGE)
-
 cblorbsrc = \
 	Contents.w \
 	Preliminaries/The\ cblorb\ Manual.w \

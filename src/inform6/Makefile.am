@@ -1,6 +1,3 @@
-# This line won't be necessary anymore in Automake 1.10a
-pkglibexecdir = $(libexecdir)/$(PACKAGE)
-
 pkglibexec_PROGRAMS = inform-6.32-biplatform
 inform_6_32_biplatform_SOURCES = arrays.c asm.c bpatch.c chars.c directs.c \
 	errors.c expressc.c expressp.c files.c header.h inform.c lexer.c linker.c \

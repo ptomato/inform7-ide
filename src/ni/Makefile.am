@@ -1,6 +1,3 @@
-# This line won't be necessary after Automake 1.10a
-pkglibexecdir = $(libexecdir)/$(PACKAGE)
-
 # We call it a "script" so that it will get installed as an executable,
 # but won't get cleaned
 pkglibexec_SCRIPTS = ni
