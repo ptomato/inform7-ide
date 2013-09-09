@@ -268,11 +268,6 @@ create_new_dialog(void)
 	options->author_box = GTK_WIDGET(load_object(builder, "new_author"));
 	options->chooser = GTK_WIDGET(load_object(builder, "new_directory"));
 
-	/* Set default button by illegally accessing GtkAssistant struct
-	(FIXME, this is naughty) */
-	gtk_widget_set_can_default(GTK_ASSISTANT(options->assistant)->forward, TRUE);
-	gtk_window_set_default(GTK_WINDOW(options->assistant), GTK_ASSISTANT(options->assistant)->forward);
-
 	/* Create a tree store with one column, with a string in it, and have two
 	columns of "hidden" data: an integer index and a description string */
 
