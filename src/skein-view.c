@@ -253,11 +253,11 @@ static gboolean
 on_edit_popup_key_press(GtkWidget *entry, GdkEventKey *event, GtkWidget *edit_popup)
 {
 	switch(event->keyval) {
-	case GDK_Escape:
+	case GDK_KEY_Escape:
 		gtk_widget_destroy(edit_popup);
 		return TRUE;
-	case GDK_Return:
-	case GDK_KP_Enter:
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		{
 			I7Node *node = I7_NODE(g_object_get_data(G_OBJECT(edit_popup), "node"));
 			void (*func)(I7Node *, const gchar *) = g_object_get_data(G_OBJECT(edit_popup), "callback");
