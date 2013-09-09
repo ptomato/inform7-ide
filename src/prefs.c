@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ populate_schemes_list(GtkListStore *list)
 }
 
 I7PrefsWidgets *
-create_prefs_window(GtkBuilder *builder)
+create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 {
 	I7PrefsWidgets *self = g_slice_new0(I7PrefsWidgets);
 
@@ -73,6 +73,37 @@ create_prefs_window(GtkBuilder *builder)
 	self->auto_number = GTK_WIDGET(load_object(builder, "auto_number"));
 	self->clean_index_files = GTK_WIDGET(load_object(builder, "clean_index_files"));
 	self->schemes_list = GTK_LIST_STORE(load_object(builder, "schemes_list"));
+
+	/* Bind widgets to GSettings */
+#define BIND(key, obj, property) \
+	g_settings_bind(prefs, key, load_object(builder, obj), property, \
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY)
+#define BIND_COMBO_BOX(key, obj, enum_values) \
+	g_settings_bind_with_mapping(prefs, key, \
+		load_object(builder, obj), "active", \
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY, \
+		(GSettingsBindGetMapping)settings_enum_get_mapping, \
+		(GSettingsBindSetMapping)settings_enum_set_mapping, \
+		enum_values, NULL)
+	BIND(PREFS_AUTHOR_NAME, "author_name", "text");
+	BIND(PREFS_CUSTOM_FONT, "custom_font", "font-name");
+	//BIND(PREFS_STYLE_SCHEME, "schemes_view", ...); FIXME
+	BIND(PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", "active");
+	BIND(PREFS_AUTO_INDENT, "auto_indent", "active");
+	BIND(PREFS_INTELLIGENCE, "follow_symbols", "active");
+	BIND(PREFS_INTELLIGENCE, "auto_number", "sensitive");
+	BIND(PREFS_AUTO_NUMBER, "auto_number", "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, "clean_build_files", "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, "clean_index_files", "sensitive");
+	BIND(PREFS_CLEAN_INDEX_FILES, "clean_index_files", "active");
+	BIND(PREFS_SHOW_DEBUG_LOG, "show_debug_tabs", "active");
+	BIND_COMBO_BOX(PREFS_FONT_SET, "font_set", font_set_enum);
+	BIND_COMBO_BOX(PREFS_FONT_SIZE, "font_size", font_size_enum);
+	BIND_COMBO_BOX(PREFS_INTERPRETER, "glulx_combo", interpreter_enum);
+#undef BIND
+#undef BIND_COMBO_BOX
+	g_settings_bind(prefs, PREFS_TAB_WIDTH,
+		gtk_range_get_adjustment(GTK_RANGE(load_object(builder, "tab_ruler"))), "value", G_SETTINGS_BIND_DEFAULT);
 
 	/* Only select one extension at a time */
 	GtkTreeSelection *select = gtk_tree_view_get_selection(self->extensions_view);
@@ -106,9 +137,11 @@ on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
+		I7App *theapp = i7_app_get();
+		GSettings *prefs = i7_app_get_prefs(theapp);
 		gchar *id;
 		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
-		config_file_set_string(PREFS_STYLE_SCHEME, id);
+		g_settings_set_string(prefs, PREFS_STYLE_SCHEME, id);
 		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(i7_app_get(), id));
 		g_free(id);
 	} else
@@ -160,7 +193,10 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 	}
 
 	populate_schemes_list(app->prefs->schemes_list);
-	config_file_set_string(PREFS_STYLE_SCHEME, scheme_id);
+
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	g_settings_set_string(prefs, PREFS_STYLE_SCHEME, scheme_id);
 }
 
 void
@@ -213,7 +249,11 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 				new_id = g_strdup("inform");
 
 			populate_schemes_list(app->prefs->schemes_list);
-			config_file_set_string(PREFS_STYLE_SCHEME, new_id);
+
+			I7App *theapp = i7_app_get();
+			GSettings *prefs = i7_app_get_prefs(theapp);
+			g_settings_set(prefs, PREFS_STYLE_SCHEME, new_id);
+
 			g_free(new_id);
 		}
 		g_free(id);
@@ -331,31 +371,6 @@ fail:
 	gtk_drag_finish(drag_context, FALSE, FALSE, time);
 }
 
-
-void
-on_font_set_changed(GtkComboBox *combobox, I7App *app)
-{
-	config_file_set_enum(PREFS_FONT_SET, gtk_combo_box_get_active(combobox), font_set_lookup_table);
-}
-
-void
-on_custom_font_font_set(GtkFontButton *button, I7App *app)
-{
-	config_file_set_string(PREFS_CUSTOM_FONT, gtk_font_button_get_font_name(button));
-}
-
-void
-on_font_size_changed(GtkComboBox *combobox, I7App *app)
-{
-	config_file_set_enum(PREFS_FONT_SIZE, gtk_combo_box_get_active(combobox), font_size_lookup_table);
-}
-
-void
-on_tab_ruler_value_changed(GtkRange *range, I7App *app)
-{
-	config_file_set_int(PREFS_TAB_WIDTH, (int)gtk_range_get_value(range));
-}
-
 gchar*
 on_tab_ruler_format_value(GtkScale *scale, gdouble value, I7App *app)
 {
@@ -465,61 +480,6 @@ on_extensions_remove_clicked(GtkButton *button, I7App *app)
 	g_free(author);
 }
 
-void
-on_enable_highlighting_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_SYNTAX_HIGHLIGHTING, gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_follow_symbols_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_INTELLIGENCE, gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_auto_indent_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_AUTO_INDENT, gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_auto_number_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_AUTO_NUMBER_SECTIONS, gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_author_name_changed(GtkEditable *editable, I7App *app)
-{
-	config_file_set_string(PREFS_AUTHOR_NAME, gtk_entry_get_text(GTK_ENTRY(editable)));
-}
-
-void
-on_glulx_combo_changed(GtkComboBox *combobox, I7App *app)
-{
-	config_file_set_bool(PREFS_USE_GIT, gtk_combo_box_get_active(combobox) == 1);
-}
-
-void
-on_clean_build_files_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_CLEAN_BUILD_FILES, gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_clean_index_files_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_CLEAN_INDEX_FILES, gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_show_debug_tabs_toggled(GtkToggleButton *togglebutton, I7App *app)
-{
-	config_file_set_bool(PREFS_DEBUG_LOG_VISIBLE, gtk_toggle_button_get_active(togglebutton));
-}
-
-
 /* Update the highlighting styles for this buffer */
 gboolean
 update_style(GtkSourceBuffer *buffer)
@@ -543,7 +503,9 @@ update_font(GtkWidget *widget)
 gboolean
 update_tabs(GtkSourceView *view)
 {
-	gint spaces = config_file_get_int(PREFS_TAB_WIDTH);
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	unsigned spaces = g_settings_get_uint(prefs, PREFS_TAB_WIDTH);
 	if(spaces == 0)
 		spaces = DEFAULT_TAB_WIDTH;
 	gtk_source_view_set_tab_width(view, spaces);

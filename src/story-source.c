@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,10 @@
 void
 after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
 {
-	if(!config_file_get_bool(PREFS_INTELLIGENCE))
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
+	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
 		return;
 	/* Reindex the section headings anytime text is deleted, because running after
 	the default signal handler means we have no access to the deleted text. */
@@ -40,10 +43,13 @@ after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkT
 void
 after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gchar *text, gint len, I7Document *document)
 {
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
 	/* If the inserted text ended in a newline, then do auto-indenting */
 	/* We could use gtk_source_view_set_auto_indent(), but that auto-indents
 	  leading spaces as well as tabs, and we don't want that */
-	if(g_str_has_suffix(text, "\n") && config_file_get_bool(PREFS_AUTO_INDENT)) {
+	if(g_str_has_suffix(text, "\n") && g_settings_get_boolean(prefs, PREFS_AUTO_INDENT)) {
 		int tab_count = 0;
 		GtkTextIter prev_line = *location;
 		gtk_text_iter_backward_line(&prev_line);
@@ -60,7 +66,7 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 	}
 
 	/* Return after that if we are not doing intelligent symbol following */
-	if(!config_file_get_bool(PREFS_INTELLIGENCE))
+	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
 		return;
 
 	/* For any text, a section heading might have been entered or changed, so

@@ -132,8 +132,7 @@ AC_PATH_PROG([MV], [mv])          # mv
 AM_GNU_GETTEXT([external])        # Gettext, link to system libintl
 IT_PROG_INTLTOOL([0.35.0])        # Intltool
 PKG_PROG_PKG_CONFIG               # pkg_config
-AM_GCONF_SOURCE_2                 # GConf
-AC_PATH_PROG([GCONFTOOL], [gconftool-2]) # GConf-Tool
+GLIB_GSETTINGS                    # used for GSettings
 
 AC_PATH_PROG([UNLZMA], [unlzma], [notfound]) # nonGNU tar doesn't have --lzma
 AS_IF([$TEST "x$UNLZMA" = xnotfound],
@@ -142,7 +141,7 @@ AS_IF([$TEST "x$UNLZMA" = xnotfound],
 
 ### INTERNATIONALIZATION #######################################################
 
-AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 GETTEXT_PACKAGE=gnome-inform7
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
@@ -174,8 +173,7 @@ PKG_CHECK_MODULES([INFORM7], [
 	gdk-2.0 >= 2.2
 	glib-2.0 >= 2.32
 	gtk+-2.0 >= 2.20
-	gio-2.0 >= 2.18
-	gconf-2.0 >= 2.4
+	gio-2.0 >= 2.30
 	gtksourceview-2.0 >= 2.2
 	webkit-1.0 >= 1.0
 	$JAVASCRIPTCORE_MODULE

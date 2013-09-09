@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -155,7 +155,6 @@ void i7_document_update_tabs(I7Document *document);
 void i7_document_update_fonts(I7Document *document);
 void i7_document_update_font_sizes(I7Document *document);
 void i7_document_update_font_styles(I7Document *document);
-void i7_document_update_source_highlight(I7Document *document);
 void i7_document_refresh_elastic_tabstops(I7Document *document);
 
 void i7_document_expand_headings_view(I7Document *document);

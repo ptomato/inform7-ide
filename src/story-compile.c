@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -195,6 +195,7 @@ start_ni_compiler(CompilerData *data)
 	/* Build the command line */
 	GSList *args = NULL;
 	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 	GFile *ni_compiler = i7_app_get_binary_file(theapp, "ni");
 	GFile *extensions_dir = i7_app_get_data_file(theapp, "Extensions");
 	args = g_slist_prepend(args, g_file_get_path(ni_compiler));
@@ -205,7 +206,7 @@ start_ni_compiler(CompilerData *data)
 	args = g_slist_prepend(args, g_file_get_path(data->input_file));
 	if(!data->use_debug_flags)
 		args = g_slist_prepend(args, g_strdup("-release")); /* Omit "not for relase" material */
-	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE))
+	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
 		args = g_slist_prepend(args, g_strdup("-log"));
 	if(i7_story_get_nobble_rng(data->story))
 		args = g_slist_prepend(args, g_strdup("-rng"));
@@ -241,6 +242,8 @@ static void
 finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 {
 	I7_STORY_USE_PRIVATE(data->story, priv);
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	/* Clear the progress indicator */
 	gdk_threads_enter();
@@ -258,7 +261,6 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		 code should one occur, display the compiler's generated Problems.html*/
 		problems_file = g_file_get_child(data->builddir_file, "Problems.html");
 	} else {
-		I7App *theapp = i7_app_get();
 		gchar *file = g_strdup_printf("Error%i.html", exit_code);
 		problems_file = i7_app_check_data_file_va(theapp, "Documentation", "Sections", file, NULL);
 		g_free(file);
@@ -270,7 +272,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_file);
 	g_object_unref(problems_file);
 
-	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE)) {
+	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG)) {
 		/* Update */
 		gdk_threads_enter();
 		while(gtk_events_pending())

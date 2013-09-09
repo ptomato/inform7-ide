@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -80,18 +80,19 @@ on_heading_depth_value_changed(GtkRange *range, I7Story *story)
 static void
 save_storywindow_size(I7Story *story)
 {
+	I7App *theapp = i7_app_get();
+	GSettings *state = i7_app_get_state(theapp);
 	gint w, h, x, y;
+
 	gtk_window_get_size(GTK_WINDOW(story), &w, &h);
-	config_file_set_int(PREFS_APP_WINDOW_WIDTH, w);
-	config_file_set_int(PREFS_APP_WINDOW_HEIGHT, h);
-	config_file_set_int(PREFS_SLIDER_POSITION, gtk_paned_get_position(GTK_PANED(story->facing_pages)));
+	g_settings_set(state, PREFS_STATE_WINDOW_SIZE, "(ii)", w, h);
+	g_settings_set_int(state, PREFS_STATE_DIVIDER_POS, gtk_paned_get_position(GTK_PANED(story->facing_pages)));
+
 	/* Also save the notepad window */
 	gtk_window_get_size(GTK_WINDOW(story->notes_window), &w, &h);
 	gtk_window_get_position(GTK_WINDOW(story->notes_window), &x, &y);
-	config_file_set_int(PREFS_NOTEPAD_WIDTH, w);
-	config_file_set_int(PREFS_NOTEPAD_HEIGHT, h);
-	config_file_set_int(PREFS_NOTEPAD_X, x);
-	config_file_set_int(PREFS_NOTEPAD_Y, y);
+	g_settings_set(state, PREFS_STATE_NOTEPAD_SIZE, "(ii)", w, h);
+	g_settings_set(state, PREFS_STATE_NOTEPAD_POS, "(ii)", x, y);
 }
 
 static gboolean
@@ -660,7 +661,11 @@ i7_story_init(I7Story *self)
 {
 	I7_STORY_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
+	GSettings *state = i7_app_get_state(theapp);
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	priv->skein_settings = g_settings_new(SCHEMA_SKEIN);
 	GError *error = NULL;
+	int w, h, x, y;
 
 	/* Build the interface */
 	GFile *file = i7_app_get_data_file_va(theapp, "ui", "story.ui", NULL);
@@ -712,6 +717,12 @@ i7_story_init(I7Story *self)
 	LOAD_WIDGET(skein_trim_dialog);
 	LOAD_WIDGET(skein_trim_slider);
 
+	/* Bind some actions one-way to GSettings settings;
+	this will make it use the last-set value as default for new windows */
+	g_settings_bind(state, "show-notepad",
+		load_object(builder, "view_notepad"), "active",
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
+
 	/* Set up the signals to do the menu hints in the statusbar */
 	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
 
@@ -733,8 +744,9 @@ i7_story_init(I7Story *self)
 	g_object_unref(builder);
 
 	/* Set the last saved window size and slider position */
-	gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_APP_WINDOW_WIDTH), config_file_get_int(PREFS_APP_WINDOW_HEIGHT));
-	gtk_paned_set_position(GTK_PANED(self->facing_pages), config_file_get_int(PREFS_SLIDER_POSITION));
+	g_settings_get(state, PREFS_STATE_WINDOW_SIZE, "(ii)", &w, &h);
+	gtk_window_resize(GTK_WINDOW(self), w, h);
+	gtk_paned_set_position(GTK_PANED(self->facing_pages), g_settings_get_int(state, PREFS_STATE_DIVIDER_POS));
 
 	/* Create the private properties */
 	priv->notes = gtk_text_buffer_new(NULL);
@@ -749,22 +761,24 @@ i7_story_init(I7Story *self)
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
 	g_object_set(priv->skein,
-		"vertical-spacing", 75.0,
 		"unlocked-color", "#6865FF",
 		NULL);
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
 	g_signal_connect(priv->skein, "differs-badge-activate", G_CALLBACK(on_differs_badge_activate), self);
 	g_signal_connect(priv->skein, "modified", G_CALLBACK(on_skein_modified), self);
-	gtk_range_set_value(GTK_RANGE(self->skein_spacing_horizontal), (gdouble)config_file_get_int(PREFS_HORIZONTAL_SPACING));
-	gtk_range_set_value(GTK_RANGE(self->skein_spacing_vertical), (gdouble)config_file_get_int(PREFS_VERTICAL_SPACING));
+	priv->skein_settings = g_settings_new("com.inform7.GUI.preferences.skein");
+	g_settings_bind(priv->skein_settings, "horizontal-spacing",
+		gtk_range_get_adjustment(GTK_RANGE(self->skein_spacing_horizontal)), "value", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(priv->skein_settings, "vertical-spacing",
+		gtk_range_get_adjustment(GTK_RANGE(self->skein_spacing_vertical)), "value", G_SETTINGS_BIND_DEFAULT);
 
 	/* Set up the Notes window */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(self->notes_view), priv->notes);
 	gtk_window_set_keep_above(GTK_WINDOW(self->notes_window), TRUE);
-	gtk_window_resize(GTK_WINDOW(self->notes_window), config_file_get_int(PREFS_NOTEPAD_WIDTH), config_file_get_int(PREFS_NOTEPAD_HEIGHT));
-	gtk_window_move(GTK_WINDOW(self->notes_window), config_file_get_int(PREFS_NOTEPAD_X), config_file_get_int(PREFS_NOTEPAD_Y));
-	/* Toggling the action will show the window if appropriate */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), config_file_get_bool(PREFS_NOTEPAD_VISIBLE));
+	g_settings_get(state, PREFS_STATE_NOTEPAD_SIZE, "(ii)", &w, &h);
+	g_settings_get(state, PREFS_STATE_NOTEPAD_POS, "(ii)", &x, &y);
+	gtk_window_resize(GTK_WINDOW(self->notes_window), w, h);
+	gtk_window_move(GTK_WINDOW(self->notes_window), x, y);
 
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
@@ -800,7 +814,7 @@ i7_story_init(I7Story *self)
 	gtk_action_set_sensitive(I7_DOCUMENT(self)->next_section, FALSE);
 
 	/* Add extra pages in "Errors" if the user has them turned on */
-	if(config_file_get_bool(PREFS_DEBUG_LOG_VISIBLE))
+	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
 		i7_story_add_debug_tabs(I7_DOCUMENT(self));
 
 	/* Do the default settings */
@@ -815,8 +829,9 @@ i7_story_init(I7Story *self)
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
 	/* Set spell checking */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
+	gboolean spell_check_default = g_settings_get_boolean(state, PREFS_STATE_SPELL_CHECK);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), spell_check_default);
+	i7_document_set_spellcheck(I7_DOCUMENT(self), spell_check_default);
 
 	/* Make the Skein dialogs transient */
 	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));

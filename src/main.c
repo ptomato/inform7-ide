@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -69,7 +69,6 @@ main(int argc, char *argv[])
 	/* TRANSLATORS: this is the human-readable application name */
 	g_set_application_name(_("Inform 7"));
 	I7App *theapp = i7_app_get();
-	trigger_config_file();
 
 	/* Open any project files specified on the command line */
 	if(remaining_args) {

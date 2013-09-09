@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ typedef struct _I7SkeinPrivate
 
 	GooCanvasLineDash *locked_dash;
 	GooCanvasLineDash *unlocked_dash;
+
+	GSettings *settings; /* skein settings */
 
 	int stamp; /* Stamp for identifying tree iterators belonging to this model */
 } I7SkeinPrivate;
@@ -146,10 +148,12 @@ i7_skein_init(I7Skein *self)
 	priv->locked_dash = goo_canvas_line_dash_new(0);
 	priv->unlocked_dash = goo_canvas_line_dash_new(2, 5.0, 5.0);
 
-	priv->hspacing = 40.0;
-	priv->vspacing = 40.0;
 	gdk_color_parse("black", &priv->locked);
 	gdk_color_parse("black", &priv->unlocked);
+
+	priv->settings = g_settings_new("com.inform7.GUI.preferences.skein");
+	g_settings_bind(priv->settings, "horizontal-spacing", self, "horizontal-spacing", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind(priv->settings, "vertical-spacing", self, "vertical-spacing", G_SETTINGS_BIND_DEFAULT);
 
 	priv->stamp = g_random_int();
 }
@@ -290,11 +294,11 @@ i7_skein_class_init(I7SkeinClass *klass)
 	g_object_class_install_property(object_class, PROP_HORIZONTAL_SPACING,
 		g_param_spec_double("horizontal-spacing", _("Horizontal spacing"),
 			_("Pixels of horizontal space between skein branches"),
-			20.0, 100.0, 40.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | flags));
+			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_VERTICAL_SPACING,
 		g_param_spec_double("vertical-spacing", _("Vertical spacing"),
 			_("Pixels of vertical space between skein items"),
-			20.0, 100.0, 40.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | flags));
+			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_LOCKED_COLOR,
 		g_param_spec_string("locked-color", _("Locked color"),
 			_("Color of locked threads"),

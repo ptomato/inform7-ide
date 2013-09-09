@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ typedef struct {
 	GtkListStore *schemes_list;
 } I7PrefsWidgets;
 
-I7PrefsWidgets *create_prefs_window(GtkBuilder *builder);
+I7PrefsWidgets *create_prefs_window(GSettings *prefs, GtkBuilder *builder);
 void populate_schemes_list(GtkListStore *list);
 
 /* The tabs in the preferences window */

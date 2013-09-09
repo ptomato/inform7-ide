@@ -1,4 +1,4 @@
-/*  Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012 P. F. Chimento
+/*  Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -95,6 +95,10 @@ i7_app_init(I7App *self)
 	I7_APP_USE_PRIVATE(self, priv);
 	GError *error = NULL;
 
+	priv->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
+	priv->state_settings = g_settings_new(SCHEMA_STATE);
+	priv->desktop_settings = g_settings_new("org.gnome.desktop.interface");
+
 	/* Retrieve data directories if set externally */
 	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
 	if(env) {
@@ -164,12 +168,10 @@ i7_app_init(I7App *self)
 			ERROR(_("Could not compile regex"), error);
 	}
 
-	self->prefs = create_prefs_window(builder);
+	self->prefs = create_prefs_window(priv->prefs_settings, builder);
 
-	/* Check the application settings and set all the controls to their current
-	values according to GConf. If the keys aren't set in GConf, set them to
-	their default values. */
-	init_config_file(builder);
+	/* Set up signals for GSettings keys. */
+	init_config_file(priv->prefs_settings);
 
 	g_object_unref(builder);
 
@@ -189,6 +191,8 @@ i7_app_finalize(GObject *self)
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->app_action_group);
 	g_object_unref(priv->color_scheme_manager);
+	g_object_unref(priv->state_settings);
+	g_object_unref(priv->prefs_settings);
 
 	int i;
 	for(i = 0; i < I7_APP_NUM_REGICES; i++)
@@ -1323,4 +1327,50 @@ i7_app_get_last_opened_project(I7App *app)
 	g_list_free(recent);
 
 	return retval;
+}
+
+/*
+ * i7_app_get_prefs:
+ * @app: the application singleton
+ *
+ * Gets the #GSettings object for the application preferences.
+ *
+ * Returns: #GSettings
+ */
+GSettings *
+i7_app_get_prefs(I7App *app)
+{
+	I7_APP_USE_PRIVATE(app, priv);
+	return priv->prefs_settings;
+}
+
+/*
+ * i7_app_get_state:
+ * @app: the application singleton
+ *
+ * Gets the #GSettings object for the application state that is saved between
+ * runs.
+ *
+ * Returns: #GSettings
+ */
+GSettings *
+i7_app_get_state(I7App *app)
+{
+	I7_APP_USE_PRIVATE(app, priv);
+	return priv->state_settings;
+}
+
+/*
+ * i7_app_get_desktop_settings:
+ * @app: the application singleton
+ *
+ * Gets the #GSettings object for the desktop-wide Gnome preferences.
+ *
+ * Returns: #GSettings for org.gnome.desktop.interface
+ */
+GSettings *
+i7_app_get_desktop_settings(I7App *app)
+{
+	I7_APP_USE_PRIVATE(app, priv);
+	return priv->desktop_settings;
 }

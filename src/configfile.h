@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,98 +19,82 @@
 #define CONFIG_FILE_H
 
 #include <glib.h>
-#include <gtk/gtk.h>
-#include <gconf/gconf.h>
+#include <pango/pango.h>
 
-/* The slashes below are not directory separators, so they should be slashes! */
-#define PREFS_BASE_PATH		"/apps/gnome-inform7"
-#define PREFS_APP_PATH		PREFS_BASE_PATH "/AppSettings/"
-#define PREFS_IDE_PATH		PREFS_BASE_PATH "/IDESettings/"
-#define PREFS_EDITOR_PATH	PREFS_BASE_PATH "/EditorSettings/"
-#define PREFS_SYNTAX_PATH	PREFS_BASE_PATH "/SyntaxSettings/"
-#define PREFS_WINDOW_PATH	PREFS_BASE_PATH "/WindowSettings/"
-#define PREFS_SKEIN_PATH	PREFS_BASE_PATH "/SkeinSettings/"
-
-#define PREFS_AUTHOR_NAME	PREFS_APP_PATH "AuthorName"
-
-#define PREFS_SPELL_CHECK_DEFAULT	    PREFS_IDE_PATH "SpellCheckDefault"
-#define PREFS_CLEAN_BUILD_FILES		    PREFS_IDE_PATH "CleanBuildFiles"
-#define PREFS_CLEAN_INDEX_FILES		    PREFS_IDE_PATH "CleanIndexFiles"
-#define PREFS_DEBUG_LOG_VISIBLE		    PREFS_IDE_PATH "DebugLogVisible"
-#define PREFS_TOOLBAR_VISIBLE           PREFS_IDE_PATH "ToolbarDefault"
-#define PREFS_STATUSBAR_VISIBLE         PREFS_IDE_PATH "StatusbarDefault"
-#define PREFS_NOTEPAD_VISIBLE           PREFS_IDE_PATH "NotepadDefault"
-#define PREFS_USE_GIT                   PREFS_IDE_PATH "UseGit"
-#define PREFS_ELASTIC_TABSTOPS_DEFAULT  PREFS_IDE_PATH "ElasticTabsDefault"
-
-#define PREFS_FONT_SET		            PREFS_EDITOR_PATH "FontSet"
-#define PREFS_CUSTOM_FONT	            PREFS_EDITOR_PATH "CustomFont"
-#define PREFS_FONT_SIZE		            PREFS_EDITOR_PATH "FontSize"
-#define PREFS_STYLE_SCHEME	            PREFS_EDITOR_PATH "StyleScheme"
-#define PREFS_TAB_WIDTH		            PREFS_EDITOR_PATH "TabWidth"
-#define PREFS_ELASTIC_TABSTOPS_PADDING  PREFS_EDITOR_PATH "ElasticTabPadding"
-
-#define PREFS_SYNTAX_HIGHLIGHTING	PREFS_SYNTAX_PATH "SyntaxHighlighting"
-#define PREFS_AUTO_INDENT			PREFS_SYNTAX_PATH "AutoIndent"
-#define PREFS_INTELLIGENCE			PREFS_SYNTAX_PATH "Intelligence"
-#define PREFS_AUTO_NUMBER_SECTIONS	PREFS_SYNTAX_PATH "AutoNumberSections"
-
-#define PREFS_APP_WINDOW_WIDTH	PREFS_WINDOW_PATH "AppWindowWidth"
-#define PREFS_APP_WINDOW_HEIGHT	PREFS_WINDOW_PATH "AppWindowHeight"
-#define PREFS_SLIDER_POSITION	PREFS_WINDOW_PATH "SliderPosition"
-#define PREFS_EXT_WINDOW_WIDTH	PREFS_WINDOW_PATH "ExtWindowWidth"
-#define PREFS_EXT_WINDOW_HEIGHT PREFS_WINDOW_PATH "ExtWindowHeight"
-#define PREFS_NOTEPAD_X         PREFS_WINDOW_PATH "NotepadPosX"
-#define PREFS_NOTEPAD_Y         PREFS_WINDOW_PATH "NotepadPosY"
-#define PREFS_NOTEPAD_WIDTH     PREFS_WINDOW_PATH "NotepadWidth"
-#define PREFS_NOTEPAD_HEIGHT    PREFS_WINDOW_PATH "NotepadHeight"
-
-#define PREFS_HORIZONTAL_SPACING	PREFS_SKEIN_PATH "HorizontalSpacing"
-#define PREFS_VERTICAL_SPACING		PREFS_SKEIN_PATH "VerticalSpacing"
+#define STANDARD_FONT_FALLBACK "Sans 11"
+#define MONOSPACE_FONT_FALLBACK "Monospace 11"
 
 /* Three options for editor font */
 typedef enum {
-	FONT_STANDARD,
-	FONT_MONOSPACE,
-	FONT_CUSTOM
+	FONT_STANDARD = 0,
+	FONT_MONOSPACE = 1,
+	FONT_CUSTOM = 2
 } I7PrefsFont;
 
 /* Four different text size options */
 typedef enum {
-	FONT_SIZE_STANDARD,
-	FONT_SIZE_MEDIUM,
-	FONT_SIZE_LARGE,
-	FONT_SIZE_HUGE
+	FONT_SIZE_STANDARD = 0,
+	FONT_SIZE_MEDIUM = 1,
+	FONT_SIZE_LARGE = 2,
+	FONT_SIZE_HUGE = 3
 } I7PrefsFontSize;
+
+typedef enum {
+  INTERPRETER_GLULXE = 0,
+  INTERPRETER_GIT = 1
+} I7PrefsInterpreter;
 
 /* Pango point sizes of text size options */
 #define DEFAULT_SIZE_STANDARD	12
-#define RELATIVE_SIZE_STANDARD	1.0
-#define RELATIVE_SIZE_MEDIUM	1.2
-#define RELATIVE_SIZE_LARGE		1.4
-#define RELATIVE_SIZE_HUGE		1.8
+#define RELATIVE_SIZE_STANDARD 1.0
+#define RELATIVE_SIZE_MEDIUM 1.2
+#define RELATIVE_SIZE_LARGE 1.4
+#define RELATIVE_SIZE_HUGE 1.8
 
 /* Other various settings */
-#define DEFAULT_TAB_WIDTH			8
+#define DEFAULT_TAB_WIDTH 8
 
-/* Enum-to-string lookup tables */
-extern GConfEnumStringPair font_styling_lookup_table[];
-extern GConfEnumStringPair font_set_lookup_table[];
-extern GConfEnumStringPair font_size_lookup_table[];
-extern GConfEnumStringPair change_colors_lookup_table[];
-extern GConfEnumStringPair color_set_lookup_table[];
+/* Schemas */
+#define SCHEMA_PREFERENCES "com.inform7.GUI.preferences"
+#define SCHEMA_SKEIN "com.inform7.GUI.preferences.skein"
+#define SCHEMA_STATE "com.inform7.GUI.state"
 
-void config_file_set_string(const gchar *key, const gchar *value);
-gchar *config_file_get_string(const gchar *key);
-void config_file_set_int(const gchar *key, const gint value);
-gint config_file_get_int(const gchar *key);
-void config_file_set_bool(const gchar *key, const gboolean value);
-gboolean config_file_get_bool(const gchar *key);
-void config_file_set_enum(const gchar *key, const gint value, GConfEnumStringPair lookup_table[]);
-gint config_file_get_enum(const gchar *key, GConfEnumStringPair lookup_table[]);
-void config_file_set_to_default(const gchar *key);
-void init_config_file(GtkBuilder *builder);
-void trigger_config_file(void);
+/* Keys */
+#define PREFS_AUTHOR_NAME          "author-name"
+#define PREFS_FONT_SET             "font-set"
+#define PREFS_CUSTOM_FONT          "custom-font"
+#define PREFS_FONT_SIZE            "font-size"
+#define PREFS_STYLE_SCHEME         "style-scheme"
+#define PREFS_TAB_WIDTH            "tab-width"
+#define PREFS_TABSTOPS_PADDING     "elastic-tabstops-padding"
+#define PREFS_SYNTAX_HIGHLIGHTING  "syntax-highlighting"
+#define PREFS_AUTO_INDENT          "auto-indent"
+#define PREFS_INTELLIGENCE         "intelligence"
+#define PREFS_AUTO_NUMBER          "auto-number"
+#define PREFS_INTERPRETER          "interpreter"
+#define PREFS_CLEAN_BUILD_FILES    "clean-build-files"
+#define PREFS_CLEAN_INDEX_FILES    "clean-index-files"
+#define PREFS_SHOW_DEBUG_LOG       "show-debug-log"
+
+#define PREFS_STATE_SPELL_CHECK       "spell-check"
+#define PREFS_STATE_SHOW_TOOLBAR      "show-toolbar"
+#define PREFS_STATE_SHOW_STATUSBAR    "show-statusbar"
+#define PREFS_STATE_SHOW_NOTEPAD      "show-notepad"
+#define PREFS_STATE_ELASTIC_TABSTOPS  "elastic-tabstops"
+#define PREFS_STATE_WINDOW_SIZE       "app-window-size"
+#define PREFS_STATE_DIVIDER_POS       "divider-position"
+#define PREFS_STATE_EXT_WINDOW_SIZE   "ext-window-size"
+#define PREFS_STATE_NOTEPAD_POS       "notepad-position"
+#define PREFS_STATE_NOTEPAD_SIZE      "notepad-size"
+
+#define PREFS_SKEIN_HORIZONTAL_SPACING  "horizontal-spacing"
+#define PREFS_SKEIN_VERTICAL_SPACING    "vertical-spacing"
+
+extern const char *font_set_enum[], *font_size_enum[], *interpreter_enum[];
+
+GVariant *settings_enum_set_mapping(const GValue *property_value, const GVariantType *expected_type, char **enum_values);
+gboolean settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum_values);
+void init_config_file(GSettings *prefs);
 PangoFontDescription *get_desktop_standard_font(void);
 PangoFontDescription *get_desktop_monospace_font(void);
 gint get_font_size(PangoFontDescription *font);

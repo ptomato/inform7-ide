@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -184,9 +184,12 @@ void
 on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptions *options)
 {
 	char *text, *dirpath;
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
 	switch(gtk_assistant_get_current_page(assistant)) {
 		case 1:
-			text = g_strstrip(config_file_get_string(PREFS_AUTHOR_NAME));
+			text = g_strstrip(g_settings_get_string(prefs, "author-name"));
 			gtk_entry_set_text(GTK_ENTRY(options->author_box), (text && strlen(text))? text : g_get_real_name());
 			if(text)
 				g_free(text);
@@ -218,9 +221,11 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
 	char *filename;
 	GFile *file;
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	/* Save the author name to the config file */
-	config_file_set_string(PREFS_AUTHOR_NAME, options->author);
+	g_settings_set_string(prefs, PREFS_AUTHOR_NAME, options->author);
 
 	switch(options->type) {
 		case I7_NEW_PROJECT_INFORM7_STORY:

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -182,7 +182,10 @@ from the project directory */
 void
 delete_build_files(I7Story *story)
 {
-	if(config_file_get_bool(PREFS_CLEAN_BUILD_FILES)) {
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
+	if(g_settings_get_boolean(prefs, PREFS_CLEAN_BUILD_FILES)) {
 		i7_document_display_status_message(I7_DOCUMENT(story), _("Cleaning out build files..."), FILE_OPERATIONS);
 
 		GFile *storyname = i7_document_get_file(I7_DOCUMENT(story));
@@ -202,7 +205,7 @@ delete_build_files(I7Story *story)
 		delete_from_project_dir(story, storyname, "Build", "temporary file 2.inf");
 		delete_from_project_dir(story, storyname, "Build", "StatusCblorb.html");
 
-		if(config_file_get_bool(PREFS_CLEAN_INDEX_FILES)) {
+		if(g_settings_get_boolean(prefs, PREFS_CLEAN_INDEX_FILES)) {
 			delete_from_project_dir(story, storyname, "Index", "Actions.html");
 			delete_from_project_dir(story, storyname, "Index", "Contents.html");
 			delete_from_project_dir(story, storyname, "Index", "Headings.xml");

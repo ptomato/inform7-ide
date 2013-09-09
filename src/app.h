@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -136,5 +136,10 @@ gboolean i7_app_color_scheme_is_user_scheme(I7App *self, const char *id);
 const char *i7_app_install_color_scheme(I7App *self, GFile *file);
 gboolean i7_app_uninstall_color_scheme(I7App *self, const char *id);
 GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
+
+/* GSettings accessors */
+GSettings *i7_app_get_state(I7App *app);
+GSettings *i7_app_get_prefs(I7App *app);
+GSettings *i7_app_get_desktop_settings(I7App *app);
 
 #endif /* _APP_H_ */

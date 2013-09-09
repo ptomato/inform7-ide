@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -54,10 +54,12 @@ on_heading_depth_value_changed(GtkRange *range, I7Extension *extension)
 static void
 save_extwindow_size(GtkWindow *window)
 {
-	gint w, h;
+	I7App *theapp = i7_app_get();
+	GSettings *state = i7_app_get_state(theapp);
+	int w, h;
+
 	gtk_window_get_size(window, &w, &h);
-	config_file_set_int(PREFS_EXT_WINDOW_WIDTH, w);
-	config_file_set_int(PREFS_EXT_WINDOW_HEIGHT, h);
+	g_settings_set(state, PREFS_STATE_EXT_WINDOW_SIZE, "(ii)", w, h);
 }
 
 static gboolean
@@ -373,6 +375,7 @@ i7_extension_init(I7Extension *self)
 	I7_EXTENSION_USE_PRIVATE(self, priv);
 	GError *error = NULL;
 	I7App *theapp = i7_app_get();
+	GSettings *state = i7_app_get_state(theapp);
 
 	priv->readonly = FALSE;
 
@@ -406,7 +409,9 @@ i7_extension_init(I7Extension *self)
 	i7_app_update_extensions_menu(theapp);
 
 	/* Set the last saved window size */
-	gtk_window_resize(GTK_WINDOW(self), config_file_get_int(PREFS_EXT_WINDOW_WIDTH), config_file_get_int(PREFS_EXT_WINDOW_HEIGHT));
+	int w, h;
+	g_settings_get(state, PREFS_STATE_EXT_WINDOW_SIZE, "(ii)", &w, &h);
+	gtk_window_resize(GTK_WINDOW(self), w, h);
 
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
@@ -440,11 +445,10 @@ i7_extension_init(I7Extension *self)
 	/* Set font sizes, etc. */
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
-	/* Set spell checking and elastic tabstops */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	i7_document_set_spellcheck(I7_DOCUMENT(self), config_file_get_bool(PREFS_SPELL_CHECK_DEFAULT));
-	priv->elastic = config_file_get_bool(PREFS_ELASTIC_TABSTOPS_DEFAULT);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->enable_elastic_tabstops), priv->elastic);
+	/* Set spell checking */
+	gboolean spell_check_default = g_settings_get_boolean(state, PREFS_STATE_SPELL_CHECK);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), spell_check_default);
+	i7_document_set_spellcheck(I7_DOCUMENT(self), spell_check_default);
 
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_extensionwindow_delete_event), NULL);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2010 P. F. Chimento
+/* Copyright (C) 2010, 2011, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,9 +24,11 @@ gboolean
 on_notes_window_delete_event(GtkWidget *window, GdkEvent *event, I7Story *story)
 {
 	I7_STORY_USE_PRIVATE(story, priv);
+	I7App *theapp = i7_app_get();
+	GSettings *state = i7_app_get_state(theapp);
 
 	gtk_widget_hide(window);
-	config_file_set_bool(PREFS_NOTEPAD_VISIBLE, FALSE);
+	g_settings_set_boolean(state, PREFS_STATE_SHOW_NOTEPAD, FALSE);
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), FALSE);
 	return TRUE; /* Block event */
 }

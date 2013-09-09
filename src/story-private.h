@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2012 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ typedef struct {
 	GFile *compiler_output_file;
 	/* Skein / running */
 	I7Skein *skein;
+	GSettings *skein_settings;
 	gboolean test_me;
 } I7StoryPrivate;
 

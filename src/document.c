@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -78,6 +78,8 @@ i7_document_init(I7Document *self)
 {
 	I7_DOCUMENT_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	GSettings *state = i7_app_get_state(theapp);
 
 	/* Set the icon */
 	gtk_window_set_icon_name(GTK_WINDOW(self), "inform7");
@@ -162,8 +164,30 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
 	LOAD_ACTION(priv->document_action_group, check_spelling);
 	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")), config_file_get_bool(PREFS_STATUSBAR_VISIBLE));
 	gtk_container_add(GTK_CONTAINER(self), self->box);
+
+	/* Bind settings one-way to some properties */
+	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
+		priv->buffer, "highlight-syntax",
+		G_SETTINGS_BIND_GET | G_SETTINGS_BIND_NO_SENSITIVITY);
+	/* Bind some actions one-way to GSettings settings;
+	this will make it use the last-set value as default for new windows */
+	g_settings_bind(state, PREFS_STATE_ELASTIC_TABSTOPS,
+		self->enable_elastic_tabstops, "active",
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
+	g_settings_bind(state, PREFS_STATE_SPELL_CHECK,
+		self->autocheck_spelling, "active",
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
+	g_settings_bind(state, PREFS_STATE_SHOW_TOOLBAR,
+		load_object(builder, "view_toolbar"), "active",
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
+	g_settings_bind(state, PREFS_STATE_SHOW_STATUSBAR,
+		load_object(builder, "view_statusbar"), "active",
+		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
+
+	/* Show statusbar if necessary */
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")),
+		g_settings_get_boolean(state, PREFS_STATE_SHOW_STATUSBAR));
 
 	g_object_unref(builder);
 }
@@ -248,8 +272,6 @@ i7_document_add_menus_and_findbar(I7Document *document)
 	gtk_widget_show_all(GTK_WIDGET(findbar_entry_container));
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_entry_container, 0);
 	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_close, -1);
-
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_toolbar")), config_file_get_bool(PREFS_TOOLBAR_VISIBLE));
 
 	/* Connect the accelerators */
 	priv->accels = gtk_ui_manager_get_accel_group(document->ui_manager);
@@ -547,14 +569,6 @@ void
 i7_document_update_font_styles(I7Document *document)
 {
 	g_idle_add((GSourceFunc)update_style, I7_DOCUMENT_PRIVATE(document)->buffer);
-}
-
-/* Turn source highlighting on or off in this document's source buffer */
-void
-i7_document_update_source_highlight(I7Document *document)
-{
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	gtk_source_buffer_set_highlight_syntax(priv->buffer, config_file_get_bool(PREFS_SYNTAX_HIGHLIGHTING));
 }
 
 /* Recalculate the document's elastic tabstops */

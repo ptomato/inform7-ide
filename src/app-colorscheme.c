@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -249,7 +249,8 @@ GtkSourceStyleScheme *
 i7_app_get_current_color_scheme(I7App *self)
 {
 	I7_APP_USE_PRIVATE(self, priv);
-	gchar *scheme_name = config_file_get_string(PREFS_STYLE_SCHEME);
+	GSettings *prefs = i7_app_get_prefs(self);
+	gchar *scheme_name = g_settings_get_string(prefs, PREFS_STYLE_SCHEME);
 	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(priv->color_scheme_manager, scheme_name);
 	g_free(scheme_name);
 	return scheme;
