@@ -141,7 +141,7 @@ check_page_finished(I7NewProjectOptions *options)
 }
 
 void
-on_new_directory_current_folder_changed(GtkFileChooser *chooser, I7NewProjectOptions *options)
+on_new_directory_selection_changed(GtkFileChooser *chooser, I7NewProjectOptions *options)
 {
 	if(options->directory)
 		g_object_unref(options->directory);
@@ -190,7 +190,7 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 			gtk_entry_set_text(GTK_ENTRY(options->author_box), (text && strlen(text))? text : g_get_real_name());
 			if(text)
 				g_free(text);
-			on_new_directory_current_folder_changed(GTK_FILE_CHOOSER(options->chooser), options);
+			on_new_directory_selection_changed(GTK_FILE_CHOOSER(options->chooser), options);
 			break;
 		case 2:
 			dirpath = g_file_get_path(options->directory);
