@@ -415,14 +415,12 @@ error_dialog_file_operation(GtkWindow *parent, GFile *file, GError *error, I7Fil
 			_("Try again.  If it fails again, the server may be down."));
 		break;
 
-#if GLIB_CHECK_VERSION(2,26,0)
 	case G_IO_ERROR_CONNECTION_REFUSED:
 		what_failed = what_failed_on_file_operation_failure(file, TRUE, what);
 		extended_error_dialog(parent, what_failed,
 			_("The system could not login to the location."),
 			_("Try again. If it fails again, contact your system administrator."));
 		break;
-#endif
 
 	case G_IO_ERROR_BUSY:
 		what_failed = what_failed_on_file_operation_failure(file, TRUE, what);
