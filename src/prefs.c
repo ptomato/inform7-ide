@@ -92,6 +92,7 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	BIND(PREFS_CUSTOM_FONT, "custom_font", "font-name");
 	BIND(PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", "active");
 	BIND(PREFS_AUTO_INDENT, "auto_indent", "active");
+	BIND(PREFS_INDENT_WRAPPED, "indent_wrapped", "active");
 	BIND(PREFS_INTELLIGENCE, "follow_symbols", "active");
 	BIND(PREFS_INTELLIGENCE, "auto_number", "sensitive");
 	BIND(PREFS_AUTO_NUMBER, "auto_number", "active");
@@ -512,6 +513,16 @@ update_tabs(GtkSourceView *view)
 	if(spaces == 0)
 		spaces = DEFAULT_TAB_WIDTH;
 	gtk_source_view_set_tab_width(view, spaces);
+
+	/* Set the hanging indent on wrapped lines to be a number of pixels equal
+	 * to twice the number of spaces in a tab; i.e. we estimate a space to be
+	 * four pixels. Not always true, but close enough.*/
+	gboolean indent_wrapped = g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED);
+	if(!indent_wrapped)
+		spaces = 0;
+	g_object_set(view,
+	    "indent", -2 * spaces,
+	    NULL);
 
 	return FALSE; /* one-shot idle function */
 }

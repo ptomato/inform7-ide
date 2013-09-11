@@ -32,6 +32,9 @@ after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkT
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
+	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED))
+		i7_document_update_indent_tags(document, start, end);
+
 	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
 		return;
 	/* Reindex the section headings anytime text is deleted, because running after
@@ -63,6 +66,12 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 		gtk_text_buffer_insert_at_cursor(buffer, tabs, -1);
 		gtk_text_buffer_get_iter_at_mark(buffer, location, bookmark);
 		gtk_text_buffer_delete_mark(buffer, bookmark);
+	}
+
+	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {
+		GtkTextIter insert_start = *location;
+		gtk_text_iter_backward_chars(&insert_start, len);
+		i7_document_update_indent_tags(document, &insert_start, location);
 	}
 
 	/* Return after that if we are not doing intelligent symbol following */
