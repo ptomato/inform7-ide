@@ -28,6 +28,17 @@
 #include "searchwindow.h"
 #include "welcomedialog.h"
 
+/*
+ * version:
+ *
+ * Print version information to the terminal.
+ */
+static void
+version(void)
+{
+	g_print("%s %s\n", PACKAGE, PACKAGE_VERSION);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -43,7 +54,10 @@ main(int argc, char *argv[])
 
 	/* Set up the command-line options */
 	gchar **remaining_args = NULL;
+	gboolean print_version = FALSE;
 	GOptionEntry entries[] = {
+		{ "version", 'v', 0, G_OPTION_ARG_NONE, &print_version,
+		  N_("Print version information"), NULL },
 		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY,
 		  &remaining_args, "",
 			/* TRANSLATORS: This string occurs in the --help message's usage
@@ -60,6 +74,11 @@ main(int argc, char *argv[])
 	if(!g_option_context_parse(context, &argc, &argv, &error))
 		WARN(_("Failed to parse commandline options"), error);
 	g_option_context_free(context);
+
+	if(print_version) {
+		version();
+		return 0;
+	}
 
 	gdk_threads_init();
 
