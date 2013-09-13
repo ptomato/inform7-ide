@@ -58,7 +58,7 @@ main(int argc, char *argv[])
 	g_option_context_add_main_entries(context, entries, GETTEXT_PACKAGE);
 	g_option_context_add_group(context, gtk_get_option_group(TRUE));
 	if(!g_option_context_parse(context, &argc, &argv, &error))
-		ERROR(_("Failed to parse commandline options."), error);
+		WARN(_("Failed to parse commandline options"), error);
 	g_option_context_free(context);
 
 	gdk_threads_init();
