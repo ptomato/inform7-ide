@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ typedef struct {
 /* Semi-private signal handlers */
 void after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 void after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
-void after_errors_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
+void after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 void after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 gint after_documentation_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel);
 

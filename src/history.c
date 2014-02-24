@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ history_block_handlers(I7Panel *panel)
 {
 	g_signal_handlers_block_by_func(panel->notebook, after_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_SOURCE], after_source_notebook_switch_page, panel);
-	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_ERRORS], after_errors_notebook_switch_page, panel);
+	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_RESULTS], after_results_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_navigation_requested, panel);
 }
@@ -55,7 +55,7 @@ history_unblock_handlers(I7Panel *panel)
 {
 	g_signal_handlers_unblock_by_func(panel->notebook, after_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_SOURCE], after_source_notebook_switch_page, panel);
-	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_ERRORS], after_errors_notebook_switch_page, panel);
+	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_RESULTS], after_results_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_navigation_requested, panel);
 }
@@ -84,7 +84,7 @@ history_goto_current(I7Panel *panel)
 	history_block_handlers(panel);
 	switch(current->pane) {
 		case I7_PANE_SOURCE:
-		case I7_PANE_ERRORS:
+		case I7_PANE_RESULTS:
 		case I7_PANE_INDEX:
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(panel->tabs[current->pane]), current->tab);
 			break;

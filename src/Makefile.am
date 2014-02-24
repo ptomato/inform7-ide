@@ -258,7 +258,7 @@ libinform7gui_a_SOURCES = \
 	source-view.c source-view.h \
 	spawn.c spawn.h \
 	story.c story.h story-private.h \
-	story-source.c story-errors.c story-index.c story-settings.c \
+	story-source.c story-results.c story-index.c story-settings.c \
 	story-compile.c story-game.c story-skein.c story-transcript.c \
 	transcript-diff.c transcript-diff.h \
 	transcript-renderer.c transcript-renderer.h \

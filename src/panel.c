@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -491,7 +491,7 @@ i7_panel_init(I7Panel *self)
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
-	self->tabs[I7_PANE_ERRORS] = GTK_WIDGET(load_object(builder, "errors_notebook"));
+	self->tabs[I7_PANE_RESULTS] = GTK_WIDGET(load_object(builder, "results_notebook"));
 	self->tabs[I7_PANE_INDEX] = GTK_WIDGET(load_object(builder, "index_notebook"));
 	self->tabs[I7_PANE_SKEIN] = skeinview;
 	self->tabs[I7_PANE_TRANSCRIPT] = GTK_WIDGET(load_object(builder, "transcript"));
@@ -500,11 +500,11 @@ i7_panel_init(I7Panel *self)
 	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));
 	self->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS] = self->sourceview->headings;
 	self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] = self->sourceview->source;
-	const gchar *errors_tab_names[] = { "progress", "debugging", "problems", "inform6" };
+	const gchar *results_tab_names[] = { "progress", "debugging", "problems", "inform6" };
 	const gchar *index_tab_names[] = { "actions", "contents", "kinds", "phrasebook", "rules", "scenes", "world" };
 	for(foo = 0; foo < I7_INDEX_NUM_TABS; foo++) {
-		if(foo < I7_ERRORS_NUM_TABS)
-			self->errors_tabs[foo] = GTK_WIDGET(load_object(builder, errors_tab_names[foo]));
+		if(foo < I7_RESULTS_NUM_TABS)
+			self->results_tabs[foo] = GTK_WIDGET(load_object(builder, results_tab_names[foo]));
 		self->index_tabs[foo] = GTK_WIDGET(load_object(builder, index_tab_names[foo]));
 	}
 
@@ -632,9 +632,9 @@ after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page
 			history_push_tab(panel, page_num,
 				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE])));
 			break;
-		case I7_PANE_ERRORS:
+		case I7_PANE_RESULTS:
 			history_push_tab(panel, page_num,
-				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_ERRORS])));
+				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_RESULTS])));
 			break;
 		case I7_PANE_INDEX:
 			history_push_tab(panel, page_num,
@@ -656,10 +656,10 @@ after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsign
 }
 
 void
-after_errors_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
+after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
 {
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_ERRORS)
-		history_push_tab(panel, I7_PANE_ERRORS, page_num);
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_RESULTS)
+		history_push_tab(panel, I7_PANE_RESULTS, page_num);
 }
 
 void
@@ -914,7 +914,7 @@ void
 i7_panel_update_tabs(I7Panel *self)
 {
 	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]));
-	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(self->errors_tabs[I7_ERRORS_TAB_INFORM6]));
+	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(self->results_tabs[I7_RESULTS_TAB_INFORM6]));
 }
 
 static gboolean
@@ -930,7 +930,7 @@ void
 i7_panel_update_fonts(I7Panel *self)
 {
 	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]));
-	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->errors_tabs[I7_ERRORS_TAB_INFORM6]));
+	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->results_tabs[I7_RESULTS_TAB_INFORM6]));
 
 	WebKitWebSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
 	PangoFontDescription *fontdesc = get_font_description();

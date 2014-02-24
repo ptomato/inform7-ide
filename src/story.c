@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -514,8 +514,8 @@ get_focus_view(I7Story *story)
 			return panel->tabs[I7_PANE_GAME];
 		case I7_PANE_SOURCE:
 			return panel->source_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE]))];
-		case I7_PANE_ERRORS:
-			return panel->errors_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_ERRORS]))];
+		case I7_PANE_RESULTS:
+			return panel->results_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_RESULTS]))];
 		case I7_PANE_INDEX:
 			return panel->index_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_INDEX]))];
 		case I7_PANE_DOCUMENTATION:
@@ -637,14 +637,14 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	/* Connect various models to various views */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]), GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self))));
 	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS]), i7_document_get_headings(I7_DOCUMENT(self)));
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_PROGRESS]), priv->progress);
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_DEBUGGING]), priv->debug_log);
-	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->errors_tabs[I7_ERRORS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_PROGRESS]), priv->progress);
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_DEBUGGING]), priv->debug_log);
+	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
 	
-	/* Set the Errors/Progress to a monospace font */
-	gtk_widget_modify_font(GTK_WIDGET(panel->errors_tabs[I7_ERRORS_TAB_PROGRESS]), font);
+	/* Set the Results/Progress to a monospace font */
+	gtk_widget_modify_font(GTK_WIDGET(panel->results_tabs[I7_RESULTS_TAB_PROGRESS]), font);
 
 	/* Connect the Previous Section and Next Section actions to the up and down buttons */
 	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->previous), I7_DOCUMENT(self)->previous_section);
@@ -788,7 +788,7 @@ i7_story_init(I7Story *self)
 	priv->debug_log = gtk_text_buffer_new(NULL);
 	priv->i6_source = create_inform6_source_buffer();
 
-	/* Create a monospace font description for the Errors/Progress views */
+	/* Create a monospace font description for the Results/Progress views */
 	PangoFontDescription *font = get_desktop_monospace_font();
 	pango_font_description_set_size(font, get_font_size(font));
 
@@ -811,7 +811,7 @@ i7_story_init(I7Story *self)
 	gtk_action_set_sensitive(I7_DOCUMENT(self)->previous_section, FALSE);
 	gtk_action_set_sensitive(I7_DOCUMENT(self)->next_section, FALSE);
 
-	/* Add extra pages in "Errors" if the user has them turned on */
+	/* Add extra pages in "Results" if the user has them turned on */
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
 		i7_story_add_debug_tabs(I7_DOCUMENT(self));
 

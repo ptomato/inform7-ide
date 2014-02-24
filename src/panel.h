@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@
 /* The names of the panes in each notebook */
 typedef enum {
 	I7_PANE_SOURCE = 0,
-	I7_PANE_ERRORS,
+	I7_PANE_RESULTS,
 	I7_PANE_INDEX,
 	I7_PANE_SKEIN,
 	I7_PANE_TRANSCRIPT,
@@ -43,14 +43,14 @@ typedef enum {
 	I7_PANEL_NUM_PANES
 } I7PanelPane;
 
-/* The names of the sub tabs in "Errors" */
+/* The names of the sub tabs in "Results" */
 typedef enum {
-	I7_ERRORS_TAB_PROGRESS = 0,
-	I7_ERRORS_TAB_DEBUGGING,
-	I7_ERRORS_TAB_PROBLEMS,
-	I7_ERRORS_TAB_INFORM6,
-	I7_ERRORS_NUM_TABS
-} I7PaneErrorsTab;
+	I7_RESULTS_TAB_PROGRESS = 0,
+	I7_RESULTS_TAB_DEBUGGING,
+	I7_RESULTS_TAB_PROBLEMS,
+	I7_RESULTS_TAB_INFORM6,
+	I7_RESULTS_NUM_TABS
+} I7PaneResultsTab;
 
 /* The names of the sub tabs in "Index" */
 typedef enum {
@@ -86,7 +86,7 @@ typedef struct {
 	GtkCellRenderer *transcript_cell;
 	GtkWidget *tabs[I7_PANEL_NUM_PANES];
 	GtkWidget *source_tabs[I7_SOURCE_VIEW_NUM_TABS];
-	GtkWidget *errors_tabs[I7_ERRORS_NUM_TABS];
+	GtkWidget *results_tabs[I7_RESULTS_NUM_TABS];
 	GtkWidget *index_tabs[I7_INDEX_NUM_TABS];
 } I7Panel;
 

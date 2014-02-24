@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2010, 2012 P. F. Chimento
+/* Copyright (C) 2007-2009, 2010, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify

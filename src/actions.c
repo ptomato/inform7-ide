@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -583,9 +583,9 @@ action_show_source(GtkAction *action, I7Story *story)
 
 /* View->Show Tab->Errors */
 void
-action_show_errors(GtkAction *action, I7Story *story)
+action_show_results(GtkAction *action, I7Story *story)
 {
-	i7_story_show_pane(story, I7_PANE_ERRORS);
+	i7_story_show_pane(story, I7_PANE_RESULTS);
 }
 
 /* View->Show Tab->Index */

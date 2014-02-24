@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ void on_panel_paste_code(I7Panel *panel, gchar *code, I7Story *story);
 void on_panel_jump_to_line(I7Panel *panel, guint line, I7Story *story);
 gboolean reindex_headings(GtkTextBuffer *buffer, I7Document *document);
 
-/* Errors pane, story-errors.c */
+/* Results pane, story-results.c */
 void i7_story_add_debug_tabs(I7Document *document);
 void i7_story_remove_debug_tabs(I7Document *document);
 GtkSourceBuffer *create_inform6_source_buffer(void);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -128,8 +128,8 @@ prepare_ni_compiler(CompilerData *data)
 
 	/* Clear the previous compile output */
 	gtk_text_buffer_set_text(priv->progress, "", -1);
-	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]));
-	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]));
+	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]));
+	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]));
 
 	/* Create the UUID file if needed */
 	GFile *uuid_file = g_file_get_child(data->input_file, "uuid.txt");
@@ -268,8 +268,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 			problems_file = i7_app_get_data_file_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
 	}
 
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), problems_file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), problems_file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), problems_file);
 	g_object_unref(problems_file);
 
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG)) {
@@ -302,7 +302,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		g_object_unref(i6_file);
 	}
 
-	/* Stop here and show the Errors/Problems tab if there was an error */
+	/* Stop here and show the Results/Problems tab if there was an error */
 	if(exit_code != 0) {
 		finish_compiling(FALSE, data);
 		return;
@@ -488,14 +488,14 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 		loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
 	if(loadfile) {
 		gdk_threads_enter();
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), loadfile);
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), loadfile);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), loadfile);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), loadfile);
 		gdk_threads_leave();
 
 		g_object_unref(loadfile);
 	}
 
-	/* Stop here and show the Errors/Problems tab if there was an error */
+	/* Stop here and show the Results/Problems tab if there was an error */
 	if(exit_code != 0) {
 		finish_compiling(FALSE, data);
 		return;
@@ -588,12 +588,12 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 	/* Display the appropriate HTML page */
 	GFile *file = g_file_get_child(data->builddir_file, "StatusCblorb.html");
 	gdk_threads_enter();
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->errors_tabs[I7_ERRORS_TAB_PROBLEMS]), file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), file);
 	gdk_threads_leave();
 	g_object_unref(file);
 
-	/* Stop here and show the Errors/Problems tab if there was an error */
+	/* Stop here and show the Results/Problems tab if there was an error */
 	if(exit_code != 0) {
 		finish_compiling(FALSE, data);
 		return;
@@ -625,8 +625,8 @@ finish_compiling(gboolean success, CompilerData *data)
 		success? _("Compiling succeeded.") : _("Compiling failed."),
 		COMPILE_OPERATIONS);
 
-	/* Switch the Errors tab to the Problems page */
-	i7_story_show_tab(data->story, I7_PANE_ERRORS, I7_ERRORS_TAB_PROBLEMS);
+	/* Switch the Results tab to the Problems page */
+	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_PROBLEMS);
 	gdk_threads_leave();
 
 	/* Store the compiler output filename (the I7Story now owns the reference) */
@@ -700,7 +700,7 @@ i7_story_save_ifiction(I7Story *story)
 	else
 		error_dialog(GTK_WINDOW(story), NULL,
 			_("The compiler failed to create an iFiction record; check the "
-			"errors page to see why."));
+			"results page to see why."));
 
 	g_object_unref(ifiction_file);
 	g_object_unref(project_file);
