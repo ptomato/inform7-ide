@@ -732,6 +732,7 @@ i7_story_init(I7Story *self)
 	self->panel[RIGHT] = I7_PANEL(i7_panel_new());
 	GFile *docs_file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
 	i7_panel_reset_queue(self->panel[LEFT], I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_SOURCE, NULL);
+	i7_panel_goto_docpage(self->panel[LEFT], docs_file);
 	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, docs_file);
 	g_object_unref(docs_file);
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
