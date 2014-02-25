@@ -6,8 +6,8 @@
 # Args: (human-readable package name, package version, bug report address,
 # tarballname)
 AC_INIT([Inform 7], [6G60], [http://inform7.com/mantis], [gnome-inform7])
-# Require Autoconf 2.60; I think the newest feature is AC_PROG_MKDIR_P...
-AC_PREREQ([2.60])
+# Require Autoconf 2.64; I think the newest feature is m4_map_args_w...
+AC_PREREQ([2.64])
 # Sanity check to make sure we are running Autoconf from the right directory
 AC_CONFIG_SRCDIR(src/main.c)
 # Tell where to put the libtool macros
@@ -16,6 +16,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.11 -Wall])
 # Configure with --enable-silent-rules to cut down on clutter
 AM_SILENT_RULES([yes])
+# Allow "AM_GST_ELEMENT_CHECK" for building without GStreamer development files
+m4_pattern_allow([^AM_GST_ELEMENT_CHECK$])
 
 ### CHECK FOR PROPER NI EXECUTABLE #############################################
 
@@ -174,9 +176,9 @@ AS_IF([test "x$with_sound" = "xgstreamer"], [
 	AC_MSG_CHECKING([which version of GStreamer is used in WebKit])
 	WEBKIT_LIBDIR=$(pkg-config --variable=libdir webkit-1.0)
 	# Get -lwebkit-blah and remove -l
-	WEBKIT_LIBNAME=$(pkg-config --libs webkit-1.0 | sed -e 's/ /\n/g' | grep webkit | cut -c3-)
+	WEBKIT_LIBNAME=$(pkg-config --libs webkit-1.0 | sed -e 's/ /\n/g' | $GREP webkit | cut -c3-)
 	WEBKIT_LIBRARY="$WEBKIT_LIBDIR/lib$WEBKIT_LIBNAME.so"
-	with_sound=$(ldd $WEBKIT_LIBRARY | grep -E -o "gstreamer-@<:@0-9@:>@\\.@<:@0-9@:>@+" | uniq)
+	with_sound=$(ldd $WEBKIT_LIBRARY | $GREP -E -o "gstreamer-@<:@0-9@:>@\\.@<:@0-9@:>@+" | uniq)
 	# with_sound is now gstreamer-1.0, gstreamer-0.10, or empty
 	AS_IF([test -z "$with_sound"], [with_sound=no])
 	AC_MSG_RESULT([$with_sound])])
