@@ -19,8 +19,9 @@ typedef struct auxiliary_file {
 	char relative_URL[MAX_FILENAME_LENGTH];
 	char full_filename[MAX_FILENAME_LENGTH];
 	char aux_leafname[MAX_FILENAME_LENGTH];
+	char aux_subfolder[MAX_FILENAME_LENGTH];
 	char description[MAX_FILENAME_LENGTH];
-	char format[MAX_EXTENSION_LENGTH]; /* e.g., ``jpg'', ``pdf'' */
+	char format[MAX_EXTENSION_LENGTH]; /* e.g., "jpg", "pdf" */
 	MEMORY_MANAGEMENT
 } auxiliary_file;
 
@@ -34,7 +35,7 @@ website. In that case the format is |link| and the URL is to the index file
 in the subfolder.
 
 @c
-/**/ void create_auxiliary_file(char *filename, char *description) {
+void create_auxiliary_file(char *filename, char *description, char *subfolder) {
 	auxiliary_file *aux = CREATE(auxiliary_file);
 
 	strcpy(aux->description, description);
@@ -43,16 +44,17 @@ in the subfolder.
 	char *leaf = get_filename_leafname(filename);
 	if (ext[0] == '.') {
 		strcpy(aux->relative_URL, filename);
-		if (strlen(ext + 1) >= MAX_EXTENSION_LENGTH - 1) {
+		if (cblorb_strlen(ext + 1) >= MAX_EXTENSION_LENGTH - 1) {
 			error("auxiliary file has overlong extension"); return;
 		}
 		strcpy(aux->format, ext + 1);
-		int k; for (k=0; aux->format[k]; k++) aux->format[k] = tolower(aux->format[k]);
+		int k; for (k=0; aux->format[k]; k++) aux->format[k] = cblorb_tolower(aux->format[k]);
 	} else {
 		strcpy(aux->format, "link");
 		sprintf(aux->relative_URL, "%s%cindex.html", filename, SEP_CHAR);
 	}
 	strcpy(aux->aux_leafname, leaf);
+	strcpy(aux->aux_subfolder, subfolder);
 
 	printf("! Auxiliary file: <%s> = <%s>\n", filename, description);
 }
@@ -65,10 +67,12 @@ list entry tags, for convenience of CSS styling.
 void expand_AUXILIARY_variable(FILE *COPYTO) {
 	auxiliary_file *aux;
 	LOOP_OVER(aux, auxiliary_file) {
-		fprintf(COPYTO, "<li>");
-		download_link(COPYTO,
-			aux->description, aux->full_filename, aux->aux_leafname, aux->format);
-		fprintf(COPYTO, "</li>");
+		if (strcmp(aux->description, "--") != 0) {
+			fprintf(COPYTO, "<li>");
+			download_link(COPYTO,
+				aux->description, aux->full_filename, aux->aux_leafname, aux->format);
+			fprintf(COPYTO, "</li>");
+		}
 	}
 	add_links_to_requested_resources(COPYTO);
 }
@@ -87,7 +91,7 @@ void expand_DOWNLOAD_variable(FILE *COPYTO) {
 This routine, then, handles either kind of link.
 
 @c
-/**/ void download_link(FILE *COPYTO, char *desc, char *filename, char *relative_url, char *form) {
+void download_link(FILE *COPYTO, char *desc, char *filename, char *relative_url, char *form) {
 	int size_up = TRUE;
 	if (strcmp(form, "link") == 0) size_up = FALSE;
 	fprintf(COPYTO, "<a href=\"%s\">%s</a> ", relative_url, desc);
@@ -104,7 +108,7 @@ This routine, then, handles either kind of link.
 }
 
 @ We round down to the nearest KB, MB, GB, TB or byte, as appropriate. Although
-this will describe a 1-byte auxiliary file as ``1 bytes'', the contingency seems
+this will describe a 1-byte auxiliary file as "1 bytes", the contingency seems
 remote.
 
 @<Write a description of the rough file size@> =
@@ -120,7 +124,7 @@ remote.
 
 @p Cover image.
 Note that if the large cover image is a PNG, so is the small (thumbnail)
-version, and vice versa -- supplying ``Cover.jpg'' and ``Small Cover.png''
+version, and vice versa -- supplying "Cover.jpg" and "Small Cover.png"
 will not work.
 
 @c
@@ -137,12 +141,12 @@ When we generate a website, we need to copy the auxiliary files into it
 (though not mini-websites: the user will have to do that).
 
 @c
-/**/ void request_copy_of_auxiliaries(void) {
+void request_copy_of_auxiliaries(void) {
 	auxiliary_file *aux;
 	LOOP_OVER(aux, auxiliary_file)
 		if (strcmp(aux->format, "link") != 0) {
 			if (trace_mode)
 				printf("! COPY <%s> as <%s>\n", aux->full_filename, aux->aux_leafname);
-			request_copy(aux->full_filename, aux->aux_leafname);
+			request_copy(aux->full_filename, aux->aux_leafname, aux->aux_subfolder);
 		}
 }

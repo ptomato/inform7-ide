@@ -40,13 +40,13 @@ topmost segment begins at the first heading in the source text. So there
 will usually be at least a few prefatory lines before this point -- perhaps
 the title, some extension inclusions, and so on -- and it's even possible,
 if there are no headings at all, for there to be no segments so that the
-entire source text is ``prefatory''. If we have three segments, then, we
+entire source text is "prefatory". If we have three segments, then, we
 will split the source text into four HTML files:
 
-	|source0.html| -- ``Page 1 of 4'', the preface and then contents
-	|source1.html| -- ``Page 2 of 4'', first segment (with allocation ID 0)
-	|source2.html| -- ``Page 3 of 4'', second segment (with allocation ID 1)
-	|source3.html| -- ``Page 4 of 4'', third segment (with allocation ID 2)
+	|source0.html| -- "Page 1 of 4", the preface and then contents
+	|source1.html| -- "Page 2 of 4", first segment (with allocation ID 0)
+	|source2.html| -- "Page 3 of 4", second segment (with allocation ID 1)
+	|source3.html| -- "Page 4 of 4", third segment (with allocation ID 2)
 
 Note that the prefatory lines contain no headings, that every heading
 belongs to a unique segment (hence the |heading_to_segment| field above)
@@ -59,8 +59,8 @@ contains no content except white space: this is so that, e.g.,
 >> Rickety Jetty is a room. [...]
 
 would be combined into a single segment, rather than a pointlessly short
-segment just containing the ``Part I'' heading followed by a second segment
-opening with ``Section I.1''.
+segment just containing the "Part I" heading followed by a second segment
+opening with "Section I.1".
 
 @c
 typedef struct segment {
@@ -90,24 +90,24 @@ is required to define:
 
 	|columnhead| -- the heading of a column in a Table in I7 source text
 	|comment| -- comments in I7 source text
-	|filetype| -- the ``(pdf, 150KB)'' text annotating links
+	|filetype| -- the "(pdf, 150KB)" text annotating links
 	|heading| -- heading or top line of a Table in I7 source text
 	|i6code| -- verbatim I6 code in I7 source text
 	|notecue| -- footnote cues which annotate I7 source text
-	|notesheading| -- the little ``Notes'' subheading above the footnotes to source text
+	|notesheading| -- the little "Notes" subheading above the footnotes to source text
 	|notetext| -- texts of footnotes which annotate I7 source text
 	|quote| -- double-quoted text in I7 source text
 	|substitution| -- text substitution inside double-quoted text in I7 source text
 
 In addition it must provide paragraph classes |indent0| to |indent9| for code
-which begins at tab positions 0 to 9 (see below). Although ``Standard.css''
-contains other names of classes, these are only needed because ``Standard.html''
-or ``Standard-Source.html'' say so: |cblorb| does not mandate them.
+which begins at tab positions 0 to 9 (see below). Although "Standard.css"
+contains other names of classes, these are only needed because "Standard.html"
+or "Standard-Source.html" say so: |cblorb| does not mandate them.
 
 @ In case CSS is not available, we use old-fashioned HTML alternatives:
 
 @c
-/**/ void open_style(FILE *write_to, char *new) {
+void open_style(FILE *write_to, char *new) {
 	if (new == NULL) return;
 	if (use_css_code_styles) {
 		fprintf(write_to, "<span class=\"%s\">", new);		
@@ -125,7 +125,7 @@ or ``Standard-Source.html'' say so: |cblorb| does not mandate them.
 	}
 }
 
-/**/ void close_style(FILE *write_to, char *old) {
+void close_style(FILE *write_to, char *old) {
 	if (old == NULL) return;
 	if (use_css_code_styles) {
 		fprintf(write_to, "</span>");
@@ -233,7 +233,7 @@ void close_table_cell(FILE *write_to) {
 
 @c
 FILE *COPYTO = NULL;
-/**/ void web_copy(char *from, char *to) {
+void web_copy(char *from, char *to) {
 	if ((from == NULL) || (to == NULL) || (strcmp(from, to) == 0))
 		fatal("files confused in website maker");
 	HTML_pages_created++;
@@ -250,6 +250,7 @@ void copy_html_line(char *line, text_file_position *tfp) {
 	int i;
 	for (i=0; line[i]; i++) {
 		@<Detect square-bracketed names of Web variables and expand them@>;
+		@<Detect an out of head experience@>;
 		fprintf(COPYTO, "%c", line[i]);
 	}
 	fprintf(COPYTO, "\n");
@@ -268,6 +269,16 @@ void copy_html_line(char *line, text_file_position *tfp) {
 		}
 	}
 
+@ For this to work we rely on the source template containing a |</head>| tag,
+in exactly that casing and spacing, but that's safe enough for the templates
+used by Inform.
+
+@<Detect an out of head experience@> =
+	if ((line[i] == '<') && (line[i+1] == '/') && (line[i+2] == 'h') &&
+		(line[i+3] == 'e') && (line[i+4] == 'a') && (line[i+5] == 'd') &&
+		(line[i+6] == '>'))
+		copy_placeholder_to("INTERPRETERSCRIPTS", COPYTO);
+
 @p Rendering the source text as HTML pages.
 This is a fiddly operation, which requires us to parse the source text and
 then typeset it appealingly in a whole suite of HTML pages. This necessarily
@@ -276,7 +287,7 @@ running time, where $N$ is the number of lines in the source text. (Note
 that the number of HTML files to be written will also be $O(N)$.)
 
 This is done in two passes. On pass 1, we scan the source text for tables
-and headings, and divide the whole into ``segments'', each of which is
+and headings, and divide the whole into "segments", each of which is
 typeset as a single HTML page: segments do not quite correspond to headings,
 as we shall see. But we write nothing. On pass 2, we actually write these
 HTML pages.
@@ -284,7 +295,7 @@ HTML pages.
 @c
 char source_text[MAX_FILENAME_LENGTH];
 
-/**/ void web_copy_source(char *template, char *website_pathname) {
+void web_copy_source(char *template, char *website_pathname) {
 	strcpy(source_text, read_placeholder("SOURCELOCATION"));
 	scan_source_text();
 	write_source_text_pages(template, website_pathname);
@@ -296,7 +307,7 @@ During this scan, we will maintain the following variables:
 @c
 int within_a_table; /* are we inside a Table declaration in the source text? */
 int scan_quoted_matter; /* are we inside double-quoted matter in the source text? */
-int scan_comment_nesting; /* level of nesting of comments in source text: 0 means ``not in a comment'' */
+int scan_comment_nesting; /* level of nesting of comments in source text: 0 means "not in a comment" */
 text_file_position *latest_line_position; /* |ftell|-reported byte offset of the start of the current line in the source */
 table *current_table; /* the Table which started most recently, or |NULL| if none has */
 heading *current_heading; /* the heading seen most recently, or |NULL| if none has been */
@@ -361,7 +372,7 @@ void scan_source_line(char *line, text_file_position *tfp) {
 
 @ Looking at the first word, if any, tells whether we are a heading, or the start
 of a table, or an empty line, or none of these (in which case a line is perhaps
-unfairly called ``dull''). We set |lv| accordingly.
+unfairly called "dull"). We set |lv| accordingly.
 
 @d EMPTY_LEVEL -1
 @d DULL_LEVEL 0
@@ -449,7 +460,7 @@ unfairly called ``dull''). We set |lv| accordingly.
 @p Pass 2: writing the source text pages.
 Though there is no obvious way that the following routine passes control
 to the routines below it, in fact it does: |web_copy| works on the template
-and finds reserved variables such as ``[SOURCE]''; expanding those then calls
+and finds reserved variables such as "[SOURCE]"; expanding those then calls
 the routines below.
 
 @c
@@ -553,10 +564,10 @@ pages |doc_0.html| and so on up.
 		segment_being_written = NULL;
 	}
 
-@ This is what ``[PAGENUMBER]'' in the template becomes.
+@ This is what "[PAGENUMBER]" in the template becomes.
 
 @c
-/**/ void expand_PAGENUMBER_variable(FILE *COPYTO) {
+void expand_PAGENUMBER_variable(FILE *COPYTO) {
 	int p = 1;
 	if (segment_being_written) {
 		p = segment_being_written->page_number;
@@ -565,10 +576,10 @@ pages |doc_0.html| and so on up.
 	fprintf(COPYTO, "%d", p);
 }
 
-@ And similarly ``[PAGEEXTENT]''.
+@ And similarly "[PAGEEXTENT]".
 
 @c
-/**/ void expand_PAGEEXTENT_variable(FILE *COPYTO) {
+void expand_PAGEEXTENT_variable(FILE *COPYTO) {
 	int n = no_src_files + 1;
 	if ((segment_being_written) && (segment_being_written->documentation))
 		n = no_doc_files;
@@ -576,10 +587,10 @@ pages |doc_0.html| and so on up.
 	fprintf(COPYTO, "%d", n);
 }
 
-@ And this is what ``[SOURCELINKS]'' in the template becomes:
+@ And this is what "[SOURCELINKS]" in the template becomes:
 
 @c
-/**/ void expand_SOURCELINKS_variable(FILE *COPYTO) {
+void expand_SOURCELINKS_variable(FILE *COPYTO) {
 	segment *seg = segment_being_written;
 	if (seg) {
 		if (seg->link_home)
@@ -597,27 +608,28 @@ pages |doc_0.html| and so on up.
 	}
 }
 
-@ When working on ``[SOURCE]'' or ``[SOURCENOTES]'', we will need to run
+@ When working on "[SOURCE]" or "[SOURCENOTES]", we will need to run
 through a segment of the source text, one line at a time. As we do so, we'll
 maintain the following variables, along with |current_style| (for which
 see the CSS discussion above):
 
 @c
 FILE *SPAGE = NULL; /* where the output is going */
-int SOURCENOTES_mode = FALSE; /* |TRUE| for ``[SOURCENOTES]'', |FALSE| for ``[SOURCE]'' */
+int SOURCENOTES_mode = FALSE; /* |TRUE| for "[SOURCENOTES]", |FALSE| for "[SOURCE]" */
 int quoted_matter = FALSE; /* are we inside double-quoted matter in the source text? */
 int i6_matter = FALSE; /* are we inside verbatim I6 code in the source text? */
 int comment_nesting = 0; /* nesting level of comments in source text being read: 0 for not in a comment */
+int footnote_comment_level = 0; /* ditto, but where the outermost comment is a footnote marker */
 int carry_over_indentation = -1; /* indentation carried over for para breaks in quoted text */
 int next_footnote_number = 1; /* number to assign to the next footnote which comes up */
 heading *latest_heading = NULL; /* a heading which is always behind the current position */
 table *latest_table = NULL; /* a table which is always behind the current position */
 
-@ So this is ``[SOURCE]'' (if |noting_mode| is |FALSE|) or ``[SOURCENOTES]''
+@ So this is "[SOURCE]" (if |noting_mode| is |FALSE|) or "[SOURCENOTES]"
 (if |TRUE|).
 
 @c
-/**/ void expand_SOURCE_or_SOURCENOTES_variable(FILE *write_to, int SN) {
+void expand_SOURCE_or_SOURCENOTES_variable(FILE *write_to, int SN) {
 	if (SN) @<Typeset the little Notes subheading@>;
 	open_code(write_to);
 	@<Initialise the variables to their state at the start of an HTML page@>;
@@ -634,13 +646,14 @@ table *latest_table = NULL; /* a table which is always behind the current positi
 	quoted_matter = FALSE;
 	i6_matter = FALSE;
 	comment_nesting = 0;
+	footnote_comment_level = 0;
 	carry_over_indentation = -1;
 	current_style = NULL;
 	latest_heading = FIRST_OBJECT(heading);
 	latest_table = FIRST_OBJECT(table);
 
-@ We expect any use of ``[SOURCENOTES]'' to come after the relevant
-``[SOURCE]'', so that looking at |next_footnote_number| will tell us how many
+@ We expect any use of "[SOURCENOTES]" to come after the relevant
+"[SOURCE]", so that looking at |next_footnote_number| will tell us how many
 notes there were.
 
 @<Typeset the little Notes subheading@> =
@@ -709,7 +722,7 @@ int write_source_line(char *line, text_file_position *tfp) {
 }
 
 @ Recall that the source text is divided into an initial portion containing
-no headings -- the ``preface'' -- and then segments, each of which begins with
+no headings -- the "preface" -- and then segments, each of which begins with
 a heading.
 
 Here we are handling the case of typesetting the preface. We allow the line
@@ -748,23 +761,26 @@ number, and typeset. All other material is ignored.
 	int i;
 	for (i=0; line[i]; i++) {
 		if ((line[i] == '[') && (line[i+1] == '*')) {
-			int comment_level = 1;
+			footnote_comment_level = 1;
 			fprintf(SPAGE, "<p><a name=\"note%d\"></a>", next_footnote_number);
 			open_style(SPAGE, "notetext");
 			fprintf(SPAGE, "<a href=\"#note%dref\">[%d]</a>. ",
 				next_footnote_number, next_footnote_number);
 			next_footnote_number++;
 			i+=2;
-			while (line[i]) {
-				if (line[i] == '[') comment_level++;
-				if (line[i] == ']') comment_level--;
-				if (comment_level == 0) break;
-				fprintf(SPAGE, "%c", line[i++]);
+		}
+		if (footnote_comment_level > 0) {
+			if (line[i] == '[') footnote_comment_level++;
+			if (line[i] == ']') footnote_comment_level--;
+			if (footnote_comment_level == 0) {
+				close_style(SPAGE, "notetext");
+				fprintf(SPAGE, "</p>\n");
+			} else {
+				fprintf(SPAGE, "%c", line[i]);
 			}
-			close_style(SPAGE, "notetext");
-			fprintf(SPAGE, "</p>\n");
 		}
 	}
+	if (footnote_comment_level > 0) fprintf(SPAGE, " ");
 
 @ In [SOURCE] mode, we need to work out appropriate type styles to embellish
 the line, then indent it suitably, then typeset it character by character.
@@ -778,21 +794,32 @@ the line, then indent it suitably, then typeset it character by character.
 	if ((tabulate) && (quoted_matter == FALSE)) { fprintf(SPAGE, "<tr>"); open_table_cell(SPAGE); }
 
 	int start = 0;
-	if (tabulate == FALSE) {
-		for (; line[start] == '\t'; start++) ;
-		if (carry_over_indentation < 0) carry_over_indentation = start;
-		open_code_paragraph(SPAGE, carry_over_indentation);
+	
+	if (footnote_comment_level > 0) {
+		for (; line[start]; start++) {
+			if (line[start] == '[') footnote_comment_level++;
+			if (line[start] == ']') footnote_comment_level--;
+			if (footnote_comment_level == 0) { start++; break; }
+		}
 	}
-
-	@<Begin typographic embellishments@>;
-	@<The documentation requires some corrections@>;
-
-	int i; for (i=start; line[i]; i++) @<Typeset a single character of the source text@>;
-
-	@<End typographic embellishments@>;
-	if ((tabulate) && (quoted_matter == FALSE)) { close_table_cell(SPAGE); fprintf(SPAGE, "</tr>\n"); }
-	else close_code_paragraph(SPAGE);
-	if (quoted_matter == FALSE) carry_over_indentation = -1;
+	if ((footnote_comment_level == 0) && (line[start])) {
+		if (tabulate == FALSE) {
+			int insteps = 0;
+			for (; line[start] == '\t'; start++) insteps++;
+			if (carry_over_indentation < 0) carry_over_indentation = insteps;
+			open_code_paragraph(SPAGE, carry_over_indentation);
+		}
+	
+		@<Begin typographic embellishments@>;
+		@<The documentation requires some corrections@>;
+	
+		int i; for (i=start; line[i]; i++) @<Typeset a single character of the source text@>;
+	
+		@<End typographic embellishments@>;
+		if ((tabulate) && (quoted_matter == FALSE)) { close_table_cell(SPAGE); fprintf(SPAGE, "</tr>\n"); }
+		else close_code_paragraph(SPAGE);
+		if (quoted_matter == FALSE) carry_over_indentation = -1;
+	}
 
 @ The type styles are easily applied, so let's do that now. The innermost one
 must be colour, since that may change in the course of the line.
@@ -815,16 +842,16 @@ line is underlined; and the material inside appears in an HTML table, with
 
 The |while| loop here needs a careful look, since on the face of it this
 could mean $O(N)$ iterations -- since the number of tables is probably
-proportional to $N$ -- made in the course of the current ``[SOURCE]''
-expansion. Since the number of ``[SOURCE]'' expansions needed to make the
+proportional to $N$ -- made in the course of the current "[SOURCE]"
+expansion. Since the number of "[SOURCE]" expansions needed to make the
 website is also $O(N)$ -- the number of HTML pages in the site is proportional
 to the number of headings, which is also proportional to $N$ -- there's a
 risk that this |while| loop makes the whole website algorithm $O(N^2)$.
-This is why, on each ``[SOURCE]'' expansion, |latest_table| is initialised
+This is why, on each "[SOURCE]" expansion, |latest_table| is initialised
 not to the first table but to the most recent one at the start position of
 the current HTML page. Moreover, the loop never goes past the current line
 count, which never goes outside the range of lines in the current HTML page.
-The result is that over the course of all the ``[SOURCE]'' expansions
+The result is that over the course of all the "[SOURCE]" expansions
 combined, the |while| loop here executes $O(N)$ iterations in total.
 
 @<Decide any typographic embellishments due to the line falling inside a table@> =
@@ -945,12 +972,13 @@ as they begin.
 @<Typeset an open square bracket outside of a string@> =
 	if (line[i+1] == '*') {
 		/* advance past the end of the asterisked comment */
-		int comment_level = 1;
+		footnote_comment_level++;
 		for (i+=2; line[i]; ++i) {
-			if (line[i] == '[') comment_level++;
-			if (line[i] == ']') comment_level--;
-			if (comment_level == 0) break;
+			if (line[i] == '[') footnote_comment_level++;
+			if (line[i] == ']') footnote_comment_level--;
+			if (footnote_comment_level == 0) break;
 		}
+		if (line[i] == 0) i--;
 		@<Typeset a footnote cue@>;
 	} else {
 		comment_nesting++;
@@ -966,7 +994,7 @@ as they begin.
 	if (comment_nesting == 0) change_style(SPAGE, NULL);
 
 @ Styling applied to I6 verbatim code does not apply to the purely-I7 markers
-``(-'' and ``-)'' around it:
+"(-" and "-)" around it:
 
 @<Typeset the opening of I6 verbatim code@> =
 	fprintf(SPAGE, "(-");
@@ -980,7 +1008,7 @@ as they begin.
 	fprintf(SPAGE, "-)");
 	i6_matter = FALSE;
 
-@ The ``cue'' of a footnote is the reference in the body of the text, which
+@ The "cue" of a footnote is the reference in the body of the text, which
 is conventionally printed as a superscript number. We leave that to the
 span |notecue| if we have CSS, and otherwise render in grey superscript.
 

@@ -8,11 +8,11 @@ obey them.
 @ We will need the following:
 
 @c
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
-#include "time.h"
-#include "ctype.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <ctype.h>
 
 @ We identify which platform we're running on thus:
 
@@ -25,7 +25,7 @@ maxima on the size or complexity of its input, but:
 
 @d MAX_FILENAME_LENGTH 10240 /* total length of pathname including leaf and extension */
 @d MAX_EXTENSION_LENGTH 32 /* extension part of filename, for auxiliary files */
-@d MAX_VAR_NAME_LENGTH 32 /* length of name of placeholder variable like ``[AUTHOR]'' */
+@d MAX_VAR_NAME_LENGTH 32 /* length of name of placeholder variable like "[AUTHOR]" */
 @d MAX_TEXT_FILE_LINE_LENGTH 51200 /* for any single line in the project's source text */
 @d MAX_SOURCE_TEXT_LINES 2000000000; /* enough for 300 copies of the Linux kernel source -- plenty! */
 
@@ -60,6 +60,8 @@ int no_pictures_included = 0; /* number of picture resources included in the blo
 int no_sounds_included = 0; /* number of sound resources included in the blorb */
 int HTML_pages_created = 0; /* number of pages created in the website, if any */
 int source_HTML_pages_created = 0; /* number of those holding source */
+int sound_resource_num = 3; /* current sound resource number we're working on */
+int picture_resource_num = 1; /* current picture resource number we're working on */
 
 int use_css_code_styles = FALSE; /* use |<span class="X">| markings when setting code */
 char project_folder[MAX_FILENAME_LENGTH]; /* pathname of I7 project folder, if any */
@@ -82,7 +84,7 @@ file is only the main output -- there might also be a web page and a solution
 file, for instance.
 
 @c
-/*****/ int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	int platform, produce_help;
 	char blurb_filename[MAX_FILENAME_LENGTH];
 	char blorb_filename[MAX_FILENAME_LENGTH];
@@ -125,7 +127,7 @@ file, for instance.
 	int arg, names;
 	for (arg = 1, names = 0; arg < argc; arg++) {
 		char *p = argv[arg];
-		if (strlen(p) >= MAX_FILENAME_LENGTH) {
+		if (cblorb_strlen(p) >= MAX_FILENAME_LENGTH) {
 			fprintf(stderr, "cblorb: command line argument %d too long\n", arg+1);
 			return 1;
 		}
@@ -187,11 +189,11 @@ operating system's default web browser, the second opens a file (identified
 by a |file:...| URL) in the local operating system. These two URLs may
 need treatment to handle special characters:
 
-(a) ``escaping'', where spaces in the URL are escaped to |%2520|, which
+(a) "escaping", where spaces in the URL are escaped to |%2520|, which
 within a Javascript string literal produces |%20|, the standard way to
 represent a space in a web URL;
 
-(b) ``reversing slashes'', where backslashes are converted to forward
+(b) "reversing slashes", where backslashes are converted to forward
 slashes -- useful if the separation character is a backslash, as on Windows,
 since backslashes are escape characters in Javascript literals.
 
@@ -250,7 +252,7 @@ be overridden by commands in the blurb file, and Inform always does this in
 the blurb files it writes. But it leaves [DATESTAMP] and [TIMESTAMP] alone.)
 
 @c
-/**/ void initialise_time_variables(void) {
+void initialise_time_variables(void) {
 	char datestamp[100], infocom[100], timestamp[100];
 	char *weekdays[] = { "Sunday", "Monday", "Tuesday", "Wednesday",
 		"Thursday", "Friday", "Saturday" };
@@ -289,7 +291,7 @@ placeholders in the template. All of the meat of the report is in those
 placeholders, of course; the template contains only some fancy formatting.
 
 @c
-/**/ void print_report(void) {
+void print_report(void) {
 	if (error_count > 0) printf("! Completed: %d error(s)\n", error_count);
 	@<Set a whole pile of placeholders which will be needed to generate the status page@>;
 	if (status_template[0]) web_copy(status_template, status_file);
@@ -302,7 +304,7 @@ where they're used.
 @<Set a whole pile of placeholders which will be needed to generate the status page@> =
 	if (error_count > 0) {
 		set_placeholder_to("CBLORBSTATUS", "Failed", 0);
-		set_placeholder_to("CBLORBSTATUSIMAGE", "inform:/cblorb_failed.png", 0);
+		set_placeholder_to("CBLORBSTATUSIMAGE", "inform:/outcome_images/cblorb_failed.png", 0);
 		set_placeholder_to("CBLORBSTATUSTEXT",
 			"Inform translated your source text as usual, to manufacture a 'story "
 			"file': all of that worked fine. But the Release then went wrong, for "

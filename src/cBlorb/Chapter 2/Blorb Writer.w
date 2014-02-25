@@ -5,11 +5,13 @@
 @Interface:
 
 -- Owns struct chunk_metadata (private)
+-- Owns struct resource_list (private)
+-- Owns struct rdes_record (private)
 
 @Definitions:
 
-@ ``Blorb'' is an IF-specific format, but it is defined as a form of IFF file.
-IFF, ``Interchange File Format'', is a general-purpose wrapper format dating back
+@ "Blorb" is an IF-specific format, but it is defined as a form of IFF file.
+IFF, "Interchange File Format", is a general-purpose wrapper format dating back
 to the mid-1980s; it was designed as a way to gather together audiovisual media
 for use on home computers. (Though Electronic Arts among others used IFF files
 to wrap up entertainment material, Infocom, the pioneer of IF at the time, did
@@ -34,14 +36,14 @@ another, in order of their creation. Every chunk has a type, a 4-character ID
 like |"AUTH"| or |"JPEG"|, specifying what kind of data it holds; some
 chunks are also given resource", " numbers which allow the story file to refer
 to them as it runs -- the pictures, sound effects and the story file itself
-all have unique resource numbers. (These are called ``indexed'', because
+all have unique resource numbers. (These are called "indexed", because
 references to them appear in a special |RIdx| record in the front part
-of the file -- the ``resource index''.)
+of the file -- the "resource index".)
 
 @c
 typedef struct chunk_metadata {
 	char filename[MAX_FILENAME_LENGTH]; /* if the content is stored on disc */
-	char data_in_memory[MAX_FILENAME_LENGTH]; /* if the content is stored in memory */
+	unsigned char data_in_memory[MAX_FILENAME_LENGTH]; /* if the content is stored in memory */
 	int length_of_data_in_memory; /* in bytes; or $-1$ if the content is stored on disc */
 	char *chunk_type; /* pointer to a 4-character string */
 	char *index_entry; /* ditto */
@@ -50,6 +52,30 @@ typedef struct chunk_metadata {
 	int size; /* in bytes */
 	MEMORY_MANAGEMENT
 } chunk_metadata;
+
+@ It is not legal to have two or more Snd resources with the same number.  The 
+same goes for Pict resources.  These two linked lists are used to store all the 
+resource numbers encountered.
+
+@c
+typedef struct resource_list resource_list;
+struct resource_list {
+	int num;
+	struct resource_list *n;
+};
+resource_list *sound_resource = NULL;
+resource_list *pict_resource = NULL;
+
+@ And this is used to record alt-descriptions of resources, for the benefit
+of partially sighted or deaf users:
+
+@c
+typedef struct rdes_record {
+	int usage;
+	int resource_id;
+	char *description;
+	MEMORY_MANAGEMENT
+} rdes_record;
 
 @-------------------------------------------------------------------------------
 
@@ -75,20 +101,20 @@ void one_byte(FILE *F, int n) {
 	fputc((n)%0x100, F);
 }
 
-void s_four_word(char *F, int n) {
-	F[0] = (n / 0x1000000)%0x100;
-	F[1] = (n / 0x10000)%0x100;
-	F[2] = (n / 0x100)%0x100;
-	F[3] = (n)%0x100;
+void s_four_word(unsigned char *F, int n) {
+	F[0] = (unsigned char) (n / 0x1000000)%0x100;
+	F[1] = (unsigned char) (n / 0x10000)%0x100;
+	F[2] = (unsigned char) (n / 0x100)%0x100;
+	F[3] = (unsigned char) (n)%0x100;
 }
 
-void s_two_word(char *F, int n) {
-	F[0] = (n / 0x100)%0x100;
-	F[1] = (n)%0x100;
+void s_two_word(unsigned char *F, int n) {
+	F[0] = (unsigned char) (n / 0x100)%0x100;
+	F[1] = (unsigned char) (n)%0x100;
 }
 
-void s_one_byte(char *F, int n) {
-	F[0] = (n)%0x100;
+void s_one_byte(unsigned char *F, int n) {
+	F[0] = (unsigned char) (n)%0x100;
 }
 
 @p Chunks.
@@ -100,14 +126,14 @@ with no further chunks inside.
 @c
 chunk_metadata *current_chunk = NULL;
 
-@ Each chunk is ``added'' in one of two ways. {\it Either} we supply a filename
+@ Each chunk is "added" in one of two ways. {\it Either} we supply a filename
 for an existing binary file on disc which will hold the data we want to
 write, {\it or} we supply a |NULL| filename and a |data| pointer to |length|
 bytes in memory.
 
 @c
 void add_chunk_to_blorb(char *id, int resource_num, char *supplied_filename, char *index,
-	char *data, int length) {
+	unsigned char *data, int length) {
 	if (chunk_type_is_legal(id) == FALSE)
 		fatal("tried to complete non-Blorb chunk");
 	if (index_entry_is_legal(index) == FALSE) 
@@ -170,10 +196,10 @@ or even sixteen-byte boundaries.
 We will generate only the following chunks with the above apparatus. The full
 Blorb specification does include others, but Inform doesn't need them.
 
-The weasel words ``with the above...'' are because we will also generate two
+The weasel words "with the above..." are because we will also generate two
 chunks separately: the compulsory |"FORM"| chunk enclosing the entire Blorb, and
 an indexing chunk, |"RIdx"|. Within this index, some chunks appear, but not
-others, and they are labelled with the ``index entry'' text.
+others, and they are labelled with the "index entry" text.
 
 @c
 char *legal_Blorb_chunk_types[] = {
@@ -181,6 +207,7 @@ char *legal_Blorb_chunk_types[] = {
 	"JPEG", "PNG ", /* images in different formats */
 	"AIFF", "OGGV", "MIDI", "MOD ", /* sound effects in different formats */
 	"ZCOD", "GLUL", /* story files in different formats */
+	"RDes", /* resource descriptions (added to the standard in March 2014) */
 	NULL };
 
 char *legal_Blorb_index_entries[] = {
@@ -207,6 +234,26 @@ int index_entry_is_legal(char *entry) {
     return FALSE;
 }
 
+@ This function checks a linked list to see if a resource number is used twice.  
+If so, TRUE is returned and the rest of the program is expected to immediately 
+exit with a fatal error.  Otherwise, FALSE is returned, indicating that 
+everything is fine.
+
+@c
+int resource_seen(resource_list **list, int value) {
+	resource_list *p;
+	for(p = *list; p; p = p->n) {
+		if (p->num == value) return TRUE;
+	}
+	p = *list;
+	*list = malloc(sizeof(resource_list));
+	if (*list == NULL)
+		fatal("Run out of memory: malloc failed");
+	(*list)->num = value;
+	(*list)->n = p;
+	return FALSE;
+}
+
 @ Because it will make a difference to how we embed a file into our Blorb,
 we need to know whether the chunk in question is already an IFF in its
 own right. Only one type of chunk is, as it happens:
@@ -220,26 +267,26 @@ int chunk_type_is_already_an_IFF(char *type) {
 @ |"AUTH"|: author's name, as a null-terminated string.
 
 @c
-/**/ void author_chunk(char *t) {
+void author_chunk(char *t) {
 	if (trace_mode) printf("! Author: <%s>\n", t);
-    add_chunk_to_blorb("AUTH", 0, NULL, NULL, t, strlen(t));
+    add_chunk_to_blorb("AUTH", 0, NULL, NULL, (unsigned char *) t, cblorb_strlen(t));
 }
 
 @ |"(c) "|: copyright declaration.
 
 @c
-/**/ void copyright_chunk(char *t) {
+void copyright_chunk(char *t) {
 	if (trace_mode) printf("! Copyright declaration: <%s>\n", t);
-    add_chunk_to_blorb("(c) ", 0, NULL, NULL, t, strlen(t));
+    add_chunk_to_blorb("(c) ", 0, NULL, NULL, (unsigned char *) t, cblorb_strlen(t));
 }
 
 @ |"Fspc"|: frontispiece image ID number -- which picture resource provides
 cover art, in other words.
 
 @c
-/**/ void frontispiece_chunk(int pn) {
+void frontispiece_chunk(int pn) {
 	if (trace_mode) printf("! Frontispiece is image %d\n", pn);
-    char data[4];
+    unsigned char data[4];
     s_four_word(data, pn);
     add_chunk_to_blorb("Fspc", 0, NULL, NULL, data, 4);
 }
@@ -247,9 +294,9 @@ cover art, in other words.
 @ |"RelN"|: release number.
 
 @c
-/**/ void release_chunk(int rn) {
+void release_chunk(int rn) {
 	if (trace_mode) printf("! Release number is %d\n", rn);
-    char data[2];
+    unsigned char data[2];
     s_two_word(data, rn);
     add_chunk_to_blorb("RelN", 0, NULL, NULL, data, 2);
 }
@@ -259,28 +306,54 @@ disc, and in a format which Blorb allows: for Inform 7 use, this will always
 be PNG or JPEG. There can be any number of these chunks.
 
 @c
-/**/ void picture_chunk(int n, char *fn) {
+void picture_chunk(int n, char *fn, char *alt) {
 	char *p = get_filename_extension(fn);
 	char *type = "PNG ";
+
+	if (n < 1) fatal("Picture resource number is less than 1");
+	if (resource_seen(&pict_resource, n)) fatal("Duplicate Picture resource number");
+
 	if (*p == '.') {
 		p++;
 		if ((*p == 'j') || (*p == 'J')) type = "JPEG";
 	}
+
     add_chunk_to_blorb(type, n, fn, "Pict", NULL, 0);
+    if ((alt) && (alt[0])) add_rdes_record(1, n, alt);
 	no_pictures_included++;
+}
+
+@ For images identified by name. The older Blorb creation program, |perlBlorb|,
+would emit helpful I6 constant declarations, allowing the programmer to
+include these an I6 source file and then write, say, |PlaySound(SOUND_Boom)|
+rather than |PlaySound(5)|. (Whenever the Blurb file is changed, the constants
+must be included again.)
+
+@c
+void picture_chunk_text(char *name, char *fn) {
+	if (name[0] == 0) {
+		printf("! Null picture ID, using %d\n", picture_resource_num);
+	} else {
+		printf("Constant PICTURE_%s = %d;\n", name, picture_resource_num);
+	}
+	picture_resource_num++;
+	picture_chunk(picture_resource_num, fn, "");
 }
 
 @ |"Snd "|: a sound effect. This must be available as a binary file on
 disc, and in a format which Blorb allows: for Inform 7 use, this is officially
 Ogg Vorbis or AIFF at present, but there has been repeated discussion about
-adding MOD (``SoundTracker'') or MIDI files, so both are supported here.
+adding MOD ("SoundTracker") or MIDI files, so both are supported here.
 
 There can be any number of these chunks, too.
 
 @c
-/**/ void sound_chunk(int n, char *fn) {
+void sound_chunk(int n, char *fn, char *alt) {
 	char *p = get_filename_extension(fn);
 	char *type = "AIFF";
+	if (n < 3) fatal("Sound resource number is less than 3");
+	if (resource_seen(&sound_resource, n)) fatal("Duplicate Sound resource number");
+
 	if (*p == '.') {
 		p++;
 		if ((*p == 'o') || (*p == 'O')) type = "OGGV";
@@ -290,7 +363,60 @@ There can be any number of these chunks, too.
 		}
 	}
     add_chunk_to_blorb(type, n, fn, "Snd ", NULL, 0);
+    if ((alt) && (alt[0])) add_rdes_record(2, n, alt);
 	no_sounds_included++;
+}
+
+@ And again, by name:
+
+@c
+void sound_chunk_text(char *name, char *fn) {
+	if (name[0] == 0) {
+		printf("! Null sound ID, using %d\n", sound_resource_num);
+	} else {
+		printf("Constant SOUND_%s = %d;\n", name, sound_resource_num);
+	}
+	sound_resource_num++;
+	sound_chunk(sound_resource_num, fn, "");
+}
+
+@ |"RDes"|: the resource description, a repository for alt-texts describing
+images or sounds.
+
+@c
+size_t size_of_rdes_chunk = 0;
+
+void add_rdes_record(int usage, int n, char *alt) {
+	size_t S = strlen(alt);
+	char *p = malloc(S+1);
+	if (p == NULL) fatal("Run out of memory: malloc failed");
+	strcpy(p, alt);
+	rdes_record *rr = CREATE(rdes_record);
+	rr->usage = usage;
+	rr->resource_id = n;
+	rr->description = p;
+	size_of_rdes_chunk += 12 + S;
+}
+
+void rdes_chunk(void) {
+	if (size_of_rdes_chunk > 0) {
+		unsigned char *rdes_data = (unsigned char *) malloc(size_of_rdes_chunk + 9);
+		if (rdes_data == NULL) fatal("Run out of memory: malloc failed");
+		size_t pos = 4;
+		s_four_word(rdes_data, NUMBER_CREATED(rdes_record));
+		rdes_record *rr;
+		LOOP_OVER(rr, rdes_record) {
+			if (rr->usage == 1) strcpy((char *) (rdes_data + pos), "Pict");
+			else if (rr->usage == 2) strcpy((char *) (rdes_data + pos), "Snd ");
+			else s_four_word(rdes_data + pos, 0);
+			s_four_word(rdes_data + pos + 4, rr->resource_id);
+			s_four_word(rdes_data + pos + 8, cblorb_strlen(rr->description));
+			strcpy((char *) (rdes_data + pos + 12), rr->description);
+			pos += 12 + strlen(rr->description);
+		}
+		if (pos != size_of_rdes_chunk + 4) fatal("misconstructed rdes");
+		add_chunk_to_blorb("RDes", 0, NULL, NULL, rdes_data, (int) pos);
+	}
 }
 
 @ |"Exec"|: the executable program, which will normally be a Z-machine or
@@ -298,28 +424,29 @@ Glulx story file. It's legal to make a blorb with no story file in, but
 Inform 7 never does this.
 
 @c
-/**/ void executable_chunk(char *fn) {
+void executable_chunk(char *fn) {
 	char *p = get_filename_extension(fn);
 	char *type = "ZCOD";
 	if (*p == '.') {
-		if (p[strlen(p)-1] == 'x') type = "GLUL";
+		if (p[cblorb_strlen(p)-1] == 'x') type = "GLUL";
 	}
 	add_chunk_to_blorb(type, 0, fn, "Exec", NULL, 0);
 }
 
-@ |"IFmd"|: the bibliographic data (or ``metadata'') about the work of IF
+@ |"IFmd"|: the bibliographic data (or "metadata") about the work of IF
 being blorbed up, in the form of an iFiction record. (The format of which
 is set out in the {\it Treaty of Babel} agreement.)
 
 @c
-/**/ void metadata_chunk(char *fn) {
+void metadata_chunk(char *fn) {
     add_chunk_to_blorb("IFmd", 0, fn, NULL, NULL, 0);
 }
 
 @p Main construction.
 
 @c
-/**/ void write_blorb_file(char *out) {
+void write_blorb_file(char *out) {
+	rdes_chunk();
 	if (NUMBER_CREATED(chunk_metadata) == 0) return;
 
 	FILE *IFF = fopen(out, "wb");
@@ -359,9 +486,9 @@ the chunks we'll copy in, whether they are indexed or not.
 
 	blorb_file_size = first_byte_after_index + total_size_of_Blorb_chunks;
 
-@ Each different IFF file format is supposed to provide its own ``magic text''
-identifying what the file format is, and for Blorbs that text is ``IFRS'',
-short for ``IF Resource''.
+@ Each different IFF file format is supposed to provide its own "magic text"
+identifying what the file format is, and for Blorbs that text is "IFRS",
+short for "IF Resource".
 
 @<Write the initial FORM chunk of the IFF file, and then the index@> =
 	fprintf(IFF, "FORM");
@@ -422,7 +549,7 @@ so they come with ready-made headers.
 @<Copy that many bytes from memory@> =
 	int i;
 	for (i=0; i<bytes_to_copy; i++) {
-		int j = chunk->data_in_memory[i];
+		int j = (int) (chunk->data_in_memory[i]);
 		one_byte(IFF, j);
 	}
 

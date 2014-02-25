@@ -25,7 +25,7 @@ typedef struct text_file_position {
 This is useful for error messages:
 
 @c
-/**/ void describe_file_position(char *t, text_file_position *tfp) {
+void describe_file_position(char *t, text_file_position *tfp) {
 	*t = 0;
 	if (tfp == NULL) return;
 	sprintf(t, "%s, line %d: ", tfp->text_file_filename, tfp->line_count);
@@ -34,7 +34,7 @@ This is useful for error messages:
 @
 
 @c
-/**/ int tfp_get_line_count(text_file_position *tfp) {
+int tfp_get_line_count(text_file_position *tfp) {
 	if (tfp == NULL) return 0;
 	return tfp->line_count;
 }
@@ -42,7 +42,7 @@ This is useful for error messages:
 @
 
 @c
-/**/ void tfp_lose_interest(text_file_position *tfp) {
+void tfp_lose_interest(text_file_position *tfp) {
 	tfp->actively_scanning = FALSE;
 }
 
@@ -55,55 +55,55 @@ never know that |cBlorb| exists.
 
 @c
 text_file_position *error_position = NULL;
-/**/ void set_error_position(text_file_position *tfp) {
+void set_error_position(text_file_position *tfp) {
 	error_position = tfp;
 }
 
-/**/ void error(char *erm) {
+void error(char *erm) {
 	char err[MAX_FILENAME_LENGTH];
  	describe_file_position(err, error_position);
-	sprintf(err+strlen(err), "Error: %s\n", erm);
+	sprintf(err+cblorb_strlen(err), "Error: %s\n", erm);
 	spool_error(err);
 }
 
-/**/ void error_1(char *erm, char *s) {
+void error_1(char *erm, char *s) {
 	char err[MAX_FILENAME_LENGTH];
  	describe_file_position(err, error_position);
-	sprintf(err+strlen(err), "Error: %s: '%s'\n", erm, s);
+	sprintf(err+cblorb_strlen(err), "Error: %s: '%s'\n", erm, s);
 	spool_error(err);
 }
 
-/**/ void errorf_1s(char *erm, char *s1) {
+void errorf_1s(char *erm, char *s1) {
 	char err[MAX_FILENAME_LENGTH];
  	sprintf(err, erm, s1);
 	spool_error(err);
 }
 
-/**/ void errorf_2s(char *erm, char *s1, char *s2) {
+void errorf_2s(char *erm, char *s1, char *s2) {
 	char err[MAX_FILENAME_LENGTH];
  	sprintf(err, erm, s1, s2);
 	spool_error(err);
 }
 
-/**/ void fatal(char *erm) {
+void fatal(char *erm) {
 	char err[MAX_FILENAME_LENGTH];
  	describe_file_position(err, error_position);
-	sprintf(err+strlen(err), "Fatal error: %s\n", erm);
+	sprintf(err+cblorb_strlen(err), "Fatal error: %s\n", erm);
 	spool_error(err);
     print_report();
     exit(1);
 }
 
-/**/ void fatal_fs(char *erm, char *fn) {
+void fatal_fs(char *erm, char *fn) {
 	char err[MAX_FILENAME_LENGTH];
  	describe_file_position(err, error_position);
-	sprintf(err+strlen(err), "Fatal error: %s: filename '%s'\n", erm, fn);
+	sprintf(err+cblorb_strlen(err), "Fatal error: %s: filename '%s'\n", erm, fn);
 	spool_error(err);
     print_report();
     exit(1);
 }
 
-/**/ void warning_fs(char *erm, char *fn) {
+void warning_fs(char *erm, char *fn) {
 	char err[MAX_FILENAME_LENGTH];
  	describe_file_position(err, error_position);
     fprintf(stderr, "%sWarning: %s: filename '%s'\n", err, erm, fn);
@@ -126,7 +126,7 @@ We read lines in, delimited by any of the standard line-ending characters,
 and send them one at a time to a function called |iterator|. 
 
 @c
-/**/ void file_read(char *filename, char *message, int serious,
+void file_read(char *filename, char *message, int serious,
 	void (iterator)(char *, text_file_position *), text_file_position *start_at) {
 	FILE *HANDLE;
 	text_file_position tfp;
@@ -139,7 +139,7 @@ and send them one at a time to a function called |iterator|.
 @
 
 @<Open the text file@> =
-	if (strlen(filename) >= MAX_FILENAME_LENGTH) {
+	if (cblorb_strlen(filename) >= MAX_FILENAME_LENGTH) {
 		if (serious) fatal_fs("filename too long", filename);
 		error_1("filename too long", filename);
 		return;
@@ -231,11 +231,11 @@ to run to 2GB. Text files seldom come that large.
 @p Two string utilities.
 
 @c
-/**/ char *trim_white_space(char *original) {
+char *trim_white_space(char *original) {
 	int i;
 	for (i=0; white_space(original[i]); i++) ;
 	original += i;
-	for (i=strlen(original)-1; ((i>=0) && (white_space(original[i]))); i--)
+	for (i=cblorb_strlen(original)-1; ((i>=0) && (white_space(original[i]))); i--)
 		original[i] = 0;
 	return original;
 }
@@ -243,7 +243,7 @@ to run to 2GB. Text files seldom come that large.
 @
 
 @c
-/**/ void extract_word(char *fword, char *line, int size, int word) {
+void extract_word(char *fword, char *line, int size, int word) {
 	int i = 0;
 	fword[0] = 0;
 	while (word > 0) {
@@ -251,7 +251,7 @@ to run to 2GB. Text files seldom come that large.
 		while (white_space(line[i])) i++;
 		int j = 0;
 		while ((line[i]) && (!white_space(line[i]))) {
-			if (j < size-1) fword[j++] = tolower(line[i]);
+			if (j < size-1) fword[j++] = cblorb_tolower(line[i]);
 			i++;
 		}
 		fword[j] = 0;
@@ -266,30 +266,30 @@ to run to 2GB. Text files seldom come that large.
 int white_space(int c) { if ((c == ' ') || (c == '\t')) return TRUE; return FALSE; }
 
 @p Other file utilities.
-Although this section is called ``Text Files'', it also has a couple of
+Although this section is called "Text Files", it also has a couple of
 general-purpose file utilities:
 
 @c
-/**/ char *get_filename_extension(char *filename) {
-	int i = strlen(filename) - 1;
+char *get_filename_extension(char *filename) {
+	int i = cblorb_strlen(filename) - 1;
 	while ((i>=0) && (filename[i] != '.') && (filename[i] != SEP_CHAR)) i--;
-	if ((i<0) || (filename[i] == SEP_CHAR)) return filename + strlen(filename);
+	if ((i<0) || (filename[i] == SEP_CHAR)) return filename + cblorb_strlen(filename);
 	return filename + i;
 }
 
-/**/ char *get_filename_leafname(char *filename) {
-	int i = strlen(filename) - 1;
+char *get_filename_leafname(char *filename) {
+	int i = cblorb_strlen(filename) - 1;
 	while ((i>=0) && (filename[i] != SEP_CHAR)) i--;
 	return filename + i + 1;
 }
 
-/**/ int file_exists(char *filename) {
+int file_exists(char *filename) {
 	FILE *TEST = fopen(filename, "r");
 	if (TEST) { fclose(TEST); return TRUE; }
 	return FALSE;
 }
 
-/**/ long int file_size(char *filename) {
+long int file_size(char *filename) {
 	FILE *TEST_FILE = fopen(filename, "rb");
 	if (TEST_FILE) {
 		if (fseek(TEST_FILE, 0, SEEK_END) == 0) {
@@ -303,7 +303,7 @@ general-purpose file utilities:
 	return -1L;
 }
 
-/**/ int copy_file(char *from, char *to, int suppress_error) {
+int copy_file(char *from, char *to, int suppress_error) {
 	if ((from == NULL) || (to == NULL) || (strcmp(from, to) == 0))
 		fatal("files confused in copier");
 

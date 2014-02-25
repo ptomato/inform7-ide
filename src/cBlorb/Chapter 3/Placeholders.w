@@ -8,11 +8,11 @@
 
 @Definitions:
 
-@ Placeholders are markers such as ``[AUTHOR]'', found in the template
-files for making web pages. (``AUTHOR'' would be the name of this one; the use
+@ Placeholders are markers such as "[AUTHOR]", found in the template
+files for making web pages. ("AUTHOR" would be the name of this one; the use
 of capital letters is customary but not required.) Most of these can be set
 to arbitrary texts by use of the |placeholder| command in the blurb file, but
-a few are ``reserved'' by |cblorb|:
+a few are "reserved" by |cblorb|:
 
 @d SOURCE_RPL 1
 @d SOURCENOTES_RPL 2
@@ -35,11 +35,11 @@ typedef struct placeholder {
 @-------------------------------------------------------------------------------
 
 @p Initial values.
-The |BLURB| refers here to back-cover-style text, and not to the ``blurb''
+The |BLURB| refers here to back-cover-style text, and not to the "blurb"
 file which we are acting on.
 
 @c
-/**/ void initialise_placeholders(void) {
+void initialise_placeholders(void) {
 	set_placeholder_to("SOURCE", "", SOURCE_RPL);
 	set_placeholder_to("SOURCENOTES", "", SOURCENOTES_RPL);
 	set_placeholder_to("SOURCELINKS", "", SOURCELINKS_RPL);
@@ -50,6 +50,8 @@ file which we are acting on.
 	set_placeholder_to("PAGEEXTENT", "", PAGEEXTENT_RPL);
 	set_placeholder_to("CBLORBERRORS", "", 0);
 	set_placeholder_to("INBROWSERPLAY", "", 0);
+	set_placeholder_to("INTERPRETERSCRIPTS", "", 0);
+	set_placeholder_to("OTHERCREDITS", "", 0);
 	set_placeholder_to("BLURB", "", 0);
 	set_placeholder_to("TEMPLATE", "Standard", 0);
 	set_placeholder_to("GENERATOR", VERSION, 0);
@@ -73,17 +75,17 @@ placeholder *find_placeholder(char *name) {
 	return NULL;
 }
 
-/**/ char *read_placeholder(char *name) {
+char *read_placeholder(char *name) {
 	placeholder *wv = find_placeholder(name);
 	if (wv) return wv->pl_contents;
 	return NULL;
 }
 
-@ There are no ``types'' of these placeholders. When they hold numbers, it's only
+@ There are no "types" of these placeholders. When they hold numbers, it's only
 as the text of a number written out in decimal, so:
 
 @c
-/**/ void set_placeholder_to_number(char *var, int v) {
+void set_placeholder_to_number(char *var, int v) {
 	char temp_digits[64];
 	sprintf(temp_digits, "%d", v);
 	set_placeholder_to(var, temp_digits, 0);
@@ -96,10 +98,10 @@ that a reserved placeholder cannot be set with the |placeholder| command of a
 blurb file.
 
 @c
-/**/ void set_placeholder_to(char *var, char *text, int reservation) {
+void set_placeholder_to(char *var, char *text, int reservation) {
 	set_placeholder_to_inner(var, text, reservation, FALSE);
 }
-/**/ void append_to_placeholder(char *var, char *text) {
+void append_to_placeholder(char *var, char *text) {
 	set_placeholder_to_inner(var, text, 0, TRUE);
 }
 
@@ -107,7 +109,7 @@ blurb file.
 
 @c
 void set_placeholder_to_inner(char *var, char *text, int reservation, int extend) {
-	if (strlen(var) >= MAX_VAR_NAME_LENGTH-1) { error("variable name too long"); return; }
+	if (cblorb_strlen(var) >= MAX_VAR_NAME_LENGTH-1) { error("variable name too long"); return; }
 
 	if (trace_mode) printf("! [%s] <-- \"%s\"\n", var, (text)?text:"");
 	
@@ -121,8 +123,8 @@ void set_placeholder_to_inner(char *var, char *text, int reservation, int extend
 		wv->reservation = reservation;
 	}
 	
-	int L = strlen(text) + 1;
-	if (extend) L += strlen(wv->pl_contents);
+	int L = cblorb_strlen(text) + 1;
+	if (extend) L += cblorb_strlen(wv->pl_contents);
 	if (L >= MAX_FILENAME_LENGTH) { error("placeholder text too long"); return; }
 
 	if (extend) strcat(wv->pl_contents, text);
@@ -131,7 +133,7 @@ void set_placeholder_to_inner(char *var, char *text, int reservation, int extend
 
 @ And that just leaves writing the output of these placeholders. The scenario
 here is that we're copying HTML over to make a new web page, but we've hit
-text in the template like ``[AUTHOR]''. We output the value of this
+text in the template like "[AUTHOR]". We output the value of this
 placeholder instead of that literal text. The reserved placeholders output as
 special gadgets instead of any fixed text, so those all call suitable
 routines elsewhere in |cblorb|.
@@ -142,7 +144,7 @@ uses of square brackets which aren't for placeholding.)
 
 @c
 int escape_quotes_mode = 0;
-/**/ void copy_placeholder_to(char *var, FILE *COPYTO) {
+void copy_placeholder_to(char *var, FILE *COPYTO) {
 	int multiparagraph_mode = FALSE, eqm = escape_quotes_mode;
 	if (var[0] == '*') { var++; escape_quotes_mode = 1; }
 	if (var[0] == '*') { var++; escape_quotes_mode = 2; }

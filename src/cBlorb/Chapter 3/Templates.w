@@ -21,7 +21,7 @@ typedef struct template_path {
 
 @c
 typedef struct template {
-	char template_name[MAX_FILENAME_LENGTH]; /* e.g., ``Standard'' */
+	char template_name[MAX_FILENAME_LENGTH]; /* e.g., "Standard" */
 	struct template_path *template_location;
 	char latest_use[MAX_FILENAME_LENGTH]; /* filename most recently sought from it */
 	MEMORY_MANAGEMENT
@@ -30,11 +30,11 @@ typedef struct template {
 @-------------------------------------------------------------------------------
 
 @p Defining template paths.
-The following implements the Blurb command ``template path''.
+The following implements the Blurb command "template path".
 
 @c
 int no_template_paths = 0;
-/**/ void new_template_path(char *pathname) {
+void new_template_path(char *pathname) {
 	template_path *tp = CREATE(template_path);
 	strcpy(tp->template_repository, pathname);
 	if (trace_mode)
@@ -60,7 +60,7 @@ template_path *seek_file_in_template_paths(char *name, char *leafname) {
 }
 
 @ And this is where that happens. Suppose we need to locate the template
-``Molybdenum''. We ought to do this by looking for a directory of that name
+"Molybdenum". We ought to do this by looking for a directory of that name
 among the template paths, but searching for directories is a little tricky
 to do in ANSI C in a way which will work on all platforms. So instead we
 look for any of the four files which compulsorily ought to exist (or the
@@ -94,11 +94,11 @@ template *find_template(char *name) {
 
 @p Searching for template files.
 If we can't find the file |name| in the template specified, we try looking
-inside ``Standard'' instead (if we can find a template of that name).
+inside "Standard" instead (if we can find a template of that name).
 
 @c
 int template_doesnt_exist = FALSE;
-/**/ char *find_file_in_named_template(char *name, char *needed) {
+char *find_file_in_named_template(char *name, char *needed) {
 	template *t = find_template(name), *Standard = find_template("Standard");
 	if (t == NULL) {
 		if (template_doesnt_exist == FALSE) {

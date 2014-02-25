@@ -50,8 +50,9 @@ There can in principle be up to 1000 memory types.
 @d request_MT 7
 @d template_MT 8
 @d template_path_MT 9
+@d rdes_record_MT 10
 
-@d NO_MEMORY_TYPES 10 /* must be 1 more than the highest |_MT| constant above */
+@d NO_MEMORY_TYPES 11 /* must be 1 more than the highest |_MT| constant above */
 
 @-------------------------------------------------------------------------------
 
@@ -85,7 +86,7 @@ begin as soon as this is initialised.
 @c
 allocation_status_structure alloc_status[NO_MEMORY_TYPES];
 
-/**/ void start_memory(void) {
+void start_memory(void) {
 	int i;
 	for (i=0; i<NO_MEMORY_TYPES; i++) {
 		alloc_status[i].first_in_memory = NULL;
@@ -112,7 +113,7 @@ or an array of small objects.
 
 @p Level 1: memory blocks.
 Memory is allocated in blocks of 100K, within which objects are allocated as
-needed. The ``safety margin'' is the number of spare bytes left blank at the
+needed. The "safety margin" is the number of spare bytes left blank at the
 end of each object: this is done because we want to be paranoid about
 compilers on different architectures aligning structures to different
 boundaries (multiples of 4, 8, 16, etc.). Each block also ends with a
@@ -207,7 +208,7 @@ in turn, but of course being careful to avoid following links in a just-freed
 block.
 
 @c
-/**/ void free_memory(void) {
+void free_memory(void) {
 	memblock_header *mh = first_memblock_header;
 	while (mh != NULL) {
 		memblock_header *next_mh = mh->next;
@@ -219,7 +220,7 @@ block.
 
 @p Level 2: memory frames and integrity checking.
 Within these extensive blocks of contiguous memory, we place the actual
-objects in between ``memory frames'', which are only used at present to police
+objects in between "memory frames", which are only used at present to police
 the integrity of memory: again, finding obscure and irritating memory-corruption
 bugs is more important to us than saving bytes. Each memory frame wraps either
 a single large object, or a single array of small objects.
@@ -344,7 +345,7 @@ functions to handle each possible type. These macros provide the interface
 through which all other sections of |cblorb| allocate and leaf through memory.
 
 Note that |inweb| allows multi-line macro definitions without backslashes
-to continue them, unlike ordinary C. Otherwise these are ``standard''
+to continue them, unlike ordinary C. Otherwise these are "standard"
 macros, though this was my first brush with the |##| concatenation
 operator: basically |CREATE(thing)| expands into |(allocate_thing())|
 because of the |##|. (See Kernighan and Ritchie, section 4.11.2.)
@@ -482,7 +483,24 @@ ALLOCATE_INDIVIDUALLY(chunk_metadata)
 ALLOCATE_INDIVIDUALLY(placeholder)
 ALLOCATE_INDIVIDUALLY(heading)
 ALLOCATE_INDIVIDUALLY(table)
+ALLOCATE_INDIVIDUALLY(rdes_record)
 ALLOCATE_INDIVIDUALLY(segment)
 ALLOCATE_INDIVIDUALLY(request)
 ALLOCATE_INDIVIDUALLY(template)
 ALLOCATE_INDIVIDUALLY(template_path)
+
+@p Avoiding pedantic compiler warnings.
+Because the development build of cblorb is compiled with all warnings on,
+a lot of essentially spurious errors are produced by innocuous comparisons
+between int and size_t, and so on. The following avoid that:
+
+@c
+char cblorb_tolower(char c) {
+	return (char) tolower((int) c);
+}
+char cblorb_toupper(char c) {
+	return (char) toupper((int) c);
+}
+int cblorb_strlen(const char *p) {
+	return (int) strlen(p);
+}

@@ -12,7 +12,7 @@
 We divide the file into blurb commands at line breaks, so:
 
 @c
-/**/ void parse_blurb_file(char *in) {
+void parse_blurb_file(char *in) {
 	file_read(in, "can't open blurb file", TRUE, interpret, 0);
 	set_error_position(NULL);
 }
@@ -35,47 +35,54 @@ indexes into the syntaxes table below.
 @d palette_32_bit_COMMAND 12
 @d picture_scaled_COMMAND 13
 @d picture_COMMAND 14
-@d placeholder_COMMAND 15
-@d project_folder_COMMAND 16
-@d release_COMMAND 17
-@d release_file_COMMAND 18
-@d release_file_from_COMMAND 19
-@d release_source_COMMAND 20
-@d release_to_COMMAND 21
-@d resolution_max_COMMAND 22
-@d resolution_min_max_COMMAND 23
-@d resolution_min_COMMAND 24
-@d resolution_COMMAND 25
-@d solution_COMMAND 26
-@d solution_public_COMMAND 27
-@d sound_music_COMMAND 28
-@d sound_repeat_COMMAND 29
-@d sound_forever_COMMAND 30
-@d sound_song_COMMAND 31
-@d sound_COMMAND 32
-@d source_COMMAND 33
-@d source_public_COMMAND 34
-@d status_COMMAND 35
-@d status_alternative_COMMAND 36
-@d status_instruction_COMMAND 37
-@d storyfile_include_COMMAND 38
-@d storyfile_COMMAND 39
-@d storyfile_leafname_COMMAND 40
-@d template_path_COMMAND 41
-@d website_COMMAND 42
+@d picture_text_COMMAND 15
+@d picture_noid_COMMAND 16
+@d picture_with_alt_text_COMMAND 17
+@d placeholder_COMMAND 18
+@d project_folder_COMMAND 19
+@d release_COMMAND 20
+@d release_file_COMMAND 21
+@d release_file_from_COMMAND 22
+@d release_source_COMMAND 23
+@d release_to_COMMAND 24
+@d resolution_max_COMMAND 25
+@d resolution_min_max_COMMAND 26
+@d resolution_min_COMMAND 27
+@d resolution_COMMAND 28
+@d solution_COMMAND 29
+@d solution_public_COMMAND 30
+@d sound_music_COMMAND 31
+@d sound_repeat_COMMAND 32
+@d sound_forever_COMMAND 33
+@d sound_song_COMMAND 34
+@d sound_COMMAND 35
+@d sound_text_COMMAND 36
+@d sound_noid_COMMAND 37
+@d sound_with_alt_text_COMMAND 38
+@d source_COMMAND 39
+@d source_public_COMMAND 40
+@d status_COMMAND 41
+@d status_alternative_COMMAND 42
+@d status_instruction_COMMAND 43
+@d storyfile_include_COMMAND 44
+@d storyfile_COMMAND 45
+@d storyfile_leafname_COMMAND 46
+@d template_path_COMMAND 47
+@d website_COMMAND 48
 
 @ A single number specifying various possible combinations of operands:
 
 @d OPS_NO 1
 @d OPS_1TEXT 2
 @d OPS_2TEXT 3
-@d OPS_1NUMBER 4
-@d OPS_2NUMBER 5
-@d OPS_1NUMBER_1TEXT 6
-@d OPS_1NUMBER_2TEXTS 7
-@d OPS_1NUMBER_1TEXT_1NUMBER 8
-@d OPS_3NUMBER 9
-@d OPS_3TEXT 10
+@d OPS_2TEXT_1NUMBER 4
+@d OPS_1NUMBER 5
+@d OPS_2NUMBER 6
+@d OPS_1NUMBER_1TEXT 7
+@d OPS_1NUMBER_2TEXTS 8
+@d OPS_1NUMBER_1TEXT_1NUMBER 9
+@d OPS_3NUMBER 10
+@d OPS_3TEXT 11
 
 @ Each legal command syntax is stored as one of these structures.
 We will be parsing commands using the C library function |sscanf|,
@@ -83,7 +90,7 @@ which is a little idiosyncratic. It is, in particular, not easy to
 find out whether |sscanf| successfully matched the whole text, since
 it returns only the number of variable elements matched, so that it
 can't tell the difference between |do %n| and |do %n quickly|, say.
-The text ``do 12'' would match against both and return 1 in each case.
+The text "do 12" would match against both and return 1 in each case.
 To get around this, we end the prototype with a spurious |" %n"|.
 The space can match against arbitrary white space, including none at
 all, and |%n| is not strictly a match -- instead it sets the number
@@ -116,8 +123,8 @@ but, as we shall see, has no effect.
 @c
 blurb_command syntaxes[] = {
 	{ "author \"name\"", "author \"%[^\"]\" %n", OPS_1TEXT, FALSE },
-	{ "auxiliary \"filename\" \"description\"",
-			"auxiliary \"%[^\"]\" \"%[^\"]\" %n", OPS_2TEXT, FALSE },
+	{ "auxiliary \"filename\" \"description\" \"subfolder\"",
+			"auxiliary \"%[^\"]\" \"%[^\"]\" \"%[^\"]\" %n", OPS_3TEXT, FALSE },
 	{ "base64 \"filename\" to \"filename\"",
 			"base64 \"%[^\"]\" to \"%[^\"]\" %n", OPS_2TEXT, FALSE },
 	{ "copyright \"message\"", "copyright \"%[^\"]\" %n", OPS_1TEXT, FALSE },
@@ -131,9 +138,12 @@ blurb_command syntaxes[] = {
 	{ "palette { details }", "palette {%[^}]} %n", OPS_1TEXT, TRUE },
 	{ "palette 16 bit", "palette 16 bit %n", OPS_NO, TRUE },
 	{ "palette 32 bit", "palette 32 bit %n", OPS_NO, TRUE },
-	{ "picture N \"filename\" scale ...",
-			"picture %d \"%[^\"]\" scale %s %n", OPS_1NUMBER_2TEXTS, TRUE },
+	{ "picture ID \"filename\" scale ...",
+			"picture %20[A-Za-z0-9_] \"%[^\"]\" scale %s %n", OPS_3TEXT, TRUE },
 	{ "picture N \"filename\"", "picture %d \"%[^\"]\" %n", OPS_1NUMBER_1TEXT, FALSE },
+	{ "picture ID \"filename\"", "picture %20[A-Za-z0-9_] \"%[^\"]\" %n", OPS_2TEXT, FALSE },
+	{ "picture \"filename\"", "picture \"%[^\"]\" %n", OPS_1TEXT, FALSE },
+	{ "picture N \"filename\" \"alt-text\"", "picture %d \"%[^\"]\" \"%[^\"]\" %n", OPS_1NUMBER_2TEXTS, FALSE },
 	{ "placeholder [name] = \"text\"", "placeholder [%[A-Z]] = \"%[^\"]\" %n", OPS_2TEXT, FALSE },
 	{ "project folder \"pathname\"", "project folder \"%[^\"]\" %n", OPS_1TEXT, FALSE },
 	{ "release \"text\"", "release \"%[^\"]\" %n", OPS_1TEXT, FALSE },
@@ -149,13 +159,16 @@ blurb_command syntaxes[] = {
 	{ "resolution NxN", "resolution %d %n", OPS_1NUMBER, TRUE },
 	{ "solution", "solution %n", OPS_NO, FALSE },
 	{ "solution public", "solution public %n", OPS_NO, FALSE },
-	{ "sound N \"filename\" music", "sound %d \"%[^\"]\" music %n", OPS_1NUMBER_1TEXT, TRUE },
-	{ "sound N \"filename\" repeat N",
-			"sound %d \"%[^\"]\" repeat %d %n", OPS_1NUMBER_1TEXT_1NUMBER, TRUE },
-	{ "sound N \"filename\" repeat forever",
-			"sound %d \"%[^\"]\" repeat forever %n", OPS_1NUMBER_1TEXT, TRUE },
-	{ "sound N \"filename\" song", "sound %d \"%[^\"]\" song %n", OPS_1NUMBER_1TEXT, TRUE },
-	{ "sound N \"filename\"", "sound %d \"%[^\"]\" %n", OPS_1NUMBER_1TEXT, FALSE },
+	{ "sound ID \"filename\" music", "sound %20[A-Za-z0-9_] \"%[^\"]\" music %n", OPS_2TEXT, TRUE },
+	{ "sound ID \"filename\" repeat N",
+			"sound %20[A-Za-z0-9_] \"%[^\"]\" repeat %d %n", OPS_2TEXT_1NUMBER, TRUE },
+	{ "sound ID \"filename\" repeat forever",
+			"sound %20[A-Za-z0-9_] \"%[^\"]\" repeat forever %n", OPS_2TEXT, TRUE },
+	{ "sound ID \"filename\" song", "sound %20[A-Za-z0-9_] \"%[^\"]\" song %n", OPS_2TEXT, TRUE },
+	{ "sound N \"filename\"", "sound %d  \"%[^\"]\" %n", OPS_1NUMBER_1TEXT, FALSE },
+	{ "sound ID \"filename\"", "sound %20[A-Za-z0-9_]  \"%[^\"]\" %n", OPS_2TEXT, FALSE },
+	{ "sound \"filename\"", "sound \"%[^\"]\" %n", OPS_1TEXT, FALSE },
+	{ "sound N \"filename\" \"alt-text\"", "sound %d \"%[^\"]\" \"%[^\"]\" %n", OPS_1NUMBER_2TEXTS, FALSE },
 	{ "source", "source %n", OPS_NO, FALSE },
 	{ "source public", "source public %n", OPS_NO, FALSE },
 	{ "status \"template\" \"filename\"", "status \"%[^\"]\" \"%[^\"]\" %n", OPS_2TEXT, FALSE },
@@ -175,7 +188,7 @@ blurb_command syntaxes[] = {
 For the |-help| information:
 
 @c
-/**/ void summarise_blurb(void) {
+void summarise_blurb(void) {
 	int t;
 	printf("\nThe blurbfile is a script of commands, one per line, in these forms:\n");
 	for (t=0; syntaxes[t].prototype; t++)
@@ -224,6 +237,7 @@ copied in |text1|, |num1|, ..., accordingly.
 			case OPS_NO: sscanf(command, pr, &nm); break;
 			case OPS_1TEXT: sscanf(command, pr, text1, &nm); break;
 			case OPS_2TEXT: sscanf(command, pr, text1, text2, &nm); break;
+			case OPS_2TEXT_1NUMBER: sscanf(command, pr, text1, text2, &num1, &nm); break;
 			case OPS_1NUMBER: sscanf(command, pr, &num1, &nm); break;
 			case OPS_2NUMBER: sscanf(command, pr, &num1, &num2, &nm); break;
 			case OPS_1NUMBER_1TEXT: sscanf(command, pr, &num1, text1, &nm); break;
@@ -233,12 +247,12 @@ copied in |text1|, |num1|, ..., accordingly.
 			case OPS_3TEXT: sscanf(command, pr, text1, text2, text3, &nm); break;
 			default: fatal("unknown operand type");
 		}
-		if (nm == strlen(command)) { outcome = t; break; }
+		if (nm == cblorb_strlen(command)) { outcome = t; break; }
 	}
 
-	if ((strlen(text1) >= MAX_FILENAME_LENGTH-1) ||
-		(strlen(text2) >= MAX_FILENAME_LENGTH-1) ||
-		(strlen(text3) >= MAX_FILENAME_LENGTH-1)) {
+	if ((cblorb_strlen(text1) >= MAX_FILENAME_LENGTH-1) ||
+		(cblorb_strlen(text2) >= MAX_FILENAME_LENGTH-1) ||
+		(cblorb_strlen(text3) >= MAX_FILENAME_LENGTH-1)) {
 		error("string too long"); return;
 	}
 
@@ -259,7 +273,7 @@ copied in |text1|, |num1|, ..., accordingly.
 			set_placeholder_to("AUTHOR", text1, 0);
 			author_chunk(text1);
 			break;
-		case auxiliary_COMMAND: create_auxiliary_file(text1, text2); break;
+		case auxiliary_COMMAND: create_auxiliary_file(text1, text2, text3); break;
 		case base64_COMMAND:
 			request_2(BASE64_REQ, text1, text2, FALSE); break;
 		case copyright_COMMAND: copyright_chunk(text1); break;
@@ -271,7 +285,10 @@ copied in |text1|, |num1|, ..., accordingly.
 		case interpreter_COMMAND:
 			set_placeholder_to("INTERPRETERVMIS", text2, 0);
 			request_1(INTERPRETER_REQ, text1, FALSE); break;
-		case picture_COMMAND: picture_chunk(num1, text1); break;
+		case picture_COMMAND: picture_chunk(num1, text1, ""); break;
+		case picture_text_COMMAND: picture_chunk_text(text1, text2); break;
+		case picture_noid_COMMAND: picture_chunk_text("", text1); break;
+		case picture_with_alt_text_COMMAND: picture_chunk(num1, text1, text2); break;
 		case placeholder_COMMAND: set_placeholder_to(text1, text2, 0); break;
 		case project_folder_COMMAND: strcpy(project_folder, text1); break;
 		case release_COMMAND:
@@ -279,7 +296,7 @@ copied in |text1|, |num1|, ..., accordingly.
 			release_chunk(num1);
 			break;
 		case release_file_COMMAND:
-			request_2(COPY_REQ, text1, get_filename_leafname(text1), FALSE); break;
+			request_3(COPY_REQ, text1, get_filename_leafname(text1), "--", FALSE); break;
 		case release_file_from_COMMAND:
 			request_2(RELEASE_FILE_REQ, text1, text2, FALSE); break;
 		case release_to_COMMAND:
@@ -290,7 +307,10 @@ copied in |text1|, |num1|, ..., accordingly.
 			request_3(RELEASE_SOURCE_REQ, text1, text2, text3, FALSE); break;
 		case solution_COMMAND: request_1(SOLUTION_REQ, "", TRUE); break;
 		case solution_public_COMMAND: request_1(SOLUTION_REQ, "", FALSE); break;
-		case sound_COMMAND: sound_chunk(num1, text1); break;
+		case sound_COMMAND: sound_chunk(num1, text1, ""); break;
+		case sound_text_COMMAND: sound_chunk_text(text1, text2); break;
+		case sound_noid_COMMAND: sound_chunk_text("", text1); break;
+		case sound_with_alt_text_COMMAND: sound_chunk(num1, text1, text2); break;
 		case source_COMMAND: request_1(SOURCE_REQ, "", TRUE); break;
 		case source_public_COMMAND: request_1(SOURCE_REQ, "", FALSE); break;
 		case status_COMMAND: strcpy(status_template, text1); strcpy(status_file, text2); break;
@@ -311,7 +331,7 @@ has the assumption that the cover art is image number 1 built in.
 	set_placeholder_to("BIGCOVER", text1, 0);
 	cover_exists = TRUE;
 	cover_is_in_JPEG_format = TRUE;
-	if ((text1[strlen(text1)-3] == 'p') || (text1[strlen(text1)-3] == 'P'))
+	if ((text1[cblorb_strlen(text1)-3] == 'p') || (text1[cblorb_strlen(text1)-3] == 'P'))
 		cover_is_in_JPEG_format = FALSE;
 	frontispiece_chunk(1);
 	char *leaf = get_filename_leafname(text1);
@@ -325,7 +345,7 @@ has the assumption that the cover art is image number 1 built in.
 Materials folder for an I7 project. It follows that we can obtain the
 pathname to the Materials folder by trimming the leaf and the final separator.
 That makes the |MATERIALSFOLDERPATH| placeholder. We then set |MATERIALSFOLDER|
-to the name of the Materials folder, e.g., ``Spaceman Spiff Materials''.
+to the name of the Materials folder, e.g., "Spaceman Spiff Materials".
 
 However, we also need two variants on the pathname, one to be supplied to the
 Javascript function |openUrl| and one to |fileUrl|. For platform dependency
@@ -333,7 +353,7 @@ reasons these need to be manipulated to deal with awkward characters.
 
 @<Make pathname placeholders in three different formats@> =
 	set_placeholder_to("MATERIALSFOLDERPATH", text1, 0);
-	int k = strlen(text1);
+	int k = cblorb_strlen(text1);
 	while ((k>=0) && (text1[k] != SEP_CHAR)) k--;
 	if (k>0) { *(read_placeholder("MATERIALSFOLDERPATH")+k)=0; k--; }
 	while ((k>=0) && (text1[k] != SEP_CHAR)) k--; k++;
@@ -343,7 +363,7 @@ reasons these need to be manipulated to deal with awkward characters.
 	qualify_placeholder("MATERIALSFOLDERPATHOPEN", "MATERIALSFOLDERPATHFILE",
 		"MATERIALSFOLDERPATH");
 
-@ And here that very ``qualification'' routine. The placeholder |original| contains
+@ And here that very "qualification" routine. The placeholder |original| contains
 the pathname to a folder, a pathname which might contain spaces or backslashes,
 and which needs to be quoted as a literal Javascript string supplied to
 either the function |openUrl| or the function |fileUrl|. Depending on the
@@ -351,7 +371,7 @@ platform in use, this may entail escaping spaces or reversing slashes in the
 pathname in order to make versions for these two functions to use.
 
 @c
-/**/ void qualify_placeholder(char *openUrl_path, char *fileUrl_path, char *original) {
+void qualify_placeholder(char *openUrl_path, char *fileUrl_path, char *original) {
 	int i;
 	char *p = read_placeholder(original);
 	for (i=0; p[i]; i++) {

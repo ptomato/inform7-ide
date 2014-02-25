@@ -8,7 +8,7 @@
 
 @Definitions:
 
-@ If the previous section, ``Blorb Writer.w'', was the Lord High Executioner,
+@ If the previous section, "Blorb Writer.w", was the Lord High Executioner,
 then this one is the Lord High Everything Else: it keeps track of requests
 to write all kinds of interesting things which are {\it not} blorb files,
 and then sees that they are carried out. The requests divide as follows:
@@ -84,8 +84,8 @@ request *request_3(int kind, char *text1, char *text2, char *text3, int privacy)
 @ A convenient abbreviation:
 
 @c
-/**/ void request_copy(char *from, char *to) {
-	request_2(COPY_REQ, from, to, FALSE);
+void request_copy(char *from, char *to, char *subfolder) {
+	request_3(COPY_REQ, from, to, subfolder, FALSE);
 }
 
 @p Any Last Requests.
@@ -99,14 +99,14 @@ void any_last_requests(void) {
 	if (default_cover_used == FALSE) {
 		char *BIGCOVER = read_placeholder("BIGCOVER");
 		if (BIGCOVER) {
-			if (cover_is_in_JPEG_format) request_copy(BIGCOVER, "Cover.jpg");
-			else request_copy(BIGCOVER, "Cover.png");
+			if (cover_is_in_JPEG_format) request_copy(BIGCOVER, "Cover.jpg", "--");
+			else request_copy(BIGCOVER, "Cover.png", "--");
 		}
 		if (website_requested) {
 			char *SMALLCOVER = read_placeholder("SMALLCOVER");
 			if (SMALLCOVER) {
-				if (cover_is_in_JPEG_format) request_copy(SMALLCOVER, "Small Cover.jpg");
-				else request_copy(SMALLCOVER, "Small Cover.png");
+				if (cover_is_in_JPEG_format) request_copy(SMALLCOVER, "Small Cover.jpg", "--");
+				else request_copy(SMALLCOVER, "Small Cover.png", "--");
 			}
 		}
 	}
@@ -115,7 +115,7 @@ void any_last_requests(void) {
 @p Carrying out requests.
 
 @c
-/**/ void create_requested_material(void) {
+void create_requested_material(void) {
 	if (release_folder[0] == 0) return;
 	printf("! Release folder: <%s>\n", release_folder);
 	if (blorb_file_size > 0) declare_where_blorb_should_be_copied(release_folder);
@@ -170,12 +170,17 @@ void any_last_requests(void) {
 
 @<Copy a file into the release folder@> =
 	char write_to[MAX_FILENAME_LENGTH];
-	sprintf(write_to, "%s%c%s", release_folder, SEP_CHAR, req->details2);
+	if (strcmp(req->details3, "--") == 0) {
+		sprintf(write_to, "%s%c%s", release_folder, SEP_CHAR, req->details2);
+	} else {
+		sprintf(write_to, "%s%c%s%c%s", release_folder, SEP_CHAR, req->details3,
+			SEP_CHAR, req->details2);
+	}
 	int size = copy_file(req->details1, write_to, TRUE);
 	req->outcome_data = size;
 	if (size == -1) {
 		int i;
-		for (i = strlen(req->details1); i>0; i--)
+		for (i = cblorb_strlen(req->details1); i>0; i--)
 			if ((req->details1)[i] == SEP_CHAR) { i++; break; }
 		errorf_1s(
 			"You asked to release along with a file called '%s', which ought "
@@ -216,7 +221,7 @@ The necessary code exists in Inform already, so we'll do it there.)
 	set_placeholder_to("INTERPRETER", req->details1, 0);
 	char *t = read_placeholder("INTERPRETER");
 	char *from = find_file_in_named_template(t, "(manifest).txt");
-	if (from) { /* i.e., if the ``(manifest).txt'' file exists */
+	if (from) { /* i.e., if the "(manifest).txt" file exists */
 		file_read(from, "can't open (manifest) file", FALSE, read_requested_ifile, 0);
 	}
 
@@ -253,16 +258,16 @@ the template to add more if it wants to.
 	@<Add further material as requested by the template@>;
 
 @ Most templates do not request extra files, but they have the option by
-including a manifest called ``(extras).txt'':
+including a manifest called "(extras).txt":
 
 @<Add further material as requested by the template@> =
 	char *from = find_file_in_named_template(t, "(extras).txt");
-	if (from) { /* i.e., if the ``(extras).txt'' file exists */
+	if (from) { /* i.e., if the "(extras).txt" file exists */
 		file_read(from, "can't open (extras) file", FALSE, read_requested_file, 0);
 	}
 
 @p The Extras file for a website template.
-When parsing ``(extras).txt'', |read_requested_file| is called for each line.
+When parsing "(extras).txt", |read_requested_file| is called for each line.
 We trim white space and expect the result to be a filename of something
 within the template.
 
@@ -274,12 +279,12 @@ void read_requested_file(char *filename, text_file_position *tfp) {
 }
 
 @p The Manifest file for an interpreter.
-When parsing ``(manifest).txt'', we do almost the same thing. Like a website
+When parsing "(manifest).txt", we do almost the same thing. Like a website
 template, an interpreter is stored in a single folder, and the manifest can
 list files which need to be copied into the Release in order to piece together
 a working copy of the interpreter.
 
-However, this is more expressive than the ``(extras).txt'' file because it
+However, this is more expressive than the "(extras).txt" file because it
 also has the ability to set placeholders in |cblorb|. We use this mechanism
 because it allows each interpreter to provide some metadata about its own
 identity and exactly how it wants to be interfaced with the website which
@@ -317,13 +322,13 @@ if so, then it's the name of the one being set. Thus the code to handle
 the opening and closing lines can be identical.
 
 @<Go into or out of placeholder setting mode@> =
-	if (manifestline[strlen(manifestline)-1] == ']') {
-		if (strlen(manifestline) >= MAX_VAR_NAME_LENGTH) {
+	if (manifestline[cblorb_strlen(manifestline)-1] == ']') {
+		if (cblorb_strlen(manifestline) >= MAX_VAR_NAME_LENGTH) {
 			error_1("placeholder name too long in manifest file", manifestline);
 			return;
 		}
 		strcpy(current_placeholder, manifestline+1);
-		current_placeholder[strlen(current_placeholder)-1] = 0;
+		current_placeholder[cblorb_strlen(current_placeholder)-1] = 0;
 		return;
 	}
 	error_1("placeholder name lacks ']' in manifest file", manifestline);
@@ -398,7 +403,7 @@ void release_file_into_website(char *name, char *t, char *sub) {
 		@<Release a binary file from the template into the website@>;
 }
 
-@ ``Source.html'' is a special case, as it expands into a whole suite of
+@ "Source.html" is a special case, as it expands into a whole suite of
 pages automagically. Otherwise we work out the filenames and then hand over
 to the experts.
 
@@ -420,7 +425,7 @@ to the experts.
 is where those are added (to the other links already present, that is).
 
 @c
-/**/ void add_links_to_requested_resources(FILE *COPYTO) {
+void add_links_to_requested_resources(FILE *COPYTO) {
 	request *req;
 	LOOP_OVER(req, request)
 		if (req->private == FALSE)
@@ -468,7 +473,7 @@ look through the requests.) Rather than attempt to write to the file here,
 we copy the necessary HTML into the placeholder |ph|.
 
 @c
-/**/ void report_requested_material(char *ph) {
+void report_requested_material(char *ph) {
 	if (release_folder[0] == 0) return; /* this should never happen */
 
 	int launch_website = FALSE, launch_play = FALSE;
@@ -575,6 +580,10 @@ we copy the necessary HTML into the placeholder |ph|.
 						req->outcome_data, (req->outcome_data!=1)?"s":"");
 					append_to_placeholder(ph, filesize);
 				}
+				if (strcmp(req->details3, "--") != 0) {
+					append_to_placeholder(ph, " to subfolder ");
+					append_to_placeholder(ph, req->details3);
+				}
 				append_to_placeholder(ph, "</li>");
 			}
 		append_to_placeholder(ph, "</ul></li>");
@@ -592,7 +601,7 @@ application, called |openUrl|.
 		append_to_placeholder(ph,
 			"<a href=\"[JAVASCRIPTPRELUDE]"
 			"openUrl('file://[**MATERIALSFOLDERPATHOPEN]/Release/index.html')\">"
-			"<img src='inform:/launch.png' border=0></a> home page");
+			"<img src='inform:/outcome_images/browse.png' border=0></a> home page");
 	}
 	if ((launch_website) && (launch_play))
 		append_to_placeholder(ph, " : ");
@@ -600,14 +609,14 @@ application, called |openUrl|.
 		append_to_placeholder(ph, 
 			"<a href=\"[JAVASCRIPTPRELUDE]"
 			"openUrl('file://[**MATERIALSFOLDERPATHOPEN]/Release/play.html')\">"
-			"<img src='inform:/launch.png' border=0></a> play-in-browser page");
+			"<img src='inform:/outcome_images/browse.png' border=0></a> play-in-browser page");
 	}
 	append_to_placeholder(ph, "</center></p>");
 
 @ Since |cblorb| has no knowledge of what the Inform source text producing
 this blorb was, it can't finish the status report from its own knowledge --
 it must rely on details supplied to it by Inform via blurb commands. First,
-Inform gives it source-text links for any ``Release along with...'' sentences,
+Inform gives it source-text links for any "Release along with..." sentences,
 which have by now become |INSTRUCTION_REQ| requests:
 
 @<Add in links to release instructions from Inform source text@> =

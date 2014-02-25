@@ -13,22 +13,22 @@ interface calls it when needed. The moment comes at the end of the
 translation process, but only when the Release button rather than the Go or
 Replay buttons was clicked. |cblorb| has two main jobs: to bind up the
 translated project, together with any pictures, sounds, or cover art, into
-a single file called a ``blorb'' which can be given to players on other
+a single file called a "blorb" which can be given to players on other
 machines to play; and to produce associated websites, solution files and so
-on as demanded by ``Release...'' instruction(s) in the source text.
+on as demanded by "Release..." instruction(s) in the source text.
 
-@ ``Blorb'' is a general-purpose wrapper format designed as a way to gather
+@ "Blorb" is a general-purpose wrapper format designed as a way to gather
 together audiovisual media and bibliographic data for works of IF. The
 format was devised and formally specified by Andrew Plotkin around 2000,
 and its name is borrowed from that of a magic spell in Infocom's classic
-work, {\it Enchanter}. (``The blorb spell (safely protect a small object as
-though in a strong box).'') Although Inform 6, the then current version,
+work, {\it Enchanter}. ("The blorb spell (safely protect a small object as
+though in a strong box).") Although Inform 6, the then current version,
 did not itself generate blorb files, a Perl script called |perlblorb| was
 provided in 2001 so that the user could perform the wrapping-up process.
 |perlblorb| is no longer used, and survives only in the name of |cblorb|,
 which is a C version of what had previously been written in Perl. This
 means it can run on machines with no Perl installation, which Inform 7
-needs to be able to do. Unlike |perlblorb|, |cblorb| is ``under the hood'';
+needs to be able to do. Unlike |perlblorb|, |cblorb| is "under the hood";
 the user does not need to give it instructions. This manual is therefore
 useful only for people needing to generate Inform-related websites, or
 who are maintaining the Inform user interface applications.
@@ -40,9 +40,9 @@ who are maintaining the Inform user interface applications.
 do in effect transmit instructions to |cblorb|, but |cblorb| doesn't read
 them in this natural-language form. Instead, the |ni| component of Inform 7
 translates these instructions into a script for |cblorb| to follow. This
-script is called a ``blurb''.
+script is called a "blurb".
 
-``Blurb'' is a mini-language for specifying how the materials in a work
+"Blurb" is a mini-language for specifying how the materials in a work
 of IF should be packaged up for release. It was originally codified in 2001
 as a standard way to describe how a blorb file should be put together, but
 it was extended in 2005 and again in 2008 so that it could also organise
@@ -50,7 +50,7 @@ accompanying files released along with the blorb.
 
 The original Blurb language was documented in chapter 43 of the DM4
 (i.e., the {\it Inform Designer's Manual}, fourth edition, 2001); for clarity,
-we will call that language ``Blurb 2001''. Today's Blurb language is a little
+we will call that language "Blurb 2001". Today's Blurb language is a little
 different. Some features of Blurb 2001 are deprecated and no longer used,
 while numerous other syntaxes are new. Because of this the DM4 specification
 is no longer useful, so we will give a full description below of Blurb as
@@ -58,7 +58,7 @@ it currently stands.
 
 @p |cblorb| within the Inform user interface.
 This is the sequence of events when the user clicks Release in the user
-interface application (the ``interface''):
+interface application (the "interface"):
 
 (1) The interface calls |ni|, the I7 compiler, as normal except that the
 |-release| command-line switch is specified.
@@ -92,7 +92,7 @@ should call:
 is |-osx|.) The two filename arguments are the Blurb script for |cblorb| to
 follow, which was written by |ni| at step 3, and the filename of the Blorb
 file which it should write. Note that the interface should give this the
-extension ``.gblorb'' if the Glulx setting is in force, and ``.zblorb'' if
+extension ".gblorb" if the Glulx setting is in force, and ".zblorb" if
 the Z-machine.
 
 (6) Like its predecessors, |cblorb| can produce error messages, and it returns
@@ -203,9 +203,9 @@ without making a blorb:
 	|website "Standard"|
 
 The first novelty here is the setting of placeholders. These are named pieces
-of text which appear on the website being generated: where the text ``[RELEASE]''
+of text which appear on the website being generated: where the text "[RELEASE]"
 appears in the template, |cblorb| writes the value we've set for it, in this
-case ``1''. Some of these values look like numbers, but to |cblorb| they all
+case "1". Some of these values look like numbers, but to |cblorb| they all
 hold text. A few placeholder names are reserved by |cblorb| for its own use,
 and it will produce errors if we try to set those, but none of those in
 this example is reserved.
@@ -250,17 +250,17 @@ For example, here we make a website out of an extension:
 	|release file "Extensions/Emily Short/Locksmith.i7x"|
 	|release source "Extensions/Emily Short/Locksmith.i7x" using "extsrc.html" from "Extended"|
 
-This time we're using a template called ``Extended'', and the script tells
-|cblorb| exactly what to do with it. The ``release file... from...'' command
+This time we're using a template called "Extended", and the script tells
+|cblorb| exactly what to do with it. The "release file... from..." command
 tells |cblorb| to extract the named file from this template and to copy it
-into the release folder -- if it's a ``.html'' file, placeholders are
-substituted with their values. The simpler form, ``release file ...'', just
+into the release folder -- if it's a ".html" file, placeholders are
+substituted with their values. The simpler form, "release file ...", just
 tells |cblorb| to copy that actual file -- here, it puts a copy of the
 extension itself into the release folder. The final line produces a run
 of pages, in all likelihood, for the source and documentation of the
-extension, with the design drawn from ``Extended'' again.
+extension, with the design drawn from "Extended" again.
 
-(``Extended'' isn't supplied inside Inform; it's a template we're using to
+("Extended" isn't supplied inside Inform; it's a template we're using to
 help generate the Inform website, rather than something meant for end users.
 There's nothing very special about it, in any case.)
 
@@ -276,7 +276,7 @@ Each command occupies one and only one line of text. (In Blorb 2001, the
 now-deprecated |palette| command could occupy multiple lines, but |cblorb|
 will choke on such a usage.) Lines are permitted to be empty or to contain
 only white space. Lines whose first non-white-space character is an
-exclamation mark are treated as comments, that is, ignored. ``White space''
+exclamation mark are treated as comments, that is, ignored. "White space"
 means spaces and tab characters. An entirely empty blurb file, containing
 nothing but white space, is perfectly legal though useless.
 
@@ -316,7 +316,7 @@ Adds this author name to the file.
 	|copyright| \bltoken{string}
 
 Adds this copyright declaration to the blorb file. It would normally consist of
-short text such as ``(c) J. Mango Pineapple 2007'' rather than a lengthy legal
+short text such as "(c) J. Mango Pineapple 2007" rather than a lengthy legal
 discourse.
 
 	|release| \bltoken{number}
@@ -333,7 +333,7 @@ instance,
 
 The string should be a textual description of the contents. Every auxiliary
 file should have a filename including an extension usefully describing its
-format, as in ``.png'': if there is no extension, then the auxiliary resource
+format, as in ".png": if there is no extension, then the auxiliary resource
 is assumed to be a mini-website housed in a subfolder with this name.
 
 	|ifiction| \bltoken{filename} |include|
@@ -369,7 +369,7 @@ pictures are best displayed using at least 16-bit, or 32-bit, colours. The
 third option specifies colours used in the pictures in terms of
 red/green/blue levels, and the braces allow the sequence of colours to
 continue over many lines. At least one and at most 256 colours may be
-defined in this way. This is only a ``clue'' to the interpreter; see the
+defined in this way. This is only a "clue" to the interpreter; see the
 Blorb specification for details.
 
 	|resolution| \bltoken{dim} \unsupported
@@ -419,13 +419,13 @@ fractions: so for instance,
 
 	|picture "flag/png" scale 3/1|
 
-means ``always display three times its normal size'', whereas
+means "always display three times its normal size", whereas
 
 	|picture "backdrop/png" scale min 1/10 max 8/1|
 
-means``you can display this anywhere between one tenth normal size and
+means"you can display this anywhere between one tenth normal size and
 eight times normal size, but if possible it ought to be just its normal
-size''.
+size".
 
 |cblorb| does not support any of the scaled forms of |picture|. As with
 the exotic forms of |sound|, they now seem pass\'e. We no longer need to
@@ -512,11 +512,11 @@ this command.
 
 causes the named file to be found from the given template. If it can't be
 found in that template, |cblorb| tries to find it from a template called
-``Standard''. If it isn't there either, or |cblorb| can't find any template
-called ``Standard'' in any of its template paths (see above), then an
+"Standard". If it isn't there either, or |cblorb| can't find any template
+called "Standard" in any of its template paths (see above), then an
 error message is produced. But if all goes well the file is copied into
-the release folder. If it has the file extension ``.html'' (in lower case,
-and using that exact form, i.e., not ``.HTM'' or some other variation)
+the release folder. If it has the file extension ".html" (in lower case,
+and using that exact form, i.e., not ".HTM" or some other variation)
 then any placeholders in the file will be expanded with their values.
 A few reserved placeholders have special effects, causing |cblorb| to
 expand interesting text in their places -- see {\it Writing with Inform}
@@ -531,10 +531,10 @@ suite of web pages using the style of the given file from the given template.
 
 saves the best until last: it makes a complete website for an Inform project,
 using the named template. This means that the CSS file is copied into place
-(assuming |css| is used), the ``index.html'' is released from the template,
-the source of the project is run through |release source| using ``source.html''
+(assuming |css| is used), the "index.html" is released from the template,
+the source of the project is run through |release source| using "source.html"
 from the template (assuming |source public| is used), and any extra files
-specified in the template's ``(extras.txt)'' are released as well. See
+specified in the template's "(extras.txt)" are released as well. See
 {\it Writing with Inform} for more.
 
 @ An optional addition for a website is to incorporate a playable-in-browser
@@ -556,9 +556,9 @@ necessary blurb command is:
 
 	|interpreter| \bltoken{interpreter-name} \bltoken{vm-letter}
 
-Interpreter names are like template names; Inform often uses ``Parchment''.
-The VM letter should be ``g'' if we need this to handle a Glulx story file
-(blorbed up), or ``z'' if we need it to handle a Z-machine story file.
+Interpreter names are like template names; Inform often uses "Parchment".
+The VM letter should be "g" if we need this to handle a Glulx story file
+(blorbed up), or "z" if we need it to handle a Z-machine story file.
 (This needs to be said because Inform doesn't have a way of knowing which
 formats a given interpreter can handle; so it has to leave checking to
 |cblorb| to do. Thus, if an Inform user tries to release a Z-machine-only
@@ -566,7 +566,7 @@ interpreter with a Glulx story file, it's |cblorb| which issues the error,
 not Inform itself.)
 
 @ Finally (really finally this time), three commands to do with the
-``status'' page, an HTML page written by |cblorb| to report back on
+"status" page, an HTML page written by |cblorb| to report back on
 what it has done. If requested, this is constructed for reading within
 the Inform application -- it is not a valid HTML page in other
 contexts, and expects to have access to Javascript functions provided
@@ -584,4 +584,4 @@ filename is where to write the result.
 The other two commands allow Inform to insert information which |cblorb|
 otherwise has no access to: options for fancy release tricks not currently
 being used (with links to the documentation on them), and links to source
-text ``Release along with...'' sentences.
+text "Release along with..." sentences.

@@ -4,7 +4,7 @@ Purpose: The packaging stage of the Inform 7 system, which releases a story file
 Language: C
 Licence: This is a free, open-source program published under the Artistic License 2.0.
 Build Number: 3/100422
-Cover Sheet: cover-sheet.tex
+Weave: all: Complete Program, Complete, cover-sheet
 
 Preliminaries
 	The cblorb Manual

@@ -11,7 +11,7 @@
 @ A solution file is simply a list of commands which will win a work of IF,
 starting from turn 1. In this section we will generate this list given the
 Skein file for an Inform 7 project: to follow this code, it's useful first
-to read the ``Walkthrough solutions'' section of the ``Releasing'' chapter
+to read the "Walkthrough solutions" section of the "Releasing" chapter
 in the main Inform documentation.
 
 We will need to parse the entire skein into a tree structure, in which each
@@ -19,9 +19,9 @@ node (including leaves) is one of the following structures. We expect the
 Inform user to have annotated certain nodes with the text |***| (three
 asterisks); the solution file will ignore all paths in the skein which do
 not lead to one of these |***| nodes. The surviving nodes, those in lines
-which do lead to |***| endings, are called ``relevant''.
+which do lead to |***| endings, are called "relevant".
 
-Some knots have ``branch descriptions'', others do not. These are the
+Some knots have "branch descriptions", others do not. These are the
 options where choices have to be made. The |branch_parent| and |branch_count|
 fields are used to keep these labels: see below.
 
@@ -34,7 +34,7 @@ typedef struct skein_node {
 	char id[MAX_NODE_ID_LENGTH]; /* uniquely identifying ID used within the Skein file */
 	char command[MAX_COMMAND_LENGTH]; /* text of the command at this node */
 	char annotation[MAX_ANNOTATION_LENGTH]; /* text of any annotation added by the user */
-	int relevant; /* is this node within one of the ``relevant'' lines in the skein? */
+	int relevant; /* is this node within one of the "relevant" lines in the skein? */
 	struct skein_node *branch_parent; /* the trunk of the branch description, if any, is this way */
 	int branch_count; /* the leaf of the branch description, if any, is this number */
 	struct skein_node *parent; /* within the Skein tree: |NULL| for the root only */
@@ -59,7 +59,7 @@ where $K$ is the number of knots in the Skein, and step 4 is $O(K\log_2(K))$,
 so the process as a whole is $O(K^2)$.
 
 @c
-/**/ void walkthrough(char *Skein_filename, char *walkthrough_filename) {
+void walkthrough(char *Skein_filename, char *walkthrough_filename) {
 	build_skein_tree(Skein_filename);
 	if (root_skn == NULL) {
 		error("there appear to be no threads in the Skein");
@@ -105,8 +105,8 @@ void read_skein_line(char *line, int pass) {
 	if (pass == 1) {
 		if (node_id[0]) @<Create a new skein tree node with this node ID@>;
 		if (current_skein_node) {
-			@<Look for a ``command'' tag and set the command text from it@>;
-			@<Look for an ``annotation'' tag and set the annotation text from it@>;
+			@<Look for a "command" tag and set the command text from it@>;
+			@<Look for an "annotation" tag and set the annotation text from it@>;
 		}
 	} else {
 		if (node_id[0]) current_skein_node = find_node_with_ID(node_id);
@@ -155,7 +155,7 @@ void read_skein_line(char *line, int pass) {
 
 @
 
-@<Look for a ``command'' tag and set the command text from it@> =
+@<Look for a "command" tag and set the command text from it@> =
 	char *p = current_skein_node->command;
 	if (find_text_of_tag(line, "command", p, MAX_COMMAND_LENGTH, FALSE)) {
 		if (trace_mode) printf("Raw command '%s'\n", p);
@@ -166,7 +166,7 @@ void read_skein_line(char *line, int pass) {
 
 @
 
-@<Look for an ``annotation'' tag and set the annotation text from it@> =
+@<Look for an "annotation" tag and set the annotation text from it@> =
 	char *p = current_skein_node->annotation;
 	if (find_text_of_tag(line, "annotation", p, MAX_ANNOTATION_LENGTH, FALSE)) {
 		if (trace_mode) printf("Raw annotation '%s'\n", p);
@@ -186,11 +186,11 @@ int find_node_ID_in_tag(char *line, char *tag,
 	strcat(prototype, " nodeId=\"%[^\"]\"");
 	write_to[0] = 0;
 	if (sscanf(line, prototype, portion1, portion2) == 2) {
-		if ((strlen(portion2) >= max_length-1) && (abort_not_trim)) {
+		if ((cblorb_strlen(portion2) >= max_length-1) && (abort_not_trim)) {
 			error("the skein file is malformed (C)");
 			return FALSE;
 		}
-		strncpy(write_to, portion2, max_length-1); write_to[max_length-1] = 0;
+		strncpy(write_to, portion2, (size_t) max_length-1); write_to[max_length-1] = 0;
 		return TRUE;
 	}
 	return FALSE;
@@ -208,11 +208,11 @@ int find_text_of_tag(char *line, char *tag,
 	strcat(prototype, tag);
 	strcat(prototype, "%s");
 	if (sscanf(line, prototype, portion1, portion2, portion3) == 3) {
-		if ((strlen(portion2) >= max_length-1) && (abort_not_trim)) {
+		if ((cblorb_strlen(portion2) >= max_length-1) && (abort_not_trim)) {
 			error("the skein file is malformed (C)");
 			return FALSE;
 		}
-		strncpy(write_to, portion2, max_length-1); write_to[max_length-1] = 0;
+		strncpy(write_to, portion2, (size_t) max_length-1); write_to[max_length-1] = 0;
 		if (trace_mode) printf("found %s = '%s'\n", tag, portion2);
 		return TRUE;
 	}
@@ -235,7 +235,7 @@ skein_node *find_node_with_ID(char *id) {
 @c
 void convert_string_to_upper_case(char *p) {
 	int i;
-	for (i=0; p[i]; i++) p[i]=toupper(p[i]);
+	for (i=0; p[i]; i++) p[i]=cblorb_toupper(p[i]);
 }
 
 @ and:
@@ -248,7 +248,7 @@ void undo_XML_escapes_in_string(char *p) {
 			char xml_escape[16];
 			int k=0;
 			while ((p[i+k] != 0) && (p[i+k] != ';') && (k<14)) {
-				xml_escape[k] = tolower(p[i+k]); k++;
+				xml_escape[k] = cblorb_tolower(p[i+k]); k++;
 			}
 			xml_escape[k] = p[i+k]; k++; xml_escape[k] = 0;
 			@<We have identified an XML escape@>;
@@ -267,12 +267,12 @@ void undo_XML_escapes_in_string(char *p) {
 	if (strcmp(xml_escape, "&amp;") == 0) c = '&';
 	if (strcmp(xml_escape, "&apos;") == 0) c = '\'';
 	if (strcmp(xml_escape, "&quot;") == 0) c = '\"';
-	if (c) { p[j++] = c; i += strlen(xml_escape); continue; }
+	if (c) { p[j++] = c; i += cblorb_strlen(xml_escape); continue; }
 
 @p Step 2: identify the relevant lines.
 We aim to show how to reach all knots in the Skein annotated with text which
 begins with three asterisks. (We trim those asterisks away from the annotation
-once we spot them: they have served their purpose.) A knot is ``relevant''
+once we spot them: they have served their purpose.) A knot is "relevant"
 if and only if one of its (direct or indirect) children is marked with three
 asterisks in this way.
 
@@ -306,7 +306,7 @@ number of components containing at least one relevant node is unchanged.
 (c) Since the Skein is initially a tree and not a forest, we start with
 just one component, and it contains the tree root, which is known to be
 relevant (we would have given up with an error message if not).
-(d) And therefore at the end of the loop the ``tree'' consists of a single
+(d) And therefore at the end of the loop the "tree" consists of a single
 component headed by the tree root and containing all of the relevant nodes,
 together with any number of other components each of which contains only
 irrelevant ones.
@@ -427,7 +427,7 @@ void write_command(FILE *SOL, skein_node *cmd_skn, int form) {
 
 @ For instance, at the third option from a thread which ran back to being
 the second option from a thread which ran back to being the seventh option
-from the original position, the following would print ``7.2.3''. Note that
+from the original position, the following would print "7.2.3". Note that
 only the knots representing the positions after commands which make a choice
 are labelled in this way.
 

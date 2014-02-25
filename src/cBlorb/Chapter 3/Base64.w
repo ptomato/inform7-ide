@@ -26,7 +26,7 @@ char *RFC1113_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 @ The encoding routine is as follows.
 
 @c
-/**/ void encode_as_base64(char *in_filename, char *out_filename, char *top, char *tail) {
+void encode_as_base64(char *in_filename, char *out_filename, char *top, char *tail) {
 	FILE *IN = fopen(in_filename, "rb");
 	if (IN == NULL)
 		fatal_fs("can't open story file for base-64 encoding", in_filename);
