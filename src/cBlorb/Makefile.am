@@ -15,61 +15,68 @@ cblorbsrc = \
 	Chapter\ 3/Website\ Maker.w
 cblorbmaterials = Materials/cover-sheet.tex
 
+INWEBC = $(top_builddir)/src/inwebc/Tangled/inwebc -at $(top_srcdir)/src/
+# Nifty silent rules strings
+tangle_verbose = $(tangle_verbose_@AM_V@)
+tangle_verbose_ = $(tangle_verbose_@AM_DEFAULT_V@)
+tangle_verbose_0 = @echo "  TANGLE  " $@;
+weave_verbose = $(weave_verbose_@AM_V@)
+weave_verbose_ = $(weave_verbose_@AM_DEFAULT_V@)
+weave_verbose_0 = @echo "  WEAVE   " $@;
+
 pkglibexec_PROGRAMS = cBlorb
 nodist_cBlorb_SOURCES = Tangled/cBlorb.c
 BUILT_SOURCES = $(nodist_cBlorb_SOURCES)
 $(nodist_cBlorb_SOURCES) : $(cblorbsrc)
-	$(MKDIR_P) Tangled;
-	$(PERL) $(srcdir)/../inweb/Tangled/inweb.pl \
-		$(srcdir) -tangle-to $(nodist_cBlorb_SOURCES) -at $(srcdir)/../
+	$(tangle_verbose)$(MKDIR_P) Tangled && \
+	$(INWEBC) $(srcdir) -tangle -tangle-to $(nodist_cBlorb_SOURCES)
 CLEANFILES = $(nodist_cBlorb_SOURCES)
 
 if MANUALS
 # The cBlorb manual
-cblorbmanual = Woven/Complete.pdf
-# The various extra parts of the manual that can be built
-cblorbwebsite = Woven/index.html Woven/download.gif Woven/lemons.jpg
-cblorbchapters = \
-	Woven/Complete.pdf \
-	Woven/Preliminaries.pdf \
-	Woven/Chapter-1.pdf \
-	Woven/Chapter-2.pdf \
-	Woven/Chapter-3.pdf
+cblorbmanual = Woven/Complete.html
+cblorbmanualfiles = Woven/inweb.css Woven/crumbs.gif
+# The expanded "website" version of the manual that can be built
 cblorbsections = \
-	Woven/P-man.pdf \
-	Woven/1-blurb.pdf \
-	Woven/1-main.pdf \
-	Woven/1-mem.pdf \
-	Woven/1-text.pdf \
-	Woven/2-blorb.pdf \
-	Woven/3-links.pdf \
-	Woven/3-place.pdf \
-	Woven/3-rel.pdf \
-	Woven/3-sol.pdf \
-	Woven/3-templ.pdf \
-	Woven/3-web.pdf
+	Woven/index.html \
+	Woven/download.gif \
+	Woven/lemons.jpg \
+	Woven/Complete.html \
+	Woven/Preliminaries.html \
+	Woven/P-man.html \
+	Woven/Chapter-1.html \
+	Woven/1-blurb.html \
+	Woven/1-main.html \
+	Woven/1-mem.html \
+	Woven/1-text.html \
+	Woven/Chapter-2.html \
+	Woven/2-blorb.html \
+	Woven/Chapter-3.html \
+	Woven/3-b64.html \
+	Woven/3-links.html \
+	Woven/3-place.html \
+	Woven/3-rel.html \
+	Woven/3-sol.html \
+	Woven/3-templ.html \
+	Woven/3-web.html \
+	$(NULL)
 
 # What to build and how to build it
 if MANUALS_SECTIONS
-cblorbweavefiles = $(cblorbwebsite) $(cblorbchapters) $(cblorbsections)
+cblorbweavefiles = $(cblorbmanualfiles) $(cblorbsections)
 inwebcommand = sections
 else
-if MANUALS_CHAPTERS
-cblorbweavefiles = $(cblorbwebsite) $(cblorbchapters)
-inwebcommand = chapters
-else
-cblorbweavefiles =
-inwebcommand = all # Slightly paradoxical, that...
-endif
+cblorbweavefiles = $(cblorbmanualfiles)
+inwebcommand =
 endif
 
 cblorbdocdir = $(datadir)/doc/$(PACKAGE)/cBlorb
 cblorbdoc_DATA = $(cblorbmanual) $(cblorbweavefiles)
 
 $(cblorbweavefiles): $(cblorbmanual)
-$(cblorbmanual): $(cblorbsrc) Makefile
-	$(MKDIR_P) --mode=u+w,o-w $(builddir)/Woven;
-	$(PERL) ../inweb/Tangled/inweb.pl . -closed -weave $(inwebcommand) -at ../
+$(cblorbmanual): $(cblorbsrc) $(cblorbmaterials) Makefile
+	$(weave_verbose)$(MKDIR_P) --mode=u+w,o-w $(builddir)/Woven && \
+	$(INWEBC) $(srcdir) -closed -weave $(inwebcommand) -format html
 
 CLEANFILES += $(cblorbmanual) $(cblorbweavefiles)
 endif
@@ -85,5 +92,6 @@ dist-hook:
 		cp --preserve=mode,ownership,timestamps --parents \
 		$(cblorbsrc) $(ABSDISTDIR)
 
+GITIGNOREFILES = Woven
 
 -include $(top_srcdir)/git.mk

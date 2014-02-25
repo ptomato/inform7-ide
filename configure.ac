@@ -49,7 +49,9 @@ AS_IF([${NI} | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
 AC_PATH_PROG([TEST], [test])
 # Optional programs
 AC_PATH_PROG([PDFTEX], [pdftex], [notfound])
-AC_PATH_PROG([DOT], [dot], [notfound])
+AC_PATH_PROG([EVINCE], [evince], [notfound])
+# Check for pdftex and evince even though they are not required; in any case it
+# will fill in the proper paths in inweb-configuration.txt.
 AC_PATH_PROG([RPMBUILD], [rpmbuild], [notfound])
 AC_PATH_PROG([RPM], [rpm], [notfound])
 AC_PATH_PROG([DEBUILD], [dpkg-buildpackage], [notfound])
@@ -88,18 +90,15 @@ AC_ARG_ENABLE([distcheck],
 		[Configure for make distcheck @<:@default=no@:>@])])
 AM_CONDITIONAL([DISTCHECK], [$TEST "x$enable_distcheck" = xyes])
 
-# --enable-manuals builds the inweb and cBlorb manuals. Requires pdftex and dot.
+# --enable-manuals builds the inweb and cBlorb manuals in HTML format. PDF is
+# also possible, but requires more build dependencies, so you'll have to do that
+# manually.
 AC_ARG_ENABLE([manuals],
-	[AS_HELP_STRING([--enable-manuals=@<:@yes/chapters/sections/no@:>@],
-		[Build the inweb and cBlorb manuals @<:@default=no@:>@ (requires pdftex and dot)])],
-	[AS_IF([$TEST "x$enable_manuals" != xno],
-		[AS_IF([$TEST "x$PDFTEX" = xnotfound],
-			[AC_MSG_ERROR([pdftex is required for --enable-manuals])],
-		[$TEST "x$DOT" = xnotfound],
-			[AC_MSG_ERROR([dot is required for --enable-manuals])])])],
+	[AS_HELP_STRING([--enable-manuals=@<:@yes/sections/no@:>@],
+		[Build the inweb and cBlorb manuals @<:@default=no@:>@])],
+	[],
 	[enable_manuals=no])
 AM_CONDITIONAL([MANUALS], [$TEST "x$enable_manuals" != xno])
-AM_CONDITIONAL([MANUALS_CHAPTERS], [$TEST "x$enable_manuals" = xchapters])
 AM_CONDITIONAL([MANUALS_SECTIONS], [$TEST "x$enable_manuals" = xsections])
 
 # The user can specify the RPM release number in the environment (e.g. '1.fc10')
@@ -311,8 +310,8 @@ Makefile
 gnome-inform7.spec
 src/Makefile
 src/inform6/Makefile
-src/inweb/Makefile
-src/inweb/Materials/inweb-configuration.txt
+src/inwebc/Makefile
+src/inwebc/Materials/inweb-configuration.txt
 src/cBlorb/Makefile
 src/ni/Makefile
 po/Makefile.in

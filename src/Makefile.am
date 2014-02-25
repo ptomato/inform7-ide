@@ -1,4 +1,4 @@
-SUBDIRS = inweb cBlorb inform6 ni
+SUBDIRS = inwebc cBlorb inform6 ni
 
 AM_CFLAGS = -Wall
 
