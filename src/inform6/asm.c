@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------------- */
 /*   "asm" : The Inform assembler                                            */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -48,7 +48,8 @@ int uses_acceleration_features;    /* Makes use of Glulx acceleration (3.1.1)
 int uses_float_features;           /* Makes use of Glulx floating-point (3.1.2)
                                       features?                              */
 
-dbgl debug_line_ref;               /* Source code ref of current statement   */
+debug_location statement_debug_location;
+                                   /* Location of current statement          */
 
 
 int32 *variable_tokens;            /* The allocated size is 
@@ -69,6 +70,10 @@ static char opcode_syntax_string[128];  /*  Text buffer holding the correct
                                       syntax for an opcode: used to produce
                                       helpful assembler error messages       */
 
+static int routine_symbol;         /* The symbol index of the routine currently
+                                      being compiled */
+static char *routine_name;         /* The name of the routine currently being
+                                      compiled                               */
 static int routine_locals;         /* The number of local variables used by
                                       the routine currently being compiled   */
 
@@ -89,9 +94,11 @@ static int   *label_next,          /* (i.e. zmachine_pc values) in PC order  */
              *label_prev;
 static int32 *label_symbols;       /* Symbol numbers if defined in source    */
 
-static int   *sequence_point_labels;  /* Label numbers for each              */
-static dbgl  *sequence_point_refs;    /* Source code references for each     */
-                                      /* (used for making debugging file)    */
+static int   *sequence_point_labels;
+                                   /* Label numbers for each                 */
+static debug_location *sequence_point_locations;
+                                   /* Source code references for each        */
+                                   /* (used for making debugging file)       */
 
 static void set_label_offset(int label, int32 offset)
 {
@@ -177,6 +184,10 @@ extern char *variable_name(int32 i)
       if (i==251) return("self");
       if (i==250) return("sender");
       if (i==249) return("sw__var");
+      if (i >= 256 && i < 286)
+      {   if (i - 256 < NUMBER_SYSTEM_FUNCTIONS) return system_functions.keywords[i - 256];
+          return "<unnamed system function>";
+      }
     }
     else {
       switch (i - MAX_LOCAL_VARIABLES) {
@@ -228,9 +239,13 @@ static void print_operand_g(assembly_operand o)
     else
       printf("%s (local_%d)", variable_name(o.value), o.value-1); 
     return;
-  case SYSFUN_OT: printf("sysfun_"); break;
+  case SYSFUN_OT:
+    if (o.value >= 0 && o.value < NUMBER_SYSTEM_FUNCTIONS)
+      printf("%s", system_functions.keywords[o.value]);
+    else
+      printf("<unnamed system function>");
+    return;
   case OMITTED_OT: printf("<no value>"); return;
-    /* case STACK_OT: printf("<sp>"); return; */
   default: printf("???_"); break; 
   }
   printf("%d", o.value);
@@ -262,7 +277,7 @@ static void byteout(int32 i, int mv)
 /* ------------------------------------------------------------------------- */
 
 typedef struct opcodez
-{   uchar *name;        /* Lower case standard name */
+{   uchar *name;      /* Lower case standard name */
     int version1;     /* Valid from this version number... */
     int version2;     /* ...until this one (or forever if this is 0) */
     int extension;    /* In later versions, see this line in extension table:
@@ -276,8 +291,8 @@ typedef struct opcodez
 } opcodez;
 
 typedef struct opcodeg
-{   uchar *name;        /* Lower case standard name */
-    int32 code;         /* Opcode number */
+{   uchar *name;      /* Lower case standard name */
+    int32 code;       /* Opcode number */
     int flags;        /* Flags (see below) */
     int op_rules;     /* Any unusual operand rule applying (see below) */
     int no;           /* Number of operands */
@@ -626,6 +641,7 @@ static opcodez internal_number_to_opcode_z(int32 i)
     if (x.version2 == 0) return x;
     if (instruction_set_number <= x.version2) return x;
     i = x.extension;
+    if (i < 0) return invalid_opcode_z;
     x = extension_table_z[i];
     if (instruction_set_number < x.version1) return invalid_opcode_z;
     if (x.version2 == 0) return x;
@@ -782,7 +798,8 @@ extern void assemblez_instruction(assembly_instruction *AI)
     {   sequence_point_follows = FALSE; at_seq_point = TRUE;
         if (debugfile_switch)
         {   sequence_point_labels[next_sequence_point] = next_label;
-            sequence_point_refs[next_sequence_point] = debug_line_ref;
+            sequence_point_locations[next_sequence_point] =
+                statement_debug_location;
             set_label_offset(next_label++, zmachine_pc);
         }
         next_sequence_point++;
@@ -837,9 +854,10 @@ extern void assemblez_instruction(assembly_instruction *AI)
 
     if (operand_rules==TEXT)
     {   int32 i;
-        j = subtract_pointers(
-                (translate_text(zcode_holding_area + zcode_ha_size, AI->text)),
-                (zcode_holding_area + zcode_ha_size));
+        uchar *tmp = translate_text(zcode_holding_area + zcode_ha_size, zcode_holding_area+MAX_ZCODE_SIZE, AI->text);
+        if (!tmp)
+            memoryerror("MAX_ZCODE_SIZE", MAX_ZCODE_SIZE);
+        j = subtract_pointers(tmp, (zcode_holding_area + zcode_ha_size));
         for (i=0; i<j; i++) zcode_markers[zcode_ha_size++] = 0;
         zmachine_pc += j;
         goto Instruction_Done;
@@ -1083,7 +1101,8 @@ extern void assembleg_instruction(assembly_instruction *AI)
     {   sequence_point_follows = FALSE; at_seq_point = TRUE;
         if (debugfile_switch)
         {   sequence_point_labels[next_sequence_point] = next_label;
-            sequence_point_refs[next_sequence_point] = debug_line_ref;
+            sequence_point_locations[next_sequence_point] =
+                statement_debug_location;
             set_label_offset(next_label++, zmachine_pc);
         }
         next_sequence_point++;
@@ -1372,10 +1391,10 @@ extern void define_symbol_label(int symbol)
 }
 
 extern int32 assemble_routine_header(int no_locals,
-    int routine_asterisked, char *name, dbgl *line_ref, int embedded_flag,
-    int the_symbol)
+    int routine_asterisked, char *name, int embedded_flag, int the_symbol)
 {   int i, rv;
     int stackargs = FALSE;
+    int name_length;
 
     execution_never_reaches_here = FALSE;
 
@@ -1389,7 +1408,7 @@ extern int32 assemble_routine_header(int no_locals,
 
     if (veneer_mode) routine_starts_line = -1;
     else routine_starts_line = ErrorReport.line_number
-             + 0x10000*ErrorReport.file_number;
+             + FILE_LINE_SCALE_FACTOR*ErrorReport.file_number;
 
     if (asm_trace_level > 0)
     {   printf("\n%5d  +%05lx  [ %s ", ErrorReport.line_number,
@@ -1398,20 +1417,25 @@ extern int32 assemble_routine_header(int no_locals,
         printf("\n\n");
     }
 
-    if (debugfile_switch)
-    {   write_debug_byte(ROUTINE_DBR);
-        write_debug_byte(no_routines/256);
-        write_debug_byte(no_routines%256);
-        write_dbgl(*line_ref);
-        write_debug_address(zmachine_pc);
-        write_debug_string(name);
+    routine_start_pc = zmachine_pc;
 
-        for (i=1; i<=no_locals; i++) write_debug_string(variable_name(i));
+    if (track_unused_routines) {
+        /* The name of an embedded function is in a temporary buffer,
+           so we shouldn't keep a reference to it. (It is sad that we
+           have to know this here.) */
+        char *funcname = name;
+        if (embedded_flag)
+            funcname = "<embedded>";
 
-        write_debug_byte(0);
-
-        routine_start_pc = zmachine_pc;
+        df_note_function_start(funcname, zmachine_pc, embedded_flag,
+                               routine_starts_line);
     }
+
+    routine_symbol = the_symbol;
+    name_length = strlen(name) + 1;
+    routine_name =
+      my_malloc(name_length * sizeof(char), "temporary copy of routine name");
+    strncpy(routine_name, name, name_length);
 
     /*  Update the routine counter                                           */
 
@@ -1442,7 +1466,7 @@ extern int32 assemble_routine_header(int no_locals,
       /*  function is called, if it's required.                              */
 
       if ((routine_asterisked) || (define_INFIX_switch))
-      {   char fnt[80]; assembly_operand PV, RFA, CON, STP, SLF; int ln, ln2;
+      {   char fnt[256]; assembly_operand PV, RFA, CON, STP, SLF; int ln, ln2;
 
           ln = next_label++;
           ln2 = next_label++;
@@ -1520,20 +1544,86 @@ extern int32 assemble_routine_header(int no_locals,
 
       next_label = 0; next_sequence_point = 0; last_label = -1; 
 
-      if (define_INFIX_switch) {
-        if (embedded_flag) {
-        }
-        else {
+      if ((routine_asterisked) || (define_INFIX_switch)) {
+        int ix;
+        char fnt[256];
+        assembly_operand AO, AO2;
+        if (define_INFIX_switch) {
+          /* This isn't supported */
+          if (embedded_flag) {
+          }
+          else {
             i = no_named_routines++;
             named_routine_symbols[i] = the_symbol;
+          }
         }
+        sprintf(fnt, "[ %s(", name);
+        AO.marker = STRING_MV;
+        AO.type   = CONSTANT_OT;
+        AO.value  = compile_string(fnt, FALSE, FALSE);
+        assembleg_1(streamstr_gc, AO);
+
+        if (!stackargs) {
+          for (ix=1; ix<=no_locals; ix++) {
+            sprintf(fnt, "%s%s = ", (ix==1)?"":", ", variable_name(ix));
+            AO.marker = STRING_MV;
+            AO.type   = CONSTANT_OT;
+            AO.value  = compile_string(fnt, FALSE, FALSE);
+            assembleg_1(streamstr_gc, AO);
+            AO.marker = 0;
+            AO.type = LOCALVAR_OT;
+            AO.value = ix;
+            assembleg_1(streamnum_gc, AO);
+          }
+        }
+        else {
+          int lntop, lnbottom;
+          sprintf(fnt, "%s = ", variable_name(1));
+          AO.marker = STRING_MV;
+          AO.type   = CONSTANT_OT;
+          AO.value  = compile_string(fnt, FALSE, FALSE);
+          assembleg_1(streamstr_gc, AO);
+          AO.marker = 0;
+          AO.type = LOCALVAR_OT;
+          AO.value = 1;
+          assembleg_1(streamnum_gc, AO);
+          AO2.type = BYTECONSTANT_OT;
+          AO2.marker = 0;
+          AO2.value = ':';
+          assembleg_1(streamchar_gc, AO2);
+          AO2.type = BYTECONSTANT_OT;
+          AO2.marker = 0;
+          AO2.value = ' ';
+          /* for (temp_var4=0 : temp_var4<_vararg_count : temp_var4++) {
+               @streamchar ' ';
+               @stkpeek temp_var4 sp;
+               @stream_num sp;
+             }
+          */
+          assembleg_store(temp_var4, zero_operand);
+          lntop = next_label++;
+          lnbottom = next_label++;
+          assemble_label_no(lntop);
+          assembleg_2_branch(jge_gc, temp_var4, AO, lnbottom); /* AO is _vararg_count */
+          assembleg_1(streamchar_gc, AO2); /* AO2 is space */
+          assembleg_2(stkpeek_gc, temp_var4, stack_pointer);
+          assembleg_1(streamnum_gc, stack_pointer);
+          assembleg_3(add_gc, temp_var4, one_operand, temp_var4);
+          assembleg_0_branch(jump_gc, lntop);
+          assemble_label_no(lnbottom);
+        }
+
+        AO.marker = STRING_MV;
+        AO.type   = CONSTANT_OT;
+        AO.value  = compile_string(") ]^", FALSE, FALSE);
+        assembleg_1(streamstr_gc, AO);
       }
     }
 
     return rv;
 }
 
-void assemble_routine_end(int embedded_flag, dbgl *line_ref)
+void assemble_routine_end(int embedded_flag, debug_locations locations)
 {   int32 i;
 
     /* No marker is made in the Z-machine's code area to indicate the        */
@@ -1567,31 +1657,80 @@ void assemble_routine_end(int embedded_flag, dbgl *line_ref)
     else
       transfer_routine_g();
 
+    if (track_unused_routines)
+        df_note_function_end(zmachine_pc);
+
     /* Tell the debugging file about the routine just ended.                 */
 
     if (debugfile_switch)
     {
-        write_debug_byte(LINEREF_DBR);
-        write_debug_byte((no_routines-1)/256);
-        write_debug_byte((no_routines-1)%256);
-        write_debug_byte(next_sequence_point/256);
-        write_debug_byte(next_sequence_point%256);
-
-        for (i=0; i<next_sequence_point; i++)
-        {   int32 j = label_offsets[sequence_point_labels[i]]
-                - routine_start_pc;
-
-            write_dbgl(sequence_point_refs[i]);
-            write_debug_byte(j / 256);
-            write_debug_byte(j % 256);
+        debug_file_printf("<routine>");
+        if (embedded_flag)
+        {   debug_file_printf
+                ("<identifier artificial=\"true\">%s</identifier>",
+                 routine_name);
         }
-
-        write_debug_byte(ROUTINE_END_DBR);
-        write_debug_byte((no_routines-1)/256);
-        write_debug_byte((no_routines-1)%256);
-        write_dbgl(*line_ref);
-        write_debug_address(zmachine_pc);
+        else if (sflags[routine_symbol] & REPLACE_SFLAG)
+        {   /* The symbol type will be set to ROUTINE_T once the replaced
+               version has been given; if it is already set, we must be dealing
+               with a replacement, and we can use the routine name as-is.
+               Otherwise we look for a rename.  And if that doesn't work, we
+               fall back to an artificial identifier. */
+            if (stypes[routine_symbol] == ROUTINE_T)
+            {   /* Optional because there may be further replacements. */
+                write_debug_optional_identifier(routine_symbol);
+            }
+            else if (find_symbol_replacement(&routine_symbol))
+            {   debug_file_printf
+                    ("<identifier>%s</identifier>", symbs[routine_symbol]);
+            }
+            else
+            {   debug_file_printf
+                    ("<identifier artificial=\"true\">%s (replaced)"
+                         "</identifier>",
+                     routine_name);
+            }
+        } else
+        {   debug_file_printf("<identifier>%s</identifier>", routine_name);
+        }
+        debug_file_printf("<value>");
+        if (glulx_mode)
+        {   write_debug_code_backpatch(routine_start_pc);
+        } else
+        {   write_debug_packed_code_backpatch(routine_start_pc);
+        }
+        debug_file_printf("</value>");
+        debug_file_printf("<address>");
+        write_debug_code_backpatch(routine_start_pc);
+        debug_file_printf("</address>");
+        debug_file_printf
+            ("<byte-count>%d</byte-count>", zmachine_pc - routine_start_pc);
+        write_debug_locations(locations);
+        for (i = 1; i <= routine_locals; ++i)
+        {   debug_file_printf("<local-variable>");
+            debug_file_printf("<identifier>%s</identifier>", variable_name(i));
+            if (glulx_mode)
+            {   debug_file_printf
+                    ("<frame-offset>%d</frame-offset>", 4 * (i - 1));
+            }
+            else
+            {   debug_file_printf("<index>%d</index>", i);
+            }
+            debug_file_printf("</local-variable>");
+        }
+        for (i = 0; i < next_sequence_point; ++i)
+        {   debug_file_printf("<sequence-point>");
+            debug_file_printf("<address>");
+            write_debug_code_backpatch
+                (label_offsets[sequence_point_labels[i]]);
+            debug_file_printf("</address>");
+            write_debug_location(sequence_point_locations[i]);
+            debug_file_printf("</sequence-point>");
+        }
+        debug_file_printf("</routine>");
     }
+
+    my_free(&routine_name, "temporary copy of routine name");
 
     /* Issue warnings about any local variables not used in the routine. */
 
@@ -2192,6 +2331,21 @@ void assemblez_4_to(int internal_number,
     assemblez_instruction(&AI);
 }
 
+void assemblez_5_to(int internal_number,
+    assembly_operand o1, assembly_operand o2, assembly_operand o3,
+    assembly_operand o4, assembly_operand o5, assembly_operand st)
+{   AI.internal_number = internal_number;
+    AI.operand_count = 5;
+    AI.operand[0] = o1;
+    AI.operand[1] = o2;
+    AI.operand[2] = o3;
+    AI.operand[3] = o4;
+    AI.operand[4] = o5;
+    AI.store_variable_number = st.value;
+    AI.branch_label_number = -1;
+    assemblez_instruction(&AI);
+}
+
 void assemblez_2_to(int internal_number,
     assembly_operand o1, assembly_operand o2, assembly_operand st)
 {   AI.internal_number = internal_number;
@@ -2431,91 +2585,18 @@ void assembleg_call_1(assembly_operand oaddr, assembly_operand o1,
   assembly_operand odest)
 {
   assembleg_3(callfi_gc, oaddr, o1, odest);
-  /* Copy argument to stack ptr, unless it's already there. 
-  if (!(o1.type == LOCALVAR_OT && o1.value == 0 && o1.marker == 0)) {
-    assembleg_2(copy_gc, o1, stack_pointer);
-  }
-  assembleg_3(call_gc, oaddr, one_operand, odest); */
 }
 
 void assembleg_call_2(assembly_operand oaddr, assembly_operand o1, 
   assembly_operand o2, assembly_operand odest)
 {
   assembleg_4(callfii_gc, oaddr, o1, o2, odest);
-  /* Copy arguments to stack ptr, unless they're already there. 
-  if (o1.type == LOCALVAR_OT && o1.value == 0 && o1.marker == 0) {
-    if (o2.type == LOCALVAR_OT && o2.value == 0 && o2.marker == 0) {
-    }
-    else {
-      assembleg_2(copy_gc, o2, stack_pointer);
-      assembleg_0(stkswap_gc);
-    }
-  }
-  else {
-    if (o2.type == LOCALVAR_OT && o2.value == 0 && o2.marker == 0) {
-      assembleg_2(copy_gc, o1, stack_pointer);
-    }
-    else {
-      assembleg_2(copy_gc, o2, stack_pointer);
-      assembleg_2(copy_gc, o1, stack_pointer);
-    }
-  }
-  assembleg_3(call_gc, oaddr, two_operand, odest); */
 }
 
 void assembleg_call_3(assembly_operand oaddr, assembly_operand o1, 
   assembly_operand o2, assembly_operand o3, assembly_operand odest)
 {
   assembleg_5(callfiii_gc, oaddr, o1, o2, o3, odest);
-  /* Copy arguments to stack ptr, unless they're already there. 
-  if (o1.type == LOCALVAR_OT && o1.value == 0 && o1.marker == 0) {
-    if (o2.type == LOCALVAR_OT && o2.value == 0 && o2.marker == 0) {
-      if (o3.type == LOCALVAR_OT && o3.value == 0 && o3.marker == 0) {
-    // all already there. 
-      }
-      else {
-    assembleg_2(copy_gc, o3, stack_pointer);
-    assembleg_2(stkroll_gc, three_operand, one_operand);
-      }
-    }
-    else {
-      if (o3.type == LOCALVAR_OT && o3.value == 0 && o3.marker == 0) {
-    assembleg_2(copy_gc, o2, stack_pointer);
-    assembleg_0(stkswap_gc);
-      }
-      else {
-    assembleg_2(copy_gc, o3, stack_pointer);
-    assembleg_0(stkswap_gc);
-    assembleg_2(copy_gc, o2, stack_pointer);
-        assembleg_0(stkswap_gc);
-      }
-    }
-  }
-  else {
-    if (o2.type == LOCALVAR_OT && o2.value == 0 && o2.marker == 0) {
-      if (o3.type == LOCALVAR_OT && o3.value == 0 && o3.marker == 0) {
-    assembleg_2(copy_gc, o1, stack_pointer);
-      }
-      else {
-    assembleg_2(copy_gc, o3, stack_pointer);
-        assembleg_0(stkswap_gc);
-    assembleg_2(copy_gc, o1, stack_pointer);
-      }
-    }
-    else {
-      if (o3.type == LOCALVAR_OT && o3.value == 0 && o3.marker == 0) {
-    assembleg_2(copy_gc, o2, stack_pointer);
-    assembleg_2(copy_gc, o1, stack_pointer);
-      }
-      else {
-    assembleg_2(copy_gc, o3, stack_pointer);
-    assembleg_2(copy_gc, o2, stack_pointer);
-    assembleg_2(copy_gc, o1, stack_pointer);
-      }
-    }
-  }
-
-  assembleg_3(call_gc, oaddr, three_operand, odest); */
 }
 
 void assembleg_inc(assembly_operand o1)
@@ -3057,8 +3138,10 @@ extern void asm_allocate_arrays(void)
     label_prev = my_calloc(sizeof(int), MAX_LABELS, "label dll 1");
     sequence_point_labels
         = my_calloc(sizeof(int), MAX_LABELS, "sequence point labels");
-    sequence_point_refs
-        = my_calloc(sizeof(dbgl), MAX_LABELS, "sequence point refs");
+    sequence_point_locations
+        = my_calloc(sizeof(debug_location),
+                    MAX_LABELS,
+                    "sequence point locations");
 
     zcode_holding_area = my_malloc(MAX_ZCODE_SIZE,"compiled routine code area");
     zcode_markers = my_malloc(MAX_ZCODE_SIZE, "compiled routine code area");
@@ -3077,7 +3160,7 @@ extern void asm_free_arrays(void)
     my_free(&label_next, "label dll 1");
     my_free(&label_prev, "label dll 2");
     my_free(&sequence_point_labels, "sequence point labels");
-    my_free(&sequence_point_refs, "sequence point refs");
+    my_free(&sequence_point_locations, "sequence point locations");
 
     my_free(&zcode_holding_area, "compiled routine code area");
     my_free(&zcode_markers, "compiled routine code markers");

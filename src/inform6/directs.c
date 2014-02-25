@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------------- */
 /*   "directs" : Directives (# commands)                                     */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -25,8 +25,31 @@ static int ifdef_stack[32], ifdef_sp;
 
 /* ------------------------------------------------------------------------- */
 
-extern int parse_given_directive(void)
-{   int *trace_level; int32 i, j, k, n, flag;
+static int ebf_error_recover(char *s1, char *s2)
+{
+    /* Display an "expected... but found..." error, then skim forward
+       to the next semicolon and return FALSE. This is such a common
+       case in parse_given_directive() that it's worth a utility
+       function. You will see many error paths that look like:
+          return ebf_error_recover(...);
+    */
+    ebf_error(s1, s2);
+    panic_mode_error_recovery();
+    return FALSE;
+}
+
+/* ------------------------------------------------------------------------- */
+
+extern int parse_given_directive(int internal_flag)
+{   /*  Internal_flag is FALSE if the directive is encountered normally,
+        TRUE if encountered with a # prefix inside a routine or object
+        definition.
+
+        Returns: FALSE if program continues, TRUE if end of file reached.    */
+
+    int *trace_level; int32 i, j, k, n, flag;
+    const char *constant_name;
+    debug_location_beginning beginning_debug_location;
 
     switch(token_value)
     {
@@ -42,26 +65,23 @@ extern int parse_given_directive(void)
            if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP))
                return FALSE;
 
-           /* Glulx doesn't have a 64-abbrev limit */
-           if (!glulx_mode && MAX_ABBREVS==64)
-           {   if (no_abbreviations==64)
-                   error("All 64 abbreviations already declared");
+           /* Z-code has a 64-abbrev limit; Glulx doesn't. */
+           if (!glulx_mode && no_abbreviations==64)
+           {   error("All 64 abbreviations already declared");
+               panic_mode_error_recovery(); return FALSE;
            }
-           else
-           {   if (no_abbreviations==MAX_ABBREVS)
-                   memoryerror("MAX_ABBREVS", MAX_ABBREVS);
-           }
+           if (no_abbreviations==MAX_ABBREVS)
+               memoryerror("MAX_ABBREVS", MAX_ABBREVS);
 
            if (abbrevs_lookup_table_made)
            {   error("All abbreviations must be declared together");
-               break;
+               panic_mode_error_recovery(); return FALSE;
            }
            if (token_type != DQ_TT)
-               ebf_error("abbreviation string", token_text);
-           else
+               return ebf_error_recover("abbreviation string", token_text);
            if (strlen(token_text)<2)
            {   error_named("It's not worth abbreviating", token_text);
-               break;
+               continue;
            }
            make_abbreviation(token_text);
         } while (TRUE);
@@ -83,7 +103,13 @@ extern int parse_given_directive(void)
     /*   Class classname ...                                                 */
     /* --------------------------------------------------------------------- */
 
-    case CLASS_CODE: make_class(NULL); return FALSE;       /* See "tables.c" */
+    case CLASS_CODE: 
+        if (internal_flag)
+        {   error("Cannot nest #Class inside a routine or object");
+            panic_mode_error_recovery(); return FALSE;
+        }
+        make_class(NULL);                                 /* See "objects.c" */
+        return FALSE;
 
     /* --------------------------------------------------------------------- */
     /*   Constant newname [[=] value] [, ...]                                */
@@ -94,22 +120,40 @@ extern int parse_given_directive(void)
 
       ParseConstantSpec:
         get_next_token(); i = token_value;
+        beginning_debug_location = get_token_location_beginning();
 
         if ((token_type != SYMBOL_TT)
             || (!(sflags[i] & (UNKNOWN_SFLAG + REDEFINABLE_SFLAG))))
-        {   ebf_error("new constant name", token_text);
-            panic_mode_error_recovery(); break;
+        {   discard_token_location(beginning_debug_location);
+            return ebf_error_recover("new constant name", token_text);
         }
 
         assign_symbol(i, 0, CONSTANT_T);
+        constant_name = token_text;
 
         get_next_token();
 
         if ((token_type == SEP_TT) && (token_value == COMMA_SEP))
+        {   if (debugfile_switch && !(sflags[i] & REDEFINABLE_SFLAG))
+            {   debug_file_printf("<constant>");
+                debug_file_printf("<identifier>%s</identifier>", constant_name);
+                write_debug_symbol_optional_backpatch(i);
+                write_debug_locations(get_token_location_end(beginning_debug_location));
+                debug_file_printf("</constant>");
+            }
             goto ParseConstantSpec;
+        }
 
         if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP))
+        {   if (debugfile_switch && !(sflags[i] & REDEFINABLE_SFLAG))
+            {   debug_file_printf("<constant>");
+                debug_file_printf("<identifier>%s</identifier>", constant_name);
+                write_debug_symbol_optional_backpatch(i);
+                write_debug_locations(get_token_location_end(beginning_debug_location));
+                debug_file_printf("</constant>");
+            }
             return FALSE;
+        }
 
         if (!((token_type == SEP_TT) && (token_value == SETEQUALS_SEP)))
             put_token_back();
@@ -136,6 +180,16 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
                 }
             }
         }
+
+        if (debugfile_switch && !(sflags[i] & REDEFINABLE_SFLAG))
+        {   debug_file_printf("<constant>");
+            debug_file_printf("<identifier>%s</identifier>", constant_name);
+            write_debug_symbol_optional_backpatch(i);
+            write_debug_locations
+                (get_token_location_end(beginning_debug_location));
+            debug_file_printf("</constant>");
+        }
+
         get_next_token();
         if ((token_type == SEP_TT) && (token_value == COMMA_SEP))
             goto ParseConstantSpec;
@@ -149,14 +203,12 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     case DEFAULT_CODE:
         if (module_switch)
         {   error("'Default' cannot be used in -M (Module) mode");
-            break;
+            panic_mode_error_recovery(); return FALSE;
         }
 
         get_next_token();
         if (token_type != SYMBOL_TT)
-        {   ebf_error("name", token_text);
-            panic_mode_error_recovery(); break;
-        }
+            return ebf_error_recover("name", token_text);
 
         i = -1;
         if (sflags[token_value] & UNKNOWN_SFLAG)
@@ -183,12 +235,74 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         break;
 
     /* --------------------------------------------------------------------- */
-    /*   Dictionary constantname "word"                                      */
+    /*   Dictionary 'word'                                                   */
+    /*   Dictionary 'word' val1                                              */
+    /*   Dictionary 'word' val1 val3                                         */
     /* --------------------------------------------------------------------- */
 
     case DICTIONARY_CODE:
-        obsolete_warning("use 'word' as a constant dictionary address");
-        goto ParseConstantSpec;
+        /* In Inform 5, this directive had the form
+             Dictionary SYMBOL "word";
+           This was deprecated as of I6 (if not earlier), and is no longer
+           supported at all. The current form just creates a dictionary word,
+           with the given values for dict_par1 and dict_par3. If the word
+           already exists, the values are bit-or'd in with the existing
+           values.
+           (We don't offer a way to set dict_par2, because that is entirely
+           reserved for the verb number. Or'ing values into it would create
+           garbage.)
+         */
+        get_next_token();
+        if (token_type != SQ_TT && token_type != DQ_TT)
+            return ebf_error_recover("dictionary word", token_text);
+
+        {
+            char *wd = token_text;
+            int val1 = 0;
+            int val3 = 0;
+
+            get_next_token();
+            if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP)) {
+                put_token_back();
+            }
+            else {
+                assembly_operand AO;
+                put_token_back();
+                AO = parse_expression(CONSTANT_CONTEXT);
+                if (module_switch && (AO.marker != 0))
+                    error("A definite value must be given as a Dictionary flag");
+                else
+                    val1 = AO.value;
+
+                get_next_token();
+                if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP)) {
+                    put_token_back();
+                }
+                else {
+                    assembly_operand AO;
+                    put_token_back();
+                    AO = parse_expression(CONSTANT_CONTEXT);
+                    if (module_switch && (AO.marker != 0))
+                        error("A definite value must be given as a Dictionary flag");
+                    else
+                        val3 = AO.value;
+                }
+            }
+
+            if (!glulx_mode) {
+                if ((val1 & ~0xFF) || (val3 & ~0xFF)) {
+                    warning("Dictionary flag values cannot exceed $FF in Z-code");
+                }
+            }
+            else {
+                if ((val1 & ~0xFFFF) || (val3 & ~0xFFFF)) {
+                    warning("Dictionary flag values cannot exceed $FFFF in Glulx");
+                }
+            }
+
+            dictionary_add(wd, val1, 0, val3);
+        }
+        break;
 
     /* --------------------------------------------------------------------- */
     /*   End                                                                 */
@@ -212,7 +326,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     /* --------------------------------------------------------------------- */
 
     case FAKE_ACTION_CODE:
-        make_fake_action(); break;                         /* see "tables.c" */
+        make_fake_action(); break;                          /* see "verbs.c" */
 
     /* --------------------------------------------------------------------- */
     /*   Global variable [= value / array...]                                */
@@ -242,9 +356,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
       DefCondition:
         get_next_token();
         if (token_type != SYMBOL_TT)
-        {   ebf_error("symbol name", token_text);
-            break;
-        }
+            return ebf_error_recover("symbol name", token_text);
 
         if ((token_text[0] == 'V')
             && (token_text[1] == 'N')
@@ -334,9 +446,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     HashIfCondition:
         get_next_token();
         if (!((token_type == SEP_TT) && (token_value == SEMICOLON_SEP)))
-        {   ebf_error("semicolon after 'If...' condition", token_text);
-            break;
-        }
+            return ebf_error_recover("semicolon after 'If...' condition", token_text);
 
         if (flag)
         {   ifdef_stack[ifdef_sp++] = TRUE; return FALSE; }
@@ -384,7 +494,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     case IMPORT_CODE:
         if (!module_switch)
         {   error("'Import' can only be used in -M (Module) mode");
-            break;
+            panic_mode_error_recovery(); return FALSE;
         }
         directives.enabled = TRUE;
         do
@@ -401,14 +511,15 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
 
     /* --------------------------------------------------------------------- */
     /*   Include "[>]filename"                                               */
+    /*                                                                       */
+    /* The ">" character means to load the file from the same directory as   */
+    /* the current file, instead of relying on the include path.             */
     /* --------------------------------------------------------------------- */
 
     case INCLUDE_CODE:
         get_next_token();
         if (token_type != DQ_TT)
-        {   ebf_error("filename in double-quotes", token_text);
-            panic_mode_error_recovery(); return FALSE;
-        }
+            return ebf_error_recover("filename in double-quotes", token_text);
 
         {   char *name = token_text;
 
@@ -431,9 +542,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     case LINK_CODE:
         get_next_token();
         if (token_type != DQ_TT)
-        {   ebf_error("filename in double-quotes", token_text);
-            panic_mode_error_recovery(); return FALSE;
-        }
+            return ebf_error_recover("filename in double-quotes", token_text);
         link_module(token_text);                           /* See "linker.c" */
         break;
 
@@ -447,19 +556,16 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
 
     case LOWSTRING_CODE:
         if (module_switch)
-        {   error("'LowString' cannot be used in -M (Module) mode"); break;
+        {   error("'LowString' cannot be used in -M (Module) mode");
+            panic_mode_error_recovery(); return FALSE;
         }
         get_next_token(); i = token_value;
         if ((token_type != SYMBOL_TT) || (!(sflags[i] & UNKNOWN_SFLAG)))
-        {   ebf_error("new low string name", token_text);
-            panic_mode_error_recovery(); return FALSE;
-        }
+            return ebf_error_recover("new low string name", token_text);
 
         get_next_token();
         if (token_type != DQ_TT)
-        {   ebf_error("literal string in double-quotes", token_text);
-            panic_mode_error_recovery(); return FALSE;
-        }
+            return ebf_error_recover("literal string in double-quotes", token_text);
 
         assign_symbol(i, compile_string(token_text, TRUE, TRUE), CONSTANT_T);
         break;
@@ -490,25 +596,25 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         if ((token_type == DIR_KEYWORD_TT) && (token_value == ERROR_DK))
         {   get_next_token();
             if (token_type != DQ_TT)
-            {   ebf_error("error message in double-quotes", token_text);
+            {   return ebf_error_recover("error message in double-quotes", token_text);
             }
             error(token_text); break;
         }
         if ((token_type == DIR_KEYWORD_TT) && (token_value == FATALERROR_DK))
         {   get_next_token();
             if (token_type != DQ_TT)
-            {   ebf_error("fatal error message in double-quotes", token_text);
+            {   return ebf_error_recover("fatal error message in double-quotes", token_text);
             }
             fatalerror(token_text); break;
         }
         if ((token_type == DIR_KEYWORD_TT) && (token_value == WARNING_DK))
         {   get_next_token();
             if (token_type != DQ_TT)
-            {   ebf_error("warning message in double-quotes", token_text);
+            {   return ebf_error_recover("warning message in double-quotes", token_text);
             }
             warning(token_text); break;
         }
-        ebf_error("a message in double-quotes, 'error', 'fatalerror' or 'warning'",
+        return ebf_error_recover("a message in double-quotes, 'error', 'fatalerror' or 'warning'",
             token_text);
         break;
 
@@ -516,14 +622,24 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     /*   Nearby objname "short name" ...                                     */
     /* --------------------------------------------------------------------- */
 
-    case NEARBY_CODE: make_object(TRUE, NULL, -1, -1, -1);
+    case NEARBY_CODE:
+        if (internal_flag)
+        {   error("Cannot nest #Nearby inside a routine or object");
+            panic_mode_error_recovery(); return FALSE;
+        }
+        make_object(TRUE, NULL, -1, -1, -1);
         return FALSE;                                     /* See "objects.c" */
 
     /* --------------------------------------------------------------------- */
     /*   Object objname "short name" ...                                     */
     /* --------------------------------------------------------------------- */
 
-    case OBJECT_CODE: make_object(FALSE, NULL, -1, -1, -1);
+    case OBJECT_CODE:
+        if (internal_flag)
+        {   error("Cannot nest #Object inside a routine or object");
+            panic_mode_error_recovery(); return FALSE;
+        }
+        make_object(FALSE, NULL, -1, -1, -1);
         return FALSE;                                     /* See "objects.c" */
 
     /* --------------------------------------------------------------------- */
@@ -547,7 +663,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         break;
 
     /* --------------------------------------------------------------------- */
-    /*   Replace routine                                                     */
+    /*   Replace routine [routinename]                                       */
     /* --------------------------------------------------------------------- */
 
     case REPLACE_CODE:
@@ -558,24 +674,51 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         directives.enabled = FALSE;
         directive_keywords.enabled = FALSE;
 
+        /* Don't count the upcoming symbol as a top-level reference
+           *to* the function. */
+        df_dont_note_global_symbols = TRUE;
         get_next_token();
+        df_dont_note_global_symbols = FALSE;
         if (token_type == SYSFUN_TT)
         {   if (system_function_usage[token_value] == 1)
                 error("You can't 'Replace' a system function already used");
             else system_function_usage[token_value] = 2;
-            break;
+            get_next_token();
+            if (!((token_type == SEP_TT) && (token_value == SEMICOLON_SEP)))
+            {
+                error("You can't give a 'Replace'd system function a new name");
+                panic_mode_error_recovery(); return FALSE;
+            }
+            return FALSE;
         }
 
         if (token_type != SYMBOL_TT)
-        {   ebf_error("name of routine to replace", token_text);
-            break;
+            return ebf_error_recover("name of routine to replace", token_text);
+        if (!(sflags[token_value] & UNKNOWN_SFLAG))
+            return ebf_error_recover("name of routine not yet defined", token_text);
+
+        sflags[token_value] |= REPLACE_SFLAG;
+
+        /* If a second symbol is provided, it will refer to the
+           original (replaced) definition of the routine. */
+        i = token_value;
+
+        system_functions.enabled = FALSE;
+        df_dont_note_global_symbols = TRUE;
+        get_next_token();
+        df_dont_note_global_symbols = FALSE;
+        if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP))
+        {   return FALSE;
         }
 
-        if (!(sflags[token_value] & UNKNOWN_SFLAG))
-        {   ebf_error("name of routine not yet defined", token_text);
-            break;
-        }
-        sflags[token_value] |= REPLACE_SFLAG;
+        if (token_type != SYMBOL_TT || !(sflags[token_value] & UNKNOWN_SFLAG))
+            return ebf_error_recover("semicolon ';' or new routine name", token_text);
+
+        /* Define the original-form symbol as a zero constant. Its
+           value will be overwritten later, when we define the
+           replacement. */
+        assign_symbol(token_value, 0, CONSTANT_T);
+        add_symbol_replacement_mapping(i, token_value);
 
         break;
 
@@ -587,11 +730,11 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         get_next_token();
         if ((token_type != DQ_TT) || (strlen(token_text)!=6))
         {   error("The serial number must be a 6-digit date in double-quotes");
-            break;
+            panic_mode_error_recovery(); return FALSE;
         }
         for (i=0; i<6; i++) if (isdigit(token_text[i])==0)
         {   error("The serial number must be a 6-digit date in double-quotes");
-            break;
+            panic_mode_error_recovery(); return FALSE;
         }
         strcpy(serial_code_buffer, token_text);
         serial_code_given_in_program = TRUE;
@@ -610,9 +753,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         directive_keywords.enabled = FALSE;
         if ((token_type != DIR_KEYWORD_TT)
             || ((token_value != SCORE_DK) && (token_value != TIME_DK)))
-        {   ebf_error("'score' or 'time' after 'statusline'", token_text);
-            break;
-        }
+            return ebf_error_recover("'score' or 'time' after 'statusline'", token_text);
         if (token_value == SCORE_DK) statusline_flag = SCORE_STYLE;
         else statusline_flag = TIME_STYLE;
         break;
@@ -622,12 +763,18 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
     /* --------------------------------------------------------------------- */
 
     case STUB_CODE:
-
-        get_next_token();
-        if (token_type != SYMBOL_TT)
-        {   ebf_error("routine name to stub", token_text);
+        if (internal_flag)
+        {   error("Cannot nest #Stub inside a routine or object");
             panic_mode_error_recovery(); return FALSE;
         }
+
+        /* The upcoming symbol is a definition; don't count it as a
+           top-level reference *to* the stub function. */
+        df_dont_note_global_symbols = TRUE;
+        get_next_token();
+        df_dont_note_global_symbols = FALSE;
+        if (token_type != SYMBOL_TT)
+            return ebf_error_recover("routine name to stub", token_text);
 
         i = token_value; flag = FALSE;
 
@@ -638,9 +785,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
 
         get_next_token(); k = token_value;
         if (token_type != NUMBER_TT)
-        {   ebf_error("number of local variables", token_text);
-            k = 0;
-        }
+            return ebf_error_recover("number of local variables", token_text);
         if ((k>4) || (k<0))
         {   error("Must specify 0 to 4 local variables for 'Stub' routine");
             k = 0;
@@ -658,8 +803,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
             local_variable_texts[3] = "dummy4";
 
             assign_symbol(i,
-                assemble_routine_header(k, FALSE, (char *) symbs[i],
-                    &token_line_ref, FALSE, i),
+                assemble_routine_header(k, FALSE, (char *) symbs[i], FALSE, i),
                 ROUTINE_T);
 
             /*  Ensure the return value of a stubbed routine is false,
@@ -674,7 +818,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
 
             for (i=1; i<=k; i++) variable_usage[i] = 1;
             sequence_point_follows = FALSE;
-            assemble_routine_end(FALSE, &token_line_ref);
+            assemble_routine_end(FALSE, get_token_locations());
         }
         break;
 
@@ -688,9 +832,7 @@ Fake_Action directives to a point after the inclusion of \"Parser\".)");
         get_next_token();
         dont_enter_into_symbol_table = FALSE;
         if (token_type != DQ_TT)
-        {   ebf_error("string of switches", token_text);
-            break;
-        }
+            return ebf_error_recover("string of switches", token_text);
         if (!ignore_switches_switch)
         {   if (constant_made_yet)
                 error("A 'Switches' directive must must come before \
@@ -731,9 +873,7 @@ the first constant definition");
         {   asm_trace_level = 1; return FALSE; }
 
         if (token_type != TRACE_KEYWORD_TT)
-        {   ebf_error("debugging keyword", token_text);
-            panic_mode_error_recovery(); return FALSE;
-        }
+            return ebf_error_recover("debugging keyword", token_text);
 
         trace_keywords.enabled = TRUE;
 
@@ -788,6 +928,31 @@ the first constant definition");
         break;
 
     /* --------------------------------------------------------------------- */
+    /*   Undef symbol                                                        */
+    /* --------------------------------------------------------------------- */
+
+    case UNDEF_CODE:
+        get_next_token();
+        if (token_type != SYMBOL_TT)
+            return ebf_error_recover("symbol name", token_text);
+
+        if (sflags[token_value] & UNKNOWN_SFLAG)
+        {   break; /* undef'ing an undefined constant is okay */
+        }
+
+        if (stypes[token_value] != CONSTANT_T)
+        {   error_named("Cannot Undef a symbol which is not a defined constant:", (char *)symbs[token_value]);
+            break;
+        }
+
+        if (debugfile_switch)
+        {   write_debug_undef(token_value);
+        }
+        end_symbol_scope(token_value);
+        sflags[token_value] |= USED_SFLAG;
+        break;
+
+    /* --------------------------------------------------------------------- */
     /*   Verb ...                                                            */
     /* --------------------------------------------------------------------- */
 
@@ -799,11 +964,16 @@ the first constant definition");
 
     case VERSION_CODE:
 
-        /* Ignore this if a version has already been set on the command line */
-        if (version_set_switch) break;
-
         {   assembly_operand AO;
             AO = parse_expression(CONSTANT_CONTEXT);
+            /* If a version has already been set on the command line,
+               that overrides this. */
+            if (version_set_switch)
+            {
+              warning("The Version directive was overridden by a command-line argument.");
+              break;
+            }
+
             if (module_switch && (AO.marker != 0))
                 error("A definite value must be given as version number");
             else 
@@ -835,7 +1005,7 @@ the first constant definition");
 
         if (glulx_mode) {
             error("The Zcharacter directive has no meaning in Glulx.");
-            return TRUE;
+            panic_mode_error_recovery(); return FALSE;
         }
 
         directive_keywords.enabled = TRUE;
@@ -847,18 +1017,18 @@ the first constant definition");
                 new_alphabet(token_text, 0);
                 get_next_token();
                 if (token_type != DQ_TT)
-                    ebf_error("double-quoted alphabet string", token_text);
-                else new_alphabet(token_text, 1);
+                    return ebf_error_recover("double-quoted alphabet string", token_text);
+                new_alphabet(token_text, 1);
                 get_next_token();
                 if (token_type != DQ_TT)
-                    ebf_error("double-quoted alphabet string", token_text);
-                else new_alphabet(token_text, 2);
+                    return ebf_error_recover("double-quoted alphabet string", token_text);
+                new_alphabet(token_text, 2);
             break;
 
             case SQ_TT:
                 map_new_zchar(text_to_unicode(token_text));
                 if (token_text[textual_form_length] != 0)
-                    ebf_error("single character value", token_text);
+                    return ebf_error_recover("single character value", token_text);
             break;
 
             case DIR_KEYWORD_TT:
@@ -879,13 +1049,13 @@ the first constant definition");
                                 new_zscii_character(text_to_unicode(token_text),
                                     plus_flag);
                                 if (token_text[textual_form_length] != 0)
-                                    ebf_error("single character value",
+                                    return ebf_error_recover("single character value",
                                         token_text);
                                 plus_flag = TRUE;
                                 break;
                             default:
-                                ebf_error("character or Unicode number",
-                                    token_text); break;
+                                return ebf_error_recover("character or Unicode number",
+                                    token_text);
                         }
                         get_next_token();
                     }
@@ -902,30 +1072,40 @@ the first constant definition");
                                     = token_value;
                                 break;
                             default:
-                                ebf_error("ZSCII number", token_text); break;
+                                return ebf_error_recover("ZSCII number",
+                                    token_text);
                         }
                         get_next_token();
                     }
                     put_token_back();
                     break;
                 default:
-                    ebf_error("'table', 'terminating', a string or a constant",
+                    return ebf_error_recover("'table', 'terminating', \
+a string or a constant",
                         token_text);
             }
                 break;
             default:
-                ebf_error("three alphabet strings, a 'table' or 'terminating' \
-command or a single character", token_text);
-            break;
+                return ebf_error_recover("three alphabet strings, \
+a 'table' or 'terminating' command or a single character", token_text);
         }
         break;
 
     /* ===================================================================== */
 
     }
+
+    /* We are now at the end of a syntactically valid directive. It
+       should be terminated by a semicolon. */
+
     get_next_token();
     if ((token_type != SEP_TT) || (token_value != SEMICOLON_SEP))
     {   ebf_error("';'", token_text);
+        /* Put the non-semicolon back. We will continue parsing from
+           that point, in hope that it's the start of a new directive.
+           (This recovers cleanly from a missing semicolon at the end
+           of a directive. It's not so clean if the directive *does*
+           end with a semicolon, but there's extra garbage before it.) */
         put_token_back();
     }
     return FALSE;

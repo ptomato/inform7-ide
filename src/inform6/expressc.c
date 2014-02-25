@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------------- */
 /*   "expressc" :  The expression code generator                             */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -16,11 +16,11 @@ int vivc_flag;                      /*  TRUE if the last code-generated
                                         treated as yet-to-be-defined constants
                                         and thus as values in void context  */
 
-/* ###- I'm making these global, because they're too useful to be
+/* These data structures are global, because they're too useful to be
    static. */
 assembly_operand stack_pointer, temp_var1, temp_var2, temp_var3,
   temp_var4, zero_operand, one_operand, two_operand, three_operand,
-  valueless_operand;
+  four_operand, valueless_operand;
 
 static void make_operands(void)
 {
@@ -52,6 +52,9 @@ static void make_operands(void)
     three_operand.type = SHORT_CONSTANT_OT;
     three_operand.value = 3;
     three_operand.marker = 0;
+    four_operand.type = SHORT_CONSTANT_OT;
+    four_operand.value = 4;
+    four_operand.marker = 0;
     valueless_operand.type = OMITTED_OT;
     valueless_operand.value = 0;
     valueless_operand.marker = 0;
@@ -84,6 +87,9 @@ static void make_operands(void)
     three_operand.type = BYTECONSTANT_OT;
     three_operand.value = 3;
     three_operand.marker = 0;
+    four_operand.type = BYTECONSTANT_OT;
+    four_operand.value = 4;
+    four_operand.marker = 0;
     valueless_operand.type = OMITTED_OT;
     valueless_operand.value = 0;
     valueless_operand.marker = 0;
@@ -430,8 +436,12 @@ static void value_in_void_context_z(assembly_operand AO)
             if (AO.marker == SYMBOL_MV)
                 t = (char *) (symbs[AO.value]);
             break;
+        case VARIABLE_OT:
+            t = variable_name(AO.value);
+            break;
         default:
-            t = (char *) (symbs[variable_tokens[AO.value]]);
+            compiler_error("Unable to print value in void context");
+            t = "<expression>";
             break;
     }
     vivc_flag = TRUE;
@@ -445,7 +455,7 @@ static void value_in_void_context_z(assembly_operand AO)
     if (strcmp(t, "print_char") == 0)
     obsolete_warning("ignoring 'print_char': use 'print (char)' instead");
     else
-    ebf_error("assignment or statement", t);
+    ebf_error("expression with side-effects", t);
 }
 
 static void write_result_z(assembly_operand to, assembly_operand from)
@@ -488,13 +498,13 @@ static void access_memory_z(int oc, assembly_operand AO1, assembly_operand AO2,
             }
         }
         if (size_ao.value==-1) 
-            from_module=TRUE; /*compiler_error("Array size can't be found");*/
+            from_module=TRUE;
         else {
             from_module=FALSE;
             type_ao = zero_ao; type_ao.value = array_types[y];
 
             if ((!is_systemfile()))
-                if (byte_flag)
+            {   if (byte_flag)
                 {
                     if ((array_types[y] == WORD_ARRAY)
                         || (array_types[y] == TABLE_ARRAY))
@@ -506,6 +516,7 @@ static void access_memory_z(int oc, assembly_operand AO1, assembly_operand AO2,
                         || (array_types[y] == STRING_ARRAY))
                     warning("Using '-->' to access a -> or string array");
                 }
+            }
         }
     }
 
@@ -795,13 +806,18 @@ static void value_in_void_context_g(assembly_operand AO)
             if (AO.marker == SYMBOL_MV)
                 t = (char *) (symbs[AO.value]);
             break;
+        case GLOBALVAR_OT:
+        case LOCALVAR_OT:
+            t = variable_name(AO.value);
+            break;
         default:
-            t = (char *) (symbs[variable_tokens[AO.value]]);
+            compiler_error("Unable to print value in void context");
+            t = "<expression>";
             break;
     }
     vivc_flag = TRUE;
 
-    ebf_error("assignment or statement", t);
+    ebf_error("expression with side-effects", t);
 }
 
 static void write_result_g(assembly_operand to, assembly_operand from)
@@ -841,7 +857,7 @@ static void access_memory_g(int oc, assembly_operand AO1, assembly_operand AO2,
         type_ao = zero_ao; type_ao.value = array_types[y];
 
         if ((!is_systemfile()))
-            if (data_len == 1)
+        {   if (data_len == 1)
             {
                 if ((array_types[y] == WORD_ARRAY)
                     || (array_types[y] == TABLE_ARRAY))
@@ -853,6 +869,7 @@ static void access_memory_g(int oc, assembly_operand AO1, assembly_operand AO2,
                     || (array_types[y] == STRING_ARRAY))
                  warning("Using '-->' to access a -> or string array");
             }
+        }
     }
 
 
@@ -1049,7 +1066,7 @@ static assembly_operand check_nonzero_at_runtime_g(assembly_operand AO1,
     assembleg_2_branch(jne_gc, stack_pointer, AO3, failed_label);
     /* Test if inside the "Class" object... */
     AO3.type = BYTECONSTANT_OT;
-    AO3.value = 5; /* object-offset: parent */
+    AO3.value = GOBJFIELD_PARENT();
     AO3.marker = 0;
     assembleg_3(aload_gc, AO, AO3, stack_pointer);
     ln = symbol_index("Class", -1);
@@ -1195,7 +1212,7 @@ static void compile_conditional_g(condclass *cc,
             error_label = next_label++;
           AO1 = check_nonzero_at_runtime(AO1, error_label, IN_RTE);
         }
-        AO4.value = 5;
+        AO4.value = GOBJFIELD_PARENT();
         AO4.marker = 0;
         AO4.type = BYTECONSTANT_OT;
         assembleg_3(aload_gc, AO1, AO4, stack_pointer);
@@ -2561,7 +2578,7 @@ static void generate_code_from(int n, int void_flag)
                                 AO = check_nonzero_at_runtime(AO, -1,
                                     PARENT_RTE);
                             AO2.type = BYTECONSTANT_OT;
-                            AO2.value = 5;
+                            AO2.value = GOBJFIELD_PARENT();
                             AO2.marker = 0; 
                             assembleg_3(aload_gc, AO, AO2, Result);
                          }
@@ -2575,7 +2592,7 @@ static void generate_code_from(int n, int void_flag)
                                AO = check_nonzero_at_runtime(AO, -1,
                                (sf_number==CHILD_SYSF)?CHILD_RTE:ELDEST_RTE);
                             AO2.type = BYTECONSTANT_OT;
-                            AO2.value = 7;
+                            AO2.value = GOBJFIELD_CHILD();
                             AO2.marker = 0;
                             assembleg_3(aload_gc, AO, AO2, Result);
                          }
@@ -2590,7 +2607,7 @@ static void generate_code_from(int n, int void_flag)
                                (sf_number==SIBLING_SYSF)
                                    ?SIBLING_RTE:YOUNGER_RTE);
                             AO2.type = BYTECONSTANT_OT;
-                            AO2.value = 6;
+                            AO2.value = GOBJFIELD_SIBLING();
                             AO2.marker = 0;
                             assembleg_3(aload_gc, AO, AO2, Result);
                          }
@@ -2603,11 +2620,11 @@ static void generate_code_from(int n, int void_flag)
                                 AO = check_nonzero_at_runtime(AO, -1,
                                     CHILDREN_RTE);
                             AO2.type = BYTECONSTANT_OT;
-                            AO2.value = 7;
+                            AO2.value = GOBJFIELD_CHILD();
                             AO2.marker = 0;
                             assembleg_store(temp_var1, zero_operand);
                             assembleg_3(aload_gc, AO, AO2, temp_var2);
-                            AO2.value = 6;
+                            AO2.value = GOBJFIELD_SIBLING();
                             assemble_label_no(next_label);
                             assembleg_1_branch(jz_gc, temp_var2, next_label+1);
                             assembleg_3(add_gc, temp_var1, one_operand, 
@@ -2641,10 +2658,10 @@ static void generate_code_from(int n, int void_flag)
                            AO = check_nonzero_at_runtime(AO, -1,
                              YOUNGEST_RTE);
                          AO2.marker = 0;
-                         AO2.value = 7;
+                         AO2.value = GOBJFIELD_CHILD();
                          AO2.type = BYTECONSTANT_OT;
                          assembleg_3(aload_gc, AO, AO2, temp_var1);
-                         AO2.value = 6;
+                         AO2.value = GOBJFIELD_SIBLING();
                          assembleg_1_branch(jz_gc, temp_var1, next_label+1);
                          assemble_label_no(next_label);
                          assembleg_3(aload_gc, temp_var1, AO2, temp_var2);
@@ -2664,17 +2681,17 @@ static void generate_code_from(int n, int void_flag)
                              YOUNGEST_RTE);
                          assembleg_store(temp_var3, AO);
                          AO2.marker = 0;
-                         AO2.value = 5;
+                         AO2.value = GOBJFIELD_PARENT();
                          AO2.type = BYTECONSTANT_OT;
                          assembleg_3(aload_gc, temp_var3, AO2, temp_var1);
                          assembleg_1_branch(jz_gc, temp_var1, next_label+2);
-                         AO2.value = 7;
+                         AO2.value = GOBJFIELD_CHILD();
                          assembleg_3(aload_gc, temp_var1, AO2, temp_var1);
                          assembleg_1_branch(jz_gc, temp_var1, next_label+2);
                          assembleg_2_branch(jeq_gc, temp_var3, temp_var1, 
                            next_label+1);
                          assemble_label_no(next_label);
-                         AO2.value = 6;
+                         AO2.value = GOBJFIELD_SIBLING();
                          assembleg_3(aload_gc, temp_var1, AO2, temp_var2);
                          assembleg_2_branch(jeq_gc, temp_var3, temp_var2,
                            next_label+2);

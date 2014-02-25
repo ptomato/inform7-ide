@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------------- */
 /*   "symbols" :  The symbols table; creating stock of reserved words        */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -17,7 +17,7 @@ int no_symbols;                        /* Total number of symbols defined    */
 int no_named_constants;                         /* Copied into story file    */
 
 /* ------------------------------------------------------------------------- */
-/*   Plus four arrays.  Each symbol has its own index n (an int32) and       */
+/*   Plus six arrays.  Each symbol has its own index n (an int32) and        */
 /*                                                                           */
 /*       svals[n]   is its value (must be 32 bits wide, i.e. an int32, tho'  */
 /*                  it is used to hold an unsigned 16 bit Z-machine value)   */
@@ -29,6 +29,15 @@ int no_named_constants;                         /* Copied into story file    */
 /*                  of the symbol, in the same case form as when created.    */
 /*       slines[n]  is the source line on which the symbol value was first   */
 /*                  assigned                                                 */
+/*       symbol_debug_backpatch_positions[n]                                 */
+/*                  is a file position in the debug information file where   */
+/*                  the symbol's value should be written after backpatching, */
+/*                  or else the null position if the value was known and     */
+/*                  written beforehand                                       */
+/*       replacement_debug_backpatch_positions[n]                            */
+/*                  is a file position in the debug information file where   */
+/*                  the symbol's name can be erased if it is replaced, or    */
+/*                  else null if the name will never need to be replaced     */
 /*                                                                           */
 /*   Comparison is case insensitive.                                         */
 /*   Note that local variable names are not entered into the symbols table,  */
@@ -49,11 +58,15 @@ int no_named_constants;                         /* Copied into story file    */
 #else
   signed char *stypes;
 #endif
+  maybe_file_position  *symbol_debug_backpatch_positions;
+  maybe_file_position  *replacement_debug_backpatch_positions;
 
 /* ------------------------------------------------------------------------- */
 /*   Memory to hold the text of symbol names: note that this memory is       */
 /*   allocated as needed in chunks of size SYMBOLS_CHUNK_SIZE.               */
 /* ------------------------------------------------------------------------- */
+
+#define MAX_SYMBOL_CHUNKS (100)
 
 static uchar *symbols_free_space,       /* Next byte free to hold new names  */
            *symbols_ceiling;            /* Pointer to the end of the current
@@ -62,6 +75,14 @@ static uchar *symbols_free_space,       /* Next byte free to hold new names  */
 static char** symbol_name_space_chunks; /* For chunks of memory used to hold
                                            the name strings of symbols       */
 static int no_symbol_name_space_chunks;
+
+typedef struct value_pair_struct {
+    int original_symbol;
+    int renamed_symbol;
+} value_pair_t;
+static value_pair_t *symbol_replacements;
+static int symbol_replacements_count;
+static int symbol_replacements_size; /* calloced size */
 
 /* ------------------------------------------------------------------------- */
 /*   The symbols table is "hash-coded" into a disjoint union of linked       */
@@ -117,7 +138,7 @@ static void make_case_conversion_grid(void)
 
 extern int hash_code_from_string(char *p)
 {   uint32 hashcode=0;
-    for (; *p; p++) hashcode=hashcode*30011 + case_conversion_grid[*p];
+    for (; *p; p++) hashcode=hashcode*30011 + case_conversion_grid[(uchar)*p];
     return (int) (hashcode % HASH_TAB_SIZE);
 }
 
@@ -137,17 +158,16 @@ extern int strcmpcis(char *p, char *q)
 }
 
 /* ------------------------------------------------------------------------- */
-/*   Symbol finding/creating.                                                */
+/*   Symbol finding, creating, and removing.                                 */
 /* ------------------------------------------------------------------------- */
 
 extern int symbol_index(char *p, int hashcode)
 {
-    /*  Return the index in the symbs/svals/sflags/stypes arrays of symbol
+    /*  Return the index in the symbs/svals/sflags/stypes/... arrays of symbol
         "p", creating a new symbol with that name if it isn't already there.
 
-        New symbols are created with fundamental type UNKNOWN_CONSTANT_FT,
-        value 0x100 (a 2-byte quantity in Z-machine terms) and type
-        CONSTANT_T.
+        New symbols are created with flag UNKNOWN_SFLAG, value 0x100
+        (a 2-byte quantity in Z-machine terms) and type CONSTANT_T.
 
         The string "p" is undamaged.                                         */
 
@@ -162,7 +182,12 @@ extern int symbol_index(char *p, int hashcode)
 
         r = (char *)symbs[this];
         new_entry = strcmpcis(r, p);
-        if (new_entry == 0) return this;
+        if (new_entry == 0) 
+        {
+            if (track_unused_routines)
+                df_note_function_symbol(this);
+            return this;
+        }
         if (new_entry > 0) break;
 
         last = this;
@@ -185,8 +210,16 @@ extern int symbol_index(char *p, int hashcode)
     {   symbols_free_space
             = my_malloc(SYMBOLS_CHUNK_SIZE, "symbol names chunk");
         symbols_ceiling = symbols_free_space + SYMBOLS_CHUNK_SIZE;
+        /* If we've passed MAX_SYMBOL_CHUNKS chunks, we print an error
+           message telling the user to increase SYMBOLS_CHUNK_SIZE.
+           That is the correct cure, even though the error comes out
+           worded inaccurately. */
+        if (no_symbol_name_space_chunks >= MAX_SYMBOL_CHUNKS)
+            memoryerror("SYMBOLS_CHUNK_SIZE", SYMBOLS_CHUNK_SIZE);
         symbol_name_space_chunks[no_symbol_name_space_chunks++]
             = (char *) symbols_free_space;
+        if (symbols_free_space+strlen(p)+1 >= symbols_ceiling)
+            memoryerror("SYMBOLS_CHUNK_SIZE", SYMBOLS_CHUNK_SIZE);
     }
 
     strcpy((char *) symbols_free_space, p);
@@ -198,9 +231,41 @@ extern int symbol_index(char *p, int hashcode)
     sflags[no_symbols]  =  UNKNOWN_SFLAG;
     stypes[no_symbols]  =  CONSTANT_T;
     slines[no_symbols]  =  ErrorReport.line_number
-                           + 0x10000*ErrorReport.file_number;
+                           + FILE_LINE_SCALE_FACTOR*ErrorReport.file_number;
+    if (debugfile_switch)
+    {   nullify_debug_file_position
+            (&symbol_debug_backpatch_positions[no_symbols]);
+        nullify_debug_file_position
+            (&replacement_debug_backpatch_positions[no_symbols]);
+    }
 
+    if (track_unused_routines)
+        df_note_function_symbol(no_symbols);
     return(no_symbols++);
+}
+
+extern void end_symbol_scope(int k)
+{
+    /* Remove the given symbol from the hash table, making it
+       invisible to symbol_index. This is used by the Undef directive.
+       If the symbol is not found, this silently does nothing.
+    */
+
+    int j;
+    j = hash_code_from_string((char *) symbs[k]);
+    if (start_of_list[j] == k)
+    {   start_of_list[j] = next_entry[k];
+        return;
+    }
+    j = start_of_list[j];
+    while (j != -1)
+    {
+        if (next_entry[j] == k)
+        {   next_entry[j] = next_entry[k];
+            return;
+        }
+        j = next_entry[j];
+    }
 }
 
 /* ------------------------------------------------------------------------- */
@@ -250,7 +315,9 @@ static void describe_flags(int flags)
 
 extern void describe_symbol(int k)
 {   printf("%4d  %-16s  %2d:%04d  %04x  %s  ",
-        k, (char *) (symbs[k]), slines[k]/0x10000, slines[k]%0x10000,
+        k, (char *) (symbs[k]), 
+        (int)(slines[k]/FILE_LINE_SCALE_FACTOR),
+        (int)(slines[k]%FILE_LINE_SCALE_FACTOR),
         svals[k], typename(stypes[k]));
     describe_flags(sflags[k]);
 }
@@ -330,26 +397,12 @@ extern void write_the_identifier_names(void)
                         }
                     }
 
-                    if (debugfile_switch)
-                    {   write_debug_byte(PROP_DBR);
-                        write_debug_byte(svals[i]/256);
-                        write_debug_byte(svals[i]%256);
-                        write_debug_string(idname_string);
-                    }
-
                     individual_name_strings[svals[i]]
                         = compile_string(idname_string, FALSE, FALSE);
                 }
             }
             else
             {   sprintf(idname_string, "%s", (char *) symbs[i]);
-
-                if (debugfile_switch)
-                {   write_debug_byte(PROP_DBR);
-                    write_debug_byte(svals[i]/256);
-                    write_debug_byte(svals[i]%256);
-                    write_debug_string(idname_string);
-                }
 
                 individual_name_strings[svals[i]]
                     = compile_string(idname_string, FALSE, FALSE);
@@ -369,26 +422,12 @@ extern void write_the_identifier_names(void)
                         }
                     }
 
-                    if (debugfile_switch)
-                    {   write_debug_byte(ATTR_DBR);
-                        write_debug_byte(svals[i]/256);
-                        write_debug_byte(svals[i]%256);
-                        write_debug_string(idname_string);
-                    }
-
                     attribute_name_strings[svals[i]]
                         = compile_string(idname_string, FALSE, FALSE);
                 }
             }
             else
             {   sprintf(idname_string, "%s", (char *) symbs[i]);
-
-                if (debugfile_switch)
-                {   write_debug_byte(ATTR_DBR);
-                    write_debug_byte(svals[i]/256);
-                    write_debug_byte(svals[i]%256);
-                    write_debug_string(idname_string);
-                }
 
                 attribute_name_strings[svals[i]]
                     = compile_string(idname_string, FALSE, FALSE);
@@ -399,10 +438,11 @@ extern void write_the_identifier_names(void)
             idname_string[strlen(idname_string)-3] = 0;
 
             if (debugfile_switch)
-            {   write_debug_byte(ACTION_DBR);
-                write_debug_byte(svals[i]/256);
-                write_debug_byte(svals[i]%256);
-                write_debug_string(idname_string);
+            {   debug_file_printf("<action>");
+                debug_file_printf
+                    ("<identifier>##%s</identifier>", idname_string);
+                debug_file_printf("<value>%d</value>", svals[i]);
+                debug_file_printf("</action>");
             }
 
             action_name_strings[svals[i]]
@@ -415,13 +455,6 @@ extern void write_the_identifier_names(void)
         {   sprintf(idname_string, "%s", (char *) symbs[i]);
             idname_string[strlen(idname_string)-3] = 0;
 
-            if (debugfile_switch)
-            {   write_debug_byte(ACTION_DBR);
-                write_debug_byte(svals[i]/256);
-                write_debug_byte(svals[i]%256);
-                write_debug_string(idname_string);
-            }
-
             action_name_strings[svals[i]
                     - ((grammar_version_number==1)?256:4096) + no_actions]
                 = compile_string(idname_string, FALSE, FALSE);
@@ -431,13 +464,6 @@ extern void write_the_identifier_names(void)
     for (j=0; j<no_arrays; j++)
     {   i = array_symbols[j];
         sprintf(idname_string, "%s", (char *) symbs[i]);
-
-        if (debugfile_switch)
-        {   write_debug_byte(ARRAY_DBR);
-            write_debug_byte(svals[i]/256);
-            write_debug_byte(svals[i]%256);
-            write_debug_string(idname_string);
-        }
 
         array_name_strings[j]
             = compile_string(idname_string, FALSE, FALSE);
@@ -482,7 +508,7 @@ static void assign_symbol_base(int index, int32 value, int type)
     {   sflags[index] &= (~UNKNOWN_SFLAG);
         if (is_systemfile()) sflags[index] |= INSF_SFLAG;
         slines[index] = ErrorReport.line_number
-                        + 0x10000*ErrorReport.file_number;
+                        + FILE_LINE_SCALE_FACTOR*ErrorReport.file_number;
     }
 }
 
@@ -509,17 +535,66 @@ extern void assign_marked_symbol(int index, int marker, int32 value, int type)
     }
 }
 
+static void emit_debug_information_for_predefined_symbol
+    (char *name, int32 symbol, int32 value, int type)
+{   if (debugfile_switch)
+    {   switch (type)
+        {   case CONSTANT_T:
+                debug_file_printf("<constant>");
+                debug_file_printf("<identifier>%s</identifier>", name);
+                write_debug_symbol_optional_backpatch(symbol);
+                debug_file_printf("</constant>");
+                break;
+            case GLOBAL_VARIABLE_T:
+                debug_file_printf("<global-variable>");
+                debug_file_printf("<identifier>%s</identifier>", name);
+                debug_file_printf("<address>");
+                write_debug_global_backpatch(value);
+                debug_file_printf("</address>");
+                debug_file_printf("</global-variable>");
+                break;
+            case OBJECT_T:
+                if (value)
+                {   compiler_error("Non-nothing object predefined");
+                }
+                debug_file_printf("<object>");
+                debug_file_printf("<identifier>%s</identifier>", name);
+                debug_file_printf("<value>0</value>");
+                debug_file_printf("</object>");
+                break;
+            case ATTRIBUTE_T:
+                debug_file_printf("<attribute>");
+                debug_file_printf("<identifier>%s</identifier>", name);
+                debug_file_printf("<value>%d</value>", value);
+                debug_file_printf("</attribute>");
+                break;
+            case PROPERTY_T:
+            case INDIVIDUAL_PROPERTY_T:
+                debug_file_printf("<property>");
+                debug_file_printf("<identifier>%s</identifier>", name);
+                debug_file_printf("<value>%d</value>", value);
+                debug_file_printf("</property>");
+                break;
+            default:
+                compiler_error
+                    ("Unable to emit debug information for predefined symbol");
+            break;
+        }
+    }
+}
 
 static void create_symbol(char *p, int32 value, int type)
 {   int i = symbol_index(p, -1);
     svals[i] = value; stypes[i] = type; slines[i] = 0;
     sflags[i] = USED_SFLAG + SYSTEM_SFLAG;
+    emit_debug_information_for_predefined_symbol(p, i, value, type);
 }
 
 static void create_rsymbol(char *p, int value, int type)
 {   int i = symbol_index(p, -1);
     svals[i] = value; stypes[i] = type; slines[i] = 0;
     sflags[i] = USED_SFLAG + SYSTEM_SFLAG + REDEFINABLE_SFLAG;
+    emit_debug_information_for_predefined_symbol(p, i, value, type);
 }
 
 static void stockup_symbols(void)
@@ -571,6 +646,14 @@ static void stockup_symbols(void)
         if (DICT_CHAR_SIZE != 1)
             create_symbol("DICT_IS_UNICODE", 1, CONSTANT_T);
         create_symbol("NUM_ATTR_BYTES",     NUM_ATTR_BYTES, CONSTANT_T);
+        create_symbol("GOBJFIELD_CHAIN",    GOBJFIELD_CHAIN(), CONSTANT_T);
+        create_symbol("GOBJFIELD_NAME",     GOBJFIELD_NAME(), CONSTANT_T);
+        create_symbol("GOBJFIELD_PROPTAB",  GOBJFIELD_PROPTAB(), CONSTANT_T);
+        create_symbol("GOBJFIELD_PARENT",   GOBJFIELD_PARENT(), CONSTANT_T);
+        create_symbol("GOBJFIELD_SIBLING",  GOBJFIELD_SIBLING(), CONSTANT_T);
+        create_symbol("GOBJFIELD_CHILD",    GOBJFIELD_CHILD(), CONSTANT_T);
+        create_symbol("GOBJ_EXT_START",     1+NUM_ATTR_BYTES+6*WORDSIZE, CONSTANT_T);
+        create_symbol("GOBJ_TOTAL_LENGTH",  1+NUM_ATTR_BYTES+6*WORDSIZE+GLULX_OBJECT_EXT_BYTES, CONSTANT_T);
         create_symbol("INDIV_PROP_START",   INDIV_PROP_START, CONSTANT_T);
     }    
 
@@ -655,6 +738,484 @@ static void stockup_symbols(void)
     }
 }
 
+/* ------------------------------------------------------------------------- */
+/*   The symbol replacement table. This is needed only for the               */
+/*   "Replace X Y" directive.                                                */
+/* ------------------------------------------------------------------------- */
+
+extern void add_symbol_replacement_mapping(int original, int renamed)
+{
+    int ix;
+
+    if (original == renamed) {
+        error_named("A routine cannot be 'Replace'd to itself:", (char *)symbs[original]);
+        return;        
+    }
+
+    if (symbol_replacements_count == symbol_replacements_size) {
+        int oldsize = symbol_replacements_size;
+        if (symbol_replacements_size == 0) 
+            symbol_replacements_size = 4;
+        else
+            symbol_replacements_size *= 2;
+        my_recalloc(&symbol_replacements, sizeof(value_pair_t), oldsize,
+            symbol_replacements_size, "symbol replacement table");
+    }
+
+    /* If the original form is already in our table, report an error.
+       Same goes if the replaced form is already in the table as an
+       original. (Other collision cases have already been
+       detected.) */
+
+    for (ix=0; ix<symbol_replacements_count; ix++) {
+        if (original == symbol_replacements[ix].original_symbol) {
+            error_named("A routine cannot be 'Replace'd to more than one new name:", (char *)symbs[original]);
+        }
+        if (renamed == symbol_replacements[ix].original_symbol) {
+            error_named("A routine cannot be 'Replace'd to a 'Replace'd name:", (char *)symbs[original]);
+        }
+    }
+
+    symbol_replacements[symbol_replacements_count].original_symbol = original;
+    symbol_replacements[symbol_replacements_count].renamed_symbol = renamed;
+    symbol_replacements_count++;
+}
+
+extern int find_symbol_replacement(int *value)
+{
+    int changed = FALSE;
+    int ix;
+
+    if (!symbol_replacements)
+        return FALSE;
+
+    for (ix=0; ix<symbol_replacements_count; ix++) {
+        if (*value == symbol_replacements[ix].original_symbol) {
+            *value = symbol_replacements[ix].renamed_symbol;
+            changed = TRUE;
+        }
+    }
+
+    return changed;
+}
+
+/* ------------------------------------------------------------------------- */
+/*   The dead-function removal optimization.                                 */
+/* ------------------------------------------------------------------------- */
+
+int track_unused_routines; /* set if either WARN_UNUSED_ROUTINES or
+                              OMIT_UNUSED_ROUTINES is nonzero */
+int df_dont_note_global_symbols; /* temporarily set at times in parsing */
+static int df_tables_closed; /* set at end of compiler pass */
+
+typedef struct df_function_struct df_function_t;
+typedef struct df_reference_struct df_reference_t;
+
+struct df_function_struct {
+    char *name; /* borrowed reference, generally to the symbs[] table */
+    int32 source_line; /* copied from routine_starts_line */
+    int sysfile; /* does this occur in a system file? */
+    uint32 address; /* function offset in zcode_area (not the final address) */
+    uint32 newaddress; /* function offset after stripping */
+    uint32 length;
+    int usage;
+    df_reference_t *refs; /* chain of references made *from* this function */
+    int processed;
+
+    df_function_t *funcnext; /* in forward functions order */
+    df_function_t *todonext; /* in the todo chain */
+    df_function_t *next; /* in the hash table */
+};
+
+struct df_reference_struct {
+    uint32 address; /* function offset in zcode_area (not the final address) */
+    int symbol; /* index in symbols array */
+
+    df_reference_t *refsnext; /* in the function's refs chain */
+    df_reference_t *next; /* in the hash table */
+};
+
+/* Bitmask flags for how functions are used: */
+#define DF_USAGE_GLOBAL   (1<<0) /* In a global variable, array, etc */
+#define DF_USAGE_EMBEDDED (1<<1) /* An anonymous function in a property */
+#define DF_USAGE_MAIN     (1<<2) /* Main() or Main__() */
+#define DF_USAGE_FUNCTION (1<<3) /* Used from another used function */
+
+#define DF_FUNCTION_HASH_BUCKETS (1023)
+
+/* Table of all compiled functions. (Only created if track_unused_routines
+   is set.) */
+static df_function_t **df_functions;
+/* List of all compiled functions, in address order. The first entry
+   has address DF_NOT_IN_FUNCTION, and stands in for the global namespace. */
+static df_function_t *df_functions_head;
+static df_function_t *df_functions_tail;
+/* Used during output_file(), to track how far the code-area output has
+   gotten. */
+static df_function_t *df_iterator;
+
+#define DF_NOT_IN_FUNCTION ((uint32)0xFFFFFFFF)
+#define DF_SYMBOL_HASH_BUCKETS (4095)
+
+/* Map of what functions reference what other functions. (Only created if
+   track_unused_routines is set.) */
+static df_reference_t **df_symbol_map;
+
+/* Globals used while a function is being compiled. When a function
+  *isn't* being compiled, df_current_function_addr will be DF_NOT_IN_FUNCTION
+  and df_current_function will refer to the global namespace record. */
+static df_function_t *df_current_function;
+static char *df_current_function_name;
+static uint32 df_current_function_addr;
+
+/* Size totals for compiled code. These are only meaningful if
+   track_unused_routines is true. (If we're only doing WARN_UNUSED_ROUTINES,
+   these values will be set, but the "after" value will not affect the
+   final game file.) */
+uint32 df_total_size_before_stripping;
+uint32 df_total_size_after_stripping;
+
+/* When we begin compiling a function, call this to note that fact.
+   Any symbol referenced from now on will be associated with the function.
+*/
+extern void df_note_function_start(char *name, uint32 address, 
+    int embedded_flag, int32 source_line)
+{
+    df_function_t *func;
+    int bucket;
+
+    if (df_tables_closed)
+        error("Internal error in stripping: Tried to start a new function after tables were closed.");
+
+    /* We retain the name only for debugging output. Note that embedded
+       functions all show up as "<embedded>" -- their "obj.prop" name
+       never gets stored in permanent memory. */
+    df_current_function_name = name;
+    df_current_function_addr = address;
+
+    func = my_malloc(sizeof(df_function_t), "df function entry");
+    memset(func, 0, sizeof(df_function_t));
+    func->name = name;
+    func->address = address;
+    func->source_line = source_line;
+    func->sysfile = (address == DF_NOT_IN_FUNCTION || is_systemfile());
+    /* An embedded function is stored in an object property, so we
+       consider it to be used a priori. */
+    if (embedded_flag)
+        func->usage |= DF_USAGE_EMBEDDED;
+
+    if (!df_functions_head) {
+        df_functions_head = func;
+        df_functions_tail = func;
+    }
+    else {
+        df_functions_tail->funcnext = func;
+        df_functions_tail = func;
+    }
+
+    bucket = address % DF_FUNCTION_HASH_BUCKETS;
+    func->next = df_functions[bucket];
+    df_functions[bucket] = func;
+
+    df_current_function = func;
+}
+
+/* When we're done compiling a function, call this. Any symbol referenced
+   from now on will be associated with the global namespace.
+*/
+extern void df_note_function_end(uint32 endaddress)
+{
+    df_current_function->length = endaddress - df_current_function->address;
+
+    df_current_function_name = NULL;
+    df_current_function_addr = DF_NOT_IN_FUNCTION;
+    df_current_function = df_functions_head; /* the global namespace */
+}
+
+/* Find the function record for a given address. (Addresses are offsets
+   in zcode_area.)
+*/
+static df_function_t *df_function_for_address(uint32 address)
+{
+    int bucket = address % DF_FUNCTION_HASH_BUCKETS;
+    df_function_t *func;
+    for (func = df_functions[bucket]; func; func = func->next) {
+        if (func->address == address)
+            return func;
+    }
+    return NULL;
+}
+
+/* Whenever a function is referenced, we call this to note who called it.
+*/
+extern void df_note_function_symbol(int symbol)
+{
+    int bucket, symtype;
+    df_reference_t *ent;
+
+    /* If the compiler pass is over, looking up symbols does not create
+       a global reference. */
+    if (df_tables_closed)
+        return;
+    /* In certain cases during parsing, looking up symbols does not
+       create a global reference. (For example, when reading the name
+       of a function being defined.) */
+    if (df_dont_note_global_symbols)
+        return;
+
+    /* We are only interested in functions, or forward-declared symbols
+       that might turn out to be functions. */
+    symtype = stypes[symbol];
+    if (symtype != ROUTINE_T && symtype != CONSTANT_T)
+        return;
+    if (symtype == CONSTANT_T && !(sflags[symbol] & UNKNOWN_SFLAG))
+        return;
+
+    bucket = (df_current_function_addr ^ (uint32)symbol) % DF_SYMBOL_HASH_BUCKETS;
+    for (ent = df_symbol_map[bucket]; ent; ent = ent->next) {
+        if (ent->address == df_current_function_addr && ent->symbol == symbol)
+            return;
+    }
+
+    /* Create a new reference entry in df_symbol_map. */
+    ent = my_malloc(sizeof(df_reference_t), "df symbol map entry");
+    ent->address = df_current_function_addr;
+    ent->symbol = symbol;
+    ent->next = df_symbol_map[bucket];
+    df_symbol_map[bucket] = ent;
+
+    /* Add the reference to the function's entry as well. */
+    /* The current function is the most recently added, so it will be
+       at the top of its bucket. That makes this call fast. Unless
+       we're in global scope, in which case it might be slower.
+       (I suppose we could cache the df_function_t pointer of the
+       current function, to speed things up.) */
+    if (!df_current_function || df_current_function_addr != df_current_function->address)
+        compiler_error("DF: df_current_function does not match current address.");
+    ent->refsnext = df_current_function->refs;
+    df_current_function->refs = ent;
+}
+
+/* This does the hard work of figuring out what functions are truly dead.
+   It's called near the end of run_pass() in inform.c.
+*/
+extern void locate_dead_functions(void)
+{
+    df_function_t *func, *tofunc;
+    df_reference_t *ent;
+    int ix;
+
+    if (!track_unused_routines)
+        compiler_error("DF: locate_dead_functions called, but function references have not been mapped");
+
+    df_tables_closed = TRUE;
+    df_current_function = NULL;
+
+    /* Note that Main__ was tagged as global implicitly during
+       compile_initial_routine(). Main was tagged during
+       issue_unused_warnings(). But for the sake of thoroughness,
+       we'll mark them specially. */
+
+    ix = symbol_index("Main__", -1);
+    if (stypes[ix] == ROUTINE_T) {
+        uint32 addr = svals[ix] * (glulx_mode ? 1 : scale_factor);
+        tofunc = df_function_for_address(addr);
+        if (tofunc)
+            tofunc->usage |= DF_USAGE_MAIN;
+    }
+    ix = symbol_index("Main", -1);
+    if (stypes[ix] == ROUTINE_T) {
+        uint32 addr = svals[ix] * (glulx_mode ? 1 : scale_factor);
+        tofunc = df_function_for_address(addr);
+        if (tofunc)
+            tofunc->usage |= DF_USAGE_MAIN;
+    }
+
+    /* Go through all the functions referenced at the global level;
+       mark them as used. */
+
+    func = df_functions_head;
+    if (!func || func->address != DF_NOT_IN_FUNCTION)
+        compiler_error("DF: Global namespace entry is not at the head of the chain.");
+
+    for (ent = func->refs; ent; ent=ent->refsnext) {
+        uint32 addr;
+        int symbol = ent->symbol;
+        if (stypes[symbol] != ROUTINE_T)
+            continue;
+        addr = svals[symbol] * (glulx_mode ? 1 : scale_factor);
+        tofunc = df_function_for_address(addr);
+        if (!tofunc) {
+            error_named("Internal error in stripping: global ROUTINE_T symbol is not found in df_function map:", (char *)symbs[symbol]);
+            continue;
+        }
+        /* A function may be marked here more than once. That's fine. */
+        tofunc->usage |= DF_USAGE_GLOBAL;
+    }
+
+    /* Perform a breadth-first search through functions, starting with
+       the ones that are known to be used at the top level. */
+    {
+        df_function_t *todo, *todotail;
+        df_function_t *func;
+        todo = NULL;
+        todotail = NULL;
+
+        for (func = df_functions_head; func; func = func->funcnext) {
+            if (func->address == DF_NOT_IN_FUNCTION)
+                continue;
+            if (func->usage == 0)
+                continue;
+            if (!todo) {
+                todo = func;
+                todotail = func;
+            }
+            else {
+                todotail->todonext = func;
+                todotail = func;
+            }
+        }
+        
+        /* todo is a linked list of functions which are known to be
+           used. If a function's usage field is nonzero, it must be
+           either be on the todo list or have come off already (in
+           which case processed will be set). */
+
+        while (todo) {
+            /* Pop the next function. */
+            func = todo;
+            todo = todo->todonext;
+            if (!todo)
+                todotail = NULL;
+
+            if (func->processed)
+                error_named("Internal error in stripping: function has been processed twice:", func->name);
+
+            /* Go through the function's symbol references. Any
+               reference to a routine, push it into the todo list (if
+               it isn't there already). */
+
+            for (ent = func->refs; ent; ent=ent->refsnext) {
+                uint32 addr;
+                int symbol = ent->symbol;
+                if (stypes[symbol] != ROUTINE_T)
+                    continue;
+                addr = svals[symbol] * (glulx_mode ? 1 : scale_factor);
+                tofunc = df_function_for_address(addr);
+                if (!tofunc) {
+                    error_named("Internal error in stripping: function ROUTINE_T symbol is not found in df_function map:", (char *)symbs[symbol]);
+                    continue;
+                }
+                if (tofunc->usage)
+                    continue;
+
+                /* Not yet known to be used. Add it to the todo list. */
+                tofunc->usage |= DF_USAGE_FUNCTION;
+                if (!todo) {
+                    todo = tofunc;
+                    todotail = tofunc;
+                }
+                else {
+                    todotail->todonext = tofunc;
+                    todotail = tofunc;
+                }
+            }
+
+            func->processed = TRUE;
+        }
+    }
+
+    /* Go through all functions; figure out how much space is consumed,
+       with and without useless functions. */
+
+    {
+        df_function_t *func;
+
+        df_total_size_before_stripping = 0;
+        df_total_size_after_stripping = 0;
+
+        for (func = df_functions_head; func; func = func->funcnext) {
+            if (func->address == DF_NOT_IN_FUNCTION)
+                continue;
+
+            if (func->address != df_total_size_before_stripping)
+                compiler_error("DF: Address gap in function list");
+
+            df_total_size_before_stripping += func->length;
+            if (func->usage) {
+                func->newaddress = df_total_size_after_stripping;
+                df_total_size_after_stripping += func->length;
+            }
+
+            if (!glulx_mode && (df_total_size_after_stripping % scale_factor != 0))
+                compiler_error("DF: New function address is not aligned");
+
+            if (WARN_UNUSED_ROUTINES && !func->usage) {
+                if (!func->sysfile || WARN_UNUSED_ROUTINES >= 2)
+                    uncalled_routine_warning("Routine", func->name, func->source_line);
+            }
+        }
+    }
+
+    /* df_measure_hash_table_usage(); */
+}
+
+extern uint32 df_stripped_address_for_address(uint32 addr)
+{
+    df_function_t *func;
+
+    if (!track_unused_routines)
+        compiler_error("DF: df_stripped_address_for_address called, but function references have not been mapped");
+
+    if (!glulx_mode)
+        func = df_function_for_address(addr*scale_factor);
+    else
+        func = df_function_for_address(addr);
+
+    if (!func) {
+        compiler_error("DF: Unable to find function while backpatching");
+        return 0;
+    }
+    if (!func->usage)
+        compiler_error("DF: Tried to backpatch a function address which should be stripped");
+
+    if (!glulx_mode)
+        return func->newaddress / scale_factor;
+    else
+        return func->newaddress;
+}
+
+/* The output_file() routines in files.c have to run down the list of
+   functions, deciding who is in and who is out. But I don't want to
+   export the df_function_t list structure. Instead, I provide this
+   silly iterator pair. Set it up with df_prepare_function_iterate();
+   then repeatedly call df_next_function_iterate().
+*/
+
+extern void df_prepare_function_iterate(void)
+{
+    df_iterator = df_functions_head;
+    if (!df_iterator || df_iterator->address != DF_NOT_IN_FUNCTION)
+        compiler_error("DF: Global namespace entry is not at the head of the chain.");
+    if (!df_iterator->funcnext || df_iterator->funcnext->address != 0)
+        compiler_error("DF: First function entry is not second in the chain.");
+}
+
+/* This returns the end of the next function, and whether the next function
+   is used (live).
+*/
+extern uint32 df_next_function_iterate(int *funcused)
+{
+    if (df_iterator)
+        df_iterator = df_iterator->funcnext;
+    if (!df_iterator) {
+        *funcused = TRUE;
+        return df_total_size_before_stripping+1;
+    }
+    *funcused = (df_iterator->usage != 0);
+    return df_iterator->address + df_iterator->length;
+}
+
 /* ========================================================================= */
 /*   Data structure management routines                                      */
 /* ------------------------------------------------------------------------- */
@@ -676,10 +1237,28 @@ extern void init_symbols_vars(void)
 
     no_symbols = 0;
 
+    symbol_replacements = NULL;
+    symbol_replacements_count = 0;
+    symbol_replacements_size = 0;
+
     make_case_conversion_grid();
+
+    track_unused_routines = (WARN_UNUSED_ROUTINES || OMIT_UNUSED_ROUTINES);
+    df_tables_closed = FALSE;
+    df_symbol_map = NULL;
+    df_functions = NULL;
+    df_functions_head = NULL;
+    df_functions_tail = NULL;
+    df_current_function = NULL;
 }
 
-extern void symbols_begin_pass(void) { }
+extern void symbols_begin_pass(void) 
+{
+    df_total_size_before_stripping = 0;
+    df_total_size_after_stripping = 0;
+    df_dont_note_global_symbols = FALSE;
+    df_iterator = NULL;
+}
 
 extern void symbols_allocate_arrays(void)
 {
@@ -690,16 +1269,43 @@ extern void symbols_allocate_arrays(void)
     slines     = my_calloc(sizeof(int32),   MAX_SYMBOLS, "symbol lines");
     stypes     = my_calloc(sizeof(char),    MAX_SYMBOLS, "symbol types");
     sflags     = my_calloc(sizeof(int),     MAX_SYMBOLS, "symbol flags");
+    if (debugfile_switch)
+    {   symbol_debug_backpatch_positions =
+            my_calloc(sizeof(maybe_file_position), MAX_SYMBOLS,
+                      "symbol debug information backpatch positions");
+        replacement_debug_backpatch_positions =
+            my_calloc(sizeof(maybe_file_position), MAX_SYMBOLS,
+                      "replacement debug information backpatch positions");
+    }
     next_entry = my_calloc(sizeof(int),     MAX_SYMBOLS,
                      "symbol linked-list forward links");
     start_of_list = my_calloc(sizeof(int32), HASH_TAB_SIZE,
                      "hash code list beginnings");
 
     symbol_name_space_chunks
-        = my_calloc(sizeof(char *), 100, "symbol names chunk addresses");
+        = my_calloc(sizeof(char *), MAX_SYMBOL_CHUNKS, "symbol names chunk addresses");
+
+    if (track_unused_routines) {
+        df_tables_closed = FALSE;
+
+        df_symbol_map = my_calloc(sizeof(df_reference_t *), DF_SYMBOL_HASH_BUCKETS, "df symbol-map hash table");
+        memset(df_symbol_map, 0, sizeof(df_reference_t *) * DF_SYMBOL_HASH_BUCKETS);
+
+        df_functions = my_calloc(sizeof(df_function_t *), DF_FUNCTION_HASH_BUCKETS, "df function hash table");
+        memset(df_functions, 0, sizeof(df_function_t *) * DF_FUNCTION_HASH_BUCKETS);
+        df_functions_head = NULL;
+        df_functions_tail = NULL;
+
+        df_note_function_start("<global namespace>", DF_NOT_IN_FUNCTION, FALSE, -1);
+        df_note_function_end(DF_NOT_IN_FUNCTION);
+        /* Now df_current_function is df_functions_head. */
+    }
 
     init_symbol_banks();
     stockup_symbols();
+
+    /*  Allocated as needed  */
+    symbol_replacements = NULL;
 
     /*  Allocated during story file construction, not now  */
     individual_name_strings = NULL;
@@ -723,8 +1329,44 @@ extern void symbols_free_arrays(void)
     my_free(&slines, "symbol lines");
     my_free(&stypes, "symbol types");
     my_free(&sflags, "symbol flags");
+    if (debugfile_switch)
+    {   my_free
+            (&symbol_debug_backpatch_positions,
+             "symbol debug information backpatch positions");
+        my_free
+            (&replacement_debug_backpatch_positions,
+             "replacement debug information backpatch positions");
+    }
     my_free(&next_entry, "symbol linked-list forward links");
     my_free(&start_of_list, "hash code list beginnings");
+
+    if (symbol_replacements)
+        my_free(&symbol_replacements, "symbol replacement table");
+
+    if (df_symbol_map) {
+        for (i=0; i<DF_SYMBOL_HASH_BUCKETS; i++) {
+            df_reference_t *ent = df_symbol_map[i];
+            while (ent) {
+                df_reference_t *next = ent->next;
+                my_free(&ent, "df symbol map entry");
+                ent = next;
+            }
+        }
+        my_free(&df_symbol_map, "df symbol-map hash table");
+    }
+    if (df_functions) {
+        for (i=0; i<DF_FUNCTION_HASH_BUCKETS; i++) {
+            df_function_t *func = df_functions[i];
+            while (func) {
+                df_function_t *next = func->next;
+                my_free(&func, "df function entry");
+                func = next;
+            }
+        }
+        my_free(&df_functions, "df function hash table");
+        df_functions_head = NULL;
+        df_functions_tail = NULL;
+    }
 
     if (individual_name_strings != NULL)
         my_free(&individual_name_strings, "property name strings");

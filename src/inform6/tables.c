@@ -3,8 +3,8 @@
 /*               end of dynamic memory, gluing together all the required     */
 /*               tables.                                                     */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -145,7 +145,7 @@ static int32 rough_size_of_paged_memory_z(void)
             + 6*32;                                   /* abbreviations table */
 
     total += 8;                                    /* header extension table */
-    if (header_ext_setting>3) total += (header_ext_setting-3)*2;
+    if (ZCODE_HEADER_EXT_WORDS>3) total += (ZCODE_HEADER_EXT_WORDS-3)*2;
 
     if (alphabet_modified) total += 78;               /* character set table */
 
@@ -164,8 +164,8 @@ static int32 rough_size_of_paged_memory_z(void)
     for (i=0; i<no_Inform_verbs; i++)
         total += 2 + 1 +                        /* address of grammar table, */
                                                   /* number of grammar lines */
-                 (grammar_version_number == 1)?
-                 (8*Inform_verbs[i].lines):0;               /* grammar lines */
+                 ((grammar_version_number == 1)?
+                  (8*Inform_verbs[i].lines):0);             /* grammar lines */
 
     if (grammar_version_number != 1)
         total += grammar_lines_top;            /* size of grammar lines area */
@@ -227,7 +227,7 @@ static int32 rough_size_of_paged_memory_g(void)
 
 static void construct_storyfile_z(void)
 {   uchar *p;
-    int32 i, j, k, l, mark, objs, strings_length,
+    int32 i, j, k, l, mark, objs, strings_length, code_length,
           limit, excess, extend_offset, headerext_length;
     int32 globals_at, link_table_at, dictionary_at, actions_at, preactions_at,
           abbrevs_at, prop_defaults_at, object_tree_at, object_props_at,
@@ -290,8 +290,17 @@ static void construct_storyfile_z(void)
     /*  ------------------- Header extension table ------------------------- */
 
     headerext_at = mark;
-    headerext_length = 3;                            /* Usually 3 words long */
-    if (header_ext_setting>3) headerext_length = header_ext_setting;
+    headerext_length = ZCODE_HEADER_EXT_WORDS;
+    if (zscii_defn_modified) {
+        /* Need at least 3 words for unicode table address */
+        if (headerext_length < 3)
+            headerext_length = 3;
+    }
+    if (ZCODE_HEADER_FLAGS_3) {
+        /* Need at least 4 words for the flags-3 field (ZSpec 1.1) */
+        if (headerext_length < 4)
+            headerext_length = 4;
+    }
     p[mark++] = 0; p[mark++] = headerext_length;
     for (i=0; i<headerext_length; i++)
     {   p[mark++] = 0; p[mark++] = 0;
@@ -604,7 +613,15 @@ or less.");
     /*  -------------------------------------------------------------------- */
 
     Write_Code_At = mark;
-    mark += zmachine_pc;
+    if (!OMIT_UNUSED_ROUTINES) {
+        code_length = zmachine_pc;
+    }
+    else {
+        if (zmachine_pc != df_total_size_before_stripping)
+            compiler_error("Code size does not match (zmachine_pc and df_total_size).");
+        code_length = df_total_size_after_stripping;
+    }
+    mark += code_length;
 
     /*  ------------------ Another synchronising gap ----------------------- */
 
@@ -665,6 +682,7 @@ or less.");
     prop_defaults_offset = prop_defaults_at;
     prop_values_offset = object_props_at;
     static_memory_offset = grammar_table_at;
+    grammar_table_offset = grammar_table_at;
 
     if (extend_memory_map)
     {   extend_offset=256;
@@ -683,7 +701,7 @@ or less.");
          * With the standard memory model, we only need the earlier total size
          * check.
          */
-        excess = zmachine_pc + code_offset - (scale_factor*((int32) 0x10000L));
+        excess = code_length + code_offset - (scale_factor*((int32) 0x10000L));
         if (excess > 0)
         {   char code_full_error[80];
             sprintf(code_full_error,
@@ -771,11 +789,24 @@ or less.");
 
     /*  ------------------------ Header Extension -------------------------- */
 
-    i = headerext_at + 2;
-    p[i++] = 0; p[i++] = 0;                       /* Mouse x-coordinate slot */
-    p[i++] = 0; p[i++] = 0;                       /* Mouse y-coordinate slot */
-    j = unicode_at;
-    p[i++] = j/256; p[i++] = j%256;     /* Unicode translation table address */
+    /* The numbering in the spec is a little weird -- it's headerext_length
+       words *after* the initial length word. We follow the spec numbering
+       in this switch statement, so the count is 1-based. */
+    for (i=1; i<=headerext_length; i++) {
+        switch (i) {
+        case 3:
+            j = unicode_at;             /* Unicode translation table address */
+            break;
+        case 4:
+            j = ZCODE_HEADER_FLAGS_3;                        /* Flags 3 word */
+            break;
+        default:
+            j = 0;
+            break;
+        }
+        p[headerext_at+2*i+0] = j / 256;
+        p[headerext_at+2*i+1] = j % 256;
+    }
 
     /*  ----------------- The Header: Extras for modules ------------------- */
 
@@ -838,14 +869,20 @@ or less.");
 
         mark = actions_at;
         for (i=0; i<no_actions; i++)
-        {   j=action_byte_offset[i] + code_offset/scale_factor;
+        {   j=action_byte_offset[i];
+            if (OMIT_UNUSED_ROUTINES)
+                j = df_stripped_address_for_address(j);
+            j += code_offset/scale_factor;
             p[mark++]=j/256; p[mark++]=j%256;
         }
 
         if (grammar_version_number == 1)
         {   mark = preactions_at;
             for (i=0; i<no_grammar_token_routines; i++)
-            {   j=grammar_token_routine[i] + code_offset/scale_factor;
+            {   j=grammar_token_routine[i];
+                if (OMIT_UNUSED_ROUTINES)
+                    j = df_stripped_address_for_address(j);
+                j += code_offset/scale_factor;
                 p[mark++]=j/256; p[mark++]=j%256;
             }
         }
@@ -866,6 +903,8 @@ or less.");
                                         + dictionary_offset + 7;
                                 break;
                             case 2:
+                                if (OMIT_UNUSED_ROUTINES)
+                                    value = df_stripped_address_for_address(value);
                                 value += code_offset/scale_factor;
                                 break;
                         }
@@ -890,17 +929,18 @@ or less.");
 
         {   printf("In:\
 %3d source code files            %6d syntactic lines\n\
-%6d textual lines                %6ld characters ",
+%6d textual lines              %8ld characters ",
             input_file, no_syntax_lines,
             total_source_line_count, (long int) total_chars_read);
-            if (character_set_setting == 0) printf("(plain ASCII)\n");
+            if (character_set_unicode) printf("(UTF-8)\n");
+            else if (character_set_setting == 0) printf("(plain ASCII)\n");
             else
             {   printf("(ISO 8859-%d %s)\n", character_set_setting,
                     name_of_iso_set(character_set_setting));
             }
 
             printf("Allocated:\n\
-%6d symbols (maximum %4d)       %6ld bytes of memory\n\
+%6d symbols (maximum %4d)    %8ld bytes of memory\n\
 Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  no_symbols, MAX_SYMBOLS,
                  (long int) malloced_bytes,
@@ -911,7 +951,7 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  (long int) k_long, k_str);
 
             printf("\
-%6d classes (maximum %2d)         %6d objects (maximum %3d)\n\
+%6d classes (maximum %3d)        %6d objects (maximum %3d)\n\
 %6d global vars (maximum 233)    %6d variable/array space (maximum %d)\n",
                  no_classes, MAX_CLASSES,
                  no_objects, ((version_number==3)?255:(MAX_OBJECTS-1)),
@@ -932,6 +972,16 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  no_properties-2, ((version_number==3)?30:62),
                  no_individual_properties - 64);
 
+            if (track_unused_routines)
+            {
+                uint32 diff = df_total_size_before_stripping - df_total_size_after_stripping;
+                printf(
+"%6ld bytes of Z-code              %6ld unused bytes %s (%.1f%%)\n",
+                 (long int) df_total_size_before_stripping, (long int) diff,
+                 (OMIT_UNUSED_ROUTINES ? "stripped out" : "detected"),
+                 100 * (float)diff / (float)df_total_size_before_stripping);
+            }
+
             printf(
 "%6ld characters used in text      %6ld bytes compressed (rate %d.%3ld)\n\
 %6d abbreviations (maximum %d)   %6d routines (unlimited)\n\
@@ -949,6 +999,7 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  (long int) Out_Size,
                  (long int)
                       (((long int) (limit*1024L)) - ((long int) Out_Size)));
+
         }
     }
 
@@ -978,49 +1029,32 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
     }
 
     if (debugfile_switch)
-    {   write_debug_byte(MAP_DBR);
-        write_debug_string("abbreviations table");
-          write_debug_address(abbrevs_at);
-        write_debug_string("header extension");
-          write_debug_address(headerext_at);
+    {   begin_writing_debug_sections();
+        write_debug_section("abbreviations", 64);
+        write_debug_section("abbreviations table", abbrevs_at);
+        write_debug_section("header extension", headerext_at);
         if (alphabet_modified)
-        {   write_debug_string("alphabets table");
-              write_debug_address(charset_at);
+        {   write_debug_section("alphabets table", charset_at);
         }
         if (zscii_defn_modified)
-        {   write_debug_string("Unicode table");
-              write_debug_address(unicode_at);
+        {   write_debug_section("Unicode table", unicode_at);
         }
-
-        write_debug_string("property defaults");
-          write_debug_address(prop_defaults_at);
-        write_debug_string("object tree");
-          write_debug_address(object_tree_at);
-        write_debug_string("common properties");
-          write_debug_address(object_props_at);
-        write_debug_string("class numbers");
-          write_debug_address(class_numbers_offset);
-        write_debug_string("individual properties");
-          write_debug_address(individuals_offset);
-        write_debug_string("global variables");
-          write_debug_address(globals_at);
-        write_debug_string("array space");
-          write_debug_address(globals_at+480);
-        write_debug_string("grammar table");
-          write_debug_address(grammar_table_at);
-        write_debug_string("actions table");
-          write_debug_address(actions_at);
-        write_debug_string("parsing routines");
-          write_debug_address(preactions_at);
-        write_debug_string("adjectives table");
-          write_debug_address(adjectives_offset);
-        write_debug_string("dictionary");
-          write_debug_address(dictionary_at);
-        write_debug_string("code area");
-          write_debug_address(Write_Code_At);
-        write_debug_string("strings area");
-          write_debug_address(Write_Strings_At);
-        write_debug_byte(0);
+        write_debug_section("property defaults", prop_defaults_at);
+        write_debug_section("object tree", object_tree_at);
+        write_debug_section("common properties", object_props_at);
+        write_debug_section("class numbers", class_numbers_offset);
+        write_debug_section("identifier names", identifier_names_offset);
+        write_debug_section("individual properties", individuals_offset);
+        write_debug_section("global variables", globals_at);
+        write_debug_section("array space", globals_at+480);
+        write_debug_section("grammar table", grammar_table_at);
+        write_debug_section("actions table", actions_at);
+        write_debug_section("parsing routines", preactions_at);
+        write_debug_section("adjectives table", adjectives_offset);
+        write_debug_section("dictionary", dictionary_at);
+        write_debug_section("code area", Write_Code_At);
+        write_debug_section("strings area", Write_Strings_At);
+        end_writing_debug_sections(Out_Size);
     }
 
     if (memory_map_switch)
@@ -1101,7 +1135,7 @@ printf("        +---------------------+   %05lx\n", (long int) Out_Size);
     if (percentages_switch)
     {   printf("Approximate percentage breakdown of %s:\n",
                 output_called);
-        percentage("Z-code",                zmachine_pc,Out_Size);
+        percentage("Z-code",             code_length,Out_Size);
         if (module_switch)
             percentage("Linking data",   link_data_size,Out_Size);
         percentage("Static strings",     strings_length,Out_Size);
@@ -1140,7 +1174,7 @@ static void construct_storyfile_g(void)
           abbrevs_at, prop_defaults_at, object_tree_at, object_props_at,
           grammar_table_at, charset_at, headerext_at,
           unicode_at, arrays_at;
-    int32 threespaces;
+    int32 threespaces, code_length;
     char *output_called = (module_switch)?"module":"story file";
 
     ASSERT_GLULX();
@@ -1188,7 +1222,15 @@ static void construct_storyfile_g(void)
        memory layout. This is why the code starts eight bytes after
        the header. */
     Write_Code_At = GLULX_HEADER_SIZE + GLULX_STATIC_ROM_SIZE;
-    Write_Strings_At = Write_Code_At + zmachine_pc;
+    if (!OMIT_UNUSED_ROUTINES) {
+        code_length = zmachine_pc;
+    }
+    else {
+        if (zmachine_pc != df_total_size_before_stripping)
+            compiler_error("Code size does not match (zmachine_pc and df_total_size).");
+        code_length = df_total_size_after_stripping;
+    }
+    Write_Strings_At = Write_Code_At + code_length;
     strings_length = compression_table_size + compression_string_size;
 
     /* Now figure out where RAM starts. */
@@ -1286,6 +1328,10 @@ static void construct_storyfile_g(void)
         p[mark++] = (val >> 16) & 0xFF;
         p[mark++] = (val >> 8) & 0xFF;
         p[mark++] = (val) & 0xFF;
+      }
+
+      for (j=0; j<GLULX_OBJECT_EXT_BYTES; j++) {
+        p[mark++] = 0;
       }
     }
 
@@ -1508,7 +1554,10 @@ table format requested (producing number 2 format instead)");
 
         mark = actions_at + 4;
         for (i=0; i<no_actions; i++) {
-          j = action_byte_offset[i] + code_offset;
+          j = action_byte_offset[i];
+          if (OMIT_UNUSED_ROUTINES)
+            j = df_stripped_address_for_address(j);
+          j += code_offset;
           WriteInt32(p+mark, j);
           mark += 4;
         }
@@ -1531,6 +1580,8 @@ table format requested (producing number 2 format instead)");
                   + final_dict_order[value]*DICT_ENTRY_BYTE_LENGTH;
                 break;
               case 2:
+                if (OMIT_UNUSED_ROUTINES)
+                  value = df_stripped_address_for_address(value);
                 value += code_offset;
                 break;
               }
@@ -1550,15 +1601,16 @@ table format requested (producing number 2 format instead)");
         k_long=(Out_Size/1024);
         if ((Out_Size-1024*k_long) >= 512) { k_long++; k_str=""; }
         else if ((Out_Size-1024*k_long) > 0) { k_str=".5"; }
-        if (total_bytes_trans == 0) rate = 0;
-        else rate=total_bytes_trans*1000/total_chars_trans;
+        if (strings_length == 0) rate = 0;
+        else rate=strings_length*1000/total_chars_trans;
 
         {   printf("In:\
 %3d source code files            %6d syntactic lines\n\
-%6d textual lines                %6ld characters ",
+%6d textual lines              %8ld characters ",
             input_file, no_syntax_lines,
             total_source_line_count, (long int) total_chars_read);
-            if (character_set_setting == 0) printf("(plain ASCII)\n");
+            if (character_set_unicode) printf("(UTF-8)\n");
+            else if (character_set_setting == 0) printf("(plain ASCII)\n");
             else
             {   printf("(ISO 8859-%d %s)\n", character_set_setting,
                     name_of_iso_set(character_set_setting));
@@ -1567,11 +1619,10 @@ table format requested (producing number 2 format instead)");
             {char serialnum[8];
             write_serial_number(serialnum);
             printf("Allocated:\n\
-%6d symbols (maximum %4d)       %6ld bytes of memory\n\
-Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
+%6d symbols (maximum %4d)    %8ld bytes of memory\n\
+Out:   %s %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  no_symbols, MAX_SYMBOLS,
                  (long int) malloced_bytes,
-                 version_number,
                  version_name(version_number),
                  output_called,
                  release_number,
@@ -1581,7 +1632,7 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
             } 
 
             printf("\
-%6d classes (maximum %2d)         %6d objects (maximum %3d)\n\
+%6d classes (maximum %3d)        %6d objects (maximum %3d)\n\
 %6d global vars (maximum 233)    %6d variable/array space (maximum %d)\n",
                  no_classes, MAX_CLASSES,
                  no_objects, ((version_number==3)?255:(MAX_OBJECTS-1)),
@@ -1602,15 +1653,25 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  no_properties-2, ((version_number==3)?30:62),
                  no_individual_properties - 64);
 
+            if (track_unused_routines)
+            {
+                uint32 diff = df_total_size_before_stripping - df_total_size_after_stripping;
+                printf(
+"%6ld bytes of code                %6ld unused bytes %s (%.1f%%)\n",
+                 (long int) df_total_size_before_stripping, (long int) diff,
+                 (OMIT_UNUSED_ROUTINES ? "stripped out" : "detected"),
+                 100 * (float)diff / (float)df_total_size_before_stripping);
+            }
+
             printf(
 "%6ld characters used in text      %6ld bytes compressed (rate %d.%3ld)\n\
 %6d abbreviations (maximum %d)   %6d routines (unlimited)\n\
 %6ld instructions of code         %6d sequence points\n\
 %6ld bytes readable memory used (maximum 65536)\n\
-%6ld bytes used in machine        %6ld bytes free in machine\n",
+%6ld bytes used in machine    %10ld bytes free in machine\n",
                  (long int) total_chars_trans,
-                 (long int) total_bytes_trans,
-                 (total_chars_trans>total_bytes_trans)?0:1,
+                 (long int) strings_length,
+                 (total_chars_trans>strings_length)?0:1,
                  (long int) rate,
                  no_abbreviations, MAX_ABBREVS,
                  no_routines,
@@ -1619,6 +1680,7 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
                  (long int) Out_Size,
                  (long int)
                       (((long int) (limit*1024L)) - ((long int) Out_Size)));
+
         }
     }
 
@@ -1646,49 +1708,39 @@ Out:   Version %d \"%s\" %s %d.%c%c%c%c%c%c (%ld%sK long):\n",
     }
 
     if (debugfile_switch)
-    {   write_debug_byte(MAP_DBR);
-        write_debug_string("abbreviations table");
-          write_debug_address(abbrevs_at);
-        write_debug_string("header extension");
-          write_debug_address(headerext_at);
-        if (alphabet_modified)
-        {   write_debug_string("alphabets table");
-              write_debug_address(charset_at);
+    {   begin_writing_debug_sections();
+        write_debug_section("memory layout id", GLULX_HEADER_SIZE);
+        write_debug_section("code area", Write_Code_At);
+        write_debug_section("string decoding table", Write_Strings_At);
+        write_debug_section("strings area",
+                            Write_Strings_At + compression_table_size);
+        if (Write_Strings_At + strings_length < Write_RAM_At)
+        {   write_debug_section
+                ("zero padding", Write_Strings_At + strings_length);
         }
-        if (zscii_defn_modified)
-        {   write_debug_string("Unicode table");
-              write_debug_address(unicode_at);
+        if (globals_at)
+        {   compiler_error("Failed assumption that globals are at start of "
+                           "Glulx RAM");
         }
-
-        write_debug_string("property defaults");
-          write_debug_address(prop_defaults_at);
-        write_debug_string("object tree");
-          write_debug_address(object_tree_at);
-        write_debug_string("common properties");
-          write_debug_address(object_props_at);
-        write_debug_string("class numbers");
-          write_debug_address(class_numbers_offset);
-        write_debug_string("individual properties");
-          write_debug_address(individuals_offset);
-        write_debug_string("global variables");
-          write_debug_address(globals_at);
-        write_debug_string("array space");
-          write_debug_address(globals_at+480); /* ###fix in Glulx */
-        write_debug_string("grammar table");
-          write_debug_address(grammar_table_at);
-        write_debug_string("actions table");
-          write_debug_address(actions_at);
-        write_debug_string("parsing routines");
-          write_debug_address(preactions_at);
-        write_debug_string("adjectives table");
-          write_debug_address(adjectives_offset);
-        write_debug_string("dictionary");
-          write_debug_address(dictionary_at);
-        write_debug_string("code area");
-          write_debug_address(Write_Code_At);
-        write_debug_string("strings area");
-          write_debug_address(Write_Strings_At);
-        write_debug_byte(0);
+        write_debug_section("global variables", Write_RAM_At + globals_at);
+        write_debug_section("array space", Write_RAM_At + arrays_at);
+        write_debug_section("abbreviations table", Write_RAM_At + abbrevs_at);
+        write_debug_section("object tree", Write_RAM_At + object_tree_at);
+        write_debug_section("common properties",
+                            Write_RAM_At + object_props_at);
+        write_debug_section("property defaults",
+                            Write_RAM_At + prop_defaults_at);
+        write_debug_section("class numbers",
+                            Write_RAM_At + class_numbers_offset);
+        write_debug_section("identifier names",
+                            Write_RAM_At + identifier_names_offset);
+        write_debug_section("grammar table", Write_RAM_At + grammar_table_at);
+        write_debug_section("actions table", Write_RAM_At + actions_at);
+        write_debug_section("dictionary", Write_RAM_At + dictionary_at);
+        if (MEMORY_MAP_EXTENSION)
+        {   write_debug_section("zero padding", Out_Size);
+        }
+        end_writing_debug_sections(Out_Size + MEMORY_MAP_EXTENSION);
     }
 
     if (memory_map_switch)
@@ -1743,22 +1795,25 @@ printf("        | class numbers table |\n");
 printf("        + - - - - - - - - - - +   %06lx\n",
   (long int) (Write_RAM_At+identifier_names_offset));
 printf("        |   id names table    |\n");
-printf("        +=====================+   %06lx\n",
-                                          
+printf("        +---------------------+   %06lx\n",
   (long int) (Write_RAM_At+grammar_table_at));
-printf("Readable|    grammar table    |\n");
-printf("memory  + - - - - - - - - - - +   %06lx\n", 
+printf("        |    grammar table    |\n");
+printf("        + - - - - - - - - - - +   %06lx\n", 
   (long int) (Write_RAM_At+actions_at));
 printf("        |       actions       |\n");
-printf("        + - - - - - - - - - - +   %06lx\n", (long int) preactions_at);
-printf("        |   parsing routines  |\n");
-printf("        + - - - - - - - - - - +   %06lx\n",
-                                          (long int) adjectives_offset);
-printf("        |     adjectives      |\n");
 printf("        +---------------------+   %06lx\n", 
   (long int) dictionary_offset);
 printf("        |     dictionary      |\n");
+            if (MEMORY_MAP_EXTENSION == 0)
+            {
 printf("        +---------------------+   %06lx\n", (long int) Out_Size);
+            }
+            else
+            {
+printf("        +=====================+   %06lx\n", (long int) Out_Size);
+printf("Runtime |       (empty)       |\n");
+printf("  extn  +---------------------+   %06lx\n", (long int) Out_Size+MEMORY_MAP_EXTENSION);
+            }
 
         }
 
@@ -1768,7 +1823,7 @@ printf("        +---------------------+   %06lx\n", (long int) Out_Size);
     if (percentages_switch)
     {   printf("Approximate percentage breakdown of %s:\n",
                 output_called);
-        percentage("Code",                zmachine_pc,Out_Size);
+        percentage("Code",               code_length,Out_Size);
         if (module_switch)
             percentage("Linking data",   link_data_size,Out_Size);
         percentage("Static strings",     strings_length,Out_Size);
@@ -1778,7 +1833,7 @@ printf("        +---------------------+   %06lx\n", (long int) Out_Size);
         percentage("Parsing tables",   dictionary_at-grammar_table_at,Out_Size);
         percentage("Header and synonyms", prop_defaults_at,Out_Size);
         percentage("Total of save area", grammar_table_at,Out_Size);
-        percentage("Total of text",      total_bytes_trans,Out_Size);
+        percentage("Total of text",      strings_length,Out_Size);
     }
     if (frequencies_switch)
     {

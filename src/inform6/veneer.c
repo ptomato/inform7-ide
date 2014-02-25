@@ -3,8 +3,8 @@
 /*              by the compiler (e.g. DefArt) which the program doesn't      */
 /*              provide                                                      */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -12,6 +12,9 @@
 
 int veneer_mode;                      /*  Is the code currently being
                                           compiled from the veneer?          */
+
+static debug_locations null_debug_locations =
+    { { 0, 0, 0, 0, 0, 0, 0 }, NULL, 0 };
 
 extern void compile_initial_routine(void)
 {
@@ -24,12 +27,11 @@ extern void compile_initial_routine(void)
         trivial routine consisting of a call to "Main" followed by "quit".   */
 
   int32 j;
-    assembly_operand AO; dbgl null_dbgl;
-    null_dbgl.b1 = 0; null_dbgl.b2 = 0; null_dbgl.b3 = 0; null_dbgl.cc = 0;
+    assembly_operand AO;
 
     j = symbol_index("Main__", -1);
     assign_symbol(j,
-        assemble_routine_header(0, FALSE, "Main__", &null_dbgl, FALSE, j),
+        assemble_routine_header(0, FALSE, "Main__", FALSE, j),
         ROUTINE_T);
     sflags[j] |= SYSTEM_SFLAG + USED_SFLAG;
     if (trace_fns_setting==3) sflags[j] |= STAR_SFLAG;
@@ -59,7 +61,7 @@ extern void compile_initial_routine(void)
 
     }
 
-    assemble_routine_end(FALSE, &null_dbgl);
+    assemble_routine_end(FALSE, null_debug_locations);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -146,7 +148,8 @@ static VeneerRoutine VRs_z[VENEER_ROUTINES] =
         legal syntaxes (such as <<Action a b>>;) are used.                   */
 
     {   "R_Process",
-        "a b c; print \"Action <\", a, \" \", b, \" \", c, \">^\";\
+        "a b c d; print \"Action <\", a, \" \", b, \" \", c;\
+         if (d) print \", \", d; print \">^\";\
          ]", "", "", "", "", ""
     },
     {   "DefArt",
@@ -922,7 +925,8 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
         legal syntaxes (such as <<Action a b>>;) are used.                   */
 
     {   "R_Process",
-        "a b c; print \"Action <\", a, \" \", b, \" \", c, \">^\";\
+        "a b c d; print \"Action <\", a, \" \", b, \" \", c;\
+         if (d) print \", \", d; print \">^\";\
          ]", "", "", "", "", ""
     },
     {   "DefArt",
@@ -940,8 +944,8 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
     {   "PrintShortName",
         "obj q; switch(metaclass(obj))\
          {   0: print \"nothing\";\
-             Object: q = obj-->3; @streamstr q;\
-             Class: print \"class \"; q = obj-->3; @streamstr q;\
+             Object: q = obj-->GOBJFIELD_NAME; @streamstr q;\
+             Class: print \"class \"; q = obj-->GOBJFIELD_NAME; @streamstr q;\
              Routine: print \"(routine at \", obj, \")\";\
              String: print \"(string at \", obj, \")\";\
          } ]", "", "", "", "", ""
@@ -1349,7 +1353,7 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
            for (i=1 : i<=NUM_ATTR_BYTES : i++) {\
              o1->i = o2->i;\
            }\
-           p2 = o2-->4;\
+           p2 = o2-->GOBJFIELD_PROPTAB;\
            pcount = p2-->0;\
            p2 = p2+4;\
            for (i=0 : i<pcount : i++) {\
@@ -1379,7 +1383,7 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
         "crime obj id size p q;\
          print \"^[** Programming error: \";\
          if (crime<0) jump RErr;\
-         if (crime==1) { print \"class \"; q = obj-->3; @streamstr q;\
+         if (crime==1) { print \"class \"; q = obj-->GOBJFIELD_NAME; @streamstr q;\
          \": 'create' can have 0 to 3 parameters only **]\";}\
          if (crime == 40) \"tried to change printing variable \",\
          obj, \"; must be 0 to \", #dynam_string_table-->0-1, \" **]\";\
@@ -1466,13 +1470,14 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
     {   /*  Unsigned__Compare:  returns 1 if x>y, 0 if x=y, -1 if x<y        */
 
         "Unsigned__Compare",
-        "x y u v;\
-         if (x==y) return 0;\
-         if (x<0 && y>=0) return 1;\
-         if (x>=0 && y<0) return -1;\
-         u = x&$7fffffff; v= y&$7fffffff;\
-         if (u>v) return 1;\
+        "x y;\
+         @jleu x y ?lesseq;\
+         return 1;\
+         .lesseq;\
+         @jeq x y ?equal;\
          return -1;\
+         .equal;\
+         return 0;\
          ]", "", "", "", "", ""
     },
     {   /*  Meta__class:  returns the metaclass of an object                 */
@@ -1503,7 +1508,7 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
         "CP__Tab",
         "obj id otab max res;\
            if (Z__Region(obj)~=1) {RT__Err(23, obj); rfalse;}\
-           otab = obj-->4;\
+           otab = obj-->GOBJFIELD_PROPTAB;\
            if (otab == 0) return 0;\
            max = otab-->0;\
            otab = otab+4;\
@@ -1814,7 +1819,7 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
         "obj;\
            if (Z__Region(obj) ~= 1)\
              return RT__Err(36);\
-           @aload obj 3 sp; @streamstr sp;\
+           @aload obj GOBJFIELD_NAME sp; @streamstr sp;\
          ]", "", "", "", "", ""
     },
     {
@@ -1823,25 +1828,25 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
         */
         "OB__Move",
         "obj dest par chi sib;\
-           par = obj-->5;\
+           par = obj-->GOBJFIELD_PARENT;\
            if (par ~= 0) {\
-             chi = par-->7;\
+             chi = par-->GOBJFIELD_CHILD;\
              if (chi == obj) {\
-               par-->7 = obj-->6;\
+               par-->GOBJFIELD_CHILD = obj-->GOBJFIELD_SIBLING;\
              }\
              else {\
                while (1) {\
-                 sib = chi-->6;\
+                 sib = chi-->GOBJFIELD_SIBLING;\
                  if (sib == obj)\
                    break;\
                  chi = sib;\
                }\
-               chi-->6 = obj-->6;\
+               chi-->GOBJFIELD_SIBLING = obj-->GOBJFIELD_SIBLING;\
              }\
            }\
-           obj-->6 = dest-->7;\
-           obj-->5 = dest;\
-           dest-->7 = obj;\
+           obj-->GOBJFIELD_SIBLING = dest-->GOBJFIELD_CHILD;\
+           obj-->GOBJFIELD_PARENT = dest;\
+           dest-->GOBJFIELD_CHILD = obj;\
            rfalse;\
          ]", "", "", "", "", ""
     },
@@ -1849,28 +1854,27 @@ static VeneerRoutine VRs_g[VENEER_ROUTINES] =
     {
         /*  OB__Remove: Remove an object from the tree. This does no
             more error checking than the Z-code \"remove\" opcode.
-            -->5 is parent; -->6 is sibling; -->7 is child.
         */
         "OB__Remove",
         "obj par chi sib;\
-           par = obj-->5;\
+           par = obj-->GOBJFIELD_PARENT;\
            if (par == 0)\
              rfalse;\
-           chi = par-->7;\
+           chi = par-->GOBJFIELD_CHILD;\
            if (chi == obj) {\
-             par-->7 = obj-->6;\
+             par-->GOBJFIELD_CHILD = obj-->GOBJFIELD_SIBLING;\
            }\
            else {\
              while (1) {\
-               sib = chi-->6;\
+               sib = chi-->GOBJFIELD_SIBLING;\
                if (sib == obj)\
                  break;\
                chi = sib;\
              }\
-             chi-->6 = obj-->6;\
+             chi-->GOBJFIELD_SIBLING = obj-->GOBJFIELD_SIBLING;\
            }\
-           obj-->6 = 0;\
-           obj-->5 = 0;\
+           obj-->GOBJFIELD_SIBLING = 0;\
+           obj-->GOBJFIELD_PARENT = 0;\
            rfalse;\
          ]", "", "", "", "", ""
     },
@@ -2163,12 +2167,16 @@ extern assembly_operand veneer_routine(int code)
 
 static void compile_symbol_table_routine(void)
 {   int32 j, nl, arrays_l, routines_l, constants_l;
-    assembly_operand AO, AO2, AO3; dbgl null_dbgl;
-    null_dbgl.b1 = 0; null_dbgl.b2 = 0; null_dbgl.b3 = 0; null_dbgl.cc = 0;
+    assembly_operand AO, AO2, AO3;
+
+    /* Assign local var names for the benefit of the debugging information 
+       file. */
+    local_variable_texts[0] = "dummy1";
+    local_variable_texts[1] = "dummy2";
 
     veneer_mode = TRUE; j = symbol_index("Symb__Tab", -1);
     assign_symbol(j,
-        assemble_routine_header(2, FALSE, "Symb__Tab", &null_dbgl, FALSE, j),
+        assemble_routine_header(2, FALSE, "Symb__Tab", FALSE, j),
         ROUTINE_T);
     sflags[j] |= SYSTEM_SFLAG + USED_SFLAG;
     if (trace_fns_setting==3) sflags[j] |= STAR_SFLAG;
@@ -2179,7 +2187,7 @@ static void compile_symbol_table_routine(void)
     {   assemblez_0(rfalse_zc);
         variable_usage[1] = TRUE;
         variable_usage[2] = TRUE;
-        assemble_routine_end(FALSE, &null_dbgl);
+        assemble_routine_end(FALSE, null_debug_locations);
         veneer_mode = FALSE;
         return;
     }
@@ -2280,7 +2288,7 @@ static void compile_symbol_table_routine(void)
     assemblez_0(rfalse_zc);
     variable_usage[1] = TRUE;
     variable_usage[2] = TRUE;
-    assemble_routine_end(FALSE, &null_dbgl);
+    assemble_routine_end(FALSE, null_debug_locations);
     veneer_mode = FALSE;
   }
   else {
@@ -2289,7 +2297,7 @@ static void compile_symbol_table_routine(void)
     {   assembleg_1(return_gc, zero_operand);
         variable_usage[1] = TRUE;
         variable_usage[2] = TRUE;
-        assemble_routine_end(FALSE, &null_dbgl);
+        assemble_routine_end(FALSE, null_debug_locations);
         veneer_mode = FALSE;
         return;
     }

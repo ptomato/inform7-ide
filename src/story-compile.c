@@ -38,6 +38,8 @@
 #  endif
 #endif
 
+#define INFORM6_COMPILER_NAME "inform6"
+
 #include "story.h"
 #include "story-private.h"
 #include "configfile.h"

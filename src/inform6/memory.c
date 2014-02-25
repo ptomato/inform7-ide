@@ -2,8 +2,8 @@
 /*   "memory" : Memory management and ICL memory setting commands            */
 /*              (For "memoryerror", see "errors.c")                          */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -12,6 +12,7 @@
 int32 malloced_bytes=0;                /* Total amount of memory allocated   */
 
 #ifdef PC_QUICKC
+
 extern void *my_malloc(int32 size, char *whatfor)
 {   char _huge *c;
     if (memout_switch)
@@ -21,6 +22,26 @@ extern void *my_malloc(int32 size, char *whatfor)
     if (c==0) memory_out_error(size, 1, whatfor);
     return(c);
 }
+
+extern void my_realloc(void *pointer, int32 oldsize, int32 size, 
+    char *whatfor)
+{   char _huge *c;
+    if (size==0) {
+        my_free(pointer, whatfor);
+        return;
+    }
+    c=halloc(size,1); malloced_bytes+=size;
+    if (c==0) memory_out_error(size, 1, whatfor);
+    if (memout_switch)
+        printf("Increasing allocation to %ld bytes for %s was (%08lx) \
+now (%08lx)\n",
+            (long int) size,whatfor,(long int) (*(int **)pointer), 
+            (long int) c);
+    memcpy(c, *(int **)pointer, MIN(oldsize, size));
+    hfree(*(int **)pointer);
+    *(int **)pointer = c;
+}
+
 extern void *my_calloc(int32 size, int32 howmany, char *whatfor)
 {   void _huge *c;
     if (memout_switch)
@@ -31,7 +52,29 @@ extern void *my_calloc(int32 size, int32 howmany, char *whatfor)
     if (c==0) memory_out_error(size, howmany, whatfor);
     return(c);
 }
+
+extern void my_recalloc(void *pointer, int32 size, int32 oldhowmany, 
+    int32 howmany, char *whatfor)
+{   void _huge *c;
+    if (size*howmany==0) {
+        my_free(pointer, whatfor);
+        return;
+    }
+    c=(void _huge *)halloc(size*howmany,1); malloced_bytes+=size*howmany;
+    if (c==0) memory_out_error(size, howmany, whatfor);
+    if (memout_switch)
+        printf("Increasing allocation to %ld bytes: array (%ld entries size %ld) \
+for %s was (%08lx) now (%08lx)\n",
+            ((long int)size) * ((long int)howmany),
+            (long int)howmany,(long int)size,whatfor,
+            (long int) *(int **)pointer, (long int) c);
+    memcpy(c, *(int **)pointer, MIN(size*oldhowmany, size*howmany));
+    hfree(*(int **)pointer);
+    *(int **)pointer = c;
+}
+
 #else
+
 extern void *my_malloc(int32 size, char *whatfor)
 {   char *c;
     if (size==0) return(NULL);
@@ -42,6 +85,24 @@ extern void *my_malloc(int32 size, char *whatfor)
             (long int) size,whatfor,(long int) c);
     return(c);
 }
+
+extern void my_realloc(void *pointer, int32 oldsize, int32 size, 
+    char *whatfor)
+{   void *c;
+    if (size==0) {
+        my_free(pointer, whatfor);
+        return;
+    }
+    c=realloc(*(int **)pointer, (size_t) size); malloced_bytes+=size;
+    if (c==0) memory_out_error(size, 1, whatfor);
+    if (memout_switch)
+        printf("Increasing allocation to %ld bytes for %s was (%08lx) \
+now (%08lx)\n",
+            (long int) size,whatfor,(long int) (*(int **)pointer), 
+            (long int) c);
+    *(int **)pointer = c;
+}
+
 extern void *my_calloc(int32 size, int32 howmany, char *whatfor)
 {   void *c;
     if (size*howmany==0) return(NULL);
@@ -55,6 +116,26 @@ for %s at (%08lx)\n",
             (long int) c);
     return(c);
 }
+
+extern void my_recalloc(void *pointer, int32 size, int32 oldhowmany, 
+    int32 howmany, char *whatfor)
+{   void *c;
+    if (size*howmany==0) {
+        my_free(pointer, whatfor);
+        return;
+    }
+    c=realloc(*(int **)pointer, (size_t)size*(size_t)howmany); 
+    malloced_bytes+=size*howmany;
+    if (c==0) memory_out_error(size, howmany, whatfor);
+    if (memout_switch)
+        printf("Increasing allocation to %ld bytes: array (%ld entries size %ld) \
+for %s was (%08lx) now (%08lx)\n",
+            ((long int)size) * ((long int)howmany),
+            (long int)howmany,(long int)size,whatfor,
+            (long int) *(int **)pointer, (long int) c);
+    *(int **)pointer = c;
+}
+
 #endif
 
 extern void my_free(void *pointer, char *whatitwas)
@@ -162,7 +243,6 @@ int32 MAX_ZCODE_SIZE;
 int MAX_LOW_STRINGS;
 int32 MAX_TRANSCRIPT_SIZE;
 int MAX_CLASSES;
-int MAX_CLASS_TABLE_SIZE;
 int32 MAX_LINK_DATA_SIZE;
 int MAX_INCLUSION_DEPTH;
 int MAX_SOURCE_FILES;
@@ -174,12 +254,17 @@ int MAX_GLOBAL_VARIABLES;
 int DICT_WORD_SIZE; /* number of characters in a dict word */
 int DICT_CHAR_SIZE; /* (glulx) 1 for one-byte chars, 4 for Unicode chars */
 int DICT_WORD_BYTES; /* DICT_WORD_SIZE*DICT_CHAR_SIZE */
+int ZCODE_HEADER_EXT_WORDS; /* (zcode 1.0) requested header extension size */
+int ZCODE_HEADER_FLAGS_3; /* (zcode 1.1) value to place in Flags 3 word */
 int NUM_ATTR_BYTES;
+int GLULX_OBJECT_EXT_BYTES; /* (glulx) extra bytes for each object record */
 int32 MAX_NUM_STATIC_STRINGS;
 int32 MAX_UNICODE_CHARS;
 int32 MAX_STACK_SIZE;
 int32 MEMORY_MAP_EXTENSION;
 int ALLOC_CHUNK_SIZE;
+int WARN_UNUSED_ROUTINES; /* 0: no, 1: yes except in system files, 2: yes always */
+int OMIT_UNUSED_ROUTINES; /* 0: no, 1: yes */
 
 /* The way memory sizes are set causes great nuisance for those parameters
    which have different defaults under Z-code and Glulx. We have to get
@@ -207,7 +292,6 @@ static void list_memory_sizes(void)
     printf("|  %25s = %-7d |\n","ALLOC_CHUNK_SIZE",ALLOC_CHUNK_SIZE);
     printf("|  %25s = %-7d |\n","NUM_ATTR_BYTES",NUM_ATTR_BYTES);
     printf("|  %25s = %-7d |\n","MAX_CLASSES",MAX_CLASSES);
-    printf("|  %25s = %-7d |\n","MAX_CLASS_TABLE_SIZE",MAX_CLASS_TABLE_SIZE);
     printf("|  %25s = %-7d |\n","MAX_DICT_ENTRIES",MAX_DICT_ENTRIES);
     printf("|  %25s = %-7d |\n","DICT_WORD_SIZE",DICT_WORD_SIZE);
     if (glulx_mode)
@@ -215,6 +299,10 @@ static void list_memory_sizes(void)
     printf("|  %25s = %-7d |\n","MAX_EXPRESSION_NODES",MAX_EXPRESSION_NODES);
     printf("|  %25s = %-7d |\n","MAX_GLOBAL_VARIABLES",MAX_GLOBAL_VARIABLES);
     printf("|  %25s = %-7d |\n","HASH_TAB_SIZE",HASH_TAB_SIZE);
+    if (!glulx_mode)
+      printf("|  %25s = %-7d |\n","ZCODE_HEADER_EXT_WORDS",ZCODE_HEADER_EXT_WORDS);
+    if (!glulx_mode)
+      printf("|  %25s = %-7d |\n","ZCODE_HEADER_FLAGS_3",ZCODE_HEADER_FLAGS_3);
     printf("|  %25s = %-7d |\n","MAX_INCLUSION_DEPTH",MAX_INCLUSION_DEPTH);
     printf("|  %25s = %-7d |\n","MAX_INDIV_PROP_TABLE_SIZE",
         MAX_INDIV_PROP_TABLE_SIZE);
@@ -231,6 +319,9 @@ static void list_memory_sizes(void)
       printf("|  %25s = %-7d |\n","MAX_NUM_STATIC_STRINGS",
         MAX_NUM_STATIC_STRINGS);
     printf("|  %25s = %-7d |\n","MAX_OBJECTS",MAX_OBJECTS);
+    if (glulx_mode)
+      printf("|  %25s = %-7d |\n","GLULX_OBJECT_EXT_BYTES",
+        GLULX_OBJECT_EXT_BYTES);
     if (glulx_mode)
       printf("|  %25s = %-7d |\n","MAX_OBJ_PROP_COUNT",
         MAX_OBJ_PROP_COUNT);
@@ -253,6 +344,8 @@ static void list_memory_sizes(void)
     if (glulx_mode)
       printf("|  %25s = %-7ld |\n","MAX_UNICODE_CHARS",
            (long int) MAX_UNICODE_CHARS);
+    printf("|  %25s = %-7d |\n","WARN_UNUSED_ROUTINES",WARN_UNUSED_ROUTINES);
+    printf("|  %25s = %-7d |\n","OMIT_UNUSED_ROUTINES",OMIT_UNUSED_ROUTINES);
     printf("|  %25s = %-7d |\n","MAX_VERBS",MAX_VERBS);
     printf("|  %25s = %-7d |\n","MAX_VERBSPACE",MAX_VERBSPACE);
     printf("|  %25s = %-7ld |\n","MAX_ZCODE_SIZE",
@@ -299,7 +392,6 @@ extern void set_memory_sizes(int size_flag)
         MAX_NUM_STATIC_STRINGS = 20000;
 
         MAX_CLASSES = 64;
-        MAX_CLASS_TABLE_SIZE = 1000;
 
         MAX_OBJ_PROP_COUNT = 128;
         MAX_OBJ_PROP_TABLE_SIZE = 4096;
@@ -350,7 +442,6 @@ extern void set_memory_sizes(int size_flag)
         MAX_NUM_STATIC_STRINGS = 20000;
 
         MAX_CLASSES = 64;
-        MAX_CLASS_TABLE_SIZE = 1000;
 
         MAX_OBJ_PROP_COUNT = 64;
         MAX_OBJ_PROP_TABLE_SIZE = 2048;
@@ -401,7 +492,6 @@ extern void set_memory_sizes(int size_flag)
         MAX_NUM_STATIC_STRINGS = 10000;
 
         MAX_CLASSES = 32;
-        MAX_CLASS_TABLE_SIZE = 800;
 
         MAX_OBJ_PROP_COUNT = 64;
         MAX_OBJ_PROP_TABLE_SIZE = 1024;
@@ -426,14 +516,22 @@ extern void set_memory_sizes(int size_flag)
     DICT_WORD_SIZE_g = 9;
     NUM_ATTR_BYTES_z = 6;
     NUM_ATTR_BYTES_g = 7;
+    /* Backwards-compatible behavior: allow for a unicode table
+       whether we need one or not. The user can set this to zero if
+       there's no unicode table. */
+    ZCODE_HEADER_EXT_WORDS = 3;
+    ZCODE_HEADER_FLAGS_3 = 0;
+    GLULX_OBJECT_EXT_BYTES = 0;
     MAX_UNICODE_CHARS = 64;
     MEMORY_MAP_EXTENSION = 0;
     /* We estimate the default Glulx stack size at 4096. That's about
        enough for 90 nested function calls with 8 locals each -- the
        same capacity as the Z-Spec's suggestion for Z-machine stack
-       size. Note that Inform 7 wants more stack, so if you're
-       compiling an I7 game, crank this up. */
+       size. Note that Inform 7 wants more stack; I7-generated code
+       sets MAX_STACK_SIZE to 65536 by default. */
     MAX_STACK_SIZE = 4096;
+    OMIT_UNUSED_ROUTINES = 0;
+    WARN_UNUSED_ROUTINES = 0;
 
     adjust_memory_sizes();
 }
@@ -533,6 +631,28 @@ static void explain_parameter(char *command)
   stores eight attributes. In Z-code this is always 6 (only 4 are used in \n\
   v3 games). In Glulx it can be any number which is a multiple of four, \n\
   plus three.\n");
+        return;
+    }
+    if (strcmp(command,"ZCODE_HEADER_EXT_WORDS")==0)
+    {   printf(
+"  ZCODE_HEADER_EXT_WORDS is the number of words in the Z-code header \n\
+  extension table (Z-Spec 1.0). The -W switch also sets this. It defaults \n\
+  to 3, but can be set higher. (It can be set lower if no Unicode \n\
+  translation table is created.)\n");
+        return;
+    }
+    if (strcmp(command,"ZCODE_HEADER_FLAGS_3")==0)
+    {   printf(
+"  ZCODE_HEADER_FLAGS_3 is the value to store in the Flags 3 word of the \n\
+  header extension table (Z-Spec 1.1).\n");
+        return;
+    }
+    if (strcmp(command,"GLULX_OBJECT_EXT_BYTES")==0)
+    {   printf(
+"  GLULX_OBJECT_EXT_BYTES is an amount of additional space to add to each \n\
+  object record. It is initialized to zero bytes, and the game is free to \n\
+  use it as desired. (This is only meaningful in Glulx, since Z-code \n\
+  specifies the object structure.)\n");
         return;
     }
     if (strcmp(command,"MAX_STATIC_DATA")==0)
@@ -642,12 +762,6 @@ static void explain_parameter(char *command)
   is cheap to increase.\n");
         return;
     }
-    if (strcmp(command,"MAX_CLASS_TABLE_SIZE")==0)
-    {   printf(
-"  MAX_CLASS_TABLE_SIZE is the number of bytes allocated to hold the table \n\
-  of properties to inherit from each class.\n");
-        return;
-    }
     if (strcmp(command,"MAX_INCLUSION_DEPTH")==0)
     {   printf(
 "  MAX_INCLUSION_DEPTH is the number of nested includes permitted.\n");
@@ -725,6 +839,22 @@ static void explain_parameter(char *command)
   memory after the game file. (Glulx only)\n");
         return;
     }
+    if (strcmp(command,"WARN_UNUSED_ROUTINES")==0)
+    {
+        printf(
+"  WARN_UNUSED_ROUTINES, if set to 2, will display a warning for each \n\
+  routine in the game file which is never called. (This includes \n\
+  routines called only from uncalled routines, etc.) If set to 1, will warn \n\
+  only about functions in game code, not in the system library.\n");
+        return;
+    }
+    if (strcmp(command,"OMIT_UNUSED_ROUTINES")==0)
+    {
+        printf(
+"  OMIT_UNUSED_ROUTINES, if set to 1, will avoid compiling unused routines \n\
+  into the game file.\n");
+        return;
+    }
 
     printf("No such memory setting as \"%s\"\n",command);
 
@@ -787,6 +917,12 @@ extern void memory_command(char *command)
             {   NUM_ATTR_BYTES=j, flag=1;
                 NUM_ATTR_BYTES_g=NUM_ATTR_BYTES_z=j;
             }
+            if (strcmp(command,"ZCODE_HEADER_EXT_WORDS")==0)
+                ZCODE_HEADER_EXT_WORDS=j, flag=1;
+            if (strcmp(command,"ZCODE_HEADER_FLAGS_3")==0)
+                ZCODE_HEADER_FLAGS_3=j, flag=1;
+            if (strcmp(command,"GLULX_OBJECT_EXT_BYTES")==0)
+                GLULX_OBJECT_EXT_BYTES=j, flag=1;
             if (strcmp(command,"MAX_STATIC_DATA")==0)
                 MAX_STATIC_DATA=j, flag=1;
             if (strcmp(command,"MAX_OLDEPTH")==0)
@@ -840,8 +976,6 @@ extern void memory_command(char *command)
                 MAX_TRANSCRIPT_SIZE=j, flag=1;
             if (strcmp(command,"MAX_CLASSES")==0)
                 MAX_CLASSES=j, flag=1;
-            if (strcmp(command,"MAX_CLASS_TABLE_SIZE")==0)
-                MAX_CLASS_TABLE_SIZE=j, flag=1;
             if (strcmp(command,"MAX_INCLUSION_DEPTH")==0)
                 MAX_INCLUSION_DEPTH=j, flag=1;
             if (strcmp(command,"MAX_SOURCE_FILES")==0)
@@ -877,6 +1011,18 @@ extern void memory_command(char *command)
                 MEMORY_MAP_EXTENSION=j, flag=1;
                 /* Adjust up to a 256-byte boundary. */
                 MEMORY_MAP_EXTENSION = (MEMORY_MAP_EXTENSION + 0xFF) & (~0xFF);
+            }
+            if (strcmp(command,"WARN_UNUSED_ROUTINES")==0)
+            {
+                WARN_UNUSED_ROUTINES=j, flag=1;
+                if (WARN_UNUSED_ROUTINES > 2 || WARN_UNUSED_ROUTINES < 0)
+                    WARN_UNUSED_ROUTINES = 2;
+            }
+            if (strcmp(command,"OMIT_UNUSED_ROUTINES")==0)
+            {
+                OMIT_UNUSED_ROUTINES=j, flag=1;
+                if (OMIT_UNUSED_ROUTINES > 1 || OMIT_UNUSED_ROUTINES < 0)
+                    OMIT_UNUSED_ROUTINES = 1;
             }
 
             if (flag==0)

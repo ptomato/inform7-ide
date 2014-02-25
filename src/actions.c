@@ -1270,7 +1270,7 @@ action_about(GtkAction *action, I7App *app)
 	gtk_show_about_dialog(parent,
 		"program-name", "Inform",
 		"copyright", copyright,
-		"comments", "Inform (1.2 6.32N/" PACKAGE_VERSION ")",
+		"comments", "Inform (" INFORM6_COMPILER_VERSION "/" PACKAGE_VERSION ")",
 		"website", "http://inform7.com",
 		"website-label", "inform7.com",
 		/* TRANSLATORS: Caution, UTF8 right arrow */

@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------------- */
 /*   "linker" : For compiling and linking modules                            */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -285,6 +285,16 @@ static void accept_export(void)
                 property_identifier_map[IE.symbol_value]
                     = no_individual_properties;
                 IE.symbol_value = no_individual_properties++;
+
+                if (debugfile_switch)
+                {   debug_file_printf("<property>");
+                    debug_file_printf
+                        ("<identifier>%s</identifier>", IE.symbol_name);
+                    debug_file_printf
+                        ("<value>%d</value>", IE.symbol_value);
+                    debug_file_printf("</property>");
+                }
+
                 break;
         }
         assign_symbol(index, IE.backpatch*0x10000 + IE.symbol_value,

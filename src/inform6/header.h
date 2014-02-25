@@ -1,10 +1,10 @@
 /* ------------------------------------------------------------------------- */
 /*   Header file for Inform:  Z-machine ("Infocom" format) compiler          */
 /*                                                                           */
-/*                              Inform 6.32                                  */
+/*                              Inform 6.33                                  */
 /*                                                                           */
 /*   This header file and the others making up the Inform source code are    */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /*   Manuals for this language are available from the IF-Archive at          */
 /*   http://www.ifarchive.org/                                               */
@@ -30,11 +30,14 @@
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-#define RELEASE_DATE "18th November 2010"
-#define RELEASE_NUMBER 1632
+#define RELEASE_DATE "18th April 2014"
+#define RELEASE_NUMBER 1633
 #define GLULX_RELEASE_NUMBER 38
 #define MODULE_VERSION_NUMBER 1
 #define VNUMBER RELEASE_NUMBER
+
+/* N indicates an intermediate release for Inform 7 */
+/*#define RELEASE_SUFFIX "N"*/
 
 /* ------------------------------------------------------------------------- */
 /*   Our host machine or OS for today is...                                  */
@@ -122,6 +125,8 @@
 /*                         date                                              */
 /*   CHAR_IS_UNSIGNED    - if on your compiler the type "char" is unsigned   */
 /*                         by default, you should define this                */
+/*   HAS_REALPATH        - the POSIX realpath() function is available to     */
+/*                         find the absolute path to a file                  */
 /*                                                                           */
 /*   3. An estimate of the typical amount of memory likely to be free        */
 /*   should be given in DEFAULT_MEMORY_SIZE.                                 */
@@ -271,6 +276,8 @@ static int32 unique_task_id(void)
 #ifdef LINUX
 /* 1 */
 #define MACHINE_STRING   "Linux"
+/* 2 */
+#define HAS_REALPATH
 /* 3 */
 #define DEFAULT_MEMORY_SIZE HUGE_SIZE
 /* 4 */
@@ -278,7 +285,7 @@ static int32 unique_task_id(void)
 /* 5 */
 #define Temporary_Directory "/tmp"
 /* 6 */
-#define PATHLEN 512
+#define PATHLEN 8192
 #endif
 /* ------------------------------------------------------------------------- */
 /*   Macintosh block                                                         */
@@ -338,6 +345,8 @@ static int32 unique_task_id(void)
 #ifdef OSX
 /* 1 */
 #define MACHINE_STRING   "Mac OS X"
+/* 2 */
+#define HAS_REALPATH
 /* 3 */
 #define DEFAULT_MEMORY_SIZE LARGE_SIZE
 /* 4 */
@@ -386,6 +395,8 @@ static int32 unique_task_id(void)
 #ifdef PC_WIN32
 /* 1 */
 #define MACHINE_STRING   "Win32"
+/* 2 */
+#define HAS_REALPATH
 /* 3 */
 #define DEFAULT_MEMORY_SIZE HUGE_SIZE
 /* 4 */
@@ -393,6 +404,11 @@ static int32 unique_task_id(void)
 /* 6 */
 #define DEFAULT_ERROR_FORMAT 1
 #define PATHLEN 512
+#ifdef _MSC_VER /* Microsoft Visual C++ */
+#define snprintf _snprintf
+#define isnan _isnan
+#define isinf(x) (!_isnan(x) && !_finite(x))
+#endif
 #endif
 /* ------------------------------------------------------------------------- */
 /*   UNIX block                                                              */
@@ -402,6 +418,7 @@ static int32 unique_task_id(void)
 #define MACHINE_STRING   "Unix"
 /* 2 */
 #define USE_TEMPORARY_FILES
+#define HAS_REALPATH
 /* 3 */
 #define DEFAULT_MEMORY_SIZE HUGE_SIZE
 /* 4 */
@@ -426,6 +443,7 @@ static int32 unique_task_id(void)
 #endif
 /* 2 */
 #define USE_TEMPORARY_FILES
+#define HAS_REALPATH
 /* 3 */
 #define DEFAULT_MEMORY_SIZE HUGE_SIZE
 /* 4 */
@@ -621,11 +639,7 @@ static int32 unique_task_id(void)
     void hfree(void *);
 #define subtract_pointers(p1,p2) (long)((char _huge *)p1-(char _huge *)p2)
 #else
-#ifdef UNIX64
 #define subtract_pointers(p1,p2) (((char *) p1)-((char *) p2))
-#else
-#define subtract_pointers(p1,p2) (((int32) p1)-((int32) p2))
-#endif
 #endif
 
 /* ------------------------------------------------------------------------- */
@@ -711,6 +725,20 @@ static int32 unique_task_id(void)
 #define  GPAGESIZE 256
 /* All Glulx memory boundaries must be multiples of GPAGESIZE. */
 
+/* In many places the compiler encodes a source-code location (file and
+   line number) into an int32 value. The encoded value looks like
+   file_number + FILE_LINE_SCALE_FACTOR*line_number. This will go
+   badly if a source file has more than FILE_LINE_SCALE_FACTOR lines,
+   of course. But this value is roughly eight million, which is a lot
+   of lines. 
+
+   There is also potential trouble if we have more than 512 source files;
+   perhaps 256, depending on signedness issues. However, there are other
+   spots in the compiler that assume no more than 255 source files, so
+   we'll stick with this for now.
+*/
+#define  FILE_LINE_SCALE_FACTOR  (0x800000L)
+
 /* ------------------------------------------------------------------------- */
 /*   Structure definitions (there are a few others local to files)           */
 /* ------------------------------------------------------------------------- */
@@ -737,7 +765,7 @@ typedef struct prop {
 /* Only one of this object. */
 typedef struct fpropt {
     uchar atts[6];
-    char l;
+    int l;
     prop pp[64];
 } fpropt;
 
@@ -773,10 +801,33 @@ typedef struct objecttg {
     int32 propsize;
 } objecttg;
 
-typedef struct dbgl_s
-{   int b1, b2, b3;
-    uchar cc;
-} dbgl;
+typedef struct maybe_file_position_S
+{   int valid;
+    fpos_t position;
+} maybe_file_position;
+
+typedef struct debug_location_s
+{   int32 file_index;
+    int32 beginning_byte_index;
+    int32 end_byte_index;
+    int32 beginning_line_number;
+    int32 end_line_number;
+    int32 beginning_character_number;
+    int32 end_character_number;
+} debug_location;
+
+typedef struct debug_locations_s
+{   debug_location location;
+    struct debug_locations_s *next;
+    int reference_count;
+} debug_locations;
+
+typedef struct debug_location_beginning_s
+{   debug_locations *head;
+    int32 beginning_byte_index;
+    int32 beginning_line_number;
+    int32 beginning_character_number;
+} debug_location_beginning;
 
 typedef struct keyword_group_s
 {   char *keywords[120];
@@ -792,7 +843,7 @@ typedef struct token_data_s
     int symtype;  /* 6.30 */
     int symflags;   /* 6.30 */
     int marker;
-    dbgl line_ref;
+    debug_location location;
 } token_data;
 
 typedef struct FileId_s                 /*  Source code file identifier:     */
@@ -1305,9 +1356,10 @@ typedef struct operator_s
 #define STUB_CODE        32
 #define SYSTEM_CODE      33
 #define TRACE_CODE       34
-#define VERB_CODE        35
-#define VERSION_CODE     36
-#define ZCHARACTER_CODE  37
+#define UNDEF_CODE       35
+#define VERB_CODE        36
+#define VERSION_CODE     37
+#define ZCHARACTER_CODE  38
 
 #define OPENBLOCK_CODE   100
 #define CLOSEBLOCK_CODE  101
@@ -1525,6 +1577,8 @@ typedef struct operator_s
 
 
 /*  Index numbers into the keyword group "system_functions" (see "lexer.c")  */
+
+#define NUMBER_SYSTEM_FUNCTIONS 12
 
 #define CHILD_SYSF       0
 #define CHILDREN_SYSF    1
@@ -1799,26 +1853,6 @@ typedef struct operator_s
 /* 36 = print (object) out of range */
 
 /* ------------------------------------------------------------------------- */
-/*   Debugging information file record types                                 */
-/* ------------------------------------------------------------------------- */
-
-#define EOF_DBR            0
-#define FILE_DBR           1
-#define CLASS_DBR          2
-#define OBJECT_DBR         3
-#define GLOBAL_DBR         4
-#define ATTR_DBR           5
-#define PROP_DBR           6
-#define FAKE_ACTION_DBR    7
-#define ACTION_DBR         8
-#define HEADER_DBR         9
-#define LINEREF_DBR       10
-#define ROUTINE_DBR       11
-#define ARRAY_DBR         12
-#define MAP_DBR           13
-#define ROUTINE_END_DBR   14
-
-/* ------------------------------------------------------------------------- */
 /*   Z-region areas (used to refer to module positions in markers)           */
 /* ------------------------------------------------------------------------- */
 
@@ -2051,7 +2085,7 @@ extern int32 no_instructions;
 extern int   sequence_point_follows;
 extern int   uses_unicode_features, uses_memheap_features, 
     uses_acceleration_features, uses_float_features;
-extern dbgl  debug_line_ref;
+extern debug_location statement_debug_location;
 extern int   execution_never_reaches_here;
 extern int   *variable_usage;
 extern int   next_label, no_sequence_points;
@@ -2070,8 +2104,8 @@ extern void assemble_label_no(int n);
 extern void assemble_jump(int n);
 extern void define_symbol_label(int symbol);
 extern int32 assemble_routine_header(int no_locals, int debug_flag,
-    char *name, dbgl *line_ref, int embedded_flag, int the_symbol);
-extern void assemble_routine_end(int embedded_flag, dbgl *line_ref);
+    char *name, int embedded_flag, int the_symbol);
+extern void assemble_routine_end(int embedded_flag, debug_locations locations);
 
 extern void assemblez_0(int internal_number);
 extern void assemblez_0_to(int internal_number, assembly_operand o1);
@@ -2120,6 +2154,10 @@ extern void assemblez_4_to(int internal_number,
                        assembly_operand o1, assembly_operand o2,
                        assembly_operand o3, assembly_operand o4,
                        assembly_operand st);
+extern void assemblez_5_to(int internal_number,
+                       assembly_operand o1, assembly_operand o2,
+                       assembly_operand o3, assembly_operand o4,
+                       assembly_operand o5, assembly_operand st);
 
 extern void assemblez_inc(assembly_operand o1);
 extern void assemblez_dec(assembly_operand o1);
@@ -2203,7 +2241,7 @@ extern int32 routine_starts_line;
 extern int  no_routines, no_named_routines, no_locals, no_termcs;
 extern int  terminating_characters[];
 
-extern int  parse_given_directive(void);
+extern int  parse_given_directive(int internal_flag);
 
 /* ------------------------------------------------------------------------- */
 /*   Extern definitions for "errors"                                         */
@@ -2232,6 +2270,7 @@ extern void warning(char *s);
 extern void warning_numbered(char *s1, int val);
 extern void warning_named(char *s1, char *s2);
 extern void dbnu_warning(char *type, char *name, int32 report_line);
+extern void uncalled_routine_warning(char *type, char *name, int32 report_line);
 extern void obsolete_warning(char *s1);
 extern void link_error(char *s);
 extern void link_error_named(char *s1, char *s2);
@@ -2256,7 +2295,7 @@ extern operator operators[];
 
 extern assembly_operand stack_pointer, temp_var1, temp_var2, temp_var3, 
     temp_var4, zero_operand, one_operand, two_operand, three_operand,
-    valueless_operand;
+    four_operand, valueless_operand;
 
 assembly_operand code_generate(assembly_operand AO, int context, int label);
 assembly_operand check_nonzero_at_runtime(assembly_operand AO1, int label,
@@ -2268,6 +2307,9 @@ assembly_operand check_nonzero_at_runtime(assembly_operand AO1, int label,
 
 extern int system_function_usage[];
 extern expression_tree_node *ET;
+
+extern int z_system_constant_list[];
+extern int glulx_system_constant_list[];
 
 extern int32 value_of_system_constant(int t);
 extern void clear_expression_space(void);
@@ -2295,13 +2337,37 @@ extern void write_to_transcript_file(char *text);
 extern void close_transcript_file(void);
 extern void abort_transcript_file(void);
 
-extern void open_debug_file(void);
+extern void nullify_debug_file_position(maybe_file_position *position);
+
 extern void begin_debug_file(void);
-extern void write_debug_byte(int i);
-extern void write_debug_address(int32 i);
-extern void write_dbgl(dbgl x);
-extern void write_debug_string(char *s);
-extern void close_debug_file(void);
+
+extern void debug_file_printf(const char*format, ...);
+extern void debug_file_print_with_entities(const char*string);
+extern void debug_file_print_base_64_triple
+    (uchar first, uchar second, uchar third);
+extern void debug_file_print_base_64_pair(uchar first, uchar second);
+extern void debug_file_print_base_64_single(uchar first);
+
+extern void write_debug_location(debug_location location);
+extern void write_debug_locations(debug_locations locations);
+extern void write_debug_optional_identifier(int32 symbol_index);
+extern void write_debug_symbol_backpatch(int32 symbol_index);
+extern void write_debug_symbol_optional_backpatch(int32 symbol_index);
+extern void write_debug_object_backpatch(int32 object_number);
+extern void write_debug_packed_code_backpatch(int32 offset);
+extern void write_debug_code_backpatch(int32 offset);
+extern void write_debug_global_backpatch(int32 offset);
+extern void write_debug_array_backpatch(int32 offset);
+extern void write_debug_grammar_backpatch(int32 offset);
+
+extern void begin_writing_debug_sections();
+extern void write_debug_section(const char*name, int32 beginning_address);
+extern void end_writing_debug_sections(int32 end_address);
+
+extern void write_debug_undef(int32 symbol_index);
+
+extern void end_debug_file();
+
 extern void add_to_checksum(void *address);
 
 extern void load_sourcefile(char *story_name, int style);
@@ -2346,7 +2412,7 @@ extern int32 requested_glulx_version;
 
 extern int error_format,    store_the_text,       asm_trace_setting,
     double_space_setting,   trace_fns_setting,    character_set_setting,
-    header_ext_setting;
+    character_set_unicode;
 
 extern char Debugging_Name[];
 extern char Transcript_Name[];
@@ -2388,7 +2454,12 @@ extern char **local_variable_texts;
 extern int32 token_value;
 extern int   token_type;
 extern char *token_text;
-extern dbgl  token_line_ref;
+
+extern debug_location get_token_location(void);
+extern debug_locations get_token_locations(void);
+extern debug_location_beginning get_token_location_beginning(void);
+extern void discard_token_location(debug_location_beginning beginning);
+extern debug_locations get_token_location_end(debug_location_beginning beginning);
 
 extern void describe_token(token_data t);
 
@@ -2396,8 +2467,8 @@ extern void construct_local_variable_tables(void);
 extern void declare_systemfile(void);
 extern int  is_systemfile(void);
 extern void report_errors_at_current_line(void);
-extern dbgl get_current_dbgl(void);
-extern dbgl get_error_report_dbgl(void);
+extern debug_location get_current_debug_location(void);
+extern debug_location get_error_report_debug_location(void);
 extern int32 get_current_line_start(void);
 
 extern void put_token_back(void);
@@ -2436,9 +2507,9 @@ extern int MAX_QTEXT_SIZE,  MAX_SYMBOLS,    HASH_TAB_SIZE,   MAX_DICT_ENTRIES,
            MAX_OBJECTS,     MAX_ACTIONS,    MAX_ADJECTIVES,   MAX_ABBREVS,
            MAX_STATIC_DATA,      MAX_PROP_TABLE_SIZE,   SYMBOLS_CHUNK_SIZE,
            MAX_EXPRESSION_NODES, MAX_LABELS,            MAX_LINESPACE,
-           MAX_LOW_STRINGS,      MAX_CLASSES,           MAX_CLASS_TABLE_SIZE,
-           MAX_VERBS,            MAX_VERBSPACE,         MAX_ARRAYS,
-           MAX_INCLUSION_DEPTH,  MAX_SOURCE_FILES;
+           MAX_LOW_STRINGS,      MAX_CLASSES,           MAX_VERBS,
+           MAX_VERBSPACE,        MAX_ARRAYS,            MAX_INCLUSION_DEPTH,
+           MAX_SOURCE_FILES;
 
 extern int32 MAX_STATIC_STRINGS, MAX_ZCODE_SIZE, MAX_LINK_DATA_SIZE,
            MAX_TRANSCRIPT_SIZE,  MAX_INDIV_PROP_TABLE_SIZE,
@@ -2447,10 +2518,27 @@ extern int32 MAX_STATIC_STRINGS, MAX_ZCODE_SIZE, MAX_LINK_DATA_SIZE,
 
 extern int32 MAX_OBJ_PROP_COUNT, MAX_OBJ_PROP_TABLE_SIZE;
 extern int MAX_LOCAL_VARIABLES, MAX_GLOBAL_VARIABLES;
-extern int DICT_WORD_SIZE, DICT_CHAR_SIZE, DICT_WORD_BYTES, NUM_ATTR_BYTES;
+extern int DICT_WORD_SIZE, DICT_CHAR_SIZE, DICT_WORD_BYTES;
+extern int ZCODE_HEADER_EXT_WORDS, ZCODE_HEADER_FLAGS_3;
+extern int NUM_ATTR_BYTES, GLULX_OBJECT_EXT_BYTES;
+extern int WARN_UNUSED_ROUTINES, OMIT_UNUSED_ROUTINES;
+
+/* These macros define offsets that depend on the value of NUM_ATTR_BYTES.
+   (Meaningful only for Glulx.) */
+/* GOBJFIELD: word offsets of various elements in the object structure. */
+#define GOBJFIELD_CHAIN()    (1+((NUM_ATTR_BYTES)/4))
+#define GOBJFIELD_NAME()     (2+((NUM_ATTR_BYTES)/4))
+#define GOBJFIELD_PROPTAB()  (3+((NUM_ATTR_BYTES)/4))
+#define GOBJFIELD_PARENT()   (4+((NUM_ATTR_BYTES)/4))
+#define GOBJFIELD_SIBLING()  (5+((NUM_ATTR_BYTES)/4))
+#define GOBJFIELD_CHILD()    (6+((NUM_ATTR_BYTES)/4))
 
 extern void *my_malloc(int32 size, char *whatfor);
+extern void my_realloc(void *pointer, int32 oldsize, int32 size, 
+    char *whatfor);
 extern void *my_calloc(int32 size, int32 howmany, char *whatfor);
+extern void my_recalloc(void *pointer, int32 size, int32 oldhowmany, 
+    int32 howmany, char *whatfor);
 extern void my_free(void *pointer, char *whatitwas);
 
 extern void set_memory_sizes(int size_flag);
@@ -2511,20 +2599,37 @@ extern int   *sflags;
 #else
   extern signed char *stypes;
 #endif
+extern maybe_file_position *symbol_debug_backpatch_positions;
+extern maybe_file_position *replacement_debug_backpatch_positions;
 extern int32 *individual_name_strings;
 extern int32 *attribute_name_strings;
 extern int32 *action_name_strings;
 extern int32 *array_name_strings;
+extern int track_unused_routines;
+extern int df_dont_note_global_symbols;
+extern uint32 df_total_size_before_stripping;
+extern uint32 df_total_size_after_stripping;
 
 extern char *typename(int type);
 extern int hash_code_from_string(char *p);
 extern int strcmpcis(char *p, char *q);
 extern int symbol_index(char *lexeme_text, int hashcode);
+extern void end_symbol_scope(int k);
 extern void describe_symbol(int k);
 extern void list_symbols(int level);
 extern void assign_marked_symbol(int index, int marker, int32 value, int type);
 extern void assign_symbol(int index, int32 value, int type);
 extern void issue_unused_warnings(void);
+extern void add_symbol_replacement_mapping(int original, int renamed);
+extern int find_symbol_replacement(int *value);
+extern void df_note_function_start(char *name, uint32 address, 
+    int embedded_flag, int32 source_line);
+extern void df_note_function_end(uint32 endaddress);
+extern void df_note_function_symbol(int symbol);
+extern void locate_dead_functions(void);
+extern uint32 df_stripped_address_for_address(uint32);
+extern void df_prepare_function_iterate(void);
+extern uint32 df_next_function_iterate(int *);
 
 /* ------------------------------------------------------------------------- */
 /*   Extern definitions for "syntax"                                         */
@@ -2533,6 +2638,7 @@ extern void issue_unused_warnings(void);
 extern int   no_syntax_lines;
 
 extern void  panic_mode_error_recovery(void);
+extern void  get_next_token_with_directives(void);
 extern int   parse_directive(int internal_flag);
 extern void  parse_program(char *source);
 extern int32 parse_routine(char *source, int embedded_flag, char *name,
@@ -2653,7 +2759,7 @@ extern void  compress_game_text(void);
 
 extern void  ao_free_arrays(void);
 extern int32 compile_string(char *b, int in_low_memory, int is_abbrev);
-extern uchar *translate_text(uchar *p, char *s_text);
+extern uchar *translate_text(uchar *p, uchar *p_limit, char *s_text);
 extern void  optimise_abbreviations(void);
 extern void  make_abbreviation(char *text);
 extern void  show_dictionary(void);

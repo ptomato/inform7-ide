@@ -2,14 +2,15 @@
 /*   "errors" : Warnings, errors and fatal errors                            */
 /*              (with error throwback code for RISC OS machines)             */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
 #include "header.h"
 
-static char error_message_buff[256];
+#define ERROR_BUFLEN (256)
+static char error_message_buff[ERROR_BUFLEN+4]; /* room for ellipsis */
 
 /* ------------------------------------------------------------------------- */
 /*   Error preamble printing.                                                */
@@ -29,10 +30,10 @@ static void print_preamble(void)
     int j, with_extension_flag = FALSE; char *p;
 
     j = ErrorReport.file_number;
-    if (j <= 0) p = ErrorReport.source;
+    if (j <= 0 || j > input_file) p = ErrorReport.source;
     else p = InputFiles[j-1].filename;
 
-    if (!p) p = ""; /* ###-call me paranoid */
+    if (!p) p = "";
     
     switch(error_format)
     {
@@ -60,17 +61,14 @@ static void print_preamble(void)
     }
 }
 
-static char trimmed_text[128];
-
-static void trim_text(char *s)
-{   int i;
-    if (strlen(s) < 128) { strcpy(trimmed_text, s); return; }
-    for (i=0; i<120; i++) trimmed_text[i] = s[i];
-    trimmed_text[i++] = '.';
-    trimmed_text[i++] = '.';
-    trimmed_text[i++] = '.';
-    trimmed_text[i++] = 0;
-    return;
+static void ellipsize_error_message_buff(void)
+{
+    /* If the error buffer was actually filled up by a message, it was
+       probably truncated too. Add an ellipsis, for which we left
+       extra room. (Yes, yes; errors that are *exactly* 255 characters
+       long will suffer an unnecessary ellipsis.) */
+    if (strlen(error_message_buff) == ERROR_BUFLEN-1)
+        strcat(error_message_buff, "...");
 }
 
 /* ------------------------------------------------------------------------- */
@@ -100,28 +98,30 @@ extern void fatalerror(char *s)
 }
 
 extern void fatalerror_named(char *m, char *fn)
-{   trim_text(fn);
-    sprintf(error_message_buff, "%s \"%s\"", m, trimmed_text);
+{   snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\"", m, fn);
+    ellipsize_error_message_buff();
     fatalerror(error_message_buff);
 }
 
 extern void memory_out_error(int32 size, int32 howmany, char *name)
 {   if (howmany == 1)
-        sprintf(error_message_buff,
+        snprintf(error_message_buff, ERROR_BUFLEN,
             "Run out of memory allocating %d bytes for %s", size, name);
     else
-        sprintf(error_message_buff,
+        snprintf(error_message_buff, ERROR_BUFLEN,
             "Run out of memory allocating array of %dx%d bytes for %s",
                 howmany, size, name);
+    ellipsize_error_message_buff();
     fatalerror(error_message_buff);
 }
 
 extern void memoryerror(char *s, int32 size)
 {
-    sprintf(error_message_buff,
+    snprintf(error_message_buff, ERROR_BUFLEN,
         "The memory setting %s (which is %ld at present) has been \
 exceeded.  Try running Inform again with $%s=<some-larger-number> on the \
 command line.",s,(long int) size,s);
+    ellipsize_error_message_buff();
     fatalerror(error_message_buff);
 }
 
@@ -190,14 +190,15 @@ extern void error(char *s)
 }
 
 extern void error_named(char *s1, char *s2)
-{   trim_text(s2);
-    sprintf(error_message_buff,"%s \"%s\"",s1,trimmed_text);
+{   snprintf(error_message_buff, ERROR_BUFLEN,"%s \"%s\"",s1,s2);
+    ellipsize_error_message_buff();
     error(error_message_buff);
 }
 
 extern void error_numbered(char *s1, int val)
 {
-    sprintf(error_message_buff,"%s %d.",s1,val);
+    snprintf(error_message_buff, ERROR_BUFLEN,"%s %d.",s1,val);
+    ellipsize_error_message_buff();
     error(error_message_buff);
 }
 
@@ -206,13 +207,13 @@ extern void error_named_at(char *s1, char *s2, int32 report_line)
 
     ErrorPosition E = ErrorReport;
     if (report_line != -1)
-    {   ErrorReport.file_number = report_line/0x10000;
-        ErrorReport.line_number = report_line%0x10000;
+    {   ErrorReport.file_number = report_line/FILE_LINE_SCALE_FACTOR;
+        ErrorReport.line_number = report_line%FILE_LINE_SCALE_FACTOR;
         ErrorReport.main_flag = (ErrorReport.file_number == 1);
     }
 
-    trim_text(s2);
-    sprintf(error_message_buff,"%s \"%s\"",s1,trimmed_text);
+    snprintf(error_message_buff, ERROR_BUFLEN,"%s \"%s\"",s1,s2);
+    ellipsize_error_message_buff();
 
     i = concise_switch; concise_switch = TRUE;
     error(error_message_buff);
@@ -224,8 +225,8 @@ extern void no_such_label(char *lname)
 }
 
 extern void ebf_error(char *s1, char *s2)
-{   trim_text(s2);
-    sprintf(error_message_buff, "Expected %s but found %s", s1, trimmed_text);
+{   snprintf(error_message_buff, ERROR_BUFLEN, "Expected %s but found %s", s1, s2);
+    ellipsize_error_message_buff();
     error(error_message_buff);
 }
 
@@ -234,34 +235,51 @@ extern void char_error(char *s, int ch)
 
     uni = iso_to_unicode(ch);
 
-    if (uni >= 0x100)
-    {   sprintf(error_message_buff,
+    if (character_set_unicode)
+        snprintf(error_message_buff, ERROR_BUFLEN, "%s (unicode) $%04x", s, uni);
+    else if (uni >= 0x100)
+    {   snprintf(error_message_buff, ERROR_BUFLEN,
             "%s (unicode) $%04x = (ISO %s) $%02x", s, uni,
             name_of_iso_set(character_set_setting), ch);
     }
     else
-        sprintf(error_message_buff, "%s (ISO Latin1) $%02x", s, uni);
+        snprintf(error_message_buff, ERROR_BUFLEN, "%s (ISO Latin1) $%02x", s, uni);
+
+    /* If the character set is set to Latin-1, and the char in question
+       is a printable Latin-1 character, we print it in the error message.
+       This conflates the source-text charset with the terminal charset,
+       really, but it's not a big deal. */
 
     if (((uni>=32) && (uni<127))
-        || (((uni >= 0xa1) && (uni <= 0xff)) && (character_set_setting==1)))
-        sprintf(error_message_buff+strlen(error_message_buff),
+        || (((uni >= 0xa1) && (uni <= 0xff))
+        && (character_set_setting==1) && (!character_set_unicode))) 
+    {   int curlen = strlen(error_message_buff);
+        snprintf(error_message_buff+curlen, ERROR_BUFLEN-curlen,
             ", i.e., '%c'", uni);
+    }
 
+    ellipsize_error_message_buff();
     error(error_message_buff);
 }
 
 extern void unicode_char_error(char *s, int32 uni)
 {
     if (uni >= 0x100)
-        sprintf(error_message_buff, "%s (unicode) $%04x", s, uni);
+        snprintf(error_message_buff, ERROR_BUFLEN, "%s (unicode) $%04x", s, uni);
     else
-        sprintf(error_message_buff, "%s (ISO Latin1) $%02x", s, uni);
+        snprintf(error_message_buff, ERROR_BUFLEN, "%s (ISO Latin1) $%02x", s, uni);
+
+    /* See comment above. */
 
     if (((uni>=32) && (uni<127))
-        || (((uni >= 0xa1) && (uni <= 0xff)) && (character_set_setting==1)))
-        sprintf(error_message_buff+strlen(error_message_buff),
+        || (((uni >= 0xa1) && (uni <= 0xff))
+        && (character_set_setting==1) && (!character_set_unicode)))
+    {   int curlen = strlen(error_message_buff);
+        snprintf(error_message_buff+curlen, ERROR_BUFLEN-curlen,
             ", i.e., '%c'", uni);
+    }
 
+    ellipsize_error_message_buff();
     error(error_message_buff);
 }
 
@@ -276,15 +294,16 @@ extern void warning(char *s1)
 
 extern void warning_numbered(char *s1, int val)
 {   if (nowarnings_switch) { no_suppressed_warnings++; return; }
-    sprintf(error_message_buff,"%s %d.", s1, val);
+    snprintf(error_message_buff, ERROR_BUFLEN,"%s %d.", s1, val);
+    ellipsize_error_message_buff();
     message(2,error_message_buff);
 }
 
 extern void warning_named(char *s1, char *s2)
 {
-    trim_text(s2);
     if (nowarnings_switch) { no_suppressed_warnings++; return; }
-    sprintf(error_message_buff,"%s \"%s\"", s1, trimmed_text);
+    snprintf(error_message_buff, ERROR_BUFLEN,"%s \"%s\"", s1, s2);
+    ellipsize_error_message_buff();
     message(2,error_message_buff);
 }
 
@@ -293,11 +312,36 @@ extern void dbnu_warning(char *type, char *name, int32 report_line)
     ErrorPosition E = ErrorReport;
     if (nowarnings_switch) { no_suppressed_warnings++; return; }
     if (report_line != -1)
-    {   ErrorReport.file_number = report_line/0x10000;
-        ErrorReport.line_number = report_line%0x10000;
+    {   ErrorReport.file_number = report_line/FILE_LINE_SCALE_FACTOR;
+        ErrorReport.line_number = report_line%FILE_LINE_SCALE_FACTOR;
         ErrorReport.main_flag = (ErrorReport.file_number == 1);
     }
-    sprintf(error_message_buff, "%s \"%s\" declared but not used", type, name);
+    snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\" declared but not used", type, name);
+    ellipsize_error_message_buff();
+    i = concise_switch; concise_switch = TRUE;
+    message(2,error_message_buff);
+    concise_switch = i;
+    ErrorReport = E;
+}
+
+extern void uncalled_routine_warning(char *type, char *name, int32 report_line)
+{   int i;
+    /* This is called for functions which have been detected by the
+       track-unused-routines module. These will often (but not always)
+       be also caught by dbnu_warning(), which tracks symbols rather
+       than routine addresses. */
+    ErrorPosition E = ErrorReport;
+    if (nowarnings_switch) { no_suppressed_warnings++; return; }
+    if (report_line != -1)
+    {   ErrorReport.file_number = report_line/FILE_LINE_SCALE_FACTOR;
+        ErrorReport.line_number = report_line%FILE_LINE_SCALE_FACTOR;
+        ErrorReport.main_flag = (ErrorReport.file_number == 1);
+    }
+    if (OMIT_UNUSED_ROUTINES)
+        snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\" unused and omitted", type, name);
+    else
+        snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\" unused (not omitted)", type, name);
+    ellipsize_error_message_buff();
     i = concise_switch; concise_switch = TRUE;
     message(2,error_message_buff);
     concise_switch = i;
@@ -308,7 +352,8 @@ extern void obsolete_warning(char *s1)
 {   if (is_systemfile()==1) return;
     if (obsolete_switch || nowarnings_switch)
     {   no_suppressed_warnings++; return; }
-    sprintf(error_message_buff, "Obsolete usage: %s",s1);
+    snprintf(error_message_buff, ERROR_BUFLEN, "Obsolete usage: %s",s1);
+    ellipsize_error_message_buff();
     message(2,error_message_buff);
 }
 
@@ -323,8 +368,8 @@ extern void link_error(char *s)
 }
 
 extern void link_error_named(char *s1, char *s2)
-{   trim_text(s2);
-    sprintf(error_message_buff,"%s \"%s\"",s1,trimmed_text);
+{   snprintf(error_message_buff, ERROR_BUFLEN,"%s \"%s\"",s1,s2);
+    ellipsize_error_message_buff();
     link_error(error_message_buff);
 }
 
@@ -358,8 +403,8 @@ extern int compiler_error(char *s)
 extern int compiler_error_named(char *s1, char *s2)
 {   if (no_link_errors > 0) return FALSE;
     if (no_errors > 0) return FALSE;
-    trim_text(s2);
-    sprintf(error_message_buff,"%s \"%s\"",s1,trimmed_text);
+    snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\"",s1,s2);
+    ellipsize_error_message_buff();
     compiler_error(error_message_buff);
     return TRUE;
 }

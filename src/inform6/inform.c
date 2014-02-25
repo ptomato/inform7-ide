@@ -2,8 +2,8 @@
 /*   "inform" :  The top level of Inform: switches, pathnames, filenaming    */
 /*               conventions, ICL (Inform Command Line) files, main          */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -186,7 +186,7 @@ static void select_target(int targ)
   }
   else {
     /* Glulx */
-    OBJECT_BYTE_LENGTH = (1 + (NUM_ATTR_BYTES) + 6*4);
+    OBJECT_BYTE_LENGTH = (1 + (NUM_ATTR_BYTES) + 6*4 + (GLULX_OBJECT_EXT_BYTES));
     DICT_WORD_BYTES = DICT_WORD_SIZE*DICT_CHAR_SIZE;
     if (DICT_CHAR_SIZE == 1) {
       DICT_ENTRY_BYTE_LENGTH = (7+DICT_WORD_BYTES);
@@ -248,14 +248,14 @@ int throwback_switch;               /* -T */
 int riscos_file_type_format;        /* set by -R */
 #endif
 int compression_switch;             /* set by -H */
-int character_set_setting,          /* set by -C */
+int character_set_setting,          /* set by -C0 through -C9 */
+    character_set_unicode,          /* set by -Cu */
     error_format,                   /* set by -E */
     asm_trace_setting,              /* set by -a and -t: value of
                                        asm_trace_level to use when tracing */
     double_space_setting,           /* set by -d: 0, 1 or 2 */
     trace_fns_setting,              /* set by -g: 0, 1 or 2 */
     linker_trace_setting,           /* set by -y: ditto for linker_... */
-    header_ext_setting,             /* set by -W */
     store_the_text;                 /* when set, record game text to a chunk
                                        of memory (used by both -r & -k) */
 static int r_e_c_s_set;             /* has -S been explicitly set? */
@@ -311,8 +311,8 @@ static void reset_switch_settings(void)
 #endif
     error_format=DEFAULT_ERROR_FORMAT;
 
-    character_set_setting = 1;                     /* Default is ISO Latin-1 */
-    header_ext_setting = 0;
+    character_set_setting = 1;         /* Default is ISO Latin-1 */
+    character_set_unicode = FALSE;
 
     compression_switch = TRUE;
     glulx_mode = FALSE;
@@ -724,8 +724,8 @@ extern void translate_out_filename(char *new_name, char *old_name)
     /* Remove any pathname or extension in <file1>. */
 
     if (contains_separator(old_name)==1)
-    {   for (i=strlen(old_name)-1; (i>=0)&&(old_name[i]!=FN_SEP) ;i--) ;
-            if (old_name[i]==FN_SEP) i++;
+    {   for (i=strlen(old_name)-1; (i>0)&&(old_name[i]!=FN_SEP) ;i--) { };
+        if (old_name[i]==FN_SEP) i++;
         old_name += i;
     }
 #ifdef FILE_EXTENSIONS
@@ -1001,6 +1001,8 @@ static void run_pass(void)
         check_temp_files();
     }
     sort_dictionary();
+    if (track_unused_routines)
+        locate_dead_functions();
     construct_storyfile();
 }
 
@@ -1084,9 +1086,11 @@ compiling modules: disabling -S switch\n");
     }
 
     init_vars();
-    allocate_arrays();
 
     if (debugfile_switch) begin_debug_file();
+
+    allocate_arrays();
+
     if (transcript_switch) open_transcript_file(Source_Name);
 
     run_pass();
@@ -1099,7 +1103,9 @@ compiling modules: disabling -S switch\n");
     if (no_errors==0) { output_file(); output_has_occurred = TRUE; }
     else { output_has_occurred = FALSE; }
 
-    if (debugfile_switch) close_debug_file();
+    if (debugfile_switch)
+    {   end_debug_file();
+    }
 
     if (temporary_files_switch && (no_errors>0)) remove_temp_files();
 
@@ -1122,7 +1128,7 @@ static void cli_print_help(int help_level)
 {
     printf(
 "\nThis program is a compiler of Infocom format (also called \"Z-machine\")\n\
-story files: copyright (c) Graham Nelson 1993 - 2010.\n\n");
+story files: copyright (c) Graham Nelson 1993 - 2014.\n\n");
 
    /* For people typing just "inform", a summary only: */
 
@@ -1221,6 +1227,7 @@ One or more words can be supplied as \"commands\". These may be:\n\n\
 printf("\
   B   use big memory model (for large V6/V7 files)\n\
   C0  text character set is plain ASCII only\n\
+  Cu  text character set is UTF-8\n\
   Cn  text character set is ISO 8859-n (n = 1 to 9)\n\
       (1 to 4, Latin1 to Latin4; 5, Cyrillic; 6, Arabic;\n\
        7, Greek; 8, Hebrew; 9, Latin5.  Default is -C1.)\n");
@@ -1343,11 +1350,21 @@ extern void switches(char *p, int cmode)
         case 'y': s=2; linker_trace_setting=p[i+1]-'0'; break;
         case 'z': memory_map_switch = state; break;
         case 'B': oddeven_packing_switch = state; break;
-        case 'C': s=2; character_set_setting=p[i+1]-'0';
-                  if ((character_set_setting < 0)
-                      || (character_set_setting > 9))
-                  {   printf("-C must be followed by 0 to 9\n");
+        case 'C': s=2;
+                  if (p[i+1] == 'u') {
+                      character_set_unicode = TRUE;
+                      /* Leave the set_setting on Latin-1, because that 
+                         matches the first block of Unicode. */
                       character_set_setting = 1;
+                  }
+                  else 
+                  {   character_set_setting=p[i+1]-'0';
+                      if ((character_set_setting < 0)
+                          || (character_set_setting > 9))
+                      {   printf("-C must be followed by 'u' or 0 to 9. Defaulting to ISO-8859-1.\n");
+                          character_set_unicode = FALSE;
+                          character_set_setting = 1;
+                      }
                   }
                   if (cmode == 0) change_character_set();
                   break;
@@ -1385,17 +1402,17 @@ extern void switches(char *p, int cmode)
         case 'G': if (cmode == 0)
                       error("The switch '-G' can't be set with 'Switches'");
                   else
-                  {   glulx_mode = state; /* ###- */
+                  {   glulx_mode = state;
                       adjust_memory_sizes();
                   }
                   break;
         case 'H': compression_switch = state; break;
         case 'U': define_USE_MODULES_switch = state; break;
         case 'W': if ((p[i+1]>='0') && (p[i+1]<='9'))
-                  {   s=2; header_ext_setting = p[i+1]-'0';
+                  {   s=2; ZCODE_HEADER_EXT_WORDS = p[i+1]-'0';
                       if ((p[i+2]>='0') && (p[i+2]<='9'))
-                      {   s=3; header_ext_setting *= 10;
-                          header_ext_setting += p[i+2]-'0';
+                      {   s=3; ZCODE_HEADER_EXT_WORDS *= 10;
+                          ZCODE_HEADER_EXT_WORDS += p[i+2]-'0';
                       }
                   }
                   break;
@@ -1614,16 +1631,13 @@ static void banner(void)
 {
     sprintf(banner_line, "Inform %d.%d%d",
         (VNUMBER/100)%10, (VNUMBER/10)%10, VNUMBER%10);
-    if (0) {
-        sprintf(banner_line+strlen(banner_line), " (biplatform, G%d.%d%d)",
-            (GLULX_RELEASE_NUMBER/100)%10, (GLULX_RELEASE_NUMBER/10)%10, 
-            GLULX_RELEASE_NUMBER%10);
-    }
+#ifdef RELEASE_SUFFIX
+    strcat(banner_line, RELEASE_SUFFIX);
+#endif
 #ifdef MACHINE_STRING
     sprintf(banner_line+strlen(banner_line), " for %s", MACHINE_STRING);
 #endif
-    sprintf(banner_line+strlen(banner_line), " (%s)",
-        RELEASE_DATE);
+    sprintf(banner_line+strlen(banner_line), " (%s)", RELEASE_DATE);
     printf("%s\n", banner_line);
 }
 

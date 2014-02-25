@@ -2,8 +2,8 @@
 /*   "verbs" :  Manages actions and grammar tables; parses the directives    */
 /*              Verb and Extend.                                             */
 /*                                                                           */
-/*   Part of Inform 6.32                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2010                                 */
+/*   Part of Inform 6.33                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2014                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -123,10 +123,13 @@ static void new_action(char *b, int c)
 extern void make_fake_action(void)
 {   int i;
     char action_sub[MAX_IDENTIFIER_LENGTH+4];
+    debug_location_beginning beginning_debug_location =
+        get_token_location_beginning();
 
     get_next_token();
     if (token_type != SYMBOL_TT)
-    {   ebf_error("new fake action name", token_text);
+    {   discard_token_location(beginning_debug_location);
+        ebf_error("new fake action name", token_text);
         panic_mode_error_recovery(); return;
     }
 
@@ -134,7 +137,8 @@ extern void make_fake_action(void)
     i = symbol_index(action_sub, -1);
 
     if (!(sflags[i] & UNKNOWN_SFLAG))
-    {   ebf_error("new fake action name", token_text);
+    {   discard_token_location(beginning_debug_location);
+        ebf_error("new fake action name", token_text);
         panic_mode_error_recovery(); return;
     }
 
@@ -142,12 +146,18 @@ extern void make_fake_action(void)
         FAKE_ACTION_T);
 
     new_action(token_text, i);
+
     if (debugfile_switch)
-    {   write_debug_byte(FAKE_ACTION_DBR);
-        write_debug_byte(svals[i]/256);
-        write_debug_byte(svals[i]%256);
-        write_debug_string(token_text);
+    {   debug_file_printf("<fake-action>");
+        debug_file_printf("<identifier>##%s</identifier>", token_text);
+        debug_file_printf("<value>%d</value>", svals[i]);
+        get_next_token();
+        write_debug_locations
+            (get_token_location_end(beginning_debug_location));
+        put_token_back();
+        debug_file_printf("</fake-action>");
     }
+
     return;
 }
 
@@ -198,20 +208,28 @@ extern assembly_operand action_of_name(char *name)
 
 extern void find_the_actions(void)
 {   int i; int32 j;
+    char action_name[MAX_IDENTIFIER_LENGTH];
     char action_sub[MAX_IDENTIFIER_LENGTH+4];
 
     if (module_switch)
         for (i=0; i<no_actions; i++) action_byte_offset[i] = 0;
     else
     for (i=0; i<no_actions; i++)
-    {   strcpy(action_sub, (char *) symbs[action_symbol[i]]);
-        strcpy(action_sub + strlen(action_sub) - 3, "Sub");
+    {   strcpy(action_name, (char *) symbs[action_symbol[i]]);
+        action_name[strlen(action_name) - 3] = '\0'; /* remove "__A" */
+        strcpy(action_sub, action_name);
+        strcat(action_sub, "Sub");
         j = symbol_index(action_sub, -1);
         if (sflags[j] & UNKNOWN_SFLAG)
-            error_named("There is no action routine called", action_sub);
+        {
+            error_named_at("No ...Sub action routine found for action:", action_name, slines[action_symbol[i]]);
+        }
         else
         if (stypes[j] != ROUTINE_T)
-            error_named("Not an action routine:", action_sub);
+        {
+            error_named_at("No ...Sub action routine found for action:", action_name, slines[action_symbol[i]]);
+            error_named_at("-- ...Sub symbol found, but not a routine:", action_sub, slines[j]);
+        }
         else
         {   action_byte_offset[i] = svals[j];
             sflags[j] |= USED_SFLAG;
@@ -373,11 +391,17 @@ static int grammar_line(int verbnum, int line)
     int j, bytecode, mark; int32 wordcode;
     int grammar_token, slash_mode, last_was_slash;
     int reverse_action, TOKEN_SIZE;
+    debug_location_beginning beginning_debug_location =
+        get_token_location_beginning();
 
     get_next_token();
-    if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP)) return FALSE;
+    if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP))
+    {   discard_token_location(beginning_debug_location);
+        return FALSE;
+    }
     if (!((token_type == SEP_TT) && (token_value == TIMES_SEP)))
-    {   ebf_error("'*' divider", token_text);
+    {   discard_token_location(beginning_debug_location);
+        ebf_error("'*' divider", token_text);
         panic_mode_error_recovery();
         return FALSE;
     }
@@ -385,7 +409,8 @@ static int grammar_line(int verbnum, int line)
     /*  Have we run out of lines or token space?  */
 
     if (line >= MAX_LINES_PER_VERB)
-    {   error("Too many lines of grammar for verb. This maximum is built \
+    {   discard_token_location(beginning_debug_location);
+        error("Too many lines of grammar for verb. This maximum is built \
 into Inform, so suggest rewriting grammar using general parsing routines");
         return(FALSE);
     }
@@ -396,11 +421,15 @@ into Inform, so suggest rewriting grammar using general parsing routines");
     mark = grammar_lines_top;
     if (!glulx_mode) {
         if (mark + 100 >= MAX_LINESPACE)
+        {   discard_token_location(beginning_debug_location);
             memoryerror("MAX_LINESPACE", MAX_LINESPACE);
+        }
     }
     else {
         if (mark + 165 >= MAX_LINESPACE)
+        {   discard_token_location(beginning_debug_location);
             memoryerror("MAX_LINESPACE", MAX_LINESPACE);
+        }
     }
 
     Inform_verbs[verbnum].l[line] = mark;
@@ -421,7 +450,8 @@ into Inform, so suggest rewriting grammar using general parsing routines");
     {   get_next_token();
         bytecode = 0; wordcode = 0;
         if ((token_type == SEP_TT) && (token_value == SEMICOLON_SEP))
-        {   ebf_error("'->' clause", token_text);
+        {   discard_token_location(beginning_debug_location);
+            ebf_error("'->' clause", token_text);
             return FALSE;
         }
         if ((token_type == SEP_TT) && (token_value == ARROW_SEP))
@@ -464,7 +494,8 @@ into Inform, so suggest rewriting grammar using general parsing routines");
                      get_next_token();
                      if ((token_type != SYMBOL_TT)
                          || (stypes[token_value] != ROUTINE_T))
-                     {   ebf_error("routine name after 'noun='", token_text);
+                     {   discard_token_location(beginning_debug_location);
+                         ebf_error("routine name after 'noun='", token_text);
                          panic_mode_error_recovery();
                          return FALSE;
                      }
@@ -518,7 +549,8 @@ are using Library 6/3 or later");
 
                  get_next_token();
                  if (!((token_type==SEP_TT)&&(token_value==SETEQUALS_SEP)))
-                 {   ebf_error("'=' after 'scope'", token_text);
+                 {   discard_token_location(beginning_debug_location);
+                     ebf_error("'=' after 'scope'", token_text);
                      panic_mode_error_recovery();
                      return FALSE;
                  }
@@ -526,7 +558,8 @@ are using Library 6/3 or later");
                  get_next_token();
                  if ((token_type != SYMBOL_TT)
                      || (stypes[token_value] != ROUTINE_T))
-                 {   ebf_error("routine name after 'scope='", token_text);
+                 {   discard_token_location(beginning_debug_location);
+                     ebf_error("routine name after 'scope='", token_text);
                      panic_mode_error_recovery();
                      return FALSE;
                  }
@@ -538,7 +571,8 @@ are using Library 6/3 or later");
                  sflags[token_value] |= USED_SFLAG;
              }
         else if ((token_type == SEP_TT) && (token_value == SETEQUALS_SEP))
-             {   error("'=' is only legal here as 'noun=Routine'");
+             {   discard_token_location(beginning_debug_location);
+                 error("'=' is only legal here as 'noun=Routine'");
                  panic_mode_error_recovery();
                  return FALSE;
              }
@@ -547,8 +581,10 @@ are using Library 6/3 or later");
                  if ((token_type != SYMBOL_TT)
                      || ((stypes[token_value] != ATTRIBUTE_T)
                          && (stypes[token_value] != ROUTINE_T)))
-                 {   error_named("No such grammar token as", token_text);
-                     panic_mode_error_recovery(); return FALSE;
+                 {   discard_token_location(beginning_debug_location);
+                     error_named("No such grammar token as", token_text);
+                     panic_mode_error_recovery();
+                     return FALSE;
                  }
                  if (stypes[token_value]==ATTRIBUTE_T)
                  {   if (grammar_version_number == 1)
@@ -599,7 +635,8 @@ tokens in any line (unless you're compiling with library 6/3 or later)");
     dont_enter_into_symbol_table = FALSE;
 
     if (token_type != DQ_TT)
-    {   ebf_error("name of new or existing action", token_text);
+    {   discard_token_location(beginning_debug_location);
+        ebf_error("name of new or existing action", token_text);
         panic_mode_error_recovery();
         return FALSE;
     }
@@ -621,6 +658,20 @@ Library 6/3 or later");
     else put_token_back();
 
     mark = Inform_verbs[verbnum].l[line];
+
+    if (debugfile_switch)
+    {   debug_file_printf("<table-entry>");
+        debug_file_printf("<type>grammar line</type>");
+        debug_file_printf("<address>");
+        write_debug_grammar_backpatch(mark);
+        debug_file_printf("</address>");
+        debug_file_printf("<end-address>");
+        write_debug_grammar_backpatch(grammar_lines_top);
+        debug_file_printf("</end-address>");
+        write_debug_locations
+            (get_token_location_end(beginning_debug_location));
+        debug_file_printf("</table-entry>");
+    }
 
     if (!glulx_mode) {
         if (reverse_action)
