@@ -85,9 +85,7 @@ AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$enable_deb" = xyes])
 # the ni binary in it, otherwise configuring it will fail.
 AC_ARG_ENABLE([distcheck],
 	[AS_HELP_STRING([--enable-distcheck=@<:@yes/no@:>@],
-		[Configure for make distcheck @<:@default=no@:>@])],
-	[]
-	[enable_distcheck=no])
+		[Configure for make distcheck @<:@default=no@:>@])])
 AM_CONDITIONAL([DISTCHECK], [$TEST "x$enable_distcheck" = xyes])
 
 # --enable-manuals builds the inweb and cBlorb manuals. Requires pdftex and dot.

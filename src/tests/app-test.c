@@ -219,7 +219,8 @@ test_app_colorscheme_get_current(void)
 	I7App *theapp = i7_app_get();
 
 	GtkSourceStyleScheme *scheme = i7_app_get_current_color_scheme(theapp);
-	char *id = config_file_get_string(PREFS_STYLE_SCHEME);
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	char *id = g_settings_get_string(prefs, PREFS_STYLE_SCHEME);
 	g_assert_cmpstr(gtk_source_style_scheme_get_id(scheme), ==, id);
 	g_free(id);
 }
