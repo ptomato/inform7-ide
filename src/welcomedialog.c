@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -93,10 +93,10 @@ create_welcome_dialog(void)
 
 	/* If there is no "last project", make the reopen button inactive */
 	GFile *last_project = i7_app_get_last_opened_project(theapp);
-	if(last_project)
+	if(last_project) {
 		gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
-	g_object_unref(last_project);
-
+		g_object_unref(last_project);
+	}
 	g_object_unref(builder);
 
 	return retval;
