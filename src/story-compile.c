@@ -405,7 +405,7 @@ start_i6_compiler(CompilerData *data)
 {
 	I7_STORY_USE_PRIVATE(data->story, priv);
 
-	GFile *i6_compiler = i7_app_get_binary_file(i7_app_get(), "inform-6.32-biplatform");
+	GFile *i6_compiler = i7_app_get_binary_file(i7_app_get(), INFORM6_COMPILER_NAME);
 	char *i6out = g_strconcat("output.", i7_story_get_extension(data->story), NULL);
 	GFile *i6_output = g_file_get_child(data->builddir_file, i6out);
 	g_free(i6out);

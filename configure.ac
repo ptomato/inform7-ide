@@ -287,6 +287,9 @@ for GStreamer 1.0 and rerun autogen.sh.])])
 # Inform 6 version that goes along with this release
 AC_SUBST([INFORM6_VERSION_MAJOR], [6])
 AC_SUBST([INFORM6_VERSION_MINOR], [32])
+AC_DEFINE_UNQUOTED([INFORM6_COMPILER_NAME],
+	["inform-$INFORM6_VERSION_MAJOR.$INFORM6_VERSION_MINOR-biplatform"],
+	[Name of Inform 6 compiler executable.])
 
 # Plugin flags; include '-module' in each Makefile.am, because AC_SUBSTed
 # variables are black boxes to Automake, so it has to know about it being a
