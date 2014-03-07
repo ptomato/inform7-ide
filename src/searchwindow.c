@@ -547,7 +547,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
 		gboolean example = FALSE;
-		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", NULL);
+		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", NULL);
 
 		GFileEnumerator *docdir;
 		if((docdir = g_file_enumerate_children(doc_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err)) == NULL) {

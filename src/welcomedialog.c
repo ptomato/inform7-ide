@@ -80,7 +80,7 @@ create_welcome_dialog(void)
 
 	/* Set the background pixmap for this window */
 	GtkRcStyle *newstyle = gtk_widget_get_modifier_style(retval);
-	file = i7_app_get_data_file_va(theapp, "Documentation", "Welcome Background.png", NULL);
+	file = i7_app_get_data_file_va(theapp, "Resources", "Welcome Background.png", NULL);
 	newstyle->bg_pixmap_name[GTK_STATE_NORMAL] = g_file_get_path(file); /* take ownership */
 	g_object_unref(file);
 	gtk_widget_modify_style(retval, newstyle);

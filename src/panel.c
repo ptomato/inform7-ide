@@ -699,14 +699,21 @@ find_real_filename_for_inform_protocol(const char *uri)
 		relative_path = g_build_filenamev(elements);
 	g_strfreev(elements);
 
-	parent = i7_app_get_data_file_va(theapp, "Documentation", "doc_images", NULL);
+	parent = i7_app_get_data_file_va(theapp, "Resources", "doc_images", NULL);
 	real_file = g_file_resolve_relative_path(parent, relative_path);
 	if(g_file_query_exists(real_file, NULL))
 		goto finally;
 	g_object_unref(real_file);
 	g_object_unref(parent);
 
-	parent = i7_app_get_data_file_va(theapp, "Documentation", "Sections", NULL);
+	parent = i7_app_get_data_file_va(theapp, "Resources", "bg_images", NULL);
+	real_file = g_file_resolve_relative_path(parent, relative_path);
+	if(g_file_query_exists(real_file, NULL))
+		goto finally;
+	g_object_unref(real_file);
+	g_object_unref(parent);
+
+	parent = i7_app_get_data_file_va(theapp, "Resources", NULL);
 	real_file = g_file_resolve_relative_path(parent, relative_path);
 	if(g_file_query_exists(real_file, NULL))
 		goto finally;

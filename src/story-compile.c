@@ -266,10 +266,10 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		problems_file = g_file_get_child(data->builddir_file, "Problems.html");
 	} else {
 		gchar *file = g_strdup_printf("Error%i.html", exit_code);
-		problems_file = i7_app_check_data_file_va(theapp, "Documentation", "Sections", file, NULL);
+		problems_file = i7_app_check_data_file_va(theapp, "Resources", "en", file, NULL);
 		g_free(file);
 		if(!problems_file)
-			problems_file = i7_app_get_data_file_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
+			problems_file = i7_app_get_data_file_va(theapp, "Resources", "en", "Error0.html", NULL);
 	}
 
 	g_clear_object(&data->results_file);
@@ -474,13 +474,13 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 		msg = gtk_text_iter_get_text(&start, &end);
 		if(strstr(msg, "rror:")) { /* "Error:", "Fatal error:" */
 			if(strstr(msg, "The memory setting ") && strstr(msg, " has been exceeded."))
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6MemorySetting.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6MemorySetting.html", NULL);
 			else if(strstr(msg, "This program has overflowed the maximum readable-memory size of the "))
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6Readable.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6Readable.html", NULL);
 			else if(strstr(msg, "The story file exceeds "))
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6TooBig.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6TooBig.html", NULL);
 			else
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
+				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6.html", NULL);
 			g_free(msg);
 			break;
 		}
@@ -488,7 +488,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	}
 	gdk_threads_leave();
 	if(!loadfile && exit_code != 0)
-		loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
+		loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6.html", NULL);
 	if(loadfile) {
 		g_clear_object(&data->results_file);
 		data->results_file = loadfile; /* assumes reference */
