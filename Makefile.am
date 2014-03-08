@@ -25,16 +25,14 @@ if BUILDING_RPM
 EXTRA_DIST += gnome-inform7.spec
 endif
 
-DISTCLEANFILES = \
-	intltool-extract \
-	intltool-merge \
-	intltool-update \
-	gnome-inform7.spec
+DISTCLEANFILES = gnome-inform7.spec
 
-MAINTAINERCLEANFILES = ABOUT-NLS INSTALL aclocal.m4 ar-lib compile \
-	config.guess config.h.in config.rpath config.sub depcomp install-sh \
-	intltool-extract.in intltool-merge.in intltool-update.in ltmain.sh \
-	missing m4
+MAINTAINERCLEANFILES = \
+	ABOUT-NLS INSTALL config.rpath m4 \
+	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_MAKEFILE_IN) \
+	$(GITIGNORE_MAINTAINERCLEANFILES_M4_LIBTOOL) \
+	$(NULL)
 
 if BUILDING_RPM
 RPMDIR=`$(RPM) --eval %_rpmdir`

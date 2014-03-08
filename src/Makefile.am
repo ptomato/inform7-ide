@@ -300,6 +300,4 @@ test_LDADD = $(gnome_inform7_LDADD)
 test_LDFLAGS = $(gnome_inform7_LDFLAGS)
 test_DEPENDENCIES = $(gnome_inform7_DEPENDENCIES)
 
-GITIGNOREFILES = $(noinst_LIBRARIES)
-
 -include $(top_srcdir)/git.mk
