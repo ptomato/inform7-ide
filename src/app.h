@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -107,6 +107,9 @@ void i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAutho
 void i7_app_run_census(I7App *app, gboolean wait);
 
 GFile *i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname);
+GFile *i7_app_get_extension_docpage(I7App *app, const char *author, const char *extname);
+GFile *i7_app_get_extension_home_page(I7App *app);
+GFile *i7_app_get_extension_index_page(I7App *app);
 GFile *i7_app_get_data_file(I7App *app, const gchar *filename);
 GFile *i7_app_get_data_file_va(I7App *app, const gchar *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_check_data_file(I7App *app, const char *filename);

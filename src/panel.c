@@ -37,6 +37,8 @@
 #include "skein-view.h"
 #include "transcript-renderer.h"
 
+#define PUBLIC_LIBRARY_URI "http://www.emshort.com/pl/index.html"
+
 const char * const i7_panel_index_names[] = {
 	"Welcome.html", "Contents.html", "Actions.html", "Kinds.html",
 	"Phrasebook.html", "Rules.html", "Scenes.html", "World.html"
@@ -391,6 +393,37 @@ action_general_index(GtkAction *action, I7Panel *panel)
 	display_docpage_in_panel(panel, "general_index.html");
 }
 
+/* Signal handler for the action connected to the "Home" button in the panel
+toolbar when the Extensions panel is displayed. Displays
+Documentation/Extensions.html from the user's extensions folder. */
+void
+action_extensions_home(GtkAction *action, I7Panel *panel)
+{
+	GFile *docs_file = i7_app_get_extension_home_page(i7_app_get());
+	i7_panel_goto_extensions_docpage(panel, docs_file);
+	g_object_unref(docs_file);
+}
+
+/* Signal handler for the action connected to the "Definitions" button in the
+panel toolbar when the Extensions panel is displayed. Displays
+Documentation/ExtIndex.html from the user's extensions folder. */
+void
+action_definitions(GtkAction *action, I7Panel *panel)
+{
+	GFile *docs_file = i7_app_get_extension_index_page(i7_app_get());
+	i7_panel_goto_extensions_docpage(panel, docs_file);
+	g_object_unref(docs_file);
+}
+
+/* Signal handler for the action connected to the "Public Library" button in the
+panel toolbar when the Extensions panel is displayed. Displays the Inform public
+extensions library website. */
+void
+action_public_library(GtkAction *action, I7Panel *panel)
+{
+	webkit_web_view_open(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]), PUBLIC_LIBRARY_URI);
+}
+
 /* TYPE SYSTEM */
 
 enum _I7PanelSignalType {
@@ -433,13 +466,15 @@ i7_panel_init(I7Panel *self)
 	priv->skein_action_group = GTK_ACTION_GROUP(load_object(builder, "skein_actions"));
 	priv->transcript_action_group = GTK_ACTION_GROUP(load_object(builder, "transcript_actions"));
 	priv->documentation_action_group = GTK_ACTION_GROUP(load_object(builder, "documentation_actions"));
-	
+	priv->extensions_action_group = GTK_ACTION_GROUP(load_object(builder, "extensions_actions"));
+
 	/* Build the toolbar from the GtkUIManager file. The UI manager owns the action groups now. */
 	priv->ui_manager = gtk_ui_manager_new();
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->common_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->skein_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->transcript_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->documentation_action_group, 0);
+	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->extensions_action_group, 0);
 	file = i7_app_get_data_file_va(theapp, "ui", "panel.uimanager.xml", NULL);
 	char *path = g_file_get_path(file);
 	gtk_ui_manager_add_ui_from_file(priv->ui_manager, path, &error);
@@ -526,6 +561,7 @@ i7_panel_init(I7Panel *self)
 	self->tabs[I7_PANE_TRANSCRIPT] = GTK_WIDGET(load_object(builder, "transcript"));
 	self->tabs[I7_PANE_STORY] = game;
 	self->tabs[I7_PANE_DOCUMENTATION] = GTK_WIDGET(load_object(builder, "documentation"));
+	self->tabs[I7_PANE_EXTENSIONS] = GTK_WIDGET(load_object(builder, "extensions"));
 	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));
 	self->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS] = self->sourceview->headings;
 	self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] = self->sourceview->source;
@@ -577,9 +613,12 @@ i7_panel_init(I7Panel *self)
 	};
 	priv->js_class = JSClassCreate(&project_class_definition);
 
-	/* Load the documentation page */
+	/* Load the documentation and extension pages */
 	file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
 	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file);
+	g_object_unref(file);
+	file = i7_app_get_extension_home_page(theapp);
+	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), file);
 	g_object_unref(file);
 }
 
@@ -635,7 +674,7 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_nu
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
 
-	gboolean skein = FALSE, transcript = FALSE, documentation = FALSE;
+	gboolean skein = FALSE, transcript = FALSE, documentation = FALSE, extensions = FALSE;
 
 	switch(page_num) {
 		case I7_PANE_SKEIN:
@@ -647,6 +686,9 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_nu
 		case I7_PANE_DOCUMENTATION:
 			documentation = TRUE;
 			break;
+		case I7_PANE_EXTENSIONS:
+			extensions = TRUE;
+			break;
 		default:
 			;
 	}
@@ -654,6 +696,7 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_nu
 	gtk_action_group_set_visible(priv->skein_action_group, skein);
 	gtk_action_group_set_visible(priv->transcript_action_group, transcript);
 	gtk_action_group_set_visible(priv->documentation_action_group, documentation);
+	gtk_action_group_set_visible(priv->extensions_action_group, extensions);
 }
 
 void
@@ -860,6 +903,10 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		g_object_unref(real_file);
 
 	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
+		/* Allow the Public Library website, but nothing else */
+		if(g_str_has_prefix(uri, PUBLIC_LIBRARY_URI))
+			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
+
 		if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error)) {
 			error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(panel))), error, _("Error opening external viewer for %s: "), uri);
 		}
@@ -986,6 +1033,19 @@ void
 i7_panel_goto_docpage_at_anchor(I7Panel *self, GFile *file, const char *anchor)
 {
 	html_load_file_at_anchor(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file, anchor);
+}
+
+/**
+ * i7_panel_goto_extensions_docpage:
+ * @self: the panel
+ * @file: file reference pointing to the page
+ *
+ * Load @file in this panel's Extensions pane.
+ */
+void
+i7_panel_goto_extensions_docpage(I7Panel *self, GFile *file)
+{
+	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), file);
 }
 
 void

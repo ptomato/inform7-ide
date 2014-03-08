@@ -39,6 +39,7 @@ typedef enum {
 	I7_PANE_TRANSCRIPT,
 	I7_PANE_STORY,
 	I7_PANE_DOCUMENTATION,
+	I7_PANE_EXTENSIONS,
 	I7_PANE_SETTINGS,
 	I7_PANEL_NUM_PANES
 } I7PanelPane;
@@ -107,6 +108,7 @@ GtkWidget *i7_panel_new();
 void i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file);
 void i7_panel_goto_docpage(I7Panel *self, GFile *file);
 void i7_panel_goto_docpage_at_anchor(I7Panel *self, GFile *file, const char *anchor);
+void i7_panel_goto_extensions_docpage(I7Panel *self, GFile *file);
 void i7_panel_update_tabs(I7Panel *self);
 void i7_panel_update_fonts(I7Panel *self);
 void i7_panel_update_font_sizes(I7Panel *self);

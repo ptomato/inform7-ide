@@ -41,6 +41,7 @@ typedef struct {
 	GtkActionGroup *skein_action_group;
 	GtkActionGroup *transcript_action_group;
 	GtkActionGroup *documentation_action_group;
+	GtkActionGroup *extensions_action_group;
 	/* History list */
 	GQueue *history; /* "front" is more recent, "back" is older */
 	guint current;

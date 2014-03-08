@@ -35,6 +35,37 @@
       </object>
     </child>
   </object>
+  <object class="GtkActionGroup" id="extensions_actions">
+    <property name="visible">False</property>
+    <child>
+      <object class="GtkAction" id="goto_extensions_home">
+        <property name="label" translatable="yes" comments="Extensions panel">Extensions</property>
+        <property name="short_label" translatable="yes" comments="Extensions panel">Extensions</property>
+        <property name="tooltip" translatable="yes" comments="Extensions panel">Display the installed extensions</property>
+        <property name="stock_id">gtk-home</property>
+        <signal name="activate" handler="action_extensions_home" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="goto_definitions">
+        <property name="label" translatable="yes" comments="Extensions panel">_Definitions</property>
+        <property name="short_label" translatable="yes" comments="Extensions panel">_Definitions</property>
+        <property name="tooltip" translatable="yes" comments="Extensions panel">Display an index of definitions from installed extensions</property>
+        <property name="stock_id">gtk-index</property>
+        <property name="is_important">True</property>
+        <signal name="activate" handler="action_definitions" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="goto_public_library">
+        <property name="label" translatable="yes" comments="Extensions panel">Public _Library</property>
+        <property name="short_label" translatable="yes" comments="Extensions panel">Public _Library</property>
+        <property name="tooltip" translatable="yes">Display the public library of extensions on the Inform website</property>
+        <property name="is_important">True</property>
+        <signal name="activate" handler="action_public_library" swapped="no"/>
+      </object>
+    </child>
+  </object>
   <object class="GtkActionGroup" id="panel_actions">
     <child>
       <object class="GtkAction" id="forward">
@@ -725,6 +756,43 @@
       </packing>
     </child>
     <child>
+      <object class="GtkScrolledWindow" id="extensions_scrolledwindow">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
+        <child>
+          <object class="WebkitWebView" id="extensions">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="settings">websettings</property>
+            <signal name="window-object-cleared" handler="on_documentation_window_object_cleared" swapped="no"/>
+            <signal name="navigation-requested" handler="on_navigation_requested" swapped="no"/>
+            <signal name="navigation-requested" handler="after_documentation_navigation_requested" after="yes" swapped="no"/>
+            <signal name="resource-request-starting" handler="on_resource_request_starting" swapped="no"/>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="position">7</property>
+        <property name="tab_fill">False</property>
+      </packing>
+    </child>
+    <child type="tab">
+      <object class="GtkLabel" id="extensions_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes" comments="Extensions panel">Extensions</property>
+        <property name="angle">270</property>
+      </object>
+      <packing>
+        <property name="position">7</property>
+        <property name="tab_fill">False</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkVBox" id="settings">
         <property name="width_request">100</property>
         <property name="visible">True</property>
@@ -949,7 +1017,7 @@
         </child>
       </object>
       <packing>
-        <property name="position">7</property>
+        <property name="position">8</property>
       </packing>
     </child>
     <child type="tab">
@@ -960,7 +1028,7 @@
         <property name="angle">270</property>
       </object>
       <packing>
-        <property name="position">7</property>
+        <property name="position">8</property>
         <property name="tab_fill">False</property>
       </packing>
     </child>

@@ -1,4 +1,4 @@
-/*  Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/*  Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -36,6 +36,9 @@
 #include "prefs.h"
 
 #define EXTENSIONS_BASE_PATH "Inform", "Extensions"
+#define EXTENSION_HOME_PATH "Inform", "Documentation", "Extensions.html"
+#define EXTENSION_INDEX_PATH "Inform", "Documentation", "ExtIndex.html"
+#define EXTENSION_DOCS_BASE_PATH "Inform", "Documentation", "Extensions"
 
 /* The singleton application class; should be derived from GtkApplication when
  porting to GTK 3. Contains the following global miscellaneous stuff:
@@ -1024,6 +1027,72 @@ i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname)
 		g_free(extname_ext);
 	}
 
+	GFile *retval = g_file_new_for_path(path);
+	g_free(path);
+	return retval;
+}
+
+/**
+ * i7_app_get_extension_docpage:
+ * @app: the application
+ * @author: (allow-none): the extension author
+ * @extname: (allow-none): the extension name, without .i7x
+ *
+ * Returns the documentation page for the extension @extname by @author.
+ * If both are %NULL, returns the directory where extension documentation is
+ * stored.
+ * Does not check whether the file exists.
+ *
+ * Returns: (transfer full): a new #GFile.
+ */
+GFile *
+i7_app_get_extension_docpage(I7App *app, const char *author, const char *extname)
+{
+	char *path;
+
+	if(author == NULL)
+		path = g_build_filename(g_get_home_dir(), EXTENSION_DOCS_BASE_PATH, NULL);
+	else if(extname == NULL)
+		path = g_build_filename(g_get_home_dir(), EXTENSION_DOCS_BASE_PATH, author, NULL);
+	else
+		path = g_build_filename(g_get_home_dir(), EXTENSION_DOCS_BASE_PATH, author, extname, NULL);
+
+	GFile *retval = g_file_new_for_path(path);
+	g_free(path);
+	return retval;
+}
+
+/**
+ * i7_app_get_extension_home_page:
+ * @app: the application
+ *
+ * Returns the home page for installed extensions (by default,
+ * $HOME/Inform/Documentation/Extensions.html.)
+ *
+ * Returns: (transfer full): a new #GFile.
+ */
+GFile *
+i7_app_get_extension_home_page(I7App *app)
+{
+	char *path = g_build_filename(g_get_home_dir(), EXTENSION_HOME_PATH, NULL);
+	GFile *retval = g_file_new_for_path(path);
+	g_free(path);
+	return retval;
+}
+
+/**
+ * i7_app_get_extension_index_page:
+ * @app: the application
+ *
+ * Returns the definitions index page for installed extensions (by default,
+ * $HOME/Inform/Documentation/ExtIndex.html.)
+ *
+ * Returns: (transfer full): a new #GFile.
+ */
+GFile *
+i7_app_get_extension_index_page(I7App *app)
+{
+	char *path = g_build_filename(g_get_home_dir(), EXTENSION_INDEX_PATH, NULL);
 	GFile *retval = g_file_new_for_path(path);
 	g_free(path);
 	return retval;
