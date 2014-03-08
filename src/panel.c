@@ -37,6 +37,11 @@
 #include "skein-view.h"
 #include "transcript-renderer.h"
 
+const char * const i7_panel_index_names[] = {
+	"Actions.html", "Contents.html", "Kinds.html", "Phrasebook.html",
+	"Rules.html", "Scenes.html", "World.html"
+};
+
 /* Forward declarations */
 gboolean on_documentation_scrollbar_policy_changed(WebKitWebFrame *frame);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,17 +24,12 @@
 #include "html.h"
 #include "panel.h"
 
-static gchar *index_names[] = {
-	"Actions.html", "Contents.html", "Kinds.html", "Phrasebook.html",
-	"Rules.html", "Scenes.html", "World.html"
-};
-
 static void
 load_index_file(I7Story *story, int counter)
 {
 	GFile *parent = i7_document_get_file(I7_DOCUMENT(story));
 	GFile *child1 = g_file_get_child(parent, "Index");
-	GFile *file = g_file_get_child(child1, index_names[counter]);
+	GFile *file = g_file_get_child(child1, i7_panel_index_names[counter]);
 	g_object_unref(parent);
 	g_object_unref(child1);
 

@@ -98,6 +98,8 @@ typedef struct {
 	void (*display_docpage)(I7Panel *self, gchar *uri);
 } I7PanelClass;
 
+extern const char * const i7_panel_index_names[];
+
 GType i7_panel_get_type() G_GNUC_CONST;
 GtkWidget *i7_panel_new();
 void i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file);
