@@ -294,10 +294,28 @@ gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libinform7gui.a
 check_PROGRAMS = test
 test_SOURCES = tests/test.c \
 	tests/app-test.c tests/app-test.h tests/skein-test.c tests/skein-test.h
-test_CPPFLAGS = $(gnome_inform7_CPPFLAGS) -I$(srcdir)/osxcart
+test_CPPFLAGS = \
+	$(gnome_inform7_CPPFLAGS) \
+	-I$(srcdir)/osxcart \
+	-DTEST_DATA_DIR=\""$(srcdir)/tests/"\" \
+	$(NULL)
 test_CFLAGS = $(gnome_inform7_CFLAGS)
 test_LDADD = $(gnome_inform7_LDADD)
 test_LDFLAGS = $(gnome_inform7_LDFLAGS)
 test_DEPENDENCIES = $(gnome_inform7_DEPENDENCIES)
+
+TESTS = test
+# Skip the /app tests, because they are too tightly coupled to the data files,
+# and will fail during make distcheck -- o, the days of innocence!
+SKIP_PATHS = \
+	/app/create \
+	/app/files \
+	/app/extensions/install-remove \
+	/app/extensions/case-insensitive \
+	/app/colorscheme/install-remove \
+	/app/colorscheme/get-current \
+	$(NULL)
+LOG_COMPILER = gtester -k --verbose $(addprefix -s=,$(SKIP_PATHS))
+EXTRA_DIST += tests/commands.rec
 
 -include $(top_srcdir)/git.mk

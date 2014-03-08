@@ -35,9 +35,7 @@ main(int argc, char **argv)
 
 	g_test_add_func("/skein/import", test_skein_import);
 	
-	I7App *theapp = i7_app_get();
 	int retval = g_test_run();
-	g_object_unref(theapp);
 
 	return retval;
 }

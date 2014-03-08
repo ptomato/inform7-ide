@@ -25,7 +25,7 @@ test_skein_import(void)
 	GError *err = NULL;
 	I7Skein *skein = i7_skein_new();
 	I7Node *node = i7_skein_get_root_node(skein);
-	GFile *commands_file = g_file_new_for_path("tests/commands.rec");
+	GFile *commands_file = g_file_new_for_path(TEST_DATA_DIR "commands.rec");
 	char * const commands[] = {
 		"- start -",
 		"look at wallpaper",
