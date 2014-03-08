@@ -38,8 +38,8 @@
 #include "transcript-renderer.h"
 
 const char * const i7_panel_index_names[] = {
-	"Actions.html", "Contents.html", "Kinds.html", "Phrasebook.html",
-	"Rules.html", "Scenes.html", "World.html"
+	"Welcome.html", "Contents.html", "Actions.html", "Kinds.html",
+	"Phrasebook.html", "Rules.html", "Scenes.html", "World.html"
 };
 
 /* Forward declarations */
@@ -370,6 +370,7 @@ enum _I7PanelSignalType {
 	PASTE_CODE_SIGNAL,
 	JUMP_TO_LINE_SIGNAL,
 	DISPLAY_DOCPAGE_SIGNAL,
+	DISPLAY_INDEX_PAGE_SIGNAL,
 	LAST_SIGNAL
 };
 static guint i7_panel_signals[LAST_SIGNAL] = { 0 };
@@ -501,7 +502,7 @@ i7_panel_init(I7Panel *self)
 	self->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS] = self->sourceview->headings;
 	self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] = self->sourceview->source;
 	const gchar *results_tab_names[] = { "progress", "debugging", "report", "inform6" };
-	const gchar *index_tab_names[] = { "actions", "contents", "kinds", "phrasebook", "rules", "scenes", "world" };
+	const gchar *index_tab_names[] = { "index_home", "contents", "actions", "kinds", "phrasebook", "rules", "scenes", "world" };
 	for(foo = 0; foo < I7_INDEX_NUM_TABS; foo++) {
 		if(foo < I7_RESULTS_NUM_TABS)
 			self->results_tabs[foo] = GTK_WIDGET(load_object(builder, results_tab_names[foo]));
@@ -591,6 +592,11 @@ i7_panel_class_init(I7PanelClass *klass)
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 		G_STRUCT_OFFSET(I7PanelClass, display_docpage), NULL, NULL,
 		g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
+	i7_panel_signals[DISPLAY_INDEX_PAGE_SIGNAL] = g_signal_new(
+		"display-index-page",
+		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+		G_STRUCT_OFFSET(I7PanelClass, display_index_page), NULL, NULL,
+		NULL, G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING);
 	g_type_class_add_private(klass, sizeof(I7PanelPrivate));
 }
 
@@ -665,6 +671,19 @@ after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigne
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_INDEX)
 		history_push_tab(panel, I7_PANE_INDEX, page_num);
+}
+
+/* Internal function: given a filename, determine whether it is one of the HTML
+files that comprise the index. Return one of the I7PaneIndexTab constants, or -1
+if it does not. */
+static I7PaneIndexTab
+filename_to_index_tab(const char *filename)
+{
+	I7PaneIndexTab retval;
+	for(retval = 0; retval < I7_INDEX_NUM_TABS; retval++)
+		if(strcmp(filename, i7_panel_index_names[retval]) == 0)
+			return retval;
+	return -1;
 }
 
 /* Internal function: find the real filename referred to by a URI starting with
@@ -756,9 +775,9 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 	const gchar *uri = webkit_network_request_get_uri(request);
 	gchar *scheme = g_uri_parse_scheme(uri);
 
-	/* If no protocol found, just go on -- it's a file:// */
-	if(!scheme)
-		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
+	/* If no protocol found, treat it as a file:// */
+	if(scheme == NULL)
+		scheme = g_strdup("file");
 
 	if(strcmp(scheme, "about") == 0) {
 		/* These are protocols that we explicitly allow WebKit to load */
@@ -766,9 +785,35 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
 	} else if(strcmp(scheme, "file") == 0) {
-		/* If the "resource-request-starting" signal is available, as it
-		 is from 1.1.14 onward, then no special manipulation is needed */
 		g_free(scheme);
+
+		/* If the file is an index page that is not displayed in the correct
+		webview, then redirect the request to the index page */
+		char *path = g_filename_from_uri(uri, NULL, NULL);
+		if(path == NULL)
+			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
+		char *filename = g_path_get_basename(path);
+		g_free(path);
+
+		/* Chop off any URI parameters and save them for the signal emission */
+		char *param_location = strchr(filename, '?');
+		char *param = NULL;
+		if(param_location != NULL) {
+			*param_location = '\0';
+			param = param_location + 1; /* freeing filename frees param now */
+		}
+
+		I7PaneIndexTab tabnum = filename_to_index_tab(filename);
+		if(tabnum == -1)
+			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
+
+		/* We've determined that this is an index page */
+		if(webview != WEBKIT_WEB_VIEW(panel->index_tabs[tabnum])) {
+			g_signal_emit_by_name(panel, "display-index-page", tabnum, param);
+			g_free(filename);
+			return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
+		}
+		g_free(filename);
 		return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
 	} else if(strcmp(scheme, "inform") == 0) {

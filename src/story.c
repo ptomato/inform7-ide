@@ -130,6 +130,24 @@ on_panel_display_docpage(I7Panel *panel, gchar *uri, I7Story *story)
 }
 
 static void
+on_panel_display_index_page(I7Panel *panel, I7PaneIndexTab tabnum, char *param, I7Story *story)
+{
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_INDEX);
+
+	/* If a ?param was requested in the URI, then navigate there before showing
+	the page - this doesn't completely eliminate the flash of the page changing,
+	but it helps */
+	if(param != NULL) {
+		char *script = g_strconcat("window.location.search = '", param, "'", NULL);
+		webkit_web_view_execute_script(WEBKIT_WEB_VIEW(story->panel[side]->index_tabs[tabnum]), script);
+		g_free(script);
+	}
+
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->tabs[I7_PANE_INDEX]), tabnum);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_INDEX);
+}
+
+static void
 on_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Story *story)
 {
 	if(page_num != I7_SOURCE_VIEW_TAB_CONTENTS)
@@ -623,6 +641,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	g_signal_connect(panel, "paste-code", G_CALLBACK(on_panel_paste_code), self);
 	g_signal_connect(panel, "jump-to-line", G_CALLBACK(on_panel_jump_to_line), self);
 	g_signal_connect(panel, "display-docpage", G_CALLBACK(on_panel_display_docpage), self);
+	g_signal_connect(panel, "display-index-page", G_CALLBACK(on_panel_display_index_page), self);
 	g_signal_connect(priv->skein, "labels-changed", G_CALLBACK(on_labels_changed), panel);
 	g_signal_connect(priv->skein, "show-node", G_CALLBACK(on_show_node), panel);
 	g_signal_connect(panel->tabs[I7_PANE_SKEIN], "node-menu-popup", G_CALLBACK(on_node_popup), NULL);

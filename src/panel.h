@@ -54,7 +54,8 @@ typedef enum {
 
 /* The names of the sub tabs in "Index" */
 typedef enum {
-	I7_INDEX_TAB_CONTENTS = 0,
+	I7_INDEX_TAB_WELCOME = 0,
+	I7_INDEX_TAB_CONTENTS,
 	I7_INDEX_TAB_ACTIONS,
 	I7_INDEX_TAB_KINDS,
 	I7_INDEX_TAB_PHRASEBOOK,
@@ -96,6 +97,7 @@ typedef struct {
 	void (*paste_code)(I7Panel *self, gchar *text);
 	void (*jump_to_line)(I7Panel *self, guint line);
 	void (*display_docpage)(I7Panel *self, gchar *uri);
+	void (*display_index_page)(I7Panel *self, I7PaneIndexTab tabnum);
 } I7PanelClass;
 
 extern const char * const i7_panel_index_names[];
