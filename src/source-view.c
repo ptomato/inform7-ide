@@ -27,6 +27,7 @@
 
 #define CONTENTS_FALLBACK_BG_COLOR "#FFFFBF"
 #define CONTENTS_FALLBACK_FG_COLOR "black"
+#define DEFAULT_ENGLISH_VARIANT "en_CA"  /* ha! */
 
 /* TYPE SYSTEM */
 
@@ -180,6 +181,25 @@ i7_source_view_jump_to_line(I7SourceView *self, guint line)
 	gtk_widget_grab_focus(GTK_WIDGET(view));
 }
 
+/* Helper function: run through the list of preferred system language in order
+of preference until one is found that is a variant of English. If one is not
+found, then return the default English variant. */
+static const char *
+get_nearest_system_language_to_english(void)
+{
+	const char * const *system_languages = g_get_language_names();
+	const char * const *chosen_language;
+	const char *default_language = DEFAULT_ENGLISH_VARIANT;
+
+	for (chosen_language = system_languages; *chosen_language != NULL; chosen_language++) {
+		if (g_str_has_prefix(*chosen_language, "en"))
+			break;
+	}
+	if (*chosen_language == NULL)
+		chosen_language = &default_language;
+	return *chosen_language;
+}
+
 void
 i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 {
@@ -187,7 +207,9 @@ i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 
 	if(spellcheck) {
 		GError *error = NULL;
-		priv->spell = gtkspell_new_attach(GTK_TEXT_VIEW(self->source), NULL, &error);
+		const char *language = get_nearest_system_language_to_english();
+
+		priv->spell = gtkspell_new_attach(GTK_TEXT_VIEW(self->source), language, &error);
 		/* Fail relatively quietly if there's a problem */
 		if(!priv->spell) {
 			g_warning(_("Error initializing spell checking: %s. Is your spelling dictionary installed?"), error->message);
