@@ -698,6 +698,28 @@ i7_document_set_headings_filter_level(I7Document *document, gint depth)
 	i7_document_reindex_headings(document);
 }
 
+/* Helper function for starts_blank_or_whitespace_line() */
+static gboolean
+is_non_whitespace(gunichar ch, gpointer data)
+{
+	return !g_unichar_isspace(ch);
+}
+
+/* Returns TRUE if @iter is at the start of a line containing only whitespace or
+nothing. @iter must be at the start of a line. Guarantees that @iter is
+unchanged. */
+static gboolean
+starts_blank_or_whitespace_line(GtkTextIter *iter)
+{
+	if(gtk_text_iter_ends_line(iter))
+		return TRUE;
+
+	GtkTextIter iter2 = *iter, end = *iter;
+	gtk_text_iter_forward_to_line_end(&end);
+	return (g_unichar_isspace(gtk_text_iter_get_char(&iter2))
+		&& !gtk_text_iter_forward_find_char(&iter2, is_non_whitespace, NULL, &end));
+}
+
 static int
 get_heading_from_string(gchar *text)
 {
@@ -764,7 +786,8 @@ i7_document_reindex_headings(I7Document *document)
 
 		GMatchInfo *match = NULL;
 		text = NULL;
-		if(gtk_text_iter_ends_line(&lastline) && gtk_text_iter_ends_line(&nextline) /* Blank line before and after */
+		if(starts_blank_or_whitespace_line(&lastline)
+			&& starts_blank_or_whitespace_line(&nextline)
 			&& (text = gtk_text_iter_get_text(&thisline, &end))
 			&& g_regex_match(theapp->regices[I7_APP_REGEX_HEADINGS], text, 0, &match))
 		{
