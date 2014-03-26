@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 			} else
 				i7_story_show_docpage(I7_STORY(priv->document), file);
 
-			g_free(path);
+			g_free(filepath);
 			g_match_info_free(match);
 		} else {
 			GError *err = NULL;
