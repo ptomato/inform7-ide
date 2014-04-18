@@ -79,6 +79,7 @@ I7Story *i7_story_new(I7App *app, GFile *file, const char *title, const char *au
 I7Story *i7_story_new_from_file(I7App *app, GFile *file);
 I7Story *i7_story_new_from_dialog(I7App *app);
 gboolean i7_story_open(I7Story *story, GFile *file);
+int i7_story_get_focus_panel(I7Story *story);
 I7StoryPanel i7_story_choose_panel(I7Story *story, I7PanelPane newtab);
 void i7_story_show_pane(I7Story *story, I7PanelPane pane);
 void i7_story_show_tab(I7Story *story, I7PanelPane pane, gint tab);

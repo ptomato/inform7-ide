@@ -1137,16 +1137,51 @@ fail2:
 	return FALSE;
 }
 
-/* Chooses an appropriate pane to display tab number newtab in. (From the
-Windows source.) */
+/**
+ * i7_story_get_focus_panel:
+ * @story: the story
+ *
+ * Tries to find out which panel is currently focused.
+ *
+ * Returns: a value from #I7StoryPanel, %RIGHT or %LEFT, or -1 if neither side
+ * was focused.
+ */
+int
+i7_story_get_focus_panel(I7Story *story)
+{
+	I7Panel *focus_child = I7_PANEL(gtk_container_get_focus_child(GTK_CONTAINER(story->facing_pages)));
+	if(focus_child == story->panel[LEFT])
+		return LEFT;
+	if(focus_child == story->panel[RIGHT])
+		return RIGHT;
+	return -1;
+}
+
+/**
+ * i7_story_choose_panel:
+ * @story: the story
+ * @newpane: the #I7PanelPane that we want to display
+ *
+ * Chooses an appropriate panel to display pane number @newpane in.
+ *
+ * Returns: a value from #I7StoryPanel, %RIGHT or %LEFT.
+ */
 I7StoryPanel
 i7_story_choose_panel(I7Story *story, I7PanelPane newpane)
 {
-	/* If either panel is showing the same as the new, use that */
+	int left = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[LEFT]->notebook));
 	int right = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[RIGHT]->notebook));
+	int originating_panel = i7_story_get_focus_panel(story);
+
+	/* If both panels are showing the same thing and that thing is also where we
+	want to go, then use the same panel where the action originated in order to
+	minimize disruption */
+	if(G_UNLIKELY(left == right && left == newpane && originating_panel != -1))
+		return originating_panel;
+
+	/* If either panel is showing the same as the new, use that */
 	if(right == newpane)
 		return RIGHT;
-	int left = gtk_notebook_get_current_page(GTK_NOTEBOOK(story->panel[LEFT]->notebook));
 	if(left == newpane)
 		return LEFT;
 	/* If the Skein is showing, use the other side for the Transcript */
