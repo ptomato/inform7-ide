@@ -128,8 +128,8 @@ prepare_ni_compiler(CompilerData *data)
 
 	/* Clear the previous compile output */
 	gtk_text_buffer_set_text(priv->progress, "", -1);
-	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]));
-	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]));
+	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]));
+	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]));
 
 	/* Create the UUID file if needed */
 	GFile *uuid_file = g_file_get_child(data->input_file, "uuid.txt");
@@ -268,8 +268,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 			problems_file = i7_app_get_data_file_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
 	}
 
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), problems_file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), problems_file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), problems_file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), problems_file);
 	g_object_unref(problems_file);
 
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG)) {
@@ -302,7 +302,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		g_object_unref(i6_file);
 	}
 
-	/* Stop here and show the Results/Problems tab if there was an error */
+	/* Stop here and show the Results/Report tab if there was an error */
 	if(exit_code != 0) {
 		finish_compiling(FALSE, data);
 		return;
@@ -488,14 +488,14 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 		loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
 	if(loadfile) {
 		gdk_threads_enter();
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), loadfile);
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), loadfile);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), loadfile);
+		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), loadfile);
 		gdk_threads_leave();
 
 		g_object_unref(loadfile);
 	}
 
-	/* Stop here and show the Results/Problems tab if there was an error */
+	/* Stop here and show the Results/Report tab if there was an error */
 	if(exit_code != 0) {
 		finish_compiling(FALSE, data);
 		return;
@@ -588,12 +588,12 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 	/* Display the appropriate HTML page */
 	GFile *file = g_file_get_child(data->builddir_file, "StatusCblorb.html");
 	gdk_threads_enter();
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_PROBLEMS]), file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), file);
 	gdk_threads_leave();
 	g_object_unref(file);
 
-	/* Stop here and show the Results/Problems tab if there was an error */
+	/* Stop here and show the Results/Report tab if there was an error */
 	if(exit_code != 0) {
 		finish_compiling(FALSE, data);
 		return;
@@ -625,8 +625,8 @@ finish_compiling(gboolean success, CompilerData *data)
 		success? _("Compiling succeeded.") : _("Compiling failed."),
 		COMPILE_OPERATIONS);
 
-	/* Switch the Results tab to the Problems page */
-	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_PROBLEMS);
+	/* Switch the Results tab to the Report page */
+	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
 	gdk_threads_leave();
 
 	/* Store the compiler output filename (the I7Story now owns the reference) */

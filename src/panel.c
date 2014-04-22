@@ -505,7 +505,7 @@ i7_panel_init(I7Panel *self)
 	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));
 	self->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS] = self->sourceview->headings;
 	self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] = self->sourceview->source;
-	const gchar *results_tab_names[] = { "progress", "debugging", "problems", "inform6" };
+	const gchar *results_tab_names[] = { "progress", "debugging", "report", "inform6" };
 	const gchar *index_tab_names[] = { "actions", "contents", "kinds", "phrasebook", "rules", "scenes", "world" };
 	for(foo = 0; foo < I7_INDEX_NUM_TABS; foo++) {
 		if(foo < I7_RESULTS_NUM_TABS)
