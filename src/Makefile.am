@@ -293,7 +293,10 @@ gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libinform7gui.a
 # Build the test suite as well, in the same way
 check_PROGRAMS = test
 test_SOURCES = tests/test.c \
-	tests/app-test.c tests/app-test.h tests/skein-test.c tests/skein-test.h
+	tests/app-test.c tests/app-test.h \
+	tests/skein-test.c tests/skein-test.h \
+	tests/story-test.c tests/story-test.h \
+	$(NULL)
 test_CPPFLAGS = \
 	$(gnome_inform7_CPPFLAGS) \
 	-I$(srcdir)/osxcart \
@@ -314,8 +317,18 @@ SKIP_PATHS = \
 	/app/extensions/case-insensitive \
 	/app/colorscheme/install-remove \
 	/app/colorscheme/get-current \
+	/story/materials-file \
+	/story/old-materials-file \
+	/story/renames-materials-file \
 	$(NULL)
 LOG_COMPILER = gtester -k --verbose $(addprefix -s=,$(SKIP_PATHS))
-EXTRA_DIST += tests/commands.rec
+EXTRA_DIST += \
+	tests/commands.rec \
+	tests/Hereafter.inform/Settings.plist \
+	tests/Hereafter.inform/Skein.skein \
+	tests/Hereafter.inform/Source/story.ni \
+	tests/Hereafter.inform/notes.rtf \
+	tests/test_color_scheme.xml \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

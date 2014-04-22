@@ -85,6 +85,7 @@ void i7_story_show_pane(I7Story *story, I7PanelPane pane);
 void i7_story_show_tab(I7Story *story, I7PanelPane pane, gint tab);
 void i7_story_show_docpage(I7Story *story, GFile *file);
 void i7_story_show_docpage_at_anchor(I7Story *story, GFile *file, const gchar *anchor);
+GFile *i7_story_get_old_materials_file(I7Story *story);
 GFile *i7_story_get_materials_file(I7Story *story);
 const gchar *i7_story_get_extension(I7Story *story);
 void i7_story_foreach_panel(I7Story *story, I7PanelForeachFunc func, gpointer data);

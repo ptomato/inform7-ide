@@ -1,4 +1,4 @@
-/*  Copyright (C) 2011, 2012 P. F. Chimento
+/*  Copyright (C) 2011, 2012, 2014 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 #include "app.h"
 #include "app-test.h"
 #include "skein-test.h"
+#include "story-test.h"
 
 int
 main(int argc, char **argv)
@@ -34,7 +35,13 @@ main(int argc, char **argv)
 	g_test_add_func("/app/colorscheme/get-current", test_app_colorscheme_get_current);
 
 	g_test_add_func("/skein/import", test_skein_import);
-	
+
+	g_test_add_func("/story/util/files-are-siblings", test_files_are_siblings);
+	g_test_add_func("/story/util/files-are-not-siblings", test_files_are_not_siblings);
+	g_test_add_func("/story/materials-file", test_story_materials_file);
+	g_test_add_func("/story/old-materials-file", test_story_old_materials_file);
+	g_test_add_func("/story/renames-materials-file", test_story_renames_materials_file);
+
 	int retval = g_test_run();
 
 	return retval;

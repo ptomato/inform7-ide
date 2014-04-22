@@ -1141,6 +1141,26 @@ i7_story_open(I7Story *story, GFile *file)
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(story, FALSE);
 
+	/* Check if the story uses the old-style name for the Materials folder, and if
+	so, quietly rename it */
+	GFile *materials_file = i7_story_get_materials_file(story);
+	if(!g_file_query_exists(materials_file, NULL)) {
+		GFile *old_materials_file = i7_story_get_old_materials_file(story);
+		if(g_file_query_exists(old_materials_file, NULL)) {
+			GError *error = NULL;
+			gboolean success = g_file_move(old_materials_file, materials_file,
+				G_FILE_COPY_NO_FALLBACK_FOR_MOVE /* fallback doesn't support moving folders */,
+				NULL, NULL, NULL, &error);
+			if(!success) {
+				/* fail silently */
+				g_message("Error copying old Materials folder to new one: %s", error->message);
+				g_clear_error(&error);
+			}
+		}
+		g_object_unref(old_materials_file);
+	}
+	g_object_unref(materials_file);
+
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(story)));
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_place_cursor(buffer, &start);
@@ -1252,25 +1272,26 @@ i7_story_show_docpage_at_anchor(I7Story *story, GFile *file, const char *anchor)
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
-/**
- * i7_story_get_materials_file:
- * @story: the story
- *
- * Work out the location of the Materials folder, adapted from OS X source.
- *
- * Returns: (transfer full): a #GFile pointing to the Materials folder. Unref
- * when done.
- */
-GFile *
-i7_story_get_materials_file(I7Story *story)
+/* Helper function: work out the project file's root name given the project file
+itself. Free return value when done. */
+static char *
+project_file_to_root_name(GFile *project_file)
 {
-	GFile *project_file = i7_document_get_file(I7_DOCUMENT(story));
 	char *base = g_file_get_basename(project_file);
 	g_assert(g_str_has_suffix(base, ".inform"));
-	gchar *projectname = g_strndup(base, strlen(base) - 7); /* lose extension */
+	char *root_name = g_strndup(base, strlen(base) - 7); /* lose extension */
 	g_free(base);
+	return root_name;
+}
 
-	gchar *materialsname = g_strconcat(projectname, " Materials", NULL);
+/* Helper function: append suffix to project file's root name to form the
+Materials folder name. Returns a GFile, unref when done. */
+static GFile *
+story_to_materials_file(I7Story *story, const char *suffix)
+{
+	GFile *project_file = i7_document_get_file(I7_DOCUMENT(story));
+	char *projectname = project_file_to_root_name(project_file);
+	char *materialsname = g_strconcat(projectname, suffix, NULL);
 	GFile *parent = g_file_get_parent(project_file);
 	GFile *materials_file = g_file_get_child(parent, materialsname);
 
@@ -1280,6 +1301,39 @@ i7_story_get_materials_file(I7Story *story)
 	g_free(materialsname);
 
 	return materials_file;
+}
+
+/**
+ * i7_story_get_old_materials_file:
+ * @story: the story
+ *
+ * Work out the old-style location of the Materials folder; this function is for
+ * the purposes of renaming the old-style Materials folder to the new-style.
+ * Adapted from OS X source.
+ *
+ * Returns: (transfer full): a #GFile pointing to the old-style Materials
+ * folder. The file itself may not exist. Unref when done.
+ */
+GFile *
+i7_story_get_old_materials_file(I7Story *story)
+{
+	return story_to_materials_file(story, " Materials");
+}
+
+/**
+ * i7_story_get_materials_file:
+ * @story: the story
+ *
+ * Work out the location of the Materials folder.
+ * Adapted from OS X source.
+ *
+ * Returns: (transfer full): a #GFile pointing to the Materials folder.
+ * The file itself may not exist. Unref when done.
+ */
+GFile *
+i7_story_get_materials_file(I7Story *story)
+{
+	return story_to_materials_file(story, ".materials");
 }
 
 /* Return the extension of the output file of this story.
