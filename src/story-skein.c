@@ -38,9 +38,9 @@ on_node_activate(I7Skein *skein, I7Node *newnode, I7Story *story)
 	I7Node *oldnode = i7_skein_get_played_node(skein);
 
 	/* If user requests to play to the node that was already just played in the
-	 * Game pane, then simply switch to the Game pane */
+	 * Story pane, then simply switch to the Story pane */
 	if(oldnode == newnode && i7_story_get_game_running(story)) {
-		i7_story_show_pane(story, I7_PANE_GAME);
+		i7_story_show_pane(story, I7_PANE_STORY);
 		return;
 	}
 

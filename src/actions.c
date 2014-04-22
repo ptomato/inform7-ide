@@ -609,11 +609,11 @@ action_show_transcript(GtkAction *action, I7Story *story)
 	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
 }
 
-/* View->Show Tab->Game */
+/* View->Show Tab->Story */
 void
-action_show_game(GtkAction *action, I7Story *story)
+action_show_story(GtkAction *action, I7Story *story)
 {
-	i7_story_show_pane(story, I7_PANE_GAME);
+	i7_story_show_pane(story, I7_PANE_STORY);
 }
 
 /* View->Show Tab->Documentation */

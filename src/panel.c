@@ -456,8 +456,8 @@ i7_panel_init(I7Panel *self)
 	/* Add the Chimara widget */
 	GtkWidget *game = chimara_if_new();
 	gtk_widget_show(game);
-	GtkWidget *gamelabel = GTK_WIDGET(load_object(builder, "game_pane_label"));
-	gtk_notebook_insert_page(GTK_NOTEBOOK(self->notebook), game, gamelabel, I7_PANE_GAME);
+	GtkWidget *gamelabel = GTK_WIDGET(load_object(builder, "story_pane_label"));
+	gtk_notebook_insert_page(GTK_NOTEBOOK(self->notebook), game, gamelabel, I7_PANE_STORY);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z5, CHIMARA_IF_INTERPRETER_FROTZ);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z6, CHIMARA_IF_INTERPRETER_FROTZ);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z8, CHIMARA_IF_INTERPRETER_FROTZ);
@@ -500,7 +500,7 @@ i7_panel_init(I7Panel *self)
 	self->tabs[I7_PANE_INDEX] = GTK_WIDGET(load_object(builder, "index_notebook"));
 	self->tabs[I7_PANE_SKEIN] = skeinview;
 	self->tabs[I7_PANE_TRANSCRIPT] = GTK_WIDGET(load_object(builder, "transcript"));
-	self->tabs[I7_PANE_GAME] = game;
+	self->tabs[I7_PANE_STORY] = game;
 	self->tabs[I7_PANE_DOCUMENTATION] = GTK_WIDGET(load_object(builder, "documentation"));
 	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));
 	self->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS] = self->sourceview->headings;
@@ -960,7 +960,7 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.user2 { }"
 		"buffer.pager { color: #ffffff; background-color: #aa0000; }",
 		size, font, size, (gint)(size * RELATIVE_SIZE_MEDIUM), size);
-	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_GAME]), css);
+	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
 	g_free(css);
 	pango_font_description_free(fontdesc);
 }

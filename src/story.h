@@ -129,7 +129,7 @@ void i7_story_compile(I7Story *story, gboolean release, gboolean refresh);
 void i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title);
 void i7_story_save_ifiction(I7Story *story);
 
-/* Game pane, story-game.c */
+/* Story pane, story-game.c */
 void i7_story_run_compiler_output(I7Story *story);
 void i7_story_test_compiler_output(I7Story *story);
 void i7_story_run_compiler_output_and_replay(I7Story *story);

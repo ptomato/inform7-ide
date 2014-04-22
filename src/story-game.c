@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 #include "node.h"
 #include "skein.h"
 
-/* Methods of I7Story having to do with the Game pane:
+/* Methods of I7Story having to do with the Story (formerly called Game) pane:
  - callbacks for when the compiler tool chain is finished
  - methods for communicating with the Chimara interpreter
 */
@@ -41,8 +41,8 @@ i7_story_run_compiler_output(I7Story *story)
 	/* Rewind the Skein to the beginning */
 	i7_skein_reset(priv->skein, TRUE);
 
-	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
-	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_STORY);
+	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_STORY]);
 
 	/* Load and start the interpreter */
 	if(!chimara_if_run_game_file(glk, priv->compiler_output_file, &err)) {
@@ -50,7 +50,7 @@ i7_story_run_compiler_output(I7Story *story)
 	}
 
 	/* Display and set the focus to the interpreter */
-	i7_story_show_pane(story, I7_PANE_GAME);
+	i7_story_show_pane(story, I7_PANE_STORY);
 	gtk_widget_grab_focus(GTK_WIDGET(glk));
 }
 
@@ -61,8 +61,8 @@ i7_story_test_compiler_output(I7Story *story)
 	I7_STORY_USE_PRIVATE(story, priv);
 	GError *err = NULL;
 
-	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
-	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_STORY);
+	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_STORY]);
 
 	/* Load and start the interpreter */
 	if(!chimara_if_run_game_file(glk, priv->compiler_output_file, &err)) {
@@ -74,7 +74,7 @@ i7_story_test_compiler_output(I7Story *story)
 	chimara_glk_feed_line_input(CHIMARA_GLK(glk), "test me");
 
 	/* Display and set the focus to the interpreter */
-	i7_story_show_pane(story, I7_PANE_GAME);
+	i7_story_show_pane(story, I7_PANE_STORY);
 	gtk_widget_grab_focus(GTK_WIDGET(glk));
 }
 
@@ -107,8 +107,8 @@ play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 	I7_STORY_USE_PRIVATE(story, priv);
 	GError *err = NULL;
 
-	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
-	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_GAME]);
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_STORY);
+	ChimaraIF *glk = CHIMARA_IF(story->panel[side]->tabs[I7_PANE_STORY]);
 
 	/* Set non-interactive if there are commands, because we don't want to
 	 scroll through screens full of -- more -- prompts */
@@ -124,7 +124,7 @@ play_commands(I7Story *story, GSList *commands, gboolean start_interpreter)
 	}
 
 	/* Display the interpreter */
-	i7_story_show_pane(story, I7_PANE_GAME);
+	i7_story_show_pane(story, I7_PANE_STORY);
 
 	/* Feed the commands up to the "played" pointer in the skein into the
 	interpreter */
@@ -218,7 +218,7 @@ static void
 on_started_feed_commands(ChimaraGlk *glk, struct RunSkeinData *data)
 {
 	/* Display the interpreter */
-	i7_story_show_pane(data->story, I7_PANE_GAME);
+	i7_story_show_pane(data->story, I7_PANE_STORY);
 
 	/* Feed the commands into the interpreter */
 	GSList *iter;
@@ -290,8 +290,8 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 	data->file_to_run = g_object_ref(priv->compiler_output_file);
 
 	/* Make sure the interpreter is non-interactive */
-	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_GAME);
-	data->glk = CHIMARA_GLK(story->panel[side]->tabs[I7_PANE_GAME]);
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_STORY);
+	data->glk = CHIMARA_GLK(story->panel[side]->tabs[I7_PANE_STORY]);
 	chimara_glk_set_interactive(data->glk, FALSE);
 	
 	GSList *blessed_nodes = i7_skein_get_blessed_thread_ends(data->skein);
@@ -308,7 +308,7 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *story)
 static void
 panel_stop_running_game(I7Story *story, I7Panel *panel)
 {
-	ChimaraGlk *glk = CHIMARA_GLK(panel->tabs[I7_PANE_GAME]);
+	ChimaraGlk *glk = CHIMARA_GLK(panel->tabs[I7_PANE_STORY]);
 	chimara_glk_stop(glk);
 	chimara_glk_wait(glk); /* Seems to be necessary? */
 	chimara_glk_unload_plugin(glk);
@@ -325,8 +325,8 @@ i7_story_stop_running_game(I7Story *story)
 gboolean
 i7_story_get_game_running(I7Story *story)
 {
-	return chimara_glk_get_running(CHIMARA_GLK(story->panel[LEFT]->tabs[I7_PANE_GAME]))
-		|| chimara_glk_get_running(CHIMARA_GLK(story->panel[RIGHT]->tabs[I7_PANE_GAME]));
+	return chimara_glk_get_running(CHIMARA_GLK(story->panel[LEFT]->tabs[I7_PANE_STORY]))
+		|| chimara_glk_get_running(CHIMARA_GLK(story->panel[RIGHT]->tabs[I7_PANE_STORY]));
 }
 
 /* Helper function: set the Chimara interpreter in @panel to prefer Git for
@@ -335,7 +335,7 @@ static void
 panel_set_use_git(I7Story *story, I7Panel *panel, gpointer data)
 {
 	ChimaraIFFormat interpreter = GPOINTER_TO_INT(data)? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
-	ChimaraIF *glk = CHIMARA_IF(panel->tabs[I7_PANE_GAME]);
+	ChimaraIF *glk = CHIMARA_IF(panel->tabs[I7_PANE_STORY]);
 	chimara_if_set_preferred_interpreter(glk, CHIMARA_IF_FORMAT_GLULX, interpreter);
 }
 

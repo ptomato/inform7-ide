@@ -510,8 +510,8 @@ get_focus_view(I7Story *story)
 		case I7_PANE_SKEIN:
 		case I7_PANE_TRANSCRIPT:
 			return NULL;
-		case I7_PANE_GAME:
-			return panel->tabs[I7_PANE_GAME];
+		case I7_PANE_STORY:
+			return panel->tabs[I7_PANE_STORY];
 		case I7_PANE_SOURCE:
 			return panel->source_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE]))];
 		case I7_PANE_RESULTS:
@@ -630,9 +630,9 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	g_signal_connect(priv->skein, "labels-changed", G_CALLBACK(on_labels_changed), panel);
 	g_signal_connect(priv->skein, "show-node", G_CALLBACK(on_show_node), panel);
 	g_signal_connect(panel->tabs[I7_PANE_SKEIN], "node-menu-popup", G_CALLBACK(on_node_popup), NULL);
-	g_signal_connect(panel->tabs[I7_PANE_GAME], "started", G_CALLBACK(on_game_started), self);
-	g_signal_connect(panel->tabs[I7_PANE_GAME], "stopped", G_CALLBACK(on_game_stopped), self);
-	g_signal_connect(panel->tabs[I7_PANE_GAME], "command", G_CALLBACK(on_game_command), self);
+	g_signal_connect(panel->tabs[I7_PANE_STORY], "started", G_CALLBACK(on_game_started), self);
+	g_signal_connect(panel->tabs[I7_PANE_STORY], "stopped", G_CALLBACK(on_game_stopped), self);
+	g_signal_connect(panel->tabs[I7_PANE_STORY], "command", G_CALLBACK(on_game_command), self);
 
 	/* Connect various models to various views */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]), GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self))));
@@ -651,7 +651,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->next), I7_DOCUMENT(self)->next_section);
 
 	/* Set the Blorb resource-loading callback */
-	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_GAME]), (ChimaraResourceLoadFunc)load_blorb_resource, self, NULL);
+	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_STORY]), (ChimaraResourceLoadFunc)load_blorb_resource, self, NULL);
 }
 
 static void
