@@ -59,9 +59,9 @@ create_default_settings()
 	obj = plist_object_new(PLIST_OBJECT_BOOLEAN);
 	obj->boolean.val = TRUE;
 	insert_setting(dict, "IFOutputSettings", "IFSettingCreateBlorb", obj);
-	/* IFOutputSettings->IFSettingZCodeVersion (8) */
+	/* IFOutputSettings->IFSettingZCodeVersion (256) */
 	obj = plist_object_new(PLIST_OBJECT_INTEGER);
-	obj->integer.val = I7_STORY_FORMAT_Z8;
+	obj->integer.val = I7_STORY_FORMAT_GLULX;
 	insert_setting(dict, "IFOutputSettings", "IFSettingZCodeVersion", obj);
 	/* IFOutputSettings->IFSettingNobbleRng (FALSE) */
 	obj = plist_object_new(PLIST_OBJECT_BOOLEAN);
@@ -144,7 +144,7 @@ i7_story_get_story_format(I7Story *story)
 	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
 	if(!obj)
-		return I7_STORY_FORMAT_Z8; /* Default value */
+		return I7_STORY_FORMAT_GLULX; /* Default value */
 	return obj->integer.val;
 }
 

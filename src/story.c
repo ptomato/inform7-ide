@@ -903,7 +903,7 @@ i7_story_class_init(I7StoryClass *klass)
 	/* Properties */
 	g_object_class_install_property(object_class, PROP_STORY_FORMAT,
 		g_param_spec_uint("story-format", "Story Format",
-			"IFOutputSettings->IFSettingZCodeVersion", 5, 256, 8,
+			"IFOutputSettings->IFSettingZCodeVersion", 5, 256, 256,
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property(object_class, PROP_MAKE_BLORB,
 		g_param_spec_boolean("create-blorb", "Create Blorb file on release",
