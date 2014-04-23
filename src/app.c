@@ -159,7 +159,6 @@ i7_app_init(I7App *self)
 		  "by\\s+(?P<author>.+)\\s+" /* by <author> */
 		  "begins?\\s+here\\.?\\s*$", /* begins here[.] */
 		  TRUE },
-		{ "R?ex(?P<number>[0-9]+).html$", FALSE }
 	};
 	int i;
 	for(i = 0; i < I7_APP_NUM_REGICES; i++) {

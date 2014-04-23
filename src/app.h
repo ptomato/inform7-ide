@@ -37,7 +37,6 @@ enum _I7AppRegices {
 	I7_APP_REGEX_HEADINGS, /* Matches story headings in the source text */
 	I7_APP_REGEX_UNICODE_ESCAPE, /* Matches Unicode escapes in Javascript paste code */
 	I7_APP_REGEX_EXTENSION, /* Matches the title of an extension in the proper format */
-	I7_APP_REGEX_EXAMPLE_FILE_NAME, /* Link must be an example page if title matches */
 	I7_APP_NUM_REGICES
 };
 

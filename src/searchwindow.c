@@ -53,6 +53,7 @@ typedef struct {
 typedef enum {
 	I7_RESULT_CONTEXT_COLUMN,
 	I7_RESULT_FILE_COLUMN,
+	I7_RESULT_ANCHOR_COLUMN,
 	I7_RESULT_RESULT_TYPE_COLUMN,
 	I7_RESULT_LINE_NUMBER_COLUMN,
 	I7_RESULT_SORT_STRING_COLUMN,
@@ -107,8 +108,10 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		return;
 	GFile *file;
 	int result_type, lineno;
+	char *anchor;
 	gtk_tree_model_get(model, &iter,
 		I7_RESULT_FILE_COLUMN, &file,
+		I7_RESULT_ANCHOR_COLUMN, &anchor,
 		I7_RESULT_RESULT_TYPE_COLUMN, &result_type,
 		I7_RESULT_LINE_NUMBER_COLUMN, &lineno,
 		-1);
@@ -121,22 +124,15 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		 is a story with facing pages. Otherwise, open the documentation in
 		 the web browser. */
 		if(I7_IS_STORY(priv->document)) {
-			GMatchInfo *match;
-			I7App *theapp = i7_app_get();
-
 			/* Jump to the proper example */
 			char *filepath = g_file_get_path(file);
-			if(g_regex_match(theapp->regices[I7_APP_REGEX_EXAMPLE_FILE_NAME], filepath, 0, &match)) {
-				gchar *number = g_match_info_fetch_named(match, "number");
-				gchar *anchor = g_strconcat("e", number, NULL);
-				g_free(number);
+			if(anchor != NULL) {
 				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), file, anchor);
 				g_free(anchor);
 			} else
 				i7_story_show_docpage(I7_STORY(priv->document), file);
 
 			g_free(filepath);
-			g_match_info_free(match);
 		} else {
 			GError *err = NULL;
 			char *uri = g_file_get_uri(file);
@@ -516,6 +512,7 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 			I7_RESULT_CONTEXT_COLUMN, context,
 			I7_RESULT_SORT_STRING_COLUMN, doctext->sort,
 			I7_RESULT_FILE_COLUMN, doctext->file,
+			I7_RESULT_ANCHOR_COLUMN, doctext->anchor,
 			I7_RESULT_RESULT_TYPE_COLUMN, doctext->is_recipebook?
 				I7_RESULT_TYPE_RECIPE_BOOK : I7_RESULT_TYPE_DOCUMENTATION,
 			I7_RESULT_LOCATION_COLUMN, location,
