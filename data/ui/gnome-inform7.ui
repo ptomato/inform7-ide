@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.24"/>
   <requires lib="gtksourceview" version="2473.34008"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkActionGroup" id="app_actions">
@@ -181,7 +181,25 @@
       <column type="GFile"/>
     </columns>
   </object>
+  <object class="GtkSourceBuffer" id="sample_buffer">
+    <property name="text" translatable="yes" comments="Editing settings panel">Part One - the Wharf
+
+The Customs Wharf is a room. [change the description if the cask is open] "Amid the bustle of the quayside, [if the case is open]many eyes stray to your broached cask. [otherwise]nobody takes much notice of a man heaving a cask about.[end if]Sleek gondolas jostle at the plank pier."</property>
+    <property name="highlight_matching_brackets">False</property>
+    <property name="max_undo_levels">-1</property>
+  </object>
+  <object class="GtkListStore" id="schemes_list">
+    <columns>
+      <!-- column-name id -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name description -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkDialog" id="prefs_dialog">
+    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes" comments="Settings panel">Inform Preferences</property>
     <property name="window_position">center</property>
@@ -192,10 +210,12 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <object class="GtkHButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="prefs_close">
@@ -228,15 +248,18 @@
             <child>
               <object class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">12</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkHBox" id="hbox5">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="spacing">12</property>
                     <child>
                       <object class="GtkLabel" id="label38">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes" comments="Author settings panel">_Author name</property>
                         <property name="use_underline">True</property>
@@ -253,6 +276,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="invisible_char">●</property>
+                        <property name="primary_icon_activatable">False</property>
+                        <property name="secondary_icon_activatable">False</property>
+                        <property name="primary_icon_sensitive">True</property>
+                        <property name="secondary_icon_sensitive">True</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -270,6 +297,7 @@
                 <child>
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
                     <property name="label" translatable="yes" comments="Author settings panel">The author name is automatically filled in when creating new stories and extensions.</property>
@@ -287,9 +315,11 @@
             <child type="tab">
               <object class="GtkHBox" id="hbox6">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="stock">gtk-orientation-portrait</property>
                   </object>
                   <packing>
@@ -301,6 +331,7 @@
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes" comments="Author settings panel">Author</property>
                   </object>
                   <packing>
@@ -317,6 +348,7 @@
             <child>
               <object class="GtkVBox" id="vbox8">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes" comments="Author settings panel">Preferred author's name for new Inform 7 projects</property>
                 <property name="border_width">12</property>
                 <property name="spacing">6</property>
@@ -392,9 +424,11 @@
             <child type="tab">
               <object class="GtkHBox" id="hbox4">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="intelligence_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="stock">gtk-edit</property>
                   </object>
                   <packing>
@@ -406,6 +440,7 @@
                 <child>
                   <object class="GtkLabel" id="intelligence_label">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes" comments="Editing settings panel">Editing</property>
                   </object>
                   <packing>
@@ -423,21 +458,25 @@
             <child>
               <object class="GtkVBox" id="vbox5">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="extension_events">cursor</property>
                 <property name="border_width">12</property>
                 <property name="spacing">12</property>
                 <child>
                   <object class="GtkFrame" id="frame1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment5">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVBox" id="vbox2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkCheckButton" id="enable_highlighting">
@@ -457,6 +496,7 @@
                             <child>
                               <object class="GtkTable" id="table1">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="n_rows">3</property>
                                 <property name="n_columns">2</property>
                                 <property name="column_spacing">12</property>
@@ -477,12 +517,13 @@
                                     <property name="top_attach">1</property>
                                     <property name="bottom_attach">2</property>
                                     <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options"></property>
+                                    <property name="y_options"/>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label42">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes" comments="Editing settings panel">_Custom font:</property>
                                     <property name="use_underline">True</property>
@@ -491,12 +532,13 @@
                                     <property name="top_attach">1</property>
                                     <property name="bottom_attach">2</property>
                                     <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options"></property>
+                                    <property name="y_options"/>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label36">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes" comments="Editing settings panel">Font si_ze:</property>
                                     <property name="use_underline">True</property>
@@ -505,24 +547,26 @@
                                     <property name="top_attach">2</property>
                                     <property name="bottom_attach">3</property>
                                     <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options"></property>
+                                    <property name="y_options"/>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkLabel" id="label34">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes" comments="Editing settings panel">Font _set:</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
                                     <property name="x_options">GTK_FILL</property>
-                                    <property name="y_options"></property>
+                                    <property name="y_options"/>
                                   </packing>
                                 </child>
                                 <child>
                                   <object class="GtkComboBox" id="font_set">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="model">font_set_model</property>
                                     <property name="active">0</property>
                                     <child>
@@ -540,6 +584,7 @@
                                 <child>
                                   <object class="GtkComboBox" id="font_size">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="model">font_size_model</property>
                                     <property name="active">0</property>
                                     <child>
@@ -570,6 +615,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label28">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Editing settings panel">&lt;b&gt;Fonts&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -584,15 +630,18 @@
                 <child>
                   <object class="GtkFrame" id="frame2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment6">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVBox" id="vbox9">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">12</property>
                             <child>
                               <object class="GtkScrolledWindow" id="scrolledwindow17">
@@ -633,6 +682,7 @@
                             <child>
                               <object class="GtkHButtonBox" id="hbuttonbox2">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
                                 <property name="homogeneous">True</property>
                                 <property name="layout_style">end</property>
@@ -683,6 +733,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label32">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Editing settings panel">&lt;b&gt;Sty_les&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="use_underline">True</property>
@@ -699,15 +750,18 @@
                 <child>
                   <object class="GtkFrame" id="frame3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment7">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVBox" id="vbox6">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkHScale" id="tab_ruler">
                                 <property name="visible">True</property>
@@ -750,6 +804,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label33">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Editing settings panel">&lt;b&gt;Tab _Width&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="use_underline">True</property>
@@ -766,11 +821,13 @@
                 <child>
                   <object class="GtkFrame" id="frame4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment8">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkScrolledWindow" id="scrolledwindow1">
@@ -799,6 +856,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label35">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Editing settings panel">&lt;b&gt;Sample Text&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -818,9 +876,11 @@
             <child type="tab">
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="styles_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="stock">gtk-select-font</property>
                   </object>
                   <packing>
@@ -832,6 +892,7 @@
                 <child>
                   <object class="GtkLabel" id="styles_label">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes" comments="Editing settings panel">Formatting</property>
                   </object>
                   <packing>
@@ -849,16 +910,19 @@
             <child>
               <object class="GtkFrame" id="frame5">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">12</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
                 <child>
                   <object class="GtkAlignment" id="alignment9">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="left_padding">12</property>
                     <child>
                       <object class="GtkVBox" id="vbox7">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="spacing">12</property>
                         <child>
                           <object class="GtkScrolledWindow" id="scrolledwindow4">
@@ -904,10 +968,12 @@
                         <child>
                           <object class="GtkHBox" id="hbox7">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkImage" id="image6">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="icon_name">inform7-builtin</property>
                               </object>
                               <packing>
@@ -919,6 +985,7 @@
                             <child>
                               <object class="GtkLabel" id="label46">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes" comments="Extension settings panel">indicates an extension built into Inform.</property>
                               </object>
@@ -938,6 +1005,7 @@
                         <child>
                           <object class="GtkHButtonBox" id="hbuttonbox1">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <property name="homogeneous">True</property>
                             <property name="layout_style">end</property>
@@ -987,6 +1055,7 @@
                 <child type="label">
                   <object class="GtkLabel" id="label37">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes" comments="Extension settings panel">&lt;b&gt;Natural Inform E_xtensions&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                     <property name="use_underline">True</property>
@@ -1001,9 +1070,11 @@
             <child type="tab">
               <object class="GtkHBox" id="hbox3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="extensions_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="icon_name">package-x-generic</property>
                   </object>
                   <packing>
@@ -1015,6 +1086,7 @@
                 <child>
                   <object class="GtkLabel" id="extensions_label">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes" comments="Extension settings panel">Extensions</property>
                   </object>
                   <packing>
@@ -1032,20 +1104,24 @@
             <child>
               <object class="GtkVBox" id="vbox10">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">12</property>
                 <property name="spacing">12</property>
                 <child>
                   <object class="GtkFrame" id="frame6">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment11">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVBox" id="vbox11">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkCheckButton" id="clean_build_files">
@@ -1086,6 +1162,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label39">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Advanced settings panel">&lt;b&gt;Cleaning&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -1100,19 +1177,23 @@
                 <child>
                   <object class="GtkFrame" id="frame8">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkHBox" id="hbox8">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">12</property>
                             <child>
                               <object class="GtkLabel" id="label4">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="label" translatable="yes" comments="Advanced settings panel">Glulx interpreter:</property>
                               </object>
                               <packing>
@@ -1124,6 +1205,7 @@
                             <child>
                               <object class="GtkComboBox" id="glulx_combo">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="model">glulx_terps_model</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="cellrenderertext1"/>
@@ -1145,6 +1227,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Advanced settings panel">&lt;b&gt;Interpreters&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -1159,15 +1242,18 @@
                 <child>
                   <object class="GtkFrame" id="frame7">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkAlignment" id="alignment12">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <object class="GtkVBox" id="vbox12">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkCheckButton" id="show_debug_tabs">
@@ -1188,6 +1274,7 @@
                             <child>
                               <object class="GtkLabel" id="label41">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes" comments="Advanced settings panel">This option is intended only for advanced users of Inform 7. It is most useful to people involved with maintaining the compiler, although the Inform 6 intermediate code may be of interest to especially advanced extension authors.</property>
                                 <property name="wrap">True</property>
@@ -1206,6 +1293,7 @@
                     <child type="label">
                       <object class="GtkLabel" id="label40">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes" comments="Advanced settings panel">&lt;b&gt;Compiler Debugging&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
@@ -1225,9 +1313,11 @@
             <child type="tab">
               <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkImage" id="advanced_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="icon_name">preferences-other</property>
                     <property name="icon-size">1</property>
                   </object>
@@ -1240,6 +1330,7 @@
                 <child>
                   <object class="GtkLabel" id="advanced_label">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes" comments="Advanced settings panel">Advanced</property>
                   </object>
                   <packing>
@@ -1266,23 +1357,6 @@
     <action-widgets>
       <action-widget response="0">prefs_close</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkSourceBuffer" id="sample_buffer">
-    <property name="text" translatable="yes" comments="Editing settings panel">Part One - the Wharf
-
-The Customs Wharf is a room. [change the description if the cask is open] "Amid the bustle of the quayside, [if the case is open]many eyes stray to your broached cask. [otherwise]nobody takes much notice of a man heaving a cask about.[end if]Sleek gondolas jostle at the plank pier."</property>
-    <property name="highlight_matching_brackets">False</property>
-    <property name="max_undo_levels">-1</property>
-  </object>
-  <object class="GtkListStore" id="schemes_list">
-    <columns>
-      <!-- column-name id -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-      <!-- column-name description -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkSourceBuffer" id="tab_buffer">
     <property name="text" translatable="yes" comments="Editing settings panel - Make sure to keep TAB characters ('\t') between the words">	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab</property>
