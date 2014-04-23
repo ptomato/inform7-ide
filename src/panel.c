@@ -278,14 +278,6 @@ action_play_all(GtkAction *action, I7Panel *panel)
 	i7_story_compile(story, FALSE, FALSE);
 }
 
-void
-action_contents(GtkAction *action, I7Panel *panel)
-{
-	GFile *docs_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "index.html", NULL);
-	html_load_file(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), docs_file);
-	g_object_unref(docs_file);
-}
-
 /*
  * action_bless_all:
  * @action: not used
@@ -361,6 +353,42 @@ action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	i7_story_next_difference_skein(story);
+}
+
+/* Helper function: display a documentation page in this panel */
+static void
+display_docpage_in_panel(I7Panel *panel, const char *filename)
+{
+	GFile *docs_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", filename, NULL);
+	i7_panel_goto_docpage(panel, docs_file);
+	g_object_unref(docs_file);
+}
+
+/* Signal handler for the action connected to the "Home" button in the panel
+toolbar when the Documentation panel is displayed. Displays index.html from the
+documentation. */
+void
+action_contents(GtkAction *action, I7Panel *panel)
+{
+	display_docpage_in_panel(panel, "index.html");
+}
+
+/* Signal handler for the action connected to the "Examples" button in the panel
+toolbar when the Documentation panel is displayed. Displays
+examples_alphabetical.html from the documentation. */
+void
+action_examples(GtkAction *action, I7Panel *panel)
+{
+	display_docpage_in_panel(panel, "examples_alphabetical.html");
+}
+
+/* Signal handler for the action connected to the "General Index" button in the
+panel toolbar when the Documentation panel is displayed. Displays
+general_index.html from the documentation. */
+void
+action_general_index(GtkAction *action, I7Panel *panel)
+{
+	display_docpage_in_panel(panel, "general_index.html");
 }
 
 /* TYPE SYSTEM */
