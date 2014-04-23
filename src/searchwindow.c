@@ -44,8 +44,10 @@ typedef struct {
 	gchar *sort;
 	gchar *body;
 	GFile *file;
-} DocText;
+	char *anchor;
 
+	char *example_title;
+} DocText;
 
 /* Columns for the search results tree view */
 typedef enum {
@@ -67,9 +69,14 @@ typedef enum {
 typedef struct {
 	GString *chars;
 	int ignore;
-	gboolean in_example;
+
 	/* Metadata */
 	DocText *doctext;
+
+	/* Temporary storage for subsections */
+	GString *outer_chars;
+	DocText *outer_doctext;
+	GSList *completed_doctexts;
 } Ctxt;
 
 typedef struct _I7SearchWindowPrivate I7SearchWindowPrivate;
@@ -352,35 +359,59 @@ end_element_callback(Ctxt *ctxt, const xmlChar *name)
 static void
 character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 {
-	if((!ctxt->doctext->is_example || ctxt->in_example) && ctxt->ignore == 0)
+	if(ctxt->ignore == 0)
 		g_string_append_len(ctxt->chars, (gchar *)ch, len);
 }
 
-static gchar *
-get_quoted_contents(const xmlChar *string)
+static void
+get_quoted_contents(const xmlChar *comment, char **quote1, char **quote2)
 {
-	const xmlChar *q1 = xmlStrchr(string, '"') + 1;
-	const xmlChar *q2 = xmlStrchr(q1, '"');
-	return (gchar *)xmlStrndup(q1, q2 - q1);
+	char *retval1, *retval2;
+	int matched = sscanf((const char *)comment, "\"%m[^\"]\" \"%m[^\"]\"", &retval1, &retval2);
+	if(quote1 != NULL)
+		*quote1 = (matched >= 1)? retval1 : NULL;
+	if(quote2 != NULL)
+		*quote2 = (matched >= 2)? retval2 : NULL;
 }
+
+#define SEARCH_TITLE_LEN 14   /* length(" SEARCH TITLE ") */
+#define SEARCH_SECTION_LEN 16 /* length(" SEARCH SECTION ") */
+#define SEARCH_SORT_LEN 13    /* length(" SEARCH SORT ") */
+#define START_EXAMPLE_LEN 15  /* length(" START EXAMPLE ") */
 
 static void
 comment_callback(Ctxt *ctxt, const xmlChar *value)
 {
 	/* Extract metadata from comments */
 	if(g_str_has_prefix((gchar *)value, " SEARCH TITLE "))
-		ctxt->doctext->title = get_quoted_contents(value + 14);
-	else if(g_str_has_prefix((gchar *)value, " SEARCH SECTION ")) {
-		gchar *meta = get_quoted_contents(value + 16);
-		ctxt->doctext->section = ctxt->doctext->is_recipebook?
-			g_strconcat(_("Recipe Book, "), meta, NULL) : g_strdup(meta);
-		g_free(meta);
-	} else if(g_str_has_prefix((gchar *)value, " SEARCH SORT "))
-		ctxt->doctext->sort = get_quoted_contents(value + 13);
-	else if(g_str_has_prefix((gchar *)value, " EXAMPLE START "))
-		ctxt->in_example = TRUE;
-	else if(g_str_has_prefix((gchar *)value, " EXAMPLE END "))
-		ctxt->in_example = FALSE;
+		get_quoted_contents(value + SEARCH_TITLE_LEN, &ctxt->doctext->title, NULL);
+	else if(g_str_has_prefix((char *)value, " SEARCH SECTION "))
+		get_quoted_contents(value + SEARCH_SECTION_LEN, &ctxt->doctext->section, NULL);
+	else if(g_str_has_prefix((char *)value, " SEARCH SORT "))
+		get_quoted_contents(value + SEARCH_SORT_LEN, &ctxt->doctext->sort, NULL);
+
+	/* From here on, these are particular subsections of the documentation page,
+	such as examples. We assume that the above metadata always appear before a
+	subsection can appear, and that subsections cannot be nested. */
+	else if(g_str_has_prefix((char *)value, " START EXAMPLE ")) {
+		ctxt->outer_chars = ctxt->chars;
+		ctxt->chars = g_string_new("");
+
+		ctxt->outer_doctext = ctxt->doctext;
+		ctxt->doctext = g_slice_dup(DocText, ctxt->outer_doctext);
+		ctxt->doctext->is_example = TRUE;
+		g_object_ref(ctxt->doctext->file);
+		ctxt->doctext->section = g_strdup(ctxt->outer_doctext->section);
+		ctxt->doctext->title = g_strdup(ctxt->outer_doctext->title);
+		ctxt->doctext->sort = g_strdup(ctxt->outer_doctext->sort);
+		get_quoted_contents(value + START_EXAMPLE_LEN, &ctxt->doctext->example_title, &ctxt->doctext->anchor);
+	} else if(g_str_has_prefix((char *)value, " END EXAMPLE ")) {
+		ctxt->doctext->body = g_string_free(ctxt->chars, FALSE);
+		ctxt->completed_doctexts = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
+
+		ctxt->doctext = ctxt->outer_doctext;
+		ctxt->chars = ctxt->outer_chars;
+	}
 }
 
 xmlSAXHandler i7_html_sax = {
@@ -410,24 +441,24 @@ xmlSAXHandler i7_html_sax = {
 	NULL /*fatalError: unused*/
 };
 
-static DocText *
-html_to_ascii(GFile *file, gboolean is_example, gboolean is_recipebook)
+static GSList *
+html_to_ascii(GFile *file, gboolean is_recipebook)
 {
 	Ctxt *ctxt = g_slice_new0(Ctxt);
 	ctxt->chars = g_string_new("");
 	DocText *doctext = g_slice_new0(DocText);
-	doctext->is_example = is_example;
 	doctext->is_recipebook = is_recipebook;
+	doctext->file = g_object_ref(file);
 	ctxt->doctext = doctext;
 
 	char *path = g_file_get_path(file);
 	htmlSAXParseFile(path, NULL, &i7_html_sax, ctxt);
 	g_free(path);
 
-	doctext->file = g_object_ref(file);
 	doctext->body = g_string_free(ctxt->chars, FALSE);
+	GSList *retval = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
 	g_slice_free(Ctxt, ctxt);
-	return doctext;
+	return retval;
 }
 
 /* Borrow from document-search.c */
@@ -546,7 +577,6 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 	GError *err;
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
-		gboolean example = FALSE;
 		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", NULL);
 
 		GFileEnumerator *docdir;
@@ -563,14 +593,8 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 			const char *basename = g_file_info_get_name(info);
 			const char *displayname = g_file_info_get_display_name(info);
 
-			if(!g_str_has_suffix(basename, ".html"))
-				continue;
-
-			if(g_str_has_prefix(basename, "doc") || g_str_has_prefix(basename, "Rdoc"))
-				example = FALSE;
-			else if(g_str_has_prefix(basename, "ex") || g_str_has_prefix(basename, "Rex"))
-				example = TRUE;
-			else
+			if(!g_str_has_suffix(basename, ".html") ||
+			   (!g_str_has_prefix(basename, "doc") && !g_str_has_prefix(basename, "Rdoc")))
 				continue;
 
 			char *label = g_strdup_printf(_("Please be patient, indexing %s..."), displayname);
@@ -581,13 +605,17 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 				gtk_main_iteration();
 
 			GFile *file = g_file_get_child(doc_file, basename);
-			DocText *doctext = html_to_ascii(file, example, g_str_has_prefix(basename, "R"));
+			GSList *doctexts = html_to_ascii(file, g_str_has_prefix(basename, "R"));
 			g_object_unref(file);
-			if(doctext) {
-				/* Append the entry to the documentation index and
-				 search it right now while we're at it */
-				doc_index = g_list_prepend(doc_index, doctext);
-				search_documentation(doctext, self);
+			if(doctexts != NULL) {
+				GSList *iter;
+				/* Append the entries to the documentation index and search them
+				right now while we're at it */
+				for(iter = doctexts; iter != NULL; iter = g_slist_next(iter)) {
+					doc_index = g_list_prepend(doc_index, iter->data);
+					search_documentation(iter->data, self);
+				}
+				g_slist_free(doctexts);
 			}
 		}
 		g_object_unref(doc_file);
@@ -762,6 +790,8 @@ i7_search_window_free_index(void)
 		g_free(text->sort);
 		g_free(text->body);
 		g_object_unref(text->file);
+		g_free(text->anchor);
+		g_free(text->example_title);
 		g_slice_free(DocText, text);
 	}
 	g_list_free(doc_index);
