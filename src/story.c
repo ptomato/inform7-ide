@@ -613,14 +613,14 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 
 	gtk_widget_show(GTK_WIDGET(panel));
 
-	/* Connect other signals */
+	/* Connect other signals and properties */
 	g_signal_connect(panel->sourceview->heading_depth, "value-changed", G_CALLBACK(on_heading_depth_value_changed), self);
 	g_signal_connect(panel->z5, "toggled", G_CALLBACK(on_z5_button_toggled), self);
 	g_signal_connect(panel->z8, "toggled", G_CALLBACK(on_z8_button_toggled), self);
 	g_signal_connect(panel->z6, "toggled", G_CALLBACK(on_z6_button_toggled), self);
 	g_signal_connect(panel->glulx, "toggled", G_CALLBACK(on_glulx_button_toggled), self);
-	g_signal_connect(panel->blorb, "toggled", G_CALLBACK(on_blorb_button_toggled), self);
-	g_signal_connect(panel->nobble_rng, "toggled", G_CALLBACK(on_nobble_rng_button_toggled), self);
+	g_object_bind_property(self, "create-blorb", panel->blorb, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+	g_object_bind_property(self, "nobble-rng", panel->nobble_rng, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 	g_signal_connect(panel->tabs[I7_PANE_SOURCE], "switch-page", G_CALLBACK(on_source_notebook_switch_page), self);
 	g_signal_connect(panel->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS], "row-activated", G_CALLBACK(on_headings_row_activated), self);
 	g_signal_connect(panel, "select-view", G_CALLBACK(on_panel_select_view), self);
@@ -793,6 +793,9 @@ i7_story_init(I7Story *self)
 	PangoFontDescription *font = get_desktop_monospace_font();
 	pango_font_description_set_size(font, get_font_size(font));
 
+	/* Do the default settings */
+	priv->settings = create_default_settings();
+
 	/* Do panel-specific stuff to the left and then the right panel */
 	i7_story_foreach_panel(self, (I7PanelForeachFunc)story_init_panel, font);
 	pango_font_description_free(font);
@@ -816,12 +819,12 @@ i7_story_init(I7Story *self)
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
 		i7_story_add_debug_tabs(I7_DOCUMENT(self));
 
-	/* Do the default settings */
-	priv->settings = create_default_settings();
 	/* Connect the widgets on the Settings pane to the settings properties */
+	g_object_bind_property(self->panel[LEFT]->z5, "active", self->panel[RIGHT]->z5, "active", G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(self->panel[LEFT]->z6, "active", self->panel[RIGHT]->z6, "active", G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(self->panel[LEFT]->z8, "active", self->panel[RIGHT]->z8, "active", G_BINDING_BIDIRECTIONAL);
+	g_object_bind_property(self->panel[LEFT]->glulx, "active", self->panel[RIGHT]->glulx, "active", G_BINDING_BIDIRECTIONAL);
 	g_signal_connect(self, "notify::story-format", G_CALLBACK(on_notify_story_format), NULL);
-	g_signal_connect(self, "notify::create-blorb", G_CALLBACK(on_notify_create_blorb), NULL);
-	g_signal_connect(self, "notify::nobble-rng", G_CALLBACK(on_notify_nobble_rng), NULL);
 	g_signal_connect(self, "notify::elastic-tabstops", G_CALLBACK(on_notify_elastic_tabstops), NULL);
 
 	/* Set font sizes, etc. */
@@ -1113,10 +1116,10 @@ i7_story_open(I7Story *story, GFile *file)
 	}
 	g_object_unref(settings_file);
 	/* Update the GUI with the new settings */
-	on_notify_story_format(story);
-	on_notify_create_blorb(story);
-	on_notify_nobble_rng(story);
-	on_notify_elastic_tabstops(story);
+	g_object_notify(G_OBJECT(story), "story-format");
+	g_object_notify(G_OBJECT(story), "create-blorb");
+	g_object_notify(G_OBJECT(story), "nobble-rng");
+	g_object_notify(G_OBJECT(story), "elastic-tabstops");
 
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(story, FALSE);

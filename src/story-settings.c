@@ -77,10 +77,6 @@ on_z5_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_Z5);
-
-	/* When the one changes, change the other */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z5), value);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->z5), value);
 }
 
 void
@@ -89,10 +85,6 @@ on_z6_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_Z6);
-
-	/* When the one changes, change the other */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z6), value);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->z6), value);
 }
 
 void
@@ -101,10 +93,6 @@ on_z8_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_Z8);
-
-	/* When the one changes, change the other */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z8), value);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->z8), value);
 }
 
 void
@@ -113,32 +101,6 @@ on_glulx_button_toggled(GtkToggleButton *button, I7Story *story)
 	gboolean value = gtk_toggle_button_get_active(button);
 	if(value)
 		i7_story_set_story_format(story, I7_STORY_FORMAT_GLULX);
-
-	/* When the one changes, change the other */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->glulx), value);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->glulx), value);
-}
-
-void
-on_blorb_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	i7_story_set_create_blorb(story, value);
-
-	/* When the one changes, change the other */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->blorb), value);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->blorb), value);
-}
-
-void
-on_nobble_rng_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	i7_story_set_nobble_rng(story, value);
-
-	/* When the one changes, change the other */
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->nobble_rng), value);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[RIGHT]->nobble_rng), value);
 }
 
 /* Select all the right buttons according to the story settings */
@@ -159,21 +121,7 @@ on_notify_story_format(I7Story *story)
 		default:
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z8), TRUE);
 	}
-	/* The callbacks ensure that we don't have to manually set the other ones */
-}
-
-void
-on_notify_create_blorb(I7Story *story)
-{
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->blorb), i7_story_get_create_blorb(story));
-	/* The callbacks ensure that we don't have to manually set the other ones */
-}
-
-void
-on_notify_nobble_rng(I7Story *story)
-{
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->nobble_rng), i7_story_get_nobble_rng(story));
-	/* The callbacks ensure that we don't have to manually set the other ones */
+	/* The property bindings ensure that we don't have to manually set the other ones */
 }
 
 void
