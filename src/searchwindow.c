@@ -72,6 +72,7 @@ typedef enum {
 typedef struct {
 	GString *chars;
 	int ignore;
+	gboolean in_ignore_section;
 
 	/* Metadata */
 	DocText *doctext;
@@ -383,7 +384,7 @@ start_element_callback(Ctxt *ctxt, const xmlChar *name, const xmlChar **atts)
 {
 	if(is_ignore_element(name))
 		ctxt->ignore++;
-	else if(is_newline_element(name) && ctxt->ignore == 0)
+	else if(is_newline_element(name) && ctxt->ignore == 0 && !ctxt->in_ignore_section)
 		g_string_append_c(ctxt->chars, ' '); /* Add spaces instead of newlines */
 }
 
@@ -397,7 +398,7 @@ end_element_callback(Ctxt *ctxt, const xmlChar *name)
 static void
 character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 {
-	if(ctxt->ignore == 0)
+	if(ctxt->ignore == 0 && !ctxt->in_ignore_section)
 		g_string_append_len(ctxt->chars, (gchar *)ch, len);
 }
 
@@ -449,7 +450,10 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 
 		ctxt->doctext = ctxt->outer_doctext;
 		ctxt->chars = ctxt->outer_chars;
-	}
+	} else if(g_str_has_prefix((char *)value, " START IGNORE "))
+		ctxt->in_ignore_section = TRUE;
+	else if(g_str_has_prefix((char *)value, " END IGNORE "))
+		ctxt->in_ignore_section = FALSE;
 }
 
 xmlSAXHandler i7_html_sax = {
