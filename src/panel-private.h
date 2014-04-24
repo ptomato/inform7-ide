@@ -58,5 +58,6 @@ void after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, u
 void after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 void after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 gint after_documentation_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel);
+int after_extensions_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel);
 
 #endif /* PANEL_PRIVATE_H */

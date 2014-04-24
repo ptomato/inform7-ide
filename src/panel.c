@@ -724,6 +724,9 @@ after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page
 		case I7_PANE_DOCUMENTATION:
 			history_push_docpage(panel, NULL);
 			break;
+		case I7_PANE_EXTENSIONS:
+			history_push_extensions_page(panel, NULL);
+			break;
 		default:
 			history_push_pane(panel, page_num);
 	}
@@ -980,6 +983,17 @@ after_documentation_navigation_requested(WebKitWebView *webview, WebKitWebFrame 
 {
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_DOCUMENTATION)
 		history_push_docpage(panel, webkit_network_request_get_uri(request));
+	return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
+}
+
+/* Signal handler to pick up navigations within the Extensions pane and push
+them into the history queue. */
+int
+after_extensions_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel)
+{
+	/* Only add it to the history if it was navigated from the current page */
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_EXTENSIONS)
+		history_push_extensions_page(panel, webkit_network_request_get_uri(request));
 	return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 }
 

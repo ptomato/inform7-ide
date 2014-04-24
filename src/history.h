@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,5 +26,6 @@ void history_goto_current(I7Panel *panel);
 void history_push_pane(I7Panel *panel, I7PanelPane pane);
 void history_push_tab(I7Panel *panel, I7PanelPane pane, guint tab);
 void history_push_docpage(I7Panel *panel, const gchar *uri);
+void history_push_extensions_page(I7Panel *panel, const char *uri);
 
 #endif /* _HISTORY_H */
