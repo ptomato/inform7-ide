@@ -57,7 +57,9 @@ typedef enum {
 	I7_RESULT_RESULT_TYPE_COLUMN,
 	I7_RESULT_LINE_NUMBER_COLUMN,
 	I7_RESULT_SORT_STRING_COLUMN,
-	I7_RESULT_LOCATION_COLUMN
+	I7_RESULT_LOCATION_COLUMN,
+	I7_RESULT_EXAMPLE_TITLE_COLUMN,
+	I7_RESULT_BACKGROUND_COLOR_COLUMN
 } I7ResultColumns;
 
 typedef enum {
@@ -166,6 +168,43 @@ on_search_window_delete_event(I7SearchWindow *self, GdkEvent *event)
 	return TRUE; /* block deletion */
 }
 
+/* This would be better done with two GtkCellRendererText-s in a GtkCellArea,
+but that requires GTK 3. */
+static void
+result_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
+{
+	I7ResultType type;
+	char *markup = NULL, *context, *example_title;
+
+	gtk_tree_model_get(model, iter,
+		I7_RESULT_RESULT_TYPE_COLUMN, &type,
+		I7_RESULT_CONTEXT_COLUMN, &context,
+		I7_RESULT_EXAMPLE_TITLE_COLUMN, &example_title,
+		-1);
+
+	switch(type) {
+		case I7_RESULT_TYPE_DOCUMENTATION:
+		case I7_RESULT_TYPE_RECIPE_BOOK:
+			if(example_title != NULL) {
+				/* TRANSLATORS: This string is from the search results window;
+				it looks like "(Example 347: The Eye of the Idol) The Hexagonal
+				Temple..." where the first string is the number and title of the
+				example, and the second is the context containing the string the
+				user searched for. */
+				markup = g_strdup_printf(_("<small><i>(Example %s)</i></small> %s"), example_title, context);
+				break;
+			}
+			/* else fall through */
+		default:
+			markup = g_strdup(context);
+	}
+
+	g_object_set(cell, "markup", markup, NULL);
+	g_free(markup);
+	g_free(context);
+	g_free(example_title);
+}
+
 static void
 location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
 {
@@ -223,16 +262,16 @@ type_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *m
 	gtk_tree_model_get(model, iter, I7_RESULT_RESULT_TYPE_COLUMN, &type, -1);
 	switch(type) {
 		case I7_RESULT_TYPE_DOCUMENTATION:
-			g_object_set(cell, "text", _("Documentation"), NULL);
+			g_object_set(cell, "text", _("Writing with Inform"), NULL);
 			break;
 		case I7_RESULT_TYPE_EXTENSION:
 			g_object_set(cell, "text", _("Extension"), NULL);
 			break;
 		case I7_RESULT_TYPE_PROJECT:
-			g_object_set(cell, "text", _("Project File"), NULL);
+			g_object_set(cell, "text", _("Source"), NULL);
 			break;
 		case I7_RESULT_TYPE_RECIPE_BOOK:
-			g_object_set(cell, "text", _("Recipe Book"), NULL);
+			g_object_set(cell, "text", _("The Inform Recipe Book"), NULL);
 			break;
 		default:
 			g_object_set(cell, "text", _("unknown"), NULL);
@@ -269,8 +308,11 @@ i7_search_window_init(I7SearchWindow *self)
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
 	priv->results = GTK_LIST_STORE(load_object(builder, "results"));
-	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "file_column")),
-		GTK_CELL_RENDERER(load_object(builder, "file_renderer")),
+	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "result_column")),
+		GTK_CELL_RENDERER(load_object(builder, "result_renderer")),
+		(GtkTreeCellDataFunc)result_data_func, self, NULL);
+	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "document_column")),
+		GTK_CELL_RENDERER(load_object(builder, "document_renderer")),
 		(GtkTreeCellDataFunc)location_data_func, self, NULL);
 	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "type_column")),
 		GTK_CELL_RENDERER(load_object(builder, "type_renderer")),
@@ -516,6 +558,9 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 			I7_RESULT_RESULT_TYPE_COLUMN, doctext->is_recipebook?
 				I7_RESULT_TYPE_RECIPE_BOOK : I7_RESULT_TYPE_DOCUMENTATION,
 			I7_RESULT_LOCATION_COLUMN, location,
+			I7_RESULT_EXAMPLE_TITLE_COLUMN, doctext->example_title,
+			I7_RESULT_BACKGROUND_COLOR_COLUMN, doctext->is_recipebook?
+				"#ffffe0" : "#ffffff",
 			-1);
 		g_free(context);
 		g_free(location);
