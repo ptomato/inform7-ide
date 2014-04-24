@@ -130,6 +130,14 @@ on_panel_display_docpage(I7Panel *panel, gchar *uri, I7Story *story)
 }
 
 static void
+on_panel_display_extensions_docpage(I7Panel *panel, char *uri, I7Story *story)
+{
+	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_EXTENSIONS);
+	webkit_web_view_open(WEBKIT_WEB_VIEW(story->panel[side]->tabs[I7_PANE_EXTENSIONS]), uri);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_EXTENSIONS);
+}
+
+static void
 on_panel_display_index_page(I7Panel *panel, I7PaneIndexTab tabnum, char *param, I7Story *story)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_INDEX);
@@ -641,6 +649,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	g_signal_connect(panel, "paste-code", G_CALLBACK(on_panel_paste_code), self);
 	g_signal_connect(panel, "jump-to-line", G_CALLBACK(on_panel_jump_to_line), self);
 	g_signal_connect(panel, "display-docpage", G_CALLBACK(on_panel_display_docpage), self);
+	g_signal_connect(panel, "display-extensions-docpage", G_CALLBACK(on_panel_display_extensions_docpage), self);
 	g_signal_connect(panel, "display-index-page", G_CALLBACK(on_panel_display_index_page), self);
 	g_signal_connect(priv->skein, "labels-changed", G_CALLBACK(on_labels_changed), panel);
 	g_signal_connect(priv->skein, "show-node", G_CALLBACK(on_show_node), panel);

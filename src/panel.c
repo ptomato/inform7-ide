@@ -431,6 +431,7 @@ enum _I7PanelSignalType {
 	PASTE_CODE_SIGNAL,
 	JUMP_TO_LINE_SIGNAL,
 	DISPLAY_DOCPAGE_SIGNAL,
+	DISPLAY_EXTENSIONS_DOCPAGE_SIGNAL,
 	DISPLAY_INDEX_PAGE_SIGNAL,
 	LAST_SIGNAL
 };
@@ -658,6 +659,11 @@ i7_panel_class_init(I7PanelClass *klass)
 	i7_panel_signals[DISPLAY_DOCPAGE_SIGNAL] = g_signal_new("display-docpage",
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 		G_STRUCT_OFFSET(I7PanelClass, display_docpage), NULL, NULL,
+		g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
+	i7_panel_signals[DISPLAY_EXTENSIONS_DOCPAGE_SIGNAL] = g_signal_new(
+		"display-extensions-docpage",
+		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+		G_STRUCT_OFFSET(I7PanelClass, display_extensions_docpage), NULL, NULL,
 		g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
 	i7_panel_signals[DISPLAY_INDEX_PAGE_SIGNAL] = g_signal_new(
 		"display-index-page",
@@ -890,9 +896,16 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 	} else if(strcmp(scheme, "inform") == 0) {
 		/* The inform: protocol can mean files in any of several different
 		locations */
-		/* Only load them in the documentation page; if this is another page,
-		then redirect the request to the documentation page */
-		if(webview != WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])) {
+		gboolean load_in_extensions_pane = g_str_has_prefix(uri, "inform://Extensions");
+		/* Most of them are only to be loaded in the documentation pane, but extension
+		documentation should be loaded in the extensions pane. */
+		if(load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS])) {
+			g_signal_emit_by_name(panel, "display-extensions-docpage", uri);
+			g_free(scheme);
+			return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
+		} else if(!load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])) {
+			/* Others should be loaded in the documentation pane; if this is another
+			pane, then redirect the request to the documentation pane */
 			g_signal_emit_by_name(panel, "display-docpage", uri);
 			g_free(scheme);
 			return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
