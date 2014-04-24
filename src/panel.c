@@ -606,27 +606,25 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_nu
 {
 	I7_PANEL_USE_PRIVATE(panel, priv);
 
+	gboolean skein = FALSE, transcript = FALSE, documentation = FALSE;
+
 	switch(page_num) {
 		case I7_PANE_SKEIN:
-			gtk_action_group_set_visible(priv->skein_action_group, TRUE);
-			gtk_action_group_set_visible(priv->transcript_action_group, FALSE);
-			gtk_action_group_set_visible(priv->documentation_action_group, FALSE);
+			skein = TRUE;
 			break;
 		case I7_PANE_TRANSCRIPT:
-			gtk_action_group_set_visible(priv->skein_action_group, FALSE);
-			gtk_action_group_set_visible(priv->transcript_action_group, TRUE);
-			gtk_action_group_set_visible(priv->documentation_action_group, FALSE);
+			transcript = TRUE;
 			break;
 		case I7_PANE_DOCUMENTATION:
-			gtk_action_group_set_visible(priv->skein_action_group, FALSE);
-			gtk_action_group_set_visible(priv->transcript_action_group, FALSE);
-			gtk_action_group_set_visible(priv->documentation_action_group, TRUE);
+			documentation = TRUE;
 			break;
 		default:
-			gtk_action_group_set_visible(priv->skein_action_group, FALSE);
-			gtk_action_group_set_visible(priv->transcript_action_group, FALSE);
-			gtk_action_group_set_visible(priv->documentation_action_group, FALSE);
+			;
 	}
+
+	gtk_action_group_set_visible(priv->skein_action_group, skein);
+	gtk_action_group_set_visible(priv->transcript_action_group, transcript);
+	gtk_action_group_set_visible(priv->documentation_action_group, documentation);
 }
 
 void
