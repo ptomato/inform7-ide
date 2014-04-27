@@ -521,13 +521,35 @@ action_definitions(GtkAction *action, I7Panel *panel)
 	g_object_unref(docs_file);
 }
 
+/* Helper function: turn everything back to normal when the Public Library is
+loaded */
+static void
+on_public_library_load_notify(WebKitWebView *html, GParamSpec *pspec, GtkAction *action)
+{
+	WebKitLoadStatus status = webkit_web_view_get_load_status(html);
+	if(status != WEBKIT_LOAD_FINISHED && status != WEBKIT_LOAD_FAILED)
+		return;
+	gtk_action_set_sensitive(action, TRUE);
+	i7_app_set_busy(i7_app_get(), FALSE);
+	g_signal_handlers_disconnect_by_func(html, on_public_library_load_notify, action);
+}
+
 /* Signal handler for the action connected to the "Public Library" button in the
 panel toolbar when the Extensions panel is displayed. Displays the Inform public
 extensions library website. */
 void
 action_public_library(GtkAction *action, I7Panel *panel)
 {
-	webkit_web_view_open(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]), PUBLIC_LIBRARY_URI);
+	WebKitWebView *html = WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]);
+
+	/* First clear the webview, gray out the button, and set the cursor busy so
+	that the button doesn't seem broken */
+	html_load_blank(html);
+	gtk_action_set_sensitive(action, FALSE);
+	i7_app_set_busy(i7_app_get(), TRUE);
+	g_signal_connect(html, "notify::load-status", G_CALLBACK(on_public_library_load_notify), action);
+
+	webkit_web_view_open(html, PUBLIC_LIBRARY_URI);
 }
 
 /* TYPE SYSTEM */
