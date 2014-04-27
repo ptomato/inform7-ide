@@ -101,6 +101,17 @@ js_string_value_to_string(JSContextRef ctx, JSValueRef value, JSValueRef *except
 	return string;
 }
 
+/* Helper function: convert a NULL-terminated UTF-8 C string to a string
+JSValueRef. Release result when done (or return from a Javascript function.) */
+static JSValueRef
+string_to_js_string_value(JSContextRef ctx, const char *string)
+{
+	JSStringRef js_string = JSStringCreateWithUTF8CString(string);
+	JSValueRef retval = JSValueMakeString(ctx, js_string);
+	JSStringRelease(js_string);
+	return retval;
+}
+
 /* The 'pasteCode' function in JavaScript. Unescapes the code to paste, and
  * emits the 'paste-code' signal, which the I7Story is listening for. */
 static JSValueRef
@@ -178,6 +189,101 @@ js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size
 
 	g_free(uri);
 	return NULL;
+}
+
+/* Helper function: convert the internal representation of an extension version
+to the form that the Public Library page's Javascript expects it in. Free return
+value when done. */
+static char *
+version_to_public_library_version(char *version)
+{
+	if(*version == '\0')
+		return g_strdup("Version 1");
+	return g_strconcat("Version ", version, NULL);
+}
+
+/* The 'askInterfaceForLocalVersion(author, title, compareWith)' function in
+Javascript. This asks the app to compare the extension "@title by @author" the
+app has with version @compareWith. It returns, in this order of consideration:
+(1) the string ‘!’ if the app has a built-in copy of the given extension; or
+(2) the string ‘=’ if the app has the exact same version installed already; or
+(3) the string ‘<’ if the app has a lower version; or (4) the string ‘>’ if the
+app has a newer version; or (5) the empty string if the app has no version of
+this extension. (The Javascript on the page then adjusts all the download
+buttons appropriately.) */
+static JSValueRef
+js_local_version_compare(JSContextRef ctx, JSObjectRef function, JSObjectRef this_object, size_t argument_count, const JSValueRef arguments[], JSValueRef *exception)
+{
+	if(argument_count != 3)
+		return NULL;
+
+	char *author = js_string_value_to_string(ctx, arguments[0], exception);
+	char *title = js_string_value_to_string(ctx, arguments[1], exception);
+	char *compare_with = js_string_value_to_string(ctx, arguments[2], exception);
+	if(author == NULL || title == NULL || compare_with == NULL) {
+		g_free(author);
+		g_free(title);
+		g_free(compare_with);
+		return NULL;
+	}
+
+	gboolean builtin;
+	char *version = i7_app_get_extension_version(i7_app_get(), author, title, &builtin);
+	g_free(author);
+	g_free(title);
+
+	if(version == NULL) {
+		g_free(compare_with);
+		return string_to_js_string_value(ctx, "");
+	}
+
+	/* Format the version string in the way the page's JS expects it */
+	char *compare_version = version_to_public_library_version(version);
+	g_free(version);
+
+	int comparison = strcmp(compare_version, compare_with);
+	g_free(compare_version);
+	g_free(compare_with);
+
+	if(builtin)
+		return string_to_js_string_value(ctx, "!");
+	if(comparison < 0)
+		return string_to_js_string_value(ctx, "<");
+	if(comparison > 0)
+		return string_to_js_string_value(ctx, ">");
+	return string_to_js_string_value(ctx, "=");
+}
+
+/* The 'askInterfaceForLocalVersionText(author, title)' function in Javascript.
+Returns the app's version of the extension as a string: e.g., '8', or
+'8/110516'. (Seems the Public Library page actually expects it to have the
+string 'Version ' prefixed to it.) */
+static JSValueRef
+js_get_local_version(JSContextRef ctx, JSObjectRef function, JSObjectRef this_object, size_t argument_count, const JSValueRef arguments[], JSValueRef *exception)
+{
+	if(argument_count != 2)
+		return NULL;
+
+	char *author = js_string_value_to_string(ctx, arguments[0], exception);
+	char *title = js_string_value_to_string(ctx, arguments[1], exception);
+	if(author == NULL || title == NULL) {
+		g_free(author);
+		g_free(title);
+		return NULL;
+	}
+
+	char *version = i7_app_get_extension_version(i7_app_get(), author, title, NULL);
+	g_free(author);
+	g_free(title);
+	if(version == NULL)
+		return NULL;  /* return undefined in JS */
+
+	char *formatted_version = version_to_public_library_version(version);
+	g_free(version);
+
+	JSValueRef retval = string_to_js_string_value(ctx, formatted_version);
+	g_free(formatted_version);
+	return retval;
 }
 
 /* ACTIONS */
@@ -604,6 +710,8 @@ i7_panel_init(I7Panel *self)
 		{ "pasteCode", js_paste_code, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
 		{ "openFile", js_open_file, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
 		{ "openUrl", js_open_url, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
+		{ "askInterfaceForLocalVersion", js_local_version_compare, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
+		{ "askInterfaceForLocalVersionText", js_get_local_version, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
 		{ NULL, NULL, 0 }
 	};
 	JSClassDefinition project_class_definition = {
