@@ -57,8 +57,6 @@ js_select_view(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, s
 {
 	if(argumentCount != 1)
 		return NULL;
-	if(!JSValueIsString(ctx, arguments[0]))
-		return NULL;
 
 	I7Panel *panel = (I7Panel *)JSObjectGetPrivate(thisObject);
 	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
@@ -85,6 +83,22 @@ unescape_unicode(const GMatchInfo *match, GString *result, gpointer data)
 	return FALSE; /* keep going */
 }
 
+/* Helper function: convert a string JSValueRef argument to a NULL-terminated
+UTF-8 C string. Returns NULL and fills @exception on error. Free result when
+done. */
+static char *
+js_string_value_to_string(JSContextRef ctx, JSValueRef value, JSValueRef *exception)
+{
+	JSStringRef jsstring = JSValueToStringCopy(ctx, value, exception);
+	if(*exception != NULL)
+		return NULL;
+	size_t bufsize = JSStringGetMaximumUTF8CStringSize(jsstring);
+	char *string = g_malloc(bufsize);
+	JSStringGetUTF8CString(jsstring, string, bufsize);
+	JSStringRelease(jsstring);
+	return string;
+}
+
 /* The 'pasteCode' function in JavaScript. Unescapes the code to paste, and
  * emits the 'paste-code' signal, which the I7Story is listening for. */
 static JSValueRef
@@ -92,18 +106,11 @@ js_paste_code(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, si
 {
 	if(argumentCount != 1)
 		return NULL;
-	if(!JSValueIsString(ctx, arguments[0]))
-		return NULL;
 
-	/* Get the string of code to paste */
 	I7Panel *panel = (I7Panel *)JSObjectGetPrivate(thisObject);
-	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
+	char *code = js_string_value_to_string(ctx, arguments[0], exception);
 	if(*exception != NULL)
 		return NULL;
-	size_t length = JSStringGetMaximumUTF8CStringSize(arg_js);
-	gchar *code = g_malloc(length);
-	JSStringGetUTF8CString(arg_js, code, length);
-	JSStringRelease(arg_js);
 
 	GError *error = NULL;
 	I7App *theapp = i7_app_get();
@@ -131,15 +138,10 @@ js_open_file(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, siz
 
 	if(argumentCount != 1)
 		return NULL;
-	if(!JSValueIsString(ctx, arguments[0]))
-		return NULL;
 
-	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
+	char *file = js_string_value_to_string(ctx, arguments[0], exception);
 	if(*exception != NULL)
 		return NULL;
-	size_t bufsize = JSStringGetMaximumUTF8CStringSize(arg_js);
-	gchar *file = g_new0(gchar, bufsize);
-	JSStringGetUTF8CString(arg_js, file, bufsize);
 
 	gchar *uri = g_filename_to_uri(file, NULL, &error);
 	if(!uri) {
@@ -152,7 +154,6 @@ js_open_file(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, siz
 	g_free(uri);
 finally:
 	g_free(file);
-	JSStringRelease(arg_js);
 	return NULL;
 }
 
@@ -165,21 +166,15 @@ js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size
 
 	if(argumentCount != 1)
 		return NULL;
-	if(!JSValueIsString(ctx, arguments[0]))
-		return NULL;
 
-	JSStringRef arg_js = JSValueToStringCopy(ctx, arguments[0], exception);
+	char *uri = js_string_value_to_string(ctx, arguments[0], exception);
 	if(*exception != NULL)
 		return NULL;
-	size_t bufsize = JSStringGetMaximumUTF8CStringSize(arg_js);
-	gchar *uri = g_new0(gchar, bufsize);
-	JSStringGetUTF8CString(arg_js, uri, bufsize);
 
 	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
 		error_dialog(NULL, error, _("Error opening external viewer for %s: "), uri);
 
 	g_free(uri);
-	JSStringRelease(arg_js);
 	return NULL;
 }
 
