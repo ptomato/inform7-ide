@@ -157,7 +157,7 @@ i7_app_init(I7App *self)
 	I7AppRegexInfo regex_info[] = {
 		{ "^(?P<level>volume|book|part|chapter|section)\\s+(?P<secnum>.*?)(\\s+-\\s+(?P<sectitle>.*))?$", TRUE },
 		{ "\\[=0x([0-9A-F]{4})=\\]", FALSE },
-		{ "^\\s*(?:version\\s.+\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */
+		{ "^\\s*(?:version\\s(?P<version>.+)\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */
 		  "(?P<title>.+)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)?" /* <title> [(for X only)] */
 		  "by\\s+(?P<author>.+)\\s+" /* by <author> */
 		  "begins?\\s+here\\.?\\s*$", /* begins here[.] */
@@ -403,30 +403,43 @@ i7_app_stop_monitoring_extensions_directory(I7App *app)
 	priv->extension_dir_monitor = NULL;
 }
 
-/* Reads an extension file to check whether it is a valid Inform 7 extension,
-and returns the extension name and author stored in the locations pointed to by
-'name' and 'author'. If the function returns TRUE, they must be freed. */
+/* Examines the @text (at least the first line) of an extension file to check
+whether it is a valid Inform 7 extension, returns TRUE if the header is correct,
+and returns the extension version, name, and author stored in the locations
+pointed to by @version, @name, and @author, respectively. If the function
+returns FALSE, nothing is stored in those locations; if it returns TRUE, then
+the values returned in @name and @author must be freed, and the value in
+@version must be freed if it is not NULL. It is okay to pass NULL for @version,
+@name, and @author, in which case nothing will be stored there. */
 static gboolean
-is_valid_extension(I7App *app, const gchar *text, gchar **thename, gchar **theauthor)
+is_valid_extension(I7App *app, const char *text, char **version, char **name, char **author)
 {
 	g_return_val_if_fail(text != NULL, FALSE);
 
 	GMatchInfo *match = NULL;
+	char *matched_name, *matched_author;
 
 	if(!g_regex_match(app->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
 		g_match_info_free(match);
 		return FALSE;
 	}
-	if((*thename = g_match_info_fetch_named(match, "title")) == NULL) {
+	matched_name = g_match_info_fetch_named(match, "title");
+	matched_author = g_match_info_fetch_named(match, "author");
+	if(matched_name == NULL || matched_author == NULL) {
+		g_free(matched_name);
+		g_free(matched_author);
 		g_match_info_free(match);
-		return FALSE;
-	}
-	if((*theauthor = g_match_info_fetch_named(match, "author")) == NULL) {
-		g_match_info_free(match);
-		g_free(*thename);
 		return FALSE;
 	}
 
+	if(name != NULL)
+		*name = matched_name;
+	if(author != NULL)
+		*author = matched_author;
+	if(version != NULL)
+		*version = g_match_info_fetch_named(match, "version");
+
+	g_match_info_free(match);
 	return TRUE;
 }
 
@@ -468,7 +481,7 @@ i7_app_install_extension(I7App *app, GFile *file)
 	/* Make sure the file is actually an Inform 7 extension */
 	gchar *name = NULL;
 	gchar *author = NULL;
-	if(!is_valid_extension(app, text, &name, &author)) {
+	if(!is_valid_extension(app, text, NULL, &name, &author)) {
 		char *display_name = file_get_display_name(file);
 		error_dialog(NULL, NULL, _("The file '%s' does not seem to be an "
 		  "extension. Extensions should be saved as UTF-8 text format files, "
@@ -737,6 +750,45 @@ get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter
 	return found;
 }
 
+/**
+ * i7_app_get_extension_version:
+ * @app: the app
+ * @author: the author of the extension
+ * @title: the title of the extension
+ * @builtin: (allow-none): return location for a boolean
+ *
+ * Gets the version of the extension uniquely identified by "@title by @author".
+ * The version may be the empty string if the extension does not identify itself
+ * with a version.
+ * If the extension is not installed, this function returns %NULL.
+ *
+ * Returns: (transfer full): a string representing the version of the extension,
+ * or %NULL if the extension is not installed.
+ */
+char *
+i7_app_get_extension_version(I7App *app, const char *author, const char *title, gboolean *builtin)
+{
+	GtkTreeModel *store = GTK_TREE_MODEL(I7_APP_PRIVATE(app)->installed_extensions);
+	GtkTreeIter parent_iter, child_iter;
+	char *version;
+	gboolean readonly;
+
+	if(!get_iter_for_author(store, author, &parent_iter))
+		return NULL;
+	if(!get_iter_for_extension_title(store, title, &parent_iter, &child_iter))
+		return NULL;
+
+	gtk_tree_model_get(store, &child_iter,
+	    I7_APP_EXTENSION_VERSION, &version,
+	    I7_APP_EXTENSION_READ_ONLY, &readonly,
+	    -1);
+	if(builtin != NULL)
+		*builtin = readonly;
+	if(version == NULL)
+		return g_strdup("");
+	return version;
+}
+
 /* Return the full path to the built-in Inform extension represented by @author
  and @extname, if not NULL; return the author directory if @extname is NULL;
  return the built-in extensions path if both are NULL. */
@@ -881,28 +933,38 @@ add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
 static void
 add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
+	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
 	GFile *extension_file = g_file_get_child(parent, extension_name);
-	const char *display_name = g_file_info_get_display_name(info);
 	GtkTreeIter child_iter;
+	char *version, *title;
 
-	/* Remove .i7x from the filename, if it is there */
-	char *i7_display_name;
-	if(g_str_has_suffix(display_name, ".i7x"))
-		i7_display_name = g_strndup(display_name, strlen(display_name) - 4);
-	else
-		i7_display_name = g_strdup(display_name);
+	char *firstline = read_first_line(extension_file, NULL, &error);
+	if(firstline == NULL) {
+		g_warning("Error reading extension file %s, skipping: %s", extension_name, error->message);
+		g_error_free(error);
+		goto finally;
+	}
+	if(!is_valid_extension(i7_app_get(), firstline, &version, &title, NULL)) {
+		g_free(firstline);
+		g_warning("Invalid extension file %s, skipping.", extension_name);
+		goto finally;
+	}
+	g_free(firstline);
 
 	gtk_tree_store_append(store, &child_iter, parent_iter);
 	gtk_tree_store_set(store, &child_iter,
-		I7_APP_EXTENSION_TEXT, i7_display_name, /* copies */
+		I7_APP_EXTENSION_TEXT, title, /* copies */
+		I7_APP_EXTENSION_VERSION, version, /* copies */
 		I7_APP_EXTENSION_READ_ONLY, FALSE,
 		I7_APP_EXTENSION_ICON, NULL,
 		I7_APP_EXTENSION_FILE, extension_file, /* references */
 		-1);
 
+	g_free(title);
+	g_free(version);
+finally:
 	g_object_unref(extension_file);
-	g_free(i7_display_name);
 }
 
 /* Helper function: add extension to tree store as a built-in extension. Makes
@@ -910,31 +972,41 @@ add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_
 static void
 add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
+	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
-	const char *display_name = g_file_info_get_display_name(info);
 	GFile *extension_file = g_file_get_child(parent, extension_name);
 	GtkTreeIter child_iter;
+	char *version, *title;
 
-	/* Remove .i7x from the filename, if it is there */
-	char *i7_display_name;
-	if(g_str_has_suffix(display_name, ".i7x"))
-		i7_display_name = g_strndup(display_name, strlen(display_name) - 4);
-	else
-		i7_display_name = g_strdup(display_name);
+	char *firstline = read_first_line(extension_file, NULL, &error);
+	if(firstline == NULL) {
+		g_warning("Error reading extension file %s, skipping: %s", extension_name, error->message);
+		g_error_free(error);
+		goto finally;
+	}
+	if(!is_valid_extension(i7_app_get(), firstline, &version, &title, NULL)) {
+		g_free(firstline);
+		g_warning("Invalid extension file %s, skipping.", extension_name);
+		goto finally;
+	}
+	g_free(firstline);
 
 	/* Only add it if it is not overridden by a user-installed extension */
-	if(!get_iter_for_extension_title(GTK_TREE_MODEL(store), i7_display_name, parent_iter, &child_iter)) {
+	if(!get_iter_for_extension_title(GTK_TREE_MODEL(store), title, parent_iter, &child_iter)) {
 		gtk_tree_store_append(store, &child_iter, parent_iter);
 		gtk_tree_store_set(store, &child_iter,
-			I7_APP_EXTENSION_TEXT, i7_display_name,
+			I7_APP_EXTENSION_TEXT, title,
+			I7_APP_EXTENSION_VERSION, version,
 			I7_APP_EXTENSION_READ_ONLY, TRUE,
 			I7_APP_EXTENSION_ICON, "inform7-builtin",
 			I7_APP_EXTENSION_FILE, extension_file,
 			-1);
 	}
 
+	g_free(title);
+	g_free(version);
+finally:
 	g_object_unref(extension_file);
-	g_free(i7_display_name);
 }
 
 /* Helper function: look in the user's extensions directory and the built-in one
@@ -1267,7 +1339,7 @@ i7_app_get_config_dir(I7App *self)
 	return retval;
 }
 
-/* Getter function for installed extensions tree */
+/* Getter function for installed extensions tree (transfer none). */
 GtkTreeStore *
 i7_app_get_installed_extensions_tree(I7App *app)
 {

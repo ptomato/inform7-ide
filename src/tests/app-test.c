@@ -88,13 +88,8 @@ test_app_extensions_install_remove(void)
 	g_object_unref(file);
 	GFile *installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	check_file(installed_file, "Lickable Wallpaper.i7x");
-
-	/* Make sure it is listed in the directory */
 	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
 	g_assert_no_error(err);
-	g_assert(strstr(contents, "Regera Dowdy"));
-	g_assert(strstr(contents, "Lickable Wallpaper"));
-	g_free(contents);
 
 	/* Test removing */
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
@@ -102,12 +97,71 @@ test_app_extensions_install_remove(void)
 	g_assert(g_file_query_exists(installed_file, NULL) == FALSE);
 	g_object_unref(installed_file);
 
+	/* Make sure it was listed in the directory before */
+	g_assert(strstr(contents, "Regera Dowdy"));
+	g_assert(strstr(contents, "Lickable Wallpaper"));
+	g_free(contents);
+
 	/* Make sure it is not listed in the directory anymore */
 	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
 	g_assert_no_error(err);
-	g_assert(!strstr(contents, "Regera Dowdy"));
 	g_assert(!strstr(contents, "Lickable Wallpaper"));
 	g_free(contents);
+}
+
+void
+test_app_extensions_get_builtin(void)
+{
+	I7App *theapp = i7_app_get();
+	gboolean builtin;
+	char *version_string;
+
+	/* Test that builtin extension is given as builtin */
+	version_string = i7_app_get_extension_version(theapp, "Graham Nelson", "Standard Rules", &builtin);
+	g_assert(version_string != NULL);
+	g_free(version_string);
+	g_assert(builtin);
+
+	/* Test that non-builtin extension is not given as builtin */
+	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	i7_app_install_extension(theapp, file);
+	g_object_unref(file);
+	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", &builtin);
+	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	g_assert(version_string != NULL);
+	g_free(version_string);
+	g_assert(!builtin);
+}
+
+void
+test_app_extensions_get_version(void)
+{
+	I7App *theapp = i7_app_get();
+	char *version_string;
+
+	/* Test that a nonexistent extension returns NULL */
+	version_string = i7_app_get_extension_version(theapp, "Eduard Blutig", "Everlasting Gobstoppers", NULL);
+	g_assert(version_string == NULL);
+
+	/* Test that "Title by Author begins here" is given as empty string */
+	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	i7_app_install_extension(theapp, file);
+	g_object_unref(file);
+	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", NULL);
+	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	g_assert(version_string != NULL);
+	g_assert_cmpstr(version_string, ==, "");
+	g_free(version_string);
+
+	/* Test that "Version X of Title by Author begins here" is given as "X" */
+	file = g_file_new_for_path("tests/Square Candies.i7x");
+	i7_app_install_extension(theapp, file);
+	g_object_unref(file);
+	version_string = i7_app_get_extension_version(theapp, "Ogdred Weary", "Square Candies", NULL);
+	i7_app_delete_extension(theapp, "Ogdred Weary", "Square Candies");
+	g_assert(version_string != NULL);
+	g_assert_cmpstr(version_string, ==, "12");
+	g_free(version_string);
 }
 
 void

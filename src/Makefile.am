@@ -314,6 +314,8 @@ SKIP_PATHS = \
 	/app/create \
 	/app/files \
 	/app/extensions/install-remove \
+	/app/extensions/get-builtin \
+	/app/extensions/get-version \
 	/app/extensions/case-insensitive \
 	/app/colorscheme/install-remove \
 	/app/colorscheme/get-current \

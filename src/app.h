@@ -41,7 +41,8 @@ enum _I7AppRegices {
 };
 
 enum _I7AppExtensionsColumns {
-	I7_APP_EXTENSION_TEXT,
+	I7_APP_EXTENSION_TEXT,  /* title rows are children of author rows */
+	I7_APP_EXTENSION_VERSION,
 	I7_APP_EXTENSION_READ_ONLY,
 	I7_APP_EXTENSION_ICON,
 	I7_APP_EXTENSION_FILE,
@@ -103,6 +104,7 @@ void i7_app_monitor_extensions_directory(I7App *app);
 void i7_app_stop_monitoring_extensions_directory(I7App *app);
 void i7_app_install_extension(I7App *app, GFile *file);
 void i7_app_delete_extension(I7App *app, gchar *author, gchar *extname);
+char *i7_app_get_extension_version(I7App *app, const char *author, const char *title, gboolean *builtin);
 void i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc author_func, gpointer author_func_data, I7AppExtensionFunc extension_func, gpointer extension_func_data, GDestroyNotify free_author_result);
 void i7_app_run_census(I7App *app, gboolean wait);
 
