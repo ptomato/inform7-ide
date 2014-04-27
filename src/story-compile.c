@@ -92,6 +92,7 @@ i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
 		g_object_unref(priv->compiler_output_file);
 		priv->compiler_output_file = NULL;
 	}
+	gtk_action_group_set_sensitive(priv->compile_action_group, FALSE);
 
 	/* Set up the compiler */
 	CompilerData *data = g_slice_new0(CompilerData);
@@ -627,6 +628,8 @@ finish_compiling(gboolean success, CompilerData *data)
 
 	/* Switch the Results tab to the Report page */
 	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
+
+	gtk_action_group_set_sensitive(priv->compile_action_group, TRUE);
 	gdk_threads_leave();
 
 	/* Store the compiler output filename (the I7Story now owns the reference) */

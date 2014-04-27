@@ -2,6 +2,74 @@
 <interface>
   <requires lib="gtk+" version="2.24"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkActionGroup" id="compile_actions">
+    <child>
+      <object class="GtkAction" id="play_all_blessed">
+        <property name="label" translatable="yes" comments="Replay Menu">Re_play Commands Blessed in Transcript</property>
+        <property name="short_label" translatable="yes" comments="Replay Menu">Re_play Commands Blessed in Transcript</property>
+        <property name="tooltip" translatable="yes" comments="Replay Menu">Play through all the blessed nodes in the entire Skein</property>
+        <signal name="activate" handler="action_play_all_blessed" swapped="no"/>
+      </object>
+      <accelerator key="r" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="refresh_index">
+        <property name="label" translatable="yes" comments="Play Menu">Refresh _Index</property>
+        <property name="short_label" translatable="yes" comments="Play Menu">Refresh _Index</property>
+        <property name="tooltip" translatable="yes" comments="Play Menu">Recompile the index files and display them</property>
+        <property name="stock_id">gtk-refresh</property>
+        <signal name="activate" handler="action_refresh_index" swapped="no"/>
+      </object>
+      <accelerator key="i" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="go">
+        <property name="label" translatable="yes" comments="Play Menu">_Go</property>
+        <property name="short_label" translatable="yes" comments="Play Menu">_Go!</property>
+        <property name="tooltip" translatable="yes" comments="Play Menu">Compile and run the story</property>
+        <property name="stock_id">gtk-media-play</property>
+        <signal name="activate" handler="action_go" swapped="no"/>
+      </object>
+      <accelerator key="r" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="release">
+        <property name="label" translatable="yes" comments="Toolbar">_Release...</property>
+        <property name="short_label" translatable="yes" comments="Toolbar">_Release</property>
+        <property name="tooltip" translatable="yes" comments="Toolbar">Compile the story ready for release</property>
+        <property name="stock_id">gtk-cdrom</property>
+        <signal name="activate" handler="action_release" swapped="no"/>
+      </object>
+      <accelerator key="r" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="save_debug_build">
+        <property name="label" translatable="yes" comments="Release Menu">Release for _Testing...</property>
+        <property name="short_label" translatable="yes" comments="Release Menu">Release for _Testing...</property>
+        <property name="tooltip" translatable="yes" comments="Release Menu">Compile the story with debugging features on and export it</property>
+        <signal name="activate" handler="action_save_debug_build" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="replay">
+        <property name="label" translatable="yes" comments="Replay Menu">_Replay Last Commands</property>
+        <property name="short_label" translatable="yes" comments="Replay Menu">Replay</property>
+        <property name="tooltip" translatable="yes" comments="Replay Menu">Compile the story, and re-run to the previously active play point</property>
+        <property name="stock_id">gtk-media-rewind</property>
+        <signal name="activate" handler="action_replay" swapped="no"/>
+      </object>
+      <accelerator key="r" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="test_me">
+        <property name="label" translatable="yes" comments="Release Menu">_Test Me</property>
+        <property name="short_label" translatable="yes" comments="Release Menu">_Test Me</property>
+        <property name="tooltip" translatable="yes" comments="Release Menu">Compile the story, and run the "test me" command</property>
+        <signal name="activate" handler="action_test_me" swapped="no"/>
+      </object>
+      <accelerator key="t" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
+    </child>
+  </object>
   <object class="GtkActionGroup" id="story_actions">
     <child>
       <object class="GtkAction" id="show_transcript">
@@ -204,33 +272,6 @@
       </object>
     </child>
     <child>
-      <object class="GtkAction" id="test_me">
-        <property name="label" translatable="yes" comments="Release Menu">_Test Me</property>
-        <property name="short_label" translatable="yes" comments="Release Menu">_Test Me</property>
-        <property name="tooltip" translatable="yes" comments="Release Menu">Compile the story, and run the "test me" command</property>
-        <signal name="activate" handler="action_test_me" swapped="no"/>
-      </object>
-      <accelerator key="t" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="save_debug_build">
-        <property name="label" translatable="yes" comments="Release Menu">Release for _Testing...</property>
-        <property name="short_label" translatable="yes" comments="Release Menu">Release for _Testing...</property>
-        <property name="tooltip" translatable="yes" comments="Release Menu">Compile the story with debugging features on and export it</property>
-        <signal name="activate" handler="action_save_debug_build" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="release">
-        <property name="label" translatable="yes" comments="Toolbar">_Release...</property>
-        <property name="short_label" translatable="yes" comments="Toolbar">_Release</property>
-        <property name="tooltip" translatable="yes" comments="Toolbar">Compile the story ready for release</property>
-        <property name="stock_id">gtk-cdrom</property>
-        <signal name="activate" handler="action_release" swapped="no"/>
-      </object>
-      <accelerator key="r" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
       <object class="GtkAction" id="stop">
         <property name="label" translatable="yes" comments="Toolbar">_Stop</property>
         <property name="short_label" translatable="yes" comments="Toolbar">_Stop</property>
@@ -258,36 +299,6 @@
         <signal name="activate" handler="action_show_last_command_skein" swapped="no"/>
       </object>
       <accelerator key="l" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="replay">
-        <property name="label" translatable="yes" comments="Replay Menu">_Replay Last Commands</property>
-        <property name="short_label" translatable="yes" comments="Replay Menu">Replay</property>
-        <property name="tooltip" translatable="yes" comments="Replay Menu">Compile the story, and re-run to the previously active play point</property>
-        <property name="stock_id">gtk-media-rewind</property>
-        <signal name="activate" handler="action_replay" swapped="no"/>
-      </object>
-      <accelerator key="r" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="go">
-        <property name="label" translatable="yes" comments="Play Menu">_Go</property>
-        <property name="short_label" translatable="yes" comments="Play Menu">_Go!</property>
-        <property name="tooltip" translatable="yes" comments="Play Menu">Compile and run the story</property>
-        <property name="stock_id">gtk-media-play</property>
-        <signal name="activate" handler="action_go" swapped="no"/>
-      </object>
-      <accelerator key="r" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="refresh_index">
-        <property name="label" translatable="yes" comments="Play Menu">Refresh _Index</property>
-        <property name="short_label" translatable="yes" comments="Play Menu">Refresh _Index</property>
-        <property name="tooltip" translatable="yes" comments="Play Menu">Recompile the index files and display them</property>
-        <property name="stock_id">gtk-refresh</property>
-        <signal name="activate" handler="action_refresh_index" swapped="no"/>
-      </object>
-      <accelerator key="i" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkToggleAction" id="view_notepad">
@@ -364,15 +375,13 @@
         <signal name="activate" handler="action_previous_changed_command" swapped="no"/>
       </object>
     </child>
-    <child>
-      <object class="GtkAction" id="play_all_blessed">
-        <property name="label" translatable="yes" comments="Replay Menu">Re_play Commands Blessed in Transcript</property>
-        <property name="short_label" translatable="yes" comments="Replay Menu">Re_play Commands Blessed in Transcript</property>
-        <property name="tooltip" translatable="yes" comments="Replay Menu">Play through all the blessed nodes in the entire Skein</property>
-        <signal name="activate" handler="action_play_all_blessed" swapped="no"/>
-      </object>
-      <accelerator key="r" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
+  </object>
+  <object class="GtkAdjustment" id="hspacing_adj">
+    <property name="lower">20</property>
+    <property name="upper">100</property>
+    <property name="value">40</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkHPaned" id="facing_pages">
     <property name="visible">True</property>
@@ -383,13 +392,6 @@
     <child>
       <placeholder/>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="hspacing_adj">
-    <property name="lower">20</property>
-    <property name="upper">100</property>
-    <property name="value">40</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
@@ -585,13 +587,6 @@
       <action-widget response="-5">button1</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkAdjustment" id="vspacing_adj">
-    <property name="lower">20</property>
-    <property name="upper">100</property>
-    <property name="value">75</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkAdjustment" id="trim_adj">
     <property name="lower">1</property>
     <property name="upper">30</property>
@@ -725,5 +720,12 @@ This operation cannot be undone.</property>
       <action-widget response="-6">button5</action-widget>
       <action-widget response="-5">button4</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkAdjustment" id="vspacing_adj">
+    <property name="lower">20</property>
+    <property name="upper">100</property>
+    <property name="value">75</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>

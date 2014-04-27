@@ -28,6 +28,8 @@ typedef struct {
 	/* Action Groups */
 	GtkUIManager *ui_manager;
 	GtkActionGroup *story_action_group;
+	GtkActionGroup *compile_action_group;
+
 	/* Widget with last input focus */
 	GtkWidget *last_focused;
 	/* Other text buffers */
