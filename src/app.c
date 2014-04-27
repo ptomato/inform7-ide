@@ -428,6 +428,21 @@ is_valid_extension(I7App *app, const gchar *text, gchar **thename, gchar **theau
 	return TRUE;
 }
 
+/* Helper function: read first line of file and return it. Free return value
+when done. */
+static char *
+read_first_line(GFile *file, GCancellable *cancellable, GError **error)
+{
+	GFileInputStream *istream = g_file_read(file, cancellable, error);
+	if(istream == NULL)
+		return NULL;
+	GDataInputStream *dstream = g_data_input_stream_new(G_INPUT_STREAM(istream));
+	g_object_unref(istream);
+	char *retval = g_data_input_stream_read_line_utf8(dstream, NULL, cancellable, error);
+	g_object_unref(dstream); /* closes stream */
+	return retval; /* is NULL if error reading */
+}
+
 /**
  * i7_app_install_extension:
  * @app: the application
@@ -441,14 +456,12 @@ i7_app_install_extension(I7App *app, GFile *file)
 	g_return_if_fail(file);
 	GError *err = NULL;
 
-	/* Read the first line of the file */
-	GFileInputStream *file_stream = g_file_read(file, NULL, &err);
-	if(!file_stream)
+	char *text = read_first_line(file, NULL, &err);
+	if(text == NULL) {
+		g_warning("Error reading extension: %s", err->message);
+		g_error_free(err);
 		return;
-	GDataInputStream *stream = g_data_input_stream_new(G_INPUT_STREAM(file_stream));
-	char *text = g_data_input_stream_read_line_utf8(stream, NULL, NULL, &err);
-	if(!text)
-		return;
+	}
 
 	/* Make sure the file is actually an Inform 7 extension */
 	gchar *name = NULL;
