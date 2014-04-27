@@ -623,11 +623,25 @@ action_show_documentation(GtkAction *action, I7Story *story)
 	i7_story_show_pane(story, I7_PANE_DOCUMENTATION);
 }
 
+/* View->Show Tab->Extensions */
+void
+action_show_extensions(GtkAction *action, I7Story *story)
+{
+	i7_story_show_pane(story, I7_PANE_EXTENSIONS);
+}
+
 /* View->Show Tab->Settings */
 void
 action_show_settings(GtkAction *action, I7Story *story)
 {
 	i7_story_show_pane(story, I7_PANE_SETTINGS);
+}
+
+/* View->Show Index->Home */
+void
+action_show_home(GtkAction *action, I7Story *story)
+{
+	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_WELCOME);
 }
 
 /* View->Show Index->Actions */
