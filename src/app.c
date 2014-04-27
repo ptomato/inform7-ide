@@ -649,6 +649,49 @@ finally:
 	i7_app_run_census(app, TRUE);
 }
 
+/* Helper function: iterate over authors in installed extensions @store, to see
+if @author is there. If so, return a tree iter pointing to @author in @iter, and
+return TRUE from function. Otherwise, return FALSE, and @iter is invalidated. */
+gboolean
+get_iter_for_author(GtkTreeModel *store, const char *author, GtkTreeIter *iter)
+{
+	gboolean found = FALSE;
+	if(gtk_tree_model_get_iter_first(store, iter)) {
+		do {
+			char *found_author;
+			gtk_tree_model_get(store, iter, I7_APP_EXTENSION_TEXT, &found_author, -1);
+			if(strcmp(author, found_author) == 0)
+				found = TRUE;
+			g_free(found_author);
+			if(found)
+				break;
+		} while(gtk_tree_model_iter_next(store, iter));
+	}
+	return found;
+}
+
+/* Helper function: iterate over extensions by author pointed to by @parent_iter
+in installed extensions @store, to see if @title is there. If so, return a tree
+iter pointing to @title in @iter, and return TRUE from function. Otherwise,
+return FALSE, and @iter is invalidated. */
+gboolean
+get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter *parent_iter, GtkTreeIter *iter)
+{
+	gboolean found = FALSE;
+	if(gtk_tree_model_iter_children(store, iter, parent_iter)) {
+		do {
+			char *found_title;
+			gtk_tree_model_get(store, iter, I7_APP_EXTENSION_TEXT, &found_title, -1);
+			if(strcmp(title, found_title) == 0)
+				found = TRUE;
+			g_free(found_title);
+			if(found)
+				break;
+		} while(gtk_tree_model_iter_next(store, iter));
+	}
+	return found;
+}
+
 /* Return the full path to the built-in Inform extension represented by @author
  and @extname, if not NULL; return the author directory if @extname is NULL;
  return the built-in extensions path if both are NULL. */
@@ -773,23 +816,10 @@ add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
 {
 	GtkTreeIter parent_iter;
 	const char *author_display_name = g_file_info_get_display_name(info);
-	gboolean found = FALSE;
 
 	/* If the author directory was already indexed before, add the extension
 	to it instead of making a new entry */
-	if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &parent_iter)) {
-		do {
-			char *author;
-			gtk_tree_model_get(GTK_TREE_MODEL(store), &parent_iter, I7_APP_EXTENSION_TEXT, &author, -1);
-			if(strcmp(author_display_name, author) == 0)
-				found = TRUE;
-			g_free(author);
-			if(found)
-				break;
-		} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &parent_iter));
-	}
-
-	if(!found) {
+	if(!get_iter_for_author(GTK_TREE_MODEL(store), author_display_name, &parent_iter)) {
 		gtk_tree_store_append(store, &parent_iter, NULL);
 		gtk_tree_store_set(store, &parent_iter,
 			I7_APP_EXTENSION_TEXT, author_display_name,
@@ -839,7 +869,6 @@ add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter 
 	const char *display_name = g_file_info_get_display_name(info);
 	GFile *extension_file = g_file_get_child(parent, extension_name);
 	GtkTreeIter child_iter;
-	gboolean found;
 
 	/* Remove .i7x from the filename, if it is there */
 	char *i7_display_name;
@@ -849,22 +878,7 @@ add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter 
 		i7_display_name = g_strdup(display_name);
 
 	/* Only add it if it is not overridden by a user-installed extension */
-	found = FALSE;
-	if(gtk_tree_model_iter_children(GTK_TREE_MODEL(store), &child_iter, parent_iter)) {
-		do {
-			char *name;
-			gtk_tree_model_get(GTK_TREE_MODEL(store), &child_iter,
-				I7_APP_EXTENSION_TEXT, &name,
-				-1);
-			if(strcmp(i7_display_name, name) == 0)
-				found = TRUE;
-			g_free(name);
-			if(found)
-				break;
-		} while(gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &child_iter));
-	}
-
-	if(!found) {
+	if(!get_iter_for_extension_title(GTK_TREE_MODEL(store), i7_display_name, parent_iter, &child_iter)) {
 		gtk_tree_store_append(store, &child_iter, parent_iter);
 		gtk_tree_store_set(store, &child_iter,
 			I7_APP_EXTENSION_TEXT, i7_display_name,
