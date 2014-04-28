@@ -317,6 +317,7 @@ data/ui/Makefile
 data/licenses/Makefile
 data/licenses/license.html
 data/languages/Makefile
+data/mime/Makefile
 data/styles/Makefile
 pixmaps/Makefile
 ])
