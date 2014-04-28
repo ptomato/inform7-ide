@@ -35,5 +35,6 @@ update-icon-cache:
 		echo "*** Icon cache not updated.  After (un)install, run this:"; \
 		echo "***   $(gtk_update_icon_cache)"; \
 	fi
+.PHONY: update-icon-cache
 
 -include $(top_srcdir)/git.mk
