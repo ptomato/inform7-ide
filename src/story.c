@@ -436,6 +436,10 @@ i7_story_save_as(I7Document *document, GFile *file)
 
 	/* Set the folder icon to be the Inform 7 project icon */
 	file_set_custom_icon(file, "application-x-inform");
+	GFile *materials_file = i7_story_get_materials_file(I7_STORY(document));
+	if(file_exists_and_is_dir(materials_file))
+		file_set_custom_icon(materials_file, "application-x-inform-materials");
+	g_object_unref(materials_file);
 
 	i7_document_set_modified(document, FALSE);
 
@@ -1164,6 +1168,8 @@ i7_story_open(I7Story *story, GFile *file)
 				/* fail silently */
 				g_message("Error copying old Materials folder to new one: %s", error->message);
 				g_clear_error(&error);
+			} else {
+				file_set_custom_icon(materials_file, "application-x-inform-materials");
 			}
 		}
 		g_object_unref(old_materials_file);
