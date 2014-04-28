@@ -53,6 +53,7 @@ typedef struct _CompilerData {
 	GFile *input_file;
 	GFile *output_file;
 	GFile *builddir_file;
+	GFile *results_file;
 } CompilerData;
 
 /* Declare these functions static so they can stay in this order */
@@ -269,9 +270,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 			problems_file = i7_app_get_data_file_va(theapp, "Documentation", "Sections", "Error0.html", NULL);
 	}
 
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), problems_file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), problems_file);
-	g_object_unref(problems_file);
+	g_clear_object(&data->results_file);
+	data->results_file = problems_file; /* assumes reference */
 
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG)) {
 		/* Update */
@@ -488,12 +488,8 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	if(!loadfile && exit_code != 0)
 		loadfile = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Sections", "ErrorI6.html", NULL);
 	if(loadfile) {
-		gdk_threads_enter();
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), loadfile);
-		html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), loadfile);
-		gdk_threads_leave();
-
-		g_object_unref(loadfile);
+		g_clear_object(&data->results_file);
+		data->results_file = loadfile; /* assumes reference */
 	}
 
 	/* Stop here and show the Results/Report tab if there was an error */
@@ -587,12 +583,8 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 	int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
 
 	/* Display the appropriate HTML page */
-	GFile *file = g_file_get_child(data->builddir_file, "StatusCblorb.html");
-	gdk_threads_enter();
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), file);
-	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), file);
-	gdk_threads_leave();
-	g_object_unref(file);
+	g_clear_object(&data->results_file);
+	data->results_file = g_file_get_child(data->builddir_file, "StatusCblorb.html");
 
 	/* Stop here and show the Results/Report tab if there was an error */
 	if(exit_code != 0) {
@@ -627,6 +619,8 @@ finish_compiling(gboolean success, CompilerData *data)
 		COMPILE_OPERATIONS);
 
 	/* Switch the Results tab to the Report page */
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
+	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
 	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
 
 	gtk_action_group_set_sensitive(priv->compile_action_group, TRUE);
@@ -638,6 +632,7 @@ finish_compiling(gboolean success, CompilerData *data)
 	/* Free the compiler data object */
 	g_object_unref(data->input_file);
 	g_object_unref(data->builddir_file);
+	g_clear_object(&data->results_file);
 	g_slice_free(CompilerData, data);
 
 	/* Update */
