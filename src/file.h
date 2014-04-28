@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,5 +32,6 @@ gboolean make_directory_unless_exists(GFile *file, GCancellable *cancellable, GE
 gboolean file_exists_and_is_dir(GFile *file);
 gboolean file_exists_and_is_symlink(GFile *file);
 char *file_get_display_name(GFile *file);
+void file_set_custom_icon(GFile *file, const char *icon_name);
 
 #endif

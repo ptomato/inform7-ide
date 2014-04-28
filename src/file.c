@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -434,4 +434,25 @@ file_get_display_name(GFile *file)
 	retval = g_filename_display_basename(path);
 	g_free(path);
 	return retval;
+}
+
+/**
+ * file_set_custom_icon:
+ * @file: a #GFile.
+ * @icon_name: icon name to set (corresponds to a MIME type?)
+ *
+ * Sets a custom icon on @file; useful for folders, which do not get custom
+ * icons by default.
+ * Ignores errors and cannot be canceled, but prints a g_warning() on failure.
+ */
+void
+file_set_custom_icon(GFile *file, const char *icon_name)
+{
+	GError *error = NULL;
+	if(!g_file_set_attribute_string(file, "metadata::custom-icon-name", icon_name, G_FILE_QUERY_INFO_NONE, NULL, &error)) {
+		char *path = g_file_get_path(file);
+		g_warning(_("Error setting custom icon on file %s: %s"), path, error->message);
+		g_free(path);
+		g_error_free(error);
+	}
 }
