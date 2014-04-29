@@ -286,6 +286,31 @@ js_get_local_version(JSContextRef ctx, JSObjectRef function, JSObjectRef this_ob
 	return retval;
 }
 
+/* Helper function: Converts a library:/ URI to a real http:// URI, extracting
+other information from the URI. Assumes an id parameter is given and that it is
+the only (last?) query parameter. Unref return value when done */
+static GFile *
+library_uri_to_real_uri(const char *uri, char **author, char **title, char **id)
+{
+	if(id != NULL)
+		*id = g_strdup(strstr(uri, "?id=") + strlen("?id="));
+
+	char *path = g_strdup(uri + strlen("library:"));
+	char *real_uri = g_strconcat(PUBLIC_LIBRARY_URI, path, NULL);
+	g_free(path);
+	GFile *retval = g_file_new_for_uri(real_uri);
+	g_free(real_uri);
+
+	char **components = g_strsplit(uri, "/", 5); /* 0 = library:, 1 = payloads */
+	if(author != NULL)
+		*author = g_uri_unescape_string(components[2], NULL);
+	if(title != NULL)
+		*title = g_uri_unescape_string(components[3], NULL);
+	g_strfreev(components);
+
+	return retval;
+}
+
 /* ACTIONS */
 
 /* Go to the previously viewed pane in this panel */
@@ -1086,6 +1111,25 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		}
 		g_free(path);
 		g_free(anchor);
+
+	} else if(strcmp(scheme, "library") == 0) {
+		char *id, *author, *title;
+		GFile *remote_file = library_uri_to_real_uri(uri, &author, &title, &id);
+
+		I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+		gboolean success = i7_document_download_single_extension(doc, remote_file, author, title);
+
+		g_object_unref(remote_file);
+		g_free(author);
+		g_free(title);
+
+		if(success) {
+			/* Notify the Public Library that the download was OK */
+			char *script = g_strconcat("downloadSucceeded(", id, ");", NULL);
+			webkit_web_view_execute_script(webview, script);
+			g_free(script);
+		}
+		g_free(id);
 
 	} else
 		g_warning(_("Unrecognized protocol: %s\n"), scheme);

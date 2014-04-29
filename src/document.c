@@ -1203,3 +1203,61 @@ i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic)
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabstops), elastic);
 	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabstops(document, elastic);
 }
+
+/* Helper function: progress callback for downloading a single extension.
+Indicator appears in the progress bar on the bottom left of the document window. */
+static void
+single_download_progress(goffset current, goffset total, I7Document *self)
+{
+	if(current == total) {
+		i7_document_display_progress_message(self, _("Installing extension"));
+		i7_document_display_progress_percentage(self, 1.0);
+	} else {
+		i7_document_display_progress_message(self, _("Downloading extension"));
+		i7_document_display_progress_percentage(self, (double)current / total);
+	}
+	while(gtk_events_pending())
+		gtk_main_iteration();
+}
+
+/**
+ * i7_document_download_single_extension:
+ * @self: the document
+ * @remote_file: a #GFile pointing to the extension (real URI, not
+ * <code>library:/</code>)
+ * @author: display name of the extension's author
+ * @title: display name of the extension's title
+ *
+ * Instructs the view to display downloading a single extension; calls
+ * i7_app_download_extension() and takes care of all the GUI work that goes
+ * with it.
+ *
+ * Returns: %TRUE if the download succeeded, %FALSE if not.
+ */
+gboolean
+i7_document_download_single_extension(I7Document *self, GFile *remote_file, const char *author, const char *title)
+{
+	GError *error = NULL;
+	I7App *theapp = i7_app_get();
+
+	gboolean success = i7_app_download_extension(theapp, remote_file, NULL, (GFileProgressCallback)single_download_progress, self, &error);
+
+	i7_document_clear_progress(self);
+
+	if(!success) {
+		error_dialog(GTK_WINDOW(self), error, _("\"%s\" by %s could not be downloaded. The error was: %s"), title, author, error->message);
+		return FALSE;
+	}
+
+	char *version = i7_app_get_extension_version(theapp, author, title, NULL);
+	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+		_("Installation complete"));
+	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+		_("\"%s\" by %s (Version %s) has been installed successfully."), title, author, version);
+	g_free(version);
+
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+	return TRUE;
+}

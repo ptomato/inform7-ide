@@ -183,6 +183,8 @@ void i7_document_set_spellcheck(I7Document *document, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *document);
 void i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic);
 
+gboolean i7_document_download_single_extension(I7Document *document, GFile *remote_file, const char *author, const char *title);
+
 /* Search, document-search.c */
 gboolean i7_document_highlight_quicksearch(I7Document *document, const gchar *text, gboolean forward);
 void i7_document_unhighlight_quicksearch(I7Document *document);

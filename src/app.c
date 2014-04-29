@@ -39,6 +39,7 @@
 #define EXTENSION_HOME_PATH "Inform", "Documentation", "Extensions.html"
 #define EXTENSION_INDEX_PATH "Inform", "Documentation", "ExtIndex.html"
 #define EXTENSION_DOCS_BASE_PATH "Inform", "Documentation", "Extensions"
+#define EXTENSION_DOWNLOAD_TIMEOUT_S 15
 
 /* The singleton application class; should be derived from GtkApplication when
  porting to GTK 3. Contains the following global miscellaneous stuff:
@@ -662,6 +663,74 @@ finally:
 
 	/* Index the new extensions, in the foreground */
 	i7_app_run_census(app, TRUE);
+}
+
+/* Helper function: when a multiple extension download operation is cancelled,
+cancel the single current download. */
+static void
+propagate_cancel(GCancellable *cancellable, GCancellable *inner_cancellable)
+{
+	g_cancellable_cancel(inner_cancellable);
+}
+
+/* Helper function: called when a download is taking too long. */
+static gboolean
+cancel_extension_download(GCancellable *inner_cancellable)
+{
+	g_cancellable_cancel(inner_cancellable);
+	return G_SOURCE_REMOVE;
+}
+
+/**
+ * i7_app_download_extension:
+ * @app: the app
+ * @file: #GFile reference to a URI from which to download the extension
+ * @cancellable: (allow-none): #GCancellable which will stop the operation, or
+ * %NULL
+ * @progress_callback: (allow-none) (scope call): function to call with progress
+ * information, or %NULL
+ * @progress_callback_data: (closure): user data to pass to @progress_callback,
+ * or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Downloads an Inform 7 extension from @file and installs it.
+ * The download will automatically be cancelled if it takes more than a
+ * reasonable number of seconds (currently 15.)
+ *
+ * Returns: %TRUE if the download succeeded, %FALSE if not, in which case
+ * @error is set.
+ */
+gboolean
+i7_app_download_extension(I7App *app, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, gpointer progress_callback_data, GError **error)
+{
+	if(g_cancellable_set_error_if_cancelled(cancellable, error))
+		return FALSE;
+
+	/* Pick a location to download the file to */
+	GFile *downloads_area = g_file_new_for_path(g_get_user_cache_dir());
+	char *basename = g_file_get_basename(file);
+	GFile *destination_file = g_file_get_child(downloads_area, basename);
+	g_object_unref(downloads_area);
+	g_free(basename);
+
+	/* Break off the download after a suitable wait */
+	GCancellable *inner_cancellable = g_cancellable_new();
+	unsigned cancel_handler, timeout_handler;
+	if(cancellable != NULL)
+		cancel_handler = g_cancellable_connect(cancellable, G_CALLBACK(propagate_cancel), inner_cancellable, g_object_unref);
+	timeout_handler = g_timeout_add_seconds(EXTENSION_DOWNLOAD_TIMEOUT_S, (GSourceFunc)cancel_extension_download, inner_cancellable);
+
+	gboolean success = g_file_copy(file, destination_file, G_FILE_COPY_OVERWRITE, inner_cancellable, progress_callback, progress_callback_data, error);
+
+	g_source_remove(timeout_handler);
+	if(cancellable != NULL)
+		g_cancellable_disconnect(cancellable, cancel_handler);  /* unrefs inner_cancellable */
+
+	if(!success)
+		return FALSE;
+
+	i7_app_install_extension(app, destination_file);
+	return TRUE;
 }
 
 /* Helper function: iterate over authors in installed extensions @store, to see
