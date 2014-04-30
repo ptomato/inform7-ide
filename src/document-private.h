@@ -46,6 +46,12 @@ typedef struct {
 	GtkTreePath *current_heading;
 	/* The view with a search match currently being highlighted */
 	GtkWidget *highlighted_view;
+
+	/* Download counts */
+	unsigned downloads_completed;
+	unsigned downloads_total;
+	unsigned downloads_failed;
+	GCancellable *cancel_download;
 } I7DocumentPrivate;
 
 #define I7_DOCUMENT_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_DOCUMENT, I7DocumentPrivate))

@@ -16,6 +16,7 @@
  */
 
 #include <string.h>
+#include <math.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -309,6 +310,82 @@ library_uri_to_real_uri(const char *uri, char **author, char **title, char **id)
 	g_strfreev(components);
 
 	return retval;
+}
+
+static void
+on_download_finished(gboolean success, const char *id, WebKitWebView *webview)
+{
+	if(success) {
+		char *script = g_strconcat("downloadSucceeded(", id, ");", NULL);
+		webkit_web_view_execute_script(webview, script);
+		g_free(script);
+	}
+}
+
+static JSValueRef
+js_download_multi(JSContextRef ctx, JSObjectRef function, JSObjectRef this_object, size_t argument_count, const JSValueRef arguments[], JSValueRef *exception)
+{
+	I7Panel *panel = (I7Panel *)JSObjectGetPrivate(this_object);
+
+	if(argument_count != 1)
+		return NULL;
+
+	/* Trick to get array length in less code */
+	JSStringRef script_js = JSStringCreateWithUTF8CString("return arguments[0].length;");
+	JSObjectRef get_length = JSObjectMakeFunction(ctx, NULL, 0, NULL, script_js, NULL, 1, exception);
+	JSStringRelease(script_js);
+	JSValueRef length_js = JSObjectCallAsFunction(ctx, get_length, this_object, 1, (JSValueRef *)&arguments[0], exception);
+	if(length_js == NULL)
+		return NULL;
+	double length = JSValueToNumber(ctx, length_js, exception);
+	if(isnan(length))
+		return NULL;
+
+	JSObjectRef array = JSValueToObject(ctx, arguments[0], exception);
+	if(array == NULL)
+		return NULL;
+
+	/* Download the extensions one by one */
+	unsigned n_extensions = length / 3.0;
+	char **ids = g_new0(char *, n_extensions);
+	GFile **files = g_new0(GFile *, n_extensions);
+	char **authors = g_new0(char *, n_extensions);
+	char **titles = g_new0(char *, n_extensions);
+	char **versions = g_new0(char *, n_extensions);
+	unsigned ix;
+	for(ix = 0; ix < n_extensions; ix++) {
+		JSValueRef id_val = JSObjectGetPropertyAtIndex(ctx, array, 3 * ix, exception);
+		JSValueRef uri_val = JSObjectGetPropertyAtIndex(ctx, array, 3 * ix + 1, exception);
+		JSValueRef desc_val = JSObjectGetPropertyAtIndex(ctx, array, 3 * ix + 2, exception);
+		char *id = js_string_value_to_string(ctx, id_val, exception);
+		char *uri = js_string_value_to_string(ctx, uri_val, exception);
+		char *desc = js_string_value_to_string(ctx, desc_val, exception);
+		if(id == NULL || uri == NULL || desc == NULL)
+			goto finally;
+
+		ids[ix] = id;
+		files[ix] = library_uri_to_real_uri(uri, &authors[ix], &titles[ix], NULL);
+		versions[ix] = desc;
+		g_free(uri);
+	}
+
+	I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+	i7_document_download_multiple_extensions(doc, n_extensions, ids, files, authors, titles, versions, (I7DocumentExtensionDownloadCallback)on_download_finished, panel->tabs[I7_PANE_EXTENSIONS]);
+
+finally:
+	for(ix = 0; ix < n_extensions; ix++) {
+		g_free(ids[ix]);
+		g_object_unref(files[ix]);
+		g_free(authors[ix]);
+		g_free(titles[ix]);
+		g_free(versions[ix]);
+	}
+	g_free(ids);
+	g_free(files);
+	g_free(authors);
+	g_free(titles);
+	g_free(versions);
+	return NULL;
 }
 
 /* ACTIONS */
@@ -759,6 +836,7 @@ i7_panel_init(I7Panel *self)
 		{ "openUrl", js_open_url, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
 		{ "askInterfaceForLocalVersion", js_local_version_compare, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
 		{ "askInterfaceForLocalVersionText", js_get_local_version, kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly },
+		{ "downloadMultipleExtensions", js_download_multi, kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete },
 		{ NULL, NULL, 0 }
 	};
 	JSClassDefinition project_class_definition = {

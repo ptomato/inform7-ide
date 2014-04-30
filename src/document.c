@@ -69,6 +69,14 @@ on_findbar_close_clicked(GtkToolButton *button, I7Document *document)
 	i7_document_unhighlight_quicksearch(document);
 }
 
+void
+on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *self)
+{
+	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	if(response == GTK_RESPONSE_CANCEL)
+		g_cancellable_cancel(priv->cancel_download);
+}
+
 /* TYPE SYSTEM */
 
 G_DEFINE_TYPE(I7Document, i7_document, GTK_TYPE_WINDOW);
@@ -153,6 +161,10 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(search_files_documentation);
 	LOAD_WIDGET(search_files_ignore_case);
 	LOAD_WIDGET(search_files_find);
+	LOAD_WIDGET(multi_download_dialog);
+	gtk_window_set_transient_for(GTK_WINDOW(self->multi_download_dialog), GTK_WINDOW(self));
+	LOAD_WIDGET(download_label);
+	LOAD_WIDGET(download_progress);
 	LOAD_ACTION(priv->document_action_group, undo);
 	LOAD_ACTION(priv->document_action_group, redo);
 	LOAD_ACTION(priv->document_action_group, current_section_only);
@@ -1260,4 +1272,131 @@ i7_document_download_single_extension(I7Document *self, GFile *remote_file, cons
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
 	return TRUE;
+}
+
+/* Helper function: label text for downloads dialog. Free return value when done */
+char *
+format_download_label_text(unsigned completed, unsigned total, unsigned failed)
+{
+	if(failed > 0)
+		return g_strdup_printf(_("Installed %d of %d (%d failed)"), completed, total, failed);
+	return g_strdup_printf(_("Installed %d of %d"), completed, total);
+}
+
+/* Helper function: progress callback for downloading more than one extension.
+Indicator appears in a dialog box. */
+static void
+multi_download_progress(goffset current, goffset total, I7Document *self)
+{
+	I7_DOCUMENT_USE_PRIVATE(self, priv);
+
+	double current_fraction = (double)current / total;
+	double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->download_progress), total_fraction);
+
+	char *label = format_download_label_text(priv->downloads_completed, priv->downloads_total, priv->downloads_failed);
+	gtk_label_set_text(GTK_LABEL(self->download_label), label);
+	g_free(label);
+
+	while(gtk_events_pending())
+		gtk_main_iteration();
+}
+
+/**
+ * i7_document_download_multiple_extensions:
+ * @self: the document
+ * @n_extensions: the number of extensions to download
+ * @ids: (array length=n_extensions): string IDs of extensions to download, to
+ * be passed to @callback
+ * @remote_files: (array length=n_extensions): #GFile references to extensions
+ * to download (real URIs)
+ * @authors: (array length=n_extensions): author strings of extensions to
+ * download
+ * @titles: (array length=n_extensions): title strings of extensions to download
+ * @versions: (array length=n_extensions): version strings of extensions to
+ * download
+ * @callback: (scope call): function to be called after each download has
+ * succeeded or failed
+ * @data: (closure callback): user data for @callback
+ *
+ * Instructs the view to display downloading multiple extensions in sequence;
+ * calls i7_app_download_extension() and takes care of all the GUI work that
+ * goes with it.
+ *
+ * Calls @callback with a boolean value indicating the success of the download
+ * and the id from @ids of that particular download, every time a download
+ * succeeds or fails.
+ *
+ * If the operation is cancelled, @callback will not be called for the remaining
+ * downloads after that.
+ */
+void
+i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, gpointer data)
+{
+	GError *error = NULL;
+	I7App *theapp = i7_app_get();
+	I7_DOCUMENT_USE_PRIVATE(self, priv);
+
+	priv->cancel_download = g_cancellable_new();
+	priv->downloads_completed = 0;
+	priv->downloads_total = n_extensions;
+	priv->downloads_failed = 0;
+
+	char *label = format_download_label_text(0, priv->downloads_total, 0);
+	gtk_label_set_text(GTK_LABEL(self->download_label), label);
+	g_free(label);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->download_progress), 0.0);
+	gtk_widget_show_all(self->multi_download_dialog);
+	while(gtk_events_pending())
+		gtk_main_iteration();
+
+	unsigned ix;
+	GString *messages = g_string_new("");
+	for(ix = 0; ix < n_extensions; ix++) {
+		if(g_cancellable_is_cancelled(priv->cancel_download))
+			break;
+
+		gboolean success = i7_app_download_extension(theapp, remote_files[ix], priv->cancel_download, (GFileProgressCallback)multi_download_progress, self, &error);
+		callback(success, ids[ix], data);
+
+		if(success)
+			priv->downloads_completed++;
+		else {
+			priv->downloads_failed++;
+			g_string_append_printf(messages, _("The extension \"%s\" by %s "
+				"(%s) could not be downloaded. The server reported: %s.\n\n"),
+				titles[ix], authors[ix], versions[ix], error->message);
+			g_clear_error(&error);
+		}
+		multi_download_progress(0, 1, self);
+	}
+	char *text = g_string_free(messages, FALSE);
+	gtk_widget_hide(self->multi_download_dialog);
+	g_clear_object(&priv->cancel_download);
+
+	GtkWidget *dialog;
+	if(priv->downloads_failed > 0) {
+		dialog = gtk_message_dialog_new(GTK_WINDOW(self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE,
+			ngettext("%u extension installed successfully, %u failed.", "%u extensions installed successfully, %u failed.", priv->downloads_completed),
+			priv->downloads_completed, priv->downloads_failed);
+		GtkWidget *area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+		GtkWidget *sw = gtk_scrolled_window_new(NULL, NULL);
+		gtk_widget_set_size_request(sw, -1, 200);
+		GtkWidget *view = gtk_text_view_new();
+		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(view), GTK_WRAP_WORD_CHAR);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
+		gtk_text_buffer_set_text(buffer, text, -1);
+		gtk_container_add(GTK_CONTAINER(sw), view);
+		gtk_box_pack_start(GTK_BOX(area), sw, TRUE, TRUE, 6);
+	} else {
+		dialog = gtk_message_dialog_new(GTK_WINDOW(self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
+			ngettext("%u extension installed successfully.", "%u extensions installed successfully.", priv->downloads_completed),
+			priv->downloads_completed);
+	}
+	g_free(text);
+	gtk_widget_show_all(dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
 }
