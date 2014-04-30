@@ -658,16 +658,39 @@ get_iter_for_author(GtkTreeModel *store, const char *author, GtkTreeIter *iter)
 	gboolean found = FALSE;
 	if(gtk_tree_model_get_iter_first(store, iter)) {
 		do {
-			char *found_author;
+			char *found_author, *author_nocase, *found_author_nocase;
 			gtk_tree_model_get(store, iter, I7_APP_EXTENSION_TEXT, &found_author, -1);
-			if(strcmp(author, found_author) == 0)
-				found = TRUE;
+			author_nocase = g_utf8_casefold(author, -1);
+			found_author_nocase = g_utf8_casefold(found_author, -1);
 			g_free(found_author);
+			if(strcmp(author_nocase, found_author_nocase) == 0)
+				found = TRUE;
+			g_free(author_nocase);
+			g_free(found_author_nocase);
 			if(found)
 				break;
 		} while(gtk_tree_model_iter_next(store, iter));
 	}
 	return found;
+}
+
+/* Helper function: remove "(for X only)" from extension title. Free return
+value when done. */
+static char *
+remove_machine_spec_from_title(const char *title)
+{
+	if(!g_str_has_suffix(title, " only)"))
+		return NULL;
+	char *workstring = g_strdup(title);
+	char *open_paren = strrchr(workstring, '(');
+	if(open_paren == NULL) {
+		g_free(workstring);
+		return NULL;
+	}
+	*open_paren = '\0';
+	char *retval = pango_trim_string(workstring);
+	g_free(workstring);
+	return retval;
 }
 
 /* Helper function: iterate over extensions by author pointed to by @parent_iter
@@ -680,11 +703,31 @@ get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter
 	gboolean found = FALSE;
 	if(gtk_tree_model_iter_children(store, iter, parent_iter)) {
 		do {
-			char *found_title;
+			char *found_title, *title_nocase, *found_title_nocase;
 			gtk_tree_model_get(store, iter, I7_APP_EXTENSION_TEXT, &found_title, -1);
-			if(strcmp(title, found_title) == 0)
-				found = TRUE;
+			title_nocase = g_utf8_casefold(title, -1);
+			found_title_nocase = g_utf8_casefold(found_title, -1);
 			g_free(found_title);
+			if(strcmp(title_nocase, found_title_nocase) == 0) {
+				found = TRUE;
+			} else if(g_str_has_prefix(title_nocase, found_title_nocase) || g_str_has_prefix(found_title_nocase, title_nocase)) {
+				char *canonical_title = remove_machine_spec_from_title(title_nocase);
+				char *canonical_found_title = remove_machine_spec_from_title(found_title_nocase);
+				if(canonical_title != NULL || canonical_found_title != NULL) {
+					if(canonical_title != NULL) {
+						g_free(title_nocase);
+						title_nocase = canonical_title;
+					}
+					if(canonical_found_title != NULL) {
+						g_free(found_title_nocase);
+						found_title_nocase = canonical_found_title;
+					}
+					if(strcmp(title_nocase, found_title_nocase) == 0)
+						found = TRUE;
+				}
+			}
+			g_free(title_nocase);
+			g_free(found_title_nocase);
 			if(found)
 				break;
 		} while(gtk_tree_model_iter_next(store, iter));
