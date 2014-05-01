@@ -18,14 +18,11 @@ EXTRA_DIST = \
 	intltool-update.in \
 	intltool-extract.in \
 	intltool-merge.in \
-	gnome-inform7.spec.in \
 	$(gsettings_SCHEMAS)
 
 if BUILDING_RPM
 EXTRA_DIST += gnome-inform7.spec
 endif
-
-DISTCLEANFILES = gnome-inform7.spec
 
 MAINTAINERCLEANFILES = \
 	ABOUT-NLS INSTALL config.rpath m4 \
@@ -38,6 +35,7 @@ if BUILDING_RPM
 RPMDIR=`$(RPM) --eval %_rpmdir`
 SRCRPMDIR=`$(RPM) --eval %_srcrpmdir`
 RPMARCH=`$(RPM) --eval %_target_cpu`
+RPM_RELEASE=`$(EGREP) ^Release: <gnome-inform7.spec | cut -f2 -d " "`
 BINRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
 DEBUGRPM = $(PACKAGE)-debuginfo-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
 SRCRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).src.rpm

@@ -1,25 +1,21 @@
-# @configure_input@
 #
 # Spec file for GNOME Inform 7
 #
 
 Name: gnome-inform7
-Version: @PACKAGE_VERSION@
-Release: @RPM_RELEASE@
+Version: 6L02
+Release: 1.fc20
 
 URL: http://inform7.com/
 License: GPLv3
 
 Group: Development/Languages
-Source: gnome-inform7-@PACKAGE_VERSION@.tar.gz
-# Packager: P. F. Chimento <philip.chimento@gmail.com>
+Source: http://inform7.com/download/content/6L02/gnome-inform7-6L02.tar.gz
 
 # Build requirements:
-# For building manuals
-BuildRequires: texlive
-BuildRequires: graphviz
 # Extra build tools
 BuildRequires: intltool
+BuildRequires: gettext
 BuildRequires: pkgconfig
 BuildRequires: xz-lzma-compat
 # Library devel packages:
@@ -30,12 +26,12 @@ BuildRequires: gtksourceview2-devel
 BuildRequires: gtkspell-devel
 BuildRequires: webkitgtk-devel
 BuildRequires: goocanvas-devel
+BuildRequires: gstreamer1-devel
+BuildRequires: gstreamer1-plugins-base
+BuildRequires: gstreamer1-plugins-good
+BuildRequires: gstreamer1-plugins-bad-free
+BuildRequires: gstreamer1-plugins-bad-free-extras
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-BuildRequires: GConf2
-Requires(pre): GConf2
-Requires(post): GConf2
-Requires(preun): GConf2
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
 
@@ -48,35 +44,30 @@ language for writing interactive fiction (also known as text adventures.)
 %setup -q
 
 %build
-%configure --enable-manuals
+%configure --enable-manuals --with-sound=gstreamer
 make
-
-%pre
-%gconf_schema_prepare gnome-inform7
 
 %install
 rm -rf %{buildroot}
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make install DESTDIR=%{buildroot}
-unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 # Clean out files that should not be part of the rpm.
 %{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
 
 %post
-%gconf_schema_upgrade gnome-inform7
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%preun
-%gconf_schema_remove gnome-inform7
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+/usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
 
 %postun
 if [ $1 -eq 0 ] ; then
-    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 fi
+/usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
 
 %posttrans
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %clean
 rm -rf %{buildroot}
@@ -90,7 +81,6 @@ rm -rf %{buildroot}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
 %{_datadir}/applications/%{name}.desktop
-%{_sysconfdir}/gconf/schemas/%{name}.schemas
 %{pkgdocdir}/AUTHORS 
 %{pkgdocdir}/ChangeLog 
 %{pkgdocdir}/COPYING 
@@ -100,33 +90,42 @@ rm -rf %{buildroot}
 %{pkgdocdir}/TODO
 %{pkgdatadir}/uninstall_manifest.txt
 %{pkgdatadir}/Documentation/*.html
-%{pkgdatadir}/Documentation/*.png
-%{pkgdatadir}/Documentation/*.gif
+%{pkgdatadir}/Documentation/*.css
 %{pkgdatadir}/Documentation/manifest.txt
-%{pkgdatadir}/Documentation/doc_images/*.png
-%{pkgdatadir}/Documentation/doc_images/*.jpg
-%{pkgdatadir}/Documentation/doc_images/*.tif
-%{pkgdatadir}/Documentation/map_icons/*.png
-%{pkgdatadir}/Documentation/scene_icons/*.png
-%{pkgdatadir}/Documentation/Sections/*.html
-%{pkgdatadir}/Extensions/David*Fisher/English.i7x
+%{pkgdatadir}/Resources/bg_images/*.png
+%{pkgdatadir}/Resources/bg_images/*.gif
+%{pkgdatadir}/Resources/doc_images/*.png
+%{pkgdatadir}/Resources/doc_images/*.jpg
+%{pkgdatadir}/Resources/doc_images/*.tif
+%{pkgdatadir}/Resources/map_icons/*.png
+%{pkgdatadir}/Resources/outcome_images/*.png
+%{pkgdatadir}/Resources/scene_icons/*.png
+%{pkgdatadir}/Resources/Welcome*Background.png
+%{pkgdatadir}/Resources/en/*.html
 %{pkgdatadir}/Extensions/Emily*Short/*.i7x
 %{pkgdatadir}/Extensions/Eric*Eve/Epistemology.i7x
 %{pkgdatadir}/Extensions/Graham*Nelson/*.i7x
 %{pkgdatadir}/Extensions/Reserved/*.i6t
 %{pkgdatadir}/Extensions/Reserved/*.jpg
 %{pkgdatadir}/Extensions/Reserved/*.html
-%{pkgdatadir}/Extensions/Reserved/IntroductionToIF.pdf
+%{pkgdatadir}/Extensions/Reserved/*.pdf
 %{pkgdatadir}/Extensions/Reserved/Templates/Classic/*.html
 %{pkgdatadir}/Extensions/Reserved/Templates/Standard/*.html
 %{pkgdatadir}/Extensions/Reserved/Templates/Standard/style.css
 %{pkgdatadir}/Extensions/Reserved/Templates/Parchment/*.js
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/parchment.css
+%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/*.css
 %{pkgdatadir}/Extensions/Reserved/Templates/Parchment/(manifest).txt
 %{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.js
 %{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.css
 %{pkgdatadir}/Extensions/Reserved/Templates/Quixe/waiting.gif
 %{pkgdatadir}/Extensions/Reserved/Templates/Quixe/(manifest).txt
+%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/*.js
+%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/vorple.css
+%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/soundmanager2.swf
+%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/(manifest).txt
+%{pkgdatadir}/Extensions/Reserved/Languages/English/Syntax.preform
+%{pkgdatadir}/Extensions/Reserved/Languages/*/about.txt
+%{pkgdatadir}/Extensions/Reserved/Languages/*/flag.png
 %{pkgdatadir}/languages/*.lang
 %{pkgdatadir}/Documentation/licenses/*.html
 %{pkgdatadir}/styles/*.xml
@@ -134,13 +133,23 @@ rm -rf %{buildroot}
 %{pkgdatadir}/ui/*.xml
 %{_datadir}/icons/hicolor/*/actions/inform7-builtin.png
 %{_datadir}/icons/hicolor/*/apps/inform7.png
+%{_datadir}/icons/hicolor/*/emblems/inform7-materials.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-materials.png
+%{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-skein+xml.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform-extension.png
+%{_datadir}/icons/hicolor/*/mimetypes/text-x-blurb.png
+%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
+%{_datadir}/mime/packages/inform7.xml
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
+%lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/%{name}.mo
 %{_bindir}/gnome-inform7
 %{pkglibexecdir}/cBlorb
-%{pkgdocdir}/cBlorb/Complete.pdf
+%{pkgdocdir}/cBlorb/Complete.html
+%{pkgdocdir}/cBlorb/crumbs.gif
+%{pkgdocdir}/cBlorb/inweb.css
 %{pkglibdir}/frotz.so
 %{pkgdocdir}/frotz/AUTHORS
 %{pkgdocdir}/frotz/COPYING
@@ -150,12 +159,14 @@ rm -rf %{buildroot}
 %{pkgdocdir}/git/README.txt
 %{pkglibdir}/glulxe.so
 %{pkgdocdir}/glulxe/README
-%{pkglibexecdir}/inform-6.32-biplatform
-%{pkgdocdir}/inform6/readme.txt
+%{pkglibexecdir}/inform6
+%{pkgdocdir}/inform6/*.txt
 %{pkgdocdir}/inform6/ReleaseNotes.html
 %{pkglibexecdir}/ni
 
 %changelog
+* Wed May 7 2014 Philip Chimento <philip.chimento@gmail.com> - 6L02-1
+- Repackaged to Build 6L02.
 * Sun Feb 12 2012 P. F. Chimento <philip.chimento@gmail.com>
 - Changed 'lzma' requirement to 'xz-lzma-compat'.
 * Wed Jan 12 2011 P.F. Chimento <philip.chimento@gmail.com>
@@ -180,7 +191,7 @@ rm -rf %{buildroot}
 - Added the gtkterp-git binary to the packing list.
 * Sat Dec 6 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Repackaged to release .1 of Public Beta Build 5U92.
-* Sun Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
+* Sun Sep 14 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Added scriptlets for GConf2 schemas processing.
 * Fri Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Updated to Public Beta Build 5U92.

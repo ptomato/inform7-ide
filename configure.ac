@@ -101,10 +101,6 @@ AC_ARG_ENABLE([manuals],
 AM_CONDITIONAL([MANUALS], [$TEST "x$enable_manuals" != xno])
 AM_CONDITIONAL([MANUALS_SECTIONS], [$TEST "x$enable_manuals" = xsections])
 
-# The user can specify the RPM release number in the environment (e.g. '1.fc10')
-AC_ARG_VAR([RPM_RELEASE], [Release number to build RPMs with [1]])
-AS_IF([$TEST "x$RPM_RELEASE" = x], [RPM_RELEASE=1])
-
 ### DECLARE PROGRAMS ##########################################################
 
 # Programs that Autoconf has built-in checks for
@@ -304,7 +300,6 @@ AC_CONFIG_HEADERS([config.h])
 # List of other files for Autoconf to output
 AC_CONFIG_FILES([
 Makefile
-gnome-inform7.spec
 src/Makefile
 src/inform6/Makefile
 src/inwebc/Makefile
