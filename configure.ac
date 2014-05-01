@@ -205,7 +205,7 @@ PKG_CHECK_EXISTS([webkit-1.0 >= 1.6.0],
 PKG_CHECK_MODULES([INFORM7], [
 	gdk-2.0 >= 2.2
 	glib-2.0 >= 2.32
-	gtk+-2.0 >= 2.20
+	gtk+-2.0 >= 2.24
 	gio-2.0 >= 2.30
 	gtksourceview-2.0 >= 2.2
 	webkit-1.0 >= 1.0
