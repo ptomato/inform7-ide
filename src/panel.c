@@ -636,6 +636,16 @@ on_public_library_load_notify(WebKitWebView *html, GParamSpec *pspec, GtkAction 
 	g_signal_handlers_disconnect_by_func(html, on_public_library_load_notify, action);
 }
 
+/* Helper function: load the "disconnected" page if an error occurred */
+static gboolean
+on_public_library_load_error(WebKitWebView *html, WebKitWebFrame *frame, char *uri, GError *web_error)
+{
+	GFile *pl404 = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "pl404.html", NULL);
+	html_load_file(html, pl404);
+	g_object_unref(pl404);
+	return TRUE; /* event handled */
+}
+
 /* Signal handler for the action connected to the "Public Library" button in the
 panel toolbar when the Extensions panel is displayed. Displays the Inform public
 extensions library website. */
@@ -650,6 +660,7 @@ action_public_library(GtkAction *action, I7Panel *panel)
 	gtk_action_set_sensitive(action, FALSE);
 	i7_app_set_busy(i7_app_get(), TRUE);
 	g_signal_connect(html, "notify::load-status", G_CALLBACK(on_public_library_load_notify), action);
+	g_signal_connect(html, "load-error", G_CALLBACK(on_public_library_load_error), NULL);
 
 	webkit_web_view_open(html, PUBLIC_LIBRARY_URI);
 }
