@@ -641,9 +641,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 
 	/* Connect other signals and properties */
 	g_signal_connect(panel->sourceview->heading_depth, "value-changed", G_CALLBACK(on_heading_depth_value_changed), self);
-	g_signal_connect(panel->z5, "toggled", G_CALLBACK(on_z5_button_toggled), self);
 	g_signal_connect(panel->z8, "toggled", G_CALLBACK(on_z8_button_toggled), self);
-	g_signal_connect(panel->z6, "toggled", G_CALLBACK(on_z6_button_toggled), self);
 	g_signal_connect(panel->glulx, "toggled", G_CALLBACK(on_glulx_button_toggled), self);
 	g_object_bind_property(self, "create-blorb", panel->blorb, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 	g_object_bind_property(self, "nobble-rng", panel->nobble_rng, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
@@ -850,8 +848,6 @@ i7_story_init(I7Story *self)
 		i7_story_add_debug_tabs(I7_DOCUMENT(self));
 
 	/* Connect the widgets on the Settings pane to the settings properties */
-	g_object_bind_property(self->panel[LEFT]->z5, "active", self->panel[RIGHT]->z5, "active", G_BINDING_BIDIRECTIONAL);
-	g_object_bind_property(self->panel[LEFT]->z6, "active", self->panel[RIGHT]->z6, "active", G_BINDING_BIDIRECTIONAL);
 	g_object_bind_property(self->panel[LEFT]->z8, "active", self->panel[RIGHT]->z8, "active", G_BINDING_BIDIRECTIONAL);
 	g_object_bind_property(self->panel[LEFT]->glulx, "active", self->panel[RIGHT]->glulx, "active", G_BINDING_BIDIRECTIONAL);
 	g_signal_connect(self, "notify::story-format", G_CALLBACK(on_notify_story_format), NULL);
@@ -1145,6 +1141,15 @@ i7_story_open(I7Story *story, GFile *file)
 			"Using default settings."));
 	}
 	g_object_unref(settings_file);
+
+	/* Silently convert old Z5 or Z6 projects to Z8 */
+	PlistObject *story_format = plist_object_lookup(priv->settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
+	if(story_format) {
+		int format = plist_object_get_integer(story_format);
+		if(format == I7_STORY_FORMAT_Z5 || I7_STORY_FORMAT_Z6)
+			plist_object_set_integer(story_format, I7_STORY_FORMAT_Z8);
+	}
+
 	/* Update the GUI with the new settings */
 	g_object_notify(G_OBJECT(story), "story-format");
 	g_object_notify(G_OBJECT(story), "create-blorb");
@@ -1357,14 +1362,12 @@ const gchar *
 i7_story_get_extension(I7Story *story)
 {
 	switch(i7_story_get_story_format(story)) {
-		case I7_STORY_FORMAT_Z5:
-			return "z5";
-		case I7_STORY_FORMAT_Z6:
-			return "z6";
 		case I7_STORY_FORMAT_Z8:
 			return "z8";
 		case I7_STORY_FORMAT_GLULX:
 			return "ulx";
+		default:
+			;
 	}
 	g_assert_not_reached();
 	return "error";

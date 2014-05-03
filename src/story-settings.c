@@ -72,22 +72,6 @@ create_default_settings()
 }
 
 void
-on_z5_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	if(value)
-		i7_story_set_story_format(story, I7_STORY_FORMAT_Z5);
-}
-
-void
-on_z6_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	if(value)
-		i7_story_set_story_format(story, I7_STORY_FORMAT_Z6);
-}
-
-void
 on_z8_button_toggled(GtkToggleButton *button, I7Story *story)
 {
 	gboolean value = gtk_toggle_button_get_active(button);
@@ -108,12 +92,6 @@ void
 on_notify_story_format(I7Story *story)
 {
 	switch(i7_story_get_story_format(story)) {
-		case I7_STORY_FORMAT_Z5:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z5), TRUE);
-			break;
-		case I7_STORY_FORMAT_Z6:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z6), TRUE);
-			break;
 		case I7_STORY_FORMAT_GLULX:
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->glulx), TRUE);
 			break;

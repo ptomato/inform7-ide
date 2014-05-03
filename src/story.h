@@ -30,8 +30,8 @@
 #include "skein.h"
 
 typedef enum {
-	I7_STORY_FORMAT_Z5 = 5,
-	I7_STORY_FORMAT_Z6 = 6,
+	I7_STORY_FORMAT_Z5 = 5,  /* deprecated, only used in old projects */
+	I7_STORY_FORMAT_Z6 = 6,  /* ditto */
 	I7_STORY_FORMAT_Z8 = 8,
 	I7_STORY_FORMAT_GLULX = 256
 } I7StoryFormat;
@@ -105,8 +105,6 @@ void i7_story_reload_index_tabs(I7Story *story, gboolean wait);
 
 /* Settings pane, story-settings.c */
 PlistObject *create_default_settings(void);
-void on_z5_button_toggled(GtkToggleButton *togglebutton, I7Story *story);
-void on_z6_button_toggled(GtkToggleButton *togglebutton, I7Story *story);
 void on_z8_button_toggled(GtkToggleButton *togglebutton, I7Story *story);
 void on_glulx_button_toggled(GtkToggleButton *togglebutton, I7Story *story);
 void on_notify_story_format(I7Story *story);

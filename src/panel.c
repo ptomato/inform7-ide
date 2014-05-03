@@ -748,8 +748,6 @@ i7_panel_init(I7Panel *self)
 	gtk_widget_show(game);
 	GtkWidget *gamelabel = GTK_WIDGET(load_object(builder, "story_pane_label"));
 	gtk_notebook_insert_page(GTK_NOTEBOOK(self->notebook), game, gamelabel, I7_PANE_STORY);
-	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z5, CHIMARA_IF_INTERPRETER_FROTZ);
-	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z6, CHIMARA_IF_INTERPRETER_FROTZ);
 	chimara_if_set_preferred_interpreter(CHIMARA_IF(game), CHIMARA_IF_FORMAT_Z8, CHIMARA_IF_INTERPRETER_FROTZ);
 	ChimaraIFInterpreter glulx_interpreter =
 	    g_settings_get_enum(prefs, PREFS_INTERPRETER) == INTERPRETER_GIT ? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
@@ -773,9 +771,7 @@ i7_panel_init(I7Panel *self)
 	    NULL);
 	
 	/* Save public pointers to specific widgets */
-	LOAD_WIDGET(z5);
 	LOAD_WIDGET(z8);
-	LOAD_WIDGET(z6);
 	LOAD_WIDGET(glulx);
 	LOAD_WIDGET(blorb);
 	LOAD_WIDGET(nobble_rng);

@@ -370,12 +370,6 @@ get_i6_compiler_switches(gboolean use_debug_flags, int format)
 	case I7_STORY_FORMAT_GLULX:
 		version_switches = g_strdup("G");
 		break;
-	case I7_STORY_FORMAT_Z5:
-		version_switches = g_strdup("v5");
-		break;
-	case I7_STORY_FORMAT_Z6:
-		version_switches = g_strdup("v6");
-		break;
 	case I7_STORY_FORMAT_Z8:
 	default:
 		version_switches = g_strdup("v8");

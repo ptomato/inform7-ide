@@ -195,6 +195,7 @@ delete_build_files(I7Story *story)
 		delete_from_project_dir(story, storyname, "Build", "auto.inf");
 		delete_from_project_dir(story, storyname, "Build", "Debug log.txt");
 		delete_from_project_dir(story, storyname, "Build", "Map.eps");
+		/* output.z5 and .z6 are not created, but may be present in old projects */
 		delete_from_project_dir(story, storyname, "Build", "output.z5");
 		delete_from_project_dir(story, storyname, "Build", "output.z6");
 		delete_from_project_dir(story, storyname, "Build", "output.z8");
