@@ -459,8 +459,11 @@ i7_story_save_as(I7Document *document, GFile *file)
 	/* Set the folder icon to be the Inform 7 project icon */
 	file_set_custom_icon(file, "application-x-inform");
 	GFile *materials_file = i7_story_get_materials_file(I7_STORY(document));
-	if(file_exists_and_is_dir(materials_file))
-		file_set_custom_icon(materials_file, "application-x-inform-materials");
+	if(file_exists_and_is_dir(materials_file)) {
+		/* Use normal folder icon */
+		file_set_custom_icon(materials_file, NULL);
+		file_set_emblem(materials_file, "inform7-materials");
+	}
 	g_object_unref(materials_file);
 
 	i7_document_set_modified(document, FALSE);

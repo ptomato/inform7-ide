@@ -440,7 +440,7 @@ file_get_display_name(GFile *file)
 /**
  * file_set_custom_icon:
  * @file: a #GFile.
- * @icon_name: icon name to set (corresponds to a MIME type?)
+ * @icon_name: (allow-none): icon name to set (corresponds to a MIME type?)
  *
  * Sets a custom icon on @file; useful for folders, which do not get custom
  * icons by default.
@@ -450,9 +450,37 @@ void
 file_set_custom_icon(GFile *file, const char *icon_name)
 {
 	GError *error = NULL;
-	if(!g_file_set_attribute_string(file, "metadata::custom-icon-name", icon_name, G_FILE_QUERY_INFO_NONE, NULL, &error)) {
+	gboolean success;
+
+	if(icon_name == NULL)
+		success = g_file_set_attribute(file, "metadata::custom-icon-name", G_FILE_ATTRIBUTE_TYPE_INVALID, NULL, G_FILE_QUERY_INFO_NONE, NULL, &error);
+	else
+		success = g_file_set_attribute_string(file, "metadata::custom-icon-name", icon_name, G_FILE_QUERY_INFO_NONE, NULL, &error);
+
+	if(!success) {
 		char *path = g_file_get_path(file);
 		g_warning(_("Error setting custom icon on file %s: %s"), path, error->message);
+		g_free(path);
+		g_error_free(error);
+	}
+}
+
+/**
+ * file_set_emblem:
+ * @file: a #GFile.
+ * @icon_name: icon name to set as emblem.
+ *
+ * Sets an emblem (badge) on @file.
+ * Ignores errors and cannot be canceled, but prints a g_warning() on failure.
+ */
+void
+file_set_emblem(GFile *file, const char *icon_name)
+{
+	GError *error = NULL;
+	const char *names[] = { icon_name, NULL };
+	if(!g_file_set_attribute(file, "metadata::emblems", G_FILE_ATTRIBUTE_TYPE_STRINGV, names, G_FILE_QUERY_INFO_NONE, NULL, &error)) {
+		char *path = g_file_get_path(file);
+		g_warning(_("Error settting emblem on file %s: %s"), path, error->message);
 		g_free(path);
 		g_error_free(error);
 	}

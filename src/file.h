@@ -33,5 +33,6 @@ gboolean file_exists_and_is_dir(GFile *file);
 gboolean file_exists_and_is_symlink(GFile *file);
 char *file_get_display_name(GFile *file);
 void file_set_custom_icon(GFile *file, const char *icon_name);
+void file_set_emblem(GFile *file, const char *icon_name);
 
 #endif
