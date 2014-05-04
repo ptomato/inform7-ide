@@ -47,7 +47,7 @@ error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...)
 		  parent? GTK_DIALOG_DESTROY_WITH_PARENT : 0,
 		  GTK_MESSAGE_ERROR,
 		  GTK_BUTTONS_OK,
-		  message);
+		  "%s", message);
 
 	/* WTF doesn't gtk_dialog_run() do this anymore? */
 	gtk_widget_show(dialog);
