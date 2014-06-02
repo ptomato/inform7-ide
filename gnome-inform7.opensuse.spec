@@ -2,6 +2,7 @@
 # Spec file for GNOME Inform 7 on OpenSUSE. Rename to gnome-inform7.spec.
 #
 # Copyright (c) 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>
+# Copyright (c) 2014 Vincent Petry <pvince81@opensuse.org>
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -16,29 +17,38 @@
 #
 
 Name:           gnome-inform7
-Version:        6G60
+Version:        6L02
 Release:        0
 License:        GPL-3.0
 Summary:        Inform 7 interactive fiction programming language IDE
 Url:            http://inform7.com/
 Group:          Development/Languages/Other
-Source0:        http://voxel.dl.sourceforge.net/project/gnome-inform7/gnome-inform7/6G60/I7_6G60_GNOME_Source.tar.gz
-Source1:        http://inform7.com/download/content/6G60/I7_6G60_Linux_all.tar.gz
+Source0:        http://downloads.sourceforge.net/%{name}/%{name}/Gnome_UI_source_%{version}.tar.gz
+Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Linux_all.tar.gz
 BuildRequires:  fdupes
-BuildRequires:  goocanvas-devel
+BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
-BuildRequires:  gtksourceview-devel
+BuildRequires:  gtksourceview2-devel
 BuildRequires:  gtkspell-devel
 BuildRequires:  intltool
 BuildRequires:  libwebkitgtk-devel
 BuildRequires:  lzma
 BuildRequires:  pkgconfig
 BuildRequires:  texlive
+BuildRequires:  libuuid-devel
 BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(gconf-2.0)
 BuildRequires:  pkgconfig(gtk+-2.0)
 BuildRequires:  pkgconfig(libxml-2.0)
-Recommends:     %{name}-lang = %{version}
+BuildRequires:  gstreamer-devel >= 1.2
+BuildRequires:  gstreamer-plugins-base >= 1.2
+BuildRequires:  gstreamer-plugins-good >= 1.2
+BuildRequires:  gstreamer-plugins-bad >= 1.2
+# Required by autogen.sh
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  libtool
+#Recommends:     %{name}-lang = %{version}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %lang_package
 
@@ -51,6 +61,10 @@ adventures.).
 %prep
 %setup -q
 %setup -T -D -a 1
+
+# Remove git update rows from autogen.sh
+sed -i -e '/^git .*/d' autogen.sh
+
 cd inform7-%{version}
 %ifarch x86_64
 tar xvf inform7-compilers_%{version}_x86_64.tar.gz
@@ -62,36 +76,32 @@ cp share/inform7/Compilers/ni ../src/ni/
 cd ..
 
 %build
-%configure --enable-manuals
-make CFLAGS="$CFLAGS -fno-strict-aliasing " %{?_smp_mflags}
+# need to run autogen.sh to make it find gstreamer 1.2
+./autogen.sh
+%configure --prefix=%{_prefix} --enable-manuals --with-sound=gstreamer
+make %{?_smp_mflags}
 
 %install
 %make_install
 find %{buildroot} -type f -name "*.la" -delete -print
 %suse_update_desktop_file %{buildroot}%{_datadir}/applications/gnome-inform7.desktop
 %find_lang %{name}
-%find_gconf_schemas
-cat %{name}.schemas_list >%{name}.lst
 %fdupes %{buildroot}
-
-%pre -f %{name}.schemas_pre
 
 %post
 %desktop_database_post
 %icon_theme_cache_post
-
-%posttrans -f %{name}.schemas_posttrans
+%glib2_gsettings_schema_post
 
 %postun
 %desktop_database_postun
 %icon_theme_cache_post
-
-%preun -f %{name}.schemas_preun
+%glib2_gsettings_schema_postun
 
 %clean
 %{?buildroot:rm -rf %{buildroot}}
 
-%files -f %{name}.lst
+%files -f %{name}.lang
 %defattr(-,root,root)
 %{_bindir}/%{name}
 %{_libdir}/%{name}
@@ -101,11 +111,15 @@ cat %{name}.schemas_list >%{name}.lst
 %{_datadir}/applications/gnome-inform7.desktop
 %doc %{_datadir}/doc/%{name}
 %{_datadir}/%{name}
+%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
 %{_datadir}/icons/hicolor/*/*
+%{_datadir}/mime/packages/inform7.xml
 
-%files lang -f %{name}.lang
+#%files lang -f %{name}.lang
 
 %changelog
+* Sun Jun 1 2014 Vincent Petry <pvince81@opensuse.org>
+- Updated spec for version 6L02
 * Mon Oct 10 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>
 - Rewrote spec file.
 * Mon Nov 1 2010 P.F. Chimento <philip.chimento@gmail.com>
@@ -122,7 +136,7 @@ cat %{name}.schemas_list >%{name}.lst
 - Added the gtkterp-git binary to the packing list.
 * Sat Dec 6 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Repackaged to release .1 of Public Beta Build 5U92.
-* Sun Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
+* Sun Sep 14 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Added scriptlets for GConf2 schemas processing.
 * Fri Sep 12 2008 P.F. Chimento <philip.chimento@gmail.com>
 - Updated to Public Beta Build 5U92.
