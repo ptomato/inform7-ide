@@ -5,7 +5,7 @@
 # Initialize autoconf
 # Args: (human-readable package name, package version, bug report address,
 # tarballname)
-AC_INIT([Inform 7], [6L02], [http://inform7.com/mantis], [gnome-inform7])
+AC_INIT([Inform 7], [6L38], [http://inform7.com/mantis], [gnome-inform7])
 # Require Autoconf 2.64; I think the newest feature is m4_map_args_w...
 AC_PREREQ([2.64])
 # Sanity check to make sure we are running Autoconf from the right directory
