@@ -126,7 +126,7 @@ rm -rf %{buildroot}
 %{pkgdatadir}/Extensions/Reserved/Languages/English/Syntax.preform
 %{pkgdatadir}/Extensions/Reserved/Languages/*/about.txt
 %{pkgdatadir}/Extensions/Reserved/Languages/*/flag.png
-%{pkgdatadir}/languages/*.lang
+%{pkgdatadir}/highlighting/*.lang
 %{pkgdatadir}/Documentation/licenses/*.html
 %{pkgdatadir}/styles/*.xml
 %{pkgdatadir}/ui/*.ui
