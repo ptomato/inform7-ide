@@ -131,7 +131,7 @@ will not work.
 void expand_COVER_variable(FILE *COPYTO) {
 	if (cover_exists) {
 		char *format = "png"; if (cover_is_in_JPEG_format) format = "jpg";
-		fprintf(COPYTO, "<a href=\"Cover.%s\"><img src=\"Small Cover.%s\" border=\"1\" /></a>",
+		fprintf(COPYTO, "<a href=\"Cover.%s\"><img src=\"Small Cover.%s\" border=\"1\"></a>",
 			format, format);
 	}
 }

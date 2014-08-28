@@ -205,7 +205,7 @@ void close_code_paragraph(FILE *write_to) {
 	if (use_css_code_styles) {
 		fprintf(write_to, "</p>");
 	} else {
-		fprintf(write_to, "<br/>");
+		fprintf(write_to, "<br>");
 	}
 }
 
@@ -1034,7 +1034,7 @@ void typeset_contents_listing(int source_contents) {
 			new_level = h->heading_level;
 			if (h->heading_level == EXAMPLE_LEVEL) new_level = DOC_CHAPTER_LEVEL;
 			@<Open or close UL tags to move to the new heading level@>;
-			fprintf(SPAGE, "<li><a href=%s>%s</a></li>\n",
+			fprintf(SPAGE, "<li><a href=\"%s\">%s</a></li>\n",
 				h->heading_to_segment->segment_url, h->heading_text);
 		}
 	new_level = benchmark_level-1;
