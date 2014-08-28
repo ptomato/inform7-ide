@@ -332,8 +332,9 @@ contain namespace dividers written |::|.
 				}
 			}
 			L->function_defined = fn;
-			if ((W->main_language == C_FOR_INFORM_LANGUAGE) &&
-				(pattern_match(fname, "%c*::%c*"))) fn->within_namespace = TRUE;
+			
+			if (W->main_language == C_FOR_INFORM_LANGUAGE)
+				@<Check that the function has its namespace correctly declared@>;
 		}
 	}
 
@@ -376,6 +377,29 @@ reach an open brace |{|.
 	}
 	int n = find_open_brace(arguments);
 	if (n >= 0) in_truncate(arguments, n);
+
+@
+
+@<Check that the function has its namespace correctly declared@> =
+	char *declared_namespace = "";
+	if (pattern_match(fname, "(%c+::)%c*")) {
+		declared_namespace = found_text1;
+		fn->within_namespace = TRUE;
+	} else if ((strcmp(fname, "main") == 0) && (strcmp(S->sect_namespace, "Main::") == 0))
+		declared_namespace = "Main::";
+	if (strcmp(declared_namespace, S->sect_namespace) != 0) {
+		string err_mess;
+		if (declared_namespace[0] == 0)
+			sprintf(err_mess, "Function '%s' should have namespace prefix '%s'",
+				fname, S->sect_namespace);
+		else if (S->sect_namespace[0] == 0)
+			sprintf(err_mess, "Function '%s' declared in a section with no namespace",
+				fname);
+		else
+			sprintf(err_mess, "Function '%s' declared in a section with the wrong namespace '%s'",
+				fname, S->sect_namespace);
+		error_in_web(err_mess, L);
+	}
 
 @
 
@@ -629,8 +653,6 @@ int c_like_syntax_colour(programming_language *pl, FILE *WEAVEOUT, weave_target 
 	}
 	if (ident_from >= 0)
 		c_like_colour_ident(S, matter, colouring, ident_from, in_strlen(matter)-1);
-	/* printf("%s\n", matter);
-	for (int i=0; matter[i]; i++) printf("%c", '0'+colouring[i]); */
 	return FALSE;
 }
 

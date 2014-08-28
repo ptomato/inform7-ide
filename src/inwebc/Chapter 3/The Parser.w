@@ -61,7 +61,7 @@ also give the namespace for its functions.
 @<Parse the line as a probable section heading@> =
 	string rewritten; in_strcpy(rewritten, "");
 	if ((S->sect_language == C_FOR_INFORM_LANGUAGE) &&
-		(pattern_match(L->text, "(%C+) (%C+/%C+): (%c+)."))) {
+		(pattern_match(L->text, "%[(%C+)%] (%C+/%C+): (%c+)."))) {
 		in_strcpy(S->sect_namespace, found_text1);
 		in_strcpy(S->sigil, found_text2);
 		in_strcpy(S->sect_title, found_text3);
@@ -72,7 +72,81 @@ also give the namespace for its functions.
 		in_strcpy(S->sect_title, found_text2);
 		L->text_operand = new_string(found_text2);
 		L->category = SECTION_HEADING_LCAT;
+	} else if (pattern_match(L->text, "%[(%C+::)%] (%c+).")) {
+		in_strcpy(S->sect_namespace, found_text1);
+		in_strcpy(S->sect_title, found_text2);
+		@<Set the sigil to an automatic abbreviation of the relative pathname@>;
+		L->text_operand = new_string(found_text2);
+		L->category = SECTION_HEADING_LCAT;
+	} else if (pattern_match(L->text, "(%c+).")) {
+		in_strcpy(S->sect_title, found_text1);
+		@<Set the sigil to an automatic abbreviation of the relative pathname@>;
+		L->text_operand = new_string(found_text1);
+		L->category = SECTION_HEADING_LCAT;
 	}
+
+@ If no sigil is supplied, we make one ourselves.
+
+@<Set the sigil to an automatic abbreviation of the relative pathname@> =
+	sprintf(S->sigil, "%s/", C->ch_sigil);
+
+	char *from = S->sect_title;
+	int w = strlen(S->sigil);
+	char *tail = S->sigil + w;
+
+	int letters_from_each_word = 5;
+	do {
+		@<Make the tail using this many consonants from each word@>;
+		if (--letters_from_each_word == 0) break;
+	} while (strlen(tail) > 5);
+
+	@<Terminate with disambiguating numbers in case of collisions@>;
+
+@ We collapse words to an initial letter plus consonants: thus "electricity"
+would be "elctrcty", since we don't count "y" as a vowel here.
+
+@<Make the tail using this many consonants from each word@> =
+	int sn = 0, sw = w;
+	if (from[sn] == SEP_CHAR) sn++;
+	int letters_from_current_word = 0;
+	while ((from[sn]) && (from[sn] != '.')) {
+		if (from[sn] == ' ') letters_from_current_word = 0;
+		else {
+			if (letters_from_current_word < letters_from_each_word) {
+				if (from[sn] != '-') {
+					int l = tolower(from[sn]);
+					if ((letters_from_current_word == 0) ||
+						((l != 'a') && (l != 'e') && (l != 'i') && (l != 'o') && (l != 'u'))) {
+						S->sigil[sw++] = l; S->sigil[sw] = 0;
+						letters_from_current_word++;
+					}
+				}
+			}
+		}
+		sn++;
+	}
+
+@ We never want two sections to have the same sigil.
+
+@<Terminate with disambiguating numbers in case of collisions@> =
+	char *distail = S->sigil + strlen(S->sigil);
+	int disnum = 0, collision = FALSE;
+	do {
+		if (disnum++ > 0) {
+			int ldn = 5;
+			if (disnum >= 1000) ldn = 4;
+			else if (disnum >= 100) ldn = 3;
+			else if (disnum >= 10) ldn = 2;
+			else ldn = 1;
+			sprintf(distail-ldn, "%d", disnum);
+		}
+		collision = FALSE;
+		for (chapter *C = W->first_chapter; C; C = C->next_chapter)
+			for (section *S2 = C->first_section; S2; S2 = S2->next_section)
+				if ((S2 != S) && (strcmp(S2->sigil, S->sigil) == 0)) {
+					collision = TRUE; break;
+				}
+	} while (collision);
 
 @ Note that we report an error if the command isn't one we recognise: we
 don't simply ignore the squares and let it fall through into the tangler.

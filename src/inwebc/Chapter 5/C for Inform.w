@@ -560,7 +560,7 @@ Here, though, there's a complication:
 
 must expand to:
 
-	|if (parse_nt_against_word_range(k_kind_NTM, a1, a2, NULL, NULL)) { ...|
+	|if (Text__Languages__parse_nt_against_word_range(k_kind_NTM, a1, a2, NULL, NULL)) { ...|
 
 This is all syntactic sugar to make it easier to see parsing in action.
 Anyway, it means we have to set |fcall_mode| to remember to add in the
@@ -577,7 +577,7 @@ any trouble.
 		if (pnt) {
 			i += in_strlen(putative) - 1;
 			if (original[i+1] == '(') fcall_mode = TRUE;
-			if (fcall_mode) fprintf(F, "parse_nt_against_word_range(");
+			if (fcall_mode) fprintf(F, "Preform__parse_nt_against_word_range(");
 			fprintf(F, "%s", pnt->as_C_identifier);
 			if (fcall_mode) {
 				fprintf(F, ", "); i++; 
@@ -785,7 +785,7 @@ int c_for_inform_weave_code_line(FILE *WEAVEOUT, weave_target *wv,
 			fprintf(WEAVEOUT, "\\nonterminal{%s} |::=|",
 				L->preform_nonterminal_defined->unangled_name);
 			if (L->preform_nonterminal_defined->as_function) {
-				fprintf(WEAVEOUT, "{\\it internal definition");	
+				fprintf(WEAVEOUT, "\\quad{\\it internal definition");	
 				if (L->preform_nonterminal_defined->voracious)
 					fprintf(WEAVEOUT, " (voracious)");
 				else if (L->preform_nonterminal_defined->min_word_count ==
@@ -816,19 +816,22 @@ int c_for_inform_weave_code_line(FILE *WEAVEOUT, weave_target *wv,
 						found_text1, found_text2, found_text3);
 				string label; in_strcpy(label, "");
 				int N = preform_production_count;
-				if (in_string_eq(S->sigil, "9/engin")) {
-					in_sprintf(label, "${}_{%d}$", N);
-				} else {
-					int L = ((N-1)%26) + 1;
-					if (N <= 26) in_sprintf(label, "%c", 'a'+L-1);
-					else if (N <= 52) in_sprintf(label, "%c%c", 'a'+L-1, 'a'+L-1);
-					else if (N <= 78) in_sprintf(label, "%c%c%c", 'a'+L-1, 'a'+L-1, 'a'+L-1);
+				int L = ((N-1)%26) + 1;
+				if (N <= 26) in_sprintf(label, "%c", 'a'+L-1);
+				else if (N <= 52) in_sprintf(label, "%c%c", 'a'+L-1, 'a'+L-1);
+				else if (N <= 78) in_sprintf(label, "%c%c%c", 'a'+L-1, 'a'+L-1, 'a'+L-1);
+				else {
+					int n = (N-1)/26;
+					in_sprintf(label, "%c${}^{%d}$", 'a'+L-1, n);
 				}
 				fprintf(WEAVEOUT, "\\qquad {\\hbox to 0.4in{\\it %s\\hfil}}%s", label, matter);
 				if (problem[0])
 					fprintf(WEAVEOUT, "\\hfill$\\longrightarrow$ {\\ttninepoint\\it %s}", problem);
-				else
-					fprintf(WEAVEOUT, "%s", concluding_comment);
+				else if (concluding_comment[0]) {
+					fprintf(WEAVEOUT, " \\hfill{\\ttninepoint\\it ");
+					if (concluding_comment) format_identifier(WEAVEOUT, wv, concluding_comment);
+					fprintf(WEAVEOUT, "}");
+				}
 				fprintf(WEAVEOUT, "\n");
 				return TRUE;
 			}

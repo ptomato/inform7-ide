@@ -288,11 +288,13 @@ void tex_endnote(FILE *F, weave_target *wv, int end) {
 
 @c
 void tex_identifier(FILE *F, weave_target *wv, char *id) {
+	int math_mode = FALSE;
 	for (int i=0; id[i]; i++) {
 		switch (id[i]) {
-			case '_': fprintf(F, "\\_"); break;
+			case '$': math_mode = (math_mode)?FALSE:TRUE; break;
+			case '_': if (math_mode) fprintf(F, "_"); else fprintf(F, "\\_"); break;
 			case '"':
-				if ((id[i] == '"') && ((i==0) || (id[i-1] == ' ')))
+				if ((id[i] == '"') && ((i==0) || (id[i-1] == ' ') || (id[i-1] == '(')))
 					fprintf(F, "``");
 				else
 					fprintf(F, "''");
