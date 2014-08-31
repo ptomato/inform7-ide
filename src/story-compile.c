@@ -197,35 +197,29 @@ start_ni_compiler(CompilerData *data)
 	I7_STORY_USE_PRIVATE(data->story, priv);
 
 	/* Build the command line */
-	GSList *args = NULL;
+	GPtrArray *args = g_ptr_array_new_full(7, g_free); /* usual number of args */
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GFile *ni_compiler = i7_app_get_binary_file(theapp, "ni");
 	GFile *extensions_dir = i7_app_get_data_file(theapp, "Extensions");
-	args = g_slist_prepend(args, g_file_get_path(ni_compiler));
-	args = g_slist_prepend(args, g_strdup("-rules"));
-	args = g_slist_prepend(args, g_file_get_path(extensions_dir));
-	args = g_slist_prepend(args, g_strconcat("-extension=", i7_story_get_extension(data->story), NULL));
-	args = g_slist_prepend(args, g_strdup("-package"));
-	args = g_slist_prepend(args, g_file_get_path(data->input_file));
+	g_ptr_array_add(args, g_file_get_path(ni_compiler));
+	g_ptr_array_add(args, g_strdup("-rules"));
+	g_ptr_array_add(args, g_file_get_path(extensions_dir));
+	g_ptr_array_add(args, g_strconcat("-extension=", i7_story_get_extension(data->story), NULL));
+	g_ptr_array_add(args, g_strdup("-package"));
+	g_ptr_array_add(args, g_file_get_path(data->input_file));
 	if(!data->use_debug_flags)
-		args = g_slist_prepend(args, g_strdup("-release")); /* Omit "not for relase" material */
+		g_ptr_array_add(args, g_strdup("-release")); /* Omit "not for relase" material */
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
-		args = g_slist_prepend(args, g_strdup("-log"));
+		g_ptr_array_add(args, g_strdup("-log"));
 	if(i7_story_get_nobble_rng(data->story))
-		args = g_slist_prepend(args, g_strdup("-rng"));
-	args = g_slist_reverse(args);
+		g_ptr_array_add(args, g_strdup("-rng"));
+	g_ptr_array_add(args, NULL);
 
 	g_object_unref(ni_compiler);
 	g_object_unref(extensions_dir);
 
-	gchar **commandline = g_new0(gchar *, g_slist_length(args) + 1);
-	GSList *iter;
-	gchar **arg;
-	for(iter = args, arg = commandline; iter; iter = g_slist_next(iter))
-		*arg++ = iter->data;
-	*arg = NULL;
-	g_slist_free(args);
+	char **commandline = (char **)g_ptr_array_free(args, FALSE);
 
 	/* Run the command and pipe its output to the text buffer. Also pipe stderr
 	through a function that analyzes the progress messages and puts them in the
