@@ -113,6 +113,7 @@ GFile *i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *e
 GFile *i7_app_get_extension_docpage(I7App *app, const char *author, const char *extname);
 GFile *i7_app_get_extension_home_page(I7App *app);
 GFile *i7_app_get_extension_index_page(I7App *app);
+GFile *i7_app_get_internal_dir(I7App *app);
 GFile *i7_app_get_data_file(I7App *app, const gchar *filename);
 GFile *i7_app_get_data_file_va(I7App *app, const gchar *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_check_data_file(I7App *app, const char *filename);

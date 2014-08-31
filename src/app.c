@@ -1107,14 +1107,14 @@ void
 i7_app_run_census(I7App *app, gboolean wait)
 {
 	GFile *ni_binary = i7_app_get_binary_file(app, "ni");
-	GFile *builtin_extensions = get_builtin_extension_file(app, NULL, NULL);
+	GFile *builtin_extensions = i7_app_get_internal_dir(app);
 
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 5);
 	commandline[0] = g_file_get_path(ni_binary);
-	commandline[1] = g_strdup("--rules");
+	commandline[1] = g_strdup("-internal");
 	commandline[2] = g_file_get_path(builtin_extensions);
-	commandline[3] = g_strdup("--census");
+	commandline[3] = g_strdup("-census");
 	commandline[4] = NULL;
 
 	g_object_unref(ni_binary);
@@ -1237,6 +1237,21 @@ i7_app_get_extension_index_page(I7App *app)
 	GFile *retval = g_file_new_for_path(path);
 	g_free(path);
 	return retval;
+}
+
+/**
+ * i7_app_get_internal_dir:
+ * @app: the app
+ *
+ * Gets a reference to the application data directory, or in other words the
+ * directory which the NI compiler considers to be the "internal" directory.
+ *
+ * Returns: (transfer full): a new #GFile.
+ */
+GFile *
+i7_app_get_internal_dir(I7App *app)
+{
+	return g_object_ref(I7_APP_PRIVATE(app)->datadir);
 }
 
 /**

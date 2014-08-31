@@ -199,25 +199,22 @@ start_ni_compiler(CompilerData *data)
 	/* Build the command line */
 	GPtrArray *args = g_ptr_array_new_full(7, g_free); /* usual number of args */
 	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
 	GFile *ni_compiler = i7_app_get_binary_file(theapp, "ni");
-	GFile *extensions_dir = i7_app_get_data_file(theapp, "Extensions");
+	GFile *internal_dir = i7_app_get_internal_dir(theapp);
 	g_ptr_array_add(args, g_file_get_path(ni_compiler));
-	g_ptr_array_add(args, g_strdup("-rules"));
-	g_ptr_array_add(args, g_file_get_path(extensions_dir));
-	g_ptr_array_add(args, g_strconcat("-extension=", i7_story_get_extension(data->story), NULL));
-	g_ptr_array_add(args, g_strdup("-package"));
+	g_ptr_array_add(args, g_strdup("-internal"));
+	g_ptr_array_add(args, g_file_get_path(internal_dir));
+	g_ptr_array_add(args, g_strconcat("-format=", i7_story_get_extension(data->story), NULL));
+	g_ptr_array_add(args, g_strdup("-project"));
 	g_ptr_array_add(args, g_file_get_path(data->input_file));
 	if(!data->use_debug_flags)
 		g_ptr_array_add(args, g_strdup("-release")); /* Omit "not for relase" material */
-	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
-		g_ptr_array_add(args, g_strdup("-log"));
 	if(i7_story_get_nobble_rng(data->story))
 		g_ptr_array_add(args, g_strdup("-rng"));
 	g_ptr_array_add(args, NULL);
 
 	g_object_unref(ni_compiler);
-	g_object_unref(extensions_dir);
+	g_object_unref(internal_dir);
 
 	char **commandline = (char **)g_ptr_array_free(args, FALSE);
 
