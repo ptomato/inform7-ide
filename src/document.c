@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -485,6 +485,35 @@ i7_document_save_as(I7Document *document, GFile *file)
 	I7_DOCUMENT_GET_CLASS(document)->save_as(document, file);
 }
 
+/* Helper function: display a dialog box asking for confirmation of save.
+Optionally allow canceling. (If the window is being forced to close, for
+example, then the user shouldn't be allowed to cancel.) */
+static int
+show_save_changes_dialog(I7Document *document, gboolean allow_cancel)
+{
+	char *filename = i7_document_get_display_name(document);
+	GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+		_("<b><big>Save changes to '%s' before closing?</big></b>"), filename);
+	g_free(filename);
+	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(save_changes_dialog),
+		_("If you don't save, your changes will be lost."));
+	if(allow_cancel)
+		gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
+			_("Close _without saving"), GTK_RESPONSE_REJECT,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+			NULL);
+	else
+		gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
+			_("Close _without saving"), GTK_RESPONSE_REJECT,
+			GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+			NULL);
+	int result = gtk_dialog_run(GTK_DIALOG(save_changes_dialog));
+	gtk_widget_destroy(save_changes_dialog);
+	return result;
+}
+
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
 gboolean
@@ -493,20 +522,7 @@ i7_document_verify_save(I7Document *document)
 	if(!i7_document_get_modified(document))
 		return TRUE;
 
-	gchar *filename = i7_document_get_display_name(document);
-	GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
-		GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-		_("<b><big>Save changes to '%s' before closing?</big></b>"), filename);
-	g_free(filename);
-	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(save_changes_dialog),
-		_("If you don't save, your changes will be lost."));
-	gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
-		_("Close _without saving"), GTK_RESPONSE_REJECT,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_SAVE, GTK_RESPONSE_OK,
-		NULL);
-	gint result = gtk_dialog_run(GTK_DIALOG(save_changes_dialog));
-	gtk_widget_destroy(save_changes_dialog);
+	int result = show_save_changes_dialog(document, TRUE /* allow cancel */);
 	switch(result) {
 		case GTK_RESPONSE_OK: /* save */
 			return i7_document_save(document);
@@ -520,20 +536,7 @@ void
 i7_document_close(I7Document *document)
 {
 	if(i7_document_get_modified(document)) {
-		gchar *filename = i7_document_get_display_name(document);
-		GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-			_("<b><big>Save changes to '%s' before closing?</big></b>"),
-			filename);
-		g_free(filename);
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(save_changes_dialog),
-			_("If you don't save, your changes will be lost."));
-		gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
-			_("Close _without saving"), GTK_RESPONSE_REJECT,
-			GTK_STOCK_SAVE, GTK_RESPONSE_OK,
-			NULL);
-		gint result = gtk_dialog_run(GTK_DIALOG(save_changes_dialog));
-		gtk_widget_destroy(save_changes_dialog);
+		int result = show_save_changes_dialog(document, FALSE /* can't cancel */);
 		if(result == GTK_RESPONSE_OK)
 			i7_document_save(document);
 	}
