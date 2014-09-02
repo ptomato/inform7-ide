@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -132,6 +132,8 @@ i7_story_set_story_format(I7Story *story, I7StoryFormat format)
 	g_return_if_fail(story || I7_IS_STORY(story));
 	g_return_if_fail(format == I7_STORY_FORMAT_Z5 || format == I7_STORY_FORMAT_Z6 || format == I7_STORY_FORMAT_Z8 || format == I7_STORY_FORMAT_GLULX);
 
+	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+
 	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
 	if(!obj) {
@@ -163,6 +165,8 @@ void
 i7_story_set_create_blorb(I7Story *story, gboolean create_blorb)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
+
+	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
 
 	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingCreateBlorb", -1);
@@ -196,6 +200,8 @@ i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
 
+	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+
 	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingNobbleRng", -1);
 	if(!obj) {
@@ -227,6 +233,8 @@ void
 i7_story_set_elastic_tabstops(I7Story *story, gboolean elastic_tabstops)
 {
 	g_return_if_fail(story || I7_IS_STORY(story));
+
+	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
 
 	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
 	PlistObject *obj = plist_object_lookup(settings, "IFMiscSettings", "IFSettingElasticTabs", -1);
