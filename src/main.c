@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -83,6 +83,11 @@ main(int argc, char *argv[])
 	gdk_threads_init();
 
 	gtk_init(&argc, &argv);
+
+	/* Workaround for GTK 2 bug for people using Oxygen or QtCurve themes:
+	https://bugzilla.gnome.org/show_bug.cgi?id=729651 */
+	gtk_rc_parse_string("style 'workaround' { GtkComboBox::appears-as-list = 0 }"
+		"class '*' style : highest 'workaround'");
 
 	/* Initialize the Inform 7 application */
 	/* TRANSLATORS: this is the human-readable application name */
