@@ -1146,7 +1146,7 @@ i7_story_open(I7Story *story, GFile *file)
 	PlistObject *story_format = plist_object_lookup(priv->settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
 	if(story_format) {
 		int format = plist_object_get_integer(story_format);
-		if(format == I7_STORY_FORMAT_Z5 || I7_STORY_FORMAT_Z6)
+		if(format == I7_STORY_FORMAT_Z5 || format == I7_STORY_FORMAT_Z6)
 			plist_object_set_integer(story_format, I7_STORY_FORMAT_Z8);
 	}
 
