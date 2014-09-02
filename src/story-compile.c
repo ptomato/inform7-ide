@@ -655,6 +655,10 @@ i7_story_save_ifiction(I7Story *story)
 {
 	/* Work out where the file should be */
 	GFile *project_file = i7_document_get_file(I7_DOCUMENT(story));
+	if(project_file == NULL) {
+		g_warning("Tried to save iFiction record of story without associated file");
+		return; /* This shouldn't happen because the file is saved before compilation */
+	}
 	GFile *ifiction_file = g_file_get_child(project_file, "Metadata.iFiction");
 
 	/* Prompt user to save iFiction file if it exists */
@@ -667,6 +671,7 @@ i7_story_save_ifiction(I7Story *story)
 
 		/* Make up a default file name */
 		gchar *name = i7_document_get_display_name(I7_DOCUMENT(story));
+		/* project_file is not NULL so neither is name */
 		*(strrchr(name, '.')) = '\0';
 		gchar *filename = g_strconcat(name, ".iFiction", NULL);
 		g_free(name);
@@ -741,9 +746,15 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 		char *curfilename = g_file_get_basename(priv->compiler_output_file);
 		gchar *title = i7_document_get_display_name(I7_DOCUMENT(story));
-		*(strrchr(title, '.')) = '\0';
-		gchar *suggestname = g_strconcat(title, strrchr(curfilename, '.'), NULL);
-		g_free(title);
+		char *extension = strrchr(curfilename, '.'); /* not allocated */
+		char *suggestname;
+		if(title != NULL) {
+			*(strrchr(title, '.')) = '\0';
+			suggestname = g_strconcat(title, extension, NULL);
+			g_free(title);
+		} else {
+			suggestname = g_strconcat("Untitled", extension, NULL);
+		}
 		g_free(curfilename);
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), suggestname);
 		g_free(suggestname);

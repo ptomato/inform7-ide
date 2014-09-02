@@ -296,6 +296,8 @@ i7_document_refresh_title(I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
 	gchar *documentname = i7_document_get_display_name(document);
+	if(documentname == NULL)
+		return;
 
 	if(priv->modified)
 	{
@@ -333,11 +335,14 @@ i7_document_get_file(const I7Document *document)
 
 /* Returns a newly-allocated string containing the filename of this document
  without the full path, converted to UTF-8, suitable for display in a window
- titlebar */
+ titlebar. If this document doesn't have a filename yet, returns NULL. */
 gchar *
 i7_document_get_display_name(I7Document *document)
 {
-	return file_get_display_name(I7_DOCUMENT_PRIVATE(document)->file);
+	GFile *file = I7_DOCUMENT_PRIVATE(document)->file;
+	if(file == NULL)
+		return NULL;
+	return file_get_display_name(file);
 }
 
 GtkSourceBuffer *
@@ -492,10 +497,19 @@ static int
 show_save_changes_dialog(I7Document *document, gboolean allow_cancel)
 {
 	char *filename = i7_document_get_display_name(document);
-	GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
-		GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-		_("<b><big>Save changes to '%s' before closing?</big></b>"), filename);
-	g_free(filename);
+	GtkWidget *save_changes_dialog;
+
+	if(filename == NULL) {
+		save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+			_("<b><big>Save changes to your story before closing?</big></b>"));
+	} else {
+		save_changes_dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+			_("<b><big>Save changes to '%s' before closing?</big></b>"), filename);
+		g_free(filename);
+	}
+
 	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(save_changes_dialog),
 		_("If you don't save, your changes will be lost."));
 	if(allow_cancel)

@@ -229,8 +229,12 @@ location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeMode
 				text = g_strdup_printf(_("Story, line %d"), lineno);
 			else {
 				gchar *displayname = i7_document_get_display_name(priv->document);
-				text = g_strdup_printf(_("%s, line %d"), displayname, lineno);
-				g_free(displayname);
+				if(displayname == NULL) {
+					text = g_strdup_printf(_("Untitled story, line %d"), lineno);
+				} else {
+					text = g_strdup_printf(_("%s, line %d"), displayname, lineno);
+					g_free(displayname);
+				}
 			}
 			break;
 		case I7_RESULT_TYPE_EXTENSION:
