@@ -715,6 +715,11 @@ i7_story_init(I7Story *self)
 	gtk_widget_set_no_show_all(I7_DOCUMENT(self)->toolbar, TRUE);
 	i7_document_add_menus_and_findbar(I7_DOCUMENT(self));
 
+	/* Set the initial visible state of the toolbar based on the most recent
+	choice the user made */
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->view_toolbar),
+		g_settings_get_boolean(state, PREFS_STATE_SHOW_TOOLBAR));
+
 	/* Build the rest of the interface */
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), menu, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
@@ -742,12 +747,6 @@ i7_story_init(I7Story *self)
 	LOAD_WIDGET(skein_spacing_use_defaults);
 	LOAD_WIDGET(skein_trim_dialog);
 	LOAD_WIDGET(skein_trim_slider);
-
-	/* Bind some actions one-way to GSettings settings;
-	this will make it use the last-set value as default for new windows */
-	g_settings_bind(state, "show-notepad",
-		load_object(builder, "view_notepad"), "active",
-		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
 	/* Set up the signals to do the menu hints in the statusbar */
 	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
@@ -806,6 +805,8 @@ i7_story_init(I7Story *self)
 	g_settings_get(state, PREFS_STATE_NOTEPAD_POS, "(ii)", &x, &y);
 	gtk_window_resize(GTK_WINDOW(self->notes_window), w, h);
 	gtk_window_move(GTK_WINDOW(self->notes_window), x, y);
+	if(g_settings_get_boolean(state, PREFS_STATE_SHOW_NOTEPAD))
+		gtk_widget_show(self->notes_window);
 
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));

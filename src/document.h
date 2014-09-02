@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -97,6 +97,7 @@ typedef struct {
 	GtkAction *next_section;
 	GtkAction *autocheck_spelling;
 	GtkAction *check_spelling;
+	GtkAction *view_toolbar;
 	GtkAction *enable_elastic_tabstops;
 } I7Document;
 

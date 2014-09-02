@@ -175,6 +175,7 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, next_section);
 	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
 	LOAD_ACTION(priv->document_action_group, check_spelling);
+	LOAD_ACTION(priv->document_action_group, view_toolbar);
 	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
@@ -182,20 +183,6 @@ i7_document_init(I7Document *self)
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
 		priv->buffer, "highlight-syntax",
 		G_SETTINGS_BIND_GET | G_SETTINGS_BIND_NO_SENSITIVITY);
-	/* Bind some actions one-way to GSettings settings;
-	this will make it use the last-set value as default for new windows */
-	g_settings_bind(state, PREFS_STATE_ELASTIC_TABSTOPS,
-		self->enable_elastic_tabstops, "active",
-		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
-	g_settings_bind(state, PREFS_STATE_SPELL_CHECK,
-		self->autocheck_spelling, "active",
-		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
-	g_settings_bind(state, PREFS_STATE_SHOW_TOOLBAR,
-		load_object(builder, "view_toolbar"), "active",
-		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
-	g_settings_bind(state, PREFS_STATE_SHOW_STATUSBAR,
-		load_object(builder, "view_statusbar"), "active",
-		G_SETTINGS_BIND_SET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
 	/* Show statusbar if necessary */
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")),
@@ -1217,6 +1204,10 @@ i7_document_attach_menu_hints(I7Document *document, GtkMenuBar *menu)
 void
 i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 {
+	/* Set the default value for the next time a window is opened */
+	GSettings *state = i7_app_get_state(i7_app_get());
+	g_settings_set_boolean(state, PREFS_STATE_SPELL_CHECK, spellcheck);
+
 	I7_DOCUMENT_GET_CLASS(document)->set_spellcheck(document, spellcheck);
 }
 
@@ -1229,6 +1220,10 @@ i7_document_check_spelling(I7Document *document)
 void
 i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
+	/* Set the default value for the next time a window is opened */
+	GSettings *state = i7_app_get_state(i7_app_get());
+	g_settings_set_boolean(state, PREFS_STATE_ELASTIC_TABSTOPS, elastic);
+
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabstops), elastic);
 	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabstops(document, elastic);
 }

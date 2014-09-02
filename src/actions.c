@@ -546,6 +546,11 @@ void
 action_view_toolbar_toggled(GtkToggleAction *action, I7Document *document)
 {
 	gboolean show = gtk_toggle_action_get_active(action);
+
+	/* Set the default value for the next time a window is opened */
+	GSettings *state = i7_app_get_state(i7_app_get());
+	g_settings_set_boolean(state, PREFS_STATE_SHOW_TOOLBAR, show);
+
 	if(show)
 		gtk_widget_show(document->toolbar);
 	else
@@ -557,6 +562,11 @@ void
 action_view_statusbar_toggled(GtkToggleAction *action, I7Document *document)
 {
 	gboolean show = gtk_toggle_action_get_active(action);
+
+	/* Set the default value for the next time a window is opened */
+	GSettings *state = i7_app_get_state(i7_app_get());
+	g_settings_set_boolean(state, PREFS_STATE_SHOW_STATUSBAR, show);
+
 	if(show)
 		gtk_widget_show(document->statusline);
 	else
@@ -568,6 +578,11 @@ void
 action_view_notepad_toggled(GtkToggleAction *action, I7Story *story)
 {
 	gboolean show = gtk_toggle_action_get_active(action);
+
+	/* Set the default value for the next time a window is opened */
+	GSettings *state = i7_app_get_state(i7_app_get());
+	g_settings_set_boolean(state, PREFS_STATE_SHOW_NOTEPAD, show);
+
 	if(show)
 		gtk_widget_show(story->notes_window);
 	else
