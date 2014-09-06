@@ -88,6 +88,7 @@ deb: dist
 		debian/rules \
 		$(DEBSOURCEDIR)/debian && \
 	cd $(DEBSOURCEDIR) && \
+	DEB_BUILD_MAINT_OPTIONS=hardening=-format \
 	$(DEBUILD) -rfakeroot -D -us -uc; \
 	cd $(srcdir); \
 	rm --force $(DEBSOURCEPKG); \

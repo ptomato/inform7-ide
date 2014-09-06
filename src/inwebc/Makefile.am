@@ -144,7 +144,7 @@ EXTRA_DIST = $(inwebmaterials)
 # Also: why should the distdir be unwritable?!
 #
 # Also: why is distdir sometimes an absolute path and sometimes relative?
-ABSDISTDIR = $(abspath $(distdir))
+ABSDISTDIR = `(mkdir -p $(distdir) && cd $(distdir) && pwd)`
 dist-hook:
 	$(MKDIR_P) --mode=u+w \
 		$(distdir)/Preliminaries \
