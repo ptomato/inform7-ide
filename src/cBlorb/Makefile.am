@@ -83,7 +83,7 @@ endif
 
 EXTRA_DIST = $(cblorbmaterials)
 
-ABSDISTDIR = $(abspath $(distdir))
+ABSDISTDIR = `(cd $(distdir) && pwd)`
 dist-hook:
 	$(MKDIR_P) --mode=u+w $(distdir)/Preliminaries $(distdir)/Chapter\ 1 \
 		$(distdir)/Chapter\ 2 $(distdir)/Chapter\ 3 $(distdir)/Woven \
