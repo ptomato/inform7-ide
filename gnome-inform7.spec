@@ -3,14 +3,14 @@
 #
 
 Name: gnome-inform7
-Version: 6L02
+Version: 6L38
 Release: 1.fc20
 
 URL: http://inform7.com/
 License: GPLv3
 
 Group: Development/Languages
-Source: http://inform7.com/download/content/6L02/gnome-inform7-6L02.tar.gz
+Source: http://inform7.com/download/content/6L38/gnome-inform7-6L38.tar.gz
 
 # Build requirements:
 # Extra build tools
@@ -105,27 +105,19 @@ rm -rf %{buildroot}
 %{pkgdatadir}/Extensions/Emily*Short/*.i7x
 %{pkgdatadir}/Extensions/Eric*Eve/Epistemology.i7x
 %{pkgdatadir}/Extensions/Graham*Nelson/*.i7x
-%{pkgdatadir}/Extensions/Reserved/*.i6t
-%{pkgdatadir}/Extensions/Reserved/*.jpg
-%{pkgdatadir}/Extensions/Reserved/*.html
-%{pkgdatadir}/Extensions/Reserved/*.pdf
-%{pkgdatadir}/Extensions/Reserved/Templates/Classic/*.html
-%{pkgdatadir}/Extensions/Reserved/Templates/Standard/*.html
-%{pkgdatadir}/Extensions/Reserved/Templates/Standard/style.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/*.js
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/*.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Parchment/(manifest).txt
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.js
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/*.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/waiting.gif
-%{pkgdatadir}/Extensions/Reserved/Templates/Quixe/(manifest).txt
-%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/*.js
-%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/vorple.css
-%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/soundmanager2.swf
-%{pkgdatadir}/Extensions/Reserved/Templates/Vorple/(manifest).txt
-%{pkgdatadir}/Extensions/Reserved/Languages/English/Syntax.preform
-%{pkgdatadir}/Extensions/Reserved/Languages/*/about.txt
-%{pkgdatadir}/Extensions/Reserved/Languages/*/flag.png
+%{pkgdatadir}/I6T/*.i6t
+%{pkgdatadir}/Languages/*/Syntax.preform
+%{pkgdatadir}/Languages/*/about.txt
+%{pkgdatadir}/Languages/*/flag.png
+%{pkgdatadir}/Miscellany/*.html
+%{pkgdatadir}/Miscellany/*.jpg
+%{pkgdatadir}/Miscellany/*.pdf
+%{pkgdatadir}/Templates/*/*.html
+%{pkgdatadir}/Templates/*/*.css
+%{pkgdatadir}/Templates/*/*.js
+%{pkgdatadir}/Templates/*/(manifest).txt
+%{pkgdatadir}/Templates/Quixe/waiting.gif
+%{pkgdatadir}/Templates/Vorple/soundmanager2.swf
 %{pkgdatadir}/highlighting/*.lang
 %{pkgdatadir}/Documentation/licenses/*.html
 %{pkgdatadir}/styles/*.xml
@@ -165,6 +157,8 @@ rm -rf %{buildroot}
 %{pkglibexecdir}/ni
 
 %changelog
+* Sun Sep 7 2014 Philip Chimento <philip.chimento@gmail.com> - 6L38-1
+- Repackaged to Build 6L38.
 * Wed May 7 2014 Philip Chimento <philip.chimento@gmail.com> - 6L02-1
 - Repackaged to Build 6L02.
 * Sun Feb 12 2012 P. F. Chimento <philip.chimento@gmail.com>
