@@ -17,13 +17,13 @@
 #
 
 Name:           gnome-inform7
-Version:        6L02
+Version:        6L38
 Release:        0
 License:        GPL-3.0
 Summary:        Inform 7 interactive fiction programming language IDE
 Url:            http://inform7.com/
 Group:          Development/Languages/Other
-Source0:        http://downloads.sourceforge.net/%{name}/%{name}/Gnome_UI_source_%{version}.tar.gz
+Source0:        http://downloads.sourceforge.net/%{name}/%{name}/gnome-inform7-%{version}.tar.gz
 Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Linux_all.tar.gz
 BuildRequires:  fdupes
 BuildRequires:  libgoocanvas3-devel
@@ -34,7 +34,6 @@ BuildRequires:  intltool
 BuildRequires:  libwebkitgtk-devel
 BuildRequires:  lzma
 BuildRequires:  pkgconfig
-BuildRequires:  texlive
 BuildRequires:  libuuid-devel
 BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(gconf-2.0)
