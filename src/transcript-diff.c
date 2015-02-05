@@ -90,7 +90,7 @@ word_diff(const char *expected, const char *actual, GList **expected_diffs, GLis
 	ctxt.expected_diffs = *expected_diffs;
 	ctxt.actual_diffs = *actual_diffs;
 	ctxt.heuristic = TRUE;
-	compareseq(0, expected_limit, 0, actual_limit, FALSE, &ctxt);
+	compareseq(0, expected_limit, 0, actual_limit, &ctxt);
 
 	g_strfreev(expected_words);
 	g_strfreev(actual_words);
