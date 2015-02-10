@@ -86,7 +86,7 @@ word_diff(const char *expected, const char *actual, GList **expected_diffs, GLis
 	ctxt.xvec = expected_words; /* char * const * */
 	ctxt.yvec = actual_words;
 	ctxt.fdiag = work_buffer + actual_limit + 1;
-	ctxt.bdiag = work_buffer + expected_limit + actual_limit + 3;
+	ctxt.bdiag = ctxt.fdiag + expected_limit + actual_limit + 3;
 	ctxt.expected_diffs = *expected_diffs;
 	ctxt.actual_diffs = *actual_diffs;
 	ctxt.heuristic = TRUE;
