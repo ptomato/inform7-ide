@@ -550,7 +550,7 @@ i7_app_install_extension(I7App *app, GFile *file)
 	/* If a version without *.i7x is still residing in that directory, delete
 	it now */
 	if(g_file_query_exists(target, NULL)) {
-		if(!g_file_delete(target, NULL, &err) == -1)
+		if(!g_file_delete(target, NULL, &err))
 			error_dialog_file_operation(NULL, target, err, I7_FILE_ERROR_OTHER, _("removing an old extension file"));
 	}
 
