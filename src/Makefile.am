@@ -147,7 +147,8 @@ frotz_la_CPPFLAGS = \
 	-I$(srcdir)/chimara/libchimara \
 	-I$(srcdir)/chimara
 frotz_la_CFLAGS = $(AM_CFLAGS) -Wno-pointer-sign -Wno-unused-variable \
-	-Wno-implicit-function-declaration -Wno-unused-but-set-variable
+	-Wno-implicit-function-declaration -Wno-unused-but-set-variable \
+	-Wno-unused-value
 frotz_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 frotzdocdir = $(datadir)/doc/$(PACKAGE)/frotz
