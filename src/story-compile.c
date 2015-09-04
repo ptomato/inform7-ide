@@ -181,7 +181,7 @@ display_ni_status(I7Document *document, gchar *text)
 	gint percent;
 	gchar *message;
 
-	if(sscanf(text, " ++ %d%% (%a[^)]", &percent, &message) == 2) {
+	if(sscanf(text, " ++ %d%% (%m[^)]", &percent, &message) == 2) {
 		gdk_threads_enter();
 		i7_document_display_progress_percentage(document, percent / 100.0);
 		gdk_threads_leave();
