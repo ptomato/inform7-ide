@@ -38,7 +38,8 @@
 #include "skein-view.h"
 #include "transcript-renderer.h"
 
-#define PUBLIC_LIBRARY_URI "http://www.emshort.com/pl/index.html"
+#define PUBLIC_LIBRARY_URI "http://www.emshort.com/pl/"
+#define PUBLIC_LIBRARY_HOME_URI PUBLIC_LIBRARY_URI "index.html"
 
 const char * const i7_panel_index_names[] = {
 	"Welcome.html", "Contents.html", "Actions.html", "Kinds.html",
@@ -662,7 +663,7 @@ action_public_library(GtkAction *action, I7Panel *panel)
 	g_signal_connect(html, "notify::load-status", G_CALLBACK(on_public_library_load_notify), action);
 	g_signal_connect(html, "load-error", G_CALLBACK(on_public_library_load_error), NULL);
 
-	webkit_web_view_open(html, PUBLIC_LIBRARY_URI);
+	webkit_web_view_open(html, PUBLIC_LIBRARY_HOME_URI);
 }
 
 /* TYPE SYSTEM */
@@ -1160,7 +1161,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 
 	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
 		/* Allow the Public Library website, but nothing else */
-		if(g_str_has_prefix(uri, PUBLIC_LIBRARY_URI))
+		if(g_str_has_prefix(uri, PUBLIC_LIBRARY_HOME_URI))
 			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
 		if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error)) {
