@@ -16,6 +16,7 @@
  */
 
 #include <string.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
 #include <gtksourceview/gtksourcebuffer.h>
@@ -25,6 +26,80 @@
 #include "configfile.h"
 #include "document.h"
 #include "panel.h"
+
+/* Following two functions adapted from gtksourceview. We could use
+gtk_source_view_set_auto_indent(), but that auto-indents leading spaces as well
+as tabs, and we don't want that. */
+static char *
+compute_indentation(GtkSourceView *source, GtkTextIter *cur)
+{
+	GtkTextIter start, end;
+	int line = gtk_text_iter_get_line(cur);
+
+	gtk_text_buffer_get_iter_at_line(gtk_text_view_get_buffer(GTK_TEXT_VIEW(source)), &start, line);
+	end = start;
+
+	gunichar ch = gtk_text_iter_get_char(&end);
+
+	while(ch == '\t' && gtk_text_iter_compare(&end, cur) < 0) {
+		if(!gtk_text_iter_forward_char(&end))
+			break;
+
+		ch = gtk_text_iter_get_char(&end);
+	}
+
+	if(gtk_text_iter_equal(&start, &end))
+		return NULL;
+
+	return gtk_text_iter_get_slice(&start, &end);
+}
+
+gboolean
+on_source_key_press_event(GtkSourceView *source, GdkEventKey *event, I7SourceView *view)
+{
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(source));
+
+	int key = event->keyval;
+
+	if((key == GDK_KEY_Return || key == GDK_KEY_KP_Enter) &&
+		!(event->state & GDK_SHIFT_MASK) &&
+		g_settings_get_boolean(prefs, PREFS_AUTO_INDENT)) {
+		/* Auto-indent means that when you press ENTER at the end of a line, the new
+		line is automatically indented at the same level as the previous line.
+		SHIFT+ENTER avoids auto-indentation. */
+		GtkTextMark *mark = gtk_text_buffer_get_insert(buffer);
+		GtkTextIter cur;
+		gtk_text_buffer_get_iter_at_mark(buffer, &cur, mark);
+
+		char *indent = compute_indentation(source, &cur);
+
+		if(indent != NULL) {
+			/* Allow input methods to internally handle a key press event. If this
+			function returns TRUE, then no further processing should be done for this
+			keystroke. */
+			if(gtk_text_view_im_context_filter_keypress(GTK_TEXT_VIEW(source), event)) {
+				g_free(indent);
+				return TRUE; /* stop event */
+			}
+
+			/* If an input method has inserted some text while handling the key press
+			event, the cur iter may be invalid, so get the iter again */
+			gtk_text_buffer_get_iter_at_mark(buffer, &cur, mark);
+
+			/* Insert new line and auto-indent. */
+			gtk_text_buffer_begin_user_action(buffer);
+			gtk_text_buffer_insert(buffer, &cur, "\n", 1);
+			gtk_text_buffer_insert(buffer, &cur, indent, strlen(indent));
+			g_free(indent);
+			gtk_text_buffer_end_user_action(buffer);
+			gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(source), mark);
+			return TRUE; /* stop event */
+		}
+	}
+	return FALSE;  /* propagate event */
+}
 
 void
 after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
@@ -48,25 +123,6 @@ after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gc
 {
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	/* If the inserted text ended in a newline, then do auto-indenting */
-	/* We could use gtk_source_view_set_auto_indent(), but that auto-indents
-	  leading spaces as well as tabs, and we don't want that */
-	if(g_str_has_suffix(text, "\n") && g_settings_get_boolean(prefs, PREFS_AUTO_INDENT)) {
-		int tab_count = 0;
-		GtkTextIter prev_line = *location;
-		gtk_text_iter_backward_line(&prev_line);
-		while(gtk_text_iter_get_char(&prev_line) == '\t') {
-			gtk_text_iter_forward_char(&prev_line);
-			tab_count++;
-		}
-		gchar *tabs = g_strnfill(tab_count, '\t');
-		/* Preserve and restore iter position by creating a mark with right gravity (FALSE) */
-		GtkTextMark *bookmark = gtk_text_buffer_create_mark(buffer, "bookmark", location, FALSE);
-		gtk_text_buffer_insert_at_cursor(buffer, tabs, -1);
-		gtk_text_buffer_get_iter_at_mark(buffer, location, bookmark);
-		gtk_text_buffer_delete_mark(buffer, bookmark);
-	}
 
 	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {
 		GtkTextIter insert_start = *location;
