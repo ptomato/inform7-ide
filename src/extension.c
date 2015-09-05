@@ -67,6 +67,7 @@ on_extensionwindow_delete_event(GtkWidget *window, GdkEvent *event)
 {
 	if(i7_document_verify_save(I7_DOCUMENT(window))) {
 		save_extwindow_size(GTK_WINDOW(window));
+		i7_app_remove_document(i7_app_get(), I7_DOCUMENT(window));
 		return FALSE;
 	}
 	return TRUE;

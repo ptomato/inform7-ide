@@ -195,7 +195,6 @@ static void
 i7_document_finalize(GObject *self)
 {
 	I7_DOCUMENT_USE_PRIVATE(self, priv);
-	I7App *theapp = i7_app_get();
 
 	if(priv->file)
 		g_object_unref(priv->file);
@@ -207,12 +206,7 @@ i7_document_finalize(GObject *self)
 	g_object_unref(priv->headings);
 	gtk_tree_path_free(priv->current_heading);
 
-	i7_app_remove_document(theapp, I7_DOCUMENT(self));
-
 	G_OBJECT_CLASS(i7_document_parent_class)->finalize(self);
-
-	if(i7_app_get_num_open_documents(theapp) == 0 && !i7_app_get_splash_screen_active(theapp))
-		gtk_main_quit();
 }
 
 static void
@@ -541,7 +535,7 @@ i7_document_close(I7Document *document)
 		if(result == GTK_RESPONSE_OK)
 			i7_document_save(document);
 	}
-	g_object_unref(document);
+	i7_app_remove_document(i7_app_get(), document);
 }
 
 void

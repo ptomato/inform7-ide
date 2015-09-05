@@ -112,6 +112,8 @@ on_storywindow_delete_event(GtkWidget *window, GdkEvent *event)
 		g_object_unref(file);
 	}
 
+	i7_app_remove_document(i7_app_get(), I7_DOCUMENT(window));
+
 	return FALSE;
 }
 

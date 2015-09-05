@@ -276,6 +276,9 @@ void
 i7_app_remove_document(I7App *app, I7Document *document)
 {
 	I7_APP_PRIVATE(app)->document_list = g_slist_remove(I7_APP_PRIVATE(app)->document_list, document);
+
+	if(i7_app_get_num_open_documents(app) == 0 && !i7_app_get_splash_screen_active(app))
+		gtk_main_quit();
 }
 
 /* Custom search function for invocation of g_slist_find_custom() in
@@ -325,8 +328,9 @@ i7_app_close_all_documents(I7App *app)
 {
 	I7_APP_USE_PRIVATE(app, priv);
 	g_slist_foreach(priv->document_list, (GFunc)i7_document_close, NULL);
-	if(i7_app_get_num_open_documents(app) == 0)
-		gtk_main_quit();
+	g_slist_foreach(priv->document_list, (GFunc)gtk_widget_destroy, NULL);
+	priv->document_list = NULL;
+	gtk_main_quit();
 }
 
 /* Carry out @func for each document window. To do something to each story or
