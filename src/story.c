@@ -316,19 +316,26 @@ i7_story_save(I7Document *document)
 	return TRUE;
 }
 
-/* Update the list of recently used files */
-static void
-update_recent_story_file(I7Story *story, GFile *file)
+/* Get a URI from a story GFile suitable for passing to the GtkRecentManager.
+Add story.ni as the actual file to open, in case any other application wants to
+open it. Free return value when done. */
+static char *
+get_recent_uri_for_story_file(GFile *file)
 {
-	GtkRecentManager *manager = gtk_recent_manager_get_default();
-
-	/* Add story.ni as the actual file to open, in case any other application
-	wants to open it, and set the display name to the project directory */
 	GFile *source_file = g_file_get_child(file, "Source");
 	GFile *story_file = g_file_get_child(source_file, "story.ni");
 	g_object_unref(source_file);
 	char *uri = g_file_get_uri(story_file);
 	g_object_unref(story_file);
+	return uri;
+}
+
+/* Update the list of recently used files */
+static void
+update_recent_story_file(I7Story *story, GFile *file)
+{
+	GtkRecentManager *manager = gtk_recent_manager_get_default();
+	char *uri = get_recent_uri_for_story_file(file);
 
 	/* We use the groups "inform7_project", "inform7_extension", and
 	 "inform7_builtin" to determine how to open a file from the recent manager */
@@ -338,6 +345,7 @@ update_recent_story_file(I7Story *story, GFile *file)
 		"gnome-inform7 %f", NULL, FALSE
 	};
 
+	/* The display name is the project directory */
 	recent_data.display_name = file_get_display_name(file);
 
 	/* Use the story title and author as the description,
@@ -354,6 +362,18 @@ update_recent_story_file(I7Story *story, GFile *file)
 
 	g_free(recent_data.display_name);
 	g_free(recent_data.description);
+	g_free(uri);
+}
+
+/* Remove a file from the recently used list of files, e.g. if it failed to
+open */
+static void
+remove_recent_story_file(GFile *file)
+{
+	GtkRecentManager *manager = gtk_recent_manager_get_default();
+	char *uri = get_recent_uri_for_story_file(file);
+	gtk_recent_manager_remove_item(manager, uri, NULL);
+	/* ignore error */
 	g_free(uri);
 }
 
@@ -1205,6 +1225,7 @@ i7_story_open(I7Story *story, GFile *file)
 fail:
 	g_free(display_name);
 fail2:
+	remove_recent_story_file(file);
 	g_object_unref(file);
 	return FALSE;
 }

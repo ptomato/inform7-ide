@@ -209,6 +209,18 @@ update_recent_extension_file(I7Extension *extension, GFile *file, gboolean reado
 	g_free(uri);
 }
 
+/* Remove a file from the recently used list of files, e.g. if it failed to
+open */
+static void
+remove_recent_extension_file(GFile *file)
+{
+	GtkRecentManager *manager = gtk_recent_manager_get_default();
+	char *uri = g_file_get_uri(file);
+	gtk_recent_manager_remove_item(manager, uri, NULL);
+	/* ignore error */
+	g_free(uri);
+}
+
 /* Save extension in the given directory  */
 static void
 i7_extension_save_as(I7Document *document, GFile *file)
@@ -563,7 +575,7 @@ i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly)
 	/* Read the source */
 	char *text = read_source_file(file);
 	if(!text)
-		return FALSE;
+		goto fail;
 
 	update_recent_extension_file(extension, file, readonly);
 
@@ -582,6 +594,10 @@ i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly)
 	i7_document_set_modified(I7_DOCUMENT(extension), FALSE);
 
 	return TRUE;
+
+fail:
+	remove_recent_extension_file(file);
+	return FALSE;
 }
 
 void
