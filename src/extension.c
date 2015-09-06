@@ -529,7 +529,7 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 
 	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION, NULL));
 	if(!i7_extension_open(extension, file, readonly)) {
-		g_object_unref(extension);
+		gtk_widget_destroy(GTK_WIDGET(extension));
 		return NULL;
 	}
 

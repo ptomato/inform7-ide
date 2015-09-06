@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -360,9 +360,8 @@ void
 action_close(GtkAction *action, I7Document *document)
 {
 	if(i7_document_verify_save(document)) {
-		g_object_unref(document);
-		if(i7_app_get_num_open_documents(i7_app_get()) == 0)
-			gtk_main_quit();
+		i7_app_remove_document(i7_app_get(), I7_DOCUMENT(document));
+		gtk_widget_destroy(GTK_WIDGET(document));
 	}
 }
 
