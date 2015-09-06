@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ typedef struct {
 	void (*set_spellcheck)();
 	void (*check_spelling)();
 	void (*set_elastic_tabstops)();
+	void (*revert)();
 } I7DocumentClass;
 
 typedef struct {
@@ -154,6 +155,7 @@ void i7_document_stop_file_monitor(I7Document *document);
 gboolean i7_document_save(I7Document *document);
 void i7_document_save_as(I7Document *document, GFile *file);
 gboolean i7_document_verify_save(I7Document *document);
+void i7_document_revert(I7Document *self);
 void i7_document_close(I7Document *document);
 void i7_document_scroll_to_selection(I7Document *document);
 void i7_document_jump_to_line(I7Document *document, guint lineno);

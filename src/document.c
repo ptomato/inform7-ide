@@ -230,6 +230,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->set_spellcheck = NULL;
 	klass->check_spelling = NULL;
 	klass->set_elastic_tabstops = NULL;
+	klass->revert = NULL;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_document_finalize;
@@ -1405,4 +1406,17 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+}
+
+/**
+ * i7_document_revert:
+ * @self: the #I7Document
+ *
+ * Revert to the last saved version of the document, discarding all unsaved
+ * changes.
+ */
+void
+i7_document_revert(I7Document *self)
+{
+	I7_DOCUMENT_GET_CLASS(self)->revert(self);
 }

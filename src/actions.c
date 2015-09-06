@@ -232,9 +232,7 @@ action_revert(GtkAction *action, I7Document *document)
 	if(result != GTK_RESPONSE_OK)
 		goto finally; /* Only go on if the user clicked revert */
 
-	/* Close the window and reopen it */
-	g_object_unref(document);
-	document = I7_DOCUMENT(i7_story_new_from_file(i7_app_get(), file));
+	i7_document_revert(document);
 
 finally:
 	g_object_unref(file);

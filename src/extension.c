@@ -368,6 +368,15 @@ i7_extension_set_elastic_tabstops(I7Document *document, gboolean elastic)
 	i7_source_view_set_elastic_tabstops(I7_EXTENSION(document)->sourceview, elastic);
 }
 
+static void
+i7_extension_revert(I7Document *document)
+{
+	I7_EXTENSION_USE_PRIVATE(document, priv);
+	GFile *file = i7_document_get_file(document);
+	i7_extension_open(I7_EXTENSION(document), file, priv->readonly);
+	g_object_unref(file);
+}
+
 /* TYPE SYSTEM */
 
 static void
@@ -479,6 +488,7 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
 	document_class->check_spelling = i7_extension_check_spelling;
 	document_class->set_elastic_tabstops = i7_extension_set_elastic_tabstops;
+	document_class->revert = i7_extension_revert;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_extension_finalize;

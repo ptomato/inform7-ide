@@ -632,6 +632,14 @@ i7_story_check_spelling(I7Document *document)
 	i7_source_view_check_spelling(I7_STORY(document)->panel[RIGHT]->sourceview);
 }
 
+static void
+i7_story_revert(I7Document *document)
+{
+	GFile *file = i7_document_get_file(document);
+	i7_story_open(I7_STORY(document), file);
+	g_object_unref(file);
+}
+
 /* TYPE SYSTEM */
 
 static void
@@ -906,6 +914,7 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->set_spellcheck = i7_story_set_spellcheck;
 	document_class->check_spelling = i7_story_check_spelling;
 	document_class->set_elastic_tabstops = i7_story_set_elastic_tabstops;
+	document_class->revert = i7_story_revert;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->set_property = i7_story_set_property;
