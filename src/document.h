@@ -49,6 +49,7 @@ typedef struct {
 	void (*set_spellcheck)();
 	void (*check_spelling)();
 	void (*set_elastic_tabstops)();
+	gboolean (*can_revert)();
 	void (*revert)();
 } I7DocumentClass;
 
@@ -155,6 +156,7 @@ void i7_document_stop_file_monitor(I7Document *document);
 gboolean i7_document_save(I7Document *document);
 void i7_document_save_as(I7Document *document, GFile *file);
 gboolean i7_document_verify_save(I7Document *document);
+gboolean i7_document_can_revert(I7Document *self);
 void i7_document_revert(I7Document *self);
 void i7_document_close(I7Document *document);
 void i7_document_scroll_to_selection(I7Document *document);

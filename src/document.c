@@ -230,6 +230,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->set_spellcheck = NULL;
 	klass->check_spelling = NULL;
 	klass->set_elastic_tabstops = NULL;
+	klass->can_revert = NULL;
 	klass->revert = NULL;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
@@ -1406,6 +1407,34 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+}
+
+/**
+ * i7_document_can_revert:
+ * @self: the #I7Document
+ *
+ * Tell whether the document can be reverted to its last saved version; for
+ * this, the document must have a last saved version, and there must have been
+ * changes since that version.
+ *
+ * Returns: %TRUE if the document can be reverted, %FALSE otherwise.
+ */
+gboolean
+i7_document_can_revert(I7Document *self)
+{
+	I7_DOCUMENT_USE_PRIVATE(self, priv);
+
+	if(priv->file == NULL)
+		return FALSE; /* No saved version to revert to */
+	if(!g_file_query_exists(priv->file, NULL))
+		return FALSE; /* No saved version to revert to */
+	if(!priv->modified)
+		return FALSE; /* Can't revert if not changed since last save */
+
+	if (I7_DOCUMENT_GET_CLASS(self)->can_revert != NULL)
+		return I7_DOCUMENT_GET_CLASS(self)->can_revert(self);
+
+	return TRUE;
 }
 
 /**

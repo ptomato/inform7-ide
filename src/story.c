@@ -652,6 +652,17 @@ i7_story_check_spelling(I7Document *document)
 	i7_source_view_check_spelling(I7_STORY(document)->panel[RIGHT]->sourceview);
 }
 
+/* In addition to the logic in i7_document_can_revert(), also require that the
+story's GFile points to a directory. */
+static gboolean
+i7_story_can_revert(I7Document *document)
+{
+	GFile *file = i7_document_get_file(document);
+	gboolean retval = (g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY);
+	g_object_unref (file);
+	return retval;
+}
+
 static void
 i7_story_revert(I7Document *document)
 {
@@ -934,6 +945,7 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->set_spellcheck = i7_story_set_spellcheck;
 	document_class->check_spelling = i7_story_check_spelling;
 	document_class->set_elastic_tabstops = i7_story_set_elastic_tabstops;
+	document_class->can_revert = i7_story_can_revert;
 	document_class->revert = i7_story_revert;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);

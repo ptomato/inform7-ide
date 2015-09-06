@@ -208,13 +208,8 @@ action_save_copy(GtkAction *action, I7Document *document)
 void
 action_revert(GtkAction *action, I7Document *document)
 {
-	GFile *file = i7_document_get_file(document);
-	if(!file)
-		return; /* No saved version to revert to */
-	if(!file_exists_and_is_dir(file))
-		goto finally; /* No saved version to revert to */
-	if(!i7_document_get_modified(document))
-		goto finally; /* Not changed since last save */
+	if (!i7_document_can_revert(document))
+		return;
 
 	/* Ask if the user is sure */
 	/* TRANSLATORS: File->Revert */
@@ -230,12 +225,9 @@ action_revert(GtkAction *action, I7Document *document)
 	gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
 	gtk_widget_destroy(revert_dialog);
 	if(result != GTK_RESPONSE_OK)
-		goto finally; /* Only go on if the user clicked revert */
+		return; /* Only go on if the user clicked revert */
 
 	i7_document_revert(document);
-
-finally:
-	g_object_unref(file);
 }
 
 /* File->Page Setup... */
