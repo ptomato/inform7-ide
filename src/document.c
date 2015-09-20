@@ -32,12 +32,36 @@
 
 /* CALLBACKS */
 
-void
+static void
 on_buffer_mark_set(GtkTextBuffer *buffer, GtkTextIter *location, GtkTextMark *mark, I7Document *document)
 {
 	I7_DOCUMENT_USE_PRIVATE(document, priv);
 	if(gtk_text_mark_get_name(mark) && strcmp(gtk_text_mark_get_name(mark), "selection-bound"))
 		gtk_action_group_set_sensitive(priv->selection_action_group, gtk_text_buffer_get_has_selection(buffer));
+}
+
+/* These two handlers implement indenting wrapped lines half a tab stop */
+static void
+after_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, char *text, int len, I7Document *document)
+{
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
+	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {
+		GtkTextIter insert_start = *location;
+		gtk_text_iter_backward_chars(&insert_start, len);
+		i7_document_update_indent_tags(document, &insert_start, location);
+	}
+}
+
+static void
+after_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
+{
+	I7App *theapp = i7_app_get();
+	GSettings *prefs = i7_app_get_prefs(theapp);
+
+	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED))
+		i7_document_update_indent_tags(document, start, end);
 }
 
 void
@@ -107,11 +131,6 @@ i7_document_init(I7Document *self)
 	priv->accels = NULL;
 	priv->buffer = GTK_SOURCE_BUFFER(load_object(builder, "buffer"));
 	g_object_ref(priv->buffer);
-	/* Add invisible tag to buffer */
-	GtkTextTagTable *table = gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(priv->buffer));
-	priv->invisible_tag = GTK_TEXT_TAG(load_object(builder, "invisible_tag"));
-	gtk_text_tag_table_add(table, priv->invisible_tag);
-	/* do not unref table */
 	priv->heading_depth = I7_HEADING_PART;
 	priv->headings = GTK_TREE_STORE(load_object(builder, "headings_store"));
 	g_object_ref(priv->headings);
@@ -179,9 +198,15 @@ i7_document_init(I7Document *self)
 	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
+	/* This requires the undo and redo actions to exist */
+	priv->excerpt = i7_text_buffer_excerpt_new(priv->buffer);
+	g_signal_connect(priv->excerpt, "mark-set", G_CALLBACK(on_buffer_mark_set), self);
+	g_signal_connect_after(priv->excerpt, "insert-text", G_CALLBACK(after_buffer_insert_text), self);
+	g_signal_connect_after(priv->excerpt, "delete-range", G_CALLBACK(after_buffer_delete_range), self);
+
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
-		priv->buffer, "highlight-syntax",
+		priv->excerpt, "highlight-syntax",
 		G_SETTINGS_BIND_GET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
 	/* Show statusbar if necessary */
@@ -328,8 +353,14 @@ i7_document_get_display_name(I7Document *document)
 	return file_get_display_name(file);
 }
 
-GtkSourceBuffer *
+I7TextBufferExcerpt *
 i7_document_get_buffer(I7Document *document)
+{
+	return I7_DOCUMENT_PRIVATE(document)->excerpt;
+}
+
+GtkSourceBuffer *
+i7_document_get_full_buffer(I7Document *document)
 {
 	return I7_DOCUMENT_PRIVATE(document)->buffer;
 }
@@ -546,6 +577,22 @@ i7_document_scroll_to_selection(I7Document *document)
 	I7_DOCUMENT_GET_CLASS(document)->scroll_to_selection(document);
 }
 
+/* Helper function; also used in document-search.c. Takes iters on priv->buffer
+and selects and shows the appropriate region of priv->excerpt, showing the whole
+document if the iters are not within the excerpted region. */
+void
+i7_document_show_iters(I7Document *self, GtkTextIter *start, GtkTextIter *end)
+{
+	I7_DOCUMENT_USE_PRIVATE(self, priv);
+
+	if(!i7_text_buffer_excerpt_iters_in_range(priv->excerpt, start, end))
+		i7_document_show_entire_source(self);
+
+	i7_text_buffer_excerpt_iters_from_buffer_iters(priv->excerpt, start, end);
+	gtk_text_buffer_select_range(GTK_TEXT_BUFFER(priv->excerpt), start, end);
+	I7_DOCUMENT_GET_CLASS(self)->scroll_to_selection(self);
+}
+
 void
 i7_document_jump_to_line(I7Document *document, guint lineno)
 {
@@ -555,8 +602,7 @@ i7_document_jump_to_line(I7Document *document, guint lineno)
 	gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(priv->buffer), &start, lineno - 1);
 	end = start;
 	gtk_text_iter_forward_to_line_end(&end);
-	gtk_text_buffer_select_range(GTK_TEXT_BUFFER(priv->buffer), &start, &end);
-	I7_DOCUMENT_GET_CLASS(document)->scroll_to_selection(document);
+	i7_document_show_iters(document, &start, &end);
 }
 
 void
@@ -580,7 +626,7 @@ i7_document_update_font_sizes(I7Document *document)
 void
 i7_document_update_font_styles(I7Document *document)
 {
-	g_idle_add((GSourceFunc)update_style, I7_DOCUMENT_PRIVATE(document)->buffer);
+	g_idle_add((GSourceFunc)update_style, I7_DOCUMENT_PRIVATE(document)->excerpt);
 }
 
 /* Recalculate the document's elastic tabstops */
@@ -629,7 +675,7 @@ remove_indent_tags(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, 
 void
 i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, GtkTextIter *orig_end)
 {
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(I7_DOCUMENT_PRIVATE(document)->buffer);
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(I7_DOCUMENT_PRIVATE(document)->excerpt);
 	GtkTextTagTable *table = gtk_text_buffer_get_tag_table(buffer);
 	GtkTextIter start, end;
 	static unsigned max_tab_tag_created = 0;
@@ -895,23 +941,21 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 		-1);
 	startline--;
 
-	/* Remove the invisible tag */
-	GtkTextIter start, end;
-	gtk_text_buffer_get_start_iter(buffer, &start);
-	gtk_text_buffer_get_end_iter(buffer, &end);
-	gtk_text_buffer_remove_tag(buffer, priv->invisible_tag, &start, &end);
-
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = path;
 
 	/* If the user clicked on the title, show the entire source */
 	if(depth == I7_HEADING_NONE) {
-		/* we have now shown the entire source */
+		i7_text_buffer_excerpt_clear_range(priv->excerpt);
+
 		gtk_action_set_sensitive(document->previous_section, FALSE);
 		gtk_action_set_sensitive(document->next_section, FALSE);
 		gtk_action_set_sensitive(document->decrease_restriction, FALSE);
 		gtk_action_set_sensitive(document->entire_source, FALSE);
-		gtk_text_buffer_place_cursor(buffer, &start);
+
+		GtkTextIter start;
+		gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(priv->excerpt), &start);
+		gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(priv->excerpt), &start);
 		return;
 	}
 
@@ -919,10 +963,8 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	gtk_action_set_sensitive(document->decrease_restriction, TRUE);
 	gtk_action_set_sensitive(document->entire_source, TRUE);
 
-	GtkTextIter mid;
-	gtk_text_buffer_get_iter_at_line(buffer, &mid, startline);
-	gtk_text_buffer_apply_tag(buffer, priv->invisible_tag, &start, &mid);
-	gtk_text_buffer_place_cursor(buffer, &mid);
+	GtkTextIter start, end;
+	gtk_text_buffer_get_iter_at_line(buffer, &start, startline);
 
 	GtkTreeIter next_iter = iter;
 	/* if there is a next heading at the current level, display until there */
@@ -934,7 +976,13 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 		{
 			/* otherwise, there is no next heading, display until the end of the
 			source text */
+			gtk_text_buffer_get_end_iter(buffer, &end);
+			i7_text_buffer_excerpt_set_range(priv->excerpt, &start, &end);
+
 			gtk_action_set_sensitive(document->next_section, FALSE);
+
+			gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(priv->excerpt), &start);
+			gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(priv->excerpt), &start);
 			return;
 		}
 
@@ -943,10 +991,13 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	/* the line should be counted from zero, and also we need to back up
 	by one line so as not to display the heading */
 	endline -= 2;
-	gtk_text_buffer_get_iter_at_line(buffer, &mid, endline);
-	gtk_text_buffer_apply_tag(buffer, priv->invisible_tag, &mid, &end);
+	gtk_text_buffer_get_iter_at_line(buffer, &end, endline);
+	i7_text_buffer_excerpt_set_range(priv->excerpt, &start, &end);
 
 	gtk_action_set_sensitive(document->next_section, TRUE);
+
+	gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(priv->excerpt), &start);
+	gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(priv->excerpt), &start);
 }
 
 GtkTreePath *
@@ -1008,7 +1059,7 @@ i7_document_get_deeper_heading(I7Document *document)
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 
-	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->buffer));
+	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->excerpt));
 	GtkTreeIter iter, next_iter;
 	guint line = 0;
 	/* This perhaps won't deal quite as well with changes on the fly */
@@ -1035,7 +1086,7 @@ i7_document_get_deepest_heading(I7Document *document)
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 
-	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->buffer));
+	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->excerpt));
 	GtkTreeIter iter, next_iter;
 	guint line = 0;
 	/* Could start at current_heading to be more efficient, but starting at the
@@ -1064,17 +1115,13 @@ i7_document_get_deepest_heading(I7Document *document)
 	return path;
 }
 
-/* Remove the invisible tag */
+/* Stop excerpting and show the whole buffer */
 void
 i7_document_show_entire_source(I7Document *document)
 {
 	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 
-	GtkTextIter start, end;
-	gtk_text_buffer_get_start_iter(buffer, &start);
-	gtk_text_buffer_get_end_iter(buffer, &end);
-	gtk_text_buffer_remove_tag(buffer, priv->invisible_tag, &start, &end);
+	i7_text_buffer_excerpt_clear_range(priv->excerpt);
 
 	gtk_action_set_sensitive(document->previous_section, FALSE);
 	gtk_action_set_sensitive(document->next_section, FALSE);
@@ -1447,5 +1494,6 @@ i7_document_can_revert(I7Document *self)
 void
 i7_document_revert(I7Document *self)
 {
+	i7_document_show_entire_source(self);
 	I7_DOCUMENT_GET_CLASS(self)->revert(self);
 }

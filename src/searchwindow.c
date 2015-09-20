@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -687,7 +687,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(priv->document));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_full_buffer(priv->document));
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
 
 	start_spinner(self);

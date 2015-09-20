@@ -196,7 +196,7 @@ update_recent_extension_file(I7Extension *extension, GFile *file, gboolean reado
 	/* Use the "begins here" line as the description,
 	 retrieved from the first line of the text */
 	GtkTextIter start, end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_full_buffer(I7_DOCUMENT(extension)));
 	gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
 	gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
 	gtk_text_iter_forward_to_line_end(&end);
@@ -436,7 +436,7 @@ i7_extension_init(I7Extension *self)
 	gtk_window_resize(GTK_WINDOW(self), w, h);
 
 	/* Set up the Natural Inform highlighting */
-	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
+	GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self)));
 	set_buffer_language(buffer, "inform7x");
 	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 

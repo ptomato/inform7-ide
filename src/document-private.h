@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010, 2012 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2012, 2015 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gio/gio.h>
 #include "document.h"
+#include "text-buffer-excerpt.h"
 
 typedef struct {
 	/* Action Groups */
@@ -38,7 +39,7 @@ typedef struct {
 	GFileMonitor *monitor;
 	/* The program code */
 	GtkSourceBuffer *buffer;
-	GtkTextTag *invisible_tag;
+	I7TextBufferExcerpt *excerpt;
 	/* The tree of section headings */
 	I7Heading heading_depth;
 	GtkTreeStore *headings;
@@ -56,5 +57,7 @@ typedef struct {
 
 #define I7_DOCUMENT_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_DOCUMENT, I7DocumentPrivate))
 #define I7_DOCUMENT_USE_PRIVATE(o,n) I7DocumentPrivate *n = I7_DOCUMENT_PRIVATE(o)
+
+void i7_document_show_iters(I7Document *self, GtkTextIter *start, GtkTextIter *end);
 
 #endif /* _DOCUMENT_PRIVATE_H_ */

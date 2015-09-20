@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2015 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -292,11 +292,5 @@ i7_document_find(I7Document *document, const gchar *text, gboolean forward, gboo
 		return;
 	}
 
-	/* We may have searched the invisible regions, so if the found text is
-	 invisible, go back to showing the entire source. */
-	if(gtk_text_iter_has_tag(&start, priv->invisible_tag) || gtk_text_iter_has_tag(&end, priv->invisible_tag))
-		i7_document_show_entire_source(document);
-
-	gtk_text_buffer_select_range(GTK_TEXT_BUFFER(priv->buffer), &start, &end);
-	i7_document_scroll_to_selection(document);
+	i7_document_show_iters(document, &start, &end);
 }

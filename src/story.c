@@ -351,7 +351,7 @@ update_recent_story_file(I7Story *story, GFile *file)
 	/* Use the story title and author as the description,
 	retrieved from the first line of the text */
 	GtkTextIter start, end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(story)));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_full_buffer(I7_DOCUMENT(story)));
 	gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
 	gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
 	gtk_text_iter_forward_to_line_end(&end);
@@ -420,7 +420,7 @@ i7_story_save_as(I7Document *document, GFile *file)
 	}
 	g_free(text);
 
-	gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(i7_document_get_buffer(document)), FALSE);
+	gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(i7_document_get_full_buffer(document)), FALSE);
 
 	update_recent_story_file(I7_STORY(document), file);
 
@@ -850,7 +850,7 @@ i7_story_init(I7Story *self)
 		gtk_widget_show(self->notes_window);
 
 	/* Set up the Natural Inform highlighting */
-	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
+	GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self)));
 	set_buffer_language(buffer, "inform7");
 	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 

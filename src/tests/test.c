@@ -1,4 +1,4 @@
-/*  Copyright (C) 2011, 2012, 2014 P. F. Chimento
+/*  Copyright (C) 2011, 2012, 2014, 2015 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,8 @@
 #include "skein-test.h"
 #include "story-test.h"
 
+extern void add_text_buffer_excerpt_tests(void);
+
 int
 main(int argc, char **argv)
 {
@@ -43,6 +45,8 @@ main(int argc, char **argv)
 	g_test_add_func("/story/materials-file", test_story_materials_file);
 	g_test_add_func("/story/old-materials-file", test_story_old_materials_file);
 	g_test_add_func("/story/renames-materials-file", test_story_renames_materials_file);
+
+	add_text_buffer_excerpt_tests();
 
 	int retval = g_test_run();
 

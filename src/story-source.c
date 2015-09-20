@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -101,14 +101,12 @@ on_source_key_press_event(GtkSourceView *source, GdkEventKey *event, I7SourceVie
 	return FALSE;  /* propagate event */
 }
 
+/* Do any code intelligence after text has been deleted */
 void
 after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
 {
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED))
-		i7_document_update_indent_tags(document, start, end);
 
 	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
 		return;
@@ -118,19 +116,13 @@ after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkT
 	/* TODO: do this in idle time and remove the old idle function */
 }
 
+/* Do any code intelligence after text has been inserted */
 void
 after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gchar *text, gint len, I7Document *document)
 {
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
-	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {
-		GtkTextIter insert_start = *location;
-		gtk_text_iter_backward_chars(&insert_start, len);
-		i7_document_update_indent_tags(document, &insert_start, location);
-	}
-
-	/* Return after that if we are not doing intelligent symbol following */
 	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
 		return;
 

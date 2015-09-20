@@ -261,6 +261,7 @@ libinform7gui_a_SOURCES = \
 	story.c story.h story-private.h \
 	story-source.c story-results.c story-index.c story-settings.c \
 	story-compile.c story-game.c story-skein.c story-transcript.c \
+	text-buffer-excerpt.c text-buffer-excerpt.h \
 	transcript-diff.c transcript-diff.h \
 	transcript-renderer.c transcript-renderer.h \
 	welcomedialog.c welcomedialog.h
@@ -297,6 +298,7 @@ test_SOURCES = tests/test.c \
 	tests/app-test.c tests/app-test.h \
 	tests/skein-test.c tests/skein-test.h \
 	tests/story-test.c tests/story-test.h \
+	tests/text-buffer-excerpt-test.c \
 	$(NULL)
 test_CPPFLAGS = \
 	$(gnome_inform7_CPPFLAGS) \

@@ -22,6 +22,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include "text-buffer-excerpt.h"
 
 #define I7_TYPE_DOCUMENT            (i7_document_get_type())
 #define I7_DOCUMENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_DOCUMENT, I7Document))
@@ -142,7 +143,8 @@ void i7_document_add_menus_and_findbar(I7Document *document);
 GFile *i7_document_get_file(const I7Document *document);
 gchar *i7_document_get_display_name(I7Document *document);
 void i7_document_set_file(I7Document *document, GFile *file);
-GtkSourceBuffer *i7_document_get_buffer(I7Document *document);
+I7TextBufferExcerpt *i7_document_get_buffer(I7Document *document);
+GtkSourceBuffer *i7_document_get_full_buffer(I7Document *document);
 GtkTextView *i7_document_get_default_view(I7Document *document);
 void i7_document_set_source_text(I7Document *document, gchar *text);
 gchar *i7_document_get_source_text(I7Document *document);

@@ -268,7 +268,7 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 {
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
-	GtkSourcePrintCompositor *compositor = gtk_source_print_compositor_new(i7_document_get_buffer(document));
+	GtkSourcePrintCompositor *compositor = gtk_source_print_compositor_new(GTK_SOURCE_BUFFER(i7_document_get_buffer(document)));
 	g_signal_connect(print, "draw-page", G_CALLBACK(on_draw_page), compositor);
 	g_signal_connect(print, "end-print", G_CALLBACK(on_end_print), compositor);
 
@@ -368,7 +368,7 @@ action_quit(GtkAction *action, I7App *app)
 void
 action_undo(GtkAction *action, I7Document *document)
 {
-	GtkSourceBuffer *buffer = i7_document_get_buffer(document);
+	GtkSourceBuffer *buffer = i7_document_get_full_buffer(document);
 	if(gtk_source_buffer_can_undo(buffer))
 		gtk_source_buffer_undo(buffer);
 
@@ -381,7 +381,7 @@ action_undo(GtkAction *action, I7Document *document)
 void
 action_redo(GtkAction *action, I7Document *document)
 {
-	GtkSourceBuffer *buffer = i7_document_get_buffer(document);
+	GtkSourceBuffer *buffer = i7_document_get_full_buffer(document);
 	if(gtk_source_buffer_can_redo(buffer))
 		gtk_source_buffer_redo(buffer);
 
@@ -905,7 +905,7 @@ action_renumber_all_sections(GtkAction *action, I7Document *document)
 {
 	GtkTextIter pos, end;
 	int volume = 1, book = 1, part = 1, chapter = 1, section = 1;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_full_buffer(document));
 
 	gtk_text_buffer_get_start_iter(buffer, &pos);
 
