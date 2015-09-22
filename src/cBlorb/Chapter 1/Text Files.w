@@ -267,16 +267,66 @@ int white_space(int c) { if ((c == ' ') || (c == '\t')) return TRUE; return FALS
 
 @p Other file utilities.
 Although this section is called "Text Files", it also has a couple of
-general-purpose file utilities:
+general-purpose file utilities.
+
+The first is cautiously written because of an oddity in Windows's handling
+of filenames, which are allowed to have trailing dots or spaces, in a way
+which isn't necessarily visible to the user, who may have added these by
+an accidental brush of the keyboard. Thus |frog.jpg .| should be treated
+as equivalent to |frog.jpg| when deciding the likely file format.
 
 @c
 char *get_filename_extension(char *filename) {
 	int i = cblorb_strlen(filename) - 1;
+	while ((i>=0) && ((filename[i] == '.') || (filename[i] == ' '))) i--;
 	while ((i>=0) && (filename[i] != '.') && (filename[i] != SEP_CHAR)) i--;
 	if ((i<0) || (filename[i] == SEP_CHAR)) return filename + cblorb_strlen(filename);
 	return filename + i;
 }
 
+@ The following guesses the file format from its file extension:
+
+@d FORMAT_PERHAPS_HTML 1
+@d FORMAT_PERHAPS_JPEG 2
+@d FORMAT_PERHAPS_PNG 3
+@d FORMAT_PERHAPS_OGG 4
+@d FORMAT_PERHAPS_AIFF 5
+@d FORMAT_PERHAPS_MIDI 6
+@d FORMAT_PERHAPS_MOD 7
+@d FORMAT_PERHAPS_GLULX 8
+@d FORMAT_PERHAPS_ZCODE 9
+@d FORMAT_UNRECOGNISED 0
+
+@c
+int infer_format_from_filename_extension(char *filename) {
+	char *p = get_filename_extension(filename);
+	if (p[0] == '.') p++;
+	char normalised[8];
+	int i;
+	for (i=0; (p[i]) && (p[i] != '.') && (p[i] != ' ') && (i<7); i++)
+		normalised[i] = cblorb_tolower(p[i]);
+	normalised[i] = 0;
+	if (strcmp(normalised, "html") == 0) return FORMAT_PERHAPS_HTML;
+	if (strcmp(normalised, "htm") == 0) return FORMAT_PERHAPS_HTML;
+	if (strcmp(normalised, "jpg") == 0) return FORMAT_PERHAPS_JPEG;
+	if (strcmp(normalised, "jpeg") == 0) return FORMAT_PERHAPS_JPEG;
+	if (strcmp(normalised, "png") == 0) return FORMAT_PERHAPS_PNG;
+	if (strcmp(normalised, "ogg") == 0) return FORMAT_PERHAPS_OGG;
+	if (strcmp(normalised, "aiff") == 0) return FORMAT_PERHAPS_AIFF;
+	if (strcmp(normalised, "aif") == 0) return FORMAT_PERHAPS_AIFF;
+	if (strcmp(normalised, "midi") == 0) return FORMAT_PERHAPS_MIDI;
+	if (strcmp(normalised, "mid") == 0) return FORMAT_PERHAPS_MIDI;
+	if (strcmp(normalised, "mod") == 0) return FORMAT_PERHAPS_MOD;
+	if ((normalised[0] == 'z') && (isdigit(normalised[1])) && (normalised[2] == 0))
+		return FORMAT_PERHAPS_ZCODE;
+	if ((normalised[0]) && (normalised[cblorb_strlen(normalised)-1] == 'x'))
+		return FORMAT_PERHAPS_GLULX;
+	return FORMAT_UNRECOGNISED;
+}
+
+@
+
+@c
 char *get_filename_leafname(char *filename) {
 	int i = cblorb_strlen(filename) - 1;
 	while ((i>=0) && (filename[i] != SEP_CHAR)) i--;

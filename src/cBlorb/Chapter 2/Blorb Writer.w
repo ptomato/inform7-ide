@@ -307,21 +307,25 @@ be PNG or JPEG. There can be any number of these chunks.
 
 @c
 void picture_chunk(int n, char *fn, char *alt) {
-	char *p = get_filename_extension(fn);
 	char *type = "PNG ";
+	int form = infer_format_from_filename_extension(fn);
+	if (form == FORMAT_PERHAPS_JPEG) type = "JPEG";
+	else if (form == FORMAT_PERHAPS_PNG) type = "PNG ";
+	else error_1("image file has unknown file extension "
+		"(expected e.g. '.png' for PNG, '.jpeg' for JPEG)", fn); 
 
 	if (n < 1) fatal("Picture resource number is less than 1");
 	if (resource_seen(&pict_resource, n)) fatal("Duplicate Picture resource number");
-
-	if (*p == '.') {
-		p++;
-		if ((*p == 'j') || (*p == 'J')) type = "JPEG";
-	}
 
     add_chunk_to_blorb(type, n, fn, "Pict", NULL, 0);
     if ((alt) && (alt[0])) add_rdes_record(1, n, alt);
 	no_pictures_included++;
 }
+
+@
+
+@<Normalise the file extension p@> =
+	
 
 @ For images identified by name. The older Blorb creation program, |perlBlorb|,
 would emit helpful I6 constant declarations, allowing the programmer to
@@ -349,19 +353,18 @@ There can be any number of these chunks, too.
 
 @c
 void sound_chunk(int n, char *fn, char *alt) {
-	char *p = get_filename_extension(fn);
 	char *type = "AIFF";
+	int form = infer_format_from_filename_extension(fn);
+	if (form == FORMAT_PERHAPS_OGG) type = "OGGV";
+	else if (form == FORMAT_PERHAPS_MIDI) type = "MIDI";
+	else if (form == FORMAT_PERHAPS_MOD) type = "MOD ";
+	else if (form == FORMAT_PERHAPS_AIFF) type = "AIFF";
+	else error_1("sound file has unknown file extension "
+		"(expected e.g. '.ogg', '.midi', '.mod' or '.aiff', as appropriate)", fn); 
+
 	if (n < 3) fatal("Sound resource number is less than 3");
 	if (resource_seen(&sound_resource, n)) fatal("Duplicate Sound resource number");
 
-	if (*p == '.') {
-		p++;
-		if ((*p == 'o') || (*p == 'O')) type = "OGGV";
-		else if ((*p == 'm') || (*p == 'M')) {
-			if ((p[1] == 'i') || (p[1] == 'I')) type = "MIDI";
-			else type = "MOD ";
-		}
-	}
     add_chunk_to_blorb(type, n, fn, "Snd ", NULL, 0);
     if ((alt) && (alt[0])) add_rdes_record(2, n, alt);
 	no_sounds_included++;
@@ -425,11 +428,13 @@ Inform 7 never does this.
 
 @c
 void executable_chunk(char *fn) {
-	char *p = get_filename_extension(fn);
 	char *type = "ZCOD";
-	if (*p == '.') {
-		if (p[cblorb_strlen(p)-1] == 'x') type = "GLUL";
-	}
+	int form = infer_format_from_filename_extension(fn);
+	if (form == FORMAT_PERHAPS_GLULX) type = "GLUL";
+	else if (form == FORMAT_PERHAPS_ZCODE) type = "ZCOD";
+	else error_1("story file has unknown file extension "
+		"(expected e.g. '.z5' for Z-code, '.ulx' for Glulx)", fn); 
+
 	add_chunk_to_blorb(type, 0, fn, "Exec", NULL, 0);
 }
 

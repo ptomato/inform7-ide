@@ -397,7 +397,7 @@ void release_file_into_website(char *name, char *t, char *sub) {
 		return;
 	}
 
-	if (strcmp(get_filename_extension(name), ".html") == 0)
+	if (infer_format_from_filename_extension(name) == FORMAT_PERHAPS_HTML)
 		@<Release an HTML page from the template into the website@>
 	else
 		@<Release a binary file from the template into the website@>;
