@@ -3,7 +3,7 @@
 /*              Verb and Extend.                                             */
 /*                                                                           */
 /*   Part of Inform 6.33                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2014                                 */
+/*   copyright (c) Graham Nelson 1993 - 2015                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -133,7 +133,7 @@ extern void make_fake_action(void)
         panic_mode_error_recovery(); return;
     }
 
-    sprintf(action_sub, "%s__A", token_text);
+    snprintf(action_sub, MAX_IDENTIFIER_LENGTH+4, "%s__A", token_text);
     i = symbol_index(action_sub, -1);
 
     if (!(sflags[i] & UNKNOWN_SFLAG))
@@ -170,12 +170,12 @@ extern assembly_operand action_of_name(char *name)
     int j;
     assembly_operand AO;
 
-    sprintf(action_sub, "%s__A", name);
+    snprintf(action_sub, MAX_IDENTIFIER_LENGTH+4, "%s__A", name);
     j = symbol_index(action_sub, -1);
 
     if (stypes[j] == FAKE_ACTION_T)
-    {   AO.value = svals[j];
-        AO.marker = 0;
+    {   INITAO(&AO);
+        AO.value = svals[j];
         if (!glulx_mode)
           AO.type = LONG_CONSTANT_OT;
         else
@@ -194,6 +194,7 @@ extern assembly_operand action_of_name(char *name)
     }
     sflags[j] |= USED_SFLAG;
 
+    INITAO(&AO);
     AO.value = svals[j];
     AO.marker = ACTION_MV;
     if (!glulx_mode) {
@@ -208,7 +209,7 @@ extern assembly_operand action_of_name(char *name)
 
 extern void find_the_actions(void)
 {   int i; int32 j;
-    char action_name[MAX_IDENTIFIER_LENGTH];
+    char action_name[MAX_IDENTIFIER_LENGTH+4];
     char action_sub[MAX_IDENTIFIER_LENGTH+4];
 
     if (module_switch)
@@ -773,7 +774,7 @@ extern void extend_verb(void)
 {
     /*  Parse an entire Extend ... directive.                                */
 
-    int Inform_verb, k, l, lines, extend_mode;
+    int Inform_verb = -1, k, l, lines, extend_mode;
 
     directive_keywords.enabled = TRUE;
     directives.enabled = FALSE;

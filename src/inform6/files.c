@@ -8,7 +8,7 @@
 /*             settings and are very host OS-dependent.                      */
 /*                                                                           */
 /*   Part of Inform 6.33                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2014                                 */
+/*   copyright (c) Graham Nelson 1993 - 2015                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -320,7 +320,7 @@ static void output_compression(int entnum, int32 *size, int *count)
 }
 
 static void output_file_z(void)
-{   FILE *fin; char new_name[PATHLEN];
+{   FILE *fin=NULL; char new_name[PATHLEN];
     int32 length, blanks=0, size, i, j, offset;
     uint32 code_length, size_before_code, next_cons_check;
     int use_function;
@@ -619,7 +619,7 @@ static void output_file_z(void)
 }
 
 static void output_file_g(void)
-{   FILE *fin; char new_name[PATHLEN];
+{   FILE *fin=NULL; char new_name[PATHLEN];
     int32 size, i, j, offset;
     int32 VersionNum;
     uint32 code_length, size_before_code, next_cons_check;
@@ -986,7 +986,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
       for (lx=0, ix=0; lx<no_strings; lx++) {
         int escapelen=0, escapetype=0;
         int done=FALSE;
-        int32 escapeval;
+        int32 escapeval=0;
         if (compression_switch)
           sf_put(0xE1); /* type byte -- compressed string */
         else
@@ -1464,7 +1464,14 @@ extern void write_debug_packed_code_backpatch(int32 offset)
 }
 
 static int32 backpatch_packed_code_address(int32 offset)
-{   return (code_offset + offset) / scale_factor;
+{
+    if (OMIT_UNUSED_ROUTINES) {
+        int stripped;
+        offset = df_stripped_offset_for_code_offset(offset, &stripped);
+        if (stripped)
+            return 0;
+    }
+    return (code_offset + offset) / scale_factor;
 }
 
 extern void write_debug_code_backpatch(int32 offset)
@@ -1472,7 +1479,14 @@ extern void write_debug_code_backpatch(int32 offset)
 }
 
 static int32 backpatch_code_address(int32 offset)
-{   return code_offset + offset;
+{
+    if (OMIT_UNUSED_ROUTINES) {
+        int stripped;
+        offset = df_stripped_offset_for_code_offset(offset, &stripped);
+        if (stripped)
+            return 0;
+    }
+    return code_offset + offset;
 }
 
 extern void write_debug_global_backpatch(int32 offset)

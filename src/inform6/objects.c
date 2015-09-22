@@ -7,7 +7,7 @@
 /*                    specifications for the object-maker.                   */
 /*                                                                           */
 /*   Part of Inform 6.33                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2014                                 */
+/*   copyright (c) Graham Nelson 1993 - 2015                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -1030,7 +1030,7 @@ static void properties_segment_z(int this_segment)
         to the token value for the introductory word ("private" or "with").  */
 
 
-    int   i, property_name_symbol, property_number, next_prop, length,
+    int   i, property_name_symbol, property_number=0, next_prop=0, length,
           individual_property, this_identifier_number;
 
     do

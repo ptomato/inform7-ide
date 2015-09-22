@@ -4,7 +4,7 @@
 /*                              Inform 6.33                                  */
 /*                                                                           */
 /*   This header file and the others making up the Inform source code are    */
-/*   copyright (c) Graham Nelson 1993 - 2014                                 */
+/*   copyright (c) Graham Nelson 1993 - 2015                                 */
 /*                                                                           */
 /*   Manuals for this language are available from the IF-Archive at          */
 /*   http://www.ifarchive.org/                                               */
@@ -30,7 +30,7 @@
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-#define RELEASE_DATE "20th August 2014"
+#define RELEASE_DATE "30th August 2015"
 #define RELEASE_NUMBER 1633
 #define GLULX_RELEASE_NUMBER 38
 #define MODULE_VERSION_NUMBER 1
@@ -630,6 +630,14 @@ static int32 unique_task_id(void)
     typedef char uchar;
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define NORETURN __attribute__((__noreturn__))
+#endif /* defined(__GNUC__) || defined(__clang__) */
+
+#ifndef NORETURN
+#define NORETURN
+#endif
+
 /* ------------------------------------------------------------------------- */
 /*   A macro (rather than constant) definition:                              */
 /* ------------------------------------------------------------------------- */
@@ -660,12 +668,10 @@ static int32 unique_task_id(void)
 #define TRUE -1
 #define FALSE 0
 
-#define ASSERT_ZCODE()   \
-  ((!glulx_mode) ?       \
-    0 : compiler_error("assertion violated (not in Z-code compiler)"))
-#define ASSERT_GLULX()   \
-  ((glulx_mode)  ?       \
-    0 : compiler_error("assertion violated (not in Glulx compiler)"))
+/* These checked the glulx_mode global during development, but are no
+   longer needed. */
+#define ASSERT_ZCODE() (0)
+#define ASSERT_GLULX() (0)
 
 
 #define ReadInt32(ptr)                               \
@@ -750,6 +756,10 @@ typedef struct assembly_operand_t
     int   symflags;  /* 6.30 */
     int   marker;
 } assembly_operand;
+
+#define INITAOTV(aop, typ, val) ((aop)->type=(typ), (aop)->value=(val), (aop)->marker=0, (aop)->symtype=0, (aop)->symflags=0)
+#define INITAOT(aop, typ) INITAOTV(aop, typ, 0)
+#define INITAO(aop) INITAOTV(aop, 0, 0)
 
 #define  MAX_LINES_PER_VERB 32
 typedef struct verbt {
@@ -2170,6 +2180,11 @@ extern void assembleg_2(int internal_number, assembly_operand o1,
   assembly_operand o2);
 extern void assembleg_3(int internal_number, assembly_operand o1,
   assembly_operand o2, assembly_operand o3);
+extern void assembleg_4(int internal_number, assembly_operand o1,
+  assembly_operand o2, assembly_operand o3, assembly_operand o4);
+extern void assembleg_5(int internal_number, assembly_operand o1,
+  assembly_operand o2, assembly_operand o3, assembly_operand o4,
+  assembly_operand o5);
 extern void assembleg_0_branch(int internal_number,
   int label);
 extern void assembleg_1_branch(int internal_number,
@@ -2254,10 +2269,10 @@ extern int  no_errors, no_warnings, no_suppressed_warnings,
 
 extern ErrorPosition ErrorReport;
 
-extern void fatalerror(char *s);
-extern void fatalerror_named(char *s1, char *s2);
-extern void memory_out_error(int32 size, int32 howmany, char *name);
-extern void memoryerror(char *s, int32 size);
+extern void fatalerror(char *s) NORETURN;
+extern void fatalerror_named(char *s1, char *s2) NORETURN;
+extern void memory_out_error(int32 size, int32 howmany, char *name) NORETURN;
+extern void memoryerror(char *s, int32 size) NORETURN;
 extern void error(char *s);
 extern void error_named(char *s1, char *s2);
 extern void error_numbered(char *s1, int val);
@@ -2360,13 +2375,13 @@ extern void write_debug_global_backpatch(int32 offset);
 extern void write_debug_array_backpatch(int32 offset);
 extern void write_debug_grammar_backpatch(int32 offset);
 
-extern void begin_writing_debug_sections();
+extern void begin_writing_debug_sections(void);
 extern void write_debug_section(const char*name, int32 beginning_address);
 extern void end_writing_debug_sections(int32 end_address);
 
 extern void write_debug_undef(int32 symbol_index);
 
-extern void end_debug_file();
+extern void end_debug_file(void);
 
 extern void add_to_checksum(void *address);
 
@@ -2628,6 +2643,7 @@ extern void df_note_function_end(uint32 endaddress);
 extern void df_note_function_symbol(int symbol);
 extern void locate_dead_functions(void);
 extern uint32 df_stripped_address_for_address(uint32);
+extern uint32 df_stripped_offset_for_code_offset(uint32, int *);
 extern void df_prepare_function_iterate(void);
 extern uint32 df_next_function_iterate(int *);
 
