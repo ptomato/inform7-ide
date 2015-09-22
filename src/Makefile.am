@@ -1,4 +1,4 @@
-SUBDIRS = inwebc cBlorb inform6 ni
+SUBDIRS = inlib inweb cBlorb inform6 ni
 
 # We build libinform7gui.a to link to the regular binary
 # as well as the test binary

@@ -15,7 +15,7 @@ cblorbsrc = \
 	Chapter\ 3/Website\ Maker.w
 cblorbmaterials = Materials/cover-sheet.tex
 
-INWEBC = $(top_builddir)/src/inwebc/Tangled/inwebc -at $(top_srcdir)/src/
+INWEB = $(top_builddir)/src/inweb/Tangled/inweb -at $(top_srcdir)/src/
 # Nifty silent rules strings
 tangle_verbose = $(tangle_verbose_@AM_V@)
 tangle_verbose_ = $(tangle_verbose_@AM_DEFAULT_V@)
@@ -29,7 +29,7 @@ nodist_cBlorb_SOURCES = Tangled/cBlorb.c
 BUILT_SOURCES = $(nodist_cBlorb_SOURCES)
 $(nodist_cBlorb_SOURCES) : $(cblorbsrc)
 	$(tangle_verbose)$(MKDIR_P) Tangled && \
-	$(INWEBC) $(srcdir) -tangle -tangle-to $(nodist_cBlorb_SOURCES)
+	$(INWEB) $(srcdir) -tangle -tangle-to $(nodist_cBlorb_SOURCES)
 CLEANFILES = $(nodist_cBlorb_SOURCES)
 
 if MANUALS
@@ -76,7 +76,7 @@ cblorbdoc_DATA = $(cblorbmanual) $(cblorbweavefiles)
 $(cblorbweavefiles): $(cblorbmanual)
 $(cblorbmanual): $(cblorbsrc) $(cblorbmaterials) Makefile
 	$(weave_verbose)$(MKDIR_P) --mode=u+w,o-w $(builddir)/Woven && \
-	$(INWEBC) $(srcdir) -closed -weave $(inwebcommand) -format html
+	$(INWEB) $(srcdir) -closed -weave $(inwebcommand) -format html
 
 CLEANFILES += $(cblorbmanual) $(cblorbweavefiles)
 endif

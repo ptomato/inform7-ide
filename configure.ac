@@ -316,8 +316,8 @@ AC_DEFINE_UNQUOTED([COPYRIGHT_YEAR], ["$COPYRIGHT_YEAR"], [Year this program was
 # to use all the parameters passed to a callback.
 AX_APPEND_COMPILE_FLAGS([-Wall -Wextra -Wno-unused-parameter], [WARNINGFLAGS])
 AC_SUBST([WARNINGFLAGS])
-AX_APPEND_COMPILE_FLAGS([-Wno-unused-result], [INWEBC_EXTRAFLAGS])
-AC_SUBST([INWEBC_EXTRAFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wno-unused-result], [INWEB_EXTRAFLAGS])
+AC_SUBST([INWEB_EXTRAFLAGS])
 AX_APPEND_COMPILE_FLAGS([-Wno-pointer-to-int-cast], [INFORM6_EXTRAFLAGS])
 AC_SUBST([INFORM6_EXTRAFLAGS])
 AX_APPEND_COMPILE_FLAGS([-Wno-tautological-compare], [CHIMARA_EXTRAFLAGS])
@@ -337,8 +337,9 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/inform6/Makefile
-src/inwebc/Makefile
-src/inwebc/Materials/inweb-configuration.txt
+src/inlib/Makefile
+src/inweb/Makefile
+src/inweb/Materials/inweb-configuration.txt
 src/cBlorb/Makefile
 src/ni/Makefile
 po/Makefile.in
