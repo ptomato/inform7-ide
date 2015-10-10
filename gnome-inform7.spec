@@ -81,13 +81,10 @@ rm -rf %{buildroot}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
 %{_datadir}/applications/%{name}.desktop
-%{pkgdocdir}/AUTHORS 
-%{pkgdocdir}/ChangeLog 
-%{pkgdocdir}/COPYING 
-%{pkgdocdir}/NEWS 
-%{pkgdocdir}/README 
-%{pkgdocdir}/THANKS 
-%{pkgdocdir}/TODO
+%{pkgdocdir}/AUTHORS.md
+%{pkgdocdir}/ChangeLog
+%{pkgdocdir}/COPYING
+%{pkgdocdir}/README.md
 %{pkgdatadir}/uninstall_manifest.txt
 %{pkgdatadir}/Documentation/*.html
 %{pkgdatadir}/Documentation/*.css
@@ -157,6 +154,8 @@ rm -rf %{buildroot}
 %{pkglibexecdir}/ni
 
 %changelog
+* Sat Oct 10 2015 Philip Chimento <philip.chimento@gmail.com>
+- Updated documentation files.
 * Sun Sep 7 2014 Philip Chimento <philip.chimento@gmail.com> - 6L38-1
 - Repackaged to Build 6L38.
 * Wed May 7 2014 Philip Chimento <philip.chimento@gmail.com> - 6L02-1
