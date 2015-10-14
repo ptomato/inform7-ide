@@ -13,7 +13,9 @@ AC_CONFIG_SRCDIR(src/main.c)
 # Tell where to put the libtool macros
 AC_CONFIG_MACRO_DIR([m4])
 # Initialize automake; pkglibexecdir and silent rules introduced in 1.11
-AM_INIT_AUTOMAKE([1.11 -Wall subdir-objects])
+# foreign: Don't require GNU docs such as NEWS
+# subdir-objects: forwards compatibility with 2.0
+AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
 # Configure with --enable-silent-rules to cut down on clutter
 AM_SILENT_RULES([yes])
 # Allow "AM_GST_ELEMENT_CHECK" for building without GStreamer development files
