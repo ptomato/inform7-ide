@@ -10,7 +10,7 @@ gsettings_SCHEMAS = com.inform7.GUI.gschema.xml
 @GSETTINGS_RULES@
 
 docdir = $(datadir)/doc/$(PACKAGE)
-dist_doc_DATA = AUTHORS ChangeLog COPYING NEWS README THANKS TODO
+dist_doc_DATA = AUTHORS.md ChangeLog COPYING README.md
 
 EXTRA_DIST = \
 	INSTALL \
