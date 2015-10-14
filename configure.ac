@@ -15,7 +15,8 @@ AC_CONFIG_MACRO_DIR([m4])
 # Initialize automake; pkglibexecdir and silent rules introduced in 1.11
 # foreign: Don't require GNU docs such as NEWS
 # subdir-objects: forwards compatibility with 2.0
-AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
+# dist-xz/no-dist-gzip: distribute .tar.xz instead of .tar.gz
+AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects dist-xz no-dist-gzip])
 # Configure with --enable-silent-rules to cut down on clutter
 AM_SILENT_RULES([yes])
 # Allow "AM_GST_ELEMENT_CHECK" for building without GStreamer development files
