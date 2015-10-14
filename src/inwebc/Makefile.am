@@ -144,8 +144,8 @@ EXTRA_DIST = $(inwebmaterials)
 # Also: why should the distdir be unwritable?!
 #
 # Also: why is distdir sometimes an absolute path and sometimes relative?
-ABSDISTDIR = `(mkdir -p $(distdir) && cd $(distdir) && pwd)`
 dist-hook:
+	export ABSDISTDIR=`readlink -f $(distdir)`; \
 	$(MKDIR_P) --mode=u+w \
 		$(distdir)/Preliminaries \
 		$(distdir)/Chapter\ 1 \
@@ -156,10 +156,10 @@ dist-hook:
 		$(distdir)/Chapter\ 6 \
 		$(distdir)/Figures \
 		$(distdir)/Woven \
-		$(NULL)
+		&& \
 	cd $(srcdir) && \
-		cp --preserve=mode,ownership,timestamps --parents \
-		$(inwebsrc) $(ABSDISTDIR)
+	cp --preserve=mode,ownership,timestamps --parents \
+		$(inwebsrc) "$$ABSDISTDIR"
 
 GITIGNOREFILES = Tangled/inweb Tangled/inweb-bootstrap Tangled/.dirstamp Woven
 
