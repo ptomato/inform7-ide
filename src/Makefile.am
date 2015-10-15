@@ -273,7 +273,7 @@ libinform7gui_a_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
 
 bin_PROGRAMS = gnome-inform7
 gnome_inform7_SOURCES = main.c
-gnome_inform7_CPPFLAGS = -DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+gnome_inform7_CPPFLAGS = -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"
 gnome_inform7_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
 gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 	$(INTLLIBS) \
