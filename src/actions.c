@@ -1232,7 +1232,7 @@ void
 action_about(GtkAction *action, I7App *app)
 {
 	/* TRANSLATORS: Help->About ; %s is the copyright year. */
-	char *copyright = g_strdup_printf(_("Copyright 2006\xE2\x80\x93%s " /* UTF8 en-dash */
+	char *copyright = g_strdup_printf(_("Copyright 2006\u2013%s " /* UTF8 en-dash */
 		"Philip Chimento (front end),\n"
 	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
 	char *authors[] = {
@@ -1293,15 +1293,13 @@ action_about(GtkAction *action, I7App *app)
 		"website", "http://inform7.com",
 		"website-label", "inform7.com",
 		/* TRANSLATORS: Caution, UTF8 right arrow */
-		"license", _("See Help\xE2\x86\x92License for licensing information."),
+		"license", _("See Help\u2192License for licensing information."),
 		"authors", authors,
-		/* TRANSLATORS: Caution, C381 = UTF8 capital A acute accent; C3AD = UTF8
-	     lowercase I acute accent; C3A9 = UTF8 lowercase E acute accent */
-		"translator-credits", _(
-		    "\xC3\x81ngel Eduardo Garc\xC3\xAD""a (Spanish)\n"
-		    "Jhames Bolumbero (Spanish)\n"
-			"St\xC3\xA9phane Aulery (French)\n"
-		    ),
+		/* TRANSLATORS: Caution, 00C1 = UTF8 capital A acute accent; 00ED = UTF8
+		lowercase I acute accent; 00E9 = UTF8 lowercase E acute accent */
+		"translator-credits", _("\u00C1ngel Eduardo Garc\u00EDa (Spanish)\n"
+			"Jhames Bolumbero (Spanish)\n"
+			"St\u00E9phane Aulery (French)\n"),
 		"logo-icon-name", "inform7",
 		"title", _("About Inform"),
 		NULL);
