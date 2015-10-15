@@ -25,6 +25,8 @@
 #include "configfile.h"
 #include "error.h"
 
+#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-2.0"
+
 enum SchemesListColumns {
 	ID_COLUMN = 0,
 	NAME_COLUMN,
@@ -39,6 +41,23 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 	const char *id = gtk_source_style_scheme_get_id(scheme);
 	const char *name = gtk_source_style_scheme_get_name(scheme);
 	const char *description = gtk_source_style_scheme_get_description(scheme);
+
+	/* We pick up system color schemes as well. These won't have translations in
+	the gnome-inform7 domain, so if we can't get a translation then we try it
+	again in GtkSourceView's translation domain. */
+	const char *try_name = gettext(name);
+	if (try_name == name) {  /* Pointer equality, not strcmp */
+		char *save_domain = g_strdup(textdomain(NULL));
+		textdomain(DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES);
+		bind_textdomain_codeset(DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES, "UTF-8");
+		name = gettext(name);
+		description = gettext(description);
+		textdomain(save_domain);
+		g_free(save_domain);
+	} else {
+		name = try_name;
+		description = gettext(description);
+	}
 
 	GtkTreeIter iter;
 	gtk_list_store_append(list, &iter);
