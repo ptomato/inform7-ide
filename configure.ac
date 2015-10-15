@@ -126,6 +126,7 @@ AC_PATH_PROG([ECHO], [echo])      # echo
 AC_PATH_PROG([CP], [cp])          # cp
 AC_PATH_PROG([DATE], [date])      # date
 AC_PATH_PROG([MV], [mv])          # mv
+AC_PATH_PROG([ITSTOOL], [itstool], [notfound])  # not needed for tarball build
 # Other programs
 AM_GNU_GETTEXT([external])        # Gettext, link to system libintl
 IT_PROG_INTLTOOL([0.35.0])        # Intltool

@@ -1,3 +1,4 @@
+# po must come before data
 SUBDIRS = src po data pixmaps
 
 ACLOCAL_AMFLAGS = -I m4

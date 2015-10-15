@@ -1,10 +1,15 @@
 mimedir = $(datadir)/mime/packages
-mime_DATA = inform7.xml
+dist_mime_DATA = inform7.xml
+dist_noinst_DATA = mime.pot inform7.xml.in
 
-@INTLTOOL_XML_RULE@
+mime.pot: inform7.xml.in
+	$(AM_V_GEN)$(ITSTOOL) -o $@ $<
 
-CLEANFILES = $(mime_DATA)
-EXTRA_DIST = inform7.xml.in
+# Merge translations back into a new XML file
+inform7.xml: inform7.xml.in
+	$(AM_V_GEN)$(ITSTOOL) -j $< -o $@ $(top_srcdir)/po/*.gmo
+
+MAINTAINERCLEANFILES = $(dist_mime_DATA) mime.pot
 
 update_mime_database = update-mime-database $(DESTDIR)$(datadir)/mime
 
