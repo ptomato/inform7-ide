@@ -129,7 +129,6 @@ AC_PATH_PROG([MV], [mv])          # mv
 AC_PATH_PROG([ITSTOOL], [itstool], [notfound])  # not needed for tarball build
 # Other programs
 AM_GNU_GETTEXT([external])        # Gettext, link to system libintl
-IT_PROG_INTLTOOL([0.35.0])        # Intltool
 PKG_PROG_PKG_CONFIG               # pkg_config
 GLIB_GSETTINGS                    # used for GSettings
 
@@ -140,7 +139,8 @@ AS_IF([$TEST "x$UNLZMA" = xnotfound],
 
 ### INTERNATIONALIZATION #######################################################
 
-AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT_VERSION([0.19.3])
+# 0.18.3 required for Glade files; but use last point release from Debian stable
 GETTEXT_PACKAGE=gnome-inform7
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])

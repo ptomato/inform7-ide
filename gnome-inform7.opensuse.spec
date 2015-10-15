@@ -30,7 +30,6 @@ BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
 BuildRequires:  gtksourceview2-devel
 BuildRequires:  gtkspell-devel
-BuildRequires:  intltool
 BuildRequires:  libwebkitgtk-devel
 BuildRequires:  lzma
 BuildRequires:  pkgconfig

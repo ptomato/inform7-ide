@@ -16,9 +16,6 @@ dist_doc_DATA = AUTHORS.md ChangeLog COPYING README.md
 EXTRA_DIST = \
 	INSTALL \
 	autogen.sh \
-	intltool-update.in \
-	intltool-extract.in \
-	intltool-merge.in \
 	$(gsettings_SCHEMAS)
 
 if BUILDING_RPM

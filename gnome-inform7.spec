@@ -14,7 +14,6 @@ Source: http://inform7.com/download/content/6L38/gnome-inform7-6L38.tar.gz
 
 # Build requirements:
 # Extra build tools
-BuildRequires: intltool
 BuildRequires: gettext
 BuildRequires: pkgconfig
 BuildRequires: xz-lzma-compat
