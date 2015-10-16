@@ -311,6 +311,7 @@ test_DEPENDENCIES = $(gnome_inform7_DEPENDENCIES)
 TESTS = test
 # Skip the /app tests, because they are too tightly coupled to the data files,
 # and will fail during make distcheck -- o, the days of innocence!
+# The /skein test requires the GSettings schema to be installed.
 SKIP_PATHS = \
 	/app/create \
 	/app/files \
@@ -320,6 +321,7 @@ SKIP_PATHS = \
 	/app/extensions/case-insensitive \
 	/app/colorscheme/install-remove \
 	/app/colorscheme/get-current \
+	/skein/import \
 	/story/materials-file \
 	/story/old-materials-file \
 	/story/renames-materials-file \
