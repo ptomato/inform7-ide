@@ -324,7 +324,7 @@ SKIP_PATHS = \
 	/story/old-materials-file \
 	/story/renames-materials-file \
 	$(NULL)
-LOG_COMPILER = gtester -k --verbose `echo $(SKIP_PATHS) | sed 's,\(^\|\s\+\)/, -s=/,g'`
+LOG_COMPILER = $(XVFB_RUN) gtester -k --verbose `echo $(SKIP_PATHS) | sed 's,\(^\|\s\+\)/, -s=/,g'`
 EXTRA_DIST += \
 	tests/commands.rec \
 	tests/Hereafter.inform/Settings.plist \

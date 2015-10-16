@@ -281,6 +281,18 @@ for GStreamer 1.0 and rerun autogen.sh.])])
 	],
 	[])
 
+### WHETHER TO RUN TESTS IN VIRTUAL X SERVER ###################################
+# Requires xvfb
+AC_ARG_WITH([xvfb-tests],
+       AS_HELP_STRING([--with-xvfb-tests],
+               [Use xvfb to run tests, e.g. on build servers @<:@default=no@:>@]))
+AS_IF([test "x$with_xvfb_tests" != "xno"],
+       [AC_PATH_PROG([XVFB], [xvfb-run], [notfound])])
+AS_IF([test "x$XVFB" != "xnotfound"],
+       [AC_SUBST([XVFB_RUN], ["$XVFB "])],  dnl can add other xvfb-run args here
+       [AS_IF([test "x$with_vfb_tests" = "yes"],
+               [AC_MSG_ERROR([XVFB tests requested, but xvfb-run not found])])])
+
 ### DEFINE OTHER VARIABLES #####################################################
 
 # Inform 6 version that goes along with this release
