@@ -19,7 +19,6 @@ docdir = $(datadir)/doc/$(PACKAGE)
 dist_doc_DATA = AUTHORS.md ChangeLog COPYING README.md
 
 EXTRA_DIST = \
-	INSTALL \
 	autogen.sh \
 	$(gsettings_SCHEMAS) \
 	gnome-inform7.desktop.in \
