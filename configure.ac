@@ -310,6 +310,21 @@ AC_SUBST(PLUGIN_LIBTOOL_FLAGS)
 AC_SUBST(COPYRIGHT_YEAR, [`$DATE +%Y`])
 AC_DEFINE_UNQUOTED([COPYRIGHT_YEAR], ["$COPYRIGHT_YEAR"], [Year this program was built.])
 
+# Compiler flags
+AX_APPEND_COMPILE_FLAGS([-Wall], [WARNINGFLAGS])
+AC_SUBST([WARNINGFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wno-unused-result], [INWEBC_EXTRAFLAGS])
+AC_SUBST([INWEBC_EXTRAFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wno-pointer-to-int-cast], [INFORM6_EXTRAFLAGS])
+AC_SUBST([INFORM6_EXTRAFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wno-tautological-compare], [CHIMARA_EXTRAFLAGS])
+AC_SUBST([CHIMARA_EXTRAFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wno-implicit-function-declaration],
+	[FROTZ_EXTRAFLAGS])
+AC_SUBST([FROTZ_EXTRAFLAGS])
+AX_APPEND_COMPILE_FLAGS([-Wno-pointer-sign], [GIT_EXTRAFLAGS])
+AC_SUBST([GIT_EXTRAFLAGS])
+
 ### OUTPUT #####################################################################
 
 # Output platform-specific definitions to config.h

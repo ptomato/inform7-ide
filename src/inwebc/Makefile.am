@@ -1,3 +1,5 @@
+AM_CFLAGS = $(INWEBC_EXTRAFLAGS)
+
 inwebsrc = \
 	Contents.w \
 	Preliminaries/Inweb\ vs\ Cweb.w \
@@ -56,9 +58,7 @@ weave_verbose_0 = @echo "  WEAVE   " $@;
 
 noinst_PROGRAMS = Tangled/inwebc-bootstrap Tangled/inwebc
 Tangled_inwebc_bootstrap_SOURCES = Tangled/inwebc.c
-Tangled_inwebc_bootstrap_CFLAGS = -std=c99 $(AM_CFLAGS)
 Tangled_inwebc_SOURCES = Tangled/inwebc2.c
-Tangled_inwebc_CFLAGS = -std=c99 $(AM_CFLAGS)
 BUILT_SOURCES = $(Tangled_inwebc_SOURCES)
 WEBDIR = $(srcdir)/..
 INWEBC = Tangled/inwebc -at $(WEBDIR)/

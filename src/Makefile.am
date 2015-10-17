@@ -1,7 +1,5 @@
 SUBDIRS = inwebc cBlorb inform6 ni
 
-AM_CFLAGS = -Wall
-
 # We build libinform7gui.a to link to the regular binary
 # as well as the test binary
 noinst_LIBRARIES = libosxcart.a libchimara.a libinform7gui.a
@@ -37,7 +35,7 @@ libosxcart_a_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Osxcart\" \
 	-DLOCALEDIR=\""$(datadir)/locale"\" \
 	-I$(srcdir)/osxcart
-libosxcart_a_CFLAGS = @OSXCART_CFLAGS@ $(AM_CFLAGS)
+libosxcart_a_CFLAGS = @OSXCART_CFLAGS@
 
 pluginpath = $(pkglibdir)
 
@@ -106,7 +104,7 @@ libchimara_a_CPPFLAGS = \
 	-DPLUGINDIR=\""$(pluginpath)"\" \
 	-DPLUGINSOURCEDIR=\""$(abs_builddir)/../interpreters"\" \
 	-I$(srcdir)/chimara
-libchimara_a_CFLAGS = @CHIMARA_CFLAGS@ $(AM_CFLAGS)
+libchimara_a_CFLAGS = @CHIMARA_CFLAGS@ $(CHIMARA_EXTRAFLAGS)
 
 BUILT_SOURCES = chimara-marshallers.c chimara-marshallers.h
 chimara-marshallers.c: chimara/libchimara/chimara-marshallers.txt
@@ -146,9 +144,7 @@ frotz_la_CPPFLAGS = \
 	-I$(srcdir)/chimara/interpreters/frotz \
 	-I$(srcdir)/chimara/libchimara \
 	-I$(srcdir)/chimara
-frotz_la_CFLAGS = $(AM_CFLAGS) -Wno-pointer-sign -Wno-unused-variable \
-	-Wno-implicit-function-declaration -Wno-unused-but-set-variable \
-	-Wno-unused-value
+frotz_la_CFLAGS = $(FROTZ_EXTRAFLAGS)
 frotz_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 frotzdocdir = $(datadir)/doc/$(PACKAGE)/frotz
@@ -180,8 +176,6 @@ glulxe_la_SOURCES = \
     chimara/interpreters/glulxe/unixstrt.c \
     chimara/interpreters/glulxe/vm.c 
 glulxe_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara -DOS_UNIX
-glulxe_la_CFLAGS = $(AM_CFLAGS) -Wall -Wmissing-prototypes -Wstrict-prototypes \
-	-Wno-unused -Wno-strict-aliasing -Wno-maybe-uninitialized
 glulxe_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 glulxedocdir = $(datadir)/doc/$(PACKAGE)/glulxe
@@ -222,8 +216,7 @@ git_la_SOURCES = \
     chimara/interpreters/git/terp.c \
     chimara/interpreters/git/accel.c
 git_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara
-git_la_CFLAGS = -DCHIMARA_EXTENSIONS -DUSE_INLINE $(AM_CFLAGS) \
-	-Wno-pointer-sign -Wno-unused-but-set-variable -Wno-strict-aliasing
+git_la_CFLAGS = -DCHIMARA_EXTENSIONS -DUSE_INLINE $(GIT_EXTRAFLAGS)
 git_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 gitdocdir = $(datadir)/doc/$(PACKAGE)/git
@@ -269,12 +262,12 @@ libinform7gui_a_CPPFLAGS = \
 	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \
 	-I$(srcdir)/osxcart \
 	-I$(srcdir)/chimara
-libinform7gui_a_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
+libinform7gui_a_CFLAGS = @INFORM7_CFLAGS@ $(WARNINGFLAGS)
 
 bin_PROGRAMS = gnome-inform7
 gnome_inform7_SOURCES = main.c
 gnome_inform7_CPPFLAGS = -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"
-gnome_inform7_CFLAGS = @INFORM7_CFLAGS@ $(AM_CFLAGS)
+gnome_inform7_CFLAGS = @INFORM7_CFLAGS@ $(WARNINGFLAGS)
 gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 	$(INTLLIBS) \
 	libosxcart.a \
