@@ -1,4 +1,4 @@
-/* Copyright (C) 2010 P. F. Chimento
+/* Copyright (C) 2010, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,6 +42,6 @@ GType i7_placeholder_entry_get_type(void) G_GNUC_CONST;
 GtkWidget *i7_placeholder_entry_new(const gchar *placeholder_text);
 void i7_placeholder_entry_set_placeholder_text(I7PlaceholderEntry *self, const gchar *placeholder_text);
 gchar *i7_placeholder_entry_get_placeholder_text(I7PlaceholderEntry *self);
-G_CONST_RETURN const gchar *i7_placeholder_entry_get_text(I7PlaceholderEntry *self);
+const char *i7_placeholder_entry_get_text(I7PlaceholderEntry *self);
 
 #endif /* __PLACEHOLDER_ENTRY_H__ */

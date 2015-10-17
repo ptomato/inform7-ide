@@ -1,4 +1,4 @@
-/* Copyright (C) 2010 P. F. Chimento
+/* Copyright (C) 2010, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ i7_placeholder_entry_new(const gchar *placeholder_text)
 	return retval;
 }
 
-G_CONST_RETURN const gchar *
+const char *
 i7_placeholder_entry_get_text(I7PlaceholderEntry *self)
 {
 	I7_PLACEHOLDER_ENTRY_USE_PRIVATE(self, priv);
