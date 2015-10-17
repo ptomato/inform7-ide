@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -334,7 +334,7 @@ i7_story_get_game_running(I7Story *story)
 static void
 panel_set_use_git(I7Story *story, I7Panel *panel, gpointer data)
 {
-	ChimaraIFFormat interpreter = GPOINTER_TO_INT(data)? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
+	ChimaraIFInterpreter interpreter = GPOINTER_TO_INT(data)? CHIMARA_IF_INTERPRETER_GIT : CHIMARA_IF_INTERPRETER_GLULXE;
 	ChimaraIF *glk = CHIMARA_IF(panel->tabs[I7_PANE_STORY]);
 	chimara_if_set_preferred_interpreter(glk, CHIMARA_IF_FORMAT_GLULX, interpreter);
 }
