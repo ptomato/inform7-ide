@@ -108,6 +108,7 @@ AM_CONDITIONAL([MANUALS_SECTIONS], [$TEST "x$enable_manuals" = xsections])
 
 # Programs that Autoconf has built-in checks for
 AC_PROG_CC                        # C compiler
+AC_PROG_CC_C99                    # ...and put it in C99 mode
 AM_PROG_CC_C_O                    # Automake requires this for per-target CFLAGS
 AC_PROG_INSTALL                   # Install
 AC_PROG_SED                       # Sed
