@@ -996,7 +996,7 @@ after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigne
 
 /* Internal function: given a filename, determine whether it is one of the HTML
 files that comprise the index. Return one of the I7PaneIndexTab constants, or -1
-if it does not. */
+(I7_INDEX_TAB_NONE) if it does not. */
 static I7PaneIndexTab
 filename_to_index_tab(const char *filename)
 {
@@ -1004,7 +1004,7 @@ filename_to_index_tab(const char *filename)
 	for(retval = 0; retval < I7_INDEX_NUM_TABS; retval++)
 		if(strcmp(filename, i7_panel_index_names[retval]) == 0)
 			return retval;
-	return -1;
+	return I7_INDEX_TAB_NONE;
 }
 
 /* Internal function: find the real filename referred to by a URI starting with
@@ -1125,7 +1125,7 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		}
 
 		I7PaneIndexTab tabnum = filename_to_index_tab(filename);
-		if(tabnum == -1)
+		if(tabnum == I7_INDEX_TAB_NONE)
 			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
 		/* We've determined that this is an index page */

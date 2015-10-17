@@ -63,7 +63,8 @@ typedef enum {
 	I7_INDEX_TAB_RULES,
 	I7_INDEX_TAB_SCENES,
 	I7_INDEX_TAB_WORLD,
-	I7_INDEX_NUM_TABS
+	I7_INDEX_NUM_TABS,
+	I7_INDEX_TAB_NONE = -1
 } I7PaneIndexTab;
 
 typedef struct {
