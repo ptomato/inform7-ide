@@ -311,7 +311,10 @@ AC_SUBST(COPYRIGHT_YEAR, [`$DATE +%Y`])
 AC_DEFINE_UNQUOTED([COPYRIGHT_YEAR], ["$COPYRIGHT_YEAR"], [Year this program was built.])
 
 # Compiler flags
-AX_APPEND_COMPILE_FLAGS([-Wall], [WARNINGFLAGS])
+# Justification for -Wno-unused-parameter: GLib signal handling code has many
+# callback types with certain signatures, and more often than not we don't need
+# to use all the parameters passed to a callback.
+AX_APPEND_COMPILE_FLAGS([-Wall -Wextra -Wno-unused-parameter], [WARNINGFLAGS])
 AC_SUBST([WARNINGFLAGS])
 AX_APPEND_COMPILE_FLAGS([-Wno-unused-result], [INWEBC_EXTRAFLAGS])
 AC_SUBST([INWEBC_EXTRAFLAGS])

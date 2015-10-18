@@ -167,8 +167,9 @@ on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 		g_settings_set_string(prefs, PREFS_STYLE_SCHEME, id);
 		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(i7_app_get(), id));
 		g_free(id);
-	} else
+	} else {
 		; /* Do nothing; no selection */
+	}
 }
 
 void
