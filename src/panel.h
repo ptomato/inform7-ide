@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2014 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,8 @@ typedef enum {
 	I7_PANE_DOCUMENTATION,
 	I7_PANE_EXTENSIONS,
 	I7_PANE_SETTINGS,
-	I7_PANEL_NUM_PANES
+	I7_PANEL_NUM_PANES,
+	I7_PANE_NONE = -1
 } I7PanelPane;
 
 /* The names of the sub tabs in "Results" */

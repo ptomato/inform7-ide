@@ -594,7 +594,7 @@ i7_document_refresh_elastic_tabstops(I7Document *document)
  * is not a tab, and keep track of the number of tabs found so far in
  * *pointer_to_num_tabs. */
 static gboolean
-true_if_non_tab(gunichar ch, int *pointer_to_num_tabs)
+true_if_non_tab(gunichar ch, unsigned *pointer_to_num_tabs)
 {
 	if(ch != '\t')
 		return TRUE;
@@ -607,9 +607,9 @@ true_if_non_tab(gunichar ch, int *pointer_to_num_tabs)
 static void
 remove_indent_tags(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, unsigned max_tabs)
 {
-	int count;
+	unsigned count;
 	for(count = 1; count <= max_tabs; count++) {
-		char *tag_name = g_strdup_printf("indent-%d", count);
+		char *tag_name = g_strdup_printf("indent-%u", count);
 		gtk_text_buffer_remove_tag_by_name(buffer, tag_name, start, end);
 		g_free(tag_name);
 	}
@@ -659,7 +659,7 @@ i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, Gt
 
 	while(gtk_text_iter_compare(&start, &end) < 0) {
 		GtkTextIter first_non_tab = start, line_end = start;
-		int num_tabs = 0;
+		unsigned num_tabs = 0;
 
 		gtk_text_iter_forward_to_line_end(&line_end);
 		gtk_text_iter_backward_char(&first_non_tab); /* forward_find_char advances before searching, so counteract that */

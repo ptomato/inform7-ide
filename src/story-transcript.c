@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 P. F. Chimento
+/* Copyright (C) 2011, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ on_transcript_size_allocate(GtkTreeView *view, GtkAllocation *allocation, I7Pane
 {
 	unsigned default_width;
 	g_object_get(panel->transcript_cell, "default-width", &default_width, NULL);
-	if(default_width != allocation->width) {
+	if(allocation->width >= 0 && default_width != (unsigned)allocation->width) {
 		g_object_set(panel->transcript_cell, "default-width", allocation->width, NULL);
 		gtk_tree_view_column_queue_resize(panel->transcript_column);
 	}

@@ -1,4 +1,4 @@
-/* Copyright (C) 2010, 2011 P. F. Chimento
+/* Copyright (C) 2010, 2011, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -757,7 +757,7 @@ i7_node_get_tree_width(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 	g_object_get(skein, "horizontal-spacing", &spacing, NULL);
 
 	/* Get the tree width of all children */
-	int i;
+	unsigned i;
 	gdouble total = 0.0;
 	for(i = 0; i < g_node_n_children(self->gnode); i++) {
 		total += i7_node_get_tree_width(g_node_nth_child(self->gnode, i)->data, skein, canvas);

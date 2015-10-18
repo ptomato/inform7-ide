@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -220,7 +220,7 @@ void
 init_config_file(GSettings *prefs)
 {
 	/* Add listeners to specific keys */
-	int i;
+	unsigned i;
 	for(i = 0; i < G_N_ELEMENTS(keys_to_monitor); i++)
 	{
 		if (keys_to_monitor[i].callback != NULL) {

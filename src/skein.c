@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1058,7 +1058,7 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 	}
 
 	/* Draw the children's lines to this node */
-	int i;
+	unsigned i;
 	for(i = 0; i < g_node_n_children(node->gnode); i++) {
 		I7Node *child = g_node_nth_child(node->gnode, i)->data;
 		draw_tree(self, child, canvas);
@@ -1404,7 +1404,7 @@ i7_skein_trim_recurse(I7Skein *self, I7Node *node, gint min_score)
 {
 	I7_SKEIN_USE_PRIVATE;
 
-	int i = 0;
+	unsigned i = 0;
 	while(i < g_node_n_children(node->gnode)) {
 		I7Node *child = g_node_nth_child(node->gnode, i)->data;
 		if(i7_node_get_locked(child) || i7_node_get_score(child) > min_score) {

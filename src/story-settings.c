@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ i7_story_set_story_format(I7Story *story, I7StoryFormat format)
 		g_object_notify(G_OBJECT(story), "story-format");
 		return;
 	}
-	if(obj->integer.val != format) {
+	if(obj->integer.val != (int) format) {
 		obj->integer.val = format;
 		g_object_notify(G_OBJECT(story), "story-format");
 	}
