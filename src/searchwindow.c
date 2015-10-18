@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -461,30 +461,11 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 }
 
 xmlSAXHandler i7_html_sax = {
-	NULL, /*internalSubset*/
-	NULL, /*isStandalone*/
-	NULL, /*hasInternalSubset*/
-	NULL, /*hasExternalSubset*/
-	NULL, /*resolveEntity*/
-	(getEntitySAXFunc)entity_callback, /*getEntity*/
-	NULL, /*entityDecl*/
-	NULL, /*notationDecl*/
-	NULL, /*attributeDecl*/
-	NULL, /*elementDecl*/
-	NULL, /*unparsedEntityDecl*/
-	NULL, /*setDocumentLocator*/
-	NULL, /*startDocument*/
-	NULL, /*endDocument*/
-	(startElementSAXFunc)start_element_callback, /*startElement*/
-	(endElementSAXFunc)end_element_callback, /*endElement*/
-	NULL, /*reference*/
-	(charactersSAXFunc)character_callback, /*characters*/
-	NULL, /*ignorableWhitespace*/
-	NULL, /*processingInstruction*/
-	(commentSAXFunc)comment_callback, /*comment*/
-	NULL, /*warning*/
-	NULL, /*error*/
-	NULL /*fatalError: unused*/
+	.getEntity = (getEntitySAXFunc)entity_callback,
+	.startElement = (startElementSAXFunc)start_element_callback,
+	.endElement = (endElementSAXFunc)end_element_callback,
+	.characters = (charactersSAXFunc)character_callback,
+	.comment = (commentSAXFunc)comment_callback,
 };
 
 static GSList *

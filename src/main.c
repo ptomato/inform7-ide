@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -56,15 +56,24 @@ main(int argc, char *argv[])
 	gchar **remaining_args = NULL;
 	gboolean print_version = FALSE;
 	GOptionEntry entries[] = {
-		{ "version", 'v', 0, G_OPTION_ARG_NONE, &print_version,
-		  N_("Print version information"), NULL },
-		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY,
-		  &remaining_args, "",
+		{
+			.long_name = "version",
+			.short_name = 'v',
+			.arg = G_OPTION_ARG_NONE,
+			.arg_data = &print_version,
+			.description = N_("Print version information"),
+		},
+		{
+			.long_name = G_OPTION_REMAINING,
+			.arg = G_OPTION_ARG_FILENAME_ARRAY,
+			.arg_data = &remaining_args,
+			.description = "",
 			/* TRANSLATORS: This string occurs in the --help message's usage
 			 string, to indicate that the user can specify project files on the
 			 command line in order to have them opened at startup */
-			N_("[FILE1 FILE2 ...]") },
-		{ NULL }
+			.arg_description = N_("[FILE1 FILE2 ...]"),
+		},
+		{ .long_name = NULL }
 	};
 	GOptionContext *context = g_option_context_new(
 	/* TRANSLATORS: This is the usage string for the --help message */

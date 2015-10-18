@@ -116,7 +116,7 @@ on_node_transcript_notify(I7Node *node, GParamSpec *pspec, I7Skein *self)
 	if(!i7_skein_is_node_in_current_thread(self, node))
 		return;
 	GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(node->gnode) - 1, -1);
-	GtkTreeIter iter = { priv->stamp, node };
+	GtkTreeIter iter = { .stamp = priv->stamp, .user_data = node };
 	gtk_tree_model_row_changed(GTK_TREE_MODEL(self), path, &iter);
 	gtk_tree_path_free(path);
 }
@@ -647,7 +647,7 @@ i7_skein_set_current_node(I7Skein *self, I7Node *node)
 		if(gnode == NULL) {
 			gnode = priv->root->gnode;
 			GtkTreePath *path = gtk_tree_path_new_from_indices(0, -1);
-			GtkTreeIter iter = { priv->stamp, priv->root };
+			GtkTreeIter iter = { .stamp = priv->stamp, .user_data = priv->root };
 			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
 			gtk_tree_path_free(path);
 			depth = 0;
@@ -658,7 +658,7 @@ i7_skein_set_current_node(I7Skein *self, I7Node *node)
 					break;
 			}
 			GtkTreePath *path = gtk_tree_path_new_from_indices(++depth, -1);
-			GtkTreeIter iter = { priv->stamp, gnode->data };
+			GtkTreeIter iter = { .stamp = priv->stamp, .user_data = gnode->data };
 			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
 			gtk_tree_path_free(path);
 		}
@@ -1146,7 +1146,7 @@ reinstate_all_in_model(I7Skein *self)
 	while(gnode) {
 		int depth = g_node_depth(gnode) - 1;
 		GtkTreePath *path = gtk_tree_path_new_from_indices(depth, -1);
-		GtkTreeIter iter = { priv->stamp, gnode->data };
+		GtkTreeIter iter = { .stamp = priv->stamp, .user_data = gnode->data };
 		gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
 		gtk_tree_path_free(path);
 
