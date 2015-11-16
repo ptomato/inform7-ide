@@ -83,14 +83,17 @@ action_open_recent(GtkAction *action, I7App *app)
 
 	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri(item));
 
-	if(gtk_recent_info_has_group(item, "inform7_project"))
+	if(gtk_recent_info_has_group(item, "inform7_project")) {
 		i7_story_new_from_file(app, file);
-	else if(gtk_recent_info_has_group(item, "inform7_extension"))
+	} else if(gtk_recent_info_has_group(item, "inform7_extension")) {
 		i7_extension_new_from_file(app, file, FALSE);
-	else if(gtk_recent_info_has_group(item, "inform7_builtin"))
+	} else if(gtk_recent_info_has_group(item, "inform7_builtin")) {
 		i7_extension_new_from_file(app, file, TRUE);
-	else
-		g_warning("Recent manager file does not have tag");
+	} else {
+		g_warning("Recent manager file does not have an Inform tag. This means "
+			"it was not saved by Inform. I'll try to open it anyway.");
+		i7_story_new_from_file(app, file);
+	}
 
 	g_object_unref(file);
 	gtk_recent_info_unref(item);
