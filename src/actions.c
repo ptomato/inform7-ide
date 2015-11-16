@@ -1235,41 +1235,56 @@ action_about(GtkAction *action, I7App *app)
 	char *copyright = g_strdup_printf(_("Copyright 2006\u2013%s " /* UTF8 en-dash */
 		"Philip Chimento (front end),\n"
 	    "Graham Nelson et al. (compiler)."), COPYRIGHT_YEAR);
-	char *authors[] = {
-		N_("Inform written by:\n"
-		"    Graham Nelson\n\n"
-		"Glulx compiler written by:\n"
+	/* Build the credits string in such a way that it's robust to changes and
+	translations don't get invalidated every time someone is added */
+	GString *builder = g_string_new(_("Inform written by:"));
+	g_string_append(builder, "\n"
 		"    Graham Nelson\n"
-		"    Andrew Plotkin\n\n"
-		"Inform front-end written by:\n"
-		"    Philip Chimento\n\n"
-		"Contributions by:\n"
+		"\n");
+	g_string_append(builder, _("Glulx compiler written by:"));
+	g_string_append(builder, "\n"
+		"    Graham Nelson\n"
+		"    Andrew Plotkin\n"
+		"\n");
+	g_string_append(builder, _("Inform front-end written by:"));
+	g_string_append(builder, "\n"
+		"    Philip Chimento\n"
+		"\n");
+	g_string_append(builder, _("Contributions by:"));
+	g_string_append(builder, "\n"
 		"    Adam Thornton\n"
+		"    Alan de Smet\n"
+		"    Bart Massey\n"
 		"    Daniel Nilsson\n"
+		"    David Leverton\n"
 		"    Evil Tabby Cat\n"
 		"    Eric Forgeot\n"
-		"    Alan De Smet\n"
 		"    Jonathan Liu\n"
-		"    Zachary Amsden\n"
-		"    David Leverton\n"
 		"    Leandro Ribeiro\n"
 		"    Matteo Settenvini\n"
-		"In addition, Andrew Hunter's OS X version\n"
+		"    St\u00E9phane Aulery\n"
+		"    Vincent Petry\n"
+		"    Zachary Amsden\n");
+	g_string_append(builder, _("In addition, Andrew Hunter's OS X version\n"
 		"and David Kinder's Windows version\n"
-		"proved invaluable.\n\n"
-		"Interface designed by:\n"
+		"proved invaluable."));
+	g_string_append(builder, "\n\n");
+	g_string_append(builder, _("Interface designed by:"));
+	g_string_append(builder, "\n"
 		"    Graham Nelson\n"
-		"    Andrew Hunter\n\n"
-		"Chimara written by:\n"
+		"    Andrew Hunter\n"
+		"\n");
+	g_string_append(builder, _("Chimara written by:"));
+	g_string_append(builder, "\n"
 		"    Philip Chimento\n"
-		"    Marijn van Vliet\n\n"
-		"Gargoyle originally written by:\n"
-		"    Tor Andersson\n"
-		"Updated by:\n"
-		"    Ben Cressey et al.\n\n"
-		"Elastic tabstops invented by:\n"
-		"    Nick Gravgaard\n\n"
-		"Contributions to the compiler:\n"
+		"    Marijn van Vliet\n"
+		"\n");
+	g_string_append(builder, _("Elastic tabstops invented by:"));
+	g_string_append(builder, "\n"
+		"Nick Gravgaard\n"
+		"\n");
+	g_string_append(builder, _("Contributions to the compiler:"));
+	g_string_append(builder, "\n"
 		"    Emily Short\n"
 		"    Gunther Schmidl\n"
 		"    Andrew Plotkin\n"
@@ -1281,9 +1296,22 @@ action_about(GtkAction *action, I7App *app)
 		"    Michael Coyne\n"
 		"    David Cornelson\n"
 		"    Neil Cerutti\n"
-		"    Kevin Bracey"),
-		NULL
+		"    Kevin Bracey\n");
+	char **authors = g_new0(char *, 2);  /* terminating 0 */
+	authors[0] = g_string_free(builder, FALSE);
+	char *translators_and_languages[] = {
+		"\u00C1ngel Eduardo Garc\u00EDa", N_("Spanish"),
+		"Jhames Bolumbero", N_("Spanish"),
+		"St\u00E9phane Aulery", N_("French"),
+		NULL, NULL
 	};
+	builder = g_string_new("");
+	char * const *iter = translators_and_languages;
+	while(*iter != NULL) {
+		g_string_append(builder, *iter++);
+		g_string_append_printf(builder, " (%s)\n", gettext(*iter++));
+	}
+	char *translator_credits = g_string_free(builder, FALSE);
 
 	GtkWindow *parent = get_toplevel_for_action(action);
 	gtk_show_about_dialog(parent,
@@ -1295,13 +1323,11 @@ action_about(GtkAction *action, I7App *app)
 		/* TRANSLATORS: Caution, UTF8 right arrow */
 		"license", _("See Help\u2192License for licensing information."),
 		"authors", authors,
-		/* TRANSLATORS: Caution, 00C1 = UTF8 capital A acute accent; 00ED = UTF8
-		lowercase I acute accent; 00E9 = UTF8 lowercase E acute accent */
-		"translator-credits", _("\u00C1ngel Eduardo Garc\u00EDa (Spanish)\n"
-			"Jhames Bolumbero (Spanish)\n"
-			"St\u00E9phane Aulery (French)\n"),
+		"translator-credits", translator_credits,
 		"logo-icon-name", "inform7",
 		"title", _("About Inform"),
 		NULL);
 	g_free(copyright);
+	g_strfreev(authors);
+	g_free(translator_credits);
 }
