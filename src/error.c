@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -365,7 +365,7 @@ error_dialog_file_operation(GtkWindow *parent, GFile *file, GError *error, I7Fil
 		extended_error_dialog(parent, what_failed,
 		    _("The system does not recognize that as a valid location."),
 		    _("Try checking that you spelled the location correctly. "
-			"Remember that capitalisation is significant (\"http\" is not the "
+			"Remember that capitalization is significant (\"http\" is not the "
 			"same as \"Http\" or \"HTTP\")."));
 		break;
 
@@ -412,7 +412,7 @@ error_dialog_file_operation(GtkWindow *parent, GFile *file, GError *error, I7Fil
 		what_failed = what_failed_on_file_operation_failure(file, FALSE, what);
 		extended_error_dialog(parent, what_failed,
 			_("The server could not be contacted."),
-			_("Try again.  If it fails again, the server may be down."));
+			_("Try again. If it fails again, the server may be down."));
 		break;
 
 	case G_IO_ERROR_CONNECTION_REFUSED:
