@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010, 2011 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2011, 2015 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -52,6 +52,6 @@ load_object(GtkBuilder *builder, const gchar *name)
 {
 	GObject *retval;
 	if(G_UNLIKELY((retval = gtk_builder_get_object(builder, name)) == NULL))
-		g_error(_("Error while getting object '%s' during interface building"), name);
+		g_error("Error while getting object '%s' during interface building", name);
 	return retval;
 }

@@ -90,8 +90,7 @@ action_open_recent(GtkAction *action, I7App *app)
 	else if(gtk_recent_info_has_group(item, "inform7_builtin"))
 		i7_extension_new_from_file(app, file, TRUE);
 	else
-		/* TRANSLATORS: File->Open Recent submenu */
-		g_warning(_("Recent manager file does not have tag"));
+		g_warning("Recent manager file does not have tag");
 
 	g_object_unref(file);
 	gtk_recent_info_unref(item);

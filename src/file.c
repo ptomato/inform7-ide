@@ -452,7 +452,7 @@ file_set_custom_icon(GFile *file, const char *icon_name)
 	GError *error = NULL;
 	if(!g_file_set_attribute_string(file, "metadata::custom-icon-name", icon_name, G_FILE_QUERY_INFO_NONE, NULL, &error)) {
 		char *path = g_file_get_path(file);
-		g_warning(_("Error setting custom icon on file %s: %s"), path, error->message);
+		g_warning("Error setting custom icon on file %s: %s", path, error->message);
 		g_free(path);
 		g_error_free(error);
 	}
