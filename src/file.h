@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,5 +33,8 @@ gboolean file_exists_and_is_dir(GFile *file);
 gboolean file_exists_and_is_symlink(GFile *file);
 char *file_get_display_name(GFile *file);
 void file_set_custom_icon(GFile *file, const char *icon_name);
+gboolean show_uri_in_browser(const char *uri, GtkWindow *parent, const char *display_name);
+gboolean show_uri_externally(const char *uri, GtkWindow *parent, const char *display_name);
+gboolean show_file_in_browser(GFile *file, GtkWindow *parent);
 
 #endif

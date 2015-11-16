@@ -159,15 +159,14 @@ js_open_file(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, siz
 		return NULL;
 
 	gchar *uri = g_filename_to_uri(file, NULL, &error);
-	if(!uri) {
-		error_dialog(NULL, error, _("Error converting '%s' to URI: "), file);
-		goto finally;
+	if(uri != NULL) {
+		show_uri_externally(uri, NULL, file);
+	} else {
+		g_warning("Filename has no URI: %s", error->message);
+		g_clear_error(&error);
 	}
-	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
-		error_dialog(NULL, error, _("Error opening external viewer for %s: "), uri);
 
 	g_free(uri);
-finally:
 	g_free(file);
 	return NULL;
 }
@@ -177,8 +176,6 @@ system's default viewer, but that viewer happens to be the web browser. */
 static JSValueRef
 js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
 {
-	GError *error = NULL;
-
 	if(argumentCount != 1)
 		return NULL;
 
@@ -186,8 +183,7 @@ js_open_url(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size
 	if(*exception != NULL)
 		return NULL;
 
-	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
-		error_dialog(NULL, error, _("Error opening external viewer for %s: "), uri);
+	show_uri_externally(uri, NULL, NULL);
 
 	g_free(uri);
 	return NULL;
@@ -1092,7 +1088,6 @@ finally:
 gint
 on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel)
 {
-	GError *error = NULL;
 	const gchar *uri = webkit_network_request_get_uri(request);
 	gchar *scheme = g_uri_parse_scheme(uri);
 
@@ -1164,9 +1159,8 @@ on_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNet
 		if(g_str_has_prefix(uri, PUBLIC_LIBRARY_HOME_URI))
 			return WEBKIT_NAVIGATION_RESPONSE_ACCEPT;
 
-		if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error)) {
-			error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(panel))), error, _("Error opening external viewer for %s: "), uri);
-		}
+		show_uri_in_browser(uri,
+			GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(panel))), NULL);
 
 	} else if(strcmp(scheme, "source") == 0) {
 		guint line;

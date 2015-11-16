@@ -1137,8 +1137,9 @@ action_open_materials_folder(GtkAction *action, I7Story *story)
 		uri = g_file_get_uri(materials_file);
 	}
 
-	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error))
-		error_dialog(GTK_WINDOW(story), error, _("Error opening external viewer for %s: "), uri);
+	/* TRANSLATORS: this string is used in error messages and should fit in the
+	pattern "We couldn't open a program to show ___" */
+	show_uri_externally(uri, GTK_WINDOW(story), _("the Materials folder"));
 
 	g_free(uri);
 finally:
@@ -1196,35 +1197,33 @@ action_help_recipe_book(GtkAction *action, I7Story *story)
 	g_object_unref(file);
 }
 
-/* Internal function: open a page in a browser and show error dialog if fail */
-static void
-open_page_in_browser(const gchar *uri)
-{
-	GError *err = NULL;
-	if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &err))
-		/* TRANSLATORS: open_page_in_browser */
-		error_dialog(NULL, err, _("The page \"%s\" should have opened in your browser:"), uri);
-}
-
 /* Help->Visit Inform7.com */
 void
 action_visit_inform7_com(GtkAction *action, I7App *app)
 {
-	open_page_in_browser("http://inform7.com/");
+	/* TRANSLATORS: This string is used in error messages and should fit in the
+	pattern "We couldn't show ___ in your browser" */
+	show_uri_in_browser("http://inform7.com/", NULL, _("the Inform website"));
 }
 
 /* Help->Suggest a Feature */
 void
 action_suggest_feature(GtkAction *action, I7App *app)
 {
-	open_page_in_browser("http://inform7.uservoice.com/");
+	show_uri_in_browser("http://inform7.uservoice.com/", NULL,
+		/* TRANSLATORS: This string is used in error messages and should fit in
+		the pattern "We couldn't show ___ in your browser" */
+		_("the Inform feature suggestion page"));
 }
 
 /* Help->Report a Bug */
 void
 action_report_bug(GtkAction *action, I7App *app)
 {
-	open_page_in_browser("http://inform7.com/mantis");
+	show_uri_in_browser("http://inform7.com/mantis", NULL,
+		/* TRANSLATORS: This string is used in error messages and should fit in
+		the pattern "We couldn't show ___ in your browser" */
+		_("the Inform bug reports page"));
 }
 
 /* Help->About */

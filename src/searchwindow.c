@@ -137,11 +137,7 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 
 			g_free(filepath);
 		} else {
-			GError *err = NULL;
-			char *uri = g_file_get_uri(file);
-			if(!gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &err))
-				error_dialog(GTK_WINDOW(self), err, _("The page \"%s\" should have opened in your browser:"), uri);
-			g_free(uri);
+			show_file_in_browser(file, GTK_WINDOW(self));
 		}
 	}
 		break;

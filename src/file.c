@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -456,4 +456,98 @@ file_set_custom_icon(GFile *file, const char *icon_name)
 		g_free(path);
 		g_error_free(error);
 	}
+}
+
+/**
+ * show_uri_in_browser:
+ * @uri: a string with a URI to display.
+ * @parent: a parent window for a possible error dialog, or %NULL.
+ * @display_name: a string to display to the user in an error message instead of
+ * the @uri, or %NULL.
+ *
+ * Tries to open @file externally and shows an error dialog if unsuccessful.
+ * This function is identical to show_uri_externally() except for intent, and
+ * therefore the message displayed on failure.
+ *
+ * If @display_name is %NULL, then @uri will be used instead.
+ *
+ * Returns: %TRUE if the operation succeeded, %FALSE otherwise.
+ */
+gboolean
+show_uri_in_browser(const char *uri, GtkWindow *parent, const char *display_name)
+{
+	g_return_val_if_fail(uri != NULL, FALSE);
+	g_return_val_if_fail(parent == NULL || GTK_IS_WINDOW(parent), FALSE);
+
+	GError *error = NULL;
+
+	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	if (!success) {
+		error_dialog(parent, error,
+			/* TRANSLATORS: %s can be a URL, a filename, or a noun like "the
+			Inform website" */
+			_("We couldn't show %s in your browser. The error was: "),
+			display_name != NULL ? display_name : uri);
+	}
+	return success;
+}
+
+/**
+ * show_uri_externally:
+ * @uri: a string with a URI to display.
+ * @parent: a parent window for a possible error dialog, or %NULL.
+ * @display_name: a string to display to the user in an error message instead of
+ * the @uri, or %NULL.
+ *
+ * Tries to open @file externally and shows an error dialog if unsuccessful.
+ * This function is identical to show_uri_in_browser() except for intent, and
+ * therefore the message displayed on failure.
+ *
+ * If @display_name is %NULL, then @uri will be used instead.
+ *
+ * Returns: %TRUE if the operation succeeded, %FALSE otherwise.
+ */
+gboolean
+show_uri_externally(const char *uri, GtkWindow *parent, const char *display_name)
+{
+	g_return_val_if_fail(uri != NULL, FALSE);
+	g_return_val_if_fail(parent == NULL || GTK_IS_WINDOW(parent), FALSE);
+
+	GError *error = NULL;
+
+	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	if (!success) {
+		error_dialog(parent, error,
+			/* TRANSLATORS: %s can be a URL, a filename, or a noun like "the
+			Materials folder" */
+			_("We couldn't open a program to show %s. The error was: "),
+			display_name != NULL ? display_name : uri);
+	}
+	return success;
+}
+
+/**
+ * show_file_in_browser:
+ * @file: a #GFile to display.
+ * @parent: a parent window for a possible error dialog, or %NULL.
+ *
+ */
+gboolean
+show_file_in_browser(GFile *file, GtkWindow *parent)
+{
+	g_return_val_if_fail(G_IS_FILE(file), FALSE);
+	g_return_val_if_fail(parent == NULL || GTK_IS_WINDOW(parent), FALSE);
+
+	GError *error = NULL;
+	char *uri = g_file_get_uri(file);
+	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	if(!success) {
+		char *display_name = file_get_display_name(file);
+		error_dialog(parent, error,
+			_("We couldn't show '%s' in your browser. The error was: "),
+			display_name);
+		g_free(display_name);
+	}
+	g_free(uri);
+	return success;
 }
