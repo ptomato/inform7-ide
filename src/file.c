@@ -544,7 +544,7 @@ show_file_in_browser(GFile *file, GtkWindow *parent)
 	if(!success) {
 		char *display_name = file_get_display_name(file);
 		error_dialog(parent, error,
-			_("We couldn't show '%s' in your browser. The error was: "),
+			_("We couldn't show %s in your browser. The error was: "),
 			display_name);
 		g_free(display_name);
 	}
