@@ -284,28 +284,28 @@ i7_skein_class_init(I7SkeinClass *klass)
 	/* Install properties */
 	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS;
 	g_object_class_install_property(object_class, PROP_CURRENT_NODE,
-		g_param_spec_object("current-node", _("Current node"),
-			_("The node currently displayed in the Transcript"),
+		g_param_spec_object("current-node", "Current node",
+			"The node currently displayed in the Transcript",
 			I7_TYPE_NODE, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_PLAYED_NODE,
-		g_param_spec_object("played-node", _("Played node"),
-			_("The node last played in the Game view"),
+		g_param_spec_object("played-node", "Played node",
+			"The node last played in the Game view",
 			I7_TYPE_NODE, G_PARAM_READABLE | flags));
 	g_object_class_install_property(object_class, PROP_HORIZONTAL_SPACING,
-		g_param_spec_double("horizontal-spacing", _("Horizontal spacing"),
-			_("Pixels of horizontal space between skein branches"),
+		g_param_spec_double("horizontal-spacing", "Horizontal spacing",
+			"Pixels of horizontal space between skein branches",
 			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_VERTICAL_SPACING,
-		g_param_spec_double("vertical-spacing", _("Vertical spacing"),
-			_("Pixels of vertical space between skein items"),
+		g_param_spec_double("vertical-spacing", "Vertical spacing",
+			"Pixels of vertical space between skein items",
 			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_LOCKED_COLOR,
-		g_param_spec_string("locked-color", _("Locked color"),
-			_("Color of locked threads"),
+		g_param_spec_string("locked-color", "Locked color",
+			"Color of locked threads",
 			"black", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | flags));
 	g_object_class_install_property(object_class, PROP_UNLOCKED_COLOR,
-		g_param_spec_string("unlocked-color", _("Unlocked color"),
-			_("Color of unlocked threads"),
+		g_param_spec_string("unlocked-color", "Unlocked color",
+			"Color of unlocked threads",
 			"black", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | flags));
 
 	/* Add private data */
@@ -793,7 +793,7 @@ i7_skein_load(I7Skein *self, GFile *file, GError **error)
 	xmlNode *top = xmlDocGetRootElement(xmldoc);
 	if(!xmlStrEqual(top->name, (xmlChar *)"Skein")) {
 		if(error)
-			*error = g_error_new(I7_SKEIN_ERROR, I7_SKEIN_ERROR_BAD_FORMAT, _("<Skein> element not found."));
+			*error = g_error_new(I7_SKEIN_ERROR, I7_SKEIN_ERROR_BAD_FORMAT, "<Skein> element not found.");
 		goto fail;
 	}
 
@@ -801,7 +801,7 @@ i7_skein_load(I7Skein *self, GFile *file, GError **error)
 	gchar *root_id = get_property_from_node(top, "rootNode");
 	if(!root_id) {
 		if(error)
-			*error = g_error_new(I7_SKEIN_ERROR, I7_SKEIN_ERROR_BAD_FORMAT, _("rootNode attribute not found."));
+			*error = g_error_new(I7_SKEIN_ERROR, I7_SKEIN_ERROR_BAD_FORMAT, "rootNode attribute not found.");
 		goto fail;
 	}
 

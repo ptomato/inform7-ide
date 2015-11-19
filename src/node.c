@@ -470,44 +470,44 @@ i7_node_class_init(I7NodeClass *klass)
 	/* Install properties */
 	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS;
 	g_object_class_install_property(object_class, PROP_COMMAND,
-		g_param_spec_string("command", _("Command"),
-			_("The command entered in the game"),
+		g_param_spec_string("command", "Command",
+			"The command entered in the game",
 			"", flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_LABEL,
-		g_param_spec_string("label", _("Label"),
-			_("The text this node has been labelled with"),
+		g_param_spec_string("label", "Label",
+			"The text this node has been labelled with",
 			"", flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_TRANSCRIPT_TEXT,
-		g_param_spec_string("transcript-text", _("Transcript text"),
-			_("The text produced by the command on the last play-through"),
+		g_param_spec_string("transcript-text", "Transcript text",
+			"The text produced by the command on the last play-through",
 			"", flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_EXPECTED_TEXT,
-		g_param_spec_string("expected-text", _("Expected text"),
-			_("The text this command should produce"),
+		g_param_spec_string("expected-text", "Expected text",
+			"The text this command should produce",
 			"", flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_CHANGED,
-		g_param_spec_boolean("changed", _("Changed"),
-			_("Whether the transcript text has changed since the last time this node was played"),
+		g_param_spec_boolean("changed", "Changed",
+			"Whether the transcript text has changed since the last time this node was played",
 			FALSE, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property(object_class, PROP_BLESSED,
-		g_param_spec_boolean("blessed", _("Blessed"),
-			_("Whether this node has expected text"),
+		g_param_spec_boolean("blessed", "Blessed",
+			"Whether this node has expected text",
 			FALSE, flags | G_PARAM_READABLE));
 	g_object_class_install_property(object_class, PROP_LOCKED,
-		g_param_spec_boolean("locked", _("Locked"),
-			_("Whether this node is locked"),
+		g_param_spec_boolean("locked", "Locked",
+			"Whether this node is locked",
 			FALSE, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_PLAYED,
-		g_param_spec_boolean("played", _("Played"),
-			_("Whether this node is in the currently playing thread"),
+		g_param_spec_boolean("played", "Played",
+			"Whether this node is in the currently playing thread",
 			FALSE, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	g_object_class_install_property(object_class, PROP_SCORE,
-		g_param_spec_int("score", _("Score"),
-			_("This node's score, used for cleaning up the skein"),
+		g_param_spec_int("score", "Score",
+			"This node's score, used for cleaning up the skein",
 			G_MININT16, G_MAXINT16, 0, flags | G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 	g_object_class_install_property(object_class, PROP_MATCH,
-	    g_param_spec_int("match", _("Match type"),
-		    _("How this node's transcript and expected text differ"),
+	    g_param_spec_int("match", "Match type",
+		    "How this node's transcript and expected text differ",
 		    -1, 2, -1, flags | G_PARAM_READABLE));
 
 	/* Private data */

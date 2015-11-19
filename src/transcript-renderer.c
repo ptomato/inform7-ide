@@ -1,4 +1,4 @@
-/* Copyright (C) 2011 P. F. Chimento
+/* Copyright (C) 2011, 2015 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -431,40 +431,40 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 	/* Install properties */
 	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS;
 	g_object_class_install_property(object_class, PROP_DEFAULT_WIDTH, 
-		g_param_spec_uint("default-width", _("Default width"), 
-			_("The width to make the whole renderer"), 
+		g_param_spec_uint("default-width", "Default width",
+			"The width to make the whole renderer",
 			0, G_MAXUINT, 400, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_TEXT_PADDING, 
-		g_param_spec_uint("text-padding", _("Text padding"), 
-			_("Padding between the edges of the rectangles and the text"), 
+		g_param_spec_uint("text-padding", "Text padding",
+			"Padding between the edges of the rectangles and the text",
 			0, G_MAXUINT, 6, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_COMMAND, 
-		g_param_spec_string("command", _("Command"), 
-			_("Command from the Skein"), 
+		g_param_spec_string("command", "Command",
+			"Command from the Skein",
 			NULL, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_TRANSCRIPT_TEXT, 
-		g_param_spec_string("transcript-text", _("Transcript text"), 
-			_("Transcript text from the Skein"), 
+		g_param_spec_string("transcript-text", "Transcript text",
+			"Transcript text from the Skein",
 			NULL, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_EXPECTED_TEXT, 
-		g_param_spec_string("expected-text", _("Expected text"), 
-			_("Expected text from the Skein"), 
+		g_param_spec_string("expected-text", "Expected text",
+			"Expected text from the Skein",
 			NULL, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_MATCH_TYPE,
-	    g_param_spec_int("match-type", _("Match type"),
-		    _("-1 = no comparison, 0 = no match, 1 = near match, 2 = exact match"),
+	    g_param_spec_int("match-type", "Match type",
+		    "-1 = no comparison, 0 = no match, 1 = near match, 2 = exact match",
 		    -1, 2, -1, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_CURRENT,
-	    g_param_spec_boolean("current", _("Current"),
-		    _("Whether to render the node as the currently highlighted node"),
+	    g_param_spec_boolean("current", "Current",
+		    "Whether to render the node as the currently highlighted node",
 		    FALSE, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_PLAYED,
-	    g_param_spec_boolean("played", _("Played"),
-		    _("Whether to render the node as the latest played node"),
+	    g_param_spec_boolean("played", "Played",
+		    "Whether to render the node as the latest played node",
 		    FALSE, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_CHANGED,
-	    g_param_spec_boolean("changed", _("Changed"),
-		    _("Whether to render the node as having been changed since it was last played"),
+	    g_param_spec_boolean("changed", "Changed",
+		    "Whether to render the node as having been changed since it was last played",
 		    FALSE, G_PARAM_READWRITE | flags));
 	
 	/* Add private data */

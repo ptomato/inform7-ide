@@ -127,8 +127,8 @@ i7_placeholder_entry_class_init(I7PlaceholderEntryClass *klass)
 
 	/* Install properties */
 	GParamSpec *pspec = g_param_spec_string("placeholder-text",
-		_("Placeholder text"),
-		_("Text to use as a placeholder when no text has been entered"),
+		"Placeholder text",
+		"Text to use as a placeholder when no text has been entered",
 		"", G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
 	g_object_class_install_property(object_class, PROP_PLACEHOLDER_TEXT, pspec);
 
