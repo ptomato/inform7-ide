@@ -17,7 +17,7 @@
 #
 
 Name:           gnome-inform7
-Version:        6L38
+Version:        6M62
 Release:        0
 License:        GPL-3.0
 Summary:        Inform 7 interactive fiction programming language IDE
@@ -116,6 +116,8 @@ find %{buildroot} -type f -name "*.la" -delete -print
 #%files lang -f %{name}.lang
 
 %changelog
+* Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com>
+- Updated to version 6M62
 * Sun Jun 1 2014 Vincent Petry <pvince81@opensuse.org>
 - Updated spec for version 6L02
 * Mon Oct 10 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>

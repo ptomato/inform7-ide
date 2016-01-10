@@ -3,14 +3,14 @@
 #
 
 Name: gnome-inform7
-Version: 6L38
-Release: 1.fc20
+Version: 6M62
+Release: 1.fc22
 
 URL: http://inform7.com/
 License: GPLv3
 
 Group: Development/Languages
-Source: http://inform7.com/download/content/6L38/gnome-inform7-6L38.tar.gz
+Source: http://inform7.com/download/content/6M62/gnome-inform7-6M62.tar.xz
 
 # Build requirements:
 # Extra build tools
@@ -131,8 +131,10 @@ rm -rf %{buildroot}
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-blurb.png
 %{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
 %{_datadir}/mime/packages/inform7.xml
+%lang(de) %{_datadir}/locale/de/LC_MESSAGES/%{name}.mo
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
 %lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/%{name}.mo
+%lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/%{name}.mo
 %{_bindir}/gnome-inform7
 %{pkglibexecdir}/cBlorb
 %{pkgdocdir}/cBlorb/Complete.html
@@ -153,6 +155,8 @@ rm -rf %{buildroot}
 %{pkglibexecdir}/ni
 
 %changelog
+* Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com> - 6M62-1
+- Repackaged to Build 6M62.
 * Sat Oct 10 2015 Philip Chimento <philip.chimento@gmail.com>
 - Updated documentation files.
 * Sun Sep 7 2014 Philip Chimento <philip.chimento@gmail.com> - 6L38-1
