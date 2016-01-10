@@ -208,7 +208,10 @@ filename *Filenames::set_extension(filename *F, char *extension) {
 		if (c == '.') break;
 		PUT_TO(NEWLEAF, c);
 	}
-	if ((extension) && (extension[0])) WRITE_TO(NEWLEAF, ".%s", extension);
+	if (extension) {
+		if (extension[0] == '.') extension++;
+		if (extension[0]) WRITE_TO(NEWLEAF, ".%s", extension);
+	}
 	filename *N = Filenames::in_folder_S(F->pathname_of_location, NEWLEAF);
 	DISCARD_TEXT(NEWLEAF);
 	return N;
