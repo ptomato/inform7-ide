@@ -1302,6 +1302,7 @@ action_about(GtkAction *action, I7App *app)
 	authors[0] = g_string_free(builder, FALSE);
 	char *translators_and_languages[] = {
 		"\u00C1ngel Eduardo Garc\u00EDa", N_("Spanish"),
+		"helado de brownie", N_("Spanish"),
 		"Jhames Bolumbero", N_("Spanish"),
 		"St\u00E9phane Aulery", N_("French"),
 		NULL, NULL
