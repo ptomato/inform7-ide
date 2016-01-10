@@ -1282,7 +1282,7 @@ action_about(GtkAction *action, I7App *app)
 		"\n");
 	g_string_append(builder, _("Elastic tabstops invented by:"));
 	g_string_append(builder, "\n"
-		"Nick Gravgaard\n"
+		"    Nick Gravgaard\n"
 		"\n");
 	g_string_append(builder, _("Contributions to the compiler:"));
 	g_string_append(builder, "\n"
