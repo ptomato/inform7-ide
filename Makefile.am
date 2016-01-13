@@ -45,7 +45,7 @@ DEBUGRPM = $(PACKAGE)-debuginfo-$(VERSION)-$(RPM_RELEASE).$(RPMARCH).rpm
 SRCRPM = $(PACKAGE)-$(VERSION)-$(RPM_RELEASE).src.rpm
 rpm: dist
 	$(ECHO) "Building RPM package..."; \
-	if $(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.gz; then \
+	if $(RPMBUILD) -ta --clean $(PACKAGE)-$(VERSION).tar.xz; then \
 		if $(TEST) -e $(RPMDIR)/$(BINRPM); then \
 			$(CP) $(RPMDIR)/$(BINRPM) $(builddir); \
 		elif $(TEST) -e $(RPMDIR)/$(RPMARCH)/$(BINRPM); then \
