@@ -69,7 +69,7 @@ rpm:
 endif
 
 if BUILDING_DEB
-DEBSOURCEPKG=$(PACKAGE)_$(VERSION).orig.tar.gz
+DEBSOURCEPKG=$(PACKAGE)_$(VERSION).orig.tar.xz
 DEBSOURCEDIR=$(PACKAGE)-$(VERSION)
 deb: dist
 	@$(ECHO) "Building Debian package..."; \
@@ -79,8 +79,8 @@ deb: dist
 		"out the project from source control."; \
 		exit 1; \
 	fi; \
-	$(MV) $(PACKAGE)-$(VERSION).tar.gz $(DEBSOURCEPKG) && \
-	$(TAR) --extract --gunzip --file $(DEBSOURCEPKG) && \
+	$(MV) $(PACKAGE)-$(VERSION).tar.xz $(DEBSOURCEPKG) && \
+	$(TAR) --extract --xz --file $(DEBSOURCEPKG) && \
 	$(MKDIR_P) $(DEBSOURCEDIR)/debian && \
 	$(CP) \
 		debian/changelog \
