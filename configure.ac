@@ -127,7 +127,6 @@ AC_PATH_PROG([ECHO], [echo])      # echo
 AC_PATH_PROG([CP], [cp])          # cp
 AC_PATH_PROG([DATE], [date])      # date
 AC_PATH_PROG([MV], [mv])          # mv
-AC_PATH_PROG([ITSTOOL], [itstool], [notfound])  # not needed for tarball build
 # Other programs
 AM_GNU_GETTEXT([external])        # Gettext, link to system libintl
 PKG_PROG_PKG_CONFIG               # pkg_config
@@ -136,6 +135,12 @@ GLIB_GSETTINGS                    # used for GSettings
 AC_PATH_PROG([UNLZMA], [unlzma], [notfound]) # nonGNU tar doesn't have --lzma
 AS_IF([$TEST "x$UNLZMA" = xnotfound],
 	[AC_MSG_ERROR([The unlzma program is required to install Inform 7.
+	Try installing it from your package manager.])])
+
+# ITS tool not needed for tarball build, so only error out if a git clone
+AC_PATH_PROG([ITSTOOL], [itstool], [itstool-notfound])
+AS_IF([$TEST "x$ITSTOOL" = xitstool-notfound -a -d .git],
+	[AC_MSG_ERROR([ITS Tool is needed to compile Inform 7 from a Git checkout.
 	Try installing it from your package manager.])])
 
 ### INTERNATIONALIZATION #######################################################
