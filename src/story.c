@@ -568,6 +568,8 @@ get_focus_view(I7Story *story)
 			return panel->index_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_INDEX]))];
 		case I7_PANE_DOCUMENTATION:
 			return panel->tabs[I7_PANE_DOCUMENTATION];
+		case I7_PANE_EXTENSIONS:
+			return panel->tabs[I7_PANE_EXTENSIONS];
 		default:
 			g_assert_not_reached();
 	}
