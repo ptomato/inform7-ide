@@ -145,8 +145,9 @@ AS_IF([$TEST "x$ITSTOOL" = xitstool-notfound -a -d .git],
 
 ### INTERNATIONALIZATION #######################################################
 
-AM_GNU_GETTEXT_VERSION([0.19.3])
-# 0.18.3 required for Glade files; but use last point release from Debian stable
+AM_GNU_GETTEXT_VERSION([0.19.2])
+# 0.18.3 required for Glade files; but use last point release from supported
+# distros (currently openSUSE 13.2 has this version, Debian stable has .3)
 GETTEXT_PACKAGE=gnome-inform7
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
