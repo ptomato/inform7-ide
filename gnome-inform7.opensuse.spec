@@ -23,7 +23,7 @@ License:        GPL-3.0
 Summary:        Inform 7 interactive fiction programming language IDE
 Url:            http://inform7.com/
 Group:          Development/Languages/Other
-Source0:        http://downloads.sourceforge.net/%{name}/%{name}/gnome-inform7-%{version}.tar.gz
+Source0:        https://github.com/ptomato/gnome-inform7/releases/download/6M62/Gnome_UI_Source_%{version}.tar.xz
 Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Linux_all.tar.gz
 BuildRequires:  fdupes
 BuildRequires:  libgoocanvas3-devel
@@ -62,6 +62,10 @@ adventures.).
 
 # Remove git update rows from autogen.sh
 sed -i -e '/^git .*/d' autogen.sh
+
+# Adjust required gettext version for openSUSE
+# FIXME: remove this for the next major release!
+sed -i -e 's/^AM_GNU_GETTEXT_VERSION(.*$/AM_GNU_GETTEXT_VERSION([0.19.2])/g' configure.ac
 
 cd inform7-%{version}
 %ifarch x86_64
@@ -116,6 +120,9 @@ find %{buildroot} -type f -name "*.la" -delete -print
 #%files lang -f %{name}.lang
 
 %changelog
+* Sun Feb 7 2016 Vincent Petry <pvince81@opensuse.org>
+- Updated Source0 URL
+- Added patch for gettext version
 * Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com>
 - Updated to version 6M62
 * Sun Jun 1 2014 Vincent Petry <pvince81@opensuse.org>
