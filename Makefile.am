@@ -1,5 +1,5 @@
-# . must come before po, and po must come before data
-SUBDIRS = src . po data pixmaps
+# . and data must come before po
+SUBDIRS = src . data po pixmaps
 
 ACLOCAL_AMFLAGS = -I m4
 

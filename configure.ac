@@ -137,17 +137,10 @@ AS_IF([$TEST "x$UNLZMA" = xnotfound],
 	[AC_MSG_ERROR([The unlzma program is required to install Inform 7.
 	Try installing it from your package manager.])])
 
-# ITS tool not needed for tarball build, so only error out if a git clone
-AC_PATH_PROG([ITSTOOL], [itstool], [itstool-notfound])
-AS_IF([$TEST "x$ITSTOOL" = xitstool-notfound -a -d .git],
-	[AC_MSG_ERROR([ITS Tool is needed to compile Inform 7 from a Git checkout.
-	Try installing it from your package manager.])])
-
 ### INTERNATIONALIZATION #######################################################
 
-AM_GNU_GETTEXT_VERSION([0.19.2])
-# 0.18.3 required for Glade files; but use last point release from supported
-# distros (currently openSUSE 13.2 has this version, Debian stable has .3)
+AM_GNU_GETTEXT_VERSION([0.19.7])
+# 0.19.7 required for custom ITS rules
 GETTEXT_PACKAGE=gnome-inform7
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
@@ -354,6 +347,7 @@ data/ui/Makefile
 data/licenses/Makefile
 data/licenses/license.html
 data/highlighting/Makefile
+data/its/Makefile
 data/mime/Makefile
 data/styles/Makefile
 pixmaps/Makefile

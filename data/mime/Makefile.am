@@ -1,15 +1,16 @@
 mimedir = $(datadir)/mime/packages
-dist_mime_DATA = inform7.xml
-dist_noinst_DATA = mime.pot inform7.xml.in
-
-mime.pot: inform7.xml.in
-	$(AM_V_GEN)$(ITSTOOL) -o $@ $<
+mime = inform7.xml
+dist_mime_DATA = $(mime)
+EXTRA_DIST = $(mime).in
 
 # Merge translations back into a new XML file
-inform7.xml: inform7.xml.in
-	$(AM_V_GEN)$(ITSTOOL) -j $< -o $@ $(top_srcdir)/po/*.gmo
+# GETTEXTDATADIR(S) is an undocumented hack to use uninstalled ITS rules
+$(mime): $(mime).in
+	$(AM_V_GEN)export GETTEXTDATADIR=$(top_srcdir)/data; \
+	export GETTEXTDATADIRS=''; \
+	$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
-MAINTAINERCLEANFILES = $(dist_mime_DATA) mime.pot
+CLEANFILES = $(mime)
 
 update_mime_database = update-mime-database $(DESTDIR)$(datadir)/mime
 

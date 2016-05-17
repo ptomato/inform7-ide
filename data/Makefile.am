@@ -1,4 +1,4 @@
-SUBDIRS = . highlighting licenses mime styles ui
+SUBDIRS = . highlighting its licenses mime styles ui
 
 INFORMTARBALL = Inform_@PACKAGE_VERSION@_data.tar.lz
 
