@@ -711,7 +711,7 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
-	
+
 	/* Set the Results/Progress to a monospace font */
 	gtk_widget_modify_font(GTK_WIDGET(panel->results_tabs[I7_RESULTS_TAB_PROGRESS]), font);
 
@@ -826,7 +826,7 @@ i7_story_init(I7Story *self)
 	priv->compiler_output_file = NULL;
 	priv->test_me = FALSE;
 	priv->manifest = NULL;
-	
+
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
 	g_object_set(priv->skein,
@@ -908,7 +908,7 @@ i7_story_init(I7Story *self)
 	/* Make the Skein dialogs transient */
 	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));
 	gtk_window_set_transient_for(GTK_WINDOW(self->skein_trim_dialog), GTK_WINDOW(self));
-	
+
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_storywindow_delete_event), NULL);
 }
