@@ -420,6 +420,7 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 			isn't current with what's on disk anymore, but we weren't able to
 			reload it. So treat the situation as if the file had been deleted. */
 	    }
+		/* fall through */
 		case G_FILE_MONITOR_EVENT_DELETED:
 		case G_FILE_MONITOR_EVENT_UNMOUNTED:
 			/* If the file is removed, quietly make sure the user gets a chance
