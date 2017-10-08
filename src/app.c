@@ -762,6 +762,19 @@ get_iter_for_author(GtkTreeModel *store, const char *author, GtkTreeIter *iter)
 	return found;
 }
 
+/* Helper function: trim whitespace from string. Free return value when
+ * done. Copied from deprecated pango_trim_string() function. */
+static char *
+trim(const char *string)
+{
+	while (*string && g_ascii_isspace(*string))
+		string++;
+	int len = strlen(string);
+	while (len > 0 && g_ascii_isspace(string[len - 1]))
+		len--;
+	return g_strndup(string, len);
+}
+
 /* Helper function: remove "(for X only)" from extension title. Free return
 value when done. */
 static char *
@@ -776,7 +789,7 @@ remove_machine_spec_from_title(const char *title)
 		return NULL;
 	}
 	*open_paren = '\0';
-	char *retval = pango_trim_string(workstring);
+	char *retval = trim(workstring);
 	g_free(workstring);
 	return retval;
 }
