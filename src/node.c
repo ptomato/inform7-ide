@@ -797,10 +797,13 @@ i7_node_find_child(I7Node *self, const gchar *command)
 {
 	I7Node *node = NULL;
 	GNode *gnode = self->gnode->children;
+	/* Special case: NULL is treated as "" */
+	if (!command) {
+		command = "";
+	}
 	while(gnode != NULL) {
 		gchar *cmp_command = i7_node_get_command(I7_NODE(gnode->data));
-		/* Special case: NULL is treated as "" */
-		if((strlen(cmp_command) == 0 && (command == NULL || strlen(command) == 0)) || (strcmp(cmp_command, command) == 0)) {
+		if((strlen(cmp_command) == 0 && strlen(command) == 0) || strcmp(cmp_command, command) == 0) {
 			g_free(cmp_command);
 			node = gnode->data;
 			break;
