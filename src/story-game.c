@@ -414,8 +414,8 @@ on_game_command(ChimaraIF *game, gchar *input, gchar *response, I7Story *story)
 		I7Node *root = i7_skein_get_root_node(priv->skein);
 		if(i7_skein_get_current_node(priv->skein) == root) {
 			i7_node_set_transcript_text(root, response);
-			return;
 		}
+		return;
 	} 
 	I7Node *node = i7_skein_new_command(priv->skein, input);
 	i7_node_set_transcript_text(node, response);
