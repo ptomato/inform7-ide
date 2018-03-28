@@ -1164,10 +1164,12 @@ reinstate_all_in_model(I7Skein *self)
 I7Node *
 i7_skein_new_command(I7Skein *self, const gchar *command)
 {
+	g_return_val_if_fail(command != NULL, NULL);
+
 	I7_SKEIN_USE_PRIVATE;
 
 	gboolean node_added = FALSE;
-	gchar *node_command = g_strescape(command ? command : "", "\"");
+	gchar *node_command = g_strescape(command, "\"");
 
 	I7Node *node = i7_node_find_child(priv->played, node_command);
 	if(node == NULL) {
