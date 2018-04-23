@@ -174,29 +174,6 @@ AC_ARG_WITH([sound],
 	[],
 	[with_sound=gstreamer])
 
-SOUND_MODULE=
-# Autodetect sound library
-AS_IF([test "x$with_sound" = "xgstreamer"], [
-	AC_MSG_CHECKING([which version of GStreamer is used in WebKit])
-	WEBKIT_LIBDIR=$(pkg-config --variable=libdir webkit-1.0)
-	# Get -lwebkit-blah and remove -l
-	WEBKIT_LIBNAME=$(pkg-config --libs webkit-1.0 | sed -e 's/ /\n/g' | $GREP webkit | cut -c3-)
-	WEBKIT_LIBRARY="$WEBKIT_LIBDIR/lib$WEBKIT_LIBNAME.so"
-	with_sound=$(ldd $WEBKIT_LIBRARY | $GREP -E -o "gstreamer-@<:@0-9@:>@\\.@<:@0-9@:>@+" | uniq)
-	# with_sound is now gstreamer-1.0, gstreamer-0.10, or empty
-	AS_IF([test -z "$with_sound"], [with_sound=no])
-	AC_MSG_RESULT([$with_sound])])
-# Sound library to use in the end
-AS_CASE([$with_sound],
-	[gstreamer-0.10], [
-		AC_DEFINE([GSTREAMER_0_10_SOUND], [1],
-			[Define to enable sound support with GStreamer 0.10])
-		SOUND_MODULE="gstreamer-0.10 >= 0.10.12"],
-	[gstreamer-1.0], [
-		AC_DEFINE([GSTREAMER_1_0_SOUND], [1],
-			[Define to enable sound support with GStreamer 1.0])
-		SOUND_MODULE="gstreamer-1.0"],
-	[])
 AS_IF([test "x$with_sound" != "xno"],
 	[AC_DEFINE([HAVE_SOUND], [1], [Define if any sound support is enabled])])
 
@@ -233,36 +210,12 @@ PKG_CHECK_MODULES([CHIMARA], [
 	gthread-2.0
 	gmodule-2.0
 	pango
-	$SOUND_MODULE
+	gstreamer-1.0
 ])
 
 # GStreamer plugins needed to run library
 AS_CASE([$with_sound],
-	[gstreamer-0.10], [
-		have_all_elements=yes
-		m4_ifdef([AM_GST_ELEMENT_CHECK], [
-			m4_map_args_w([
-				giostreamsrc
-				typefind
-				audioconvert
-				volume
-				oggdemux
-				vorbisdec
-				autoaudiosink
-				aiffparse
-				modplug],
-				[AM_GST_ELEMENT_CHECK(], [, [], [have_all_elements=no])])
-			AS_IF([test "x$have_all_elements" = "xno"],
-				[AC_MSG_ERROR([One or more required GStreamer elements were not found.
-You will have to install your system's "base", "good", and "bad" plugins
-pacakges. Try looking for names such as: gstreamer-plugins-base,
-gstreamer-plugins-good, gstreamer-plugins-bad-free,
-gstreamer-plugins-bad-free-extras, gstreamer0.10-plugins-base,
-gstreamer0.10-plugins-good, gstreamer0.10-plugins-bad])])],
-		[AC_MSG_ERROR([AM_GST_ELEMENT_CHECK not found. Install the development package
-for GStreamer 0.10 and rerun autogen.sh.])])
-	],
-	[gstreamer-1.0], [
+	[gstreamer], [
 		have_all_elements=yes
 		m4_ifdef([GST_ELEMENT_CHECK], [
 			m4_map_args_w([
@@ -285,6 +238,8 @@ gstreamer1-plugins-bad-free-extras, gstreamer1.0-plugins-base,
 gstreamer1.0-plugins-good, gstreamer1.0-plugins-bad])])],
 			[AC_MSG_ERROR([GST_ELEMENT_CHECK not found. Install the development package
 for GStreamer 1.0 and rerun autogen.sh.])])
+		AC_DEFINE([GSTREAMER_1_0_SOUND], [1],
+			[Define to enable sound support with GStreamer 1.0])
 	],
 	[])
 
