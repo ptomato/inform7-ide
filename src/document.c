@@ -90,7 +90,7 @@ i7_document_init(I7Document *self)
 	GSettings *state = i7_app_get_state(theapp);
 
 	/* Set the icon */
-	gtk_window_set_icon_name(GTK_WINDOW(self), "inform7");
+	gtk_window_set_icon_name(GTK_WINDOW(self), "com.inform7.IDE");
 
 	/* Set the minimum size so that the window can be sized smaller than the
 	 widgets inside it */
@@ -126,7 +126,7 @@ i7_document_init(I7Document *self)
 	priv->document_action_group = GTK_ACTION_GROUP(load_object(builder, "document_actions"));
 	priv->selection_action_group = GTK_ACTION_GROUP(load_object(builder, "selection_actions"));
 	priv->copy_action_group = GTK_ACTION_GROUP(load_object(builder, "copy_actions"));
-	
+
 	self->ui_manager = gtk_ui_manager_new();
 	i7_app_insert_action_groups(theapp, self->ui_manager);
 	gtk_ui_manager_insert_action_group(self->ui_manager, priv->document_action_group, 0);

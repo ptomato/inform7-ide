@@ -294,7 +294,7 @@ i7_search_window_init(I7SearchWindow *self)
 	priv->algorithm = I7_SEARCH_CONTAINS;
 
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(self), TRUE);
-	gtk_window_set_icon_name(GTK_WINDOW(self), "inform7");
+	gtk_window_set_icon_name(GTK_WINDOW(self), "com.inform7.IDE");
 	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(self), TRUE);
 	gtk_window_set_title(GTK_WINDOW(self), _("Search Results"));
 	gtk_window_set_type_hint(GTK_WINDOW(self), GDK_WINDOW_TYPE_HINT_UTILITY);

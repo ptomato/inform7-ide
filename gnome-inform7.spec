@@ -120,7 +120,7 @@ rm -rf %{buildroot}
 %{pkgdatadir}/ui/*.ui
 %{pkgdatadir}/ui/*.xml
 %{_datadir}/icons/hicolor/*/actions/inform7-builtin.png
-%{_datadir}/icons/hicolor/*/apps/inform7.png
+%{_datadir}/icons/hicolor/*/apps/com.inform7.IDE.png
 %{_datadir}/icons/hicolor/*/emblems/inform7-materials.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-materials.png
