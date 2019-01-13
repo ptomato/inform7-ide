@@ -11,7 +11,7 @@ com.inform7.IDE.desktop: com.inform7.IDE.desktop.in
 	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 CLEANFILES = $(desktop_DATA)
 
-gsettings_SCHEMAS = com.inform7.GUI.gschema.xml
+gsettings_SCHEMAS = com.inform7.IDE.gschema.xml
 
 @GSETTINGS_RULES@
 

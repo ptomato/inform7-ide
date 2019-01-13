@@ -113,7 +113,7 @@ find %{buildroot} -type f -name "*.la" -delete -print
 %{_datadir}/applications/com.inform7.IDE.desktop
 %doc %{_datadir}/doc/%{name}
 %{_datadir}/%{name}
-%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
+%{_datadir}/glib-2.0/schemas/com.inform7.IDE.gschema.xml
 %{_datadir}/icons/hicolor/*/*
 %{_datadir}/mime/packages/inform7.xml
 

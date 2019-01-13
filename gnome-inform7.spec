@@ -129,7 +129,7 @@ rm -rf %{buildroot}
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform-extension.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-blurb.png
-%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
+%{_datadir}/glib-2.0/schemas/com.inform7.IDE.gschema.xml
 %{_datadir}/mime/packages/inform7.xml
 %lang(de) %{_datadir}/locale/de/LC_MESSAGES/%{name}.mo
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo

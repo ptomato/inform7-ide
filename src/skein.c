@@ -151,7 +151,7 @@ i7_skein_init(I7Skein *self)
 	gdk_color_parse("black", &priv->locked);
 	gdk_color_parse("black", &priv->unlocked);
 
-	priv->settings = g_settings_new("com.inform7.GUI.preferences.skein");
+	priv->settings = g_settings_new("com.inform7.IDE.preferences.skein");
 	g_settings_bind(priv->settings, "horizontal-spacing", self, "horizontal-spacing", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(priv->settings, "vertical-spacing", self, "vertical-spacing", G_SETTINGS_BIND_DEFAULT);
 

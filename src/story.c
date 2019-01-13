@@ -835,7 +835,7 @@ i7_story_init(I7Story *self)
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
 	g_signal_connect(priv->skein, "differs-badge-activate", G_CALLBACK(on_differs_badge_activate), self);
 	g_signal_connect(priv->skein, "modified", G_CALLBACK(on_skein_modified), self);
-	priv->skein_settings = g_settings_new("com.inform7.GUI.preferences.skein");
+	priv->skein_settings = g_settings_new("com.inform7.IDE.preferences.skein");
 	g_settings_bind(priv->skein_settings, "horizontal-spacing",
 		gtk_range_get_adjustment(GTK_RANGE(self->skein_spacing_horizontal)), "value", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(priv->skein_settings, "vertical-spacing",
