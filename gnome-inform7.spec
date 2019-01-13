@@ -79,7 +79,7 @@ rm -rf %{buildroot}
 %define pkglibexecdir %{_libexecdir}/%{name}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
-%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/com.inform7.IDE.desktop
 %{pkgdocdir}/AUTHORS.md
 %{pkgdocdir}/ChangeLog
 %{pkgdocdir}/COPYING
