@@ -6,6 +6,9 @@ ACLOCAL_AMFLAGS = -I m4
 desktopdir = $(datadir)/applications
 desktop_DATA = com.inform7.IDE.desktop
 
+appdatadir = $(datadir)/metainfo
+dist_appdata_DATA=com.inform7.IDE.appdata.xml
+
 # Merge translations back into the desktop file
 com.inform7.IDE.desktop: com.inform7.IDE.desktop.in
 	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
