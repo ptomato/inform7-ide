@@ -4,14 +4,17 @@ SUBDIRS = src . po data pixmaps
 ACLOCAL_AMFLAGS = -I m4
 
 desktopdir = $(datadir)/applications
-desktop_DATA = gnome-inform7.desktop
+desktop_DATA = com.inform7.IDE.desktop
+
+appdatadir = $(datadir)/metainfo
+dist_appdata_DATA=com.inform7.IDE.appdata.xml
 
 # Merge translations back into the desktop file
-gnome-inform7.desktop: gnome-inform7.desktop.in
+com.inform7.IDE.desktop: com.inform7.IDE.desktop.in
 	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 CLEANFILES = $(desktop_DATA)
 
-gsettings_SCHEMAS = com.inform7.GUI.gschema.xml
+gsettings_SCHEMAS = com.inform7.IDE.gschema.xml
 
 @GSETTINGS_RULES@
 
@@ -21,7 +24,7 @@ dist_doc_DATA = AUTHORS.md ChangeLog COPYING README.md
 EXTRA_DIST = \
 	autogen.sh \
 	$(gsettings_SCHEMAS) \
-	gnome-inform7.desktop.in \
+	com.inform7.IDE.desktop.in \
 	$(NULL)
 
 if BUILDING_RPM

@@ -79,7 +79,8 @@ rm -rf %{buildroot}
 %define pkglibexecdir %{_libexecdir}/%{name}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
-%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/com.inform7.IDE.desktop
+%{_datadir}/metainfo/com.inform7.IDE.appdata.xml
 %{pkgdocdir}/AUTHORS.md
 %{pkgdocdir}/ChangeLog
 %{pkgdocdir}/COPYING
@@ -120,7 +121,7 @@ rm -rf %{buildroot}
 %{pkgdatadir}/ui/*.ui
 %{pkgdatadir}/ui/*.xml
 %{_datadir}/icons/hicolor/*/actions/inform7-builtin.png
-%{_datadir}/icons/hicolor/*/apps/inform7.png
+%{_datadir}/icons/hicolor/*/apps/com.inform7.IDE.png
 %{_datadir}/icons/hicolor/*/emblems/inform7-materials.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-materials.png
@@ -129,7 +130,7 @@ rm -rf %{buildroot}
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform-extension.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-blurb.png
-%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
+%{_datadir}/glib-2.0/schemas/com.inform7.IDE.gschema.xml
 %{_datadir}/mime/packages/inform7.xml
 %lang(de) %{_datadir}/locale/de/LC_MESSAGES/%{name}.mo
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo

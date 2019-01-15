@@ -1,4 +1,4 @@
-# 
+#
 # Spec file for GNOME Inform 7 on OpenSUSE. Rename to gnome-inform7.spec.
 #
 # Copyright (c) 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>
@@ -86,7 +86,7 @@ make %{?_smp_mflags}
 %install
 %make_install
 find %{buildroot} -type f -name "*.la" -delete -print
-%suse_update_desktop_file %{buildroot}%{_datadir}/applications/gnome-inform7.desktop
+%suse_update_desktop_file %{buildroot}%{_datadir}/applications/com.inform7.IDE.desktop
 %find_lang %{name}
 %fdupes %{buildroot}
 
@@ -110,10 +110,11 @@ find %{buildroot} -type f -name "*.la" -delete -print
 %ifarch x86_64
 %{_prefix}/lib/%{name}
 %endif
-%{_datadir}/applications/gnome-inform7.desktop
+%{_datadir}/applications/com.inform7.IDE.desktop
+%{_datadir}/metainfo/com.inform7.IDE.appdata.xml
 %doc %{_datadir}/doc/%{name}
 %{_datadir}/%{name}
-%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
+%{_datadir}/glib-2.0/schemas/com.inform7.IDE.gschema.xml
 %{_datadir}/icons/hicolor/*/*
 %{_datadir}/mime/packages/inform7.xml
 
