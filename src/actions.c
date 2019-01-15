@@ -1194,7 +1194,7 @@ action_help_extensions(GtkAction *action, I7Story *story)
 void
 action_help_recipe_book(GtkAction *action, I7Story *story)
 {
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Rindex.html", NULL);
+	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Rallegs.html", NULL);
 	i7_story_show_docpage(story, file);
 	g_object_unref(file);
 }
