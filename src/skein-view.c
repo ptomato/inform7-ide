@@ -344,6 +344,12 @@ i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason w
 			I7Skein *skein = i7_skein_view_get_skein(self);
 			gdouble vspacing, x, y, width, height;
 
+			/* Give up if drawing is in progress */
+			if (!g_mutex_trylock(&skein->drawing_mutex))
+			{
+				return;
+			}
+
 			/* Work out the position of the node */
 			g_object_get(skein, "vertical-spacing", &vspacing, NULL);
 			x = i7_node_get_x(node);
@@ -358,6 +364,7 @@ i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason w
 			height = gtk_adjustment_get_page_size(adj);
 
 			goo_canvas_scroll_to(GOO_CANVAS(self), x - width * 0.5, y - height * 0.5);
+			g_mutex_unlock(&skein->drawing_mutex);
 		}
 			break;
 		default:

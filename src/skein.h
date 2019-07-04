@@ -77,6 +77,7 @@ struct _I7SkeinClass
 struct _I7Skein
 {
 	GooCanvasGroupModel parent_instance;
+	GMutex drawing_mutex;
 };
 
 typedef enum _I7SkeinError {

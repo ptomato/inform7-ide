@@ -156,6 +156,8 @@ i7_skein_init(I7Skein *self)
 	g_settings_bind(priv->settings, "vertical-spacing", self, "vertical-spacing", G_SETTINGS_BIND_DEFAULT);
 
 	priv->stamp = g_random_int();
+
+	g_mutex_init(&self->drawing_mutex);
 }
 
 static void
@@ -220,6 +222,7 @@ i7_skein_finalize(GObject *self)
 {
 	I7_SKEIN_USE_PRIVATE;
 
+	g_mutex_clear(&I7_SKEIN(self)->drawing_mutex);
 	g_object_unref(priv->root);
 	goo_canvas_line_dash_unref(priv->unlocked_dash);
 
@@ -1072,6 +1075,7 @@ draw_intern(I7Skein *self, GooCanvas *canvas)
 
 	if(GPOINTER_TO_INT(g_object_get_data(G_OBJECT(canvas), "waiting-for-draw")) == 0)
 		return;
+	g_mutex_lock(&self->drawing_mutex);
 
 	i7_node_layout(priv->root, GOO_CANVAS_ITEM_MODEL(self), canvas, 0.0);
 
@@ -1083,6 +1087,7 @@ draw_intern(I7Skein *self, GooCanvas *canvas)
 		treewidth * 0.5 + priv->hspacing, g_node_max_height(priv->root->gnode) * priv->vspacing);
 
 	g_object_set_data(G_OBJECT(canvas), "waiting-for-draw", GINT_TO_POINTER(0));
+	g_mutex_unlock(&self->drawing_mutex);
 }
 
 void
