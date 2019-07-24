@@ -1118,7 +1118,7 @@ i7_skein_schedule_draw(I7Skein *self, GooCanvas *canvas)
 	DrawData *draw_data = g_slice_new0(DrawData);
 	draw_data->skein = self;
 	draw_data->canvas = canvas;
-	g_idle_add_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)idle_draw, draw_data, (GDestroyNotify)destroy_draw_data);
+	gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)idle_draw, draw_data, (GDestroyNotify)destroy_draw_data);
 }
 
 /* Remove all the rows from the tree model, in preparation for a complicated
