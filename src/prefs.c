@@ -18,14 +18,14 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceview.h>
+#include <gtksourceview/gtksource.h>
 #include "prefs.h"
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
 #include "error.h"
 
-#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-2.0"
+#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-3.0"
 
 enum SchemesListColumns {
 	ID_COLUMN = 0,

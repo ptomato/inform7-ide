@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceiter.h>
+#include <gtksourceview/gtksource.h>
 #include "document.h"
 #include "document-private.h"
 #include "app.h"
@@ -1159,7 +1159,7 @@ i7_document_clear_progress(I7Document *document)
 }
 
 static void
-on_menu_item_select(GtkItem *item, GtkStatusbar *statusbar)
+on_menu_item_select(GtkMenuItem *item, GtkStatusbar *statusbar)
 {
 	gchar *hint = NULL;
 	g_object_get(gtk_activatable_get_related_action(GTK_ACTIVATABLE(item)),
@@ -1173,7 +1173,7 @@ on_menu_item_select(GtkItem *item, GtkStatusbar *statusbar)
 }
 
 static void
-on_menu_item_deselect(GtkItem *item, GtkStatusbar *statusbar)
+on_menu_item_deselect(GtkMenuItem *item, GtkStatusbar *statusbar)
 {
 	guint id = gtk_statusbar_get_context_id(statusbar, "MenuItemHints");
 	gtk_statusbar_pop(statusbar, id);

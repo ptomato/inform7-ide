@@ -19,7 +19,7 @@
 #define LANG_H
 
 #include <glib.h>
-#include <gtksourceview/gtksourcebuffer.h>
+#include <gtksourceview/gtksource.h>
 
 void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang);
 

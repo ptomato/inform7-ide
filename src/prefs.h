@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceview.h>
+#include <gtksourceview/gtksource.h>
 
 typedef struct {
 	/* Global pointer to preferences window */

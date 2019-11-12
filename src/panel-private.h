@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2014 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2014, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <webkit/webkit.h>
-#include <JavaScriptCore/JavaScript.h>
+#include <webkit2/webkit2.h>
 
 #include "panel.h"
 
@@ -33,8 +32,6 @@ typedef struct {
 } I7PanelHistory;
 
 typedef struct {
-	/* JavaScript Project Class Type */
-	JSClassRef js_class;
 	/* Action Groups */
 	GtkUIManager *ui_manager;
 	GtkActionGroup *common_action_group;
@@ -46,7 +43,7 @@ typedef struct {
 	GQueue *history; /* "front" is more recent, "back" is older */
 	guint current;
 	/* Webview settings */
-	WebKitWebSettings *websettings;
+	WebKitSettings *websettings;
 } I7PanelPrivate;
 
 #define I7_PANEL_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_PANEL, I7PanelPrivate))
@@ -57,7 +54,7 @@ void after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned
 void after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 void after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
 void after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel);
-gint after_documentation_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel);
-int after_extensions_navigation_requested(WebKitWebView *webview, WebKitWebFrame *frame, WebKitNetworkRequest *request, I7Panel *panel);
+void after_documentation_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *panel);
+void after_extensions_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *panel);
 
 #endif /* PANEL_PRIVATE_H */

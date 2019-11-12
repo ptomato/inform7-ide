@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,8 @@
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcestylescheme.h>
+#include <gtksourceview/gtksource.h>
+#include <webkit2/webkit2.h>
 #include "document.h"
 #include "prefs.h"
 
@@ -147,5 +148,7 @@ GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
 GSettings *i7_app_get_state(I7App *app);
 GSettings *i7_app_get_prefs(I7App *app);
 GSettings *i7_app_get_desktop_settings(I7App *app);
+
+WebKitUserScript *i7_app_get_content_javascript(I7App *self);
 
 #endif /* _APP_H_ */

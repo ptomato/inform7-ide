@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2015 P. F. Chimento
+/* Copyright (C) 2006-2015, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <webkit/webkit.h>
-#include <gtksourceview/gtksourceiter.h>
+#include <webkit2/webkit2.h>
+#include <gtksourceview/gtksource.h>
 #include "osxcart/plist.h"
 #include "osxcart/rtf.h"
 #include "libchimara/chimara-glk.h"
@@ -127,7 +127,7 @@ static void
 on_panel_display_docpage(I7Panel *panel, gchar *uri, I7Story *story)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_DOCUMENTATION);
-	webkit_web_view_open(WEBKIT_WEB_VIEW(story->panel[side]->tabs[I7_PANE_DOCUMENTATION]), uri);
+	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(story->panel[side]->tabs[I7_PANE_DOCUMENTATION]), uri);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
@@ -135,7 +135,7 @@ static void
 on_panel_display_extensions_docpage(I7Panel *panel, char *uri, I7Story *story)
 {
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_EXTENSIONS);
-	webkit_web_view_open(WEBKIT_WEB_VIEW(story->panel[side]->tabs[I7_PANE_EXTENSIONS]), uri);
+	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(story->panel[side]->tabs[I7_PANE_EXTENSIONS]), uri);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_EXTENSIONS);
 }
 
@@ -147,11 +147,12 @@ on_panel_display_index_page(I7Panel *panel, I7PaneIndexTab tabnum, char *param, 
 	/* If a ?param was requested in the URI, then navigate there before showing
 	the page - this doesn't completely eliminate the flash of the page changing,
 	but it helps */
-	if(param != NULL) {
-		char *script = g_strconcat("window.location.search = '", param, "'", NULL);
-		webkit_web_view_execute_script(WEBKIT_WEB_VIEW(story->panel[side]->index_tabs[tabnum]), script);
-		g_free(script);
-	}
+	// FIXME: don't do this by executing javascript. possibly webkit_web_view_load_uri again with the param
+	// if(param != NULL) {
+	// 	char *script = g_strconcat("window.location.search = '", param, "'", NULL);
+	// 	webkit_web_view_execute_script(WEBKIT_WEB_VIEW(story->panel[side]->index_tabs[tabnum]), script);
+	// 	g_free(script);
+	// }
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->tabs[I7_PANE_INDEX]), tabnum);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_INDEX);
@@ -578,14 +579,9 @@ get_focus_view(I7Story *story)
 static gboolean
 do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextIter *startpos, GtkTextIter *start, GtkTextIter *end)
 {
-	if(GTK_IS_SOURCE_VIEW(view)) {
-		if(forward)
-			return gtk_source_iter_forward_search(startpos, text, GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY | GTK_SOURCE_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-		return gtk_source_iter_backward_search(startpos, text, GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY | GTK_SOURCE_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-	}
 	if(forward)
-		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY, start, end, NULL);
-	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY, start, end, NULL);
+		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
+	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
 }
 
 static gboolean
@@ -632,10 +628,8 @@ i7_story_highlight_search(I7Document *document, const gchar *text, gboolean forw
 		gtk_text_buffer_select_range(buffer, &start, &end);
 		gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(focus), gtk_text_buffer_get_insert(buffer), 0.25, FALSE, 0.0, 0.0);
 	} else if(WEBKIT_IS_WEB_VIEW(focus)) {
-		if(webkit_web_view_mark_text_matches(WEBKIT_WEB_VIEW(focus), text, FALSE, 0) == 0)
-			return FALSE;
-		webkit_web_view_set_highlight_text_matches(WEBKIT_WEB_VIEW(focus), TRUE);
-		webkit_web_view_search_text(WEBKIT_WEB_VIEW(focus), text, FALSE, forward, TRUE);
+		WebKitFindController *controller = webkit_web_view_get_find_controller(WEBKIT_WEB_VIEW(focus));
+		webkit_find_controller_search(controller, text, WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND, /* max matches? */ 0);
 	} /* else do nothing */
 	return TRUE;
 }

@@ -34,8 +34,7 @@
 typedef struct _I7SourceViewPrivate I7SourceViewPrivate;
 struct _I7SourceViewPrivate
 {
-	/* Spell checker */
-	GtkSpell *spell;
+	GtkSpellChecker *spell;
 };
 
 #define I7_SOURCE_VIEW_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SOURCE_VIEW, I7SourceViewPrivate))
@@ -209,18 +208,18 @@ i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 		GError *error = NULL;
 		const char *language = get_nearest_system_language_to_english();
 
-		priv->spell = gtkspell_new_attach(GTK_TEXT_VIEW(self->source), language, &error);
+		priv->spell = gtk_spell_checker_new();
 		/* Fail relatively quietly if there's a problem */
-		if(!priv->spell) {
+		if(!gtk_spell_checker_set_language(priv->spell, language, &error)) {
 			g_warning("Error initializing spell checking: %s. Is your spelling "
 				"dictionary installed?", error->message);
 			g_error_free(error);
 		}
+		if (!gtk_spell_checker_attach(priv->spell, GTK_TEXT_VIEW(self->source)))
+			g_warning("Error initializing spell checking. Is your spelling "
+				"dictionary installed?");
 	} else {
-		if(priv->spell) {
-			gtkspell_detach(priv->spell);
-			priv->spell = NULL;
-		}
+		g_clear_pointer(&priv->spell, gtk_spell_checker_detach);
 	}
 }
 
@@ -229,7 +228,7 @@ i7_source_view_check_spelling(I7SourceView *self)
 {
 	I7_SOURCE_VIEW_USE_PRIVATE(self, priv);
 	if(priv->spell)
-		gtkspell_recheck_all(priv->spell);
+		gtk_spell_checker_recheck_all(priv->spell);
 }
 
 void

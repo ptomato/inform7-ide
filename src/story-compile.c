@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2015 P. F. Chimento
+/* Copyright (C) 2006-2015, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -593,15 +593,15 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 though Page Caching is turned off! So unless it is reloaded right after it is
 loaded, the compiler's newly written version is not picked up. Shame there is no
 webkit_web_view_load_uri_bypass_cache(). Presumably this is fixed in WebKit2. */
-static void
-on_load_status_finished_reload(WebKitWebView *html, GParamSpec *pspec)
-{
-	WebKitLoadStatus status = webkit_web_view_get_load_status(html);
-	if(status != WEBKIT_LOAD_FINISHED && status != WEBKIT_LOAD_FAILED)
-		return;
-	webkit_web_view_reload_bypass_cache(html);
-	g_signal_handlers_disconnect_by_func(html, on_load_status_finished_reload, NULL);
-}
+// static void
+// on_load_status_finished_reload(WebKitWebView *html, GParamSpec *pspec)
+// {
+// 	WebKitLoadStatus status = webkit_web_view_get_load_status(html);
+// 	if(status != WEBKIT_LOAD_FINISHED && status != WEBKIT_LOAD_FAILED)
+// 		return;
+// 	webkit_web_view_reload_bypass_cache(html);
+// 	g_signal_handlers_disconnect_by_func(html, on_load_status_finished_reload, NULL);
+// }
 
 /* Clean up the compiling stuff and notify the user that compiling has finished.
  All compiler tool chains must call this function at the end!! This function is
@@ -622,8 +622,8 @@ finish_compiling(gboolean success, CompilerData *data)
 	/* Switch the Results tab to the Report page */
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
-	g_signal_connect(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT], "notify::load-status", G_CALLBACK(on_load_status_finished_reload), NULL);
-	g_signal_connect(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT], "notify::load-status", G_CALLBACK(on_load_status_finished_reload), NULL);
+	// g_signal_connect(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT], "notify::load-status", G_CALLBACK(on_load_status_finished_reload), NULL);
+	// g_signal_connect(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT], "notify::load-status", G_CALLBACK(on_load_status_finished_reload), NULL);
 	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
 
 	gtk_action_group_set_sensitive(priv->compile_action_group, TRUE);

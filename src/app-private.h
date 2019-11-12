@@ -21,6 +21,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcestyleschememanager.h>
+#include <webkit2/webkit2.h>
 #include "app.h"
 
 typedef struct {
@@ -46,6 +47,8 @@ typedef struct {
 	GSettings *prefs_settings;
 	GSettings *state_settings;
 	GSettings *desktop_settings;
+	/* JavaScript code for documentation panes */
+	WebKitUserScript *content_javascript;
 } I7AppPrivate;
 
 #define I7_APP_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_APP, I7AppPrivate))

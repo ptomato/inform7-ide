@@ -19,7 +19,7 @@
 #define FILE_H
 
 #include <glib.h>
-#include <gtksourceview/gtksourcebuffer.h>
+#include <gtksourceview/gtksource.h>
 #include "story.h"
 #include "document.h"
 

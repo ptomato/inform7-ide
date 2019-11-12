@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
+/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcebuffer.h>
+#include <gtksourceview/gtksource.h>
 
 #define I7_TYPE_DOCUMENT            (i7_document_get_type())
 #define I7_DOCUMENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_DOCUMENT, I7Document))

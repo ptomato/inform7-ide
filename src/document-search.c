@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2018 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceiter.h>
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 #include "document.h"
 #include "document-private.h"
 #include "searchwindow.h"
@@ -31,17 +30,18 @@
 /* THE "SEARCH ENGINE" */
 
 gboolean
-find_no_wrap(const GtkTextIter *startpos, const gchar *text, gboolean forward, GtkSourceSearchFlags flags, I7SearchType search_type, GtkTextIter *match_start, GtkTextIter *match_end)
+find_no_wrap(const GtkTextIter *startpos, const char *text, gboolean forward, GtkTextSearchFlags flags,
+    I7SearchType search_type, GtkTextIter *match_start, GtkTextIter *match_end)
 {
 	if(search_type == I7_SEARCH_CONTAINS)
 		return forward?
-			gtk_source_iter_forward_search(startpos, text, flags, match_start, match_end, NULL)
-			: gtk_source_iter_backward_search(startpos, text, flags, match_start, match_end, NULL);
+			gtk_text_iter_forward_search(startpos, text, flags, match_start, match_end, NULL)
+			: gtk_text_iter_backward_search(startpos, text, flags, match_start, match_end, NULL);
 
 	GtkTextIter start, end, searchfrom = *startpos;
 	while(forward?
-		gtk_source_iter_forward_search(&searchfrom, text, flags, &start, &end, NULL)
-		: gtk_source_iter_backward_search(&searchfrom, text, flags, &start, &end, NULL))
+		gtk_text_iter_forward_search(&searchfrom, text, flags, &start, &end, NULL)
+		: gtk_text_iter_backward_search(&searchfrom, text, flags, &start, &end, NULL))
 	{
 		if(search_type == I7_SEARCH_FULL_WORD && gtk_text_iter_starts_word(&start) && gtk_text_iter_ends_word(&end)) {
 			*match_start = start;
@@ -61,9 +61,9 @@ static gboolean
 find(GtkTextBuffer *buffer, const gchar *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type, GtkTextIter *match_start, GtkTextIter *match_end)
 {
 	GtkTextIter iter;
-	GtkSourceSearchFlags flags = GTK_SOURCE_SEARCH_TEXT_ONLY
-		| (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0)
-		| (restrict_search? GTK_SOURCE_SEARCH_VISIBLE_ONLY : 0);
+	GtkTextSearchFlags flags = GTK_TEXT_SEARCH_TEXT_ONLY
+		| (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0)
+		| (restrict_search? GTK_TEXT_SEARCH_VISIBLE_ONLY : 0);
 
 	/* Start the search at the end or beginning of the selection */
 	if(forward)
@@ -158,9 +158,9 @@ on_replace_all_button_clicked(GtkButton *button, I7Document *document)
 	I7SearchType search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(document->search_type));
 	GtkTextIter cursor, start, end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
-	GtkSourceSearchFlags flags = GTK_SOURCE_SEARCH_TEXT_ONLY
-		| (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0)
-		| (restrict_search? GTK_SOURCE_SEARCH_VISIBLE_ONLY : 0);
+	GtkTextSearchFlags flags = GTK_TEXT_SEARCH_TEXT_ONLY
+		| (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0)
+		| (restrict_search? GTK_TEXT_SEARCH_VISIBLE_ONLY : 0);
 
 	/* Replace All counts as one action for Undo */
 	gtk_text_buffer_begin_user_action(buffer);
@@ -241,8 +241,8 @@ i7_document_unhighlight_quicksearch(I7Document *document)
 		if(gtk_text_buffer_get_selection_bounds(buffer, &start, NULL))
 			gtk_text_buffer_place_cursor(buffer, &start);
 	} else if(WEBKIT_IS_WEB_VIEW(focus)) {
-		webkit_web_view_set_highlight_text_matches(WEBKIT_WEB_VIEW(focus), FALSE);
-		webkit_web_view_unmark_text_matches(WEBKIT_WEB_VIEW(focus));
+		WebKitFindController *controller = webkit_web_view_get_find_controller(WEBKIT_WEB_VIEW(focus));
+		webkit_find_controller_search_finish(controller);
 	}
 
 	i7_document_set_highlighted_view(document, NULL);

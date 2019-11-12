@@ -177,36 +177,29 @@ AC_ARG_WITH([sound],
 AS_IF([test "x$with_sound" != "xno"],
 	[AC_DEFINE([HAVE_SOUND], [1], [Define if any sound support is enabled])])
 
-# If webkit-1.0 is a later version than 1.6.0, then we need to pull in
-# javascriptcoregtk-1.0 as well
-PKG_CHECK_EXISTS([webkit-1.0 >= 1.6.0],
-	[JAVASCRIPTCORE_MODULE=javascriptcoregtk-1.0],
-	[JAVASCRIPTCORE_MODULE=]
-)
-
 # Libraries for main program
 PKG_CHECK_MODULES([INFORM7], [
-	gdk-2.0 >= 2.2
+	gdk-3.0
 	glib-2.0 >= 2.32
-	gtk+-2.0 >= 2.24
+	gtk+-3.0
 	gio-2.0 >= 2.30
-	gtksourceview-2.0 >= 2.2
-	webkit-1.0 >= 1.0
-	$JAVASCRIPTCORE_MODULE
-	gtkspell-2.0
+	gtksourceview-3.0
+	webkit2gtk-4.0
+	gtkspell3-3.0
 	libxml-2.0
-	goocanvas
+	goocanvas-2.0
 	$UUID_MODULE
 ])
 PKG_CHECK_MODULES([OSXCART], [
-	glib-2.0 >= 2.16
-	gdk-2.0
+	glib-2.0 >= 2.18
+	gio-2.0 >= 2.18
+	gdk-3.0
 	gdk-pixbuf-2.0 >= 2.6
-	gtk+-2.0 >= 2.10
+	gtk+-3.0
 ])
 PKG_CHECK_MODULES([CHIMARA], [
-	glib-2.0 >= 2.16
-	gtk+-2.0 >= 2.12
+	glib-2.0 >= 2.40
+	gtk+-3.0 >= 3.10
 	gthread-2.0
 	gmodule-2.0
 	pango

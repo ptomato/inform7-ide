@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2013, 2015 P. F. Chimento
+/* Copyright (C) 2006-2013, 2015, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceiter.h>
+#include <gtksourceview/gtksource.h>
 #include "extension.h"
 #include "app.h"
 #include "configfile.h"
@@ -309,14 +309,9 @@ i7_extension_expand_headings_view(I7Document *document)
 static gboolean
 do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextIter *startpos, GtkTextIter *start, GtkTextIter *end)
 {
-	if(GTK_IS_SOURCE_VIEW(view)) {
-		if(forward)
-			return gtk_source_iter_forward_search(startpos, text, GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY | GTK_SOURCE_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-		return gtk_source_iter_backward_search(startpos, text, GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY | GTK_SOURCE_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-	}
 	if(forward)
-		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY, start, end, NULL);
-	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY, start, end, NULL);
+		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
+	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
 }
 
 static gboolean

@@ -1,4 +1,4 @@
-/*  Copyright (C) 2007-2015 P. F. Chimento
+/*  Copyright (C) 2007-2015, 2018 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,8 @@
 #include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcestyleschememanager.h>
+#include <gtksourceview/gtksource.h>
+#include <webkit2/webkit2.h>
 #include "app.h"
 #include "app-private.h"
 #include "actions.h"
@@ -40,6 +41,16 @@
 #define EXTENSION_INDEX_PATH "Inform", "Documentation", "ExtIndex.html"
 #define EXTENSION_DOCS_BASE_PATH "Inform", "Documentation", "Extensions"
 #define EXTENSION_DOWNLOAD_TIMEOUT_S 15
+#define CONTENT_JAVASCRIPT_SOURCE \
+	"window.Project = {" \
+	"    selectView() { window.webkit.messageHandlers.selectView.postMessage(...arguments); }" \
+	"    pasteCode() { window.webkit.messageHandlers.pasteCode.postMessage(...arguments); }" \
+	"    openFile() { window.webkit.messageHandlers.openFile.postMessage(...arguments); }" \
+	"    openUrl() { window.webkit.messageHandlers.openUrl.postMessage(...arguments); }" \
+	"    askInterfaceForLocalVersion() { window.webkit.messageHandlers.askInterfaceForLocalVersion.postMessage(...arguments); }" \
+	"    askInterfaceForLocalVersionText() { window.webkit.messageHandlers.askInterfaceForLocalVersionText.postMessage(...arguments); }" \
+	"    downloadMultipleExtensions() { window.webkit.messageHandlers.downloadMultipleExtensions.postMessage(...arguments); }" \
+	"};"
 
 /* The singleton application class; should be derived from GtkApplication when
  porting to GTK 3. Contains the following global miscellaneous stuff:
@@ -180,6 +191,11 @@ i7_app_init(I7App *self)
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
 	priv->color_scheme_manager = create_color_scheme_manager(self);
+
+	static const char *javascript_allowed_uris[] = { "inform:///*", NULL };
+	priv->content_javascript = webkit_user_script_new(CONTENT_JAVASCRIPT_SOURCE,
+		WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
+		javascript_allowed_uris, NULL);
 }
 
 static void
@@ -1665,4 +1681,20 @@ i7_app_get_desktop_settings(I7App *app)
 {
 	I7_APP_USE_PRIVATE(app, priv);
 	return priv->desktop_settings;
+}
+
+/*
+ * i7_app_get_content_javascript:
+ * @self: the application singleton
+ *
+ * Gets the #WebKitUserScript object that defines the custom JavaScript
+ * functions used in documentation webviews.
+ *
+ * Returns: (transfer none): #WebKitUserScript object
+ */
+WebKitUserScript *
+i7_app_get_content_javascript(I7App *self)
+{
+	I7_APP_USE_PRIVATE(self, priv);
+	return priv->content_javascript;
 }

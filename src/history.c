@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2014, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 #include "panel.h"
 #include "panel-private.h"
 
@@ -47,8 +47,8 @@ history_block_handlers(I7Panel *panel)
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_SOURCE], after_source_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_RESULTS], after_results_notebook_switch_page, panel);
 	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
-	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_navigation_requested, panel);
-	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_EXTENSIONS], after_extensions_navigation_requested, panel);
+	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_notify_uri, panel);
+	g_signal_handlers_block_by_func(panel->tabs[I7_PANE_EXTENSIONS], after_extensions_notify_uri, panel);
 }
 
 static void
@@ -58,8 +58,8 @@ history_unblock_handlers(I7Panel *panel)
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_SOURCE], after_source_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_RESULTS], after_results_notebook_switch_page, panel);
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_INDEX], after_index_notebook_switch_page, panel);
-	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_navigation_requested, panel);
-	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_EXTENSIONS], after_extensions_navigation_requested, panel);
+	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_DOCUMENTATION], after_documentation_notify_uri, panel);
+	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_EXTENSIONS], after_extensions_notify_uri, panel);
 }
 
 /* Empty the list of pages to go forward to */
@@ -91,11 +91,11 @@ history_goto_current(I7Panel *panel)
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(panel->tabs[current->pane]), current->tab);
 			break;
 		case I7_PANE_DOCUMENTATION:
-			webkit_web_view_open(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), current->page);
+			webkit_web_view_load_uri(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]), current->page);
 			/* Deprecated in 1.1.1 */
 			break;
 		case I7_PANE_EXTENSIONS:
-			webkit_web_view_open(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]), current->page);
+			webkit_web_view_load_uri(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]), current->page);
 		default:
 			;
 	}
@@ -146,7 +146,7 @@ history_push_docpage(I7Panel *panel, const gchar *uri)
 {
 	I7PanelHistory *newitem = g_slice_new0(I7PanelHistory);
 	newitem->pane = I7_PANE_DOCUMENTATION;
-	newitem->page = g_strdup(uri? uri : webkit_web_frame_get_uri(webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION]))));
+	newitem->page = g_strdup(uri? uri : webkit_web_view_get_uri(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])));
 	history_push_item(panel, newitem);
 }
 
@@ -158,6 +158,6 @@ history_push_extensions_page(I7Panel *panel, const char *uri)
 {
 	I7PanelHistory *newitem = g_slice_new0(I7PanelHistory);
 	newitem->pane = I7_PANE_EXTENSIONS;
-	newitem->page = g_strdup((uri != NULL)? uri : webkit_web_frame_get_uri(webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]))));
+	newitem->page = g_strdup((uri != NULL)? uri : webkit_web_view_get_uri(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS])));
 	history_push_item(panel, newitem);
 }

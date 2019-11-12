@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2018 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,9 +21,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcestyle.h>
-#include <gtksourceview/gtksourcestyleschememanager.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "app-private.h"

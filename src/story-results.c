@@ -16,9 +16,7 @@
  */
 
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcelanguagemanager.h>
+#include <gtksourceview/gtksource.h>
 #include "story.h"
 #include "document.h"
 #include "lang.h"
