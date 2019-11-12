@@ -19,12 +19,12 @@ BuildRequires: pkgconfig
 BuildRequires: xz-lzma-compat
 # Library devel packages:
 BuildRequires: libuuid-devel
-BuildRequires: glib2-devel
-BuildRequires: gtk2-devel
-BuildRequires: gtksourceview2-devel
-BuildRequires: gtkspell-devel
-BuildRequires: webkitgtk-devel
-BuildRequires: goocanvas-devel
+BuildRequires: glib2-devel >= 2.44
+BuildRequires: gtk3-devel >= 3.22
+BuildRequires: gtksourceview4-devel
+BuildRequires: gtkspell3-devel
+BuildRequires: webkit2gtk3-devel
+BuildRequires: goocanvas2-devel
 BuildRequires: gstreamer1-devel
 BuildRequires: gstreamer1-plugins-base
 BuildRequires: gstreamer1-plugins-good

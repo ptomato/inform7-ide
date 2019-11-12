@@ -25,8 +25,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceprintcompositor.h>
-#include <webkit/webkit.h>
+#include <gtksourceview/gtksource.h>
+#include <webkit2/webkit2.h>
 
 #include "actions.h"
 #include "app.h"
@@ -402,8 +402,8 @@ action_cut(GtkAction *action, I7Document *document)
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
 	/* What actually happens depends on the type of widget that is focused */
-	if(WEBKIT_IS_WEB_VIEW(widget)) /* can't cut, just copy */
-		webkit_web_view_copy_clipboard(WEBKIT_WEB_VIEW(widget));
+	if(WEBKIT_IS_WEB_VIEW(widget))
+		webkit_web_view_execute_editing_command(WEBKIT_WEB_VIEW(widget), WEBKIT_EDITING_COMMAND_CUT);
 	else if(GTK_IS_LABEL(widget) && gtk_label_get_selectable(GTK_LABEL(widget)))
 		g_signal_emit_by_name(widget, "copy-clipboard", NULL);  /* just copy */
 	else if(GTK_IS_ENTRY(widget) || GTK_IS_TEXT_VIEW(widget))
@@ -420,7 +420,7 @@ action_copy(GtkAction *action, I7Document *document)
 
 	/* What actually happens depends on the type of widget that is focused */
 	if(WEBKIT_IS_WEB_VIEW(widget))
-		webkit_web_view_copy_clipboard(WEBKIT_WEB_VIEW(widget));
+		webkit_web_view_execute_editing_command(WEBKIT_WEB_VIEW(widget), WEBKIT_EDITING_COMMAND_COPY);
 	else if((GTK_IS_LABEL(widget) && gtk_label_get_selectable(GTK_LABEL(widget)))
 		|| GTK_IS_ENTRY(widget) || GTK_IS_TEXT_VIEW(widget))
 		g_signal_emit_by_name(widget, "copy-clipboard", NULL);
@@ -449,7 +449,7 @@ action_select_all(GtkAction *action, I7Document *document)
 
 	/* What actually happens depends on the type of widget that is focused */
 	if(WEBKIT_IS_WEB_VIEW(widget))
-		webkit_web_view_select_all(WEBKIT_WEB_VIEW(widget));
+		webkit_web_view_execute_editing_command(WEBKIT_WEB_VIEW(widget), WEBKIT_EDITING_COMMAND_SELECT_ALL);
 	else if(GTK_IS_LABEL(widget) && gtk_label_get_selectable(GTK_LABEL(widget)))
 		gtk_label_select_region(GTK_LABEL(widget), 0, -1);
 	else if(GTK_IS_EDITABLE(widget))

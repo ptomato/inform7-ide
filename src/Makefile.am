@@ -81,7 +81,6 @@ libchimara_a_SOURCES = \
 	chimara/libchimara/magic.c \
 	chimara/libchimara/magic.h \
 	chimara/libchimara/mouse.c \
-	chimara/libchimara/mouse.h \
 	chimara/libchimara/pager.c \
 	chimara/libchimara/pager.h \
 	chimara/libchimara/resource.c \
@@ -95,7 +94,22 @@ libchimara_a_SOURCES = \
 	chimara/libchimara/style.c \
 	chimara/libchimara/style.h \
 	chimara/libchimara/timer.c \
-	chimara/libchimara/timer.h \
+	chimara/libchimara/ui-buffer.c \
+	chimara/libchimara/ui-buffer.h \
+	chimara/libchimara/ui-graphics.c \
+	chimara/libchimara/ui-graphics.h \
+	chimara/libchimara/ui-grid.c \
+	chimara/libchimara/ui-grid.h \
+	chimara/libchimara/ui-message.c \
+	chimara/libchimara/ui-message.h \
+	chimara/libchimara/ui-misc.c \
+	chimara/libchimara/ui-misc.h \
+	chimara/libchimara/ui-style.c \
+	chimara/libchimara/ui-style.h \
+	chimara/libchimara/ui-textwin.c \
+	chimara/libchimara/ui-textwin.h \
+	chimara/libchimara/ui-window.c \
+	chimara/libchimara/ui-window.h \
 	chimara/libchimara/window.c \
 	chimara/libchimara/window.h
 libchimara_a_CPPFLAGS = \

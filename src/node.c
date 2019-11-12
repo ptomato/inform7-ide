@@ -331,8 +331,8 @@ i7_node_init(I7Node *self)
 		"stroke-pattern", NULL,
 		"fill-pattern", priv->label_pattern,
 		NULL);
-	priv->command_item = goo_canvas_text_model_new(GOO_CANVAS_ITEM_MODEL(self), "", 0.0, 0.0, -1, GTK_ANCHOR_CENTER, NULL);
-	priv->label_item = goo_canvas_text_model_new(GOO_CANVAS_ITEM_MODEL(self), "", 0.0, 0.0, -1, GTK_ANCHOR_CENTER, NULL);
+	priv->command_item = goo_canvas_text_model_new(GOO_CANVAS_ITEM_MODEL(self), "", 0.0, 0.0, -1, GOO_CANVAS_ANCHOR_CENTER, NULL);
+	priv->label_item = goo_canvas_text_model_new(GOO_CANVAS_ITEM_MODEL(self), "", 0.0, 0.0, -1, GOO_CANVAS_ANCHOR_CENTER, NULL);
 	priv->badge_item = goo_canvas_path_model_new(GOO_CANVAS_ITEM_MODEL(self), "",
 	  "fill-color", "red",
 	  "line-width", 0,

@@ -21,7 +21,7 @@
 #include "config.h"
 
 #include <glib.h>
-#include <gtksourceview/gtksourcebuffer.h>
+#include <gtksourceview/gtksource.h>
 
 #include "document.h"
 #include "story.h"
