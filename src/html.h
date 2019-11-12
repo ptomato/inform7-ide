@@ -21,7 +21,7 @@
 #include "config.h"
 
 #include <glib.h>
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 
 void html_load_file(WebKitWebView *html, GFile *filename);
 void html_load_file_at_anchor(WebKitWebView *html, GFile *file, const char *anchor);

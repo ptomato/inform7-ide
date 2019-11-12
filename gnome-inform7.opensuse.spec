@@ -28,15 +28,15 @@ Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Lin
 BuildRequires:  fdupes
 BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
-BuildRequires:  gtksourceview2-devel
-BuildRequires:  gtkspell-devel
-BuildRequires:  libwebkitgtk-devel
+BuildRequires:  gtksourceview4-devel
+BuildRequires:  gtkspell3-devel
+BuildRequires:  libwebkit2gtk3-devel
 BuildRequires:  lzma
 BuildRequires:  pkgconfig
 BuildRequires:  libuuid-devel
 BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(gconf-2.0)
-BuildRequires:  pkgconfig(gtk+-2.0)
+BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:  pkgconfig(libxml-2.0)
 BuildRequires:  gstreamer-devel >= 1.2
 BuildRequires:  gstreamer-plugins-base >= 1.2

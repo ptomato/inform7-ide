@@ -78,7 +78,7 @@ test_story_materials_file(void)
 		"The Arrow of Time", "Eduard Blutig");
 
 	GFile *materials_file = i7_story_get_materials_file(story);
-	/* gtk_object_destroy(GTK_OBJECT(story)); FIXME crashes */
+	/* gtk_widget_destroy(GTK_WIDGET(story)); FIXME crashes */
 	char *basename = g_file_get_basename(materials_file);
 
 	g_assert_cmpstr(basename, ==, "The Arrow of Time.materials");
@@ -115,7 +115,7 @@ test_story_old_materials_file(void)
 
 	g_object_unref(story_file);
 	g_object_unref(materials_file);
-	/* gtk_object_destroy(GTK_OBJECT(story)); FIXME crashes */
+	/* gtk_widget_destroy(GTK_WIDGET(story)); FIXME crashes */
 }
 
 void
@@ -138,7 +138,7 @@ test_story_renames_materials_file(void)
 	GFile *story_file = g_file_new_for_path(TEST_DATA_DIR "Hereafter.inform");
 	I7Story *story = i7_story_new_from_file(theapp, story_file);
 	g_object_unref(story_file);
-	gtk_object_destroy(GTK_OBJECT(story));
+	gtk_widget_destroy(GTK_WIDGET(story));
 
 	g_assert(g_file_query_exists(materials_file, NULL));
 	g_assert(!g_file_query_exists(old_materials_file, NULL));

@@ -21,7 +21,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceview.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "builder.h"

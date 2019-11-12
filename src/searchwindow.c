@@ -22,7 +22,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceiter.h>
+#include <gtksourceview/gtksource.h>
 #include <libxml/HTMLparser.h>
 #include <webkit2/webkit2.h>
 
@@ -489,7 +489,7 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 }
 
 /* Borrow from document-search.c */
-extern gboolean find_no_wrap(const GtkTextIter *, const gchar *, gboolean, GtkSourceSearchFlags, I7SearchType, GtkTextIter *, GtkTextIter *);
+extern gboolean find_no_wrap(const GtkTextIter *, const gchar *, gboolean, GtkTextSearchFlags, I7SearchType, GtkTextIter *, GtkTextIter *);
 
 /* Helper function: extract some characters of context around the match, with
  the match itself highlighted in bold. String must be freed. */
@@ -527,7 +527,7 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		priv->algorithm, &match_start, &match_end))
 	{
 		while(gtk_events_pending())
@@ -674,7 +674,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 	start_spinner(self);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		priv->algorithm, &match_start, &match_end))
 	{
 		while(gtk_events_pending())
@@ -742,7 +742,7 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 	start_spinner(self);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		priv->algorithm, &match_start, &match_end))
 	{
 		unsigned lineno;

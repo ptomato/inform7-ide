@@ -22,9 +22,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcelanguagemanager.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "error.h"
@@ -40,7 +38,7 @@ set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 	gchar **mypaths;
 	int dirs, i;
 
-	lmanager = GTK_SOURCE_LANGUAGE_MANAGER(g_object_new(GTK_TYPE_SOURCE_LANGUAGE_MANAGER, NULL));
+	lmanager = gtk_source_language_manager_new();
 
 	/* Get and count the default paths, then add our custom language
 	definitions to the set. */

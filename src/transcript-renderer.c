@@ -225,8 +225,8 @@ i7_cell_renderer_transcript_finalize(GObject* self)
 	G_OBJECT_CLASS(i7_cell_renderer_transcript_parent_class)->finalize(self);
 }
 
-static void 
-i7_cell_renderer_transcript_get_size(GtkCellRenderer *self, GtkWidget *widget, GdkRectangle *cell_area, int *x_offset, int *y_offset, int *width, int *height) 
+static void
+i7_cell_renderer_transcript_get_size(GtkCellRenderer *renderer, GtkWidget *widget, const GdkRectangle *cell_area, int *x_offset, int *y_offset, int *width, int *height)
 {
 	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
 
@@ -287,14 +287,13 @@ set_rgb_style(cairo_t *cr, I7TranscriptStyle style) {
 
 /* TODO remove redundant code */
 static void 
-i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, GtkWidget *widget, GdkRectangle *background_area, GdkRectangle *cell_area, GdkRectangle *expose_area, GtkCellRendererState flags) 
+i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWidget *widget, const GdkRectangle *background_area, const GdkRectangle *cell_area, GtkCellRendererState flags)
 {
 	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
 	
 	int x, y, width, height;
 	unsigned xpad, ypad, transcript_width;
 	GtkStateType state;
-	cairo_t *cr;
 	PangoRectangle command_rect;
 	PangoLayout *layout;
 	GtkStyle *style = gtk_widget_get_style(widget);
@@ -319,10 +318,6 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 			state = GTK_STATE_NORMAL;
 	}
 
-	/* Get a cairo context to draw the rectangles on directly; use GTK themed
-	 drawing to draw everything else */
-	cr = gdk_cairo_create(GDK_DRAWABLE(window));
-
 	/* Draw the command */
 	layout = gtk_widget_create_pango_layout(widget, priv->command);
 	pango_layout_get_pixel_extents(layout, NULL, &command_rect);
@@ -331,7 +326,7 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	cairo_rectangle(cr, (double)x, (double)y, 
 	    (double)width, (double)(command_rect.height + priv->text_padding * 2));
 	cairo_fill(cr);
-	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL, 
+	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
 	    	x + priv->text_padding, y + priv->text_padding, 
 	    	layout);
 	g_object_unref(layout);
@@ -353,7 +348,7 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	pango_layout_set_markup(layout, priv->transcript_text, -1);
 	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
-	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL, 
+	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
 	    x + (int)priv->text_padding, 
 	    y + command_rect.height + (int)priv->text_padding * 3, 
 		layout);
@@ -386,17 +381,17 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 	pango_layout_set_markup(layout, priv->expected_text, -1);
 	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
-	gtk_paint_layout(style, window, state, TRUE, cell_area, widget, NULL,
+	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
 	    x + width / 2 + (int)priv->text_padding, 
 	    y + command_rect.height + (int)priv->text_padding * 3, 
 		layout);
 	g_object_unref(layout);
 
 	/* Draw some lines */
-	gtk_paint_hline(style, window, state, cell_area, widget, NULL, 
+	gtk_paint_hline(style, cr, state, widget, NULL,
 	    x, x + width, 
 	    y + command_rect.height + priv->text_padding * 2);
-	gtk_paint_vline(style, window, state, cell_area, widget, NULL, 
+	gtk_paint_vline(style, cr, state, widget, NULL,
 	    y + command_rect.height + priv->text_padding * 2, y + height, 
 	    x + width / 2);
 	
@@ -417,8 +412,6 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *self, GdkWindow *window, Gtk
 			(double)width - 2.0, (double)height - 2.0);
 		cairo_stroke(cr);
 	}
-	
-	cairo_destroy(cr);
 }
 
 static void 
