@@ -4,7 +4,7 @@
 
 Name: gnome-inform7
 Version: 6M62
-Release: 1.fc22
+Release: 1.fc29
 
 URL: http://inform7.com/
 License: GPLv3
@@ -12,24 +12,28 @@ License: GPLv3
 Group: Development/Languages
 Source: http://inform7.com/download/content/6M62/gnome-inform7-6M62.tar.xz
 
+AutoReqProv: no
+
 # Build requirements:
 # Extra build tools
-BuildRequires: gettext
-BuildRequires: pkgconfig
-BuildRequires: xz-lzma-compat
+Requires: intltool
+Requires: gettext
+Requires: pkgconfig
+Requires: xz-lzma-compat
 # Library devel packages:
-BuildRequires: libuuid-devel
-BuildRequires: glib2-devel
-BuildRequires: gtk2-devel
-BuildRequires: gtksourceview2-devel
-BuildRequires: gtkspell-devel
-BuildRequires: webkitgtk-devel
-BuildRequires: goocanvas-devel
-BuildRequires: gstreamer1-devel
-BuildRequires: gstreamer1-plugins-base
-BuildRequires: gstreamer1-plugins-good
-BuildRequires: gstreamer1-plugins-bad-free
-BuildRequires: gstreamer1-plugins-bad-free-extras
+Requires: libuuid-devel
+Requires: glib2-devel
+Requires: gtk2-devel
+Requires: gtksourceview2-devel
+Requires: gtkspell-devel
+#BuildRequires: webkitgtk-devel
+Requires: goocanvas-devel
+Requires: gstreamer-plugins-base
+Requires: gstreamer1-devel
+Requires: gstreamer1-plugins-base
+Requires: gstreamer1-plugins-good
+Requires: gstreamer1-plugins-bad-free
+Requires: gstreamer1-plugins-bad-free-extras
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
@@ -49,6 +53,11 @@ make
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
+mkdir "%{buildroot}/usr/local"
+mkdir "%{buildroot}/usr/local/lib"
+#read -p "Press [Enter] key ..."
+cp "%{_builddir}/%{name}-%{version}/src/webkit/lib/distribution/"*.* "%{buildroot}/usr/local/lib/"
+
 # Clean out files that should not be part of the rpm.
 %{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
 
@@ -153,6 +162,12 @@ rm -rf %{buildroot}
 %{pkgdocdir}/inform6/*.txt
 %{pkgdocdir}/inform6/ReleaseNotes.html
 %{pkglibexecdir}/ni
+/usr/local/lib/libwebkitgtk-1.0.so.0
+/usr/local/lib/libwebkitgtk-1.0.so.0.17.5
+/usr/local/lib/libwebkitgtk-1.0.so
+/usr/local/lib/libjavascriptcoregtk-1.0.so
+/usr/local/lib/libjavascriptcoregtk-1.0.so.0
+/usr/local/lib/libjavascriptcoregtk-1.0.so.0.13.11
 
 %changelog
 * Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com> - 6M62-1

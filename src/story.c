@@ -1061,9 +1061,9 @@ i7_story_new_from_dialog(I7App *app)
 		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
 
-	GtkFileFilter *filter = gtk_file_filter_new();
-	gtk_file_filter_add_pattern(filter, "*.inform");
-	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), filter);
+	//GtkFileFilter *filter = gtk_file_filter_new();
+	//gtk_file_filter_add_pattern(filter, "*.inform");
+	//gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), filter);
 
 	if(gtk_dialog_run(GTK_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) {
 		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(chooser));
