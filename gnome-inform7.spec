@@ -34,6 +34,7 @@ Requires: gstreamer1-plugins-base
 Requires: gstreamer1-plugins-good
 Requires: gstreamer1-plugins-bad-free
 Requires: gstreamer1-plugins-bad-free-extras
+Recommends: compat-libicu62
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
