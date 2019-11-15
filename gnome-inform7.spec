@@ -12,28 +12,113 @@ License: GPLv3
 Group: Development/Languages
 Source: http://inform7.com/download/content/6M62/gnome-inform7-6M62.tar.xz
 
-AutoReqProv: no
+#AutoReqProv: no
 
 # Build requirements:
 # Extra build tools
-Requires: intltool
-Requires: gettext
-Requires: pkgconfig
-Requires: xz-lzma-compat
+BuildRequires: intltool
+BuildRequires: gettext
+BuildRequires: pkgconfig
+BuildRequires: xz-lzma-compat
 # Library devel packages:
-Requires: libuuid-devel
-Requires: glib2-devel
-Requires: gtk2-devel
-Requires: gtksourceview2-devel
-Requires: gtkspell-devel
+BuildRequires: libuuid-devel
+BuildRequires: glib2-devel
+BuildRequires: gtk2-devel
+BuildRequires: gtksourceview2-devel
+BuildRequires: gtkspell-devel
 #BuildRequires: webkitgtk-devel
-Requires: goocanvas-devel
-Requires: gstreamer-plugins-base
-Requires: gstreamer1-devel
-Requires: gstreamer1-plugins-base
-Requires: gstreamer1-plugins-good
-Requires: gstreamer1-plugins-bad-free
-Requires: gstreamer1-plugins-bad-free-extras
+BuildRequires: goocanvas-devel
+BuildRequires: gstreamer-plugins-base
+BuildRequires: gstreamer1-devel
+BuildRequires: gstreamer1-plugins-base
+BuildRequires: gstreamer1-plugins-good
+BuildRequires: gstreamer1-plugins-bad-free
+BuildRequires: gstreamer1-plugins-bad-free-extras
+Requires:libGL.so.1()(64bit)
+Requires:libX11.so.6()(64bit)
+Requires:libXcomposite.so.1()(64bit)
+Requires:libXdamage.so.1()(64bit)
+Requires:libXfixes.so.3()(64bit)
+Requires:libXrender.so.1()(64bit)
+Requires:libXt.so.6()(64bit)
+Requires:libatk-1.0.so.0()(64bit)
+Requires:libbz2.so.1()(64bit)
+Requires:libc.so.6()(64bit)
+Requires:libc.so.6(GLIBC_2.11)(64bit)
+Requires:libc.so.6(GLIBC_2.14)(64bit)
+Requires:libc.so.6(GLIBC_2.2.5)(64bit)
+Requires:libc.so.6(GLIBC_2.3)(64bit)
+Requires:libc.so.6(GLIBC_2.3.4)(64bit)
+Requires:libc.so.6(GLIBC_2.4)(64bit)
+Requires:libc.so.6(GLIBC_2.7)(64bit)
+Requires:libcairo.so.2()(64bit)
+Requires:libdl.so.2()(64bit)
+Requires:libdl.so.2(GLIBC_2.2.5)(64bit)
+Requires:libenchant.so.1()(64bit)
+Requires:libfontconfig.so.1()(64bit)
+Requires:libfreetype.so.6()(64bit)
+Requires:libgailutil.so.18()(64bit)
+Requires:libgcc_s.so.1()(64bit)
+Requires:libgdk-x11-2.0.so.0()(64bit)
+Requires:libgdk_pixbuf-2.0.so.0()(64bit)
+Requires:libgio-2.0.so.0()(64bit)
+Requires:libglib-2.0.so.0()(64bit)
+Requires:libgmodule-2.0.so.0()(64bit)
+Requires:libgobject-2.0.so.0()(64bit)
+Requires:libgstapp-0.10.so.0()(64bit)
+Requires:libgstaudio-0.10.so.0()(64bit)
+Requires:libgstbase-0.10.so.0()(64bit)
+Requires:libgstfft-0.10.so.0()(64bit)
+Requires:libgstinterfaces-0.10.so.0()(64bit)
+Requires:libgstpbutils-0.10.so.0()(64bit)
+Requires:libgstreamer-0.10.so.0()(64bit)
+Requires:libgstvideo-0.10.so.0()(64bit)
+Requires:libgthread-2.0.so.0()(64bit)
+Requires:libgtk-x11-2.0.so.0()(64bit)
+Requires:libgtksourceview-2.0.so.0()(64bit)
+Requires:libgtkspell.so.0()(64bit)
+Requires:libharfbuzz.so.0()(64bit)
+Requires:libicudata.so.62()(64bit)
+Requires:libicui18n.so.62()(64bit)
+Requires:libicuuc.so.62()(64bit)
+#Requires:libjavascriptcoregtk-1.0.so.0()(64bit)
+Requires:libjpeg.so.62()(64bit)
+Requires:libjpeg.so.62(LIBJPEG_6.2)(64bit)
+Requires:libm.so.6()(64bit)
+Requires:libm.so.6(GLIBC_2.2.5)(64bit)
+Requires:libm.so.6(GLIBC_2.27)(64bit)
+Requires:libpango-1.0.so.0()(64bit)
+Requires:libpangocairo-1.0.so.0()(64bit)
+Requires:libpangoft2-1.0.so.0()(64bit)
+Requires:libpng16.so.16()(64bit)
+Requires:libpng16.so.16(PNG16_0)(64bit)
+Requires:libpthread.so.0()(64bit)
+Requires:libpthread.so.0(GLIBC_2.2.5)(64bit)
+Requires:libpthread.so.0(GLIBC_2.3.2)(64bit)
+Requires:libsoup-2.4.so.1()(64bit)
+Requires:libsqlite3.so.0()(64bit)
+Requires:libstdc++.so.6()(64bit)
+Requires:libstdc++.so.6(CXXABI_1.3)(64bit)
+Requires:libstdc++.so.6(CXXABI_1.3.9)(64bit)
+Requires:libstdc++.so.6(GLIBCXX_3.4)(64bit)
+Requires:libstdc++.so.6(GLIBCXX_3.4.15)(64bit)
+Requires:libstdc++.so.6(GLIBCXX_3.4.20)(64bit)
+Requires:libstdc++.so.6(GLIBCXX_3.4.21)(64bit)
+Requires:libstdc++.so.6(GLIBCXX_3.4.9)(64bit)
+Requires:libuuid.so.1()(64bit)
+Requires:libuuid.so.1(UUID_1.0)(64bit)
+#Requires:libwebkitgtk-1.0.so.0()(64bit)
+Requires:libxml2.so.2()(64bit)
+Requires:libxml2.so.2(LIBXML2_2.4.30)(64bit)
+Requires:libxml2.so.2(LIBXML2_2.6.0)(64bit)
+Requires:libxml2.so.2(LIBXML2_2.6.6)(64bit)
+Requires:libxslt.so.1()(64bit)
+Requires:libxslt.so.1(LIBXML2_1.0.11)(64bit)
+Requires:libxslt.so.1(LIBXML2_1.0.22)(64bit)
+Requires:libxslt.so.1(LIBXML2_1.0.24)(64bit)
+Requires:libxslt.so.1(LIBXML2_1.1.9)(64bit)
+Requires:libz.so.1()(64bit)
+Requires:libz.so.1(ZLIB_1.2.0)(64bit)
 Recommends: compat-libicu62
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -86,7 +171,8 @@ rm -rf %{buildroot}
 %define pkglibexecdir %{_libexecdir}/%{name}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
-%{_datadir}/applications/%{name}.desktop
+%{_datadir}/applications/com.inform7.IDE.desktop
+%{_datadir}/metainfo/com.inform7.IDE.appdata.xml
 %{pkgdocdir}/AUTHORS.md
 %{pkgdocdir}/ChangeLog
 %{pkgdocdir}/COPYING
@@ -127,7 +213,7 @@ rm -rf %{buildroot}
 %{pkgdatadir}/ui/*.ui
 %{pkgdatadir}/ui/*.xml
 %{_datadir}/icons/hicolor/*/actions/inform7-builtin.png
-%{_datadir}/icons/hicolor/*/apps/inform7.png
+%{_datadir}/icons/hicolor/*/apps/com.inform7.IDE.png
 %{_datadir}/icons/hicolor/*/emblems/inform7-materials.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-materials.png
@@ -136,7 +222,7 @@ rm -rf %{buildroot}
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform-extension.png
 %{_datadir}/icons/hicolor/*/mimetypes/text-x-blurb.png
-%{_datadir}/glib-2.0/schemas/com.inform7.GUI.gschema.xml
+%{_datadir}/glib-2.0/schemas/com.inform7.IDE.gschema.xml
 %{_datadir}/mime/packages/inform7.xml
 %lang(de) %{_datadir}/locale/de/LC_MESSAGES/%{name}.mo
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
