@@ -22,6 +22,11 @@ AM_SILENT_RULES([yes])
 # Allow "AM_GST_ELEMENT_CHECK" for building without GStreamer development files
 m4_pattern_allow([^AM_GST_ELEMENT_CHECK$])
 
+### CHECK FOR WEBKIT AVAILABILITY AND WORK AROUND IF NOT PRESENT
+PKG_CHECK_EXISTS([webkit-1.0 >= 1.6.0],
+   [echo "##### Detected webkit-1.0 exists, no workaround needed...";],
+       [echo "##### No webkit-1.0 exists, workaround needed..."; source ./src/webkit/setup-fedora-inform7-build-env-new;])
+
 ### CHECK FOR PROPER NI EXECUTABLE #############################################
 
 # Grep is required for these tests.
@@ -180,7 +185,7 @@ AS_IF([test "x$with_sound" = "xgstreamer"], [
 	AC_MSG_CHECKING([which version of GStreamer is used in WebKit])
 	WEBKIT_LIBDIR=$(pkg-config --variable=libdir webkit-1.0)
 	# Get -lwebkit-blah and remove -l
-	WEBKIT_LIBNAME=$(pkg-config --libs webkit-1.0 | sed -e 's/ /\n/g' | $GREP webkit | cut -c3-)
+	WEBKIT_LIBNAME=$(pkg-config --libs webkit-1.0 | sed -e 's/ /\n/g' | $GREP lwebkit | cut -c3-)
 	WEBKIT_LIBRARY="$WEBKIT_LIBDIR/lib$WEBKIT_LIBNAME.so"
 	with_sound=$(ldd $WEBKIT_LIBRARY | $GREP -E -o "gstreamer-@<:@0-9@:>@\\.@<:@0-9@:>@+" | uniq)
 	# with_sound is now gstreamer-1.0, gstreamer-0.10, or empty
@@ -218,7 +223,6 @@ PKG_CHECK_MODULES([INFORM7], [
 	$JAVASCRIPTCORE_MODULE
 	gtkspell-2.0
 	libxml-2.0
-	goocanvas
 	$UUID_MODULE
 ])
 PKG_CHECK_MODULES([OSXCART], [
@@ -235,7 +239,11 @@ PKG_CHECK_MODULES([CHIMARA], [
 	pango
 	$SOUND_MODULE
 ])
-
+PKG_CHECK_MODULES([GOOCANVAS],[
+	gtk+-2.0 >= 2.12.0 
+	glib-2.0 >= 2.10.0 
+	cairo >= 1.4.0
+])
 # GStreamer plugins needed to run library
 AS_CASE([$with_sound],
 	[gstreamer-0.10], [

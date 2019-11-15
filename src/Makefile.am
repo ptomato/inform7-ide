@@ -2,7 +2,56 @@ SUBDIRS = inlib inweb cBlorb inform6 ni
 
 # We build libinform7gui.a to link to the regular binary
 # as well as the test binary
-noinst_LIBRARIES = libosxcart.a libchimara.a libinform7gui.a
+noinst_LIBRARIES = libosxcart.a libchimara.a libinform7gui.a libgoocanvas.a
+
+libgoocanvas_a_SOURCES = \
+	goocanvas/src/goocanvasatk.c \
+	goocanvas/src/goocanvas.c \
+	goocanvas/src/goocanvasellipse.c \
+	goocanvas/src/goocanvasenumtypes.c \
+	goocanvas/src/goocanvasgrid.c \
+	goocanvas/src/goocanvasgroup.c \
+	goocanvas/src/goocanvasimage.c \
+	goocanvas/src/goocanvasitem.c \
+	goocanvas/src/goocanvasitemmodel.c \
+	goocanvas/src/goocanvasitemsimple.c \
+	goocanvas/src/goocanvasmarshal.c \
+	goocanvas/src/goocanvaspath.c \
+	goocanvas/src/goocanvaspolyline.c \
+	goocanvas/src/goocanvasrect.c \
+	goocanvas/src/goocanvasstyle.c \
+	goocanvas/src/goocanvastable.c \
+	goocanvas/src/goocanvastext.c \
+	goocanvas/src/goocanvasutils.c \
+	goocanvas/src/goocanvaswidget.c \
+	goocanvas/src/goocanvasatk.h \
+	goocanvas/src/goocanvasellipse.h \
+	goocanvas/src/goocanvasenumtypes.h \
+	goocanvas/src/goocanvasgrid.h \
+	goocanvas/src/goocanvasgroup.h \
+	goocanvas/src/goocanvas.h \
+	goocanvas/src/goocanvasimage.h \
+	goocanvas/src/goocanvasitem.h \
+	goocanvas/src/goocanvasitemmodel.h \
+	goocanvas/src/goocanvasitemsimple.h \
+	goocanvas/src/goocanvasmarshal.h \
+	goocanvas/src/goocanvaspath.h \
+	goocanvas/src/goocanvaspolyline.h \
+	goocanvas/src/goocanvasprivate.h \
+	goocanvas/src/goocanvasrect.h \
+	goocanvas/src/goocanvasstyle.h \
+	goocanvas/src/goocanvastable.h \
+	goocanvas/src/goocanvastext.h \
+	goocanvas/src/goocanvasutils.h \
+	goocanvas/src/goocanvaswidget.h \
+	goocanvas/src/stamp-goocanvasenumtypes.h \
+	goocanvas/src/stamp-goocanvasmarshal.h
+libgoocanvas_a_CPPFLAGS = \
+	-DG_LOG_DOMAIN=\"Goocanvas\" \
+	-DLOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(srcdir)/goocanvas \
+	-I$(srcdir)/goocanvas/src
+libgoocanvas_a_CFLAGS = @GOOCANVAS_CFLAGS@ $(AM_CFLAGS)
 
 libosxcart_a_SOURCES = \
 	osxcart/osxcart/init.c \
@@ -264,14 +313,15 @@ libinform7gui_a_CPPFLAGS = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LIBEXEC_DIR=\""$(pkglibexecdir)"\" \
 	-I$(srcdir)/osxcart \
-	-I$(srcdir)/chimara
+	-I$(srcdir)/chimara \
+	-I$(srcdir)/goocanvas/src
 libinform7gui_a_CFLAGS = @INFORM7_CFLAGS@ $(WARNINGFLAGS)
 
 bin_PROGRAMS = gnome-inform7
 gnome_inform7_SOURCES = main.c
 gnome_inform7_CPPFLAGS = -DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\"
 gnome_inform7_CFLAGS = @INFORM7_CFLAGS@ $(WARNINGFLAGS)
-gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
+gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ @GOOCANVAS_LIBS@ \
 	$(INTLLIBS) \
 	libosxcart.a \
 	-lm
@@ -282,10 +332,10 @@ gnome_inform7_LDADD = @INFORM7_LIBS@ @OSXCART_LIBS@ @CHIMARA_LIBS@ \
 # symbols in libinform7gui.a, which are not referenced by the main program. This
 # tells ld to link in all object files in libchimara.a and libinform7gui.a.
 gnome_inform7_LDFLAGS = -Wl,--export-dynamic \
-	-Wl,--whole-archive,libinform7gui.a,libchimara.a,--no-whole-archive
+	-Wl,--whole-archive,libinform7gui.a,libchimara.a,libgoocanvas.a,--no-whole-archive
 # The gnome-inform7 executable must also depend on libchimara.a; because of the
 # trickery above, Automake doesn't realize that.
-gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libinform7gui.a
+gnome_inform7_DEPENDENCIES = libosxcart.a libchimara.a libgoocanvas.a libinform7gui.a
 
 # Build the test suite as well, in the same way
 check_PROGRAMS = test
@@ -330,6 +380,20 @@ EXTRA_DIST += \
 	tests/Hereafter.inform/Source/story.ni \
 	tests/Hereafter.inform/notes.rtf \
 	tests/test_color_scheme.xml \
+	webkit/libjavascriptcoregtk-1.0.so \
+	webkit/libwebkitgtk-1.0.so.0 \
+	webkit/libjavascriptcoregtk-1.0.so.0 \
+	webkit/libwebkitgtk-1.0.so.0.17.5 \
+	webkit/libjavascriptcoregtk-1.0.so.0.13.11  \
+	webkit/libwebkitgtk-1.0.so \
+	webkit/setup-fedora-inform7-build-env-new \
+	webkit/genjavascriptpc.sh \
+	webkit/genwebkitpc.sh \
+	webkit/lib/*.* \
+	webkit/lib/distribution/*.* \
+	webkit/include/webkitgtk-1.0/webkit/*.* \
+	webkit/include/webkitgtk-1.0/JavaScriptCore/*.* \
+	webkit/include/webkitgtk-1.0/JavaScriptCore/API/*.*
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
