@@ -54,10 +54,7 @@ make
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
-mkdir "%{buildroot}/usr/local"
-mkdir "%{buildroot}/usr/local/lib"
-#read -p "Press [Enter] key ..."
-cp "%{_builddir}/%{name}-%{version}/src/webkit/lib/distribution/"*.* "%{buildroot}/usr/local/lib/"
+cp "%{_builddir}/%{name}-%{version}/src/webkit/lib/distribution/"*.* "%{buildroot}/%{_libdir}"
 
 # Clean out files that should not be part of the rpm.
 %{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
@@ -163,12 +160,12 @@ rm -rf %{buildroot}
 %{pkgdocdir}/inform6/*.txt
 %{pkgdocdir}/inform6/ReleaseNotes.html
 %{pkglibexecdir}/ni
-/usr/local/lib/libwebkitgtk-1.0.so.0
-/usr/local/lib/libwebkitgtk-1.0.so.0.17.5
-/usr/local/lib/libwebkitgtk-1.0.so
-/usr/local/lib/libjavascriptcoregtk-1.0.so
-/usr/local/lib/libjavascriptcoregtk-1.0.so.0
-/usr/local/lib/libjavascriptcoregtk-1.0.so.0.13.11
+%{_libdir}/libwebkitgtk-1.0.so.0
+%{_libdir}/libwebkitgtk-1.0.so.0.17.5
+%{_libdir}/libwebkitgtk-1.0.so
+%{_libdir}/libjavascriptcoregtk-1.0.so
+%{_libdir}/libjavascriptcoregtk-1.0.so.0
+%{_libdir}/libjavascriptcoregtk-1.0.so.0.13.11
 
 %changelog
 * Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com> - 6M62-1
