@@ -2,7 +2,7 @@ iconsdir = $(datadir)/icons/hicolor
 
 # Named Icons
 # -----------
-# com.inform7.IDE.png: named application icon (inform.iconset)
+# inform7.png: named application icon (inform.iconset)
 # inform7-builtin.png: named icon for built-in extension
 # inform7-materials.png: named emblem for materials folder
 #
@@ -17,12 +17,12 @@ iconsdir = $(datadir)/icons/hicolor
 # text/x-blurb: Blurb file (blurbfile.iconset)
 
 nobase_dist_icons_DATA = \
-	16x16/apps/com.inform7.IDE.png \
-	32x32/apps/com.inform7.IDE.png \
-	48x48/apps/com.inform7.IDE.png \
-	64x64/apps/com.inform7.IDE.png \
-	128x128/apps/com.inform7.IDE.png \
-	256x256/apps/com.inform7.IDE.png \
+	16x16/apps/inform7.png \
+	32x32/apps/inform7.png \
+	48x48/apps/inform7.png \
+	64x64/apps/inform7.png \
+	128x128/apps/inform7.png \
+	256x256/apps/inform7.png \
 	16x16/actions/inform7-builtin.png \
 	32x32/actions/inform7-builtin.png \
 	48x48/actions/inform7-builtin.png \

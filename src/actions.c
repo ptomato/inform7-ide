@@ -134,7 +134,7 @@ void
 action_import_into_skein(GtkAction *action, I7Story *story)
 {
 	GError *err = NULL;
-
+	
 	/* Ask the user for a file to import */
 	/* TRANSLATORS: File->Import Into Skein... */
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(
@@ -157,7 +157,7 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 		gtk_widget_destroy(dialog);
 		return;
 	}
-
+	
 	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
 	gtk_widget_destroy(dialog);
 	if(!file)
@@ -168,7 +168,7 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 		error_dialog_file_operation(GTK_WINDOW(story), file, err, I7_FILE_ERROR_OPEN, NULL);
 	else
 		i7_story_show_pane(story, I7_PANE_SKEIN);
-
+	
 	g_object_unref(file);
 }
 
@@ -1326,7 +1326,7 @@ action_about(GtkAction *action, I7App *app)
 		"license", _("See Help\u2192License for licensing information."),
 		"authors", authors,
 		"translator-credits", translator_credits,
-		"logo-icon-name", "com.inform7.IDE",
+		"logo-icon-name", "inform7",
 		"title", _("About Inform"),
 		NULL);
 	g_free(copyright);
