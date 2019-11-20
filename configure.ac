@@ -243,6 +243,11 @@ for GStreamer 1.0 and rerun autogen.sh.])])
 	],
 	[])
 
+PKG_CHECK_MODULES([GLIB260], [glib-2.0 >= 2.60],
+	[AC_DEFINE([GLIB_VERSION_MIN_REQUIRED], [GLIB_VERSION_2_60],
+		[Ignore GTimeVal deprecation warnings in 2.62])],
+	[true])
+
 ### WHETHER TO RUN TESTS IN VIRTUAL X SERVER ###################################
 # Requires xvfb
 AC_ARG_WITH([xvfb-tests],
