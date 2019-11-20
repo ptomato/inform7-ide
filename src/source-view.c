@@ -40,16 +40,13 @@ struct _I7SourceViewPrivate
 	GtkSpellChecker *spell;
 };
 
-#define I7_SOURCE_VIEW_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SOURCE_VIEW, I7SourceViewPrivate))
-#define I7_SOURCE_VIEW_USE_PRIVATE(o,n) I7SourceViewPrivate *n = I7_SOURCE_VIEW_PRIVATE(o)
-
 static GtkFrameClass *parent_class = NULL;
-G_DEFINE_TYPE(I7SourceView, i7_source_view, GTK_TYPE_FRAME);
+G_DEFINE_TYPE_WITH_PRIVATE(I7SourceView, i7_source_view, GTK_TYPE_FRAME);
 
 static void
 i7_source_view_init(I7SourceView *self)
 {
-	I7_SOURCE_VIEW_USE_PRIVATE(self, priv);
+	I7SourceViewPrivate *priv = i7_source_view_get_instance_private(self);
 
 	/* Set private data */
 	priv->spell = NULL;
@@ -96,9 +93,9 @@ i7_source_view_init(I7SourceView *self)
 }
 
 static void
-i7_source_view_finalize(GObject *self)
+i7_source_view_finalize(GObject *object)
 {
-	G_OBJECT_CLASS(parent_class)->finalize(self);
+	G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
 static void
@@ -108,8 +105,6 @@ i7_source_view_class_init(I7SourceViewClass *klass)
 	object_class->finalize = i7_source_view_finalize;
 
 	parent_class = g_type_class_peek_parent(klass);
-
-	g_type_class_add_private(klass, sizeof(I7SourceViewPrivate));
 }
 
 /* SIGNAL HANDLERS */
@@ -205,7 +200,7 @@ get_nearest_system_language_to_english(void)
 void
 i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 {
-	I7_SOURCE_VIEW_USE_PRIVATE(self, priv);
+	I7SourceViewPrivate *priv = i7_source_view_get_instance_private(self);
 
 	if(spellcheck) {
 		GError *error = NULL;
@@ -229,7 +224,7 @@ i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 void
 i7_source_view_check_spelling(I7SourceView *self)
 {
-	I7_SOURCE_VIEW_USE_PRIVATE(self, priv);
+	I7SourceViewPrivate *priv = i7_source_view_get_instance_private(self);
 	if(priv->spell)
 		gtk_spell_checker_recheck_all(priv->spell);
 }

@@ -92,17 +92,14 @@ typedef struct _I7NodePrivate {
 	gdouble label_height;
 } I7NodePrivate;
 
-#define I7_NODE_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_NODE, I7NodePrivate))
-#define I7_NODE_USE_PRIVATE I7NodePrivate *priv = I7_NODE_PRIVATE(self)
-
-G_DEFINE_TYPE(I7Node, i7_node, GOO_TYPE_CANVAS_GROUP_MODEL);
+G_DEFINE_TYPE_WITH_PRIVATE(I7Node, i7_node, GOO_TYPE_CANVAS_GROUP_MODEL);
 
 /* STATIC FUNCTIONS */
 
 static void
 draw_differs_badge(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	if(g_object_get_data(G_OBJECT(priv->badge_item), "path-drawn") == NULL) {
 		/* if the differs badge hasn't been drawn yet, draw it */
 		g_object_set(priv->badge_item, "data",
@@ -140,7 +137,7 @@ draw_differs_badge(I7Node *self)
 static void
 update_node_background(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	g_object_set(priv->command_shape_item,
 		"fill-pattern", priv->node_pattern[SELECT_PATTERN(priv->played, priv->blessed)],
 		NULL);
@@ -153,8 +150,8 @@ update_node_background(I7Node *self)
 static void
 clear_diffs(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
-	
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
+
 	g_free(priv->transcript_pango_string);
 	g_free(priv->expected_pango_string);
 	g_list_free(priv->transcript_diffs);
@@ -170,7 +167,7 @@ clear_diffs(I7Node *self)
 static void
 calculate_diffs(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	I7NodeMatchType old_match_status = priv->match;
 	
@@ -235,7 +232,7 @@ on_differs_badge_button_press(GooCanvasItem *item, GooCanvasItem *target_item, G
 static void
 i7_node_set_expected_text(I7Node *self, const gchar *text)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	g_free(priv->expected_text);
 	priv->expected_text = g_strdup(text? text : ""); /* silently accept NULL */
@@ -267,7 +264,7 @@ i7_node_set_expected_text(I7Node *self, const gchar *text)
 static void
 i7_node_set_changed(I7Node *self, gboolean changed)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	gboolean old_changed_status = priv->changed;
 	priv->changed = changed;
@@ -294,7 +291,7 @@ create_node_pattern(double r, double g, double b)
 static void
 i7_node_init(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	priv->id = g_strdup_printf("node-%p", self);
 	self->gnode = g_node_new(self);
 	self->tree_item = NULL;
@@ -351,45 +348,47 @@ i7_node_init(I7Node *self)
 }
 
 static void
-i7_node_set_property(GObject *self, guint prop_id, const GValue *value, GParamSpec *pspec)
+i7_node_set_property(GObject *object, unsigned prop_id, const GValue *value, GParamSpec *pspec)
 {
-	I7_NODE_USE_PRIVATE;
+	I7Node *self = I7_NODE(object);
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	switch(prop_id) {
 		case PROP_COMMAND:
-			i7_node_set_command(I7_NODE(self), g_value_get_string(value));
+			i7_node_set_command(self, g_value_get_string(value));
 			break;
 		case PROP_LABEL:
-			i7_node_set_label(I7_NODE(self), g_value_get_string(value));
+			i7_node_set_label(self, g_value_get_string(value));
 			break;
 		case PROP_TRANSCRIPT_TEXT:
-			i7_node_set_transcript_text(I7_NODE(self), g_value_get_string(value));
+			i7_node_set_transcript_text(self, g_value_get_string(value));
 			break;
 		case PROP_EXPECTED_TEXT: /* Construct only */
-			i7_node_set_expected_text(I7_NODE(self), g_value_get_string(value));
+			i7_node_set_expected_text(self, g_value_get_string(value));
 			break;
 		case PROP_LOCKED:
-			i7_node_set_locked(I7_NODE(self), g_value_get_boolean(value));
+			i7_node_set_locked(self, g_value_get_boolean(value));
 			break;
 		case PROP_PLAYED:
-			i7_node_set_played(I7_NODE(self), g_value_get_boolean(value));
+			i7_node_set_played(self, g_value_get_boolean(value));
 			break;
 		case PROP_CHANGED: /* Construct only */
-			i7_node_set_changed(I7_NODE(self), g_value_get_boolean(value));
+			i7_node_set_changed(self, g_value_get_boolean(value));
 			break;
 		case PROP_SCORE: /* Construct only */
 			priv->score = g_value_get_int(value);
-			g_object_notify(self, "score");
+			g_object_notify(object, "score");
 			break;
 		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
 }
 
 static void
-i7_node_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *pspec)
+i7_node_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
-	I7_NODE_USE_PRIVATE;
+	I7Node *self = I7_NODE(object);
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	switch(prop_id) {
 		case PROP_COMMAND:
@@ -420,10 +419,10 @@ i7_node_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *ps
 			g_value_set_int(value, priv->score);
 			break;
 		case PROP_MATCH:
-			g_value_set_int(value, i7_node_get_match_type(I7_NODE(self)));
+			g_value_set_int(value, i7_node_get_match_type(self));
 			break;
 		default:
-			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
 }
 
@@ -434,9 +433,10 @@ unref_node(GNode *gnode)
 }
 
 static void
-i7_node_finalize(GObject *self)
+i7_node_finalize(GObject *object)
 {
-	I7_NODE_USE_PRIVATE;
+	I7Node *self = I7_NODE(object);
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	cairo_pattern_destroy(priv->label_pattern);
 	cairo_pattern_destroy(priv->node_pattern[NODE_UNPLAYED_UNBLESSED]);
@@ -450,16 +450,16 @@ i7_node_finalize(GObject *self)
 	g_free(priv->transcript_pango_string);
 	g_free(priv->expected_pango_string);
 	g_free(priv->id);
-	goo_canvas_points_unref(I7_NODE(self)->tree_points);
+	goo_canvas_points_unref(self->tree_points);
 	g_list_free(priv->transcript_diffs);
 	g_list_free(priv->expected_diffs);
 
 	/* recurse */
-	g_node_children_foreach(I7_NODE(self)->gnode, G_TRAVERSE_ALL, (GNodeForeachFunc)unref_node, NULL);
+	g_node_children_foreach(self->gnode, G_TRAVERSE_ALL, (GNodeForeachFunc)unref_node, NULL);
 	/* free the node itself */
-	g_node_destroy(I7_NODE(self)->gnode);
+	g_node_destroy(self->gnode);
 
-	G_OBJECT_CLASS(i7_node_parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_node_parent_class)->finalize(object);
 }
 
 static void
@@ -512,9 +512,6 @@ i7_node_class_init(I7NodeClass *klass)
 	    g_param_spec_int("match", "Match type",
 		    "How this node's transcript and expected text differ",
 		    -1, 2, -1, flags | G_PARAM_READABLE));
-
-	/* Private data */
-	g_type_class_add_private(klass, sizeof(I7NodePrivate));
 }
 
 I7Node *
@@ -539,14 +536,14 @@ i7_node_new(const gchar *command, const gchar *label, const gchar *transcript,
 gchar *
 i7_node_get_command(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return g_strdup(priv->command);
 }
 
 void
 i7_node_set_command(I7Node *self, const gchar *command)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	g_free(priv->command);
 	priv->command = g_strdup(command? command : ""); /* silently accept NULL */
 
@@ -561,14 +558,14 @@ i7_node_set_command(I7Node *self, const gchar *command)
 gchar *
 i7_node_get_label(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return g_strdup(priv->label);
 }
 
 void
 i7_node_set_label(I7Node *self, const gchar *label)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	g_free(priv->label);
 	priv->label = g_strdup(label? label : ""); /* silently accept NULL */
 
@@ -584,21 +581,21 @@ i7_node_set_label(I7Node *self, const gchar *label)
 gboolean
 i7_node_has_label(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return (self->gnode->parent != NULL) && priv->label && (strlen(priv->label) > 0);
 }
 
 gchar *
 i7_node_get_transcript_text(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return g_strdup(priv->transcript_text);
 }
 
 void
 i7_node_set_transcript_text(I7Node *self, const gchar *transcript)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	char *old_transcript_text = g_strdup(priv->transcript_text? priv->transcript_text : "");
 
@@ -628,14 +625,14 @@ i7_node_set_transcript_text(I7Node *self, const gchar *transcript)
 gchar *
 i7_node_get_expected_text(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return g_strdup(priv->expected_text);
 }
 
 const char *
 i7_node_get_transcript_pango_string(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	if(!priv->transcript_pango_string)
 		calculate_diffs(self);
@@ -646,7 +643,7 @@ i7_node_get_transcript_pango_string(I7Node *self)
 const char *
 i7_node_get_expected_pango_string(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	if(!priv->expected_pango_string)
 		calculate_diffs(self);
@@ -657,7 +654,7 @@ i7_node_get_expected_pango_string(I7Node *self)
 I7NodeMatchType
 i7_node_get_match_type(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	if(!priv->expected_pango_string || !priv->transcript_pango_string)
 		calculate_diffs(self);
@@ -679,7 +676,7 @@ i7_node_get_match_type(I7Node *self)
 gboolean
 i7_node_get_different(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	if(!priv->expected_pango_string || !priv->transcript_pango_string)
 		calculate_diffs(self);
@@ -690,21 +687,21 @@ i7_node_get_different(I7Node *self)
 gboolean
 i7_node_get_changed(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->changed;
 }
 
 gboolean
 i7_node_get_locked(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->locked;
 }
 
 void
 i7_node_set_locked(I7Node *self, gboolean locked)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	priv->locked = locked;
 	g_object_notify(G_OBJECT(self), "locked");
 }
@@ -712,14 +709,14 @@ i7_node_set_locked(I7Node *self, gboolean locked)
 gboolean
 i7_node_get_played(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->played;
 }
 
 void
 i7_node_set_played(I7Node *self, gboolean played)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	priv->played = played;
 	update_node_background(self);
 	g_object_notify(G_OBJECT(self), "played");
@@ -728,26 +725,26 @@ i7_node_set_played(I7Node *self, gboolean played)
 gboolean
 i7_node_get_blessed(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->blessed;
 }
 
 void
 i7_node_bless(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	i7_node_set_expected_text(self, priv->transcript_text);
 }
 
 gint i7_node_get_score(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->score;
 }
 
 void i7_node_set_score(I7Node *self, gint score)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	priv->score = score;
 	g_object_notify(G_OBJECT(self), "score");
 }
@@ -755,7 +752,7 @@ void i7_node_set_score(I7Node *self, gint score)
 gdouble
 i7_node_get_tree_width(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	gdouble spacing;
 	g_object_get(skein, "horizontal-spacing", &spacing, NULL);
 
@@ -777,7 +774,7 @@ i7_node_get_tree_width(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 const gchar *
 i7_node_get_unique_id(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->id;
 }
 
@@ -906,13 +903,14 @@ i7_node_get_next_difference(I7Node *node)
 static void
 write_child_pointer(GNode *gnode, GString *string)
 {
-	g_string_append_printf(string, "      <child nodeId=\"%s\"/>\n", I7_NODE_PRIVATE(gnode->data)->id);
+	I7NodePrivate *priv = i7_node_get_instance_private(I7_NODE(gnode->data));
+	g_string_append_printf(string, "      <child nodeId=\"%s\"/>\n", priv->id);
 }
 
 gchar *
 i7_node_get_xml(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	/* Escape the following strings if necessary */
 	gchar *command = g_markup_escape_text(priv->command, -1);
@@ -949,14 +947,14 @@ i7_node_get_xml(I7Node *self)
 gdouble
 i7_node_get_x(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	return priv->x;
 }
 
 void
 i7_node_layout(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas, gdouble x)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	gdouble hspacing, vspacing;
 	g_object_get(skein,
@@ -991,7 +989,7 @@ i7_node_layout(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas, gdoub
 static void
 redraw_command(I7Node *self, double width, double height)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	cairo_matrix_t matrix;
 	char *path;
 	
@@ -1023,7 +1021,7 @@ redraw_command(I7Node *self, double width, double height)
 static void
 redraw_label(I7Node *self, double width, double height)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	cairo_matrix_t matrix;
 	char *path;
 
@@ -1054,7 +1052,7 @@ redraw_label(I7Node *self, double width, double height)
 void
 i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	GooCanvasBounds size;
 	GooCanvasItem *item;
 	double command_width, command_height;
@@ -1116,7 +1114,7 @@ i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canva
 void
 i7_node_invalidate_size(I7Node *self)
 {
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 	priv->command_width = -1.0;
 	priv->command_height = -1.0;
 	priv->label_width = -1.0;
@@ -1169,7 +1167,7 @@ i7_node_get_command_coordinates(I7Node *self, gint *x, gint *y, GooCanvas *canva
 	g_return_val_if_fail(self || I7_IS_NODE(self), FALSE);
 	g_return_val_if_fail(canvas || GOO_IS_CANVAS(canvas), FALSE);
 
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	return i7_goo_canvas_item_get_onscreen_coordinates(goo_canvas_get_item(canvas, GOO_CANVAS_ITEM_MODEL(priv->command_item)), canvas, x, y);
 }
@@ -1180,7 +1178,7 @@ i7_node_get_label_coordinates(I7Node *self, gint *x, gint *y, GooCanvas *canvas)
 	g_return_val_if_fail(self || I7_IS_NODE(self), FALSE);
 	g_return_val_if_fail(canvas || GOO_IS_CANVAS(canvas), FALSE);
 
-	I7_NODE_USE_PRIVATE;
+	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
 	return i7_goo_canvas_item_get_onscreen_coordinates(goo_canvas_get_item(canvas, GOO_CANVAS_ITEM_MODEL(priv->label_item)), canvas, x, y);
 }

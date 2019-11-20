@@ -39,18 +39,15 @@ struct _I7ExtensionPrivate
 	gboolean elastic;
 };
 
-#define I7_EXTENSION_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_EXTENSION, I7ExtensionPrivate))
-#define I7_EXTENSION_USE_PRIVATE(o,n) I7ExtensionPrivate *n = I7_EXTENSION_PRIVATE(o)
-
-G_DEFINE_TYPE(I7Extension, i7_extension, I7_TYPE_DOCUMENT);
+G_DEFINE_TYPE_WITH_PRIVATE(I7Extension, i7_extension, I7_TYPE_DOCUMENT);
 
 /* SIGNAL HANDLERS */
 
 static void
-on_heading_depth_value_changed(GtkRange *range, I7Extension *extension)
+on_heading_depth_value_changed(GtkRange *range, I7Extension *self)
 {
 	double value = gtk_range_get_value(range);
-	i7_document_set_headings_filter_level(I7_DOCUMENT(extension), (gint)value);
+	i7_document_set_headings_filter_level(I7_DOCUMENT(self), (int)value);
 }
 
 /* Save window size */
@@ -77,41 +74,42 @@ on_extensionwindow_delete_event(GtkWidget *window, GdkEvent *event)
 }
 
 static void
-on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Extension *extension)
+on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Extension *self)
 {
 	if(page_num != I7_SOURCE_VIEW_TAB_CONTENTS)
 		return;
-	i7_document_reindex_headings(I7_DOCUMENT(extension));
+	i7_document_reindex_headings(I7_DOCUMENT(self));
 }
 
 static void
-on_headings_row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn *column, I7Extension *extension)
+on_headings_row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn *column, I7Extension *self)
 {
-	GtkTreePath *real_path = i7_document_get_child_path(I7_DOCUMENT(extension), path);
-	i7_document_show_heading(I7_DOCUMENT(extension), real_path);
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(extension->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
+	I7Document *document = I7_DOCUMENT(self);
+	GtkTreePath *real_path = i7_document_get_child_path(document, path);
+	i7_document_show_heading(document, real_path);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(self->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
 }
 
 static void
-on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extension *extension)
-{
-	gboolean sensitive;
-	g_object_get(action, "sensitive", &sensitive, NULL);
-	if(sensitive)
-		gtk_widget_show(extension->sourceview->previous);
-	else
-		gtk_widget_hide(extension->sourceview->previous);
-}
-
-static void
-on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extension *extension)
+on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extension *self)
 {
 	gboolean sensitive;
 	g_object_get(action, "sensitive", &sensitive, NULL);
 	if(sensitive)
-		gtk_widget_show(extension->sourceview->next);
+		gtk_widget_show(self->sourceview->previous);
 	else
-		gtk_widget_hide(extension->sourceview->next);
+		gtk_widget_hide(self->sourceview->previous);
+}
+
+static void
+on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extension *self)
+{
+	gboolean sensitive;
+	g_object_get(action, "sensitive", &sensitive, NULL);
+	if(sensitive)
+		gtk_widget_show(self->sourceview->next);
+	else
+		gtk_widget_hide(self->sourceview->next);
 }
 
 /* IMPLEMENTATIONS OF VIRTUAL FUNCTIONS */
@@ -145,7 +143,8 @@ otherwise ask for a new location */
 static gboolean
 i7_extension_save(I7Document *document)
 {
-	if(I7_EXTENSION_PRIVATE(document)->readonly) {
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(I7_EXTENSION(document));
+	if (priv->readonly) {
 		GtkWidget *dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
 			_("<big><b>You are editing a built-in Inform extension.</b></big>"));
@@ -180,7 +179,7 @@ i7_extension_save(I7Document *document)
 
 /* Update the list of recently used files */
 static void
-update_recent_extension_file(I7Extension *extension, GFile *file, gboolean readonly)
+update_recent_extension_file(I7Extension *self, GFile *file, gboolean readonly)
 {
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
 	char *uri = g_file_get_uri(file);
@@ -199,7 +198,7 @@ update_recent_extension_file(I7Extension *extension, GFile *file, gboolean reado
 	/* Use the "begins here" line as the description,
 	 retrieved from the first line of the text */
 	GtkTextIter start, end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self)));
 	gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
 	gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
 	gtk_text_iter_forward_to_line_end(&end);
@@ -425,17 +424,19 @@ i7_extension_check_spelling(I7Document *document)
 static void
 i7_extension_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
-	I7_EXTENSION_USE_PRIVATE(document, priv);
+	I7Extension *self = I7_EXTENSION(document);
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
 	priv->elastic = elastic;
-	i7_source_view_set_elastic_tabstops(I7_EXTENSION(document)->sourceview, elastic);
+	i7_source_view_set_elastic_tabstops(self->sourceview, elastic);
 }
 
 static void
 i7_extension_revert(I7Document *document)
 {
-	I7_EXTENSION_USE_PRIVATE(document, priv);
+	I7Extension *self = I7_EXTENSION(document);
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
 	GFile *file = i7_document_get_file(document);
-	i7_extension_open(I7_EXTENSION(document), file, priv->readonly);
+	i7_extension_open(self, file, priv->readonly);
 	g_object_unref(file);
 }
 
@@ -444,7 +445,7 @@ i7_extension_revert(I7Document *document)
 static void
 i7_extension_init(I7Extension *self)
 {
-	I7_EXTENSION_USE_PRIVATE(self, priv);
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
 	GError *error = NULL;
 	I7App *theapp = i7_app_get();
 	GSettings *state = i7_app_get_state(theapp);
@@ -555,8 +556,6 @@ i7_extension_class_init(I7ExtensionClass *klass)
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_extension_finalize;
-
-	g_type_class_add_private(klass, sizeof(I7ExtensionPrivate));
 }
 
 /* PUBLIC FUNCTIONS */
@@ -607,7 +606,7 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 
 /**
  * i7_extension_open:
- * @extension: the extension object
+ * @self: the extension object
  * @file: a #GFile to open
  * @readonly: whether to open @file as a built-in extension or not
  *
@@ -616,33 +615,35 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
  * Returns: %TRUE if successful, %FALSE if not.
  */
 gboolean
-i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly)
+i7_extension_open(I7Extension *self, GFile *file, gboolean readonly)
 {
-	i7_document_set_file(I7_DOCUMENT(extension), file);
+	I7Document *document = I7_DOCUMENT(self);
+
+	i7_document_set_file(document, file);
 
 	/* If it was a built-in extension, set it read-only */
-	i7_extension_set_read_only(extension, readonly);
+	i7_extension_set_read_only(self, readonly);
 
 	/* Read the source */
 	char *text = read_source_file(file);
 	if(!text)
 		goto fail;
 
-	update_recent_extension_file(extension, file, readonly);
+	update_recent_extension_file(self, file, readonly);
 
 	/* Watch for changes to the source file */
-	i7_document_monitor_file(I7_DOCUMENT(extension), file);
+	i7_document_monitor_file(document, file);
 
 	/* Write the source to the source buffer, clearing the undo history */
-	i7_document_set_source_text(I7_DOCUMENT(extension), text);
+	i7_document_set_source_text(document, text);
 	g_free(text);
 
 	GtkTextIter start;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_place_cursor(buffer, &start);
 
-	i7_document_set_modified(I7_DOCUMENT(extension), FALSE);
+	i7_document_set_modified(document, FALSE);
 
 	return TRUE;
 
@@ -652,7 +653,8 @@ fail:
 }
 
 void
-i7_extension_set_read_only(I7Extension *extension, gboolean readonly)
+i7_extension_set_read_only(I7Extension *self, gboolean readonly)
 {
-	I7_EXTENSION_PRIVATE(extension)->readonly = readonly;
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
+	priv->readonly = readonly;
 }

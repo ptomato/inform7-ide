@@ -24,7 +24,8 @@
 
 #include "panel.h"
 
-void history_free_queue(I7Panel *panel);
+void i7_panel_history_free(I7PanelHistory *self);
+
 void history_goto_current(I7Panel *panel);
 void history_push_pane(I7Panel *panel, I7PanelPane pane);
 void history_push_tab(I7Panel *panel, I7PanelPane pane, guint tab);

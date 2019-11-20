@@ -141,72 +141,73 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 #define INDEX_TABS         "Index"
 
 GType i7_document_get_type(void) G_GNUC_CONST;
-void i7_document_add_menus_and_findbar(I7Document *document);
-GFile *i7_document_get_file(const I7Document *document);
-gchar *i7_document_get_display_name(I7Document *document);
-void i7_document_set_file(I7Document *document, GFile *file);
-GtkSourceBuffer *i7_document_get_buffer(I7Document *document);
-GtkTextView *i7_document_get_default_view(I7Document *document);
-void i7_document_set_source_text(I7Document *document, gchar *text);
-gchar *i7_document_get_source_text(I7Document *document);
-gboolean i7_document_get_modified(I7Document *document);
-void i7_document_set_modified(I7Document *document, gboolean modified);
-GtkTreeModel *i7_document_get_headings(I7Document *document);
-GtkTreePath *i7_document_get_child_path(I7Document *document, GtkTreePath *path);
+void i7_document_add_menus_and_findbar(I7Document *self);
+GFile *i7_document_get_file(I7Document *self);
+gchar *i7_document_get_display_name(I7Document *self);
+void i7_document_set_file(I7Document *self, GFile *file);
+GtkSourceBuffer *i7_document_get_buffer(I7Document *self);
+GtkTextView *i7_document_get_default_view(I7Document *self);
+void i7_document_set_source_text(I7Document *self, gchar *text);
+gchar *i7_document_get_source_text(I7Document *self);
+gboolean i7_document_get_modified(I7Document *self);
+void i7_document_set_modified(I7Document *self, gboolean modified);
+GtkTreeModel *i7_document_get_headings(I7Document *self);
+GtkTreePath *i7_document_get_child_path(I7Document *self, GtkTreePath *path);
 
-void i7_document_monitor_file(I7Document *document, GFile *file);
-void i7_document_stop_file_monitor(I7Document *document);
-gboolean i7_document_save(I7Document *document);
-void i7_document_save_as(I7Document *document, GFile *file);
+void i7_document_monitor_file(I7Document *self, GFile *file);
+void i7_document_stop_file_monitor(I7Document *self);
+gboolean i7_document_save(I7Document *self);
+void i7_document_save_as(I7Document *self, GFile *file);
 GFile *i7_document_run_save_dialog(I7Document *self, GFile *default_file);
-gboolean i7_document_verify_save(I7Document *document);
+gboolean i7_document_verify_save(I7Document *self);
 gboolean i7_document_can_revert(I7Document *self);
 void i7_document_revert(I7Document *self);
-void i7_document_close(I7Document *document);
-void i7_document_scroll_to_selection(I7Document *document);
-void i7_document_jump_to_line(I7Document *document, guint lineno);
+void i7_document_close(I7Document *self);
+void i7_document_scroll_to_selection(I7Document *self);
+void i7_document_jump_to_line(I7Document *self, guint lineno);
 
-void i7_document_update_tabs(I7Document *document);
-void i7_document_update_fonts(I7Document *document);
-void i7_document_update_font_sizes(I7Document *document);
-void i7_document_update_font_styles(I7Document *document);
-void i7_document_refresh_elastic_tabstops(I7Document *document);
-void i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, GtkTextIter *orig_end);
+void i7_document_update_tabs(I7Document *self);
+void i7_document_update_fonts(I7Document *self);
+void i7_document_update_font_sizes(I7Document *self);
+void i7_document_update_font_styles(I7Document *self);
+void i7_document_refresh_elastic_tabstops(I7Document *self);
+void i7_document_update_indent_tags(I7Document *self, GtkTextIter *orig_start, GtkTextIter *orig_end);
+gboolean i7_document_iter_is_invisible(I7Document *self, GtkTextIter *iter);
 
-void i7_document_expand_headings_view(I7Document *document);
-void i7_document_set_headings_filter_level(I7Document *document, gint depth);
-void i7_document_reindex_headings(I7Document *document);
-void i7_document_show_heading(I7Document *document, GtkTreePath *path);
-GtkTreePath *i7_document_get_previous_heading(I7Document *document);
-GtkTreePath *i7_document_get_next_heading(I7Document *document);
-GtkTreePath *i7_document_get_shallower_heading(I7Document *document);
-GtkTreePath *i7_document_get_deeper_heading(I7Document *document);
-GtkTreePath *i7_document_get_deepest_heading(I7Document *document);
-void i7_document_show_entire_source(I7Document *document);
+void i7_document_expand_headings_view(I7Document *self);
+void i7_document_set_headings_filter_level(I7Document *self, gint depth);
+void i7_document_reindex_headings(I7Document *self);
+void i7_document_show_heading(I7Document *self, GtkTreePath *path);
+GtkTreePath *i7_document_get_previous_heading(I7Document *self);
+GtkTreePath *i7_document_get_next_heading(I7Document *self);
+GtkTreePath *i7_document_get_shallower_heading(I7Document *self);
+GtkTreePath *i7_document_get_deeper_heading(I7Document *self);
+GtkTreePath *i7_document_get_deepest_heading(I7Document *self);
+void i7_document_show_entire_source(I7Document *self);
 
-void i7_document_display_status_message(I7Document *document, const gchar *message, const gchar *context);
-void i7_document_remove_status_message(I7Document *document, const gchar *context);
-void i7_document_flash_status_message(I7Document *document, const gchar *message, const gchar *context);
-void i7_document_display_progress_busy(I7Document *document);
-void i7_document_display_progress_percentage(I7Document *document, gdouble fraction);
-void i7_document_display_progress_message(I7Document *document, const gchar *message);
-void i7_document_clear_progress(I7Document *document);
+void i7_document_display_status_message(I7Document *self, const char *message, const char *context);
+void i7_document_remove_status_message(I7Document *self, const char *context);
+void i7_document_flash_status_message(I7Document *self, const char *message, const char *context);
+void i7_document_display_progress_busy(I7Document *self);
+void i7_document_display_progress_percentage(I7Document *self, double fraction);
+void i7_document_display_progress_message(I7Document *self, const char *message);
+void i7_document_clear_progress(I7Document *self);
 
-void i7_document_attach_menu_hints(I7Document *document, GtkMenuBar *menu);
+void i7_document_attach_menu_hints(I7Document *self, GtkMenuBar *menu);
 
-void i7_document_set_spellcheck(I7Document *document, gboolean spellcheck);
-void i7_document_check_spelling(I7Document *document);
-void i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic);
+void i7_document_set_spellcheck(I7Document *self, gboolean spellcheck);
+void i7_document_check_spelling(I7Document *self);
+void i7_document_set_elastic_tabstops(I7Document *self, gboolean elastic);
 
-gboolean i7_document_download_single_extension(I7Document *document, GFile *remote_file, const char *author, const char *title);
-void i7_document_download_multiple_extensions(I7Document *document, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, gpointer data);
+gboolean i7_document_download_single_extension(I7Document *self, GFile *remote_file, const char *author, const char *title);
+void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, void *data);
 
 /* Search, document-search.c */
-gboolean i7_document_highlight_quicksearch(I7Document *document, const gchar *text, gboolean forward);
-void i7_document_unhighlight_quicksearch(I7Document *document);
-void i7_document_set_highlighted_view(I7Document *document, GtkWidget *view);
-GtkWidget *i7_document_get_highlighted_view(I7Document *document);
-void i7_document_set_quicksearch_not_found(I7Document *document, gboolean not_found);
-void i7_document_find(I7Document *document, const gchar *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type);
+gboolean i7_document_highlight_quicksearch(I7Document *self, const char *text, gboolean forward);
+void i7_document_unhighlight_quicksearch(I7Document *self);
+void i7_document_set_highlighted_view(I7Document *self, GtkWidget *view);
+GtkWidget *i7_document_get_highlighted_view(I7Document *self);
+void i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found);
+void i7_document_find(I7Document *self, const char *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type);
 
 #endif /* _DOCUMENT_H_ */

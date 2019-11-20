@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
+/* Copyright (C) 2008–2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,17 +29,48 @@
 #include "builder.h"
 #include "configfile.h"
 #include "document.h"
-#include "document-private.h"
 #include "elastic.h"
 #include "error.h"
 #include "file.h"
 
+typedef struct {
+	/* Action Groups */
+	GtkActionGroup *document_action_group;
+	GtkActionGroup *selection_action_group;
+	GtkActionGroup *copy_action_group;
+	GtkAccelGroup *accels;
+	/* The file this document refers to */
+	GFile *file;
+	/* Whether it was modified since the last save*/
+	gboolean modified;
+	/* File monitor */
+	GFileMonitor *monitor;
+	/* The program code */
+	GtkSourceBuffer *buffer;
+	GtkTextTag *invisible_tag;
+	/* The tree of section headings */
+	I7Heading heading_depth;
+	GtkTreeStore *headings;
+	GtkTreeModel *filter;
+	GtkTreePath *current_heading;
+	/* The view with a search match currently being highlighted */
+	GtkWidget *highlighted_view;
+
+	/* Download counts */
+	unsigned downloads_completed;
+	unsigned downloads_total;
+	unsigned downloads_failed;
+	GCancellable *cancel_download;
+} I7DocumentPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE(I7Document, i7_document, GTK_TYPE_WINDOW);
+
 /* CALLBACKS */
 
 void
-on_buffer_mark_set(GtkTextBuffer *buffer, GtkTextIter *location, GtkTextMark *mark, I7Document *document)
+on_buffer_mark_set(GtkTextBuffer *buffer, GtkTextIter *location, GtkTextMark *mark, I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	if(gtk_text_mark_get_name(mark) && strcmp(gtk_text_mark_get_name(mark), "selection-bound"))
 		gtk_action_group_set_sensitive(priv->selection_action_group, gtk_text_buffer_get_has_selection(buffer));
 }
@@ -59,11 +90,12 @@ on_buffer_modified_changed(GtkTextBuffer *buffer, I7Document *document)
 }
 
 static gboolean
-filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *document)
+filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *self)
 {
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	gint depth;
 	gtk_tree_model_get(model, iter, I7_HEADINGS_DEPTH, &depth, -1);
-	return depth <= I7_DOCUMENT_PRIVATE(document)->heading_depth;
+	return depth <= priv->heading_depth;
 }
 
 static void
@@ -76,19 +108,17 @@ on_findbar_close_clicked(GtkToolButton *button, I7Document *document)
 void
 on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	if(response == GTK_RESPONSE_CANCEL)
 		g_cancellable_cancel(priv->cancel_download);
 }
 
 /* TYPE SYSTEM */
 
-G_DEFINE_TYPE(I7Document, i7_document, GTK_TYPE_WINDOW);
-
 static void
 i7_document_init(I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GSettings *state = i7_app_get_state(theapp);
@@ -196,9 +226,10 @@ i7_document_init(I7Document *self)
 }
 
 static void
-i7_document_finalize(GObject *self)
+i7_document_finalize(GObject *object)
 {
-	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	I7Document *self = I7_DOCUMENT(object);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	if(priv->file)
 		g_object_unref(priv->file);
@@ -206,18 +237,16 @@ i7_document_finalize(GObject *self)
 		g_file_monitor_cancel(priv->monitor);
 		g_object_unref(priv->monitor);
 	}
-	g_object_unref(I7_DOCUMENT(self)->ui_manager);
+	g_object_unref(self->ui_manager);
 	g_object_unref(priv->headings);
 	gtk_tree_path_free(priv->current_heading);
 
-	G_OBJECT_CLASS(i7_document_parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_document_parent_class)->finalize(object);
 }
 
 static void
 i7_document_class_init(I7DocumentClass *klass)
 {
-	g_type_class_add_private(klass, sizeof(I7DocumentPrivate));
-
 	/* Private pure virtual function */
 	klass->extract_title = NULL;
 	klass->set_contents_display = NULL;
@@ -242,100 +271,100 @@ i7_document_class_init(I7DocumentClass *klass)
 }
 
 void
-i7_document_add_menus_and_findbar(I7Document *document)
+i7_document_add_menus_and_findbar(I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GError *error = NULL;
 
 	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "gnome-inform7.uimanager.xml", NULL);
 	char *path = g_file_get_path(file);
-	gtk_ui_manager_add_ui_from_file(document->ui_manager, path, &error);
+	gtk_ui_manager_add_ui_from_file(self->ui_manager, path, &error);
 	g_free(path);
 	g_object_unref(file);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 
-	document->findbar = gtk_ui_manager_get_widget(document->ui_manager, "/FindToolbar");
-	gtk_widget_set_no_show_all(document->findbar, TRUE);
-	gtk_toolbar_set_icon_size(GTK_TOOLBAR(document->findbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(document->findbar), GTK_TOOLBAR_BOTH_HORIZ);
-	gtk_widget_hide(document->findbar);
+	self->findbar = gtk_ui_manager_get_widget(self->ui_manager, "/FindToolbar");
+	gtk_widget_set_no_show_all(self->findbar, TRUE);
+	gtk_toolbar_set_icon_size(GTK_TOOLBAR(self->findbar), GTK_ICON_SIZE_MENU);
+	gtk_toolbar_set_style(GTK_TOOLBAR(self->findbar), GTK_TOOLBAR_BOTH_HORIZ);
+	gtk_widget_hide(self->findbar);
 
 	GtkToolItem *findbar_close = gtk_tool_button_new_from_stock(GTK_STOCK_CLOSE);
 	gtk_tool_item_set_is_important(findbar_close, FALSE);
 	gtk_widget_show(GTK_WIDGET(findbar_close));
-	g_signal_connect(findbar_close, "clicked", G_CALLBACK(on_findbar_close_clicked), document);
+	g_signal_connect(findbar_close, "clicked", G_CALLBACK(on_findbar_close_clicked), self);
 	GtkToolItem *findbar_entry_container = gtk_tool_item_new();
-	gtk_container_add(GTK_CONTAINER(findbar_entry_container), document->findbar_entry);
-	g_object_unref(document->findbar_entry);
+	gtk_container_add(GTK_CONTAINER(findbar_entry_container), self->findbar_entry);
+	g_object_unref(self->findbar_entry);
 	gtk_widget_show_all(GTK_WIDGET(findbar_entry_container));
-	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_entry_container, 0);
-	gtk_toolbar_insert(GTK_TOOLBAR(document->findbar), findbar_close, -1);
+	gtk_toolbar_insert(GTK_TOOLBAR(self->findbar), findbar_entry_container, 0);
+	gtk_toolbar_insert(GTK_TOOLBAR(self->findbar), findbar_close, -1);
 
 	/* Connect the accelerators */
-	priv->accels = gtk_ui_manager_get_accel_group(document->ui_manager);
+	priv->accels = gtk_ui_manager_get_accel_group(self->ui_manager);
 	g_object_ref(priv->accels); /* Apparently adding it to the window doesn't ref it? */
-	gtk_window_add_accel_group(GTK_WINDOW(document), priv->accels);
+	gtk_window_add_accel_group(GTK_WINDOW(self), priv->accels);
 }
 
 static void
-i7_document_refresh_title(I7Document *document)
+i7_document_refresh_title(I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
-	gchar *documentname = i7_document_get_display_name(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	char *documentname = i7_document_get_display_name(self);
 	if(documentname == NULL)
 		return;
 
 	if(priv->modified)
 	{
 		gchar *title = g_strconcat("*", documentname, NULL);
-		gtk_window_set_title(GTK_WINDOW(document), title);
+		gtk_window_set_title(GTK_WINDOW(self), title);
 	}
 	else
-		gtk_window_set_title(GTK_WINDOW(document), documentname);
+		gtk_window_set_title(GTK_WINDOW(self), documentname);
 	g_free(documentname);
 }
 
 void
-i7_document_set_file(I7Document *document, GFile *file)
+i7_document_set_file(I7Document *self, GFile *file)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	if(priv->file)
 		g_object_unref(priv->file);
 	priv->file = g_object_ref(file);
-	i7_document_refresh_title(document);
+	i7_document_refresh_title(self);
 }
 
 /**
  * i7_document_get_file:
- * @document: the document
+ * @self: the document
  *
  * Gets the full path to this document.
  *
  * Returns: (transfer full): a #GFile. Unref when done.
  */
 GFile *
-i7_document_get_file(const I7Document *document)
+i7_document_get_file(I7Document *self)
 {
-	return g_object_ref(I7_DOCUMENT_PRIVATE(document)->file);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	return g_object_ref(priv->file);
 }
 
 /* Returns a newly-allocated string containing the filename of this document
  without the full path, converted to UTF-8, suitable for display in a window
  titlebar. If this document doesn't have a filename yet, returns NULL. */
 gchar *
-i7_document_get_display_name(I7Document *document)
+i7_document_get_display_name(I7Document *self)
 {
-	GFile *file = I7_DOCUMENT_PRIVATE(document)->file;
-	if(file == NULL)
-		return NULL;
-	return file_get_display_name(file);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	return priv->file ? file_get_display_name(priv->file) : NULL;
 }
 
 GtkSourceBuffer *
-i7_document_get_buffer(I7Document *document)
+i7_document_get_buffer(I7Document *self)
 {
-	return I7_DOCUMENT_PRIVATE(document)->buffer;
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	return priv->buffer;
 }
 
 GtkTextView *
@@ -346,9 +375,10 @@ i7_document_get_default_view(I7Document *document)
 
 /* Write the source to the source buffer & clear the undo history */
 void
-i7_document_set_source_text(I7Document *document, gchar *text)
+i7_document_set_source_text(I7Document *self, gchar *text)
 {
-	GtkSourceBuffer *buffer = I7_DOCUMENT_PRIVATE(document)->buffer;
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	GtkSourceBuffer *buffer = priv->buffer;
 	gtk_source_buffer_begin_not_undoable_action(buffer);
 	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), text, -1);
 	gtk_source_buffer_end_not_undoable_action(buffer);
@@ -357,41 +387,43 @@ i7_document_set_source_text(I7Document *document, gchar *text)
 
 /* Get text in UTF-8. Allocates a new string */
 gchar *
-i7_document_get_source_text(I7Document *document)
+i7_document_get_source_text(I7Document *self)
 {
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(I7_DOCUMENT_PRIVATE(document)->buffer);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 	GtkTextIter start, end;
 	gtk_text_buffer_get_bounds(buffer, &start, &end);
 	return gtk_text_buffer_get_text(buffer, &start, &end, TRUE);
 }
 
 gboolean
-i7_document_get_modified(I7Document *document)
+i7_document_get_modified(I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	return priv->modified;
 }
 
 void
-i7_document_set_modified(I7Document *document, gboolean modified)
+i7_document_set_modified(I7Document *self, gboolean modified)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	priv->modified = modified;
-	i7_document_refresh_title(document);
+	i7_document_refresh_title(self);
 }
 
 GtkTreeModel *
-i7_document_get_headings(I7Document *document)
+i7_document_get_headings(I7Document *self)
 {
-	return I7_DOCUMENT_PRIVATE(document)->filter;
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	return priv->filter;
 }
 
 /* Convert a path returned from signals on the filter model to a path on the
 underlying headings model. Free path when done. */
 GtkTreePath *
-i7_document_get_child_path(I7Document *document, GtkTreePath *path)
+i7_document_get_child_path(I7Document *self, GtkTreePath *path)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTreePath *real_path = gtk_tree_model_filter_convert_path_to_child_path(GTK_TREE_MODEL_FILTER(priv->filter), path);
 	g_assert(real_path);
 	return real_path;
@@ -438,9 +470,9 @@ on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFile
 }
 
 void
-i7_document_monitor_file(I7Document *document, GFile *file)
+i7_document_monitor_file(I7Document *self, GFile *file)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	GError *error = NULL;
 	priv->monitor = g_file_monitor_file(file, G_FILE_MONITOR_NONE, NULL, &error);
@@ -451,13 +483,13 @@ i7_document_monitor_file(I7Document *document, GFile *file)
 		g_error_free(error);
 		return;
 	}
-	g_signal_connect(priv->monitor, "changed", G_CALLBACK(on_document_changed), document);
+	g_signal_connect(priv->monitor, "changed", G_CALLBACK(on_document_changed), self);
 }
 
 void
-i7_document_stop_file_monitor(I7Document *document)
+i7_document_stop_file_monitor(I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	if(priv->monitor) {
 		g_file_monitor_cancel(priv->monitor);
@@ -558,16 +590,16 @@ i7_document_scroll_to_selection(I7Document *document)
 }
 
 void
-i7_document_jump_to_line(I7Document *document, guint lineno)
+i7_document_jump_to_line(I7Document *self, unsigned lineno)
 {
-	I7_DOCUMENT_USE_PRIVATE(document, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTextIter start, end;
 	/* Line number is counted from 0 internally, so subtract one */
 	gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(priv->buffer), &start, lineno - 1);
 	end = start;
 	gtk_text_iter_forward_to_line_end(&end);
 	gtk_text_buffer_select_range(GTK_TEXT_BUFFER(priv->buffer), &start, &end);
-	I7_DOCUMENT_GET_CLASS(document)->scroll_to_selection(document);
+	I7_DOCUMENT_GET_CLASS(self)->scroll_to_selection(self);
 }
 
 void
@@ -589,9 +621,10 @@ i7_document_update_font_sizes(I7Document *document)
 }
 
 void
-i7_document_update_font_styles(I7Document *document)
+i7_document_update_font_styles(I7Document *self)
 {
-	g_idle_add((GSourceFunc)update_style, I7_DOCUMENT_PRIVATE(document)->buffer);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	g_idle_add((GSourceFunc)update_style, priv->buffer);
 }
 
 /* Recalculate the document's elastic tabstops */
@@ -638,9 +671,10 @@ remove_indent_tags(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, 
  * @orig_end do not have to be at the start and end of a line, respectively.
  */
 void
-i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, GtkTextIter *orig_end)
+i7_document_update_indent_tags(I7Document *self, GtkTextIter *orig_start, GtkTextIter *orig_end)
 {
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(I7_DOCUMENT_PRIVATE(document)->buffer);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 	GtkTextTagTable *table = gtk_text_buffer_get_tag_table(buffer);
 	GtkTextIter start, end;
 	static unsigned max_tab_tag_created = 0;
@@ -705,6 +739,13 @@ i7_document_update_indent_tags(I7Document *document, GtkTextIter *orig_start, Gt
 	}
 }
 
+gboolean
+i7_document_iter_is_invisible(I7Document *self, GtkTextIter *iter)
+{
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	return gtk_text_iter_has_tag(iter, priv->invisible_tag);
+}
+
 void
 i7_document_expand_headings_view(I7Document *document)
 {
@@ -712,13 +753,13 @@ i7_document_expand_headings_view(I7Document *document)
 }
 
 void
-i7_document_set_headings_filter_level(I7Document *document, gint depth)
+i7_document_set_headings_filter_level(I7Document *self, int depth)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	priv->heading_depth = depth;
 	gtk_tree_model_filter_refilter(GTK_TREE_MODEL_FILTER(priv->filter));
 	/* Refiltering doesn't work when moving to a higher depth, so... */
-	i7_document_reindex_headings(document);
+	i7_document_reindex_headings(self);
 }
 
 /* Helper function for starts_blank_or_whitespace_line() */
@@ -769,9 +810,9 @@ get_heading_from_string(gchar *text)
 /* Re-scan the source code and rebuild the tree model of headings for the
  * contents view */
 void
-i7_document_reindex_headings(I7Document *document)
+i7_document_reindex_headings(I7Document *self)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	I7App *theapp = i7_app_get();
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 	GtkTreeStore *tree = priv->headings;
@@ -787,7 +828,7 @@ i7_document_reindex_headings(I7Document *document)
 	gtk_text_buffer_get_iter_at_line(buffer, &nextline, 2);
 	gchar *text = gtk_text_iter_get_text(&lastline, &thisline);
 	/* Include \n */
-	gchar *realtitle = I7_DOCUMENT_GET_CLASS(document)->extract_title(document, text);
+	char *realtitle = I7_DOCUMENT_GET_CLASS(self)->extract_title(self, text);
 	g_free(text);
 
 	gtk_tree_store_append(tree, &title, NULL);
@@ -867,31 +908,31 @@ i7_document_reindex_headings(I7Document *document)
 		if(match)
 			g_match_info_free(match);
 	}
-	i7_document_expand_headings_view(document);
+	i7_document_expand_headings_view(self);
 
 	/* Display appropriate messages in the contents view */
 	/* If there is at least one child of the root node in the filtered model,
 	then the contents can be shown normally. */
 	g_assert(gtk_tree_model_get_iter_first(priv->filter, &current));
 	if(gtk_tree_model_iter_has_child(priv->filter, &current))
-		I7_DOCUMENT_GET_CLASS(document)->set_contents_display(document, I7_CONTENTS_NORMAL);
+		I7_DOCUMENT_GET_CLASS(self)->set_contents_display(self, I7_CONTENTS_NORMAL);
 	else {
 		/* If there is no child showing in the filtered model, but there is one
 		in the original headings model, then the filtered model is set to too
 		shallow a level. */
 		g_assert(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(priv->headings), &current));
 		if(gtk_tree_model_iter_has_child(GTK_TREE_MODEL(priv->headings), &current))
-			I7_DOCUMENT_GET_CLASS(document)->set_contents_display(document, I7_CONTENTS_TOO_SHALLOW);
+			I7_DOCUMENT_GET_CLASS(self)->set_contents_display(self, I7_CONTENTS_TOO_SHALLOW);
 		else
 			/* Otherwise, there simply were no headings recognized. */
-			I7_DOCUMENT_GET_CLASS(document)->set_contents_display(document, I7_CONTENTS_NO_HEADINGS);
+			I7_DOCUMENT_GET_CLASS(self)->set_contents_display(self, I7_CONTENTS_NO_HEADINGS);
 	}
 }
 
 void
-i7_document_show_heading(I7Document *document, GtkTreePath *path)
+i7_document_show_heading(I7Document *self, GtkTreePath *path)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 
@@ -918,17 +959,17 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	/* If the user clicked on the title, show the entire source */
 	if(depth == I7_HEADING_NONE) {
 		/* we have now shown the entire source */
-		gtk_action_set_sensitive(document->previous_section, FALSE);
-		gtk_action_set_sensitive(document->next_section, FALSE);
-		gtk_action_set_sensitive(document->decrease_restriction, FALSE);
-		gtk_action_set_sensitive(document->entire_source, FALSE);
+		gtk_action_set_sensitive(self->previous_section, FALSE);
+		gtk_action_set_sensitive(self->next_section, FALSE);
+		gtk_action_set_sensitive(self->decrease_restriction, FALSE);
+		gtk_action_set_sensitive(self->entire_source, FALSE);
 		gtk_text_buffer_place_cursor(buffer, &start);
 		return;
 	}
 
-	gtk_action_set_sensitive(document->previous_section, TRUE);
-	gtk_action_set_sensitive(document->decrease_restriction, TRUE);
-	gtk_action_set_sensitive(document->entire_source, TRUE);
+	gtk_action_set_sensitive(self->previous_section, TRUE);
+	gtk_action_set_sensitive(self->decrease_restriction, TRUE);
+	gtk_action_set_sensitive(self->entire_source, TRUE);
 
 	GtkTextIter mid;
 	gtk_text_buffer_get_iter_at_line(buffer, &mid, startline);
@@ -945,7 +986,7 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 		{
 			/* otherwise, there is no next heading, display until the end of the
 			source text */
-			gtk_action_set_sensitive(document->next_section, FALSE);
+			gtk_action_set_sensitive(self->next_section, FALSE);
 			return;
 		}
 
@@ -957,14 +998,15 @@ i7_document_show_heading(I7Document *document, GtkTreePath *path)
 	gtk_text_buffer_get_iter_at_line(buffer, &mid, endline);
 	gtk_text_buffer_apply_tag(buffer, priv->invisible_tag, &mid, &end);
 
-	gtk_action_set_sensitive(document->next_section, TRUE);
+	gtk_action_set_sensitive(self->next_section, TRUE);
 }
 
 GtkTreePath *
-i7_document_get_previous_heading(I7Document *document)
+i7_document_get_previous_heading(I7Document *self)
 {
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	/* Don't need to use iters here since paths can go up or back */
-	GtkTreePath *path = gtk_tree_path_copy(I7_DOCUMENT_PRIVATE(document)->current_heading);
+	GtkTreePath *path = gtk_tree_path_copy(priv->current_heading);
 	/* if there is no previous heading on this level, display the previous
 	heading one level out */
 	if(!gtk_tree_path_prev(path))
@@ -974,9 +1016,9 @@ i7_document_get_previous_heading(I7Document *document)
 }
 
 GtkTreePath *
-i7_document_get_next_heading(I7Document *document)
+i7_document_get_next_heading(I7Document *self)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 	GtkTreeIter iter;
 	gtk_tree_model_get_iter(headings, &iter, priv->current_heading);
@@ -995,10 +1037,11 @@ i7_document_get_next_heading(I7Document *document)
 }
 
 GtkTreePath *
-i7_document_get_shallower_heading(I7Document *document)
+i7_document_get_shallower_heading(I7Document *self)
 {
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	/* Don't need to use iters here */
-	GtkTreePath *path = gtk_tree_path_copy(I7_DOCUMENT_PRIVATE(document)->current_heading);
+	GtkTreePath *path = gtk_tree_path_copy(priv->current_heading);
 	if(gtk_tree_path_get_depth(path) > 1)
 		gtk_tree_path_up(path);
 	return path;
@@ -1014,9 +1057,9 @@ get_current_line_number(GtkTextBuffer *buffer)
 }
 
 GtkTreePath *
-i7_document_get_deeper_heading(I7Document *document)
+i7_document_get_deeper_heading(I7Document *self)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 
 	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->buffer));
@@ -1041,9 +1084,9 @@ i7_document_get_deeper_heading(I7Document *document)
 }
 
 GtkTreePath *
-i7_document_get_deepest_heading(I7Document *document)
+i7_document_get_deepest_heading(I7Document *self)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTreeModel *headings = GTK_TREE_MODEL(priv->headings);
 
 	guint cur_line = get_current_line_number(GTK_TEXT_BUFFER(priv->buffer));
@@ -1077,9 +1120,9 @@ i7_document_get_deepest_heading(I7Document *document)
 
 /* Remove the invisible tag */
 void
-i7_document_show_entire_source(I7Document *document)
+i7_document_show_entire_source(I7Document *self)
 {
-	I7DocumentPrivate *priv = I7_DOCUMENT_PRIVATE(document);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 
 	GtkTextIter start, end;
@@ -1087,10 +1130,10 @@ i7_document_show_entire_source(I7Document *document)
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	gtk_text_buffer_remove_tag(buffer, priv->invisible_tag, &start, &end);
 
-	gtk_action_set_sensitive(document->previous_section, FALSE);
-	gtk_action_set_sensitive(document->next_section, FALSE);
-	gtk_action_set_sensitive(document->decrease_restriction, FALSE);
-	gtk_action_set_sensitive(document->entire_source, FALSE);
+	gtk_action_set_sensitive(self->previous_section, FALSE);
+	gtk_action_set_sensitive(self->next_section, FALSE);
+	gtk_action_set_sensitive(self->decrease_restriction, FALSE);
+	gtk_action_set_sensitive(self->entire_source, FALSE);
 
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = gtk_tree_path_new_first();
@@ -1098,18 +1141,18 @@ i7_document_show_entire_source(I7Document *document)
 
 /* Displays the message text in the status bar of the current window. */
 void
-i7_document_display_status_message(I7Document *document, const gchar *message, const gchar *context)
+i7_document_display_status_message(I7Document *self, const char *message, const char *context)
 {
-	GtkStatusbar *status = GTK_STATUSBAR(document->statusbar);
+	GtkStatusbar *status = GTK_STATUSBAR(self->statusbar);
 	guint id = gtk_statusbar_get_context_id(status, context);
 	gtk_statusbar_pop(status, id);
 	gtk_statusbar_push(status, id, message);
 }
 
 void
-i7_document_remove_status_message(I7Document *document, const gchar *context)
+i7_document_remove_status_message(I7Document *self, const char *context)
 {
-	GtkStatusbar *status = GTK_STATUSBAR(document->statusbar);
+	GtkStatusbar *status = GTK_STATUSBAR(self->statusbar);
 	guint id = gtk_statusbar_get_context_id(status, context);
 	gtk_statusbar_pop(status, id);
 }
@@ -1307,7 +1350,7 @@ Indicator appears in a dialog box. */
 static void
 multi_download_progress(goffset current, goffset total, I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	double current_fraction = (double)current / total;
 	double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
@@ -1354,7 +1397,7 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 {
 	GError *error = NULL;
 	I7App *theapp = i7_app_get();
-	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	priv->cancel_download = g_cancellable_new();
 	priv->downloads_completed = 0;
@@ -1433,7 +1476,7 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 gboolean
 i7_document_can_revert(I7Document *self)
 {
-	I7_DOCUMENT_USE_PRIVATE(self, priv);
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	if(priv->file == NULL)
 		return FALSE; /* No saved version to revert to */
@@ -1459,4 +1502,18 @@ void
 i7_document_revert(I7Document *self)
 {
 	I7_DOCUMENT_GET_CLASS(self)->revert(self);
+}
+
+void
+i7_document_set_highlighted_view(I7Document *self, GtkWidget *view)
+{
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	priv->highlighted_view = view;
+}
+
+GtkWidget *
+i7_document_get_highlighted_view(I7Document *self)
+{
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+	return priv->highlighted_view;
 }

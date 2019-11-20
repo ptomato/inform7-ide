@@ -91,9 +91,6 @@ struct _I7CellRendererTranscriptPrivate
 	gboolean changed;
 };
 
-#define I7_CELL_RENDERER_TRANSCRIPT_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_CELL_RENDERER_TRANSCRIPT, I7CellRendererTranscriptPrivate))
-#define I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE I7CellRendererTranscriptPrivate *priv = I7_CELL_RENDERER_TRANSCRIPT_PRIVATE(self)
-
 enum  {
 	PROP_0,
 	PROP_DEFAULT_WIDTH,
@@ -107,14 +104,14 @@ enum  {
 	PROP_CHANGED
 };
 
-G_DEFINE_TYPE(I7CellRendererTranscript, i7_cell_renderer_transcript, GTK_TYPE_CELL_RENDERER);
+G_DEFINE_TYPE_WITH_PRIVATE(I7CellRendererTranscript, i7_cell_renderer_transcript, GTK_TYPE_CELL_RENDERER);
 
 /* TYPE SYSTEM */
 
 static void 
 i7_cell_renderer_transcript_init(I7CellRendererTranscript *self) 
 {
-	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
 	/* Default values of properties */
 	priv->default_width = 400;
 	priv->text_padding = 8;
@@ -128,48 +125,50 @@ i7_cell_renderer_transcript_init(I7CellRendererTranscript *self)
 }
 
 static void 
-i7_cell_renderer_transcript_set_property(GObject *self, unsigned prop_id, const GValue *value, GParamSpec *pspec) 
+i7_cell_renderer_transcript_set_property(GObject *object, unsigned prop_id, const GValue *value, GParamSpec *pspec)
 {
-	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
+	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(object);
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
+
 	switch(prop_id) {
 		case PROP_DEFAULT_WIDTH:
 			priv->default_width = g_value_get_uint(value);
-			g_object_notify(self, "default-width");
+			g_object_notify(object, "default-width");
 			break;
 		case PROP_TEXT_PADDING:
 			priv->text_padding = g_value_get_uint(value);
-			g_object_notify(self, "text-padding");
+			g_object_notify(object, "text-padding");
 			break;
 		case PROP_COMMAND:
 			g_free(priv->command);
 			priv->command = g_strdup(g_value_get_string(value));
-			g_object_notify(self, "command");
+			g_object_notify(object, "command");
 			break;
 		case PROP_TRANSCRIPT_TEXT:
 			g_free(priv->transcript_text);
 			priv->transcript_text = g_strdup(g_value_get_string(value));
-			g_object_notify(self, "transcript-text");
+			g_object_notify(object, "transcript-text");
 			break;
 		case PROP_EXPECTED_TEXT:
 			g_free(priv->expected_text);
 			priv->expected_text = g_strdup(g_value_get_string(value));
-			g_object_notify(self, "expected-text");
+			g_object_notify(object, "expected-text");
 			break;
 		case PROP_MATCH_TYPE:
 			priv->match_type = g_value_get_int(value);
-			g_object_notify(self, "match-type");
+			g_object_notify(object, "match-type");
 			break;
 		case PROP_CURRENT:
 			priv->current = g_value_get_boolean(value);
-			g_object_notify(self, "current");
+			g_object_notify(object, "current");
 			break;
 		case PROP_PLAYED:
 			priv->played = g_value_get_boolean(value);
-			g_object_notify(self, "played");
+			g_object_notify(object, "played");
 			break;
 		case PROP_CHANGED:
 			priv->changed = g_value_get_boolean(value);
-			g_object_notify(self, "changed");
+			g_object_notify(object, "changed");
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -177,9 +176,11 @@ i7_cell_renderer_transcript_set_property(GObject *self, unsigned prop_id, const 
 }
 
 static void 
-i7_cell_renderer_transcript_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *pspec) 
+i7_cell_renderer_transcript_get_property(GObject *object, unsigned prop_id, GValue *value, GParamSpec *pspec)
 {
-	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
+	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(object);
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
+
 	switch(prop_id) {
 		case PROP_DEFAULT_WIDTH:
 			g_value_set_uint(value, priv->default_width);
@@ -214,21 +215,23 @@ i7_cell_renderer_transcript_get_property(GObject *self, guint prop_id, GValue *v
 }
 
 static void 
-i7_cell_renderer_transcript_finalize(GObject* self) 
+i7_cell_renderer_transcript_finalize(GObject* object) 
 {
-	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
-	
+	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(object);
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
+
 	g_free(priv->command);
 	g_free(priv->transcript_text);
 	g_free(priv->expected_text);
-	
-	G_OBJECT_CLASS(i7_cell_renderer_transcript_parent_class)->finalize(self);
+
+	G_OBJECT_CLASS(i7_cell_renderer_transcript_parent_class)->finalize(object);
 }
 
 static void
 i7_cell_renderer_transcript_get_size(GtkCellRenderer *renderer, GtkWidget *widget, const GdkRectangle *cell_area, int *x_offset, int *y_offset, int *width, int *height)
 {
-	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
+	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(renderer);
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
 
 	PangoRectangle command_rect, transcript_rect, expected_rect;
 	PangoLayout *layout;
@@ -289,8 +292,9 @@ set_rgb_style(cairo_t *cr, I7TranscriptStyle style) {
 static void 
 i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWidget *widget, const GdkRectangle *background_area, const GdkRectangle *cell_area, GtkCellRendererState flags)
 {
-	I7_CELL_RENDERER_TRANSCRIPT_USE_PRIVATE;
-	
+	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(renderer);
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
+
 	int x, y, width, height;
 	unsigned xpad, ypad, transcript_width;
 	GtkStateType state;
@@ -300,7 +304,7 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWi
 
 	/* Get the size we calculated earlier and then take the padding into account */
 	g_object_get(self, "xpad", &xpad, "ypad", &ypad, NULL);
-	gtk_cell_renderer_get_size(self, widget, cell_area, &x, &y, &width, &height);
+	gtk_cell_renderer_get_size(renderer, widget, cell_area, &x, &y, &width, &height);
 	x += cell_area->x + (int)xpad;
 	y += cell_area->y + (int)ypad;
 	width -= (int)xpad * 2;
@@ -463,9 +467,6 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 	    g_param_spec_boolean("changed", "Changed",
 		    "Whether to render the node as having been changed since it was last played",
 		    FALSE, G_PARAM_READWRITE | flags));
-	
-	/* Add private data */
-	g_type_class_add_private (klass, sizeof (I7CellRendererTranscriptPrivate));
 }
 
 I7CellRendererTranscript *

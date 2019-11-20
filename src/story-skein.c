@@ -26,7 +26,6 @@
 #include "skein.h"
 #include "skein-view.h"
 #include "story.h"
-#include "story-private.h"
 
 void
 on_skein_modified(I7Skein *skein, I7Story *story)
@@ -51,8 +50,7 @@ on_node_activate(I7Skein *skein, I7Node *newnode, I7Story *story)
 
 	/* Build and run if the game isn't running, or the new node is unreachable*/
 	if(!reachable || !i7_story_get_game_running(story)) {
-		i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_play_to_node, newnode);
-		i7_story_compile(story, FALSE, FALSE);
+		i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_play_to_node, newnode);
 	} else {
 		i7_story_run_commands_from_node(story, newnode);
 	}
@@ -316,16 +314,9 @@ on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Panel *p
 }
 
 void
-on_skein_spacing_use_defaults_clicked(GtkButton *button, I7Story *story)
+on_skein_spacing_use_defaults_clicked(GtkButton *button, I7Story *self)
 {
-	I7_STORY_USE_PRIVATE(story, priv);
-	g_settings_reset(priv->skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING);
-	g_settings_reset(priv->skein_settings, PREFS_SKEIN_VERTICAL_SPACING);
-}
-
-I7Skein *
-i7_story_get_skein(I7Story *story)
-{
-	I7_STORY_USE_PRIVATE(story, priv);
-	return priv->skein;
+	GSettings *skein_settings = i7_story_get_skein_settings(self);
+	g_settings_reset(skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING);
+	g_settings_reset(skein_settings, PREFS_SKEIN_VERTICAL_SPACING);
 }

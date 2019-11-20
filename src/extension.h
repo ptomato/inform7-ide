@@ -47,7 +47,7 @@ typedef struct {
 GType i7_extension_get_type(void) G_GNUC_CONST;
 I7Extension *i7_extension_new(I7App *app, GFile *file, const char *title, const char *author);
 I7Extension *i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly);
-gboolean i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly);
-void i7_extension_set_read_only(I7Extension *extension, gboolean readonly);
+gboolean i7_extension_open(I7Extension *self, GFile *file, gboolean readonly);
+void i7_extension_set_read_only(I7Extension *self, gboolean readonly);
 
 #endif /* _EXTENSION_H_ */

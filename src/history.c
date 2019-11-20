@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2014, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,26 +20,22 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
-#include "panel.h"
-#include "panel-private.h"
 
-static void
-history_free(I7PanelHistory *history)
-{
-	if(history->page)
-		g_free(history->page);
-	g_slice_free(I7PanelHistory, history);
-}
+#include "panel.h"
+
+/* Forward declaration of signal handlers from I7Panel */
+void after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self);
+void after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self);
+void after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self);
+void after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self);
+void after_documentation_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *self);
+void after_extensions_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *self);
 
 void
-history_free_queue(I7Panel *panel)
+i7_panel_history_free(I7PanelHistory *self)
 {
-	I7_PANEL_USE_PRIVATE(panel, priv);
-
-	g_queue_foreach(priv->history, (GFunc)history_free, NULL);
-	g_queue_free(priv->history);
-	priv->history = NULL;
-	priv->current = 0;
+	g_clear_pointer(&self->page, g_free);
+	g_slice_free(I7PanelHistory, self);
 }
 
 static void
@@ -64,26 +60,11 @@ history_unblock_handlers(I7Panel *panel)
 	g_signal_handlers_unblock_by_func(panel->tabs[I7_PANE_EXTENSIONS], after_extensions_notify_uri, panel);
 }
 
-/* Empty the list of pages to go forward to */
-static void
-history_empty_forward_queue(I7Panel *panel)
-{
-	I7_PANEL_USE_PRIVATE(panel, priv);
-
-	/* Delete all the members of the queue before "current" */
-	guint count;
-	for(count = 0; count < priv->current; count++)
-		history_free(g_queue_pop_head(priv->history));
-	priv->current = 0;
-	gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "forward"), FALSE);
-}
-
 /* Go to the location pointed to by the "current" history pointer */
 void
 history_goto_current(I7Panel *panel)
 {
-	I7_PANEL_USE_PRIVATE(panel, priv);
-	I7PanelHistory *current = g_queue_peek_nth(priv->history, priv->current);
+	I7PanelHistory *current = i7_panel_get_current_history_item(panel);
 
 	history_block_handlers(panel);
 	switch(current->pane) {
@@ -105,20 +86,6 @@ history_goto_current(I7Panel *panel)
 	history_unblock_handlers(panel);
 }
 
-/* Empty the forward queue and push a new item to the front of the history */
-static void
-history_push_item(I7Panel *panel, I7PanelHistory *item)
-{
-	I7_PANEL_USE_PRIVATE(panel, priv);
-
-	if(priv->current == g_queue_get_length(priv->history) - 1)
-		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
-
-	history_empty_forward_queue(panel);
-	g_queue_push_head(priv->history, item);
-	priv->current = 0;
-}
-
 /* Set a pane as the current location, and push the previous location
 into the back queue */
 void
@@ -126,7 +93,7 @@ history_push_pane(I7Panel *panel, I7PanelPane pane)
 {
 	I7PanelHistory *newitem = g_slice_new0(I7PanelHistory);
 	newitem->pane = pane;
-	history_push_item(panel, newitem);
+	i7_panel_push_history_item(panel, newitem);
 }
 
 /* Set a combination of pane and tab as the current location, and
@@ -137,7 +104,7 @@ history_push_tab(I7Panel *panel, I7PanelPane pane, guint tab)
 	I7PanelHistory *newitem = g_slice_new0(I7PanelHistory);
 	newitem->pane = pane;
 	newitem->tab = tab;
-	history_push_item(panel, newitem);
+	i7_panel_push_history_item(panel, newitem);
 }
 
 /* Set a documentation page as the current location, and push
@@ -149,7 +116,7 @@ history_push_docpage(I7Panel *panel, const gchar *uri)
 	I7PanelHistory *newitem = g_slice_new0(I7PanelHistory);
 	newitem->pane = I7_PANE_DOCUMENTATION;
 	newitem->page = g_strdup(uri? uri : webkit_web_view_get_uri(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])));
-	history_push_item(panel, newitem);
+	i7_panel_push_history_item(panel, newitem);
 }
 
 /* Set an extensions documentation page as the current location, and push the
@@ -161,5 +128,48 @@ history_push_extensions_page(I7Panel *panel, const char *uri)
 	I7PanelHistory *newitem = g_slice_new0(I7PanelHistory);
 	newitem->pane = I7_PANE_EXTENSIONS;
 	newitem->page = g_strdup((uri != NULL)? uri : webkit_web_view_get_uri(WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS])));
-	history_push_item(panel, newitem);
+	i7_panel_push_history_item(panel, newitem);
+}
+
+/* Signal handlers, connected in I7Panel */
+
+void
+after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self)
+{
+	switch(page_num) {
+		case I7_PANE_SOURCE:
+			history_push_tab(self, page_num,
+				gtk_notebook_get_current_page(GTK_NOTEBOOK(self->tabs[I7_PANE_SOURCE])));
+			break;
+		case I7_PANE_RESULTS:
+			history_push_tab(self, page_num,
+				gtk_notebook_get_current_page(GTK_NOTEBOOK(self->tabs[I7_PANE_RESULTS])));
+			break;
+		case I7_PANE_INDEX:
+			history_push_tab(self, page_num,
+				gtk_notebook_get_current_page(GTK_NOTEBOOK(self->tabs[I7_PANE_INDEX])));
+			break;
+		case I7_PANE_DOCUMENTATION:
+			history_push_docpage(self, NULL);
+			break;
+		case I7_PANE_EXTENSIONS:
+			history_push_extensions_page(self, NULL);
+			break;
+		default:
+			history_push_pane(self, page_num);
+	}
+}
+
+void
+after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self)
+{
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(self->notebook)) == I7_PANE_RESULTS)
+		history_push_tab(self, I7_PANE_RESULTS, page_num);
+}
+
+void
+after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self)
+{
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(self->notebook)) == I7_PANE_INDEX)
+		history_push_tab(self, I7_PANE_INDEX, page_num);
 }

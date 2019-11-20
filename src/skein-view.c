@@ -35,9 +35,6 @@ typedef struct _I7SkeinViewPrivate
 	double drag_offset[2];
 } I7SkeinViewPrivate;
 
-#define I7_SKEIN_VIEW_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SKEIN_VIEW, I7SkeinViewPrivate))
-#define I7_SKEIN_VIEW_USE_PRIVATE(o,n) I7SkeinViewPrivate *n = I7_SKEIN_VIEW_PRIVATE(o)
-
 enum
 {
 	NODE_MENU_POPUP,
@@ -46,13 +43,13 @@ enum
 
 static guint i7_skein_view_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE(I7SkeinView, i7_skein_view, GOO_TYPE_CANVAS);
+G_DEFINE_TYPE_WITH_PRIVATE(I7SkeinView, i7_skein_view, GOO_TYPE_CANVAS);
 
 static void
-on_item_created(I7SkeinView *view, GooCanvasItem *item, GooCanvasItemModel *model, I7Skein **skeinptr)
+on_item_created(I7SkeinView *self, GooCanvasItem *item, GooCanvasItemModel *model, I7Skein **skeinptr)
 {
 	if(I7_IS_NODE(model)) {
-		i7_node_calculate_size(I7_NODE(model), GOO_CANVAS_ITEM_MODEL(*skeinptr), GOO_CANVAS(view));
+		i7_node_calculate_size(I7_NODE(model), GOO_CANVAS_ITEM_MODEL(*skeinptr), GOO_CANVAS(self));
 		g_signal_connect(item, "button-press-event", G_CALLBACK(on_node_button_press), model);
 	}
 	else {
@@ -90,7 +87,7 @@ set_drag_cursor(I7SkeinView *self, gboolean dragging)
 static gboolean
 on_button_press(I7SkeinView *self, GdkEventButton *event)
 {
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
 
 	if(priv->dragging)
 		return FALSE;
@@ -120,7 +117,8 @@ mode was turned on. */
 static void
 drag_to(I7SkeinView *self, double x, double y)
 {
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
+
 	double dx = priv->drag_anchor[0] - x;
 	double dy = priv->drag_anchor[1] - y;
 	
@@ -135,7 +133,7 @@ drag_to(I7SkeinView *self, double x, double y)
 static gboolean
 on_button_release(I7SkeinView *self, GdkEventButton *event)
 {
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
 
 	if(!priv->dragging)
 		return FALSE;
@@ -155,7 +153,7 @@ on_button_release(I7SkeinView *self, GdkEventButton *event)
 static gboolean
 on_motion(I7SkeinView *self, GdkEventMotion *event)
 {
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
 
 	if(!priv->dragging)
 		return FALSE;
@@ -169,7 +167,7 @@ on_motion(I7SkeinView *self, GdkEventMotion *event)
 static void
 i7_skein_view_init(I7SkeinView *self)
 {
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
 	priv->skein = NULL;
 	priv->layout_handler = 0;
 	priv->dragging = FALSE;
@@ -181,16 +179,16 @@ i7_skein_view_init(I7SkeinView *self)
 }
 
 static void
-i7_skein_view_finalize(GObject *self)
+i7_skein_view_finalize(GObject *object)
 {
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(I7_SKEIN_VIEW(object));
 
 	if(priv->skein) {
 		g_signal_handler_disconnect(priv->skein, priv->layout_handler);
 		g_object_unref(priv->skein);
 	}
 
-	G_OBJECT_CLASS(i7_skein_view_parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_skein_view_parent_class)->finalize(object);
 }
 
 static void
@@ -204,9 +202,6 @@ i7_skein_view_class_init(I7SkeinViewClass *klass)
 		G_OBJECT_CLASS_TYPE(klass), 0,
 		G_STRUCT_OFFSET(I7SkeinViewClass, node_menu_popup), NULL, NULL,
 		g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, I7_TYPE_NODE);
-
-	/* Add private data */
-	g_type_class_add_private(klass, sizeof(I7SkeinViewPrivate));
 }
 
 /* PUBLIC FUNCTIONS */
@@ -222,7 +217,7 @@ i7_skein_view_set_skein(I7SkeinView *self, I7Skein *skein)
 {
 	g_return_if_fail(self || I7_IS_SKEIN_VIEW(self));
 	g_return_if_fail(skein || I7_IS_SKEIN(skein));
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
 
 	if(priv->skein == skein)
 		return;
@@ -248,7 +243,7 @@ I7Skein *
 i7_skein_view_get_skein(I7SkeinView *self)
 {
 	g_return_val_if_fail(self || I7_IS_SKEIN_VIEW(self), NULL);
-	I7_SKEIN_VIEW_USE_PRIVATE(self, priv);
+	I7SkeinViewPrivate *priv = i7_skein_view_get_instance_private(self);
 	return priv->skein;
 }
 

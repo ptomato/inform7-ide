@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2015 P. F. Chimento
+/* Copyright (C) 2006-2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@
 #include "html.h"
 #include "spawn.h"
 #include "story.h"
-#include "story-private.h"
 
 typedef struct _CompilerData {
 	I7Story *story;
@@ -55,6 +54,8 @@ typedef struct _CompilerData {
 	GFile *output_file;
 	GFile *builddir_file;
 	GFile *results_file;
+	CompileActionFunc callback;
+	void *callback_data;
 } CompilerData;
 
 /* Declare these functions static so they can stay in this order */
@@ -69,50 +70,38 @@ static void start_cblorb_compiler(CompilerData *data);
 static void finish_cblorb_compiler(GPid pid, gint status, CompilerData *data);
 static void finish_compiling(gboolean success, CompilerData *data);
 
-/* Set the function that will be called when compiling has finished. */
-void
-i7_story_set_compile_finished_action(I7Story *story, CompileActionFunc callback, gpointer data)
-{
-	I7_STORY_USE_PRIVATE(story, priv);
-	priv->compile_finished_callback = callback;
-	priv->compile_finished_callback_data = data;
-}
-
 /* Start the compiling process. Called from the main thread. */
 void
-i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
+i7_story_compile(I7Story *self, gboolean release, gboolean refresh, CompileActionFunc callback, void *callback_data)
 {
-	I7_STORY_USE_PRIVATE(story, priv);
+	I7Document *document = I7_DOCUMENT(self);
+	i7_document_save(document);
+	i7_story_stop_running_game(self);
+	i7_story_set_copy_blorb_dest_file(self, NULL);
+	i7_story_set_compiler_output_file(self, NULL);
 
-	i7_document_save(I7_DOCUMENT(story));
-	i7_story_stop_running_game(story);
-	if(priv->copy_blorb_dest_file) {
-		g_object_unref(priv->copy_blorb_dest_file);
-		priv->copy_blorb_dest_file = NULL;
-	}
-	if(priv->compiler_output_file) {
-		g_object_unref(priv->compiler_output_file);
-		priv->compiler_output_file = NULL;
-	}
-	gtk_action_group_set_sensitive(priv->compile_action_group, FALSE);
+	GtkActionGroup *compile_action_group = i7_story_get_compile_action_group(self);
+	gtk_action_group_set_sensitive(compile_action_group, FALSE);
 
 	/* Set up the compiler */
 	CompilerData *data = g_slice_new0(CompilerData);
-	data->story = story;
-	data->create_blorb = release && i7_story_get_create_blorb(story);
+	data->story = self;
+	data->create_blorb = release && i7_story_get_create_blorb(self);
 	data->use_debug_flags = !release;
 	data->refresh_only = refresh;
+	data->callback = callback;
+	data->callback_data = callback_data;
 
 	gchar *filename;
 	if(data->create_blorb) {
-		if(i7_story_get_story_format(story) == I7_STORY_FORMAT_GLULX)
+		if (i7_story_get_story_format(self) == I7_STORY_FORMAT_GLULX)
 			filename = g_strdup("output.gblorb");
 		else
 			filename = g_strdup("output.zblorb");
 	} else {
-		filename = g_strconcat("output.", i7_story_get_extension(story), NULL);
+		filename = g_strconcat("output.", i7_story_get_extension(self), NULL);
 	}
-	data->input_file = i7_document_get_file(I7_DOCUMENT(story));
+	data->input_file = i7_document_get_file(document);
 	data->builddir_file = g_file_get_child(data->input_file, "Build");
 	data->output_file = g_file_get_child(data->builddir_file, filename);
 	g_free(filename);
@@ -126,13 +115,9 @@ i7_story_compile(I7Story *story, gboolean release, gboolean refresh)
 static void
 prepare_ni_compiler(CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
 	GError *err = NULL;
 
-	/* Clear the previous compile output */
-	gtk_text_buffer_set_text(priv->progress, "", -1);
-	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]));
-	html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]));
+	i7_story_clear_compile_output(data->story);
 
 	/* Create the UUID file if needed */
 	GFile *uuid_file = g_file_get_child(data->input_file, "uuid.txt");
@@ -193,8 +178,6 @@ display_ni_status(I7Document *document, gchar *text)
 static void
 start_ni_compiler(CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
-
 	/* Build the command line */
 	GPtrArray *args = g_ptr_array_new_full(7, g_free); /* usual number of args */
 	I7App *theapp = i7_app_get();
@@ -220,7 +203,8 @@ start_ni_compiler(CompilerData *data)
 	/* Run the command and pipe its output to the text buffer. Also pipe stderr
 	through a function that analyzes the progress messages and puts them in the
 	progress bar. */
-	GPid pid = run_command_hook(data->builddir_file, commandline, priv->progress,
+	GPid pid = run_command_hook(data->builddir_file, commandline,
+								i7_story_get_progress_buffer(data->story),
 								(IOHookFunc *)display_ni_status, data->story,
 								FALSE, TRUE);
 	/* set up a watch for the exit status */
@@ -235,7 +219,6 @@ start_ni_compiler(CompilerData *data)
 static void
 finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
@@ -278,7 +261,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		/* Ignore errors, just don't show it if it's not there */
 		if(g_file_load_contents(debug_file, NULL, &text, NULL, NULL, NULL)) {
 			gdk_threads_enter();
-			gtk_text_buffer_set_text(priv->debug_log, text, -1);
+			i7_story_set_debug_log_contents(data->story, text);
 			gdk_threads_leave();
 			g_free(text);
 		}
@@ -288,7 +271,7 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		GFile *i6_file = g_file_get_child(data->builddir_file, "auto.inf");
 		if(g_file_load_contents(i6_file, NULL, &text, NULL, NULL, NULL)) {
 			gdk_threads_enter();
-			gtk_text_buffer_set_text(GTK_TEXT_BUFFER(priv->i6_source), text, -1);
+			i7_story_set_i6_source_contents(data->story, text);
 			gdk_threads_leave();
 			g_free(text);
 		}
@@ -311,19 +294,12 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	PlistObject *manifest = plist_read_file(manifest_file, NULL, NULL);
 	g_object_unref(manifest_file);
 	/* If that failed, then silently keep the old manifest */
-	if(manifest) {
-		plist_object_free(priv->manifest);
-		priv->manifest = manifest;
-	}
+	if (manifest)
+		i7_story_take_manifest(data->story, manifest);
 
 	/* Decide what to do next */
 	if(data->refresh_only) {
-		I7Story *story = data->story;
 		finish_compiling(TRUE, data);
-		/* Hold the GDK lock for the callback */
-		gdk_threads_enter();
-		(priv->compile_finished_callback)(story, priv->compile_finished_callback_data);
-		gdk_threads_leave();
 		return;
 	}
 
@@ -390,8 +366,6 @@ display_i6_status(I7Document *document, gchar *text)
 static void
 start_i6_compiler(CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
-
 	GFile *i6_compiler = i7_app_get_binary_file(i7_app_get(), INFORM6_COMPILER_NAME);
 	char *i6out = g_strconcat("output.", i7_story_get_extension(data->story), NULL);
 	GFile *i6_output = g_file_get_child(data->builddir_file, i6out);
@@ -410,7 +384,8 @@ start_i6_compiler(CompilerData *data)
 	g_object_unref(i6_output);
 
 	GPid child_pid = run_command_hook(data->builddir_file, commandline,
-		priv->progress, (IOHookFunc *)display_i6_status, data->story, TRUE, TRUE);
+		i7_story_get_progress_buffer(data->story), (IOHookFunc *)display_i6_status,
+		data->story, TRUE, TRUE);
 	/* set up a watch for the exit status */
 	g_child_watch_add(child_pid, (GChildWatchFunc)finish_i6_compiler, data);
 
@@ -423,8 +398,6 @@ start_i6_compiler(CompilerData *data)
 static void
 finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
-
 	/* Clear the progress indicator */
 	gdk_threads_enter();
 	i7_document_remove_status_message(I7_DOCUMENT(data->story), COMPILE_OPERATIONS);
@@ -439,8 +412,9 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	  exit_code);
 	GtkTextIter iter;
 	gdk_threads_enter();
-	gtk_text_buffer_get_end_iter(priv->progress, &iter);
-	gtk_text_buffer_insert(priv->progress, &iter, statusmsg, -1);
+	GtkTextBuffer *progress_buffer = i7_story_get_progress_buffer(data->story);
+	gtk_text_buffer_get_end_iter(progress_buffer, &iter);
+	gtk_text_buffer_insert(progress_buffer, &iter, statusmsg, -1);
 	gdk_threads_leave();
 	g_free(statusmsg);
 
@@ -450,9 +424,9 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 
 	/* Display the appropriate HTML error pages */
 	gdk_threads_enter();
-	for(line = gtk_text_buffer_get_line_count(priv->progress); line >= 0; line--) {
+	for(line = gtk_text_buffer_get_line_count(progress_buffer); line >= 0; line--) {
 		gchar *msg;
-		gtk_text_buffer_get_iter_at_line(priv->progress, &start, line);
+		gtk_text_buffer_get_iter_at_line(progress_buffer, &start, line);
 		end = start;
 		gtk_text_iter_forward_to_line_end(&end);
 		msg = gtk_text_iter_get_text(&start, &end);
@@ -486,12 +460,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 
 	/* Decide what to do next */
 	if(!data->create_blorb) {
-		I7Story *story = data->story;
 		finish_compiling(TRUE, data);
-		/* Hold the GDK lock for the callback */
-		gdk_threads_enter();
-		(priv->compile_finished_callback)(story, priv->compile_finished_callback_data);
-		gdk_threads_leave();
 		return;
 	}
 
@@ -513,15 +482,13 @@ prepare_cblorb_compiler(CompilerData *data)
 static void
 parse_cblorb_output(I7Story *story, gchar *text)
 {
-	I7_STORY_USE_PRIVATE(story, priv);
 	gchar *ptr = strstr(text, "Copy blorb to: [[");
 	if(ptr) {
 		char *copy_blorb_path = g_strdup(ptr + 17);
 		*(strstr(copy_blorb_path, "]]")) = '\0';
 
-		if(priv->copy_blorb_dest_file)
-			g_object_unref(priv->copy_blorb_dest_file);
-		priv->copy_blorb_dest_file = g_file_new_for_path(copy_blorb_path);
+		g_autoptr(GFile) dest_file = g_file_new_for_path(copy_blorb_path);
+		i7_story_set_copy_blorb_dest_file(story, dest_file);
 		g_free(copy_blorb_path);
 	}
 }
@@ -531,8 +498,6 @@ parse_cblorb_output(I7Story *story, gchar *text)
 static void
 start_cblorb_compiler(CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
-
 	GFile *cblorb = i7_app_get_binary_file(i7_app_get(), "cBlorb");
 
 	/* Build the command line */
@@ -546,7 +511,8 @@ start_cblorb_compiler(CompilerData *data)
 	g_object_unref(cblorb);
 
 	GPid child_pid = run_command_hook(data->input_file, commandline,
-		priv->progress, (IOHookFunc *)parse_cblorb_output, data->story, TRUE, FALSE);
+		i7_story_get_progress_buffer(data->story),
+		(IOHookFunc *)parse_cblorb_output, data->story, TRUE, FALSE);
 	/* set up a watch for the exit status */
 	g_child_watch_add(child_pid, (GChildWatchFunc)finish_cblorb_compiler, data);
 
@@ -558,8 +524,6 @@ start_cblorb_compiler(CompilerData *data)
 static void
 finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
-
 	/* Clear the progress indicator */
 	gdk_threads_enter();
 	i7_document_remove_status_message(I7_DOCUMENT(data->story), COMPILE_OPERATIONS);
@@ -572,20 +536,9 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 	g_clear_object(&data->results_file);
 	data->results_file = g_file_get_child(data->builddir_file, "StatusCblorb.html");
 
-	/* Stop here and show the Results/Report tab if there was an error */
-	if(exit_code != 0) {
-		finish_compiling(FALSE, data);
-		return;
-	}
-
-	/* Decide what to do next */
-	I7Story *story = data->story;
-	finish_compiling(TRUE, data);
-
-	/* Hold the GDK lock for the callback */
-	gdk_threads_enter();
-	(priv->compile_finished_callback)(story, priv->compile_finished_callback_data);
-	gdk_threads_leave();
+	/* Stop here and show the Results/Report tab if there was an error, or decide
+	what to do next on success */
+	finish_compiling(exit_code == 0, data);
 }
 
 /* Clean up the compiling stuff and notify the user that compiling has finished.
@@ -595,8 +548,6 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 static void
 finish_compiling(gboolean success, CompilerData *data)
 {
-	I7_STORY_USE_PRIVATE(data->story, priv);
-
 	/* Display status message */
 	gdk_threads_enter();
 	i7_document_remove_status_message(I7_DOCUMENT(data->story), COMPILE_OPERATIONS);
@@ -609,23 +560,29 @@ finish_compiling(gboolean success, CompilerData *data)
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
 	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
 
-	gtk_action_group_set_sensitive(priv->compile_action_group, TRUE);
+	GtkActionGroup *compile_action_group = i7_story_get_compile_action_group(data->story);
+	gtk_action_group_set_sensitive(compile_action_group, TRUE);
 	gdk_threads_leave();
 
-	/* Store the compiler output filename (the I7Story now owns the reference) */
-	priv->compiler_output_file = data->output_file;
-
-	/* Free the compiler data object */
-	g_object_unref(data->input_file);
-	g_object_unref(data->builddir_file);
-	g_clear_object(&data->results_file);
-	g_slice_free(CompilerData, data);
+	/* Store the compiler output filename */
+	i7_story_set_compiler_output_file(data->story, data->output_file);
 
 	/* Update */
 	gdk_threads_enter();
 	while(gtk_events_pending())
 		gtk_main_iteration();
+
+	/* Hold the GDK lock for the callback */
+	if (success)
+		(data->callback)(data->story, data->callback_data);
 	gdk_threads_leave();
+
+	/* Free the compiler data object */
+	g_object_unref(data->input_file);
+	g_object_unref(data->output_file);
+	g_object_unref(data->builddir_file);
+	g_clear_object(&data->results_file);
+	g_slice_free(CompilerData, data);
 }
 
 /* Finish up the user's Export iFiction Record command. This is a callback and
@@ -701,10 +658,11 @@ project. This is a callback and the GDK lock is held when entering this
 void
 i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 {
-	I7_STORY_USE_PRIVATE(story, priv);
-
 	GFile *file = NULL;
-	if(priv->copy_blorb_dest_file == NULL) {
+	g_autoptr(GFile) copy_blorb_dest_file = i7_story_get_copy_blorb_dest_file(story);
+	g_autoptr(GFile) compiler_output_file = i7_story_get_compiler_output_file(story);
+
+	if(copy_blorb_dest_file == NULL) {
 		/* ask the user for a release file name if cBlorb didn't provide one */
 
 		/* Create a file chooser */
@@ -724,7 +682,7 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
 			NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
-		char *curfilename = g_file_get_basename(priv->compiler_output_file);
+		char *curfilename = g_file_get_basename(compiler_output_file);
 		gchar *title = i7_document_get_display_name(I7_DOCUMENT(story));
 		char *extension = strrchr(curfilename, '.'); /* not allocated */
 		char *suggestname;
@@ -745,13 +703,13 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 
 		gtk_widget_destroy(dialog);
 	} else {
-		file = g_object_ref(priv->copy_blorb_dest_file);
+		file = g_steal_pointer(&copy_blorb_dest_file);
 	}
 
 	if(file) {
 		/* Move the finished file to the release location */
 		GError *err = NULL;
-		if(!g_file_move(priv->compiler_output_file, file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &err)) {
+		if(!g_file_move(compiler_output_file, file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &err)) {
 			IO_ERROR_DIALOG(GTK_WINDOW(story), file, err, _("copying compiler output"));
 		}
 		g_object_unref(file);

@@ -243,12 +243,12 @@ CLEANFILES = chimara/interpreters/git/version.h
 
 libinform7gui_a_SOURCES = \
 	actions.c actions.h \
-	app.c app.h app-private.h \
+	app.c app.h \
 	app-colorscheme.c \
 	builder.c builder.h \
 	configfile.c configfile.h \
 	diffseq.h \
-	document.c document.h document-private.h \
+	document.c document.h \
 	document-search.c \
 	elastic.c elastic.h \
 	error.c error.h \
@@ -260,7 +260,7 @@ libinform7gui_a_SOURCES = \
 	newdialog.c newdialog.h \
 	node.c node.h \
 	notepad.c \
-	panel.c panel.h panel-private.h \
+	panel.c panel.h \
 	placeholder-entry.c placeholder-entry.h \
 	prefs.c prefs.h \
 	searchwindow.c searchwindow.h \
@@ -268,7 +268,7 @@ libinform7gui_a_SOURCES = \
 	skein-view.c skein-view.h \
 	source-view.c source-view.h \
 	spawn.c spawn.h \
-	story.c story.h story-private.h \
+	story.c story.h \
 	story-source.c story-results.c story-index.c story-settings.c \
 	story-compile.c story-game.c story-skein.c story-transcript.c \
 	transcript-diff.c transcript-diff.h \

@@ -21,17 +21,16 @@
 
 #include "configfile.h"
 #include "story.h"
-#include "story-private.h"
 
 gboolean
 on_notes_window_delete_event(GtkWidget *window, GdkEvent *event, I7Story *story)
 {
-	I7_STORY_USE_PRIVATE(story, priv);
 	I7App *theapp = i7_app_get();
 	GSettings *state = i7_app_get_state(theapp);
 
 	gtk_widget_hide(window);
 	g_settings_set_boolean(state, PREFS_STATE_SHOW_NOTEPAD, FALSE);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->story_action_group, "view_notepad")), FALSE);
+	GtkActionGroup *story_action_group = i7_story_get_story_action_group(story);
+	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(story_action_group, "view_notepad")), FALSE);
 	return TRUE; /* Block event */
 }

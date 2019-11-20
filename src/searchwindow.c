@@ -96,8 +96,7 @@ struct _I7SearchWindowPrivate
 	I7SearchType algorithm;
 };
 
-#define I7_SEARCH_WINDOW_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SEARCH_WINDOW, I7SearchWindowPrivate))
-#define I7_SEARCH_WINDOW_USE_PRIVATE(o,n) I7SearchWindowPrivate *n = I7_SEARCH_WINDOW_PRIVATE(o)
+G_DEFINE_TYPE_WITH_PRIVATE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
 
 /* CALLBACKS */
 
@@ -105,7 +104,7 @@ struct _I7SearchWindowPrivate
 void
 on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 	g_return_if_fail(model);
@@ -208,7 +207,7 @@ result_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel 
 static void
 location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	I7ResultType type;
 	guint lineno;
@@ -284,12 +283,10 @@ type_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *m
 
 /* TYPE SYSTEM */
 
-G_DEFINE_TYPE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
-
 static void
 i7_search_window_init(I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	priv->document = NULL;
 	priv->text = NULL;
@@ -333,19 +330,17 @@ i7_search_window_init(I7SearchWindow *self)
 }
 
 static void
-i7_search_window_finalize(GObject *self)
+i7_search_window_finalize(GObject *object)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(I7_SEARCH_WINDOW(object));
 	g_free(priv->text);
 
-	G_OBJECT_CLASS(i7_search_window_parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_search_window_parent_class)->finalize(object);
 }
 
 static void
 i7_search_window_class_init(I7SearchWindowClass *klass)
 {
-	g_type_class_add_private(klass, sizeof(I7SearchWindowPrivate));
-
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_search_window_finalize;
 }
@@ -355,7 +350,7 @@ i7_search_window_class_init(I7SearchWindowClass *klass)
 static void
 update_label(I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	gchar *label = g_strdup_printf(_("Search results for: \"%s\""), priv->text);
 	gtk_label_set_text(GTK_LABEL(self->search_text), label);
 	g_free(label);
@@ -518,7 +513,7 @@ extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *ma
 static void
 search_documentation(DocText *doctext, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
 	g_autoptr(GtkTextBuffer) buffer = gtk_text_buffer_new(NULL);
@@ -578,7 +573,7 @@ GtkWidget *
 i7_search_window_new(I7Document *document, const gchar *text, gboolean ignore_case, I7SearchType algorithm)
 {
 	I7SearchWindow *self = I7_SEARCH_WINDOW(g_object_new(I7_TYPE_SEARCH_WINDOW, NULL));
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	priv->document = document;
 	priv->text = g_strdup(text);
@@ -662,7 +657,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 void
 i7_search_window_search_project(I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(priv->document));
@@ -708,7 +703,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 static void
 extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GError *err = NULL;
 	const char *basename = g_file_info_get_name(info);
 	GFile *file = g_file_get_child(parent, basename);
