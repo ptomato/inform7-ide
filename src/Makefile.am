@@ -175,10 +175,7 @@ glulxe_la_SOURCES = \
     chimara/interpreters/glulxe/string.c \
     chimara/interpreters/glulxe/unixstrt.c \
     chimara/interpreters/glulxe/vm.c 
-glulxe_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara \
-	-DOS_UNIX \
-	-DVERIFY_MEMORY_ACCESS \
-	$(NULL)
+glulxe_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara -DOS_UNIX
 glulxe_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 
 glulxedocdir = $(datadir)/doc/$(PACKAGE)/glulxe
