@@ -27,7 +27,6 @@
 #include <gtksourceview/gtksource.h>
 
 #include "app.h"
-#include "app-private.h"
 #include "configfile.h"
 #include "error.h"
 #include "file.h"
@@ -65,13 +64,13 @@ schemes_compare(GtkSourceStyleScheme *a, GtkSourceStyleScheme *b)
 void
 i7_app_foreach_color_scheme(I7App *self, GFunc func, gpointer data)
 {
-	I7_APP_USE_PRIVATE(self, priv);
+	GtkSourceStyleSchemeManager *manager = i7_app_get_color_scheme_manager(self);
 
 	GSList *schemes = NULL;
-	const char * const *scheme_ids = gtk_source_style_scheme_manager_get_scheme_ids(priv->color_scheme_manager);
+	const char * const *scheme_ids = gtk_source_style_scheme_manager_get_scheme_ids(manager);
 
 	while (*scheme_ids != NULL) {
-		GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(priv->color_scheme_manager, *scheme_ids);
+		GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, *scheme_ids);
 		schemes = g_slist_prepend(schemes, scheme);
 		++scheme_ids;
 	}
@@ -96,9 +95,9 @@ i7_app_foreach_color_scheme(I7App *self, GFunc func, gpointer data)
 gboolean
 i7_app_color_scheme_is_user_scheme(I7App *self, const char *id)
 {
-	I7_APP_USE_PRIVATE(self, priv);
+	GtkSourceStyleSchemeManager *manager = i7_app_get_color_scheme_manager(self);
 
-	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(priv->color_scheme_manager, id);
+	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, id);
 	if(!scheme)
 		return FALSE;
 	const gchar *filename = gtk_source_style_scheme_get_filename(scheme);
@@ -130,7 +129,7 @@ i7_app_color_scheme_is_user_scheme(I7App *self, const char *id)
 const char *
 i7_app_install_color_scheme(I7App *self, GFile *file)
 {
-	I7_APP_USE_PRIVATE(self, priv);
+	GtkSourceStyleSchemeManager *manager = i7_app_get_color_scheme_manager(self);
 
 	GFile *new_file = NULL;
 	GError *error = NULL;
@@ -169,13 +168,13 @@ i7_app_install_color_scheme(I7App *self, GFile *file)
 	g_object_unref(styles_dir);
 
 	/* Reload the available style schemes */
-	gtk_source_style_scheme_manager_force_rescan(priv->color_scheme_manager);
+	gtk_source_style_scheme_manager_force_rescan(manager);
 
 	/* Check the new style scheme has been actually installed */
-	const char * const *ids = gtk_source_style_scheme_manager_get_scheme_ids(priv->color_scheme_manager);
+	const char * const *ids = gtk_source_style_scheme_manager_get_scheme_ids(manager);
 
 	while(*ids != NULL) {
-		GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(priv->color_scheme_manager, *ids);
+		GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, *ids);
 		const gchar *filename = gtk_source_style_scheme_get_filename(scheme);
 		char *new_path = g_file_get_path(new_file);
 
@@ -209,13 +208,12 @@ i7_app_install_color_scheme(I7App *self, GFile *file)
 gboolean
 i7_app_uninstall_color_scheme(I7App *self, const char *id)
 {
-	I7_APP_USE_PRIVATE(self, priv);
-
+	GtkSourceStyleSchemeManager *manager = i7_app_get_color_scheme_manager(self);
 	GError *error = NULL;
 
 	g_return_val_if_fail (id != NULL, FALSE);
 
-	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(priv->color_scheme_manager, id);
+	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, id);
 	if(!scheme)
 		return FALSE;
 
@@ -233,7 +231,7 @@ i7_app_uninstall_color_scheme(I7App *self, const char *id)
 	g_object_unref(file);
 
 	/* Reload the available style schemes */
-	gtk_source_style_scheme_manager_force_rescan(priv->color_scheme_manager);
+	gtk_source_style_scheme_manager_force_rescan(manager);
 
 	return TRUE;
 }
@@ -249,10 +247,10 @@ i7_app_uninstall_color_scheme(I7App *self, const char *id)
 GtkSourceStyleScheme *
 i7_app_get_current_color_scheme(I7App *self)
 {
-	I7_APP_USE_PRIVATE(self, priv);
+	GtkSourceStyleSchemeManager *manager = i7_app_get_color_scheme_manager(self);
 	GSettings *prefs = i7_app_get_prefs(self);
 	gchar *scheme_name = g_settings_get_string(prefs, PREFS_STYLE_SCHEME);
-	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(priv->color_scheme_manager, scheme_name);
+	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, scheme_name);
 	g_free(scheme_name);
 	return scheme;
 }

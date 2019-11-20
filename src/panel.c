@@ -37,7 +37,6 @@
 #include "history.h"
 #include "html.h"
 #include "panel.h"
-#include "panel-private.h"
 #include "skein-view.h"
 #include "transcript-renderer.h"
 
@@ -48,6 +47,24 @@ const char * const i7_panel_index_names[] = {
 	"Welcome.html", "Contents.html", "Actions.html", "Kinds.html",
 	"Phrasebook.html", "Rules.html", "Scenes.html", "World.html"
 };
+
+typedef struct {
+	/* Action Groups */
+	GtkUIManager *ui_manager;
+	GtkActionGroup *common_action_group;
+	GtkActionGroup *skein_action_group;
+	GtkActionGroup *transcript_action_group;
+	GtkActionGroup *documentation_action_group;
+	GtkActionGroup *extensions_action_group;
+	/* History list */
+	GQueue *history; /* "front" is more recent, "back" is older */
+	guint current;
+	/* Webview settings */
+	WebKitSettings *websettings;
+	WebKitUserContentManager *content;
+} I7PanelPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE(I7Panel, i7_panel, GTK_TYPE_VBOX);
 
 /* URI SCHEME HANDLERS */
 
@@ -391,15 +408,15 @@ finally:
 
 /* Go to the previously viewed pane in this panel */
 void
-action_back(GtkAction *back, I7Panel *panel)
+action_back(GtkAction *back, I7Panel *self)
 {
-	I7_PANEL_USE_PRIVATE(panel, priv);
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
 	if(priv->current == 0)
 		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "forward"), TRUE);
 
 	priv->current++;
-	history_goto_current(panel);
+	history_goto_current(self);
 
 	if(priv->current == g_queue_get_length(priv->history) - 1)
 		gtk_action_set_sensitive(back, FALSE);
@@ -408,15 +425,15 @@ action_back(GtkAction *back, I7Panel *panel)
 /* Go forward to the next viewed pane in this panel (after having gone back
  * before) */
 void
-action_forward(GtkAction *forward, I7Panel *panel)
+action_forward(GtkAction *forward, I7Panel *self)
 {
-	I7_PANEL_USE_PRIVATE(panel, priv);
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
 	if(priv->current == g_queue_get_length(priv->history) - 1)
 		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
 
 	priv->current--;
-	history_goto_current(panel);
+	history_goto_current(self);
 
 	if(priv->current == 0)
 		gtk_action_set_sensitive(forward, FALSE);
@@ -483,8 +500,7 @@ void
 action_play_all(GtkAction *action, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
 }
 
 /*
@@ -729,6 +745,13 @@ action_public_library(GtkAction *action, I7Panel *panel)
 	webkit_web_view_load_uri(html, PUBLIC_LIBRARY_HOME_URI);
 }
 
+void
+after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self)
+{
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(self->notebook)) == I7_PANE_SOURCE)
+		history_push_tab(self, I7_PANE_SOURCE, page_num);
+}
+
 /* TYPE SYSTEM */
 
 enum _I7PanelSignalType {
@@ -742,14 +765,11 @@ enum _I7PanelSignalType {
 };
 static guint i7_panel_signals[LAST_SIGNAL] = { 0 };
 
-static GtkVBoxClass *parent_class = NULL;
-G_DEFINE_TYPE(I7Panel, i7_panel, GTK_TYPE_VBOX);
-
 static void
 i7_panel_init(I7Panel *self)
 {
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	GError *error = NULL;
-	I7_PANEL_USE_PRIVATE(self, priv);
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	int foo;
@@ -930,15 +950,27 @@ i7_panel_init(I7Panel *self)
 }
 
 static void
-i7_panel_finalize(GObject *self)
+history_free_queue(I7Panel *self)
 {
-	I7_PANEL_USE_PRIVATE(self, priv);
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
-	history_free_queue(I7_PANEL(self));
+	g_queue_foreach(priv->history, (GFunc)i7_panel_history_free, NULL);
+	g_queue_free(priv->history);
+	priv->history = NULL;
+	priv->current = 0;
+}
+
+static void
+i7_panel_finalize(GObject *object)
+{
+	I7Panel *self = I7_PANEL(object);
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+
+	history_free_queue(self);
 	g_object_unref(priv->ui_manager);
-	g_object_unref(I7_PANEL(self)->transcript_menu);
+	g_object_unref(self->transcript_menu);
 
-	G_OBJECT_CLASS(parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_panel_parent_class)->finalize(object);
 }
 
 static void
@@ -946,8 +978,6 @@ i7_panel_class_init(I7PanelClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_panel_finalize;
-
-	parent_class = g_type_class_peek_parent(klass);
 
 	i7_panel_signals[SELECT_VIEW_SIGNAL] = g_signal_new("select-view",
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
@@ -975,15 +1005,14 @@ i7_panel_class_init(I7PanelClass *klass)
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 		G_STRUCT_OFFSET(I7PanelClass, display_index_page), NULL, NULL,
 		NULL, G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_STRING);
-	g_type_class_add_private(klass, sizeof(I7PanelPrivate));
 }
 
 /* SIGNAL HANDLERS */
 
 void
-on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
+on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self)
 {
-	I7_PANEL_USE_PRIVATE(panel, priv);
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
 	gboolean skein = FALSE, transcript = FALSE, documentation = FALSE, extensions = FALSE;
 
@@ -1010,54 +1039,6 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_nu
 	gtk_action_group_set_visible(priv->extensions_action_group, extensions);
 }
 
-void
-after_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
-{
-	switch(page_num) {
-		case I7_PANE_SOURCE:
-			history_push_tab(panel, page_num,
-				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE])));
-			break;
-		case I7_PANE_RESULTS:
-			history_push_tab(panel, page_num,
-				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_RESULTS])));
-			break;
-		case I7_PANE_INDEX:
-			history_push_tab(panel, page_num,
-				gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_INDEX])));
-			break;
-		case I7_PANE_DOCUMENTATION:
-			history_push_docpage(panel, NULL);
-			break;
-		case I7_PANE_EXTENSIONS:
-			history_push_extensions_page(panel, NULL);
-			break;
-		default:
-			history_push_pane(panel, page_num);
-	}
-}
-
-void
-after_source_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
-{
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_SOURCE)
-		history_push_tab(panel, I7_PANE_SOURCE, page_num);
-}
-
-void
-after_results_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
-{
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_RESULTS)
-		history_push_tab(panel, I7_PANE_RESULTS, page_num);
-}
-
-void
-after_index_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *panel)
-{
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_INDEX)
-		history_push_tab(panel, I7_PANE_INDEX, page_num);
-}
-
 /* Internal function: given a filename, determine whether it is one of the HTML
 files that comprise the index. Return one of the I7PaneIndexTab constants, or -1
 (I7_INDEX_TAB_NONE) if it does not. */
@@ -1072,7 +1053,7 @@ filename_to_index_tab(const char *filename)
 }
 
 static gboolean
-i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKitPolicyDecision *decision)
+i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitPolicyDecision *decision)
 {
 	WebKitNavigationAction *action = webkit_navigation_policy_decision_get_navigation_action(WEBKIT_NAVIGATION_POLICY_DECISION(decision));
 	WebKitURIRequest *request = webkit_navigation_action_get_request(action);
@@ -1117,8 +1098,8 @@ i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKit
 		}
 
 		/* We've determined that this is an index page */
-		if(webview != WEBKIT_WEB_VIEW(panel->index_tabs[tabnum])) {
-			g_signal_emit_by_name(panel, "display-index-page", tabnum, param);
+		if (webview != WEBKIT_WEB_VIEW(self->index_tabs[tabnum])) {
+			g_signal_emit_by_name(self, "display-index-page", tabnum, param);
 			g_free(filename);
 			webkit_policy_decision_ignore(decision);
 			return TRUE;  /* handled */
@@ -1133,15 +1114,15 @@ i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKit
 		gboolean load_in_extensions_pane = g_str_has_prefix(uri, "inform://Extensions");
 		/* Most of them are only to be loaded in the documentation pane, but extension
 		documentation should be loaded in the extensions pane. */
-		if(load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS])) {
-			g_signal_emit_by_name(panel, "display-extensions-docpage", uri);
+		if (load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS])) {
+			g_signal_emit_by_name(self, "display-extensions-docpage", uri);
 			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
 			return TRUE;  /* handled */
-		} else if(!load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_DOCUMENTATION])) {
+		} else if (!load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION])) {
 			/* Others should be loaded in the documentation pane; if this is another
 			pane, then redirect the request to the documentation pane */
-			g_signal_emit_by_name(panel, "display-docpage", uri);
+			g_signal_emit_by_name(self, "display-docpage", uri);
 			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
 			return TRUE;  /* handled */
@@ -1158,7 +1139,7 @@ i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKit
 		}
 
 		show_uri_in_browser(uri,
-			GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(panel))), NULL);
+			GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(self))), NULL);
 
 	} else if(strcmp(scheme, "source") == 0) {
 		guint line;
@@ -1170,7 +1151,7 @@ i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKit
 		/* If it links to the source file, just jump to the line */
 		if(strcmp(path, "story.ni") == 0) {
 			if(sscanf(anchor, "#line%u", &line))
-				g_signal_emit_by_name(panel, "jump-to-line", line);
+				g_signal_emit_by_name(self, "jump-to-line", line);
 		} else {
 			GFile *file = g_file_new_for_path(path);
 			/* Else it's a link to an extension, open it in a new window */
@@ -1194,7 +1175,7 @@ i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKit
 		char *id, *author, *title;
 		GFile *remote_file = library_uri_to_real_uri(uri, &author, &title, &id);
 
-		I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
+		I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(self)));
 		gboolean success = i7_document_download_single_extension(doc, remote_file, author, title);
 
 		g_object_unref(remote_file);
@@ -1218,11 +1199,11 @@ i7_panel_decide_navigation_policy(I7Panel *panel, WebKitWebView *webview, WebKit
 /* This is the callback that handles custom behaviour and permissions of the
  * webview */
 gboolean
-on_decide_policy(WebKitWebView *webview, WebKitPolicyDecision *decision, WebKitPolicyDecisionType decision_type, I7Panel *panel)
+on_decide_policy(WebKitWebView *webview, WebKitPolicyDecision *decision, WebKitPolicyDecisionType decision_type, I7Panel *self)
 {
 	switch (decision_type) {
 	case WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION:
-		return i7_panel_decide_navigation_policy(panel, webview, decision);
+		return i7_panel_decide_navigation_policy(self, webview, decision);
 	case WEBKIT_POLICY_DECISION_TYPE_NEW_WINDOW_ACTION:
 		webkit_policy_decision_ignore(decision);
 		return TRUE;  /* handled */
@@ -1235,20 +1216,20 @@ on_decide_policy(WebKitWebView *webview, WebKitPolicyDecision *decision, WebKitP
 }
 
 void
-after_documentation_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *panel)
+after_documentation_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *self)
 {
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_DOCUMENTATION)
-		history_push_docpage(panel, webkit_web_view_get_uri(webview));
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(self->notebook)) == I7_PANE_DOCUMENTATION)
+		history_push_docpage(self, webkit_web_view_get_uri(webview));
 }
 
 /* Signal handler to pick up navigations within the Extensions pane and push
 them into the history queue. */
 void
-after_extensions_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *panel)
+after_extensions_notify_uri(WebKitWebView *webview, GParamSpec *pspec, I7Panel *self)
 {
 	/* Only add it to the history if it was navigated from the current page */
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook)) == I7_PANE_EXTENSIONS)
-		history_push_extensions_page(panel, webkit_web_view_get_uri(webview));
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(self->notebook)) == I7_PANE_EXTENSIONS)
+		history_push_extensions_page(self, webkit_web_view_get_uri(webview));
 }
 
 /* PUBLIC FUNCTIONS */
@@ -1273,7 +1254,7 @@ i7_panel_new()
 void
 i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file)
 {
-	I7_PANEL_USE_PRIVATE(self, priv);
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	history_free_queue(self);
 	priv->history = g_queue_new();
 	I7PanelHistory *item = g_slice_new0(I7PanelHistory);
@@ -1329,10 +1310,12 @@ update_font_tabs(GtkSourceView *view)
 void
 i7_panel_update_fonts(I7Panel *self)
 {
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+
 	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]));
 	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->results_tabs[I7_RESULTS_TAB_INFORM6]));
 
-	WebKitSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
+	WebKitSettings *settings = priv->websettings;
 	PangoFontDescription *fontdesc = get_font_description();
 
 	const char *font = pango_font_description_get_family(fontdesc);
@@ -1367,7 +1350,8 @@ i7_panel_update_fonts(I7Panel *self)
 void
 i7_panel_update_font_sizes(I7Panel *self)
 {
-	WebKitSettings *settings = I7_PANEL_PRIVATE(self)->websettings;
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+	WebKitSettings *settings = priv->websettings;
 	PangoFontDescription *stdfont = get_desktop_standard_font();
 	PangoFontDescription *monofont = get_desktop_monospace_font();
 	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
@@ -1379,4 +1363,39 @@ i7_panel_update_font_sizes(I7Panel *self)
 		NULL);
 	pango_font_description_free(stdfont);
 	pango_font_description_free(monofont);
+}
+
+/* Empty the list of pages to go forward to */
+static void
+history_empty_forward_queue(I7Panel *self)
+{
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+
+	/* Delete all the members of the queue before "current" */
+	guint count;
+	for(count = 0; count < priv->current; count++)
+		i7_panel_history_free(g_queue_pop_head(priv->history));
+	priv->current = 0;
+	gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "forward"), FALSE);
+}
+
+/* Empty the forward queue and push a new item to the front of the history */
+void
+i7_panel_push_history_item(I7Panel *self, I7PanelHistory *item)
+{
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+
+	if(priv->current == g_queue_get_length(priv->history) - 1)
+		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
+
+	history_empty_forward_queue(self);
+	g_queue_push_head(priv->history, item);
+	priv->current = 0;
+}
+
+I7PanelHistory *
+i7_panel_get_current_history_item(I7Panel *self)
+{
+	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+	return g_queue_peek_nth(priv->history, priv->current);
 }

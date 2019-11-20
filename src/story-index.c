@@ -25,7 +25,6 @@
 #include "html.h"
 #include "panel.h"
 #include "story.h"
-#include "story-private.h"
 
 static void
 load_index_file(I7Story *story, int counter)

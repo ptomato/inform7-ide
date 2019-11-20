@@ -55,9 +55,6 @@ typedef struct _I7SkeinPrivate
 	int stamp; /* Stamp for identifying tree iterators belonging to this model */
 } I7SkeinPrivate;
 
-#define I7_SKEIN_PRIVATE(o)  (G_TYPE_INSTANCE_GET_PRIVATE ((o), I7_TYPE_SKEIN, I7SkeinPrivate))
-#define I7_SKEIN_USE_PRIVATE I7SkeinPrivate *priv = I7_SKEIN_PRIVATE(self)
-
 enum
 {
 	NEEDS_LAYOUT,
@@ -86,6 +83,7 @@ static guint i7_skein_signals[LAST_SIGNAL] = { 0 };
 static void i7_skein_tree_model_init(GtkTreeModelIface *iface);
 
 G_DEFINE_TYPE_EXTENDED(I7Skein, i7_skein, GOO_TYPE_CANVAS_GROUP_MODEL, 0,
+	G_ADD_PRIVATE(I7Skein)
     G_IMPLEMENT_INTERFACE(GTK_TYPE_TREE_MODEL, i7_skein_tree_model_init));
 
 /* SIGNAL HANDLERS */
@@ -115,7 +113,7 @@ on_node_label_notify(I7Node *node, GParamSpec *pspec, I7Skein *self)
 static void
 on_node_transcript_notify(I7Node *node, GParamSpec *pspec, I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	if(!i7_skein_is_node_in_current_thread(self, node))
 		return;
 	GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(node->gnode) - 1, -1);
@@ -142,7 +140,7 @@ node_listen(I7Skein *self, I7Node *node)
 static void
 i7_skein_init(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	priv->root = i7_node_new(_("- start -"), "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, priv->root);
 	priv->current = priv->root;
@@ -164,7 +162,7 @@ i7_skein_init(I7Skein *self)
 static void
 i7_skein_set_property(GObject *self, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(I7_SKEIN(self));
 
 	switch(prop_id) {
 		case PROP_CURRENT_NODE:
@@ -198,7 +196,7 @@ i7_skein_set_property(GObject *self, guint prop_id, const GValue *value, GParamS
 static void
 i7_skein_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *pspec)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(I7_SKEIN(self));
 
 	switch(prop_id) {
 		case PROP_CURRENT_NODE:
@@ -221,7 +219,7 @@ i7_skein_get_property(GObject *self, guint prop_id, GValue *value, GParamSpec *p
 static void
 i7_skein_finalize(GObject *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(I7_SKEIN(self));
 
 	g_object_unref(priv->root);
 	goo_canvas_line_dash_unref(priv->unlocked_dash);
@@ -233,7 +231,7 @@ i7_skein_finalize(GObject *self)
 static void
 i7_skein_modified(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	priv->modified = TRUE;
 }
 
@@ -310,9 +308,6 @@ i7_skein_class_init(I7SkeinClass *klass)
 		g_param_spec_string("unlocked-color", "Unlocked color",
 			"Color of unlocked threads",
 			"black", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | flags));
-
-	/* Add private data */
-	g_type_class_add_private(klass, sizeof(I7SkeinPrivate));
 }
 
 /* TREE MODEL INTERFACE IMPLEMENTATION */
@@ -356,7 +351,7 @@ static gboolean
 i7_skein_get_iter(GtkTreeModel *model, GtkTreeIter *iter, GtkTreePath *path)
 {
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	int i = gtk_tree_path_get_indices(path)[0];
 	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
@@ -391,7 +386,7 @@ static GtkTreePath *
 i7_skein_get_path(GtkTreeModel *model, GtkTreeIter *iter)
 {
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	
 	g_return_val_if_fail(VALID_ITER(iter, priv), NULL);
 
@@ -405,7 +400,7 @@ static void
 i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *value)
 {
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	
 	g_return_if_fail(VALID_ITER(iter, priv));
 	g_return_if_fail(column >= 0 && column < I7_SKEIN_NUM_COLUMNS);
@@ -460,7 +455,7 @@ static gboolean
 i7_skein_iter_next(GtkTreeModel *model, GtkTreeIter *iter)
 {
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	
 	g_return_val_if_fail(VALID_ITER(iter, priv), FALSE);
 
@@ -494,7 +489,7 @@ i7_skein_iter_children(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *pare
 
 	/* If parent was NULL, return the root node */
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	iter->stamp = priv->stamp;
 	iter->user_data = priv->root;
@@ -511,8 +506,8 @@ static int
 i7_skein_iter_n_children(GtkTreeModel *model, GtkTreeIter *iter)
 {
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
-	
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
+
 	/* If iter is NULL, return the number of toplevel nodes, i.e. the length of
 	 the list */
 	if(!iter) {
@@ -534,7 +529,7 @@ i7_skein_iter_nth_child(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *par
 	/* If parent was NULL, return the n'th toplevel node, i.e. the n'th node in
 	 the list*/
 	I7Skein *self = I7_SKEIN(model);
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
 	int thread_depth = g_node_depth(last->gnode) - 1;
@@ -610,21 +605,21 @@ i7_skein_error_quark(void)
 I7Node *
 i7_skein_get_root_node(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	return priv->root;
 }
 
 I7Node *
 i7_skein_get_current_node(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	return priv->current;
 }
 
 void
 i7_skein_set_current_node(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	if(priv->current == node)
 		return;
@@ -675,7 +670,7 @@ i7_skein_set_current_node(I7Skein *self, I7Node *node)
 gboolean
 i7_skein_is_node_in_current_thread(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
 	return i7_node_in_thread(node, last);
 }
@@ -683,7 +678,7 @@ i7_skein_is_node_in_current_thread(I7Skein *self, I7Node *node)
 I7Node *
 i7_skein_get_played_node(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	return priv->played;
 }
 
@@ -698,7 +693,7 @@ change_node_played(GNode *gnode, gpointer data)
 static void
 i7_skein_set_played_node(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	/* Change the colors of the nodes */
 
@@ -780,7 +775,7 @@ i7_skein_load(I7Skein *self, GFile *file, GError **error)
 	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
 	g_return_val_if_fail(file, FALSE);
 
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	char *filename = g_file_get_path(file);
 	xmlDoc *xmldoc = xmlParseFile(filename);
@@ -911,7 +906,7 @@ i7_skein_save(I7Skein *self, GFile *file, GError **error)
 {
 	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
 
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	GFileOutputStream *fstream = g_file_replace(file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, error);
 	if(!fstream)
@@ -948,9 +943,9 @@ i7_skein_import(I7Skein *self, GFile *file, GError **error)
 {
 	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
 	g_return_val_if_fail(file, FALSE);
-	
-	I7_SKEIN_USE_PRIVATE;
-	
+
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
+
 	I7Node *node = priv->root;
 	gboolean added = FALSE;
 
@@ -1001,7 +996,7 @@ fail:
 void
 i7_skein_reset(I7Skein *self, gboolean current)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	if(current)
 		i7_skein_set_current_node(self, priv->root);
 	i7_skein_set_played_node(self, priv->root);
@@ -1019,7 +1014,7 @@ rgba_from_gdk_color(GdkColor *color)
 static void
 draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	/* Draw a line from the node to its parent */
 	if(node->gnode->parent) {
@@ -1071,7 +1066,7 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 static void
 draw_intern(I7Skein *self, GooCanvas *canvas)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	if(GPOINTER_TO_INT(g_object_get_data(G_OBJECT(canvas), "waiting-for-draw")) == 0)
 		return;
@@ -1143,7 +1138,7 @@ remove_all_from_model(I7Skein *self)
 static void
 reinstate_all_in_model(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
 	GNode *gnode = priv->root->gnode;
 	while(gnode) {
@@ -1169,7 +1164,7 @@ i7_skein_new_command(I7Skein *self, const gchar *command)
 {
 	g_return_val_if_fail(command != NULL, NULL);
 
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	gboolean node_added = FALSE;
 	gchar *node_command = g_strescape(command, "\"");
@@ -1208,7 +1203,7 @@ newly-allocated copy of its command text in @command.*/
 gboolean
 i7_skein_next_command(I7Skein *self, gchar **command)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	if(!g_node_is_ancestor(priv->played->gnode, priv->current->gnode))
 		return FALSE;
@@ -1248,7 +1243,7 @@ i7_skein_get_commands_to_node(I7Skein *self, I7Node *from_node, I7Node *to_node)
 GSList *
 i7_skein_get_commands(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	return i7_skein_get_commands_to_node(self, priv->root, priv->played);
 }
 
@@ -1256,7 +1251,7 @@ i7_skein_get_commands(I7Skein *self)
 void
 i7_skein_update_after_playing(I7Skein *self, const gchar *transcript)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	i7_node_set_played(priv->played, TRUE);
 	if(strlen(transcript)) {
@@ -1268,7 +1263,7 @@ i7_skein_update_after_playing(I7Skein *self, const gchar *transcript)
 gboolean
 i7_skein_get_command_from_history(I7Skein *self, gchar **command, int history)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	/* Find the node to return the command from */
 	GNode *gnode = priv->current->gnode;
@@ -1324,7 +1319,7 @@ i7_skein_add_new_parent(I7Skein *self, I7Node *node)
 gboolean
 i7_skein_remove_all(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	if(G_NODE_IS_ROOT(node->gnode))
 		return FALSE;
@@ -1347,7 +1342,7 @@ i7_skein_remove_all(I7Skein *self, I7Node *node)
 gboolean
 i7_skein_remove_single(I7Skein *self, I7Node *node)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	if(G_NODE_IS_ROOT(node->gnode))
 		return FALSE;
@@ -1378,12 +1373,14 @@ i7_skein_remove_single(I7Skein *self, I7Node *node)
 void
 i7_skein_lock(I7Skein *self, I7Node *node)
 {
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
+
 	GNode *iter;
 	for(iter = node->gnode; iter; iter = iter->parent)
 		i7_node_set_locked(I7_NODE(iter->data), TRUE);
 
 	/* TODO change thread colors */
-	I7_SKEIN_PRIVATE(self)->modified = TRUE;
+	priv->modified = TRUE;
 }
 
 static void
@@ -1407,7 +1404,7 @@ i7_skein_unlock(I7Skein *self, I7Node *node)
 static void
 i7_skein_trim_recurse(I7Skein *self, I7Node *node, gint min_score)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	unsigned i = 0;
 	while(i < g_node_n_children(node->gnode)) {
@@ -1453,7 +1450,7 @@ print_score(gpointer item, gpointer data)
 void
 i7_skein_trim(I7Skein *self, I7Node *node, gint max_temps)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
 	GList *scores_in_use = NULL;
 	g_node_traverse(priv->root->gnode, G_PRE_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)look_for_scores, &scores_in_use);
@@ -1490,7 +1487,7 @@ get_labels(GNode *gnode, GSList **labels)
 GSList *
 i7_skein_get_labels(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	GSList *labels = NULL;
 	get_labels(priv->root->gnode, &labels);
 	labels = g_slist_sort_with_data(labels, (GCompareDataFunc)strcmp, NULL);
@@ -1527,7 +1524,7 @@ has_labels(I7Node *node)
 gboolean
 i7_skein_has_labels(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	return has_labels(priv->root);
 }
 
@@ -1639,7 +1636,7 @@ i7_skein_get_blessed_thread_ends(I7Skein *self)
 gboolean
 i7_skein_get_modified(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	return priv->modified;
 }
 
@@ -1653,7 +1650,7 @@ invalidate(GNode *gnode)
 void
 i7_skein_set_font(I7Skein *self, PangoFontDescription *font)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	g_object_set(self, "font-desc", font, NULL);
 	g_node_traverse(priv->root->gnode, G_PRE_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)invalidate, NULL);
 	g_signal_emit_by_name(self, "needs-layout");
@@ -1682,7 +1679,7 @@ dump_node_data(GNode *node, gpointer foo)
 void
 i7_skein_dump(I7Skein *self)
 {
-	I7_SKEIN_USE_PRIVATE;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 	dump_node_data(priv->root->gnode, NULL);
 	g_printerr("\n");
 }

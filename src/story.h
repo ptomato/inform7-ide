@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -83,21 +83,36 @@ GType i7_story_get_type(void) G_GNUC_CONST;
 I7Story *i7_story_new(I7App *app, GFile *file, const char *title, const char *author);
 I7Story *i7_story_new_from_file(I7App *app, GFile *file);
 I7Story *i7_story_new_from_dialog(I7App *app);
-gboolean i7_story_open(I7Story *story, GFile *file);
-int i7_story_get_focus_panel(I7Story *story);
-I7StoryPanel i7_story_choose_panel(I7Story *story, I7PanelPane newtab);
-void i7_story_show_pane(I7Story *story, I7PanelPane pane);
-void i7_story_show_tab(I7Story *story, I7PanelPane pane, gint tab);
-void i7_story_show_docpage(I7Story *story, GFile *file);
-void i7_story_show_docpage_at_anchor(I7Story *story, GFile *file, const gchar *anchor);
-GFile *i7_story_get_old_materials_file(I7Story *story);
-GFile *i7_story_get_materials_file(I7Story *story);
-const gchar *i7_story_get_extension(I7Story *story);
-void i7_story_foreach_panel(I7Story *story, I7PanelForeachFunc func, gpointer data);
+gboolean i7_story_open(I7Story *self, GFile *file);
+int i7_story_get_focus_panel(I7Story *self);
+I7StoryPanel i7_story_choose_panel(I7Story *self, I7PanelPane newtab);
+void i7_story_show_pane(I7Story *self, I7PanelPane pane);
+void i7_story_show_tab(I7Story *self, I7PanelPane pane, int tab);
+void i7_story_show_docpage(I7Story *self, GFile *file);
+void i7_story_show_docpage_at_anchor(I7Story *self, GFile *file, const char *anchor);
+GFile *i7_story_get_old_materials_file(I7Story *self);
+GFile *i7_story_get_materials_file(I7Story *self);
+const gchar *i7_story_get_extension(I7Story *self);
+void i7_story_foreach_panel(I7Story *self, I7PanelForeachFunc func, void *data);
+GtkActionGroup *i7_story_get_story_action_group(I7Story *self);
+GtkActionGroup *i7_story_get_compile_action_group(I7Story *self);
+GFile *i7_story_get_copy_blorb_dest_file(I7Story *self);
+void i7_story_set_copy_blorb_dest_file(I7Story *self, GFile *file);
+GFile *i7_story_get_compiler_output_file(I7Story *self);
+void i7_story_set_compiler_output_file(I7Story *self, GFile *file);
+void i7_story_clear_compile_output(I7Story *self);
+void i7_story_set_debug_log_contents(I7Story *self, const char *text);
+void i7_story_set_i6_source_contents(I7Story *self, const char *text);
+PlistObject *i7_story_get_manifest(I7Story *self);
+void i7_story_take_manifest(I7Story *self, PlistObject *manifest);
+PlistObject *i7_story_get_settings(I7Story *self);
+GtkTextBuffer *i7_story_get_progress_buffer(I7Story *self);
+I7Skein *i7_story_get_skein(I7Story *self);
+GSettings *i7_story_get_skein_settings(I7Story *self);
 
 /* Source pane, story-source.c */
-void on_panel_paste_code(I7Panel *panel, gchar *code, I7Story *story);
-void on_panel_jump_to_line(I7Panel *panel, guint line, I7Story *story);
+void on_panel_paste_code(I7Panel *panel, char *code, I7Story *self);
+void on_panel_jump_to_line(I7Panel *panel, unsigned line, I7Story *self);
 gboolean reindex_headings(GtkTextBuffer *buffer, I7Document *document);
 
 /* Results pane, story-results.c */
@@ -106,49 +121,45 @@ void i7_story_remove_debug_tabs(I7Document *document);
 GtkSourceBuffer *create_inform6_source_buffer(void);
 
 /* Index pane, story-index.c */
-void i7_story_reload_index_tabs(I7Story *story, gboolean wait);
+void i7_story_reload_index_tabs(I7Story *self, gboolean wait);
 
 /* Settings pane, story-settings.c */
 PlistObject *create_default_settings(void);
-void on_z8_button_toggled(GtkToggleButton *togglebutton, I7Story *story);
-void on_glulx_button_toggled(GtkToggleButton *togglebutton, I7Story *story);
-void on_notify_story_format(I7Story *story);
-void on_notify_elastic_tabstops(I7Story *story);
-I7StoryFormat i7_story_get_story_format(I7Story *story);
-void i7_story_set_story_format(I7Story *story, I7StoryFormat format);
-gboolean i7_story_get_create_blorb(I7Story *story);
-void i7_story_set_create_blorb(I7Story *story, gboolean create_blorb);
-gboolean i7_story_get_nobble_rng(I7Story *story);
-void i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng);
-gboolean i7_story_get_elastic_tabstops(I7Story *story);
-void i7_story_set_elastic_tabstops(I7Story *story, gboolean elastic_tabstops);
+void on_z8_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
+void on_glulx_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
+void on_notify_story_format(I7Story *self);
+void on_notify_elastic_tabstops(I7Story *self);
+I7StoryFormat i7_story_get_story_format(I7Story *self);
+void i7_story_set_story_format(I7Story *self, I7StoryFormat format);
+gboolean i7_story_get_create_blorb(I7Story *self);
+void i7_story_set_create_blorb(I7Story *self, gboolean create_blorb);
+gboolean i7_story_get_nobble_rng(I7Story *self);
+void i7_story_set_nobble_rng(I7Story *self, gboolean nobble_rng);
+gboolean i7_story_get_elastic_tabstops(I7Story *self);
+void i7_story_set_elastic_tabstops(I7Story *self, gboolean elastic_tabstops);
 
 /* Compiling, story-compile.c */
-void i7_story_set_compile_finished_action(I7Story *story, CompileActionFunc callback, gpointer data);
-void i7_story_compile(I7Story *story, gboolean release, gboolean refresh);
-void i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title);
-void i7_story_save_ifiction(I7Story *story);
+void i7_story_compile(I7Story *self, gboolean release, gboolean refresh, CompileActionFunc callback, void *callback_data);
+void i7_story_save_compiler_output(I7Story *self, const char *dialog_title);
+void i7_story_save_ifiction(I7Story *self);
 
 /* Story pane, story-game.c */
-void i7_story_run_compiler_output(I7Story *story);
-void i7_story_test_compiler_output(I7Story *story);
-void i7_story_run_compiler_output_and_replay(I7Story *story);
-void i7_story_run_compiler_output_and_play_to_node(I7Story *story, I7Node *node);
-void i7_story_run_commands_from_node(I7Story *story, I7Node *node);
-void i7_story_run_compiler_output_and_entire_skein(I7Story *story);
-void i7_story_stop_running_game(I7Story *story);
-gboolean i7_story_get_game_running(I7Story *story);
-void i7_story_set_use_git(I7Story *story, gboolean use_git);
-
-/* Skein pane, story-skein.c */
-I7Skein *i7_story_get_skein(I7Story *story);
+void i7_story_run_compiler_output(I7Story *self);
+void i7_story_test_compiler_output(I7Story *self);
+void i7_story_run_compiler_output_and_replay(I7Story *self);
+void i7_story_run_compiler_output_and_play_to_node(I7Story *self, I7Node *node);
+void i7_story_run_commands_from_node(I7Story *self, I7Node *node);
+void i7_story_run_compiler_output_and_entire_skein(I7Story *self);
+void i7_story_stop_running_game(I7Story *self);
+gboolean i7_story_get_game_running(I7Story *self);
+void i7_story_set_use_git(I7Story *self, gboolean use_git);
 
 /* Transcript pane, story-transcript.c */
-void i7_story_previous_changed(I7Story *story);
-void i7_story_next_changed(I7Story *story);
-void i7_story_previous_difference(I7Story *story);
-void i7_story_next_difference(I7Story *story);
-void i7_story_next_difference_skein(I7Story *story);
-void i7_story_show_node_in_transcript(I7Story *story, I7Node *node);
+void i7_story_previous_changed(I7Story *self);
+void i7_story_next_changed(I7Story *self);
+void i7_story_previous_difference(I7Story *self);
+void i7_story_next_difference(I7Story *self);
+void i7_story_next_difference_skein(I7Story *self);
+void i7_story_show_node_in_transcript(I7Story *self, I7Node *node);
 
 #endif

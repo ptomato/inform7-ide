@@ -22,7 +22,6 @@
 
 #include "panel.h"
 #include "story.h"
-#include "story-private.h"
 
 /* Helper function to insert @obj into @dict, under @key1/@key2. @key1 is
  created if it doesn't exist */
@@ -118,11 +117,11 @@ on_notify_elastic_tabstops(I7Story *story)
  dictionary with all the required keys; it may be that another port of Inform 7
  doesn't write all the keys */
 I7StoryFormat
-i7_story_get_story_format(I7Story *story)
+i7_story_get_story_format(I7Story *self)
 {
-	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
+	g_return_val_if_fail(self || I7_IS_STORY(self), 0);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
 	if(!obj)
 		return I7_STORY_FORMAT_GLULX; /* Default value */
@@ -130,34 +129,34 @@ i7_story_get_story_format(I7Story *story)
 }
 
 void
-i7_story_set_story_format(I7Story *story, I7StoryFormat format)
+i7_story_set_story_format(I7Story *self, I7StoryFormat format)
 {
-	g_return_if_fail(story || I7_IS_STORY(story));
+	g_return_if_fail(self || I7_IS_STORY(self));
 	g_return_if_fail(format == I7_STORY_FORMAT_Z5 || format == I7_STORY_FORMAT_Z6 || format == I7_STORY_FORMAT_Z8 || format == I7_STORY_FORMAT_GLULX);
 
-	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
 	if(!obj) {
 		obj = plist_object_new(PLIST_OBJECT_INTEGER);
 		obj->integer.val = format;
 		insert_setting(settings, "IFOutputSettings", "IFSettingZCodeVersion", obj);
-		g_object_notify(G_OBJECT(story), "story-format");
+		g_object_notify(G_OBJECT(self), "story-format");
 		return;
 	}
 	if(obj->integer.val != (int) format) {
 		obj->integer.val = format;
-		g_object_notify(G_OBJECT(story), "story-format");
+		g_object_notify(G_OBJECT(self), "story-format");
 	}
 }
 
 gboolean
-i7_story_get_create_blorb(I7Story *story)
+i7_story_get_create_blorb(I7Story *self)
 {
-	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
+	g_return_val_if_fail(self || I7_IS_STORY(self), 0);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingCreateBlorb", -1);
 	if(!obj)
 		return TRUE; /* Default value */
@@ -165,33 +164,33 @@ i7_story_get_create_blorb(I7Story *story)
 }
 
 void
-i7_story_set_create_blorb(I7Story *story, gboolean create_blorb)
+i7_story_set_create_blorb(I7Story *self, gboolean create_blorb)
 {
-	g_return_if_fail(story || I7_IS_STORY(story));
+	g_return_if_fail(self || I7_IS_STORY(self));
 
-	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingCreateBlorb", -1);
 	if(!obj) {
 		obj = plist_object_new(PLIST_OBJECT_BOOLEAN);
 		obj->boolean.val = create_blorb;
 		insert_setting(settings, "IFOutputSettings", "IFSettingCreateBlorb", obj);
-		g_object_notify(G_OBJECT(story), "create-blorb");
+		g_object_notify(G_OBJECT(self), "create-blorb");
 		return;
 	}
 	if(obj->boolean.val != create_blorb) {
 		obj->boolean.val = create_blorb;
-		g_object_notify(G_OBJECT(story), "create-blorb");
+		g_object_notify(G_OBJECT(self), "create-blorb");
 	}
 }
 
 gboolean
-i7_story_get_nobble_rng(I7Story *story)
+i7_story_get_nobble_rng(I7Story *self)
 {
-	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
+	g_return_val_if_fail(self || I7_IS_STORY(self), 0);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingNobbleRng", -1);
 	if(!obj)
 		return FALSE; /* Default value */
@@ -199,33 +198,33 @@ i7_story_get_nobble_rng(I7Story *story)
 }
 
 void
-i7_story_set_nobble_rng(I7Story *story, gboolean nobble_rng)
+i7_story_set_nobble_rng(I7Story *self, gboolean nobble_rng)
 {
-	g_return_if_fail(story || I7_IS_STORY(story));
+	g_return_if_fail(self || I7_IS_STORY(self));
 
-	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFOutputSettings", "IFSettingNobbleRng", -1);
 	if(!obj) {
 		obj = plist_object_new(PLIST_OBJECT_BOOLEAN);
 		obj->boolean.val = nobble_rng;
 		insert_setting(settings, "IFOutputSettings", "IFSettingNobbleRng", obj);
-		g_object_notify(G_OBJECT(story), "nobble-rng");
+		g_object_notify(G_OBJECT(self), "nobble-rng");
 		return;
 	}
 	if(obj->boolean.val != nobble_rng) {
 		obj->boolean.val = nobble_rng;
-		g_object_notify(G_OBJECT(story), "nobble-rng");
+		g_object_notify(G_OBJECT(self), "nobble-rng");
 	}
 }
 
 gboolean
-i7_story_get_elastic_tabstops(I7Story *story)
+i7_story_get_elastic_tabstops(I7Story *self)
 {
-	g_return_val_if_fail(story || I7_IS_STORY(story), 0);
+	g_return_val_if_fail(self || I7_IS_STORY(self), 0);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFMiscSettings", "IFSettingElasticTabs", -1);
 	if(!obj)
 		return FALSE; /* Default value */
@@ -233,23 +232,23 @@ i7_story_get_elastic_tabstops(I7Story *story)
 }
 
 void
-i7_story_set_elastic_tabstops(I7Story *story, gboolean elastic_tabstops)
+i7_story_set_elastic_tabstops(I7Story *self, gboolean elastic_tabstops)
 {
-	g_return_if_fail(story || I7_IS_STORY(story));
+	g_return_if_fail(self || I7_IS_STORY(self));
 
-	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
+	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
 
-	PlistObject *settings = I7_STORY_PRIVATE(story)->settings;
+	PlistObject *settings = i7_story_get_settings(self);
 	PlistObject *obj = plist_object_lookup(settings, "IFMiscSettings", "IFSettingElasticTabs", -1);
 	if(!obj) {
 		obj = plist_object_new(PLIST_OBJECT_BOOLEAN);
 		obj->boolean.val = elastic_tabstops;
 		insert_setting(settings, "IFMiscSettings", "IFSettingElasticTabs", obj);
-		g_object_notify(G_OBJECT(story), "elastic-tabstops");
+		g_object_notify(G_OBJECT(self), "elastic-tabstops");
 		return;
 	}
 	if(obj->boolean.val != elastic_tabstops) {
 		obj->boolean.val = elastic_tabstops;
-		g_object_notify(G_OBJECT(story), "elastic-tabstops");
+		g_object_notify(G_OBJECT(self), "elastic-tabstops");
 	}
 }
