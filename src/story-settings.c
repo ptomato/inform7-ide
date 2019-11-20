@@ -15,11 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
+
+#include "panel.h"
 #include "story.h"
 #include "story-private.h"
-#include "panel.h"
 
 /* Helper function to insert @obj into @dict, under @key1/@key2. @key1 is
  created if it doesn't exist */

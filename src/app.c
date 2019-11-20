@@ -15,16 +15,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
+#include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <signal.h>
-#include <errno.h>
+
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
-#include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcestyleschememanager.h>
+
 #include "app.h"
 #include "app-private.h"
 #include "actions.h"

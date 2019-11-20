@@ -17,12 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
+
 #include <gtk/gtk.h>
-#include "elastic.h"
 
 #include "app.h"
 #include "configfile.h"
+#include "elastic.h"
 
 /* calculate the width of the text between @start and @end */
 static int

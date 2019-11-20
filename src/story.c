@@ -15,18 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <errno.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <webkit/webkit.h>
 #include <gtksourceview/gtksourceiter.h>
-#include "osxcart/plist.h"
-#include "osxcart/rtf.h"
-#include "libchimara/chimara-glk.h"
-#include "libchimara/chimara-if.h"
-#include "story.h"
-#include "story-private.h"
+#include <libchimara/chimara-glk.h>
+#include <libchimara/chimara-if.h>
+#include <osxcart/plist.h>
+#include <osxcart/rtf.h>
+#include <webkit/webkit.h>
+
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
@@ -41,6 +43,8 @@
 #include "skein.h"
 #include "skein-view.h"
 #include "source-view.h"
+#include "story.h"
+#include "story-private.h"
 
 enum {
 	PROP_0,

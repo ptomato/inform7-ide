@@ -18,8 +18,10 @@
 #ifndef PREFS_H
 #define PREFS_H
 
-#include <glib-object.h>
+#include "config.h"
+
 #include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
 

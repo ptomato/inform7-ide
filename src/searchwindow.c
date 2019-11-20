@@ -15,20 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <stdarg.h>
-#include <libxml/HTMLparser.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceiter.h>
-#include <webkit/webkit.h>
-#include "searchwindow.h"
+#include <libxml/HTMLparser.h>
+#include <webkit2/webkit2.h>
+
 #include "app.h"
 #include "builder.h"
 #include "document.h"
 #include "error.h"
 #include "file.h"
 #include "extension.h"
+#include "searchwindow.h"
 #include "story.h"
 
 /* An index of the text of the documentation and example pages. Only built

@@ -18,6 +18,8 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
+#include "config.h"
+
 #include <glib-object.h>
 #include <goocanvas.h>
 

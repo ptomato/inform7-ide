@@ -18,11 +18,15 @@
 #ifndef _APP_H_
 #define _APP_H_
 
+#include "config.h"
+
 #include <stdarg.h>
+
 #include <glib-object.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourcestylescheme.h>
+
 #include "document.h"
 #include "prefs.h"
 

@@ -18,11 +18,14 @@
 #ifndef _SKEIN_H_
 #define _SKEIN_H_
 
+#include "config.h"
+
+#include <cairo.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <glib-object.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <goocanvas.h>
-#include <cairo.h>
+
 #include "node.h"
 
 typedef enum {

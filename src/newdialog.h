@@ -18,6 +18,8 @@
 #ifndef NEWDIALOG_H
 #define NEWDIALOG_H
 
+#include "config.h"
+
 #include <gtk/gtk.h>
 
 GtkWidget *create_new_dialog(void);

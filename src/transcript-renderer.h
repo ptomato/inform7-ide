@@ -18,6 +18,8 @@
 #ifndef __TRANSCRIPT_RENDERER_H__
 #define __TRANSCRIPT_RENDERER_H__
 
+#include "config.h"
+
 #include <glib-object.h>
 #include <gtk/gtk.h>
 

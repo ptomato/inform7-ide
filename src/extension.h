@@ -18,8 +18,11 @@
 #ifndef _EXTENSION_H_
 #define _EXTENSION_H_
 
-#include <glib-object.h>
+#include "config.h"
+
 #include <glib.h>
+#include <glib-object.h>
+
 #include "app.h"
 #include "document.h"
 #include "source-view.h"

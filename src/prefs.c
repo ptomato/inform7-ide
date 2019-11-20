@@ -15,15 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
-#include "prefs.h"
+
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
 #include "error.h"
+#include "prefs.h"
 
 #define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-2.0"
 

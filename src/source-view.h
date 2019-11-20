@@ -18,6 +18,8 @@
 #ifndef _SOURCE_VIEW_H_
 #define _SOURCE_VIEW_H_
 
+#include "config.h"
+
 #include <glib-object.h>
 #include <gtk/gtk.h>
 

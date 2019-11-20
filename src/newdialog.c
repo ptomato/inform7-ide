@@ -15,15 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
+#include "config.h"
 
-#include "newdialog.h"
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
 #include "error.h"
 #include "extension.h"
+#include "newdialog.h"
 #include "story.h"
 #include "welcomedialog.h"
 

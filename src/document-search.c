@@ -15,12 +15,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceiter.h>
 #include <webkit/webkit.h>
+
 #include "document.h"
 #include "document-private.h"
 #include "searchwindow.h"

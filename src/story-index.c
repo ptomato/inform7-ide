@@ -15,14 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <webkit/webkit.h>
-#include "story.h"
-#include "story-private.h"
+
 #include "html.h"
 #include "panel.h"
+#include "story.h"
+#include "story-private.h"
 
 static void
 load_index_file(I7Story *story, int counter)

@@ -18,9 +18,12 @@
 #ifndef _SEARCHWINDOW_H
 #define _SEARCHWINDOW_H
 
-#include <glib-object.h>
+#include "config.h"
+
 #include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
+
 #include "document.h"
 
 #define I7_TYPE_SEARCH_WINDOW            (i7_search_window_get_type())

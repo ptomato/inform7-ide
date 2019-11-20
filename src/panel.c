@@ -15,18 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
+#include "config.h"
+
 #include <math.h>
+#include <string.h>
+
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <libchimara/chimara-if.h>
 #include <webkit/webkit.h>
 #include <JavaScriptCore/JavaScript.h>
-#include <libchimara/chimara-if.h>
 
-#include "panel.h"
-#include "panel-private.h"
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
@@ -35,6 +36,8 @@
 #include "file.h"
 #include "history.h"
 #include "html.h"
+#include "panel.h"
+#include "panel-private.h"
 #include "skein-view.h"
 #include "transcript-renderer.h"
 

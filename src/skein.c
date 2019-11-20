@@ -15,16 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <errno.h>
-#include <gtk/gtk.h>
+
 #include <gio/gio.h>
 #include <glib/gi18n.h>
+#include <goocanvas.h>
+#include <gtk/gtk.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <goocanvas.h>
 
-#include "skein.h"
 #include "node.h"
+#include "skein.h"
 
 #define VALID_ITER(iter, priv) ( \
 	(iter) != NULL \
