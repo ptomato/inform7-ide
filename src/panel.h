@@ -102,6 +102,12 @@ typedef struct {
 	void (*display_index_page)(I7Panel *self, I7PaneIndexTab tabnum);
 } I7PanelClass;
 
+typedef struct {
+  I7PanelPane pane;
+  int tab;
+  char *page;
+} I7PanelHistory;
+
 extern const char * const i7_panel_index_names[];
 
 GType i7_panel_get_type() G_GNUC_CONST;
@@ -113,5 +119,7 @@ void i7_panel_goto_extensions_docpage(I7Panel *self, GFile *file);
 void i7_panel_update_tabs(I7Panel *self);
 void i7_panel_update_fonts(I7Panel *self);
 void i7_panel_update_font_sizes(I7Panel *self);
+void i7_panel_push_history_item(I7Panel *self, I7PanelHistory *item);
+I7PanelHistory *i7_panel_get_current_history_item(I7Panel *self);
 
 #endif /* _PANEL_H_ */

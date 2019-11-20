@@ -20,7 +20,6 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 #include "story.h"
-#include "story-private.h"
 #include "html.h"
 #include "panel.h"
 

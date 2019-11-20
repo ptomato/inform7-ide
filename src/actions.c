@@ -983,16 +983,14 @@ action_enable_elastic_tabstops_toggled(GtkToggleAction *action, I7Document *docu
 void
 action_go(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output, NULL);
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output, NULL);
 }
 
 /* Play->Test Me */
 void
 action_test_me(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_test_compiler_output, NULL);
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_test_compiler_output, NULL);
 }
 
 /* Play->Stop */
@@ -1006,24 +1004,21 @@ action_stop(GtkAction *action, I7Story *story)
 void
 action_refresh_index(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_show_pane, GUINT_TO_POINTER(I7_PANE_INDEX));
-	i7_story_compile(story, FALSE, TRUE);
+	i7_story_compile(story, FALSE, TRUE, (CompileActionFunc)i7_story_show_pane, GUINT_TO_POINTER(I7_PANE_INDEX));
 }
 
 /* Replay->Replay Last Commands */
 void
 action_replay(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_replay, NULL);
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_replay, NULL);
 }
 
 /* Replay->Replay Commands Blessed in Transcript */
 void
 action_play_all_blessed(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
 }
 
 /* Replay->Show Last Command */
@@ -1084,8 +1079,7 @@ void
 action_release(GtkAction *action, I7Story *story)
 {
 	/* TRANSLATORS: Release->Release... */
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_save_compiler_output, _("Save the game for release"));
-	i7_story_compile(story, TRUE, FALSE);
+	i7_story_compile(story, TRUE, FALSE, (CompileActionFunc)i7_story_save_compiler_output, _("Save the game for release"));
 }
 
 /* Release->Release for Testing... */
@@ -1093,8 +1087,7 @@ void
 action_save_debug_build(GtkAction *action, I7Story *story)
 {
 	/* TRANSLATORS: Release->Release for Testing... */
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_save_compiler_output, _("Save debug build"));
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_save_compiler_output, _("Save debug build"));
 }
 
 /* Release->Open Materials Folder */
@@ -1152,8 +1145,7 @@ finally:
 void
 action_export_ifiction_record(GtkAction *action, I7Story *story)
 {
-	i7_story_set_compile_finished_action(story, (CompileActionFunc)i7_story_save_ifiction, NULL);
-	i7_story_compile(story, FALSE, FALSE);
+	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_save_ifiction, NULL);
 }
 
 /* Help->Contents */
