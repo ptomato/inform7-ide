@@ -21,7 +21,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-void on_open_extension_readonly_activate(GtkMenuItem *menuitem, gchar *path);
-void on_open_extension_activate(GtkMenuItem *menuitem, gchar *path);
+void on_open_extension_readonly_activate(GtkMenuItem *menuitem, GFile *file);
+void on_open_extension_activate(GtkMenuItem *menuitem, GFile *file);
 
 #endif /* _ACTIONS_H_ */
