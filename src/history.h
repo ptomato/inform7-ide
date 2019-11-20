@@ -18,7 +18,10 @@
 #ifndef _HISTORY_H
 #define _HISTORY_H
 
+#include "config.h"
+
 #include <glib.h>
+
 #include "panel.h"
 
 void i7_panel_history_free(I7PanelHistory *self);

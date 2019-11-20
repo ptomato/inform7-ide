@@ -15,16 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
+
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
-#include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
-#include "document.h"
+
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
+#include "document.h"
 #include "elastic.h"
 #include "error.h"
 #include "file.h"

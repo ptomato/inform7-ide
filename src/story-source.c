@@ -15,15 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
+
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
-#include "story.h"
+
 #include "app.h"
 #include "configfile.h"
 #include "document.h"
 #include "panel.h"
+#include "story.h"
 
 /* Following two functions adapted from gtksourceview. We could use
 gtk_source_view_set_auto_indent(), but that auto-indents leading spaces as well

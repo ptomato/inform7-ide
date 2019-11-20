@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "config.h"
+
 #include <glib.h>
 
 gboolean word_diff(const char *expected, const char *actual, GList **expected_diffs, GList **actual_diffs);

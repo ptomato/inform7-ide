@@ -15,18 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sys/types.h>
-#include <sys/wait.h>
+#include "config.h"
+
 #include <errno.h>
 #include <stdlib.h>
-#include <gtk/gtk.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
-
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
 
 #ifdef E2FS_UUID
 #  include <uuid/uuid.h> /* Use e2fsprogs uuid */
@@ -40,11 +39,11 @@
 
 #define INFORM6_COMPILER_NAME "inform6"
 
-#include "story.h"
 #include "configfile.h"
 #include "error.h"
 #include "html.h"
 #include "spawn.h"
+#include "story.h"
 
 typedef struct _CompilerData {
 	I7Story *story;

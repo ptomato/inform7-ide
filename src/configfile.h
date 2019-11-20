@@ -18,6 +18,8 @@
 #ifndef CONFIG_FILE_H
 #define CONFIG_FILE_H
 
+#include "config.h"
+
 #include <glib.h>
 #include <pango/pango.h>
 

@@ -18,16 +18,21 @@
 #ifndef STORY_H
 #define STORY_H
 
+#include "config.h"
+
 #include <stdarg.h>
-#include <glib-object.h>
+
 #include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 #include <osxcart/plist.h>
+
 #include "app.h"
 #include "document.h"
 #include "panel.h"
 #include "skein.h"
+#include "story.h"
 
 typedef enum {
 	I7_STORY_FORMAT_Z5 = 5,  /* deprecated, only used in old projects */

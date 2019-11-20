@@ -18,7 +18,10 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include "config.h"
+
 #include <stdarg.h>
+
 #include <glib.h>
 #include <gtk/gtk.h>
 

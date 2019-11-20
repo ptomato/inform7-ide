@@ -18,6 +18,8 @@
 #ifndef _BUILDER_H_
 #define _BUILDER_H_
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 

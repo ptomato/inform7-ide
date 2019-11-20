@@ -15,14 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
-#include <glib-object.h>
+
+#include <cairo.h>
+#include <gdk/gdk.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gdk/gdk.h>
 #include <pango/pango.h>
-#include <cairo.h>
+
 #include "transcript-renderer.h"
 
 typedef enum  {

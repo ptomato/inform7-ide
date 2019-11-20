@@ -15,13 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
-#include "configfile.h"
+
 #include "app.h"
 #include "builder.h"
+#include "configfile.h"
 #include "error.h"
 #include "story.h"
 

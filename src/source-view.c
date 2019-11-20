@@ -15,15 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtkspell/gtkspell.h>
-#include "source-view.h"
+
 #include "app.h"
 #include "builder.h"
 #include "elastic.h"
 #include "error.h"
+#include "source-view.h"
 
 #define CONTENTS_FALLBACK_BG_COLOR "#FFFFBF"
 #define CONTENTS_FALLBACK_FG_COLOR "black"

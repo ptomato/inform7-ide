@@ -18,6 +18,8 @@
 #ifndef __ELASTIC_H__
 #define __ELASTIC_H__
 
+#include "config.h"
+
 #include <gtk/gtk.h>
 
 gboolean elastic_recalculate_view(GtkTextView *view);

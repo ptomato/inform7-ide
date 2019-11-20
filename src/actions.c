@@ -18,14 +18,17 @@
 /* All the callbacks for the "activate" signal of the GtkActions from the main
  menu and toolbar of document windows. */
 
+#include "config.h"
+
 #include <errno.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <webkit2/webkit2.h>
 #include <gtksourceview/gtksource.h>
-#include <config.h>
+#include <webkit2/webkit2.h>
 
+#include "actions.h"
 #include "app.h"
 #include "builder.h"
 #include "document.h"

@@ -15,14 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <libchimara/chimara-glk.h>
 #include <libchimara/chimara-if.h>
-#include "story.h"
+
 #include "error.h"
 #include "node.h"
 #include "skein.h"
+#include "story.h"
 
 /* Methods of I7Story having to do with the Story (formerly called Game) pane:
  - callbacks for when the compiler tool chain is finished

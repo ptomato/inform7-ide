@@ -15,15 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <pwd.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
-#include "file.h"
+
 #include "configfile.h"
 #include "error.h"
+#include "file.h"
 #include "story.h"
 #include "document.h"
 

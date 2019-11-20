@@ -18,6 +18,8 @@
 #ifndef __PLACEHOLDER_ENTRY_H__
 #define __PLACEHOLDER_ENTRY_H__
 
+#include "config.h"
+
 #include <glib-object.h>
 
 #define I7_TYPE_PLACEHOLDER_ENTRY         (i7_placeholder_entry_get_type())

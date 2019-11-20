@@ -18,6 +18,8 @@
 #ifndef LANG_H
 #define LANG_H
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtksourceview/gtksource.h>
 

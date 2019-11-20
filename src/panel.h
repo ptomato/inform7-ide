@@ -18,9 +18,12 @@
 #ifndef _PANEL_H_
 #define _PANEL_H_
 
-#include <glib-object.h>
+#include "config.h"
+
 #include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
+
 #include "source-view.h"
 
 #define I7_TYPE_PANEL             (i7_panel_get_type())

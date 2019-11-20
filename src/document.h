@@ -18,8 +18,10 @@
 #ifndef _DOCUMENT_H_
 #define _DOCUMENT_H_
 
-#include <glib-object.h>
+#include "config.h"
+
 #include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 

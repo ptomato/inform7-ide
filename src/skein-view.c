@@ -15,11 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <gdk/gdkkeysyms.h>
 #include <goocanvas.h>
-#include "skein-view.h"
-#include "skein.h"
+
 #include "node.h"
+#include "skein.h"
+#include "skein-view.h"
 
 typedef struct _I7SkeinViewPrivate
 {

@@ -18,10 +18,13 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include "config.h"
+
 #include <glib.h>
 #include <gtksourceview/gtksource.h>
-#include "story.h"
+
 #include "document.h"
+#include "story.h"
 
 char *read_source_file(GFile *file);
 void set_source_text(GtkSourceBuffer *buffer, gchar *text);

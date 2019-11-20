@@ -18,9 +18,12 @@
 #ifndef _SKEIN_VIEW_H_
 #define _SKEIN_VIEW_H_
 
+#include "config.h"
+
 #include <glib-object.h>
-#include "skein.h"
+
 #include "node.h"
+#include "skein.h"
 
 G_BEGIN_DECLS
 

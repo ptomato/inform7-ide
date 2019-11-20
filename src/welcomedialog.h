@@ -18,6 +18,8 @@
 #ifndef WELCOME_DIALOG_H
 #define WELCOME_DIALOG_H
 
+#include "config.h"
+
 #include <gtk/gtk.h>
 
 GtkWidget *create_welcome_dialog(void);

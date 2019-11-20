@@ -18,6 +18,8 @@
 #ifndef _SPAWN_H
 #define _SPAWN_H
 
+#include "config.h"
+
 #include <gtk/gtk.h>
 
 typedef void IOHookFunc(gpointer, gchar *);
