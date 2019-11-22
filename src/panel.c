@@ -90,29 +90,8 @@ find_real_file_for_inform_uri_scheme(const char *path)
 	} else
 		relative_path = g_build_filenamev(elements);
 
-	g_autoptr(GFile) parent = i7_app_get_data_file_va(theapp, "Resources", "doc_images", NULL);
+	g_autoptr(GFile) parent = g_file_new_for_uri("resource:///com/inform7/IDE/inform");
 	g_autoptr(GFile) real_file = g_file_resolve_relative_path(parent, relative_path);
-	if (g_file_query_exists(real_file, NULL))
-		return g_steal_pointer(&real_file);
-	g_object_unref(g_steal_pointer(&real_file));
-	g_object_unref(g_steal_pointer(&parent));
-
-	parent = i7_app_get_data_file_va(theapp, "Resources", "bg_images", NULL);
-	real_file = g_file_resolve_relative_path(parent, relative_path);
-	if(g_file_query_exists(real_file, NULL))
-		return g_steal_pointer(&real_file);
-	g_object_unref(g_steal_pointer(&real_file));
-	g_object_unref(g_steal_pointer(&parent));
-
-	parent = i7_app_get_data_file_va(theapp, "Resources", NULL);
-	real_file = g_file_resolve_relative_path(parent, relative_path);
-	if(g_file_query_exists(real_file, NULL))
-		return g_steal_pointer(&real_file);
-	g_object_unref(g_steal_pointer(&real_file));
-	g_object_unref(g_steal_pointer(&parent));
-
-	parent = i7_app_get_data_file_va(theapp, "Documentation", NULL);
-	real_file = g_file_resolve_relative_path(parent, relative_path);
 	if(g_file_query_exists(real_file, NULL))
 		return g_steal_pointer(&real_file);
 	g_object_unref(g_steal_pointer(&real_file));
@@ -166,40 +145,6 @@ handle_inform_uri(WebKitURISchemeRequest *request)
 }
 
 /* JAVASCRIPT METHODS */
-
-static const char *CONTENT_JAVASCRIPT_SOURCE =
-	"globalThis.Project = {"
-	"    selectView(view) { webkit.messageHandlers.selectView.postMessage(view); },"
-	"    pasteCode(code) { webkit.messageHandlers.pasteCode.postMessage(code); },"
-	"    openFile(file) { webkit.messageHandlers.openFile.postMessage(file); },"
-	"    openUrl(url) { webkit.messageHandlers.openUrl.postMessage(url); },"
-	"    askInterfaceForLocalVersion(author, title, compareWith) {"
-	"        if (typeof EXTENSIONS[author] === 'undefined' ||"
-	"            typeof EXTENSIONS[author][title] === 'undefined')"
-	"            return '';"
-	"        const { version, builtin } = EXTENSIONS[author][title];"
-	"        if (builtin)"
-	"            return '!';"
-	"        /* convert from internal representation to expected version string */"
-	"        const compareVersion = version === '' ? 'Version 1' : `Version ${version}`;"
-	"        const comparison = compareVersion > compareWith;"
-	"        if (comparison < 0)"
-	"            return '<';"
-	"        if (comparison > 0)"
-	"            return '>';"
-	"        return '=';"
-	"    },"
-	"    askInterfaceForLocalVersionText(author, title) {"
-	"        if (typeof EXTENSIONS[author] === 'undefined' ||"
-	"            typeof EXTENSIONS[author][title] === 'undefined')"
-	"            return undefined;"
-	"        const { version } = EXTENSIONS[author][title];"
-	"        return version === '' ? 'Version 1' : `Version ${version}`;"
-	"    },"
-	"    downloadMultipleExtensions(array) { "
-	"        webkit.messageHandlers.downloadMultipleExtensions.postMessage(array);"
-	"    },"
-	"};";
 
 /* Helper function: convert a string JSCValue to a NULL-terminated UTF-8 C
 string. Returns NULL error. Free result when done. */
@@ -580,22 +525,13 @@ action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
 	i7_story_next_difference_skein(story);
 }
 
-/* Helper function: display a documentation page in this panel */
-static void
-display_docpage_in_panel(I7Panel *panel, const char *filename)
-{
-	GFile *docs_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", filename, NULL);
-	i7_panel_goto_docpage(panel, docs_file);
-	g_object_unref(docs_file);
-}
-
 /* Signal handler for the action connected to the "Home" button in the panel
 toolbar when the Documentation panel is displayed. Displays index.html from the
 documentation. */
 void
 action_contents(GtkAction *action, I7Panel *panel)
 {
-	display_docpage_in_panel(panel, "index.html");
+	i7_panel_goto_doc_uri(panel, "inform:///index.html");
 }
 
 /* Signal handler for the action connected to the "Examples" button in the panel
@@ -604,7 +540,7 @@ examples_alphabetical.html from the documentation. */
 void
 action_examples(GtkAction *action, I7Panel *panel)
 {
-	display_docpage_in_panel(panel, "examples_alphabetical.html");
+	i7_panel_goto_doc_uri(panel, "inform:///examples_alphabetical.html");
 }
 
 /* Signal handler for the action connected to the "General Index" button in the
@@ -613,7 +549,7 @@ general_index.html from the documentation. */
 void
 action_general_index(GtkAction *action, I7Panel *panel)
 {
-	display_docpage_in_panel(panel, "general_index.html");
+	i7_panel_goto_doc_uri(panel, "inform:///general_index.html");
 }
 
 /* Signal handler for the action connected to the "Home" button in the panel
@@ -654,9 +590,7 @@ on_public_library_load_changed(WebKitWebView *html, WebKitLoadEvent status, GtkA
 static gboolean
 on_public_library_load_failed(WebKitWebView *html, WebKitLoadEvent status, char *uri, GError *web_error)
 {
-	GFile *pl404 = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "pl404.html", NULL);
-	html_load_file(html, pl404);
-	g_object_unref(pl404);
+	webkit_web_view_load_uri(html, "inform:///en/pl404.html");
 	return TRUE; /* event handled */
 }
 
@@ -710,9 +644,16 @@ add_user_content(WebKitUserContentManager *content, I7App *theapp)
 		NULL,
 	};
 
-	g_autoptr(WebKitUserScript) content_javascript = webkit_user_script_new(CONTENT_JAVASCRIPT_SOURCE,
-		WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
-		javascript_allowed_uris, /* block_list = */ NULL);
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GBytes) content_javascript_source = g_resources_lookup_data("/com/inform7/IDE/internal.js",
+		G_RESOURCE_LOOKUP_FLAGS_NONE, &error);
+	if (!content_javascript_source)
+		g_error("failed to lookup resource: %s", error->message);
+
+	g_autoptr(WebKitUserScript) content_javascript =
+		webkit_user_script_new(g_bytes_get_data(content_javascript_source, NULL),
+			WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
+			javascript_allowed_uris, /* block_list = */ NULL);
 	webkit_user_content_manager_add_script(content, content_javascript);
 
 	g_autofree char *extensions_javascript_source = build_extensions_javascript_source(theapp);
@@ -787,10 +728,9 @@ i7_panel_init(I7Panel *self)
 	g_type_ensure(WEBKIT_TYPE_SETTINGS);
 	g_type_ensure(WEBKIT_TYPE_WEB_VIEW);
 	g_type_ensure(WEBKIT_TYPE_USER_CONTENT_MANAGER);
-	GFile *file = i7_app_get_data_file_va(theapp, "ui", "panel.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
-	
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/panel.ui");
+	gtk_builder_connect_signals(builder, self);
+
 	/* Make the action groups */
 	priv->common_action_group = GTK_ACTION_GROUP(load_object(builder, "panel_actions"));
 	priv->skein_action_group = GTK_ACTION_GROUP(load_object(builder, "skein_actions"));
@@ -805,11 +745,7 @@ i7_panel_init(I7Panel *self)
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->transcript_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->documentation_action_group, 0);
 	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->extensions_action_group, 0);
-	file = i7_app_get_data_file_va(theapp, "ui", "panel.uimanager.xml", NULL);
-	char *path = g_file_get_path(file);
-	gtk_ui_manager_add_ui_from_file(priv->ui_manager, path, &error);
-	g_free(path);
-	g_object_unref(file);
+	gtk_ui_manager_add_ui_from_resource(priv->ui_manager, "/com/inform7/IDE/ui/panel.uimanager.xml", &error);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	self->toolbar = gtk_ui_manager_get_widget(priv->ui_manager, "/PanelToolbar");
@@ -922,9 +858,6 @@ i7_panel_init(I7Panel *self)
 	pango_font_description_free(stdfont);
 	pango_font_description_free(monofont);
 
-	/* Builder object not needed anymore */
-	g_object_unref(builder);
-
 	priv->content = WEBKIT_USER_CONTENT_MANAGER(load_object(builder, "content"));
 	if (!webkit_user_content_manager_register_script_message_handler(priv->content, "selectView") ||
 	    !webkit_user_content_manager_register_script_message_handler(priv->content, "pasteCode") ||
@@ -941,12 +874,9 @@ i7_panel_init(I7Panel *self)
 	add_user_content(priv->content, theapp);
 
 	/* Load the documentation and extension pages */
-	file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
-	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file);
-	g_object_unref(file);
-	file = i7_app_get_extension_home_page(theapp);
+	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), "inform:///index.html");
+	g_autoptr(GFile) file = i7_app_get_extension_home_page(theapp);
 	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), file);
-	g_object_unref(file);
 }
 
 static void
@@ -1064,7 +994,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 	if(scheme == NULL)
 		scheme = g_strdup("file");
 
-	if(strcmp(scheme, "about") == 0) {
+	if(strcmp(scheme, "about") == 0 || strcmp(scheme, "resource") == 0) {
 		/* These are protocols that we explicitly allow WebKit to load */
 		g_free(scheme);
 		webkit_policy_decision_use(decision);
@@ -1245,14 +1175,14 @@ i7_panel_new()
  * @self: the panel
  * @pane: the pane to go to after resetting the history queue
  * @tab: the subtab of @pane to go to after resetting the queue
- * @page_file: the file to display in the documentation pane after resetting
- * the queue, or %NULL
+ * @page_uri: (nullable): the URI to display in the documentation pane after
+ * resetting the queue
  *
  * Set the tab and subtab and reset the history queue. Display that item in
  * the panel.
  */
 void
-i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file)
+i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, const char *page_uri)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	history_free_queue(self);
@@ -1260,7 +1190,7 @@ i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file)
 	I7PanelHistory *item = g_slice_new0(I7PanelHistory);
 	item->pane = pane;
 	item->tab = tab;
-	item->page = page_file? g_file_get_uri(page_file) : NULL;
+	item->page = page_uri ? g_strdup(page_uri) : NULL;
 	g_queue_push_head(priv->history, item);
 	priv->current = 0;
 	history_goto_current(self);
@@ -1270,6 +1200,19 @@ void
 i7_panel_goto_docpage(I7Panel *self, GFile *file)
 {
 	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), file);
+}
+
+/**
+ * i7_panel_goto_doc_uri:
+ * @self: the panel
+ * @uri: the URI to display
+ *
+ * Display @uri in the documentation pane of @self.
+ */
+void
+i7_panel_goto_doc_uri(I7Panel *self, const char *uri)
+{
+	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), uri);
 }
 
 void

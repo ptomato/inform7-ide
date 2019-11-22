@@ -453,11 +453,7 @@ i7_extension_init(I7Extension *self)
 	priv->readonly = FALSE;
 
 	/* Build the menus and toolbars from the GtkUIManager file */
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "extension.uimanager.xml", NULL);
-	char *path = g_file_get_path(file);
-	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, path, &error);
-	g_free(path);
-	g_object_unref(file);
+	gtk_ui_manager_add_ui_from_resource(I7_DOCUMENT(self)->ui_manager, "/com/inform7/IDE/ui/extension.uimanager.xml", &error);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/ExtensionMenubar");

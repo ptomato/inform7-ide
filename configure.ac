@@ -300,6 +300,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
+src/inform/licenses/license.html
 src/inform6/Makefile
 src/inlib/Makefile
 src/inweb/Makefile
@@ -308,9 +309,6 @@ src/cBlorb/Makefile
 src/ni/Makefile
 po/Makefile.in
 data/Makefile
-data/ui/Makefile
-data/licenses/Makefile
-data/licenses/license.html
 data/highlighting/Makefile
 data/mime/Makefile
 data/styles/Makefile

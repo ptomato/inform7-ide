@@ -144,9 +144,8 @@ i7_app_init(I7App *self)
 	env = g_getenv("GNOME_INFORM_LIBEXEC_DIR");
 	priv->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
 
-	GFile *builderfile = i7_app_get_data_file(self, "ui/gnome-inform7.ui");
-	GtkBuilder *builder = create_new_builder(builderfile, self);
-	g_object_unref(builderfile);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/gnome-inform7.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Make the action group and ref it so that it won't be owned by whatever
 	UI manager it's inserted into */
@@ -203,8 +202,6 @@ i7_app_init(I7App *self)
 
 	/* Set up signals for GSettings keys. */
 	init_config_file(priv->prefs_settings);
-
-	g_object_unref(builder);
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
 	priv->color_scheme_manager = create_color_scheme_manager(self);
@@ -1365,69 +1362,6 @@ i7_app_get_data_file_va(I7App *self, const char *path1, ...)
 	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
 		"Please reinstall Inform 7."), lastarg); /* argument before NULL */
 	return NULL;
-}
-
-/**
- * i7_app_check_data_file:
- * @self: the app
- * @filename: the basename of the data file
- *
- * Locates @filename in the application data directory. Used when we do not
- * necessarily want to display an error if it does not exist.
- *
- * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
- * found.
- */
-GFile *
-i7_app_check_data_file(I7App *self, const char *filename)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GFile *retval = g_file_get_child(priv->datadir, filename);
-
-	if(!g_file_query_exists(retval, NULL)) {
-		g_object_unref(retval);
-		return NULL;
-	}
-
-	return retval;
-}
-
-/**
- * i7_app_check_data_file_va:
- * @self: the app
- * @path1: first component of the path
- * @...: subsequent path components, ending with %NULL.
- *
- * Locates a file in a subdirectory of the application data directory. Used when
- * we do not necessarily want to display an error if it does not exist.
- *
- * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
- * found.
- */
-GFile *
-i7_app_check_data_file_va(I7App *self, const char *path1, ...)
-{
-	va_list ap;
-	GFile *retval, *previous;
-	char *arg;
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	retval = previous = g_file_get_child(priv->datadir, path1);
-
-	va_start(ap, path1);
-	while((arg = va_arg(ap, char *)) != NULL) {
-		retval = g_file_get_child(previous, arg);
-		g_object_unref(previous);
-		previous = retval;
-	}
-	va_end(ap);
-
-	if(!g_file_query_exists(retval, NULL)) {
-		g_object_unref(retval);
-		return NULL;
-	}
-
-	return retval;
 }
 
 /**

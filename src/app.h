@@ -120,8 +120,6 @@ GFile *i7_app_get_extension_index_page(I7App *self);
 GFile *i7_app_get_internal_dir(I7App *self);
 GFile *i7_app_get_data_file(I7App *self, const char *filename);
 GFile *i7_app_get_data_file_va(I7App *self, const char *path1, ...) G_GNUC_NULL_TERMINATED;
-GFile *i7_app_check_data_file(I7App *self, const char *filename);
-GFile *i7_app_check_data_file_va(I7App *self, const char *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_get_binary_file(I7App *self, const char *filename);
 GFile *i7_app_get_config_dir(I7App *self);
 
