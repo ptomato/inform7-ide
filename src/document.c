@@ -131,9 +131,8 @@ i7_document_init(I7Document *self)
 	gtk_widget_set_size_request(GTK_WIDGET(self), 200, 100);
 
 	/* Build the interface */
-	GFile *file = i7_app_get_data_file_va(theapp, "ui", "document.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/document.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Create the private properties */
 	priv->file = NULL;
@@ -221,8 +220,6 @@ i7_document_init(I7Document *self)
 	/* Show statusbar if necessary */
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")),
 		g_settings_get_boolean(state, PREFS_STATE_SHOW_STATUSBAR));
-
-	g_object_unref(builder);
 }
 
 static void
@@ -276,11 +273,7 @@ i7_document_add_menus_and_findbar(I7Document *self)
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GError *error = NULL;
 
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "gnome-inform7.uimanager.xml", NULL);
-	char *path = g_file_get_path(file);
-	gtk_ui_manager_add_ui_from_file(self->ui_manager, path, &error);
-	g_free(path);
-	g_object_unref(file);
+	gtk_ui_manager_add_ui_from_resource(self->ui_manager, "/com/inform7/IDE/ui/gnome-inform7.uimanager.xml", &error);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 

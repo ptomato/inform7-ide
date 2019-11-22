@@ -89,6 +89,7 @@ I7StoryPanel i7_story_choose_panel(I7Story *self, I7PanelPane newtab);
 void i7_story_show_pane(I7Story *self, I7PanelPane pane);
 void i7_story_show_tab(I7Story *self, I7PanelPane pane, int tab);
 void i7_story_show_docpage(I7Story *self, GFile *file);
+void i7_story_show_doc_uri(I7Story *self, const char *uri);
 void i7_story_show_docpage_at_anchor(I7Story *self, GFile *file, const char *anchor);
 GFile *i7_story_get_old_materials_file(I7Story *self);
 GFile *i7_story_get_materials_file(I7Story *self);

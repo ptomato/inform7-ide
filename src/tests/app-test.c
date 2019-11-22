@@ -49,23 +49,14 @@ test_app_files(void)
 	GFile *file;
 	I7App *theapp = i7_app_get();
 
-	file = i7_app_check_data_file(theapp, "Extensions");
-	check_file(file, "Extensions");
-
-	file = i7_app_check_data_file_va(theapp, "ui", "gnome-inform7.ui", NULL);
-	check_file(file, "gnome-inform7.ui");
-	
 	file = i7_app_get_data_file(theapp, "Extensions");
 	check_file(file, "Extensions");
 
-	file = i7_app_get_data_file_va(theapp, "ui", "gnome-inform7.ui", NULL);
-	check_file(file, "gnome-inform7.ui");
+	file = i7_app_get_data_file_va(theapp, "highlighting", "inform.lang", NULL);
+	check_file(file, "inform.lang");
 
 	file = i7_app_get_binary_file(theapp, "ni");
 	check_file(file, "ni");
-
-	g_assert(i7_app_check_data_file(theapp, "nonexistent") == NULL);
-	g_assert(i7_app_check_data_file_va(theapp, "nonexistent", "nonexistent", NULL) == NULL);
 
 	/* TODO: How to test the functions that open an error dialog when they fail? */
 }

@@ -115,8 +115,9 @@ extern const char * const i7_panel_index_names[];
 
 GType i7_panel_get_type() G_GNUC_CONST;
 GtkWidget *i7_panel_new();
-void i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file);
+void i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, const char *page_uri);
 void i7_panel_goto_docpage(I7Panel *self, GFile *file);
+void i7_panel_goto_doc_uri(I7Panel *self, const char *uri);
 void i7_panel_goto_docpage_at_anchor(I7Panel *self, GFile *file, const char *anchor);
 void i7_panel_goto_extensions_docpage(I7Panel *self, GFile *file);
 void i7_panel_update_tabs(I7Panel *self);

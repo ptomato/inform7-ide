@@ -1155,18 +1155,14 @@ action_export_ifiction_record(GtkAction *action, I7Story *story)
 void
 action_help_contents(GtkAction *action, I7Story *story)
 {
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "index.html", NULL);
-	i7_story_show_docpage(story, file);
-	g_object_unref(file);
+	i7_story_show_doc_uri(story, "inform:///index.html");
 }
 
 /* Help->License */
 void
 action_help_license(GtkAction *action, I7Story *story)
 {
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "licenses", "license.html", NULL);
-	i7_story_show_docpage(story, file);
-	g_object_unref(file);
+	i7_story_show_doc_uri(story, "inform:///licenses/license.html");
 }
 
 /* Help->Help on Installed Extensions */
@@ -1189,9 +1185,7 @@ action_help_extensions(GtkAction *action, I7Story *story)
 void
 action_help_recipe_book(GtkAction *action, I7Story *story)
 {
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "Documentation", "Rallegs.html", NULL);
-	i7_story_show_docpage(story, file);
-	g_object_unref(file);
+	i7_story_show_doc_uri(story, "inform:///Rallegs.html");
 }
 
 /* Help->Visit Inform7.com */

@@ -52,9 +52,8 @@ i7_source_view_init(I7SourceView *self)
 	priv->spell = NULL;
 
 	/* Build the interface */
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "source.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/source.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Make our base-class frame invisible */
 	gtk_frame_set_label(GTK_FRAME(self), NULL);
@@ -87,9 +86,6 @@ i7_source_view_init(I7SourceView *self)
 
 	/* Turn to the default page */
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(self->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
-
-	/* Builder object not needed anymore */
-	g_object_unref(builder);
 }
 
 static void

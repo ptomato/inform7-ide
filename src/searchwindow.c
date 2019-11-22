@@ -303,9 +303,8 @@ i7_search_window_init(I7SearchWindow *self)
 	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
 
 	/* Build the interface from the builder file */
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "searchwindow.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/searchwindow.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
@@ -325,9 +324,6 @@ i7_search_window_init(I7SearchWindow *self)
 	LOAD_WIDGET(search_text);
 	LOAD_WIDGET(results_view);
 	LOAD_WIDGET(spinner);
-
-	/* Builder object not needed anymore */
-	g_object_unref(builder);
 }
 
 static void
@@ -603,7 +599,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 	GError *err;
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
-		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", NULL);
+		g_autoptr(GFile) doc_file = g_file_new_for_uri("resource:///com/inform7/IDE/inform");
 
 		GFileEnumerator *docdir;
 		if((docdir = g_file_enumerate_children(doc_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err)) == NULL) {
@@ -644,7 +640,6 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 				g_slist_free(doctexts);
 			}
 		}
-		g_object_unref(doc_file);
 
 		stop_spinner(self);
 		update_label(self);
