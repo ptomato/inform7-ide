@@ -866,9 +866,8 @@ i7_story_init(I7Story *self)
 	int w, h, x, y;
 
 	/* Build the interface */
-	GFile *file = i7_app_get_data_file_va(theapp, "ui", "story.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/story.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Make the action groups */
 	priv->story_action_group = GTK_ACTION_GROUP(load_object(builder, "story_actions"));
@@ -877,11 +876,7 @@ i7_story_init(I7Story *self)
 	/* Build the menus and toolbars from the GtkUIManager file */
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->story_action_group, 0);
 	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->compile_action_group, 1);
-	file = i7_app_get_data_file_va(theapp, "ui", "story.uimanager.xml", NULL);
-	char *path = g_file_get_path(file);
-	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, path, &error);
-	g_free(path);
-	g_object_unref(file);
+	gtk_ui_manager_add_ui_from_resource(I7_DOCUMENT(self)->ui_manager, "/com/inform7/IDE/ui/story.uimanager.xml", &error);
 	if(error)
 		ERROR(_("Building menus failed"), error);
 	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/StoryMenubar");
@@ -931,17 +926,12 @@ i7_story_init(I7Story *self)
 	/* Build the two panels */
 	self->panel[LEFT] = I7_PANEL(i7_panel_new());
 	self->panel[RIGHT] = I7_PANEL(i7_panel_new());
-	GFile *docs_file = i7_app_get_data_file_va(theapp, "Documentation", "index.html", NULL);
 	i7_panel_reset_queue(self->panel[LEFT], I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_SOURCE, NULL);
-	i7_panel_goto_docpage(self->panel[LEFT], docs_file);
-	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, docs_file);
-	g_object_unref(docs_file);
+	i7_panel_goto_doc_uri(self->panel[LEFT], "inform:///index.html");
+	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, "inform:///index.html");
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
 	gtk_paned_pack2(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[RIGHT]), TRUE, FALSE);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), self->facing_pages, TRUE, TRUE, 0);
-
-	/* Builder object not needed anymore */
-	g_object_unref(builder);
 
 	/* Set the last saved window size and slider position */
 	g_settings_get(state, PREFS_STATE_WINDOW_SIZE, "(ii)", &w, &h);
@@ -1461,6 +1451,21 @@ i7_story_show_docpage(I7Story *story, GFile *file)
 	I7StoryPanel side = i7_story_choose_panel(story, I7_PANE_DOCUMENTATION);
 	i7_panel_goto_docpage(story->panel[side], file);
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(story->panel[side]->notebook), I7_PANE_DOCUMENTATION);
+}
+
+/**
+ * i7_story_show_doc_uri:
+ * @self: the story
+ * @uri: the URI to show
+ *
+ * Displays @uri on the most convenient panel of @self.
+ */
+void
+i7_story_show_doc_uri(I7Story *self, const char *uri)
+{
+	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_DOCUMENTATION);
+	i7_panel_goto_doc_uri(self->panel[side], uri);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(self->panel[side]->notebook), I7_PANE_DOCUMENTATION);
 }
 
 void

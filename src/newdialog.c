@@ -267,9 +267,8 @@ create_new_dialog(void)
 	I7NewProjectOptions *options = g_slice_new0(I7NewProjectOptions);
 	options->type = I7_NEW_PROJECT_INFORM7_STORY;
 
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "newdialog.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, options);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/newdialog.ui");
+	gtk_builder_connect_signals(builder, options);
 	options->assistant = GTK_WIDGET(load_object(builder, "newdialog"));
 	options->label = GTK_WIDGET(load_object(builder, "project_type_description"));
 	options->author_box = GTK_WIDGET(load_object(builder, "new_author"));
@@ -317,8 +316,6 @@ create_new_dialog(void)
 	gtk_tree_view_expand_to_path(tree, default_path);
 	gtk_tree_selection_select_path(select, default_path);
 	gtk_tree_path_free(default_path);
-
-	g_object_unref(builder);
 
 	return options->assistant;
 }

@@ -30,25 +30,6 @@
 /* TODO: Move all the GtkBuilder interface definitions into one file and use
  gtk_builder_add_objects_from_file() to build the appropriate ones */
 
-/* Create a new GtkBuilder from an interface definition file and connect its
- signals */
-GtkBuilder *
-create_new_builder(GFile *file, gpointer data)
-{
-	GError *error = NULL;
-	GtkBuilder *builder;
-
-	builder = gtk_builder_new();
-	char *path = g_file_get_path(file);
-	if(!gtk_builder_add_from_file(builder, path, &error))
-		ERROR(_("Error while building interface"), error);
-	g_free(path);
-
-	gtk_builder_connect_signals(builder, data);
-
-	return builder;
-}
-
 /* Return a pointer to the object called @name constructed by @builder */
 GObject *
 load_object(GtkBuilder *builder, const gchar *name)

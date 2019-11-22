@@ -241,6 +241,32 @@ dist_gitdoc_DATA = chimara/interpreters/git/README.txt
 
 CLEANFILES = chimara/interpreters/git/version.h
 
+INFORMTARBALL = Inform_@PACKAGE_VERSION@_data.tar.lz
+
+com.inform7.IDE.generated.gresource.xml: generate-resource-xml.py
+	$(AM_V_GEN) mkdir -p inform && \
+	$(UNLZMA) < $(top_srcdir)/data/$(INFORMTARBALL) | \
+		$(TAR) -xv -C inform --strip-components=1 Documentation Resources \
+		> resourcefiles.txt && \
+	$(srcdir)/generate-resource-xml.py <resourcefiles.txt >$@ && \
+	rm resourcefiles.txt
+resources-generated.c: com.inform7.IDE.generated.gresource.xml
+	$(AM_V_GEN) glib-compile-resources --target=$@ --generate-source --c-name i7g $<
+resources-generated.h: com.inform7.IDE.generated.gresource.xml
+	$(AM_V_GEN) glib-compile-resources --target=$@ --generate-header --c-name i7g $<
+BUILT_SOURCES += resources-generated.c resources-generated.h
+CLEANFILES += com.inform7.IDE.generated.gresource.xml
+GITIGNOREFILES = inform/*.html inform/*.css inform/*.png inform/bg_images \
+	inform/doc_images inform/en inform/map_icons inform/outcome_images \
+	inform/scene_icons
+
+resource_files := $(shell glib-compile-resources --sourcedir=$(srcdir) --sourcedir=$(builddir) --generate-dependencies $(srcdir)/com.inform7.IDE.gresource.xml)
+resources.c: com.inform7.IDE.gresource.xml $(resource_files)
+	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --sourcedir=$(builddir) --generate-source --c-name i7 $<
+resources.h: com.inform7.IDE.gresource.xml $(resource_files)
+	$(AM_V_GEN) glib-compile-resources --target=$@ --sourcedir=$(srcdir) --sourcedir=$(builddir) --generate-header --c-name i7 $<
+BUILT_SOURCES += resources.c resources.h
+
 libinform7gui_a_SOURCES = \
 	actions.c actions.h \
 	app.c app.h \
@@ -263,6 +289,8 @@ libinform7gui_a_SOURCES = \
 	panel.c panel.h \
 	placeholder-entry.c placeholder-entry.h \
 	prefs.c prefs.h \
+	resources.c resources.h \
+	resources-generated.c resources-generated.h \
 	searchwindow.c searchwindow.h \
 	skein.c skein.h \
 	skein-view.c skein-view.h \

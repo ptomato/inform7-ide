@@ -76,16 +76,14 @@ GtkWidget *
 create_welcome_dialog(void)
 {
 	I7App *theapp = i7_app_get();
-	GFile *file = i7_app_get_data_file_va(theapp, "ui", "welcomedialog.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, theapp);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/welcomedialog.ui");
+	gtk_builder_connect_signals(builder, theapp);
 	GtkWidget *retval = GTK_WIDGET(load_object(builder, "welcomedialog"));
 
 	/* Set the background pixmap for this window */
 	GtkRcStyle *newstyle = gtk_widget_get_modifier_style(retval);
-	file = i7_app_get_data_file_va(theapp, "Resources", "Welcome Background.png", NULL);
+	g_autoptr(GFile) file = i7_app_get_data_file_va(theapp, "Resources", "Welcome Background.png", NULL);
 	newstyle->bg_pixmap_name[GTK_STATE_NORMAL] = g_file_get_path(file); /* take ownership */
-	g_object_unref(file);
 	gtk_widget_modify_style(retval, newstyle);
 
 	/* Set the font size to 12 pixels for the widgets in this window */
@@ -100,7 +98,6 @@ create_welcome_dialog(void)
 		gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
 		g_object_unref(last_project);
 	}
-	g_object_unref(builder);
 
 	return retval;
 }

@@ -100,6 +100,31 @@ G_DEFINE_TYPE_WITH_PRIVATE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
 
 /* CALLBACKS */
 
+typedef struct {
+	GtkWindow *win;
+	GFile *temp_file;
+} CopyResourceClosure;
+
+/* Rarely-used callback for showing documentation page in browser after copying
+ * the GResource to a temporary file where the browser can see it. This happpens
+ * when searching an extension project (no facing pages).
+ * Note: this won't work under Flatpak, but it's a rare case and will go away
+ * when we have the new Extension projects with facing pages */
+void
+finish_copy_resource_to_temp(GFile *resource, GAsyncResult *res, CopyResourceClosure *data)
+{
+	g_autoptr(GtkWindow) win = data->win;
+	g_autoptr(GFile) temp_file = data->temp_file;
+	g_clear_pointer(&data, g_free);
+
+	GError *error = NULL;
+	if (!g_file_copy_finish(resource, res, &error)) {
+		g_warning("Couldn't open temporary file for browser: %s", error->message);
+		return;
+	}
+	show_file_in_browser(temp_file, win);
+}
+
 /* Callback for double-clicking on one of the search results */
 void
 on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, I7SearchWindow *self)
@@ -129,17 +154,34 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		 is a story with facing pages. Otherwise, open the documentation in
 		 the web browser. */
 		if(I7_IS_STORY(priv->document)) {
+			g_autofree char *page = g_file_get_basename(file);
+			g_autofree char *uri = g_strconcat("inform:///", page, NULL);
+			g_autoptr(GFile) inform_file = g_file_new_for_uri(uri);
 			/* Jump to the proper example */
-			char *filepath = g_file_get_path(file);
 			if(anchor != NULL) {
-				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), file, anchor);
+				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), inform_file, anchor);
 				g_free(anchor);
-			} else
-				i7_story_show_docpage(I7_STORY(priv->document), file);
-
-			g_free(filepath);
+			} else {
+				i7_story_show_docpage(I7_STORY(priv->document), inform_file);
+			}
 		} else {
-			show_file_in_browser(file, GTK_WINDOW(self));
+			/* Copy the GResource to a temporary file so it's available to the
+			 * browser */
+			g_autoptr(GError) error = NULL;
+			g_autoptr(GFileIOStream) stream = NULL;
+			g_autoptr(GFile) temp_file = g_file_new_tmp("inform-documentation-XXXXXX", &stream, &error);
+			if (temp_file == NULL) {
+				g_warning("Couldn't open temporary file for browser: %s", error->message);
+				break;
+			}
+
+			CopyResourceClosure *data = g_new(CopyResourceClosure, 1);
+			data->temp_file = g_steal_pointer(&temp_file);
+			data->win = GTK_WINDOW(g_object_ref(self));
+
+			g_file_copy_async(file, data->temp_file, G_FILE_COPY_OVERWRITE, G_PRIORITY_DEFAULT,
+				/* cancellable = */ NULL, /* progress_callback = */ NULL, /* data = */ NULL,
+				(GAsyncReadyCallback)finish_copy_resource_to_temp, data);
 		}
 	}
 		break;
@@ -302,9 +344,8 @@ i7_search_window_init(I7SearchWindow *self)
 	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
 
 	/* Build the interface from the builder file */
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "searchwindow.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/searchwindow.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
@@ -324,9 +365,6 @@ i7_search_window_init(I7SearchWindow *self)
 	LOAD_WIDGET(search_text);
 	LOAD_WIDGET(results_view);
 	LOAD_WIDGET(spinner);
-
-	/* Builder object not needed anymore */
-	g_object_unref(builder);
 }
 
 static void
@@ -472,9 +510,16 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 	doctext->file = g_object_ref(file);
 	ctxt->doctext = doctext;
 
-	char *path = g_file_get_path(file);
-	htmlSAXParseFile(path, NULL, &i7_html_sax, ctxt);
-	g_free(path);
+	g_autoptr(GError) error = NULL;
+	g_autofree char *html_contents = NULL;
+	/* file is in a GResource in memory, this doesn't block */
+	if (!g_file_load_contents(doctext->file, /* cancellable = */ NULL,
+		&html_contents, /* length = */ NULL, /* etag = */ NULL, &error)) {
+		g_autofree char *uri = g_file_get_uri(doctext->file);
+		g_warning("Error loading documentation resource '%s': %s", uri, error->message);
+		return NULL;
+	}
+	htmlSAXParseDoc((xmlChar*)html_contents, NULL, &i7_html_sax, ctxt);
 
 	doctext->body = g_string_free(ctxt->chars, FALSE);
 	GSList *retval = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
@@ -600,7 +645,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 	GError *err;
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
-		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", NULL);
+		g_autoptr(GFile) doc_file = g_file_new_for_uri("resource:///com/inform7/IDE/inform");
 
 		GFileEnumerator *docdir;
 		if((docdir = g_file_enumerate_children(doc_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err)) == NULL) {
@@ -641,7 +686,6 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 				g_slist_free(doctexts);
 			}
 		}
-		g_object_unref(doc_file);
 
 		stop_spinner(self);
 		update_label(self);

@@ -238,11 +238,12 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		 code should one occur, display the compiler's generated Problems.html*/
 		problems_file = g_file_get_child(data->builddir_file, "Problems.html");
 	} else {
-		gchar *file = g_strdup_printf("Error%i.html", exit_code);
-		problems_file = i7_app_check_data_file_va(theapp, "Resources", "en", file, NULL);
-		g_free(file);
-		if(!problems_file)
-			problems_file = i7_app_get_data_file_va(theapp, "Resources", "en", "Error0.html", NULL);
+		g_autofree char *uri = g_strdup_printf("resource:///com/inform7/IDE/inform/en/Error%i.html", exit_code);
+		problems_file = g_file_new_for_uri(uri);
+		if (!g_file_query_exists(problems_file, NULL)) {
+			g_object_unref(problems_file);
+			problems_file = g_file_new_for_uri("resource:///com/inform7/IDE/inform/en/Error0.html");
+		}
 	}
 
 	g_clear_object(&data->results_file);
@@ -420,7 +421,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 
 	GtkTextIter start, end;
 	int line;
-	GFile *loadfile = NULL;
+	const char *load_uri = NULL;
 
 	/* Display the appropriate HTML error pages */
 	gdk_threads_enter();
@@ -432,24 +433,24 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 		msg = gtk_text_iter_get_text(&start, &end);
 		if(strstr(msg, "rror:")) { /* "Error:", "Fatal error:" */
 			if(strstr(msg, "The memory setting ") && strstr(msg, " has been exceeded."))
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6MemorySetting.html", NULL);
+				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6MemorySetting.html";
 			else if(strstr(msg, "This program has overflowed the maximum readable-memory size of the "))
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6Readable.html", NULL);
+				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6Readable.html";
 			else if(strstr(msg, "The story file exceeds "))
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6TooBig.html", NULL);
+				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6TooBig.html";
 			else
-				loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6.html", NULL);
+				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6.html";
 			g_free(msg);
 			break;
 		}
 		g_free(msg);
 	}
 	gdk_threads_leave();
-	if(!loadfile && exit_code != 0)
-		loadfile = i7_app_get_data_file_va(i7_app_get(), "Resources", "en", "ErrorI6.html", NULL);
-	if(loadfile) {
+	if (!load_uri && exit_code != 0)
+		load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6.html";
+	if (load_uri) {
 		g_clear_object(&data->results_file);
-		data->results_file = loadfile; /* assumes reference */
+		data->results_file = g_file_new_for_uri(load_uri); /* assumes reference */
 	}
 
 	/* Stop here and show the Results/Report tab if there was an error */
