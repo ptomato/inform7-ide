@@ -80,18 +80,6 @@ create_welcome_dialog(void)
 	gtk_builder_connect_signals(builder, theapp);
 	GtkWidget *retval = GTK_WIDGET(load_object(builder, "welcomedialog"));
 
-	/* Set the background pixmap for this window */
-	GtkRcStyle *newstyle = gtk_widget_get_modifier_style(retval);
-	g_autoptr(GFile) file = i7_app_get_data_file_va(theapp, "Resources", "Welcome Background.png", NULL);
-	newstyle->bg_pixmap_name[GTK_STATE_NORMAL] = g_file_get_path(file); /* take ownership */
-	gtk_widget_modify_style(retval, newstyle);
-
-	/* Set the font size to 12 pixels for the widgets in this window */
-	PangoFontDescription *font = pango_font_description_new();
-	pango_font_description_set_absolute_size(font, 12.0 * PANGO_SCALE);
-	gtk_widget_modify_font(GTK_WIDGET(load_object(builder, "welcome_label")), font);
-	pango_font_description_free(font);
-
 	/* If there is no "last project", make the reopen button inactive */
 	GFile *last_project = i7_app_get_last_opened_project(theapp);
 	if(last_project) {
