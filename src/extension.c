@@ -278,14 +278,6 @@ i7_extension_update_tabs(I7Document *document)
 	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(I7_EXTENSION(document)->sourceview->source));
 }
 
-static gboolean
-update_font_tabs(GtkSourceView *view)
-{
-	update_font(GTK_WIDGET(view));
-	update_tabs(view);
-	return FALSE; /* one-shot idle function */
-}
-
 /* Update the fonts in this extension window, but not the
 widgets that only need their font size updated */
 static void
@@ -293,7 +285,7 @@ i7_extension_update_fonts(I7Document *document)
 {
 	if(!I7_IS_EXTENSION(document))
 		return;
-	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(I7_EXTENSION(document)->sourceview->source));
+	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(I7_EXTENSION(document)->sourceview->source));
 }
 
 static void
@@ -416,6 +408,9 @@ i7_extension_init(I7Extension *self)
 
 	/* Create source view */
 	self->sourceview = I7_SOURCE_VIEW(i7_source_view_new());
+	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->sourceview));
+	gtk_style_context_add_class(style, "font-family-setting");
+	gtk_style_context_add_class(style, "font-size-setting");
 	gtk_widget_show(GTK_WIDGET(self->sourceview));
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), GTK_WIDGET(self->sourceview), TRUE, TRUE, 0);
 

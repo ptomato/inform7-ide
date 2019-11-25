@@ -515,17 +515,6 @@ update_style(GtkSourceBuffer *buffer)
 	return FALSE; /* one-shot idle function */
 }
 
-/* Change the font that this widget uses */
-gboolean
-update_font(GtkWidget *widget)
-{
-	PangoFontDescription *font = get_font_description();
-	gtk_widget_modify_font(widget, font);
-	pango_font_description_free(font);
-
-	return FALSE; /* one-shot idle function */
-}
-
 /* Update the tab stops for a GtkSourceView */
 gboolean
 update_tabs(GtkSourceView *view)
