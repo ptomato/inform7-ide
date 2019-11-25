@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.0"/>
   <requires lib="gtksourceview" version="3.0"/>
   <requires lib="webkit2" version="4.0"/>
-  <object class="WebKitWebContext" id="webcontext"/>
   <object class="GtkActionGroup" id="documentation_actions">
     <property name="visible">False</property>
     <child>
@@ -63,6 +63,50 @@
         <property name="tooltip" translatable="yes">Display the public library of extensions on the Inform website</property>
         <property name="is_important">True</property>
         <signal name="activate" handler="action_public_library" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-yes</property>
+  </object>
+  <object class="GtkMenu" id="transcript_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="transcript_menu_bless">
+        <property name="label" translatable="yes" comments="Transcript panel">_Bless</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">image1</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_transcript_menu_bless" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="transcript_menu_separator">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="transcript_menu_play_to_here">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes" comments="Transcript panel">_Play to Here</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_transcript_menu_play_to_here" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="transcript_menu_show_knot">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes" comments="Transcript panel">_Show Knot</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_transcript_menu_show_knot" swapped="no"/>
       </object>
     </child>
   </object>
@@ -131,6 +175,18 @@
       </object>
     </child>
   </object>
+  <object class="GtkLabel" id="source_pane_label">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="label" translatable="yes" comments="Source panel">Source</property>
+    <property name="angle">270</property>
+  </object>
+  <object class="GtkLabel" id="story_pane_label">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="label" translatable="yes" comments="Story panel">Story</property>
+    <property name="angle">270</property>
+  </object>
   <object class="GtkActionGroup" id="transcript_actions">
     <child>
       <object class="GtkAction" id="bless_all">
@@ -173,10 +229,12 @@
       </object>
     </child>
   </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-yes</property>
+  <object class="WebKitWebContext" id="webcontext"/>
+  <object class="WebKitSettings" id="websettings">
+    <property name="enable_html5_local_storage">False</property>
+    <property name="enable_html5_database">False</property>
+    <property name="enable_plugins">False</property>
+    <property name="enable_resizable_text_areas">False</property>
   </object>
   <object class="GtkNotebook" id="panel">
     <property name="visible">True</property>
@@ -202,8 +260,6 @@
           <object class="GtkScrolledWindow" id="progress_scrolledwindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="GtkTextView" id="progress">
                 <property name="visible">True</property>
@@ -228,8 +284,6 @@
           <object class="GtkScrolledWindow" id="debugging_scrolledwindow">
             <property name="can_focus">True</property>
             <property name="no_show_all">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="GtkTextView" id="debugging">
                 <property name="visible">True</property>
@@ -258,8 +312,8 @@
           <object class="WebKitWebView" id="report">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -284,8 +338,6 @@
           <object class="GtkScrolledWindow" id="inform6_scrolledwindow">
             <property name="can_focus">True</property>
             <property name="no_show_all">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="GtkSourceView" id="inform6">
                 <property name="visible">True</property>
@@ -341,8 +393,8 @@
           <object class="WebKitWebView" id="index_home">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -354,7 +406,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="stock">gtk-home</property>
-            <property name="icon-size">1</property>
+            <property name="icon_size">1</property>
           </object>
           <packing>
             <property name="tab_fill">False</property>
@@ -364,8 +416,8 @@
           <object class="WebKitWebView" id="contents">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -390,8 +442,8 @@
           <object class="WebKitWebView" id="actions">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -416,8 +468,8 @@
           <object class="WebKitWebView" id="kinds">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -442,8 +494,8 @@
           <object class="WebKitWebView" id="phrasebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -468,8 +520,8 @@
           <object class="WebKitWebView" id="rules">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -494,8 +546,8 @@
           <object class="WebKitWebView" id="scenes">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -520,8 +572,8 @@
           <object class="WebKitWebView" id="world">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="settings">websettings</property>
             <property name="web_context">webcontext</property>
+            <property name="settings">websettings</property>
             <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
             <child>
               <placeholder/>
@@ -564,8 +616,6 @@
       <object class="GtkScrolledWindow" id="skein_scrolledwindow">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="hscrollbar_policy">automatic</property>
-        <property name="vscrollbar_policy">automatic</property>
         <child>
           <placeholder/>
         </child>
@@ -591,8 +641,6 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="no_show_all">True</property>
-        <property name="hscrollbar_policy">automatic</property>
-        <property name="vscrollbar_policy">automatic</property>
         <child>
           <object class="GtkTreeView" id="transcript">
             <property name="visible">True</property>
@@ -604,6 +652,9 @@
             <property name="show_expanders">False</property>
             <signal name="button-press-event" handler="on_transcript_button_press" swapped="no"/>
             <signal name="size-allocate" handler="on_transcript_size_allocate" swapped="no"/>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection"/>
+            </child>
             <child>
               <object class="GtkTreeViewColumn" id="transcript_column">
                 <property name="sizing">autosize</property>
@@ -641,8 +692,8 @@
       <object class="WebKitWebView" id="documentation">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="settings">websettings</property>
         <property name="web_context">webcontext</property>
+        <property name="settings">websettings</property>
         <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
         <signal name="notify::uri" handler="after_documentation_notify_uri" after="yes" swapped="no"/>
         <child>
@@ -670,8 +721,8 @@
       <object class="WebKitWebView" id="extensions">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="settings">websettings</property>
         <property name="web_context">webcontext</property>
+        <property name="settings">websettings</property>
         <signal name="decide-policy" handler="on_decide_policy" swapped="no"/>
         <signal name="notify::uri" handler="after_extensions_notify_uri" after="yes" swapped="no"/>
         <child>
@@ -721,11 +772,11 @@
                       <object class="GtkLabel" id="settings_zcode_format_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
                         <property name="label" translatable="yes" comments="Settings panel">Inform translates the source text into a story file which can have either of two standard formats. You can change your mind about the format at any time, but some language features require Glulx to be used.</property>
                         <property name="wrap">True</property>
                         <property name="wrap_mode">word-char</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -769,11 +820,11 @@
                       <object class="GtkLabel" id="settings_blorb_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
                         <property name="label" translatable="yes" comments="Settings panel">When released, the story file is normally bound up into a Blorb file along with bibliographic data, cover art and any other resources it needs. If you need the raw story file, uncheck this option.</property>
                         <property name="wrap">True</property>
                         <property name="wrap_mode">word-char</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -837,11 +888,11 @@
                       <object class="GtkLabel" id="nobble_rng_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
                         <property name="label" translatable="yes" comments="Settings panel">If the story involves randomised outcomes or events, it may be harder to check with the Replay options or with TEST commands, because the same input may produce different results every time. This option makes testing more predictable. (It has no effect on the final Release version, which will still be randomised.)</property>
                         <property name="wrap">True</property>
                         <property name="wrap_mode">word-char</property>
+                        <property name="xalign">0</property>
+                        <property name="yalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -902,62 +953,5 @@
         <property name="tab_fill">False</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkLabel" id="source_pane_label">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="label" translatable="yes" comments="Source panel">Source</property>
-    <property name="angle">270</property>
-  </object>
-  <object class="GtkLabel" id="story_pane_label">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="label" translatable="yes" comments="Story panel">Story</property>
-    <property name="angle">270</property>
-  </object>
-  <object class="GtkMenu" id="transcript_menu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkImageMenuItem" id="transcript_menu_bless">
-        <property name="label" translatable="yes" comments="Transcript panel">_Bless</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="use_underline">True</property>
-        <property name="image">image1</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_transcript_menu_bless" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="transcript_menu_separator">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="transcript_menu_play_to_here">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes" comments="Transcript panel">_Play to Here</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_transcript_menu_play_to_here" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="transcript_menu_show_knot">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes" comments="Transcript panel">_Show Knot</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_transcript_menu_show_knot" swapped="no"/>
-      </object>
-    </child>
-  </object>
-  <object class="WebKitSettings" id="websettings">
-    <property name="enable_plugins">False</property>
-    <property name="enable_resizable_text_areas">False</property>
-    <property name="enable_html5_database">False</property>
-    <property name="enable_html5_local_storage">False</property>
   </object>
 </interface>
