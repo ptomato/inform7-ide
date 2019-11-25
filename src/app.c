@@ -131,6 +131,11 @@ i7_app_init(I7App *self)
 	priv->state_settings = g_settings_new(SCHEMA_STATE);
 	priv->desktop_settings = g_settings_new("org.gnome.desktop.interface");
 
+	g_autoptr(GtkCssProvider) css = gtk_css_provider_new();
+	gtk_css_provider_load_from_resource(css, "/com/inform7/IDE/ui/application.css");
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css),
+		GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
 	/* Retrieve data directories if set externally */
 	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
 	if(env) {

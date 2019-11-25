@@ -807,7 +807,7 @@ i7_story_revert(I7Document *document)
 /* TYPE SYSTEM */
 
 static void
-story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
+story_init_panel(I7Story *self, I7Panel *panel)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
 
@@ -842,9 +842,6 @@ story_init_panel(I7Story *self, I7Panel *panel, PangoFontDescription *font)
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
-	
-	/* Set the Results/Progress to a monospace font */
-	gtk_widget_modify_font(GTK_WIDGET(panel->results_tabs[I7_RESULTS_TAB_PROGRESS]), font);
 
 	/* Connect the Previous Section and Next Section actions to the up and down buttons */
 	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->previous), I7_DOCUMENT(self)->previous_section);
@@ -982,16 +979,11 @@ i7_story_init(I7Story *self)
 	priv->debug_log = gtk_text_buffer_new(NULL);
 	priv->i6_source = create_inform6_source_buffer();
 
-	/* Create a monospace font description for the Results/Progress views */
-	PangoFontDescription *font = get_desktop_monospace_font();
-	pango_font_description_set_size(font, get_font_size(font));
-
 	/* Do the default settings */
 	priv->settings = create_default_settings();
 
 	/* Do panel-specific stuff to the left and then the right panel */
-	i7_story_foreach_panel(self, (I7PanelForeachFunc)story_init_panel, font);
-	pango_font_description_free(font);
+	i7_story_foreach_panel(self, (I7PanelForeachFunc)story_init_panel, NULL);
 
 	/* Now the buffers and models are owned by the views, so dereference them */
 	g_object_unref(buffer);
