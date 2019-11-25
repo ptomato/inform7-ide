@@ -55,7 +55,6 @@ typedef enum {
 } I7PrefsTabs;
 
 gboolean update_style(GtkSourceBuffer *buffer);
-gboolean update_font(GtkWidget *widget);
 gboolean update_tabs(GtkSourceView *view);
 void select_style_scheme(GtkTreeView *view, const gchar *id);
 

@@ -283,11 +283,8 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 		tabwidth = DEFAULT_TAB_WIDTH;
 	gtk_source_print_compositor_set_tab_width(compositor, tabwidth);
 	gtk_source_print_compositor_set_wrap_mode(compositor, GTK_WRAP_WORD_CHAR);
-	PangoFontDescription *font = get_font_description();
-	gchar *fontstring = pango_font_description_to_string(font);
-	pango_font_description_free(font);
+	g_autofree char *fontstring = get_font_family();
 	gtk_source_print_compositor_set_body_font_name(compositor, fontstring);
-	g_free(fontstring);
 	GtkPageSetup *setup = i7_app_get_page_setup(i7_app_get());
 	gtk_source_print_compositor_set_top_margin(compositor, gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
 	gtk_source_print_compositor_set_bottom_margin(compositor, gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
