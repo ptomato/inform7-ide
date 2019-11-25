@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2015 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,9 +32,6 @@
 const char *font_set_enum[] = { "Standard", "Monospace", "Custom", NULL };
 const char *font_size_enum[] = { "Standard", "Medium", "Large", "Huge", NULL };
 const char *interpreter_enum[] = { "Glulxe (default)", "Git", NULL };
-
-#define DESKTOP_PREFS_STANDARD_FONT   "font-name"
-#define DESKTOP_PREFS_MONOSPACE_FONT  "monospace-font-name"
 
 /*
  * settings_enum_set_mapping:
@@ -100,8 +97,7 @@ on_config_font_set_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	update_font(GTK_WIDGET(theapp->prefs->source_example));
-	update_font(GTK_WIDGET(theapp->prefs->tab_example));
+	i7_app_update_css(theapp);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 }
 
@@ -112,8 +108,7 @@ on_config_custom_font_changed(GSettings *settings, const char *key)
 	I7App *theapp = i7_app_get();
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	if(g_settings_get_enum(prefs, PREFS_FONT_SET) == FONT_CUSTOM) {
-		update_font(GTK_WIDGET(theapp->prefs->source_example));
-		update_font(GTK_WIDGET(theapp->prefs->tab_example));
+		i7_app_update_css(theapp);
 		i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 	}
 }
@@ -123,8 +118,7 @@ on_config_font_size_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
 	I7App *theapp = i7_app_get();
-	update_font(GTK_WIDGET(theapp->prefs->source_example));
-	update_font(GTK_WIDGET(theapp->prefs->tab_example));
+	i7_app_update_css(theapp);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
 	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_sizes, NULL);
 }
@@ -235,50 +229,13 @@ init_config_file(GSettings *prefs)
 	}
 }
 
-/* Desktop preferences stuff: */
-
-/*
- * get_desktop_standard_font:
- *
- * Return the Gnome desktop document font as a font description. Must be freed.
- */
-PangoFontDescription *
-get_desktop_standard_font(void)
-{
-	I7App *theapp = i7_app_get();
-	PangoFontDescription *retval;
-	char *font = g_settings_get_string(i7_app_get_desktop_settings(theapp), DESKTOP_PREFS_STANDARD_FONT);
-	if(!font)
-		return pango_font_description_from_string(STANDARD_FONT_FALLBACK);
-	retval = pango_font_description_from_string(font);
-	g_free(font);
-	return retval;
-}
-
-/*
- * get_desktop_monospace_font:
- *
- * Return the Gnome desktop monospace font as a font description. Must be freed.
- */
-PangoFontDescription *
-get_desktop_monospace_font(void)
-{
-	I7App *theapp = i7_app_get();
-	PangoFontDescription *retval;
-	char *font = g_settings_get_string(i7_app_get_desktop_settings(theapp), DESKTOP_PREFS_MONOSPACE_FONT);
-	if(!font)
-		return pango_font_description_from_string(MONOSPACE_FONT_FALLBACK);
-	retval = pango_font_description_from_string(font);
-	g_free(font);
-	return retval;
-}
-
 /*
  * get_font_family:
  *
- * Return a font description for the font setting. Must be freed.
+ * Return a string representing the font setting suitable to use in CSS. Must be
+ * freed.
  */
-static PangoFontDescription *
+char *
 get_font_family(void)
 {
 	I7App *theapp = i7_app_get();
@@ -286,59 +243,34 @@ get_font_family(void)
 
 	switch(g_settings_get_enum(prefs, PREFS_FONT_SET)) {
 		case FONT_MONOSPACE:
-			return get_desktop_monospace_font();
+			return g_strdup("monospace");
 		case FONT_CUSTOM:
-		{
-			char *customfont = g_settings_get_string(prefs, PREFS_CUSTOM_FONT);
-			PangoFontDescription *retval;
-			if(customfont) {
-				retval = pango_font_description_from_string(customfont);
-				g_free(customfont);
-				return retval;
-			}
-			/* else fall through */
-		}
+			return g_settings_get_string(prefs, PREFS_CUSTOM_FONT);
 		default:
 			;
 	}
-	return get_desktop_standard_font();
+	return g_strdup("sans");
 }
 
-/* Return the font size in Pango units for the font size setting */
-gint
-get_font_size(PangoFontDescription *font)
+/* Return a relative font size for the font size setting */
+double
+get_font_size(void)
 {
 	I7App *theapp = i7_app_get();
-	double size = pango_font_description_get_size(font);
-
-	if(pango_font_description_get_size_is_absolute(font))
-		size *= 96.0 / 72.0; /* a guess; not likely to be absolute anyway */
-	if(size == 0.0)
-		size = DEFAULT_SIZE_STANDARD * PANGO_SCALE;
+	double size;
 
 	switch(g_settings_get_enum(i7_app_get_prefs(theapp), PREFS_FONT_SIZE)) {
 		case FONT_SIZE_MEDIUM:
-			size *= RELATIVE_SIZE_MEDIUM;
+			size = RELATIVE_SIZE_MEDIUM;
 			break;
 		case FONT_SIZE_LARGE:
-			size *= RELATIVE_SIZE_LARGE;
+			size = RELATIVE_SIZE_LARGE;
 			break;
 		case FONT_SIZE_HUGE:
-			size *= RELATIVE_SIZE_HUGE;
+			size = RELATIVE_SIZE_HUGE;
 			break;
 		default:
-			size *= RELATIVE_SIZE_STANDARD;
+			size = RELATIVE_SIZE_STANDARD;
 	}
 	return size;
 }
-
-/* Get the current font as a PangoFontDescription.
-Must be freed with pango_font_description_free. */
-PangoFontDescription *
-get_font_description(void)
-{
-	PangoFontDescription *font = get_font_family();
-	pango_font_description_set_size(font, get_font_size(font));
-	return font;
-}
-

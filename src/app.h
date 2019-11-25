@@ -134,6 +134,7 @@ void i7_app_set_page_setup(I7App *self, GtkPageSetup *setup);
 GtkSourceStyleSchemeManager *i7_app_get_color_scheme_manager(I7App *self);
 
 void i7_app_present_prefs_window(I7App *self);
+void i7_app_update_css(I7App *self);
 
 void i7_app_set_busy(I7App *self, gboolean busy);
 
@@ -150,6 +151,5 @@ GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
 /* GSettings accessors */
 GSettings *i7_app_get_state(I7App *self);
 GSettings *i7_app_get_prefs(I7App *self);
-GSettings *i7_app_get_desktop_settings(I7App *self);
 
 #endif /* _APP_H_ */

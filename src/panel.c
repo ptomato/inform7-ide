@@ -767,6 +767,9 @@ i7_panel_init(I7Panel *self)
 
 	/* Add the I7SourceView widget and connect the after handler of the switch-page signal */
 	self->sourceview = I7_SOURCE_VIEW(i7_source_view_new());
+	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->sourceview));
+	gtk_style_context_add_class(style, "font-family-setting");
+	gtk_style_context_add_class(style, "font-size-setting");
 	gtk_widget_show(GTK_WIDGET(self->sourceview));
 	GtkWidget *sourcelabel = GTK_WIDGET(load_object(builder, "source_pane_label"));
 	gtk_notebook_insert_page(GTK_NOTEBOOK(self->notebook), GTK_WIDGET(self->sourceview), sourcelabel, I7_PANE_SOURCE);
@@ -839,24 +842,8 @@ i7_panel_init(I7Panel *self)
 	WebKitWebContext *webcontext = WEBKIT_WEB_CONTEXT(load_object(builder, "webcontext"));
 	webkit_web_context_register_uri_scheme(webcontext, "inform", (WebKitURISchemeRequestCallback)handle_inform_uri, self, NULL);
 
-	/* Update the web settings for this panel */
 	priv->websettings = WEBKIT_SETTINGS(load_object(builder, "websettings"));
 	/* g_object_set(priv->websettings, "enable-developer-extras", TRUE, NULL); */
-
-	/* Parse the font descriptions */
-	PangoFontDescription *stdfont = get_desktop_standard_font();
-	PangoFontDescription *monofont = get_desktop_monospace_font();
-	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
-	gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
-	g_object_set(priv->websettings,
-		"default-font-family", pango_font_description_get_family(stdfont),
-		"monospace-font-family", pango_font_description_get_family(monofont),
-		"default-font-size", stdsize,
-		"default-monospace-font-size", monosize,
-		"minimum-font-size", MIN(stdsize, monosize),
-		NULL);
-	pango_font_description_free(stdfont);
-	pango_font_description_free(monofont);
 
 	priv->content = WEBKIT_USER_CONTENT_MANAGER(load_object(builder, "content"));
 	if (!webkit_user_content_manager_register_script_message_handler(priv->content, "selectView") ||
@@ -1241,52 +1228,39 @@ i7_panel_update_tabs(I7Panel *self)
 	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(self->results_tabs[I7_RESULTS_TAB_INFORM6]));
 }
 
-static gboolean
-update_font_tabs(GtkSourceView *view)
-{
-	update_font(GTK_WIDGET(view));
-	update_tabs(view);
-	return FALSE; /* one-shot idle function */
-}
-
 /* Update the fonts of the widgets in this pane */
 void
 i7_panel_update_fonts(I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
-	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]));
-	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(self->results_tabs[I7_RESULTS_TAB_INFORM6]));
+	i7_panel_update_tabs(self);
+
+	g_autofree char *font = get_font_family();
+	unsigned size = get_font_size() * 12.0;
 
 	WebKitSettings *settings = priv->websettings;
-	PangoFontDescription *fontdesc = get_font_description();
-
-	const char *font = pango_font_description_get_family(fontdesc);
-	webkit_settings_set_default_font_family (settings, font);
-
-	unsigned size_pango = pango_font_description_get_size(fontdesc);
-	double size = size_pango / PANGO_SCALE;
-	if (!pango_font_description_get_size_is_absolute(fontdesc))
-		size *= 96.0 / 72.0;  /* assume 96 dpi */
-	webkit_settings_set_default_font_size (settings, (unsigned)size);
+	g_object_set(G_OBJECT(settings),
+		"default-font-family", font,
+		"default-font-size", size,
+		NULL);
 
 	gchar *css = g_strdup_printf(
-		"grid.normal { font-size: %d; }"
+		"grid.normal { font-size: %u; }"
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
 	    "buffer.default { font-family: '%s'; }"
-		"buffer.normal { font-size: %d; }"
-		"buffer.header { font-size: %d; font-weight: bold; }"
-		"buffer.subheader { font-size: %d; font-weight: bold; }"
+		"buffer.normal { font-size: %u; }"
+		"buffer.header { font-size: %u; font-weight: bold; }"
+		"buffer.subheader { font-size: %u; font-weight: bold; }"
 		"buffer.alert { color: #aa0000; font-weight: bold; }"
 		"buffer.note { color: #aaaa00; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
 		"buffer.input { color: #0000aa; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
-		(int)size, font, (int)size, (int)(size * RELATIVE_SIZE_MEDIUM), (int)size);
+		size, font, size, (unsigned)(size * RELATIVE_SIZE_MEDIUM), size);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
 	g_free(css);
-	pango_font_description_free(fontdesc);
 }
 
 /* Update the font sizes of WebViews in this pane */
@@ -1295,17 +1269,12 @@ i7_panel_update_font_sizes(I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	WebKitSettings *settings = priv->websettings;
-	PangoFontDescription *stdfont = get_desktop_standard_font();
-	PangoFontDescription *monofont = get_desktop_monospace_font();
-	gint stdsize = (gint)((gdouble)get_font_size(stdfont) / PANGO_SCALE);
-	gint monosize = (gint)((gdouble)get_font_size(monofont) / PANGO_SCALE);
+	unsigned font_size = get_font_size() * 12.0;
 	g_object_set(G_OBJECT(settings),
-		"default-font-size", stdsize,
-		"default-monospace-font-size", monosize,
-		"minimum-font-size", MIN(stdsize, monosize),
+		"default-font-size", font_size,
+		"default-monospace-font-size", font_size,
+		"minimum-font-size", font_size,
 		NULL);
-	pango_font_description_free(stdfont);
-	pango_font_description_free(monofont);
 }
 
 /* Empty the list of pages to go forward to */

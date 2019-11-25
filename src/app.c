@@ -80,7 +80,7 @@ typedef struct {
 	/* Preferences settings */
 	GSettings *prefs_settings;
 	GSettings *state_settings;
-	GSettings *desktop_settings;
+	GtkCssProvider *font_settings_provider;
 } I7AppPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, G_TYPE_OBJECT);
@@ -129,8 +129,10 @@ i7_app_init(I7App *self)
 
 	priv->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
 	priv->state_settings = g_settings_new(SCHEMA_STATE);
-	priv->desktop_settings = g_settings_new("org.gnome.desktop.interface");
 
+	priv->font_settings_provider = gtk_css_provider_new();
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(priv->font_settings_provider),
+		GTK_STYLE_PROVIDER_PRIORITY_USER);
 	g_autoptr(GtkCssProvider) css = gtk_css_provider_new();
 	gtk_css_provider_load_from_resource(css, "/com/inform7/IDE/ui/application.css");
 	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css),
@@ -227,6 +229,7 @@ i7_app_finalize(GObject *object)
 	g_object_unref(priv->color_scheme_manager);
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
+	g_clear_object(&priv->font_settings_provider);
 
 	int i;
 	for(i = 0; i < I7_APP_NUM_REGICES; i++)
@@ -1528,6 +1531,34 @@ i7_app_present_prefs_window(I7App *self)
 	gtk_window_present(GTK_WINDOW(self->prefs->window));
 }
 
+/*
+ * i7_app_update_css:
+ * @self: the app
+ *
+ * Update the global font settings CSS provider, so that any widgets with the
+ * style classes "font-family-setting" or "font-size-setting" get their font
+ * style updated.
+ */
+void
+i7_app_update_css(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	g_autofree char *font_family = get_font_family();
+	double font_size = get_font_size();
+	g_autofree char *css = g_strdup_printf(""
+	    ".font-family-setting {"
+	    "    font-family: '%s';"
+	    "}"
+	    ".font-size-setting {"
+	    "    font-size: %.1fem;"
+	    "}", font_family, font_size);
+
+	g_autoptr(GError) error = NULL;
+	if (!gtk_css_provider_load_from_data(priv->font_settings_provider, css, -1, &error))
+		g_warning("Invalid CSS: %s", error->message);
+}
+
 /* Helper function: change the cursor of @toplevel's GdkWindow to @cursor.
  Called by g_list_foreach() in i7_app_set_busy() below. */
 static void
@@ -1628,21 +1659,6 @@ i7_app_get_state(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	return priv->state_settings;
-}
-
-/*
- * i7_app_get_desktop_settings:
- * @self: the application singleton
- *
- * Gets the #GSettings object for the desktop-wide Gnome preferences.
- *
- * Returns: #GSettings for org.gnome.desktop.interface
- */
-GSettings *
-i7_app_get_desktop_settings(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->desktop_settings;
 }
 
 /* Private method. For access to priv->color_scheme_manager in app-colorscheme.c
