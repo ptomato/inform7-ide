@@ -1,4 +1,4 @@
-/* Copyright (C) 2011, 2015 P. F. Chimento
+/* Copyright (C) 2011, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,6 +28,9 @@
 #include <pango/pango.h>
 
 #include "transcript-renderer.h"
+
+/* Below this width, the outputs will likely wrap to the point of unreadability */
+#define TRANSCRIPT_RENDERER_MIN_WIDTH 200
 
 typedef enum  {
 	STYLE_UNPLAYED,
@@ -76,9 +79,9 @@ typedef struct _I7CellRendererTranscriptPrivate I7CellRendererTranscriptPrivate;
 struct _I7CellRendererTranscriptPrivate
 {
 	/* The width to make the whole entry */
-	unsigned default_width;
+	int default_width;
 	/* The padding in between the box borders and the text */
-	unsigned text_padding;
+	int text_padding;
 	/* The text to render */
 	char *command;
 	char *transcript_text;
@@ -132,11 +135,11 @@ i7_cell_renderer_transcript_set_property(GObject *object, unsigned prop_id, cons
 
 	switch(prop_id) {
 		case PROP_DEFAULT_WIDTH:
-			priv->default_width = g_value_get_uint(value);
+			priv->default_width = g_value_get_int(value);
 			g_object_notify(object, "default-width");
 			break;
 		case PROP_TEXT_PADDING:
-			priv->text_padding = g_value_get_uint(value);
+			priv->text_padding = g_value_get_int(value);
 			g_object_notify(object, "text-padding");
 			break;
 		case PROP_COMMAND:
@@ -183,10 +186,10 @@ i7_cell_renderer_transcript_get_property(GObject *object, unsigned prop_id, GVal
 
 	switch(prop_id) {
 		case PROP_DEFAULT_WIDTH:
-			g_value_set_uint(value, priv->default_width);
+			g_value_set_int(value, priv->default_width);
 			break;
 		case PROP_TEXT_PADDING:
-			g_value_set_uint(value, priv->text_padding);
+			g_value_set_int(value, priv->text_padding);
 			break;
 		case PROP_COMMAND:
 			g_value_set_string(value, priv->command);
@@ -227,18 +230,37 @@ i7_cell_renderer_transcript_finalize(GObject* object)
 	G_OBJECT_CLASS(i7_cell_renderer_transcript_parent_class)->finalize(object);
 }
 
+static GtkSizeRequestMode
+i7_cell_renderer_transcript_get_request_mode(GtkCellRenderer *renderer)
+{
+	return GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH;
+}
+
 static void
-i7_cell_renderer_transcript_get_size(GtkCellRenderer *renderer, GtkWidget *widget, const GdkRectangle *cell_area, int *x_offset, int *y_offset, int *width, int *height)
+i7_cell_renderer_transcript_get_preferred_width(GtkCellRenderer *renderer, GtkWidget *widget, int *min_width, int *natural_width)
+{
+	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(renderer);
+	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
+
+	if (min_width)
+		*min_width = TRANSCRIPT_RENDERER_MIN_WIDTH;
+	if (natural_width)
+		*natural_width = priv->default_width;
+}
+
+static void
+i7_cell_renderer_transcript_get_preferred_height_for_width(GtkCellRenderer *renderer, GtkWidget *widget, int width, int *min_height, int *natural_height)
 {
 	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(renderer);
 	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
 
 	PangoRectangle command_rect, transcript_rect, expected_rect;
 	PangoLayout *layout;
-	unsigned xpad, ypad, transcript_width, calc_width, calc_height;
-	
-	g_object_get(self, "xpad", &xpad, "ypad", &ypad, NULL);
-	transcript_width = (priv->default_width / 2) - xpad;
+
+	int xpad, ypad;
+	gtk_cell_renderer_get_padding(renderer, &xpad, &ypad);
+
+	int transcript_width = (width / 2) - xpad;
 
 	/* Get size of command */
 	layout = gtk_widget_create_pango_layout(widget, priv->command);
@@ -260,26 +282,12 @@ i7_cell_renderer_transcript_get_size(GtkCellRenderer *renderer, GtkWidget *widge
 	g_object_unref (layout);
 
 	/* Calculate the required width and height for the cell */
-	calc_width = priv->default_width;
-	calc_height = (unsigned)(command_rect.height + MAX(transcript_rect.height, expected_rect.height)) + ypad * 2 + priv->text_padding * 4;
+	int calc_height = command_rect.height + MAX(transcript_rect.height, expected_rect.height) + ypad * 2 + priv->text_padding * 4;
 
-	/* Set the passed-in parameters; if the available cell area is larger than
-	 the required width and height, just use that instead */
-	if(cell_area) {
-		if(width)
-			*width = MAX(cell_area->width, (int)calc_width);
-		if(height)
-			*height = MAX(cell_area->height, (int)calc_height);
-	} else {
-		if(width)
-			*width = (int)calc_width;
-		if(height)
-			*height = (int)calc_height;
-	}
-	if(x_offset)
-		*x_offset = 0;
-	if(y_offset)
-		*y_offset = 0;
+	if (min_height)
+		*min_height = calc_height;
+	if (natural_height)
+		*natural_height = calc_height;
 }
 
 /* Internal function for convenience in setting Cairo drawing style */
@@ -295,21 +303,19 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWi
 	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(renderer);
 	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
 
-	int x, y, width, height;
-	unsigned xpad, ypad, transcript_width;
 	GtkStateType state;
 	PangoRectangle command_rect;
 	PangoLayout *layout;
 	GtkStyle *style = gtk_widget_get_style(widget);
 
-	/* Get the size we calculated earlier and then take the padding into account */
-	g_object_get(self, "xpad", &xpad, "ypad", &ypad, NULL);
-	gtk_cell_renderer_get_size(renderer, widget, cell_area, &x, &y, &width, &height);
-	x += cell_area->x + (int)xpad;
-	y += cell_area->y + (int)ypad;
-	width -= (int)xpad * 2;
-	height -= (int)ypad * 2;
-	
+	/* Get the size and take the padding into account */
+	int xpad, ypad;
+	gtk_cell_renderer_get_padding(renderer, &xpad, &ypad);
+	int x = cell_area->x + xpad;
+	int y = cell_area->y + ypad;
+	int width = cell_area->width - 2 * xpad;
+	int height = cell_area->height - 2 * ypad;
+
 	/* Decide what state to draw the widget components in */ 
 	switch(flags) {
 		case GTK_CELL_RENDERER_PRELIT:
@@ -336,7 +342,7 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWi
 	g_object_unref(layout);
 
 	/* Draw the transcript text */
-	transcript_width = priv->default_width / 2 - xpad;
+	int transcript_width = width / 2;
 	if(priv->changed)
 		set_rgb_style(cr, STYLE_CHANGED);
 	else
@@ -350,11 +356,11 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWi
 	cairo_fill(cr);
 	layout = gtk_widget_create_pango_layout(widget, NULL);
 	pango_layout_set_markup(layout, priv->transcript_text, -1);
-	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
+	pango_layout_set_width(layout, (transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
-	    x + (int)priv->text_padding, 
-	    y + command_rect.height + (int)priv->text_padding * 3, 
+	    x + priv->text_padding,
+	    y + command_rect.height + priv->text_padding * 3,
 		layout);
 	g_object_unref(layout);
 	
@@ -383,11 +389,11 @@ i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWi
 	cairo_fill(cr);
 	layout = gtk_widget_create_pango_layout(widget, NULL);
 	pango_layout_set_markup(layout, priv->expected_text, -1);
-	pango_layout_set_width(layout, (int)(transcript_width - priv->text_padding * 2) * PANGO_SCALE);
+	pango_layout_set_width(layout, (transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
-	    x + width / 2 + (int)priv->text_padding, 
-	    y + command_rect.height + (int)priv->text_padding * 3, 
+	    x + width / 2 + priv->text_padding,
+	    y + command_rect.height + priv->text_padding * 3,
 		layout);
 	g_object_unref(layout);
 
@@ -422,7 +428,9 @@ static void
 i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass) 
 {
 	GtkCellRendererClass *renderer_class = GTK_CELL_RENDERER_CLASS(klass);
-	renderer_class->get_size = i7_cell_renderer_transcript_get_size;
+	renderer_class->get_request_mode = i7_cell_renderer_transcript_get_request_mode;
+	renderer_class->get_preferred_width = i7_cell_renderer_transcript_get_preferred_width;
+	renderer_class->get_preferred_height_for_width = i7_cell_renderer_transcript_get_preferred_height_for_width;
 	renderer_class->render = i7_cell_renderer_transcript_render;
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->get_property = i7_cell_renderer_transcript_get_property;
@@ -432,13 +440,13 @@ i7_cell_renderer_transcript_class_init(I7CellRendererTranscriptClass *klass)
 	/* Install properties */
 	GParamFlags flags = G_PARAM_LAX_VALIDATION | G_PARAM_STATIC_STRINGS;
 	g_object_class_install_property(object_class, PROP_DEFAULT_WIDTH, 
-		g_param_spec_uint("default-width", "Default width",
+		g_param_spec_int("default-width", "Default width",
 			"The width to make the whole renderer",
-			0, G_MAXUINT, 400, G_PARAM_READWRITE | flags));
+			0, G_MAXINT, 400, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_TEXT_PADDING, 
-		g_param_spec_uint("text-padding", "Text padding",
+		g_param_spec_int("text-padding", "Text padding",
 			"Padding between the edges of the rectangles and the text",
-			0, G_MAXUINT, 6, G_PARAM_READWRITE | flags));
+			0, G_MAXINT, 6, G_PARAM_READWRITE | flags));
 	g_object_class_install_property(object_class, PROP_COMMAND, 
 		g_param_spec_string("command", "Command",
 			"Command from the Skein",
