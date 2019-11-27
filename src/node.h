@@ -104,8 +104,8 @@ gdouble i7_node_get_tree_width(I7Node *self, GooCanvasItemModel *skein, GooCanva
 void i7_node_layout(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas, gdouble x);
 void i7_node_calculate_size(I7Node *self, GooCanvasItemModel *skein, GooCanvas *canvas);
 void i7_node_invalidate_size(I7Node *self);
-gboolean i7_node_get_command_coordinates(I7Node *self, gint *x, gint *y, GooCanvas *canvas);
-gboolean i7_node_get_label_coordinates(I7Node *self, gint *x, gint *y, GooCanvas *canvas);
+gboolean i7_node_get_command_coordinates(I7Node *self, GdkRectangle *rect, GooCanvas *canvas);
+gboolean i7_node_get_label_coordinates(I7Node *self, GdkRectangle *rect, GooCanvas *canvas);
 
 /* Signal handlers for use in other skein source files*/
 gboolean on_node_button_press(GooCanvasItem *item, GooCanvasItem *target_item, GdkEventButton *event, I7Node *self);
