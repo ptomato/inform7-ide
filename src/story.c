@@ -518,8 +518,8 @@ i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 	/* Create a file chooser */
 	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"),
 		GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Save"), GTK_RESPONSE_ACCEPT,
 		NULL);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 
@@ -572,10 +572,10 @@ i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 				_("A project named \"%s\" already exists. Do you want to replace it?"), basename);
 			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
 				_("Replacing it will overwrite its contents."));
-			gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+			gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
 			GtkWidget *button = gtk_button_new_with_mnemonic(_("_Replace"));
 			gtk_widget_set_can_default(button, TRUE);
-			gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_stock(GTK_STOCK_SAVE_AS, GTK_ICON_SIZE_BUTTON));
+			gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_icon_name("document-save-as", GTK_ICON_SIZE_BUTTON));
 			gtk_widget_show(button);
 			gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
 			gtk_dialog_set_alternative_button_order(GTK_DIALOG(dialog),
@@ -911,8 +911,8 @@ i7_story_init(I7Story *self)
 	gtk_widget_show_all(GTK_WIDGET(search_toolitem));
 	gtk_toolbar_insert(GTK_TOOLBAR(I7_DOCUMENT(self)->toolbar), search_toolitem, 6);
 	/* Add icons to the entry */
-	gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, GTK_STOCK_FIND);
-	gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, "edit-find");
+	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear");
 	gtk_entry_set_icon_activatable(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, TRUE);
 	g_signal_connect(search_entry, "icon-press", G_CALLBACK(on_search_entry_icon_press), NULL);
 
@@ -1181,8 +1181,8 @@ i7_story_new_from_dialog(I7App *app)
 	/* Create a file chooser for *.inform. It actually selects folders, because
 	that's what Inform projects are. */
 	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Open Project"), NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Open"), GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	//GtkFileFilter *filter = gtk_file_filter_new();

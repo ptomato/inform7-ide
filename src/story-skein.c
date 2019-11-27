@@ -204,9 +204,9 @@ on_popup_menu_save_transcript(GtkMenuItem *menuitem, I7PopupMenuCallbackData *da
 #define ADD_SEPARATOR \
 	menuitem = gtk_separator_menu_item_new(); \
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
-#define ADD_IMAGE_MENU_ITEM(name, stock, callback) \
+#define ADD_IMAGE_MENU_ITEM(name, icon_name, callback) \
 	menuitem = gtk_image_menu_item_new_with_mnemonic(name); \
-	image = gtk_image_new_from_stock(stock, GTK_ICON_SIZE_MENU); \
+	image = gtk_image_new_from_icon_name(icon_name, GTK_ICON_SIZE_MENU); \
 	gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(menuitem), image); \
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem); \
 	g_signal_connect(menuitem, "activate", G_CALLBACK(callback), data);
@@ -230,9 +230,9 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 	ADD_SEPARATOR;
 	if(!i7_node_is_root(node)) {
 		ADD_MENU_ITEM(_("_Edit"), on_popup_menu_edit);
-		ADD_IMAGE_MENU_ITEM(i7_node_has_label(node)? _("Edit _Label") : _("Add _Label"), GTK_STOCK_EDIT, on_popup_menu_edit_label);
+		ADD_IMAGE_MENU_ITEM(i7_node_has_label(node)? _("Edit _Label") : _("Add _Label"), "edit-paste", on_popup_menu_edit_label);
 	}
-	ADD_IMAGE_MENU_ITEM(_("Show in _Transcript"), GTK_STOCK_GO_FORWARD, on_popup_menu_show_in_transcript);
+	ADD_IMAGE_MENU_ITEM(_("Show in _Transcript"), "go-next", on_popup_menu_show_in_transcript);
 	if(!i7_node_is_root(node)) {
 		ADD_MENU_ITEM(i7_node_get_locked(node)? _("Un_lock") : _("_Lock"), on_popup_menu_lock);
 		ADD_MENU_ITEM(i7_node_get_locked(node)? _("Unloc_k This Thread") : _("Loc_k This Thread"), on_popup_menu_lock_thread);
@@ -240,8 +240,8 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 	ADD_SEPARATOR;
 	ADD_MENU_ITEM(_("_New Thread"), on_popup_menu_new_thread);
 	if(!i7_node_is_root(node)) {
-		ADD_IMAGE_MENU_ITEM(_("_Insert Knot"), GTK_STOCK_ADD, on_popup_menu_insert_knot);
-		ADD_IMAGE_MENU_ITEM(_("_Delete"), GTK_STOCK_DELETE, on_popup_menu_delete);
+		ADD_IMAGE_MENU_ITEM(_("_Insert Knot"), "list-add", on_popup_menu_insert_knot);
+		ADD_IMAGE_MENU_ITEM(_("_Delete"), "list-remove", on_popup_menu_delete);
 		ADD_MENU_ITEM(_("Delete all _Below"), on_popup_menu_delete_below);
 		ADD_MENU_ITEM(_("Delete _all in Thread"), on_popup_menu_delete_thread);
 	}
