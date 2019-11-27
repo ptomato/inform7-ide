@@ -388,7 +388,8 @@ action_forward(GtkAction *forward, I7Panel *self)
 void
 action_labels(GtkAction *action, I7Panel *panel)
 {
-	gtk_menu_popup(GTK_MENU(panel->labels_menu), NULL, NULL, NULL, NULL, 1, gtk_get_current_event_time());
+	gtk_menu_popup_at_widget(GTK_MENU(panel->labels_menu), GTK_WIDGET(panel->labels),
+		GDK_GRAVITY_SOUTH_WEST, GDK_GRAVITY_NORTH_WEST, NULL);
 }
 
 /* Open the Skein layout dialog */

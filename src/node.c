@@ -1,4 +1,4 @@
-/* Copyright (C) 2010, 2011, 2015 P. F. Chimento
+/* Copyright (C) 2010, 2011, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -1122,12 +1122,14 @@ i7_node_invalidate_size(I7Node *self)
 }
 
 static gboolean
-i7_goo_canvas_item_get_onscreen_coordinates(GooCanvasItem *item, GooCanvas *canvas, gint *x, gint *y)
+i7_goo_canvas_item_get_onscreen_coordinates(GooCanvasItem *item, GooCanvas *canvas, GdkRectangle *rect)
 {
+	g_assert(rect);
+
 	GooCanvasBounds bounds;
 	GtkAllocation allocation;
 	gdouble canvas_x, canvas_y;
-	gdouble top, bottom, left, right, item_x, item_y;
+	double top, bottom, left, right;
 
 	/* Find out the size and coordinates of the current viewport */
 	goo_canvas_get_bounds(canvas, &canvas_x, &canvas_y, NULL, NULL);
@@ -1150,35 +1152,33 @@ i7_goo_canvas_item_get_onscreen_coordinates(GooCanvasItem *item, GooCanvas *canv
 	/* Find out the onscreen coordinates of the canvas viewport */
 	gtk_widget_get_allocation(GTK_WIDGET(canvas), &allocation);
 
-	if(x) {
-		item_x = bounds.x1;
-		*x = (gint)(item_x - left) + allocation.x;
-	}
-	if(y) {
-		item_y = bounds.y1;
-		*y = (gint)(item_y - top) + allocation.y;
-	}
+	rect->x = (int)(bounds.x1 - left) + allocation.x;
+	rect->y = (int)(bounds.y1 - top) + allocation.y;
+	rect->width = (int)(bounds.x2 - bounds.x1);
+	rect->height = (int)(bounds.y2 - bounds.y1);
 	return TRUE;
 }
 
 gboolean
-i7_node_get_command_coordinates(I7Node *self, gint *x, gint *y, GooCanvas *canvas)
+i7_node_get_command_coordinates(I7Node *self, GdkRectangle *rect, GooCanvas *canvas)
 {
 	g_return_val_if_fail(self || I7_IS_NODE(self), FALSE);
 	g_return_val_if_fail(canvas || GOO_IS_CANVAS(canvas), FALSE);
+	g_return_val_if_fail(rect, FALSE);
 
 	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
-	return i7_goo_canvas_item_get_onscreen_coordinates(goo_canvas_get_item(canvas, GOO_CANVAS_ITEM_MODEL(priv->command_item)), canvas, x, y);
+	return i7_goo_canvas_item_get_onscreen_coordinates(goo_canvas_get_item(canvas, GOO_CANVAS_ITEM_MODEL(priv->command_item)), canvas, rect);
 }
 
 gboolean
-i7_node_get_label_coordinates(I7Node *self, gint *x, gint *y, GooCanvas *canvas)
+i7_node_get_label_coordinates(I7Node *self, GdkRectangle *rect, GooCanvas *canvas)
 {
 	g_return_val_if_fail(self || I7_IS_NODE(self), FALSE);
 	g_return_val_if_fail(canvas || GOO_IS_CANVAS(canvas), FALSE);
+	g_return_val_if_fail(rect, FALSE);
 
 	I7NodePrivate *priv = i7_node_get_instance_private(self);
 
-	return i7_goo_canvas_item_get_onscreen_coordinates(goo_canvas_get_item(canvas, GOO_CANVAS_ITEM_MODEL(priv->label_item)), canvas, x, y);
+	return i7_goo_canvas_item_get_onscreen_coordinates(goo_canvas_get_item(canvas, GOO_CANVAS_ITEM_MODEL(priv->label_item)), canvas, rect);
 }

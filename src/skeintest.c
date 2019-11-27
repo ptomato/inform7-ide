@@ -241,7 +241,13 @@ on_node_popup(I7Skein *skein, I7Node *node, I7SkeinView *view)
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
 	gtk_widget_show_all(menu);
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 3, gtk_get_current_event_time());
+
+	GdkRectangle rect;
+	if (i7_node_get_command_coordinates(node, &rect, GOO_CANVAS(view)))
+		gtk_menu_popup_at_rect(GTK_MENU(menu), gtk_widget_get_window(GTK_WIDGET(view)), &rect,
+			GDK_GRAVITY_NORTH_EAST, GDK_GRAVITY_NORTH_WEST, NULL);
+	else
+		gtk_menu_popup_at_pointer(GTK_MENU(menu), NULL);
 }
 
 int
