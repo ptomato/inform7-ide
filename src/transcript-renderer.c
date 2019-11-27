@@ -32,45 +32,12 @@
 /* Below this width, the outputs will likely wrap to the point of unreadability */
 #define TRANSCRIPT_RENDERER_MIN_WIDTH 200
 
-typedef enum  {
-	STYLE_UNPLAYED,
-	STYLE_UNCHANGED,
-	STYLE_CHANGED,
-	STYLE_NO_EXPECTED,
-	STYLE_NO_MATCH,
-	STYLE_NEAR_MATCH,
-	STYLE_EXACT_MATCH,
-	STYLE_COMMAND,
-	STYLE_HIGHLIGHT,
-	STYLE_ACTIVE,
-	STYLE_LAST
-} I7TranscriptStyle;
-
 typedef enum {
 	CANT_COMPARE = -1,
 	NO_MATCH,
 	NEAR_MATCH,
 	EXACT_MATCH
 } I7TranscriptMatchType; /* copy of I7NodeMatchType */
-
-typedef struct {
-	double r;
-	double g;
-	double b;
-} Color;
-
-static Color colors[] = {
-	{ 0.8, 0.8, 0.8 }, /* UNPLAYED */
-	{ 0.6, 1.0, 0.6 }, /* UNCHANGED */
-	{ 1.0, 0.6, 0.6 }, /* CHANGED */
-	{ 0.7, 0.7, 0.7 }, /* NO_EXPECTED */
-	{ 1.0, 0.5, 0.5 }, /* NO_MATCH */
-	{ 1.0, 1.0, 0.5 }, /* NEAR_MATCH */
-	{ 0.5, 1.0, 0.5 }, /* EXACT_MATCH */
-	{ 0.6, 0.8, 1.0 }, /* COMMAND */
-	{ 0.4, 0.4, 1.0 }, /* HIGHLIGHT */
-	{ 1.0, 1.0, 0.7 }  /* ACTIVE */
-};
 
 /* The private properties are the non-persistent renderer state; any call to 
 i7_cell_renderer_transcript_render() must yield a cell of the same size for 
@@ -290,138 +257,113 @@ i7_cell_renderer_transcript_get_preferred_height_for_width(GtkCellRenderer *rend
 		*natural_height = calc_height;
 }
 
-/* Internal function for convenience in setting Cairo drawing style */
-static void 
-set_rgb_style(cairo_t *cr, I7TranscriptStyle style) {
-	cairo_set_source_rgb(cr, colors[style].r, colors[style].g, colors[style].b);
-}
-
-/* TODO remove redundant code */
 static void 
 i7_cell_renderer_transcript_render(GtkCellRenderer *renderer, cairo_t *cr, GtkWidget *widget, const GdkRectangle *background_area, const GdkRectangle *cell_area, GtkCellRendererState flags)
 {
 	I7CellRendererTranscript *self = I7_CELL_RENDERER_TRANSCRIPT(renderer);
 	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
 
-	GtkStateType state;
 	PangoRectangle command_rect;
 	PangoLayout *layout;
-	GtkStyle *style = gtk_widget_get_style(widget);
+	GtkStyleContext *style = gtk_widget_get_style_context(widget);
+	gtk_style_context_save(style);
+	gtk_style_context_add_class(style, "transcript");
 
 	/* Get the size and take the padding into account */
 	int xpad, ypad;
 	gtk_cell_renderer_get_padding(renderer, &xpad, &ypad);
-	int x = cell_area->x + xpad;
-	int y = cell_area->y + ypad;
-	int width = cell_area->width - 2 * xpad;
-	int height = cell_area->height - 2 * ypad;
-
-	/* Decide what state to draw the widget components in */ 
-	switch(flags) {
-		case GTK_CELL_RENDERER_PRELIT:
-			state = GTK_STATE_PRELIGHT;
-			break;
-		case GTK_CELL_RENDERER_INSENSITIVE:
-			state = GTK_STATE_INSENSITIVE;
-			break;
-		default:
-			state = GTK_STATE_NORMAL;
-	}
+	double x = cell_area->x + xpad;
+	double y = cell_area->y + ypad;
+	double width = cell_area->width - 2 * xpad;
+	double height = cell_area->height - 2 * ypad;
 
 	/* Draw the command */
+	gtk_style_context_save(style);
+	gtk_style_context_add_class(style, "command");
+
 	layout = gtk_widget_create_pango_layout(widget, priv->command);
 	pango_layout_get_pixel_extents(layout, NULL, &command_rect);
 
-	set_rgb_style(cr, STYLE_COMMAND);
-	cairo_rectangle(cr, (double)x, (double)y, 
-	    (double)width, (double)(command_rect.height + priv->text_padding * 2));
-	cairo_fill(cr);
-	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
-	    	x + priv->text_padding, y + priv->text_padding, 
-	    	layout);
+	double command_height = command_rect.height + priv->text_padding * 2;
+	gtk_render_background(style, cr, x, y, width, command_height);
+	gtk_render_frame(style, cr, x, y, width, command_height);
+	gtk_render_layout(style, cr, x + priv->text_padding, y + priv->text_padding, layout);
 	g_object_unref(layout);
 
-	/* Draw the transcript text */
-	int transcript_width = width / 2;
-	if(priv->changed)
-		set_rgb_style(cr, STYLE_CHANGED);
-	else
-		set_rgb_style(cr, STYLE_UNCHANGED);
+	gtk_style_context_restore(style);
 
-	cairo_rectangle(cr, 
-	    (double)x, 
-	    (double)(y + command_rect.height + priv->text_padding * 2), 
-	    (double)(width / 2), 
-	    (double)(height - command_rect.height - priv->text_padding * 2));
-	cairo_fill(cr);
+	/* Draw the transcript text */
+	double transcript_width = width / 2;
+
+	gtk_style_context_save(style);
+	gtk_style_context_add_class(style, "actual");
+	if(priv->changed)
+		gtk_style_context_add_class(style, "changed");
+	else
+		gtk_style_context_add_class(style, "unchanged");
+
+	double hline_y = y + command_height;
+	gtk_render_background(style, cr, x, hline_y, transcript_width, height - command_height);
+	gtk_render_frame(style, cr, x, hline_y, transcript_width, height - command_height);
 	layout = gtk_widget_create_pango_layout(widget, NULL);
 	pango_layout_set_markup(layout, priv->transcript_text, -1);
 	pango_layout_set_width(layout, (transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
-	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
-	    x + priv->text_padding,
-	    y + command_rect.height + priv->text_padding * 3,
-		layout);
+	gtk_render_layout(style, cr, x + priv->text_padding, hline_y + priv->text_padding, layout);
 	g_object_unref(layout);
-	
+
+	gtk_style_context_restore(style);  /* !actual */
+
 	/* Draw the expected text */
+	gtk_style_context_save(style);
+	gtk_style_context_add_class(style, "expected");
 	switch(priv->match_type) {
 		case CANT_COMPARE:
-			set_rgb_style(cr, STYLE_NO_EXPECTED);
+			gtk_style_context_add_class(style, "no-expected");
 			break;
 		case NO_MATCH:
-			set_rgb_style(cr, STYLE_NO_MATCH);
+			gtk_style_context_add_class(style, "no-match");
 			break;
 		case NEAR_MATCH:
-			set_rgb_style(cr, STYLE_NEAR_MATCH);
+			gtk_style_context_add_class(style, "near-match");
 			break;
 		case EXACT_MATCH:
 		default:
-			set_rgb_style(cr, STYLE_EXACT_MATCH);
+			gtk_style_context_add_class(style, "exact-match");
 			break;
 	}
 
-	cairo_rectangle(cr, 
-	    (double)(x + width / 2), 
-	    (double)(y + command_rect.height + priv->text_padding * 2), 
-	    (double)(width / 2), 
-	    (double)(height - command_rect.height - priv->text_padding * 2));
-	cairo_fill(cr);
+	gtk_render_background(style, cr, x + transcript_width, hline_y,
+		transcript_width, height - command_height);
+	gtk_render_frame(style, cr, x + transcript_width, hline_y, transcript_width,
+		height - command_height);
 	layout = gtk_widget_create_pango_layout(widget, NULL);
 	pango_layout_set_markup(layout, priv->expected_text, -1);
 	pango_layout_set_width(layout, (transcript_width - priv->text_padding * 2) * PANGO_SCALE);
 	pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
-	gtk_paint_layout(style, cr, state, TRUE, widget, NULL,
-	    x + width / 2 + priv->text_padding,
-	    y + command_rect.height + priv->text_padding * 3,
-		layout);
+	gtk_render_layout(style, cr, x + transcript_width + priv->text_padding,
+		hline_y + priv->text_padding, layout);
 	g_object_unref(layout);
 
-	/* Draw some lines */
-	gtk_paint_hline(style, cr, state, widget, NULL,
-	    x, x + width, 
-	    y + command_rect.height + priv->text_padding * 2);
-	gtk_paint_vline(style, cr, state, widget, NULL,
-	    y + command_rect.height + priv->text_padding * 2, y + height, 
-	    x + width / 2);
-	
+	gtk_style_context_restore(style);  /* !expected */
+
 	/* Draw a border around the highlighted node */
 	if(priv->current) {
-		cairo_set_line_width(cr, 4.0);
-		set_rgb_style(cr, STYLE_HIGHLIGHT);
-		cairo_rectangle(cr, (double)x + 2.0, (double)y + 2.0, 
-			(double)width - 4.0, (double)height - 4.0);
-		cairo_stroke(cr);
+		gtk_style_context_save(style);
+		gtk_style_context_add_class(style, "highlight");
+		gtk_render_frame(style, cr, x, y, width, height);
+		gtk_style_context_restore(style);
 	}
 
 	/* Draw a border around the active node */
 	if(priv->played) {
-		cairo_set_line_width(cr, 2.0);
-		set_rgb_style(cr, STYLE_ACTIVE);
-		cairo_rectangle(cr, (double)x + 1.0, (double)y + 1.0, 
-			(double)width - 2.0, (double)height - 2.0);
-		cairo_stroke(cr);
+		gtk_style_context_save(style);
+		gtk_style_context_add_class(style, "active");
+		gtk_render_frame(style, cr, x, y, width, height);
+		gtk_style_context_restore(style);
 	}
+
+	gtk_style_context_restore(style);  /* !transcript */
 }
 
 static void 
