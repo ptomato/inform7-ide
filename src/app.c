@@ -1456,15 +1456,19 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *self)
 					-1);
 				GtkWidget *extitem;
 				if(readonly) {
-					extitem = gtk_image_menu_item_new_with_label(extname);
+					extitem = gtk_menu_item_new();
 					GtkWidget *image = gtk_image_new_from_icon_name("inform7-builtin", GTK_ICON_SIZE_MENU);
-					gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(extitem), image);
+					GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+					GtkWidget *label = gtk_label_new(extname);
+					gtk_container_add(GTK_CONTAINER(box), image);
+					gtk_container_add(GTK_CONTAINER(box), label);
+					gtk_container_add(GTK_CONTAINER(extitem),box);
 					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), extension_file);
 				} else {
 					extitem = gtk_menu_item_new_with_label(extname);
 					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), extension_file);
 				}
-				gtk_widget_show(extitem);
+				gtk_widget_show_all(extitem);
 				gtk_menu_shell_append(GTK_MENU_SHELL(extmenu), extitem);
 
 				g_free(extname);
