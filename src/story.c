@@ -812,8 +812,8 @@ i7_story_init(I7Story *self)
 	gtk_widget_show_all(GTK_WIDGET(search_toolitem));
 	gtk_toolbar_insert(GTK_TOOLBAR(I7_DOCUMENT(self)->toolbar), search_toolitem, 6);
 	/* Add icons to the entry */
-	gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, GTK_STOCK_FIND);
-	gtk_entry_set_icon_from_stock(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, GTK_STOCK_CLEAR);
+	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, "edit-find");
+	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear");
 	gtk_entry_set_icon_activatable(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, TRUE);
 	g_signal_connect(search_entry, "icon-press", G_CALLBACK(on_search_entry_icon_press), NULL);
 
@@ -1081,8 +1081,8 @@ i7_story_new_from_dialog(I7App *app)
 	/* Create a file chooser for *.inform. It actually selects folders, because
 	that's what Inform projects are. */
 	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Open Project"), NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Open"), GTK_RESPONSE_ACCEPT,
 		NULL);
 
 	//GtkFileFilter *filter = gtk_file_filter_new();

@@ -140,11 +140,11 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 
 	/* Ask the user for a file to import */
 	/* TRANSLATORS: File->Import Into Skein... */
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(
-	  _("Select the file to import into the skein"),
-	  GTK_WINDOW(story),
-	  GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	  GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Select the file to import into the skein"),
+		GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_OPEN,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Open"), GTK_RESPONSE_ACCEPT,
+		NULL);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
@@ -224,8 +224,8 @@ action_revert(GtkAction *action, I7Document *document)
 	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(revert_dialog),
 		_("All unsaved changes will be lost."));
 	gtk_dialog_add_buttons(GTK_DIALOG(revert_dialog),
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_OK,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Revert"), GTK_RESPONSE_OK,
 		NULL);
 	gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
 	gtk_widget_destroy(revert_dialog);

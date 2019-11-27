@@ -181,8 +181,8 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 	/* From gedit/dialogs/gedit-preferences-dialog.c */
 	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Add Color Scheme"),
 		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_ADD, GTK_RESPONSE_ACCEPT,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Add"), GTK_RESPONSE_ACCEPT,
 		NULL);
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(chooser), TRUE);
 
@@ -436,11 +436,11 @@ install_extensions(GFile *file, I7App *app)
 void
 on_extensions_add_clicked(GtkButton *button, I7App *app)
 {
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(
-	  _("Select the extensions to install"),
-	  GTK_WINDOW(app->prefs->window),
-	  GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	  GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Select the extensions to install"),
+		GTK_WINDOW(app->prefs->window), GTK_FILE_CHOOSER_ACTION_OPEN,
+		_("_Cancel"), GTK_RESPONSE_CANCEL,
+		_("_Open"), GTK_RESPONSE_ACCEPT,
+		NULL);
 	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
