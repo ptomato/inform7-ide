@@ -1562,11 +1562,15 @@ i7_app_update_css(I7App *self)
 /* Helper function: change the cursor of @toplevel's GdkWindow to @cursor.
  Called by g_list_foreach() in i7_app_set_busy() below. */
 static void
-set_cursor(GtkWindow *toplevel, GdkCursor *cursor)
+set_cursor(GtkWindow *toplevel, const char *name)
 {
 	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(toplevel));
-	if(window)
+	if (window) {
+		g_autoptr(GdkCursor) cursor = NULL;
+		if (name)
+			cursor = gdk_cursor_new_from_name(gdk_window_get_display(window), name);
 		gdk_window_set_cursor(window, cursor);
+	}
 }
 
 /* Change the cursor in all application windows to GDK_WATCH if @busy is TRUE,
@@ -1576,9 +1580,7 @@ i7_app_set_busy(I7App *self, gboolean busy)
 {
 	GList *windows = gtk_window_list_toplevels();
 	if(busy) {
-		GdkCursor *cursor = gdk_cursor_new(GDK_WATCH);
-		g_list_foreach(windows, (GFunc)set_cursor, cursor);
-		gdk_cursor_unref(cursor);
+		g_list_foreach(windows, (GFunc)set_cursor, "wait");
 	} else
 		g_list_foreach(windows, (GFunc)set_cursor, NULL);
 	gdk_flush();
