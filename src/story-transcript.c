@@ -1,4 +1,4 @@
-/* Copyright (C) 2011, 2015 P. F. Chimento
+/* Copyright (C) 2011, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@ on_transcript_button_press(GtkTreeView *view, GdkEventButton *event, I7Panel *pa
 	if(event->button != 3)
 		return FALSE; /* propagate event */
 
-	gtk_menu_popup(GTK_MENU(panel->transcript_menu), NULL, NULL, NULL, NULL, 3, event->time);
+	gtk_menu_popup_at_pointer(GTK_MENU(panel->transcript_menu), (GdkEvent *)event);
 
 	/* Then send it through as if it was a left-button click, so the row gets selected */
 	event->button = 1;

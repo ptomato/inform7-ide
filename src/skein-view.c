@@ -1,4 +1,4 @@
-/* Copyright (C) 2010, 2011 P. F. Chimento
+/* Copyright (C) 2010, 2011, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -302,12 +302,12 @@ popup_edit_window(GtkWidget *parent, gint x, gint y, const gchar *text)
 void
 i7_skein_view_edit_node(I7SkeinView *self, I7Node *node)
 {
-	gint x, y;
-	if(!i7_node_get_command_coordinates(node, &x, &y, GOO_CANVAS(self)))
+	GdkRectangle rect;
+	if(!i7_node_get_command_coordinates(node, &rect, GOO_CANVAS(self)))
 		return;
 	GtkWidget *parent = gtk_widget_get_toplevel(GTK_WIDGET(self));
 	gchar *command = i7_node_get_command(node);
-	GtkWidget *edit_popup = popup_edit_window(parent, x, y, command);
+	GtkWidget *edit_popup = popup_edit_window(parent, rect.x, rect.y, command);
 	g_free(command);
 
 	/* Associate this window with the node we are editing */
@@ -318,12 +318,12 @@ i7_skein_view_edit_node(I7SkeinView *self, I7Node *node)
 void
 i7_skein_view_edit_label(I7SkeinView *self, I7Node *node)
 {
-	gint x, y;
-	if(!i7_node_get_label_coordinates(node, &x, &y, GOO_CANVAS(self)))
+	GdkRectangle rect;
+	if(!i7_node_get_label_coordinates(node, &rect, GOO_CANVAS(self)))
 		return;
 	GtkWidget *parent = gtk_widget_get_toplevel(GTK_WIDGET(self));
 	gchar *label = i7_node_get_label(node);
-	GtkWidget *edit_popup = popup_edit_window(parent, x, y, label);
+	GtkWidget *edit_popup = popup_edit_window(parent, rect.x, rect.y, label);
 	g_free(label);
 
 	/* Associate this window with the node we are editing */

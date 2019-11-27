@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -250,7 +250,13 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 	gtk_widget_set_sensitive(menuitem, FALSE);
 
 	gtk_widget_show_all(menu);
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, 3, gtk_get_current_event_time());
+
+	GdkRectangle rect;
+	if (i7_node_get_command_coordinates(node, &rect, GOO_CANVAS(view)))
+		gtk_menu_popup_at_rect(GTK_MENU(menu), gtk_widget_get_window(GTK_WIDGET(view)), &rect,
+			GDK_GRAVITY_NORTH_EAST, GDK_GRAVITY_NORTH_WEST, NULL);
+	else
+		gtk_menu_popup_at_pointer(GTK_MENU(menu), NULL);
 }
 
 #undef ADD_MENU_ITEM
