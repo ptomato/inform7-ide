@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2015 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 	content_hbox = gtk_hbox_new(FALSE, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(content_hbox), 6);
 
-	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_DIALOG);
+	image = gtk_image_new_from_icon_name("dialog-error", GTK_ICON_SIZE_DIALOG);
 	gtk_box_pack_start(GTK_BOX(content_hbox), image, FALSE, TRUE, 0);
 	gtk_misc_set_alignment(GTK_MISC(image), 0.5, 0);
 
@@ -118,7 +118,7 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(action_area), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(action_area), 10);
 
-	ok = gtk_button_new_from_stock(GTK_STOCK_OK);
+	ok = gtk_button_new_with_mnemonic(_("_OK"));
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), ok, GTK_RESPONSE_OK);
 	gtk_widget_set_can_default(ok, TRUE);
 

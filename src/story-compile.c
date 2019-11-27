@@ -617,8 +617,8 @@ i7_story_save_ifiction(I7Story *story)
 		/* Create a file chooser */
 		GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save iFiction record"),
 			GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Save"), GTK_RESPONSE_ACCEPT,
 			NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
@@ -679,8 +679,8 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 		}
 		GtkWidget *dialog = gtk_file_chooser_dialog_new(dialog_title,
 			GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Save"), GTK_RESPONSE_ACCEPT,
 			NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 		char *curfilename = g_file_get_basename(compiler_output_file);

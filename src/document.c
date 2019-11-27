@@ -279,11 +279,11 @@ i7_document_add_menus_and_findbar(I7Document *self)
 
 	self->findbar = gtk_ui_manager_get_widget(self->ui_manager, "/FindToolbar");
 	gtk_widget_set_no_show_all(self->findbar, TRUE);
-	gtk_toolbar_set_icon_size(GTK_TOOLBAR(self->findbar), GTK_ICON_SIZE_MENU);
 	gtk_toolbar_set_style(GTK_TOOLBAR(self->findbar), GTK_TOOLBAR_BOTH_HORIZ);
 	gtk_widget_hide(self->findbar);
 
-	GtkToolItem *findbar_close = gtk_tool_button_new_from_stock(GTK_STOCK_CLOSE);
+	GtkWidget *close_icon = gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_MENU);
+	GtkToolItem *findbar_close = gtk_tool_button_new(close_icon, NULL);
 	gtk_tool_item_set_is_important(findbar_close, FALSE);
 	gtk_widget_show(GTK_WIDGET(findbar_close));
 	g_signal_connect(findbar_close, "clicked", G_CALLBACK(on_findbar_close_clicked), self);
@@ -534,13 +534,13 @@ show_save_changes_dialog(I7Document *document, gboolean allow_cancel)
 	if(allow_cancel)
 		gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
 			_("Close _without saving"), GTK_RESPONSE_REJECT,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Save"), GTK_RESPONSE_OK,
 			NULL);
 	else
 		gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
 			_("Close _without saving"), GTK_RESPONSE_REJECT,
-			GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+			_("_Save"), GTK_RESPONSE_OK,
 			NULL);
 	int result = gtk_dialog_run(GTK_DIALOG(save_changes_dialog));
 	gtk_widget_destroy(save_changes_dialog);
