@@ -422,44 +422,76 @@ i7_document_get_child_path(I7Document *self, GtkTreePath *path)
 	return real_path;
 }
 
+typedef struct {
+	I7Document *document;
+	GFile *file;
+} I7DocumentFileMonitorIdleClosure;
+
+static I7DocumentFileMonitorIdleClosure *
+new_file_monitor_data(I7Document *document, GFile *file)
+{
+	I7DocumentFileMonitorIdleClosure *retval = g_new0(I7DocumentFileMonitorIdleClosure, 1);
+	retval->document = g_object_ref(document);
+	retval->file = g_object_ref(file);
+	return retval;
+}
+
+static void
+free_file_monitor_data(I7DocumentFileMonitorIdleClosure *data)
+{
+	g_object_unref(data->document);
+	g_object_unref(data->file);
+	g_free(data);
+}
+
+static gboolean
+on_document_deleted_or_unmounted_idle(I7Document *document) {
+	/* If the file is removed, quietly make sure the user gets a chance
+	to save it before exiting */
+	i7_document_set_modified(document, TRUE);
+	return G_SOURCE_REMOVE;
+}
+
+static gboolean
+on_document_created_or_changed_idle(I7DocumentFileMonitorIdleClosure *data)
+{
+	/* g_file_set_contents works by deleting and creating, so both of
+	these options mean the source text has been modified. Don't ask for
+	confirmation - just read in the new source text. (See mantis #681
+	and http://inform7.uservoice.com/forums/57320/suggestions/1220683 )*/
+	g_autofree char *text = read_source_file(data->file);
+	if (text) {
+		i7_document_set_source_text(data->document, text);
+		i7_document_flash_status_message(data->document, _("Source code reloaded."), FILE_OPERATIONS);
+		i7_document_set_modified(data->document, FALSE);
+		return G_SOURCE_REMOVE;
+	}
+	/* otherwise - that means that our copy of the document
+	isn't current with what's on disk anymore, but we weren't able to
+	reload it. So treat the situation as if the file had been deleted. */
+	return on_document_deleted_or_unmounted_idle(data->document);
+}
+
 /* Internal function: callback for when the source text has changed outside of
  * Inform. */
 static void
 on_document_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFileMonitorEvent event_type, I7Document *document)
 {
-	gdk_threads_enter(); /* this isn't a GTK callback */
-
 	switch(event_type) {
 		case G_FILE_MONITOR_EVENT_CREATED:
 		case G_FILE_MONITOR_EVENT_CHANGED:
 		{
-			/* g_file_set_contents works by deleting and creating, so both of
-			these options mean the source text has been modified. Don't ask for
-			confirmation - just read in the new source text. (See mantis #681
-			and http://inform7.uservoice.com/forums/57320/suggestions/1220683 )*/
-			char *text = read_source_file(file);
-			if(text) {
-				i7_document_set_source_text(document, text);
-				g_free(text);
-				i7_document_flash_status_message(document, _("Source code reloaded."), FILE_OPERATIONS);
-				i7_document_set_modified(document, FALSE);
-				break;
-			}
-			/* else fall through - that means that our copy of the document
-			isn't current with what's on disk anymore, but we weren't able to
-			reload it. So treat the situation as if the file had been deleted. */
-	    }
-		/* fall through */
+			I7DocumentFileMonitorIdleClosure *data = new_file_monitor_data(document, file);
+			gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)on_document_created_or_changed_idle, data, (GDestroyNotify)free_file_monitor_data);
+		}
+			break;
 		case G_FILE_MONITOR_EVENT_DELETED:
 		case G_FILE_MONITOR_EVENT_UNMOUNTED:
-			/* If the file is removed, quietly make sure the user gets a chance
-			to save it before exiting */
-			i7_document_set_modified(document, TRUE);
+			gdk_threads_add_idle((GSourceFunc)on_document_deleted_or_unmounted_idle, document);
+			break;
 		default:
 			;
 	}
-
-	gdk_threads_leave();
 }
 
 void
