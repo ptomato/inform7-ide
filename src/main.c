@@ -90,8 +90,6 @@ main(int argc, char *argv[])
 		return 0;
 	}
 
-	gdk_threads_init();
-
 	gtk_init(&argc, &argv);
 
 	/* Workaround for GTK 2 bug for people using Oxygen or QtCurve themes:
@@ -122,9 +120,7 @@ main(int argc, char *argv[])
 		gtk_widget_show_all(welcomedialog);
 	}
 
-	gdk_threads_enter();
 	gtk_main();
-	gdk_threads_leave();
 
 	g_object_unref(theapp);
 	i7_search_window_free_index();
