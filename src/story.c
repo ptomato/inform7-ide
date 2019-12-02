@@ -39,7 +39,6 @@
 #include "lang.h"
 #include "node.h"
 #include "panel.h"
-#include "placeholder-entry.h"
 #include "searchwindow.h"
 #include "skein.h"
 #include "skein-view.h"
@@ -904,7 +903,8 @@ i7_story_init(I7Story *self)
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->findbar, FALSE, FALSE, 0);
 	GtkToolItem *search_toolitem = gtk_tool_item_new();
-	GtkWidget *search_entry = i7_placeholder_entry_new(_("Documentation"));
+	GtkWidget *search_entry = gtk_entry_new();
+	gtk_entry_set_placeholder_text(GTK_ENTRY(search_entry), _("Documentation"));
 	gtk_container_add(GTK_CONTAINER(search_toolitem), search_entry);
 	/* "activate" is a keybinding signal, but what else am I supposed to connect to? */
 	g_signal_connect(search_entry, "activate", G_CALLBACK(on_search_entry_activate), self);
