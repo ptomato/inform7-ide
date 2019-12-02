@@ -287,7 +287,6 @@ libinform7gui_a_SOURCES = \
 	node.c node.h \
 	notepad.c \
 	panel.c panel.h \
-	placeholder-entry.c placeholder-entry.h \
 	prefs.c prefs.h \
 	resources.c resources.h \
 	resources-generated.c resources-generated.h \
