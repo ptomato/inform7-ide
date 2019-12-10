@@ -3,6 +3,20 @@
 <interface>
   <requires lib="gtk+" version="3.16"/>
   <requires lib="gtksourceview" version="3.0"/>
+  <object class="GtkSourceBuffer" id="buffer">
+    <property name="highlight-matching-brackets">False</property>
+    <signal name="changed" handler="on_buffer_changed" swapped="no"/>
+    <signal name="delete-range" handler="after_source_buffer_delete_range" after="yes" swapped="no"/>
+    <signal name="insert-text" handler="after_source_buffer_insert_text" after="yes" swapped="no"/>
+    <signal name="mark-set" handler="on_buffer_mark_set" swapped="no"/>
+    <signal name="modified-changed" handler="on_buffer_modified_changed" swapped="no"/>
+  </object>
+  <object class="GtkImage" id="findbar_close_icon">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">window-close</property>
+    <property name="icon_size">1</property>
+  </object>
   <object class="GtkVBox" id="box">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -43,332 +57,92 @@
         <property name="position">0</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkSourceBuffer" id="buffer">
-    <property name="highlight-matching-brackets">False</property>
-    <signal name="changed" handler="on_buffer_changed" swapped="no"/>
-    <signal name="delete-range" handler="after_source_buffer_delete_range" after="yes" swapped="no"/>
-    <signal name="insert-text" handler="after_source_buffer_insert_text" after="yes" swapped="no"/>
-    <signal name="mark-set" handler="on_buffer_mark_set" swapped="no"/>
-    <signal name="modified-changed" handler="on_buffer_modified_changed" swapped="no"/>
-  </object>
-  <object class="GtkActionGroup" id="copy_actions">
     <child>
-      <object class="GtkAction" id="cut">
-        <property name="label" translatable="yes" comments="Edit Menu">Cu_t</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Cut the selected text</property>
-        <property name="stock-id">gtk-cut</property>
-        <signal name="activate" handler="action_cut" swapped="no"/>
+      <object class="GtkToolbar" id="findbar">
+        <property name="can-focus">False</property>
+        <property name="no-show-all">True</property>
+        <property name="toolbar-style">both-horiz</property>
+        <child>
+          <object class="GtkToolItem" id="findbar_entry_container">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <child>
+              <object class="GtkEntry" id="findbar_entry">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="primary-icon-activatable">False</property>
+                <property name="secondary-icon-activatable">False</property>
+                <signal name="changed" handler="on_findbar_entry_changed" swapped="no"/>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="findbar_previous">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes" comments="Edit Menu">Search backwards for the find text</property>
+            <property name="action-name">win.find-previous</property>
+            <property name="label" translatable="yes" comments="Edit Menu">Find Pre_vious</property>
+            <property name="use-underline">True</property>
+            <property name="icon-name">go-previous</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="findbar_next">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes" comments="Edit Menu">Search forwards for the find text</property>
+            <property name="action-name">win.find-next</property>
+            <property name="label" translatable="yes" comments="Edit Menu">Find Ne_xt</property>
+            <property name="use-underline">True</property>
+            <property name="icon-name">go-next</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="findbar_separator1">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="draw">False</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="findbar_close">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="use-underline">True</property>
+            <property name="icon-widget">findbar_close_icon</property>
+            <signal name="clicked" handler="on_findbar_close_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="pack-type">end</property>
+        <property name="position">1</property>
+      </packing>
     </child>
-    <child>
-      <object class="GtkAction" id="copy">
-        <property name="label" translatable="yes" comments="Edit Menu">_Copy</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Copy the selected text to the clipboard</property>
-        <property name="stock-id">gtk-copy</property>
-        <signal name="activate" handler="action_copy" swapped="no"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkActionGroup" id="document_actions">
-    <child>
-      <object class="GtkAction" id="view_menu">
-        <property name="label" translatable="yes" comments="View Menu">_View</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="format_menu">
-        <property name="label" translatable="yes" comments="Format Menu">_Format</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="save">
-        <property name="label" translatable="yes" comments="File Menu">_Save</property>
-        <property name="tooltip" translatable="yes" comments="File menu">Save the current story</property>
-        <property name="stock-id">gtk-save</property>
-        <signal name="activate" handler="action_save" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="save_as">
-        <property name="label" translatable="yes" comments="File Menu">Save _As...</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Save the current story with a different name</property>
-        <property name="stock-id">gtk-save-as</property>
-        <signal name="activate" handler="action_save_as" swapped="no"/>
-      </object>
-      <accelerator key="S" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="save_copy">
-        <property name="label" translatable="yes" comments="File Menu">Sa_ve a Copy...</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Save a copy of the current story under a different name</property>
-        <signal name="activate" handler="action_save_copy" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="revert">
-        <property name="label" translatable="yes" comments="File Menu">_Revert</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Revert to the last saved version of the story, discarding all subsequent changes</property>
-        <property name="stock-id">gtk-revert-to-saved</property>
-        <signal name="activate" handler="action_revert" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="page_setup">
-        <property name="label" translatable="yes" comments="File Menu">Page Set_up...</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Setup the page settings</property>
-        <signal name="activate" handler="action_page_setup" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="print_preview">
-        <property name="label" translatable="yes" comments="File Menu">Print Previe_w...</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Print preview</property>
-        <property name="stock-id">gtk-print-preview</property>
-        <signal name="activate" handler="action_print_preview" swapped="no"/>
-      </object>
-      <accelerator key="P" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="print">
-        <property name="label" translatable="yes" comments="File Menu">_Print...</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Print the story's Source</property>
-        <property name="stock-id">gtk-print</property>
-        <signal name="activate" handler="action_print" swapped="no"/>
-      </object>
-      <accelerator key="P" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="close">
-        <property name="label" translatable="yes" comments="File Menu">_Close</property>
-        <property name="tooltip" translatable="yes" comments="File Menu">Close the current story</property>
-        <property name="stock-id">gtk-close</property>
-        <signal name="activate" handler="action_close" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="undo">
-        <property name="label" translatable="yes" comments="Edit Menu">_Undo</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Undo the last action</property>
-        <property name="stock-id">gtk-undo</property>
-        <signal name="activate" handler="action_undo" swapped="no"/>
-      </object>
-      <accelerator key="Z" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="redo">
-        <property name="label" translatable="yes" comments="Edit Menu">_Redo</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Redo the last undone action</property>
-        <property name="stock-id">gtk-redo</property>
-        <signal name="activate" handler="action_redo" swapped="no"/>
-      </object>
-      <accelerator key="Z" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="paste">
-        <property name="label" translatable="yes" comments="Edit Menu">_Paste</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Paste the clipboard</property>
-        <property name="stock-id">gtk-paste</property>
-        <signal name="activate" handler="action_paste" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="select_all">
-        <property name="label" translatable="yes" comments="Edit Menu">Select _All</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Select the entire document</property>
-        <property name="stock-id">gtk-select-all</property>
-        <signal name="activate" handler="action_select_all" swapped="no"/>
-      </object>
-      <accelerator key="A" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="find">
-        <property name="label" translatable="yes" comments="Edit Menu">_Find</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Search for text</property>
-        <property name="stock-id">gtk-find</property>
-        <signal name="activate" handler="action_find" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="find_next">
-        <property name="label" translatable="yes" comments="Edit Menu">Find Ne_xt</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Search forwards for the find text</property>
-        <property name="stock-id">gtk-go-forward</property>
-        <signal name="activate" handler="action_find_next" swapped="no"/>
-      </object>
-      <accelerator key="G" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="find_previous">
-        <property name="label" translatable="yes" comments="Edit Menu">Find Pre_vious</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Search backwards for the find text</property>
-        <property name="stock-id">gtk-go-back</property>
-        <signal name="activate" handler="action_find_previous" swapped="no"/>
-      </object>
-      <accelerator key="G" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="replace">
-        <property name="label" translatable="yes" comments="Edit Menu">Find and _Replace...</property>
-        <property name="short-label" translatable="yes" comments="Edit Menu">Find and _Replace...</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Search for text and replace each occurrence with different text</property>
-        <property name="stock-id">gtk-find-and-replace</property>
-        <signal name="activate" handler="action_replace" swapped="no"/>
-      </object>
-      <accelerator key="H" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="search">
-        <property name="label" translatable="yes" comments="Edit Menu">_Search Files...</property>
-        <property name="short-label" translatable="yes" comments="Edit Menu">_Search Files...</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Search through the entire project, including the documentation</property>
-        <signal name="activate" handler="action_search" swapped="no"/>
-      </object>
-      <accelerator key="F" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="check_spelling">
-        <property name="label" translatable="yes" comments="Edit Menu">Rec_heck Document</property>
-        <property name="short-label" translatable="yes" comments="Edit Menu">Rec_heck Document</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Recheck the current story for incorrect spelling</property>
-        <property name="stock-id">gtk-spell-check</property>
-        <signal name="activate" handler="action_check_spelling" swapped="no"/>
-      </object>
-      <accelerator key="F7" modifiers="GDK_SHIFT_MASK"/>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="autocheck_spelling">
-        <property name="label" translatable="yes" comments="Edit Menu">Aut_ocheck Spelling</property>
-        <property name="short-label" translatable="yes" comments="Edit Menu">Aut_ocheck Spelling</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Automatically underline misspelled words in the story</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="action_autocheck_spelling_toggle" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="view_toolbar">
-        <property name="label" translatable="yes" comments="View Menu">Tool_bar</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Show or hide the toolbar in the current window</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="action_view_toolbar_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="view_statusbar">
-        <property name="label" translatable="yes" comments="View Menu">_Status Bar</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Show or hide the status bar in the current window</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="action_view_statusbar_toggled" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkAction" id="show_headings">
-        <property name="label" translatable="yes" comments="View Menu">Show _Headings</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Show the table of contents</property>
-        <property name="stock-id">gtk-index</property>
-        <signal name="activate" handler="action_show_headings" swapped="no"/>
-      </object>
-      <accelerator key="H" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="current_section_only">
-        <property name="label" translatable="yes" comments="View Menu">_Current Section Only</property>
-        <property name="short-label" translatable="yes" comments="View Menu">Current</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Show only the current section in the Source</property>
-        <property name="stock-id">gtk-goto-last</property>
-        <signal name="activate" handler="action_current_section_only" swapped="no"/>
-      </object>
-      <accelerator key="period" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="increase_restriction">
-        <property name="label" translatable="yes" comments="View Menu">Incre_ase Restriction</property>
-        <property name="short-label" translatable="yes" comments="View Menu">Increase</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Restrict the Source to one level deeper in the hierarchy</property>
-        <property name="stock-id">gtk-go-forward</property>
-        <signal name="activate" handler="action_increase_restriction" swapped="no"/>
-      </object>
-      <accelerator key="period" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="decrease_restriction">
-        <property name="label" translatable="yes" comments="View Menu">Re_duce Restriction</property>
-        <property name="short-label" translatable="yes" comments="View Menu">Reduce</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Show the surrounding hierarchical level in the Source</property>
-        <property name="stock-id">gtk-go-back</property>
-        <property name="sensitive">False</property>
-        <signal name="activate" handler="action_decrease_restriction" swapped="no"/>
-      </object>
-      <accelerator key="comma" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="entire_source">
-        <property name="label" translatable="yes" comments="View Menu">_Entire Source</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Show the entire story in the Source</property>
-        <property name="stock-id">gtk-goto-first</property>
-        <property name="sensitive">False</property>
-        <signal name="activate" handler="action_entire_source" swapped="no"/>
-      </object>
-      <accelerator key="comma" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="previous_section">
-        <property name="label" translatable="yes" comments="View Menu">_Previous Section</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Jump to the previous section</property>
-        <property name="stock-id">gtk-go-up</property>
-        <signal name="activate" handler="action_previous_section" swapped="no"/>
-      </object>
-      <accelerator key="Page_Up" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="next_section">
-        <property name="label" translatable="yes" comments="View Menu">_Next Section</property>
-        <property name="tooltip" translatable="yes" comments="View Menu">Jump to the next section</property>
-        <property name="stock-id">gtk-go-down</property>
-        <signal name="activate" handler="action_next_section" swapped="no"/>
-      </object>
-      <accelerator key="Page_Down" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="indent">
-        <property name="label" translatable="yes" comments="Format Menu">_Indent</property>
-        <property name="tooltip" translatable="yes" comments="Format Menu">Insert a tab before each line of the selection</property>
-        <property name="stock-id">gtk-indent</property>
-        <signal name="activate" handler="action_indent" swapped="no"/>
-      </object>
-      <accelerator key="T" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="unindent">
-        <property name="label" translatable="yes" comments="Format Menu">_Unindent</property>
-        <property name="tooltip" translatable="yes" comments="Format Menu">Remove a tab from the beginning of each line of the selection</property>
-        <property name="stock-id">gtk-unindent</property>
-        <signal name="activate" handler="action_unindent" swapped="no"/>
-      </object>
-      <accelerator key="T" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="renumber_all_sections">
-        <property name="label" translatable="yes" comments="Format Menu">_Renumber All Sections</property>
-        <property name="tooltip" translatable="yes" comments="Format Menu">Automatically number all the sections in the story</property>
-        <signal name="activate" handler="action_renumber_all_sections" swapped="no"/>
-      </object>
-      <accelerator key="N" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK"/>
-    </child>
-    <child>
-      <object class="GtkToggleAction" id="enable_elastic_tabstops">
-        <property name="label" translatable="yes" comments="Format Menu">_Enable Elastic Tabstops</property>
-        <property name="tooltip" translatable="yes" comments="Format Menu">Make tabs line up in the Story pane</property>
-        <signal name="toggled" handler="action_enable_elastic_tabstops_toggled" swapped="no"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkEntry" id="findbar_entry">
-    <property name="visible">True</property>
-    <property name="can-focus">True</property>
-    <property name="primary-icon-activatable">False</property>
-    <property name="secondary-icon-activatable">False</property>
-    <signal name="changed" handler="on_findbar_entry_changed" swapped="no"/>
   </object>
   <object class="GtkTreeStore" id="headings_store">
     <columns>
@@ -950,33 +724,5 @@
       <action-widget response="0">search_files_close</action-widget>
       <action-widget response="0">search_files_find</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkActionGroup" id="selection_actions">
-    <property name="sensitive">False</property>
-    <child>
-      <object class="GtkAction" id="scroll_selection">
-        <property name="label" translatable="yes" comments="Edit Menu">Sc_roll to Selection</property>
-        <property name="tooltip" translatable="yes" comments="Edit Menu">Go to the selection</property>
-        <property name="stock-id">gtk-jump-to</property>
-        <signal name="activate" handler="action_scroll_selection" swapped="no"/>
-      </object>
-      <accelerator key="J" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="comment_out_selection">
-        <property name="label" translatable="yes" comments="Format Menu">_Comment Out Selection</property>
-        <property name="tooltip" translatable="yes" comments="Format Menu">Put the selected text between comment brackets</property>
-        <signal name="activate" handler="action_comment_out_selection" swapped="no"/>
-      </object>
-      <accelerator key="slash" modifiers="GDK_CONTROL_MASK"/>
-    </child>
-    <child>
-      <object class="GtkAction" id="uncomment_selection">
-        <property name="label" translatable="yes" comments="Format Menu">_Uncomment Selection</property>
-        <property name="tooltip" translatable="yes" comments="Format Menu">Remove comment brackets from selected text</property>
-        <signal name="activate" handler="action_uncomment_selection" swapped="no"/>
-      </object>
-      <accelerator key="question" modifiers="GDK_CONTROL_MASK"/>
-    </child>
   </object>
 </interface>

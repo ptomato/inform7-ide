@@ -74,7 +74,7 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 void
 populate_schemes_list(GtkListStore *list)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	gtk_list_store_clear(list);
 	i7_app_foreach_color_scheme(theapp, (GFunc)store_color_scheme, list);
@@ -163,12 +163,11 @@ on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
-		I7App *theapp = i7_app_get();
-		GSettings *prefs = i7_app_get_prefs(theapp);
+		GSettings *prefs = i7_app_get_prefs(app);
 		gchar *id;
 		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
 		g_settings_set_string(prefs, PREFS_STYLE_SCHEME, id);
-		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(i7_app_get(), id));
+		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(app, id));
 		g_free(id);
 	} else {
 		; /* Do nothing; no selection */
@@ -221,8 +220,7 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 
 	populate_schemes_list(app->prefs->schemes_list);
 
-	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
+	GSettings *prefs = i7_app_get_prefs(app);
 	g_settings_set_string(prefs, PREFS_STYLE_SCHEME, scheme_id);
 }
 
@@ -277,8 +275,7 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 
 			populate_schemes_list(app->prefs->schemes_list);
 
-			I7App *theapp = i7_app_get();
-			GSettings *prefs = i7_app_get_prefs(theapp);
+			GSettings *prefs = i7_app_get_prefs(app);
 			g_settings_set(prefs, PREFS_STYLE_SCHEME, new_id);
 
 			g_free(new_id);
@@ -324,6 +321,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 	GFile *file;
 	GFileInfo *file_info;
 	gchar *type_name = NULL;
+	I7App *theapp = I7_APP(g_application_get_default());
 
 	/* Check that we got data from source */
 	if(selectiondata == NULL || gtk_selection_data_get_length(selectiondata) < 0)
@@ -361,7 +359,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 			while((entry_info = g_file_enumerator_next_file(dir, NULL, &err)) != NULL) {
 				if(g_file_info_get_file_type(entry_info) != G_FILE_TYPE_DIRECTORY) {
 					GFile *extension_file = g_file_get_child(file, g_file_info_get_name(entry_info));
-					i7_app_install_extension(i7_app_get(), extension_file);
+					i7_app_install_extension(theapp, extension_file);
 					g_object_unref(extension_file);
 				}
 				g_object_unref(entry_info);
@@ -376,7 +374,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 
 		} else {
 			/* just install it */
-			i7_app_install_extension(i7_app_get(), file);
+			i7_app_install_extension(theapp, file);
 		}
 
 		g_object_unref(file_info);
@@ -511,7 +509,8 @@ on_extensions_remove_clicked(GtkButton *button, I7App *app)
 gboolean
 update_style(GtkSourceBuffer *buffer)
 {
-	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(i7_app_get()));
+	I7App *theapp = I7_APP(g_application_get_default());
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 	return FALSE; /* one-shot idle function */
 }
 
@@ -519,7 +518,7 @@ update_style(GtkSourceBuffer *buffer)
 gboolean
 update_tabs(GtkSourceView *view)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	unsigned spaces = g_settings_get_uint(prefs, PREFS_TAB_WIDTH);
 	if(spaces == 0)

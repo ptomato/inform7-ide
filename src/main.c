@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2014, 2015 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2014, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@
 #include "configfile.h"
 #include "error.h"
 #include "searchwindow.h"
-#include "welcomedialog.h"
 
 /*
  * version:
@@ -100,30 +99,12 @@ main(int argc, char *argv[])
 	/* Initialize the Inform 7 application */
 	/* TRANSLATORS: this is the human-readable application name */
 	g_set_application_name(_("Inform 7"));
-	I7App *theapp = i7_app_get();
+	I7App *theapp = i7_app_new();
 
-	/* Open any project files specified on the command line */
-	if(remaining_args) {
-		char **filename;
-		for(filename = remaining_args; *filename; filename++) {
-			GFile *file = g_file_new_for_commandline_arg(*filename);
-			i7_app_open(theapp, file);
-			g_object_unref(file);
-		}
-		g_strfreev(remaining_args);
-	}
-
-	/* If no windows were opened from command line arguments */
-	if(i7_app_get_num_open_documents(theapp) == 0) {
-		/* Create the splash window */
-		GtkWidget *welcomedialog = create_welcome_dialog();
-		gtk_widget_show_all(welcomedialog);
-	}
-
-	gtk_main();
+	int returncode = g_application_run(G_APPLICATION(theapp), argc, argv);
 
 	g_object_unref(theapp);
 	i7_search_window_free_index();
 	/* g_mem_profile();*/
-	return 0;
+	return returncode;
 }

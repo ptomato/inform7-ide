@@ -77,9 +77,7 @@ typedef struct {
 	GtkWidget *toolbar;
 	GtkWidget *notebook;
 	I7SourceView *sourceview;
-	GtkToolItem *labels;
-	GtkWidget *labels_menu;
-	GtkAction *labels_action;
+	GMenu *labels_menu;
 	GtkWidget *z8;
 	GtkWidget *glulx;
 	GtkWidget *blorb;
@@ -87,12 +85,27 @@ typedef struct {
 	GtkWidget *debugging_scrolledwindow;
 	GtkWidget *inform6_scrolledwindow;
 	GtkWidget *transcript_menu;
+	GtkWidget *labels;
+	GtkWidget *layout;
+	GtkWidget *trim;
+	GtkWidget *play_all_blessed;
+	GtkWidget *next_difference_skein;
+	GtkWidget *next_difference;
+	GtkWidget *previous_difference;
+	GtkWidget *bless_all;
+	GtkWidget *goto_home;
+	GtkWidget *goto_examples;
+	GtkWidget *goto_general_index;
+	GtkWidget *goto_extensions_home;
+	GtkWidget *goto_definitions;
+	GtkWidget *goto_public_library;
 	GtkTreeViewColumn *transcript_column;
 	GtkCellRenderer *transcript_cell;
 	GtkWidget *tabs[I7_PANEL_NUM_PANES];
 	GtkWidget *source_tabs[I7_SOURCE_VIEW_NUM_TABS];
 	GtkWidget *results_tabs[I7_RESULTS_NUM_TABS];
 	GtkWidget *index_tabs[I7_INDEX_NUM_TABS];
+	GSimpleActionGroup *actions;
 } I7Panel;
 
 typedef struct {

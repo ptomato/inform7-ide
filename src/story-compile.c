@@ -72,6 +72,27 @@ static void start_cblorb_compiler(CompilerData *data);
 static void finish_cblorb_compiler(GPid pid, gint status, CompilerData *data);
 static void finish_compiling(CompilerData *data);
 
+static void
+i7_story_set_compile_actions_enabled(I7Story *self, bool enabled)
+{
+	GSimpleAction *action;
+	GActionMap *map = G_ACTION_MAP(self);
+
+#define CHANGE_SETTING(name) \
+	action = G_SIMPLE_ACTION(g_action_map_lookup_action(map, name)); \
+	g_simple_action_set_enabled(action, enabled);
+
+	CHANGE_SETTING("play-all-blessed");
+	CHANGE_SETTING("refresh-index");
+	CHANGE_SETTING("go");
+	CHANGE_SETTING("release");
+	CHANGE_SETTING("save-debug-build");
+	CHANGE_SETTING("replay");
+	CHANGE_SETTING("test-me");
+
+#undef CHANGE_SETTING
+}
+
 /* Start the compiling process. Called from the main thread. */
 void
 i7_story_compile(I7Story *self, gboolean release, gboolean refresh, CompileActionFunc callback, void *callback_data)
@@ -82,8 +103,7 @@ i7_story_compile(I7Story *self, gboolean release, gboolean refresh, CompileActio
 	i7_story_set_copy_blorb_dest_file(self, NULL);
 	i7_story_set_compiler_output_file(self, NULL);
 
-	GtkActionGroup *compile_action_group = i7_story_get_compile_action_group(self);
-	gtk_action_group_set_sensitive(compile_action_group, FALSE);
+	i7_story_set_compile_actions_enabled(self, FALSE);
 
 	/* Set up the compiler */
 	CompilerData *data = g_slice_new0(CompilerData);
@@ -209,7 +229,7 @@ start_ni_compiler(CompilerData *data)
 {
 	/* Build the command line */
 	GPtrArray *args = g_ptr_array_new_full(7, g_free); /* usual number of args */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GFile *ni_compiler = i7_app_get_binary_file(theapp, "ni");
 	GFile *internal_dir = i7_app_get_internal_dir(theapp);
 	g_ptr_array_add(args, g_file_get_path(ni_compiler));
@@ -267,7 +287,7 @@ finish_ni_data_free(FinishNIData *data)
 static gboolean
 ui_finish_ni_compiler(FinishNIData *data)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	/* Clear the progress indicator */
@@ -471,7 +491,8 @@ display_i6_status(CompilerData *data, gchar *text)
 static void
 start_i6_compiler(CompilerData *data)
 {
-	GFile *i6_compiler = i7_app_get_binary_file(i7_app_get(), INFORM6_COMPILER_NAME);
+	I7App *theapp = I7_APP(g_application_get_default());
+	GFile *i6_compiler = i7_app_get_binary_file(theapp, INFORM6_COMPILER_NAME);
 	char *i6out = g_strconcat("output.", i7_story_get_extension(data->story), NULL);
 	GFile *i6_output = g_file_get_child(data->builddir_file, i6out);
 	g_free(i6out);
@@ -606,7 +627,8 @@ parse_cblorb_output(I7Story *story, gchar *text)
 static void
 start_cblorb_compiler(CompilerData *data)
 {
-	GFile *cblorb = i7_app_get_binary_file(i7_app_get(), "cBlorb");
+	I7App *theapp = I7_APP(g_application_get_default());
+	GFile *cblorb = i7_app_get_binary_file(theapp, "cBlorb");
 
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 5);
@@ -669,8 +691,7 @@ ui_finish_compiling(CompilerData *data)
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
 	i7_story_show_tab(data->story, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
 
-	GtkActionGroup *compile_action_group = i7_story_get_compile_action_group(data->story);
-	gtk_action_group_set_sensitive(compile_action_group, TRUE);
+	i7_story_set_compile_actions_enabled(data->story, TRUE);
 
 	/* Update */
 	while(gtk_events_pending())

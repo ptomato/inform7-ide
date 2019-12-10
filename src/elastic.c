@@ -53,7 +53,7 @@ find_tab(gunichar ch)
 static void
 stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, GtkTextIter *block_start, GtkTextIter *block_end)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GtkTextIter cell_start, current_pos, line_end;
 	guint max_tabs = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(tag), "elastictabstops-numtabs"));

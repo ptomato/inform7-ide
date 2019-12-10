@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2012, 2014 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2012, 2014, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ on_welcome_new_button_clicked(GtkButton *button, I7App *app)
 	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
 	GtkWidget *newdialog = create_new_dialog();
 	gtk_widget_destroy(welcomedialog);
-	i7_app_set_splash_screen_active(app, FALSE);
 	gtk_widget_show(newdialog);
 }
 
@@ -53,7 +52,6 @@ on_welcome_open_button_clicked(GtkButton *button, I7App *app)
 	}
 
 	gtk_widget_destroy(welcomedialog);
-	i7_app_set_splash_screen_active(app, FALSE);
 }
 
 void
@@ -66,26 +64,22 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 	I7Story *story = i7_story_new_from_file(app, file);
 	g_object_unref(file);
 
-	if(story) {
+	if (story)
 		gtk_widget_destroy(welcomedialog);
-		i7_app_set_splash_screen_active(app, FALSE);
-	}
 }
 
 GtkWidget *
-create_welcome_dialog(void)
+create_welcome_dialog(GtkApplication *theapp)
 {
-	I7App *theapp = i7_app_get();
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/welcomedialog.ui");
 	gtk_builder_connect_signals(builder, theapp);
 	GtkWidget *retval = GTK_WIDGET(load_object(builder, "welcomedialog"));
+	gtk_window_set_application(GTK_WINDOW(retval), theapp);
 
 	/* If there is no "last project", make the reopen button inactive */
-	GFile *last_project = i7_app_get_last_opened_project(theapp);
-	if(last_project) {
+	g_autoptr(GFile) last_project = i7_app_get_last_opened_project(I7_APP(theapp));
+	if (last_project)
 		gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
-		g_object_unref(last_project);
-	}
 
 	return retval;
 }

@@ -96,7 +96,7 @@ from the project directory */
 void
 delete_build_files(I7Story *story)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	if(g_settings_get_boolean(prefs, PREFS_CLEAN_BUILD_FILES)) {

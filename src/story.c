@@ -29,6 +29,7 @@
 #include <osxcart/rtf.h>
 #include <webkit2/webkit2.h>
 
+#include "actions.h"
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
@@ -54,11 +55,6 @@ enum {
 };
 
 typedef struct {
-	/* Action Groups */
-	GtkUIManager *ui_manager;
-	GtkActionGroup *story_action_group;
-	GtkActionGroup *compile_action_group;
-
 	/* Widget with last input focus */
 	GtkWidget *last_focused;
 	/* Other text buffers */
@@ -111,7 +107,7 @@ on_heading_depth_value_changed(GtkRange *range, I7Story *self)
 static void
 save_storywindow_size(I7Story *self)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *state = i7_app_get_state(theapp);
 	gint w, h, x, y;
 
@@ -142,8 +138,6 @@ on_storywindow_delete_event(GtkWidget *window, GdkEvent *event)
 		delete_build_files(I7_STORY(window));
 		g_object_unref(file);
 	}
-
-	i7_app_remove_document(i7_app_get(), I7_DOCUMENT(window));
 
 	return FALSE;
 }
@@ -216,31 +210,21 @@ on_headings_row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColum
 }
 
 static void
-on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Story *self)
+on_previous_action_notify_enabled(GObject *action, GParamSpec *paramspec, I7Story *self)
 {
-	gboolean sensitive;
-	g_object_get(action, "sensitive", &sensitive, NULL);
-	if(sensitive) {
-		gtk_widget_show(self->panel[LEFT]->sourceview->previous);
-		gtk_widget_show(self->panel[RIGHT]->sourceview->previous);
-	} else {
-		gtk_widget_hide(self->panel[LEFT]->sourceview->previous);
-		gtk_widget_hide(self->panel[RIGHT]->sourceview->previous);
-	}
+	gboolean enabled;
+	g_object_get(action, "enabled", &enabled, NULL);
+	gtk_widget_set_visible(self->panel[LEFT]->sourceview->previous, enabled);
+	gtk_widget_set_visible(self->panel[RIGHT]->sourceview->previous, enabled);
 }
 
 static void
-on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Story *self)
+on_next_action_notify_enabled(GObject *action, GParamSpec *paramspec, I7Story *self)
 {
-	gboolean sensitive;
-	g_object_get(action, "sensitive", &sensitive, NULL);
-	if(sensitive) {
-		gtk_widget_show(self->panel[LEFT]->sourceview->next);
-		gtk_widget_show(self->panel[RIGHT]->sourceview->next);
-	} else {
-		gtk_widget_hide(self->panel[LEFT]->sourceview->next);
-		gtk_widget_hide(self->panel[RIGHT]->sourceview->next);
-	}
+	gboolean enabled;
+	g_object_get(action, "enabled", &enabled, NULL);
+	gtk_widget_set_visible(self->panel[LEFT]->sourceview->next, enabled);
+	gtk_widget_set_visible(self->panel[RIGHT]->sourceview->next, enabled);
 }
 
 void
@@ -855,66 +839,81 @@ story_init_panel(I7Story *self, I7Panel *panel)
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
 
-	/* Connect the Previous Section and Next Section actions to the up and down buttons */
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->previous), I7_DOCUMENT(self)->previous_section);
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(panel->sourceview->next), I7_DOCUMENT(self)->next_section);
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(panel->sourceview->previous), "win.previous-section");
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(panel->sourceview->next), "win.next-section");
 
 	/* Set the Blorb resource-loading callback */
 	chimara_glk_set_resource_load_callback(CHIMARA_GLK(panel->tabs[I7_PANE_STORY]), (ChimaraResourceLoadFunc)load_blorb_resource, self, NULL);
+}
+
+typedef void (*ActionCallback)(GSimpleAction *, GVariant *, void *);
+
+static void
+create_story_actions(I7Story *self)
+{
+	const GActionEntry actions[] = {
+		{ "import-into-skein", (ActionCallback)action_import_into_skein },
+		{ "view-notepad", NULL, NULL, "false", (ActionCallback)action_view_notepad_toggled },
+		{ "show-pane", (ActionCallback)action_show_pane, "u" },
+		{ "show-tab", (ActionCallback)action_show_tab, "(uu)" },
+		{ "go", (ActionCallback)action_go },
+		{ "test-me", (ActionCallback)action_test_me },
+		{ "stop", (ActionCallback)action_stop },
+		{ "refresh-index", (ActionCallback)action_refresh_index },
+		{ "replay", (ActionCallback)action_replay },
+		{ "play-all-blessed", (ActionCallback)action_play_all_blessed },
+		{ "show-last-command", (ActionCallback)action_show_last_command },
+		{ "show-last-command-skein", (ActionCallback)action_show_last_command_skein },
+		{ "previous-changed-command", (ActionCallback)action_previous_changed_command },
+		{ "next-changed-command", (ActionCallback)action_next_changed_command },
+		{ "previous-difference", (ActionCallback)action_previous_difference },
+		{ "next-difference", (ActionCallback)action_next_difference },
+		{ "next-difference-skein", (ActionCallback)action_next_difference_skein },
+		{ "release", (ActionCallback)action_release },
+		{ "save-debug-build", (ActionCallback)action_save_debug_build },
+		{ "open-materials-folder", (ActionCallback)action_open_materials_folder },
+		{ "export-ifiction-record", (ActionCallback)action_export_ifiction_record },
+		{ "help-contents", (ActionCallback)action_help_contents },
+		{ "help-license", (ActionCallback)action_help_license },
+		{ "help-extensions", (ActionCallback)action_help_extensions },
+		{ "help-recipe-book", (ActionCallback)action_help_recipe_book },
+		/* These actions only control the visibility of a menu, they aren't added
+		 to the window action group for extension windows */
+		{ "menu-play" },
+		{ "menu-replay" },
+		{ "menu-release" },
+	};
+	g_action_map_add_action_entries(G_ACTION_MAP(self), actions, G_N_ELEMENTS(actions), self);
 }
 
 static void
 i7_story_init(I7Story *self)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *state = i7_app_get_state(theapp);
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	priv->skein_settings = g_settings_new(SCHEMA_SKEIN);
-	GError *error = NULL;
 	int w, h, x, y;
 
 	/* Build the interface */
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/story.ui");
 	gtk_builder_connect_signals(builder, self);
 
-	/* Make the action groups */
-	priv->story_action_group = GTK_ACTION_GROUP(load_object(builder, "story_actions"));
-	priv->compile_action_group = GTK_ACTION_GROUP(load_object(builder, "compile_actions"));
+	create_story_actions(self);
+	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), FALSE);
 
-	/* Build the menus and toolbars from the GtkUIManager file */
-	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->story_action_group, 0);
-	gtk_ui_manager_insert_action_group(I7_DOCUMENT(self)->ui_manager, priv->compile_action_group, 1);
-	gtk_ui_manager_add_ui_from_resource(I7_DOCUMENT(self)->ui_manager, "/com/inform7/IDE/ui/story.uimanager.xml", &error);
-	if(error)
-		ERROR(_("Building menus failed"), error);
-	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/StoryMenubar");
-	I7_DOCUMENT(self)->toolbar = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/MainToolbar");
-	gtk_widget_set_no_show_all(I7_DOCUMENT(self)->toolbar, TRUE);
-	i7_document_add_menus_and_findbar(I7_DOCUMENT(self));
+	/* Build the toolbars */
+	I7_DOCUMENT(self)->toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "main-toolbar"));
 
 	/* Set the initial visible state of the toolbar based on the most recent
 	choice the user made */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->view_toolbar),
-		g_settings_get_boolean(state, PREFS_STATE_SHOW_TOOLBAR));
+	GAction *view_toolbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-toolbar");
+	g_simple_action_set_state(G_SIMPLE_ACTION(view_toolbar), g_settings_get_value(state, PREFS_STATE_SHOW_TOOLBAR));
 
 	/* Build the rest of the interface */
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), menu, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->findbar, FALSE, FALSE, 0);
-	GtkToolItem *search_toolitem = gtk_tool_item_new();
-	GtkWidget *search_entry = gtk_entry_new();
-	gtk_entry_set_placeholder_text(GTK_ENTRY(search_entry), _("Documentation"));
-	gtk_container_add(GTK_CONTAINER(search_toolitem), search_entry);
-	/* "activate" is a keybinding signal, but what else am I supposed to connect to? */
-	g_signal_connect(search_entry, "activate", G_CALLBACK(on_search_entry_activate), self);
-	gtk_widget_show_all(GTK_WIDGET(search_toolitem));
-	gtk_toolbar_insert(GTK_TOOLBAR(I7_DOCUMENT(self)->toolbar), search_toolitem, 6);
-	/* Add icons to the entry */
-	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_PRIMARY, "edit-find");
-	gtk_entry_set_icon_from_icon_name(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, "edit-clear");
-	gtk_entry_set_icon_activatable(GTK_ENTRY(search_entry), GTK_ENTRY_ICON_SECONDARY, TRUE);
-	g_signal_connect(search_entry, "icon-press", G_CALLBACK(on_search_entry_icon_press), NULL);
 
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(facing_pages);
@@ -926,9 +925,6 @@ i7_story_init(I7Story *self)
 	LOAD_WIDGET(skein_spacing_use_defaults);
 	LOAD_WIDGET(skein_trim_dialog);
 	LOAD_WIDGET(skein_trim_slider);
-
-	/* Set up the signals to do the menu hints in the statusbar */
-	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
 
 	/* Build the Open Extensions menu */
 	i7_app_update_extensions_menu(theapp);
@@ -1007,15 +1003,17 @@ i7_story_init(I7Story *self)
 	g_object_unref(priv->i6_source);
 
 	/* Set up the Previous Section and Next Section actions to synch with the buttons */
-	g_signal_connect(I7_DOCUMENT(self)->previous_section, "notify::sensitive", G_CALLBACK(on_previous_action_notify_sensitive), self);
-	g_signal_connect(I7_DOCUMENT(self)->next_section, "notify::sensitive", G_CALLBACK(on_next_action_notify_sensitive), self);
 	/* For some reason this needs to be triggered even if the buttons are set to invisible in Glade */
-	gtk_action_set_sensitive(I7_DOCUMENT(self)->previous_section, FALSE);
-	gtk_action_set_sensitive(I7_DOCUMENT(self)->next_section, FALSE);
+	GAction *previous_section = g_action_map_lookup_action(G_ACTION_MAP(self), "previous-section");
+	g_signal_connect(previous_section, "notify::enabled", G_CALLBACK(on_previous_action_notify_enabled), self);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(previous_section), FALSE);
+	GAction *next_section = g_action_map_lookup_action(G_ACTION_MAP(self), "next-section");
+	g_signal_connect(next_section, "notify::enabled", G_CALLBACK(on_next_action_notify_enabled), self);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(next_section), FALSE);
 
 	/* Add extra pages in "Results" if the user has them turned on */
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
-		i7_story_add_debug_tabs(I7_DOCUMENT(self));
+		i7_story_add_debug_tabs(self);
 
 	/* Connect the widgets on the Settings pane to the settings properties */
 	g_object_bind_property(self->panel[LEFT]->z8, "active", self->panel[RIGHT]->z8, "active", G_BINDING_BIDIRECTIONAL);
@@ -1027,9 +1025,10 @@ i7_story_init(I7Story *self)
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
 	/* Set spell checking */
-	gboolean spell_check_default = g_settings_get_boolean(state, PREFS_STATE_SPELL_CHECK);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), spell_check_default);
-	i7_document_set_spellcheck(I7_DOCUMENT(self), spell_check_default);
+	GVariant *spell_check_default = g_settings_get_value(state, PREFS_STATE_SPELL_CHECK);
+	GAction *autocheck_spelling = g_action_map_lookup_action(G_ACTION_MAP(self), "autocheck-spelling");
+	g_simple_action_set_state(G_SIMPLE_ACTION(autocheck_spelling), spell_check_default);
+	i7_document_set_spellcheck(I7_DOCUMENT(self), g_variant_get_boolean(spell_check_default));
 
 	/* Make the Skein dialogs transient */
 	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));
@@ -1107,8 +1106,10 @@ I7Story *
 i7_story_new(I7App *app, GFile *file, const char *title, const char *author)
 {
 	/* Can take a while for old versions of WebKit */
-	i7_app_set_busy(app, TRUE);
-	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
+	g_application_mark_busy(G_APPLICATION(app));
+	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY,
+		"application", app,
+		NULL));
 
 	i7_document_set_file(I7_DOCUMENT(story), file);
 
@@ -1116,10 +1117,7 @@ i7_story_new(I7App *app, GFile *file, const char *title, const char *author)
 	i7_document_set_source_text(I7_DOCUMENT(story), text);
 	i7_document_set_modified(I7_DOCUMENT(story), TRUE);
 
-	/* Add document to global list */
-	i7_app_register_document(app, I7_DOCUMENT(story));
-
-	i7_app_set_busy(app, FALSE);
+	g_application_unmark_busy(G_APPLICATION(app));
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
@@ -1150,19 +1148,18 @@ i7_story_new_from_file(I7App *app, GFile *file)
 	}
 
 	/* Loading a large story file can take a while */
-	i7_app_set_busy(app, TRUE);
-	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY, NULL));
+	g_application_mark_busy(G_APPLICATION(app));
+	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY,
+		"application", app,
+		NULL));
 	if(!i7_story_open(story, real_file)) {
 		gtk_widget_destroy(GTK_WIDGET(story));
 		g_object_unref(real_file);
-		i7_app_set_busy(app, FALSE);
+		g_application_unmark_busy(G_APPLICATION(app));
 		return NULL;
 	}
 
-	/* Add document to global list */
-	i7_app_register_document(app, I7_DOCUMENT(story));
-
-	i7_app_set_busy(app, FALSE);
+	g_application_unmark_busy(G_APPLICATION(app));
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(story));
@@ -1570,20 +1567,6 @@ i7_story_foreach_panel(I7Story *story, I7PanelForeachFunc func, gpointer data)
 	/* Execute for both panels */
 	for(side = LEFT; side < I7_STORY_NUM_PANELS; side++)
 		func(story, story->panel[side], data);
-}
-
-GtkActionGroup *
-i7_story_get_story_action_group(I7Story *self)
-{
-	I7StoryPrivate *priv = i7_story_get_instance_private(self);
-	return priv->story_action_group;
-}
-
-GtkActionGroup *
-i7_story_get_compile_action_group(I7Story *self)
-{
-	I7StoryPrivate *priv = i7_story_get_instance_private(self);
-	return priv->compile_action_group;
 }
 
 GFile *

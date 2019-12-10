@@ -41,29 +41,9 @@
 #include "prefs.h"
 #include "story.h"
 
-/* Helper function to get the toplevel window that contains the action's proxy,
- in case it wasn't passed as a user data parameter to the action callback. */
-static GtkWindow *
-get_toplevel_for_action(GtkAction *action)
-{
-	GSList *list;
-	GtkWidget *parent = NULL;
-	for(list = gtk_action_get_proxies(action) ; list; list = g_slist_next(list)) {
-		GtkWidget *toplevel = gtk_widget_get_toplevel((GtkWidget *)list->data);
-		if(GTK_IS_MENU(toplevel))
-			toplevel = gtk_widget_get_toplevel(gtk_menu_get_attach_widget(GTK_MENU(toplevel)));
-		if(toplevel && gtk_widget_is_toplevel(toplevel)) {
-			parent = toplevel;
-			break;
-		}
-	}
-
-	return GTK_WINDOW(parent);
-}
-
 /* File->New... */
 void
-action_new(GtkAction *action, I7App *app)
+action_new(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	GtkWidget *newdialog = create_new_dialog();
 	gtk_widget_show(newdialog);
@@ -71,7 +51,7 @@ action_new(GtkAction *action, I7App *app)
 
 /* File->Open... */
 void
-action_open(GtkAction *action, I7App *app)
+action_open(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	i7_story_new_from_dialog(app);
 }
@@ -79,32 +59,30 @@ action_open(GtkAction *action, I7App *app)
 /* Callback for when of the items from the File->Open Recent submenu
  is selected */
 void
-action_open_recent(GtkAction *action, I7App *app)
+action_open_recent(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
-	GtkRecentInfo *item = gtk_recent_chooser_get_current_item(GTK_RECENT_CHOOSER(action));
-	g_assert(gtk_recent_info_has_application(item, "Inform 7"));
+	g_autofree char *uri = NULL;
+	g_autofree char *group = NULL;
+  g_variant_get(parameter, "(ss)", &uri, &group);
 
-	GFile *file = g_file_new_for_uri(gtk_recent_info_get_uri(item));
+	g_autoptr(GFile) file = g_file_new_for_uri(uri);
 
-	if(gtk_recent_info_has_group(item, "inform7_project")) {
+	if (strcmp(group, "inform7_project") == 0) {
 		i7_story_new_from_file(app, file);
-	} else if(gtk_recent_info_has_group(item, "inform7_extension")) {
+	} else if (strcmp(group, "inform7_extension") == 0) {
 		i7_extension_new_from_file(app, file, FALSE);
-	} else if(gtk_recent_info_has_group(item, "inform7_builtin")) {
+	} else if (strcmp(group, "inform7_builtin") == 0) {
 		i7_extension_new_from_file(app, file, TRUE);
 	} else {
 		g_warning("Recent manager file does not have an Inform tag. This means "
 			"it was not saved by Inform. I'll try to open it anyway.");
 		i7_story_new_from_file(app, file);
 	}
-
-	g_object_unref(file);
-	gtk_recent_info_unref(item);
 }
 
 /* File->Install Extension... */
 void
-action_install_extension(GtkAction *action, I7App *app)
+action_install_extension(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	/* Select the Extensions tab */
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(app->prefs->prefs_notebook), I7_PREFS_EXTENSIONS);
@@ -116,25 +94,20 @@ action_install_extension(GtkAction *action, I7App *app)
 	g_signal_emit_by_name(app->prefs->extensions_add, "clicked");
 }
 
-/* Callback for when one of the items from the File->Open Extension submenu
- is selected, and it is a built-in extension */
+/* File->Open Extension */
 void
-on_open_extension_readonly_activate(GtkMenuItem *menuitem, GFile *file)
+action_open_extension(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
-	i7_extension_new_from_file(i7_app_get(), file, TRUE);
-}
-
-/* Callback for when one of the items from the File->Open Extension submenu
- is selected, and it is a user-installed extension */
-void
-on_open_extension_activate(GtkMenuItem *menuitem, GFile *file)
-{
-	i7_extension_new_from_file(i7_app_get(), file, FALSE);
+	const char *uri;
+	gboolean readonly;
+	g_variant_get(parameter, "(sb)", &uri, &readonly);
+	g_autoptr(GFile) file = g_file_new_for_uri(uri);
+	i7_extension_new_from_file(app, file, readonly);
 }
 
 /* File->Import Into Skein... */
 void
-action_import_into_skein(GtkAction *action, I7Story *story)
+action_import_into_skein(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	GError *err = NULL;
 
@@ -177,14 +150,14 @@ action_import_into_skein(GtkAction *action, I7Story *story)
 
 /* File->Save */
 void
-action_save(GtkAction *action, I7Document *document)
+action_save(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	i7_document_save(document);
 }
 
 /* File->Save As... */
 void
-action_save_as(GtkAction *action, I7Document *document)
+action_save_as(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GFile *file = i7_document_run_save_dialog(document, NULL);
 	if(file) {
@@ -200,7 +173,7 @@ action_save_as(GtkAction *action, I7Document *document)
 
 /* File->Save a Copy */
 void
-action_save_copy(GtkAction *action, I7Document *document)
+action_save_copy(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GFile *file = i7_document_run_save_dialog(document, NULL);
 	if(file) {
@@ -211,7 +184,7 @@ action_save_copy(GtkAction *action, I7Document *document)
 
 /* File->Revert */
 void
-action_revert(GtkAction *action, I7Document *document)
+action_revert(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	if (!i7_document_can_revert(document))
 		return;
@@ -237,9 +210,9 @@ action_revert(GtkAction *action, I7Document *document)
 
 /* File->Page Setup... */
 void
-action_page_setup(GtkAction *action, I7Document *document)
+action_page_setup(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
 
 	if(!settings)
@@ -271,7 +244,7 @@ static void
 on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	I7Document *document)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GtkSourcePrintCompositor *compositor = gtk_source_print_compositor_new(i7_document_get_buffer(document));
 	g_signal_connect(print, "draw-page", G_CALLBACK(on_draw_page), compositor);
@@ -285,7 +258,7 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	gtk_source_print_compositor_set_wrap_mode(compositor, GTK_WRAP_WORD_CHAR);
 	g_autofree char *fontstring = get_font_family();
 	gtk_source_print_compositor_set_body_font_name(compositor, fontstring);
-	GtkPageSetup *setup = i7_app_get_page_setup(i7_app_get());
+	GtkPageSetup *setup = i7_app_get_page_setup(theapp);
 	gtk_source_print_compositor_set_top_margin(compositor, gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
 	gtk_source_print_compositor_set_bottom_margin(compositor, gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
 	gtk_source_print_compositor_set_left_margin(compositor, gtk_page_setup_get_left_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
@@ -306,10 +279,10 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 
 /* File->Print Preview... */
 void
-action_print_preview(GtkAction *action, I7Document *document)
+action_print_preview(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GtkPrintOperation *print = gtk_print_operation_new();
 	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
 
@@ -329,10 +302,10 @@ action_print_preview(GtkAction *action, I7Document *document)
 
 /* File->Print... */
 void
-action_print(GtkAction *action, I7Document *document)
+action_print(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GtkPrintOperation *print = gtk_print_operation_new();
 	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
 
@@ -351,50 +324,50 @@ action_print(GtkAction *action, I7Document *document)
 
 /* File->Close */
 void
-action_close(GtkAction *action, I7Document *document)
+action_close(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	if(i7_document_verify_save(document)) {
-		i7_app_remove_document(i7_app_get(), I7_DOCUMENT(document));
+	if (i7_document_verify_save(document))
 		gtk_widget_destroy(GTK_WIDGET(document));
-	}
 }
 
 /* File->Quit */
 void
-action_quit(GtkAction *action, I7App *app)
+action_quit(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	i7_app_close_all_documents(app);
 }
 
 /* Edit->Undo */
 void
-action_undo(GtkAction *action, I7Document *document)
+action_undo(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkSourceBuffer *buffer = i7_document_get_buffer(document);
 	if(gtk_source_buffer_can_undo(buffer))
 		gtk_source_buffer_undo(buffer);
 
-	/* Update the "sensitive" state of the undo and redo actions */
-	gtk_action_set_sensitive(action, gtk_source_buffer_can_undo(buffer));
-	gtk_action_set_sensitive(document->redo, gtk_source_buffer_can_redo(buffer));
+	/* Update the "enabled" state of the undo and redo actions */
+	g_simple_action_set_enabled(action, gtk_source_buffer_can_undo(buffer));
+	GAction *redo = g_action_map_lookup_action(G_ACTION_MAP(document), "redo");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(redo), gtk_source_buffer_can_redo(buffer));
 }
 
 /* Edit->Redo */
 void
-action_redo(GtkAction *action, I7Document *document)
+action_redo(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkSourceBuffer *buffer = i7_document_get_buffer(document);
 	if(gtk_source_buffer_can_redo(buffer))
 		gtk_source_buffer_redo(buffer);
 
-	/* Update the "sensitive" state of the undo and redo actions */
-	gtk_action_set_sensitive(action, gtk_source_buffer_can_redo(buffer));
-	gtk_action_set_sensitive(document->undo, gtk_source_buffer_can_undo(buffer));
+	/* Update the "enabled" state of the undo and redo actions */
+	g_simple_action_set_enabled(action, gtk_source_buffer_can_redo(buffer));
+	GAction *undo = g_action_map_lookup_action(G_ACTION_MAP(document), "undo");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(undo), gtk_source_buffer_can_undo(buffer));
 }
 
 /* Edit->Cut */
 void
-action_cut(GtkAction *action, I7Document *document)
+action_cut(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
@@ -411,7 +384,7 @@ action_cut(GtkAction *action, I7Document *document)
 
 /* Edit->Copy */
 void
-action_copy(GtkAction *action, I7Document *document)
+action_copy(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
@@ -427,7 +400,7 @@ action_copy(GtkAction *action, I7Document *document)
 
 /* Edit->Paste */
 void
-action_paste(GtkAction *action, I7Document *document)
+action_paste(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
@@ -440,7 +413,7 @@ action_paste(GtkAction *action, I7Document *document)
 
 /* Edit->Select All */
 void
-action_select_all(GtkAction *action, I7Document *document)
+action_select_all(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkWidget *widget = gtk_window_get_focus(GTK_WINDOW(document));
 
@@ -459,7 +432,7 @@ action_select_all(GtkAction *action, I7Document *document)
 
 /* Edit->Find - Unhide the find bar at the bottom */
 void
-action_find(GtkAction *action, I7Document *document)
+action_find(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	gtk_widget_show(document->findbar);
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
@@ -470,7 +443,7 @@ action_find(GtkAction *action, I7Document *document)
 
 /* Edit->Find Next */
 void
-action_find_next(GtkAction *action, I7Document *document)
+action_find_next(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
 	i7_document_set_quicksearch_not_found(document, !i7_document_highlight_quicksearch(document, text, TRUE));
@@ -478,7 +451,7 @@ action_find_next(GtkAction *action, I7Document *document)
 
 /* Edit->Find Previous */
 void
-action_find_previous(GtkAction *action, I7Document *document)
+action_find_previous(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
 	i7_document_set_quicksearch_not_found(document, !i7_document_highlight_quicksearch(document, text, FALSE));
@@ -487,7 +460,7 @@ action_find_previous(GtkAction *action, I7Document *document)
 /* Edit->Find and Replace... - For more complicated find operations, we use a
  dialog instead of the find bar */
 void
-action_replace(GtkAction *action, I7Document *document)
+action_replace(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	gtk_widget_show(document->find_dialog);
 	gtk_window_present(GTK_WINDOW(document->find_dialog));
@@ -495,7 +468,7 @@ action_replace(GtkAction *action, I7Document *document)
 
 /* Edit->Scroll to Selection */
 void
-action_scroll_selection(GtkAction *action, I7Document *document)
+action_scroll_selection(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	i7_document_scroll_to_selection(document);
 }
@@ -503,7 +476,7 @@ action_scroll_selection(GtkAction *action, I7Document *document)
 /* Edit->Search Files... - This is another dialog that searches any combination
  of the story, the installed extensions, and the documentation. */
 void
-action_search(GtkAction *action, I7Document *document)
+action_search(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	gtk_widget_show(document->search_files_dialog);
 	gtk_window_present(GTK_WINDOW(document->search_files_dialog));
@@ -511,204 +484,93 @@ action_search(GtkAction *action, I7Document *document)
 
 /* Edit->Recheck Document */
 void
-action_check_spelling(GtkAction *action, I7Document *document)
+action_check_spelling(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	i7_document_check_spelling(document);
 }
 
 /* Edit->Autocheck Spelling */
 void
-action_autocheck_spelling_toggle(GtkToggleAction *action, I7Document *document)
+action_autocheck_spelling_toggle(GSimpleAction *action, GVariant *state, I7Document *document)
 {
-	gboolean value = gtk_toggle_action_get_active(action);
-	gtk_action_set_sensitive(document->check_spelling, value);
+	g_simple_action_set_state(action, state);
+	gboolean value = g_variant_get_boolean(state);
+	GAction *check_spelling = g_action_map_lookup_action(G_ACTION_MAP(document), "check-spelling");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(check_spelling), value);
 	i7_document_set_spellcheck(document, value);
 }
 
 /* Edit->Preferences... */
 void
-action_preferences(GtkAction *action, I7App *app)
+action_preferences(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	i7_app_present_prefs_window(app);
 }
 
 /* View->Toolbar */
 void
-action_view_toolbar_toggled(GtkToggleAction *action, I7Document *document)
+action_view_toolbar_toggled(GSimpleAction *action, GVariant *state, I7Document *document)
 {
-	gboolean show = gtk_toggle_action_get_active(action);
+	g_simple_action_set_state(action, state);
 
 	/* Set the default value for the next time a window is opened */
-	GSettings *state = i7_app_get_state(i7_app_get());
-	g_settings_set_boolean(state, PREFS_STATE_SHOW_TOOLBAR, show);
+	GSettings *app_state = i7_app_get_state(I7_APP(g_application_get_default()));
+	g_settings_set_value(app_state, PREFS_STATE_SHOW_TOOLBAR, state);
 
-	if(show)
-		gtk_widget_show(document->toolbar);
-	else
-		gtk_widget_hide(document->toolbar);
+	gtk_widget_set_visible(document->toolbar, g_variant_get_boolean(state));
 }
 
 /* View->Statusbar */
 void
-action_view_statusbar_toggled(GtkToggleAction *action, I7Document *document)
+action_view_statusbar_toggled(GSimpleAction *action, GVariant *state, I7Document *document)
 {
-	gboolean show = gtk_toggle_action_get_active(action);
+	g_simple_action_set_state(action, state);
 
 	/* Set the default value for the next time a window is opened */
-	GSettings *state = i7_app_get_state(i7_app_get());
-	g_settings_set_boolean(state, PREFS_STATE_SHOW_STATUSBAR, show);
+	GSettings *app_state = i7_app_get_state(I7_APP(g_application_get_default()));
+	g_settings_set_value(app_state, PREFS_STATE_SHOW_STATUSBAR, state);
 
-	if(show)
-		gtk_widget_show(document->statusline);
-	else
-		gtk_widget_hide(document->statusline);
+	gtk_widget_set_visible(document->statusline, g_variant_get_boolean(state));
 }
 
 /* View->Notepad */
 void
-action_view_notepad_toggled(GtkToggleAction *action, I7Story *story)
+action_view_notepad_toggled(GSimpleAction *action, GVariant *state, I7Story *story)
 {
-	gboolean show = gtk_toggle_action_get_active(action);
+	g_simple_action_set_state(action, state);
 
 	/* Set the default value for the next time a window is opened */
-	GSettings *state = i7_app_get_state(i7_app_get());
-	g_settings_set_boolean(state, PREFS_STATE_SHOW_NOTEPAD, show);
+	GSettings *app_state = i7_app_get_state(I7_APP(g_application_get_default()));
+	g_settings_set_value(app_state, PREFS_STATE_SHOW_NOTEPAD, state);
 
-	if(show)
-		gtk_widget_show(story->notes_window);
-	else
-		gtk_widget_hide(story->notes_window);
+	gtk_widget_set_visible(story->notes_window, g_variant_get_boolean(state));
 }
 
-/* View->Show Tab->Source */
 void
-action_show_source(GtkAction *action, I7Story *story)
+action_show_pane(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
-	i7_story_show_tab(story, I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_SOURCE);
+	I7PanelPane pane = g_variant_get_uint32(parameter);
+	i7_story_show_pane(story, pane);
 }
 
-/* View->Show Tab->Errors */
 void
-action_show_results(GtkAction *action, I7Story *story)
+action_show_tab(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
-	i7_story_show_pane(story, I7_PANE_RESULTS);
-}
-
-/* View->Show Tab->Index */
-void
-action_show_index(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_INDEX);
-}
-
-/* View->Show Tab->Skein */
-void
-action_show_skein(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_SKEIN);
-}
-
-/* View->Show Tab->Transcript */
-void
-action_show_transcript(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
-}
-
-/* View->Show Tab->Story */
-void
-action_show_story(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_STORY);
-}
-
-/* View->Show Tab->Documentation */
-void
-action_show_documentation(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_DOCUMENTATION);
-}
-
-/* View->Show Tab->Extensions */
-void
-action_show_extensions(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_EXTENSIONS);
-}
-
-/* View->Show Tab->Settings */
-void
-action_show_settings(GtkAction *action, I7Story *story)
-{
-	i7_story_show_pane(story, I7_PANE_SETTINGS);
-}
-
-/* View->Show Index->Home */
-void
-action_show_home(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_WELCOME);
-}
-
-/* View->Show Index->Actions */
-void
-action_show_actions(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_ACTIONS);
-}
-
-/* View->Show Index->Contents */
-void
-action_show_contents(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_CONTENTS);
-}
-
-/* View->Show Index->Kinds */
-void
-action_show_kinds(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_KINDS);
-}
-
-/* View->Show Index->Phrasebook */
-void
-action_show_phrasebook(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_PHRASEBOOK);
-}
-
-/* View->Show Index->Rules */
-void
-action_show_rules(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_RULES);
-}
-
-/* View->Show Index->Scenes */
-void
-action_show_scenes(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_SCENES);
-}
-
-/* View->Show Index->World */
-void
-action_show_world(GtkAction *action, I7Story *story)
-{
-	i7_story_show_tab(story, I7_PANE_INDEX, I7_INDEX_TAB_WORLD);
+	uint32_t pane, tab;
+	g_variant_get(parameter, "(uu)", &pane, &tab);
+	i7_story_show_tab(story, pane, tab);
 }
 
 /* View->Show Headings */
 void
-action_show_headings(GtkAction *action, I7Story *story)
+action_show_headings(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_show_tab(story, I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_CONTENTS);
 }
 
 /* View->Current Section Only */
 void
-action_current_section_only(GtkAction *action, I7Document *document)
+action_current_section_only(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTreePath *path = i7_document_get_deepest_heading(document);
 	i7_document_show_heading(document, path);
@@ -716,7 +578,7 @@ action_current_section_only(GtkAction *action, I7Document *document)
 
 /* View->Increase Restriction - View one level deeper in the headings hierarchy */
 void
-action_increase_restriction(GtkAction *action, I7Document *document)
+action_increase_restriction(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTreePath *path = i7_document_get_deeper_heading(document);
 	i7_document_show_heading(document, path);
@@ -724,7 +586,7 @@ action_increase_restriction(GtkAction *action, I7Document *document)
 
 /* View->Decrease Restriction - View one level less deep in the headings hierarchy */
 void
-action_decrease_restriction(GtkAction *action, I7Document *document)
+action_decrease_restriction(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTreePath *path = i7_document_get_shallower_heading(document);
 	i7_document_show_heading(document, path);
@@ -732,14 +594,14 @@ action_decrease_restriction(GtkAction *action, I7Document *document)
 
 /* View->Entire Source */
 void
-action_entire_source(GtkAction *action, I7Document *document)
+action_entire_source(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	i7_document_show_entire_source(document);
 }
 
 /* View->Previous Section */
 void
-action_previous_section(GtkAction *action, I7Document *document)
+action_previous_section(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTreePath *path = i7_document_get_previous_heading(document);
 	i7_document_show_heading(document, path);
@@ -747,7 +609,7 @@ action_previous_section(GtkAction *action, I7Document *document)
 
 /* View->Next Section */
 void
-action_next_section(GtkAction *action, I7Document *document)
+action_next_section(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTreePath *path = i7_document_get_next_heading(document);
 	i7_document_show_heading(document, path);
@@ -755,7 +617,7 @@ action_next_section(GtkAction *action, I7Document *document)
 
 /* Format->Indent */
 void
-action_indent(GtkAction *action, I7Document *document)
+action_indent(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 	/* Shift the selected lines in the buffer one tab to the right */
@@ -789,7 +651,7 @@ action_indent(GtkAction *action, I7Document *document)
 
 /* Format->Unindent */
 void
-action_unindent(GtkAction *action, I7Document *document)
+action_unindent(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 
@@ -825,7 +687,7 @@ action_unindent(GtkAction *action, I7Document *document)
 
 /* Format->Comment Out Selection */
 void
-action_comment_out_selection(GtkAction *action, I7Document *document)
+action_comment_out_selection(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 	GtkTextIter start, end;
@@ -862,7 +724,7 @@ char_equals(gunichar ch, gpointer data)
 
 /* Format->Uncomment Selection */
 void
-action_uncomment_selection(GtkAction *action, I7Document *document)
+action_uncomment_selection(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 	GtkTextIter start, end;
@@ -903,7 +765,7 @@ action_uncomment_selection(GtkAction *action, I7Document *document)
 
 /* Format->Renumber All Sections */
 void
-action_renumber_all_sections(GtkAction *action, I7Document *document)
+action_renumber_all_sections(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GtkTextIter pos, end;
 	int volume = 1, book = 1, part = 1, chapter = 1, section = 1;
@@ -973,57 +835,58 @@ action_renumber_all_sections(GtkAction *action, I7Document *document)
 
 /* Format->Enable Elastic Tabstops */
 void
-action_enable_elastic_tabstops_toggled(GtkToggleAction *action, I7Document *document)
+action_enable_elastic_tabstops_toggled(GSimpleAction *action, GVariant *state, I7Document *document)
 {
-	gboolean value = gtk_toggle_action_get_active(action);
+	g_simple_action_set_state(action, state);
+	gboolean value = g_variant_get_boolean(state);
 	i7_document_set_elastic_tabstops(document, value);
 }
 
 /* Play->Go */
 void
-action_go(GtkAction *action, I7Story *story)
+action_go(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output, NULL);
 }
 
 /* Play->Test Me */
 void
-action_test_me(GtkAction *action, I7Story *story)
+action_test_me(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_test_compiler_output, NULL);
 }
 
 /* Play->Stop */
 void
-action_stop(GtkAction *action, I7Story *story)
+action_stop(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_stop_running_game(story);
 }
 
 /* Play->Refresh Index */
 void
-action_refresh_index(GtkAction *action, I7Story *story)
+action_refresh_index(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_compile(story, FALSE, TRUE, (CompileActionFunc)i7_story_show_pane, GUINT_TO_POINTER(I7_PANE_INDEX));
 }
 
 /* Replay->Replay Last Commands */
 void
-action_replay(GtkAction *action, I7Story *story)
+action_replay(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_replay, NULL);
 }
 
 /* Replay->Replay Commands Blessed in Transcript */
 void
-action_play_all_blessed(GtkAction *action, I7Story *story)
+action_play_all_blessed(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
 }
 
 /* Replay->Show Last Command */
 void
-action_show_last_command(GtkAction *action, I7Story *story)
+action_show_last_command(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	I7Skein *skein = i7_story_get_skein(story);
 	i7_story_show_node_in_transcript(story, i7_skein_get_played_node(skein));
@@ -1032,7 +895,7 @@ action_show_last_command(GtkAction *action, I7Story *story)
 
 /* Replay->Show Last Command in Skein */
 void
-action_show_last_command_skein(GtkAction *action, I7Story *story)
+action_show_last_command_skein(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	I7Skein *skein = i7_story_get_skein(story);
 	g_signal_emit_by_name(skein, "show-node", I7_REASON_USER_ACTION, i7_skein_get_played_node(skein));
@@ -1041,42 +904,42 @@ action_show_last_command_skein(GtkAction *action, I7Story *story)
 
 /* Replay->Find Previous Changed Command */
 void
-action_previous_changed_command(GtkAction *action, I7Story *story)
+action_previous_changed_command(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_previous_changed(story);
 }
 
 /* Replay->Find Next Changed Command */
 void
-action_next_changed_command(GtkAction *action, I7Story *story)
+action_next_changed_command(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_next_changed(story);
 }
 
 /* Replay->Find Previous Difference */
 void
-action_previous_difference(GtkAction *action, I7Story *story)
+action_previous_difference(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_previous_difference(story);
 }
 
 /* Replay->Find Next Difference */
 void
-action_next_difference(GtkAction *action, I7Story *story)
+action_next_difference(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_next_difference(story);
 }
 
 /* Replay->Show Next Difference in Skein */
 void
-action_next_difference_skein(GtkAction *action, I7Story *story)
+action_next_difference_skein(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_next_difference_skein(story);
 }
 
 /* Release->Release... (which was a 1978 song by Yes) */
 void
-action_release(GtkAction *action, I7Story *story)
+action_release(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	/* TRANSLATORS: Release->Release... */
 	i7_story_compile(story, TRUE, FALSE, (CompileActionFunc)i7_story_save_compiler_output, _("Save the game for release"));
@@ -1084,7 +947,7 @@ action_release(GtkAction *action, I7Story *story)
 
 /* Release->Release for Testing... */
 void
-action_save_debug_build(GtkAction *action, I7Story *story)
+action_save_debug_build(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	/* TRANSLATORS: Release->Release for Testing... */
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_save_compiler_output, _("Save debug build"));
@@ -1092,7 +955,7 @@ action_save_debug_build(GtkAction *action, I7Story *story)
 
 /* Release->Open Materials Folder */
 void
-action_open_materials_folder(GtkAction *action, I7Story *story)
+action_open_materials_folder(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	GError *error = NULL;
 	gchar *uri;
@@ -1143,28 +1006,28 @@ finally:
 
 /* Release->Export iFiction Record... */
 void
-action_export_ifiction_record(GtkAction *action, I7Story *story)
+action_export_ifiction_record(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_save_ifiction, NULL);
 }
 
 /* Help->Contents */
 void
-action_help_contents(GtkAction *action, I7Story *story)
+action_help_contents(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_show_doc_uri(story, "inform:///index.html");
 }
 
 /* Help->License */
 void
-action_help_license(GtkAction *action, I7Story *story)
+action_help_license(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_show_doc_uri(story, "inform:///licenses/license.html");
 }
 
 /* Help->Help on Installed Extensions */
 void
-action_help_extensions(GtkAction *action, I7Story *story)
+action_help_extensions(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	GFile *home_file = g_file_new_for_path(g_get_home_dir());
 	GFile *child1 = g_file_get_child(home_file, "Inform");
@@ -1180,14 +1043,14 @@ action_help_extensions(GtkAction *action, I7Story *story)
 
 /* Help->Recipe Book */
 void
-action_help_recipe_book(GtkAction *action, I7Story *story)
+action_help_recipe_book(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
 	i7_story_show_doc_uri(story, "inform:///Rallegs.html");
 }
 
 /* Help->Visit Inform7.com */
 void
-action_visit_inform7_com(GtkAction *action, I7App *app)
+action_visit_inform7_com(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	/* TRANSLATORS: This string is used in error messages and should fit in the
 	pattern "We couldn't show ___ in your browser" */
@@ -1196,7 +1059,7 @@ action_visit_inform7_com(GtkAction *action, I7App *app)
 
 /* Help->Suggest a Feature */
 void
-action_suggest_feature(GtkAction *action, I7App *app)
+action_suggest_feature(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	show_uri_in_browser("http://inform7.uservoice.com/", NULL,
 		/* TRANSLATORS: This string is used in error messages and should fit in
@@ -1206,7 +1069,7 @@ action_suggest_feature(GtkAction *action, I7App *app)
 
 /* Help->Report a Bug */
 void
-action_report_bug(GtkAction *action, I7App *app)
+action_report_bug(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	show_uri_in_browser("http://inform7.com/mantis", NULL,
 		/* TRANSLATORS: This string is used in error messages and should fit in
@@ -1216,7 +1079,7 @@ action_report_bug(GtkAction *action, I7App *app)
 
 /* Help->About */
 void
-action_about(GtkAction *action, I7App *app)
+action_about(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
 	/* TRANSLATORS: Help->About ; %s is the copyright year. */
 	char *copyright = g_strdup_printf(_("Copyright 2006\u2013%s " /* UTF8 en-dash */
@@ -1301,8 +1164,7 @@ action_about(GtkAction *action, I7App *app)
 	}
 	char *translator_credits = g_string_free(builder, FALSE);
 
-	GtkWindow *parent = get_toplevel_for_action(action);
-	gtk_show_about_dialog(parent,
+	gtk_show_about_dialog(NULL,
 		"program-name", "Inform",
 		"copyright", copyright,
 		"comments", "Inform (" INFORM6_COMPILER_VERSION "/" PACKAGE_VERSION ")",
