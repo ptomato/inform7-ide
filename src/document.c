@@ -17,6 +17,7 @@
 
 #include "config.h"
 
+#include <stdbool.h>
 #include <string.h>
 
 #include <gio/gio.h>
@@ -25,6 +26,7 @@
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 
+#include "actions.h"
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
@@ -34,11 +36,6 @@
 #include "file.h"
 
 typedef struct {
-	/* Action Groups */
-	GtkActionGroup *document_action_group;
-	GtkActionGroup *selection_action_group;
-	GtkActionGroup *copy_action_group;
-	GtkAccelGroup *accels;
 	/* The file this document refers to */
 	GFile *file;
 	/* Whether it was modified since the last save*/
@@ -63,23 +60,31 @@ typedef struct {
 	GCancellable *cancel_download;
 } I7DocumentPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE(I7Document, i7_document, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE_WITH_PRIVATE(I7Document, i7_document, GTK_TYPE_APPLICATION_WINDOW);
 
 /* CALLBACKS */
 
 void
 on_buffer_mark_set(GtkTextBuffer *buffer, GtkTextIter *location, GtkTextMark *mark, I7Document *self)
 {
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	if(gtk_text_mark_get_name(mark) && strcmp(gtk_text_mark_get_name(mark), "selection-bound"))
-		gtk_action_group_set_sensitive(priv->selection_action_group, gtk_text_buffer_get_has_selection(buffer));
+	if (gtk_text_mark_get_name(mark) && strcmp(gtk_text_mark_get_name(mark), "selection-bound")) {
+		bool enabled = gtk_text_buffer_get_has_selection(buffer);
+		GAction *action = g_action_map_lookup_action(G_ACTION_MAP(self), "scroll-selection");
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(action), enabled);
+		action = g_action_map_lookup_action(G_ACTION_MAP(self), "comment-out-selection");
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(action), enabled);
+		action = g_action_map_lookup_action(G_ACTION_MAP(self), "uncomment-selection");
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(action), enabled);
+	}
 }
 
 void
 on_buffer_changed(GtkTextBuffer *buffer, I7Document *document)
 {
-	gtk_action_set_sensitive(document->undo, gtk_source_buffer_can_undo(GTK_SOURCE_BUFFER(buffer)));
-	gtk_action_set_sensitive(document->redo, gtk_source_buffer_can_redo(GTK_SOURCE_BUFFER(buffer)));
+	GAction *action = g_action_map_lookup_action(G_ACTION_MAP(document), "undo");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(action), gtk_source_buffer_can_undo(GTK_SOURCE_BUFFER(buffer)));
+	action = g_action_map_lookup_action(G_ACTION_MAP(document), "redo");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(action), gtk_source_buffer_can_redo(GTK_SOURCE_BUFFER(buffer)));
 }
 
 void
@@ -98,7 +103,7 @@ filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *self)
 	return depth <= priv->heading_depth;
 }
 
-static void
+void
 on_findbar_close_clicked(GtkToolButton *button, I7Document *document)
 {
 	gtk_widget_hide(document->findbar);
@@ -113,13 +118,60 @@ on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *s
 		g_cancellable_cancel(priv->cancel_download);
 }
 
+typedef void (*ActionCallback)(GSimpleAction *, GVariant *, void *);
+
+static void
+create_document_actions(I7Document *self)
+{
+	const GActionEntry actions[] = {
+		{ "save", (ActionCallback)action_save },
+		{ "save-as", (ActionCallback)action_save_as },
+		{ "save-copy", (ActionCallback)action_save_copy },
+		{ "revert", (ActionCallback)action_revert },
+		{ "page-setup", (ActionCallback)action_page_setup },
+		{ "print-preview", (ActionCallback)action_print_preview },
+		{ "print", (ActionCallback)action_print },
+		{ "close", (ActionCallback)action_close },
+		{ "undo", (ActionCallback)action_undo },
+		{ "redo", (ActionCallback)action_redo },
+		{ "cut", (ActionCallback)action_cut },
+		{ "copy", (ActionCallback)action_copy },
+		{ "paste", (ActionCallback)action_paste },
+		{ "select-all", (ActionCallback)action_select_all },
+		{ "find", (ActionCallback)action_find },
+		{ "find-next", (ActionCallback)action_find_next },
+		{ "find-previous", (ActionCallback)action_find_previous },
+		{ "replace", (ActionCallback)action_replace },
+		{ "scroll-selection", (ActionCallback)action_scroll_selection },
+		{ "search", (ActionCallback)action_search },
+		{ "check-spelling", (ActionCallback)action_check_spelling },
+		{ "autocheck-spelling", NULL, NULL, "true", (ActionCallback)action_autocheck_spelling_toggle },
+		{ "view-toolbar", NULL, NULL, "true", (ActionCallback)action_view_toolbar_toggled },
+		{ "view-statusbar", NULL, NULL, "true", (ActionCallback)action_view_statusbar_toggled },
+		{ "show-headings", (ActionCallback)action_show_headings },
+		{ "current-section-only", (ActionCallback)action_current_section_only },
+		{ "increase-restriction", (ActionCallback)action_increase_restriction },
+		{ "decrease-restriction", (ActionCallback)action_decrease_restriction },
+		{ "entire-source", (ActionCallback)action_entire_source },
+		{ "previous-section", (ActionCallback)action_previous_section },
+		{ "next-section", (ActionCallback)action_next_section },
+		{ "indent", (ActionCallback)action_indent },
+		{ "unindent", (ActionCallback)action_unindent },
+		{ "comment-out-selection", (ActionCallback)action_comment_out_selection },
+		{ "uncomment-selection", (ActionCallback)action_uncomment_selection },
+		{ "renumber-all-sections", (ActionCallback)action_renumber_all_sections },
+		{ "enable-elastic-tabstops", NULL, NULL, "true", (ActionCallback)action_enable_elastic_tabstops_toggled },
+	};
+	g_action_map_add_action_entries(G_ACTION_MAP(self), actions, G_N_ELEMENTS(actions), self);
+}
+
 /* TYPE SYSTEM */
 
 static void
 i7_document_init(I7Document *self)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GSettings *state = i7_app_get_state(theapp);
 
@@ -137,7 +189,6 @@ i7_document_init(I7Document *self)
 	/* Create the private properties */
 	priv->file = NULL;
 	priv->monitor = NULL;
-	priv->accels = NULL;
 	priv->buffer = GTK_SOURCE_BUFFER(load_object(builder, "buffer"));
 	g_object_ref(priv->buffer);
 	/* Add invisible tag to buffer */
@@ -155,25 +206,19 @@ i7_document_init(I7Document *self)
 	priv->highlighted_view = NULL;
 	priv->modified = FALSE;
 
-	/* Make the action groups */
-	priv->document_action_group = GTK_ACTION_GROUP(load_object(builder, "document_actions"));
-	priv->selection_action_group = GTK_ACTION_GROUP(load_object(builder, "selection_actions"));
-	priv->copy_action_group = GTK_ACTION_GROUP(load_object(builder, "copy_actions"));
-
-	self->ui_manager = gtk_ui_manager_new();
-	i7_app_insert_action_groups(theapp, self->ui_manager);
-	gtk_ui_manager_insert_action_group(self->ui_manager, priv->document_action_group, 0);
-	gtk_ui_manager_insert_action_group(self->ui_manager, priv->selection_action_group, 0);
-	gtk_ui_manager_insert_action_group(self->ui_manager, priv->copy_action_group, 0);
+	create_document_actions(self);
+	GAction *decrease_restriction = g_action_map_lookup_action(G_ACTION_MAP(self), "decrease-restriction");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(decrease_restriction), FALSE);
+	GAction *entire_source = g_action_map_lookup_action(G_ACTION_MAP(self), "entire-source");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(entire_source), FALSE);
 
 	/* Public members */
 	LOAD_WIDGET(box);
 	LOAD_WIDGET(statusline);
 	LOAD_WIDGET(statusbar);
 	LOAD_WIDGET(progressbar);
-	self->findbar = NULL;
+	LOAD_WIDGET(findbar);
 	LOAD_WIDGET(findbar_entry);
-	g_object_ref(self->findbar_entry);
 	LOAD_WIDGET(find_dialog);
 	gtk_window_set_transient_for(GTK_WINDOW(self->find_dialog), GTK_WINDOW(self));
 	LOAD_WIDGET(search_type);
@@ -198,18 +243,6 @@ i7_document_init(I7Document *self)
 	gtk_window_set_transient_for(GTK_WINDOW(self->multi_download_dialog), GTK_WINDOW(self));
 	LOAD_WIDGET(download_label);
 	LOAD_WIDGET(download_progress);
-	LOAD_ACTION(priv->document_action_group, undo);
-	LOAD_ACTION(priv->document_action_group, redo);
-	LOAD_ACTION(priv->document_action_group, current_section_only);
-	LOAD_ACTION(priv->document_action_group, increase_restriction);
-	LOAD_ACTION(priv->document_action_group, decrease_restriction);
-	LOAD_ACTION(priv->document_action_group, entire_source);
-	LOAD_ACTION(priv->document_action_group, previous_section);
-	LOAD_ACTION(priv->document_action_group, next_section);
-	LOAD_ACTION(priv->document_action_group, autocheck_spelling);
-	LOAD_ACTION(priv->document_action_group, check_spelling);
-	LOAD_ACTION(priv->document_action_group, view_toolbar);
-	LOAD_ACTION(priv->document_action_group, enable_elastic_tabstops);
 	gtk_container_add(GTK_CONTAINER(self), self->box);
 
 	/* Bind settings one-way to some properties */
@@ -218,8 +251,8 @@ i7_document_init(I7Document *self)
 		G_SETTINGS_BIND_GET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
 	/* Show statusbar if necessary */
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(priv->document_action_group, "view_statusbar")),
-		g_settings_get_boolean(state, PREFS_STATE_SHOW_STATUSBAR));
+	GAction *view_statusbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-statusbar");
+	g_simple_action_set_state(G_SIMPLE_ACTION(view_statusbar), g_settings_get_value(state, PREFS_STATE_SHOW_STATUSBAR));
 }
 
 static void
@@ -234,7 +267,6 @@ i7_document_finalize(GObject *object)
 		g_file_monitor_cancel(priv->monitor);
 		g_object_unref(priv->monitor);
 	}
-	g_object_unref(self->ui_manager);
 	g_object_unref(priv->headings);
 	gtk_tree_path_free(priv->current_heading);
 
@@ -265,39 +297,6 @@ i7_document_class_init(I7DocumentClass *klass)
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_document_finalize;
-}
-
-void
-i7_document_add_menus_and_findbar(I7Document *self)
-{
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	GError *error = NULL;
-
-	gtk_ui_manager_add_ui_from_resource(self->ui_manager, "/com/inform7/IDE/ui/gnome-inform7.uimanager.xml", &error);
-	if(error)
-		ERROR(_("Building menus failed"), error);
-
-	self->findbar = gtk_ui_manager_get_widget(self->ui_manager, "/FindToolbar");
-	gtk_widget_set_no_show_all(self->findbar, TRUE);
-	gtk_toolbar_set_style(GTK_TOOLBAR(self->findbar), GTK_TOOLBAR_BOTH_HORIZ);
-	gtk_widget_hide(self->findbar);
-
-	GtkWidget *close_icon = gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_MENU);
-	GtkToolItem *findbar_close = gtk_tool_button_new(close_icon, NULL);
-	gtk_tool_item_set_is_important(findbar_close, FALSE);
-	gtk_widget_show(GTK_WIDGET(findbar_close));
-	g_signal_connect(findbar_close, "clicked", G_CALLBACK(on_findbar_close_clicked), self);
-	GtkToolItem *findbar_entry_container = gtk_tool_item_new();
-	gtk_container_add(GTK_CONTAINER(findbar_entry_container), self->findbar_entry);
-	g_object_unref(self->findbar_entry);
-	gtk_widget_show_all(GTK_WIDGET(findbar_entry_container));
-	gtk_toolbar_insert(GTK_TOOLBAR(self->findbar), findbar_entry_container, 0);
-	gtk_toolbar_insert(GTK_TOOLBAR(self->findbar), findbar_close, -1);
-
-	/* Connect the accelerators */
-	priv->accels = gtk_ui_manager_get_accel_group(self->ui_manager);
-	g_object_ref(priv->accels); /* Apparently adding it to the window doesn't ref it? */
-	gtk_window_add_accel_group(GTK_WINDOW(self), priv->accels);
 }
 
 static void
@@ -605,7 +604,7 @@ i7_document_close(I7Document *document)
 		if(result == GTK_RESPONSE_OK)
 			i7_document_save(document);
 	}
-	i7_app_remove_document(i7_app_get(), document);
+	gtk_widget_destroy(GTK_WIDGET(document));
 }
 
 void
@@ -717,8 +716,7 @@ i7_document_update_indent_tags(I7Document *self, GtkTextIter *orig_start, GtkTex
 		gtk_text_buffer_get_end_iter(buffer, &end);
 	}
 
-	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
+	GSettings *prefs = i7_app_get_prefs(I7_APP(g_application_get_default()));
 	if(!g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {
 		remove_indent_tags(buffer, &start, &end, max_tab_tag_created);
 		return;
@@ -838,7 +836,7 @@ void
 i7_document_reindex_headings(I7Document *self)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 	GtkTreeStore *tree = priv->headings;
 	gtk_tree_store_clear(tree);
@@ -981,20 +979,25 @@ i7_document_show_heading(I7Document *self, GtkTreePath *path)
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = path;
 
+	GAction *previous_section = g_action_map_lookup_action(G_ACTION_MAP(self), "previous-section");
+	GAction *next_section = g_action_map_lookup_action(G_ACTION_MAP(self), "next-section");
+	GAction *decrease_restriction = g_action_map_lookup_action(G_ACTION_MAP(self), "decrease-restriction");
+	GAction *entire_source = g_action_map_lookup_action(G_ACTION_MAP(self), "entire-source");
+
 	/* If the user clicked on the title, show the entire source */
 	if(depth == I7_HEADING_NONE) {
 		/* we have now shown the entire source */
-		gtk_action_set_sensitive(self->previous_section, FALSE);
-		gtk_action_set_sensitive(self->next_section, FALSE);
-		gtk_action_set_sensitive(self->decrease_restriction, FALSE);
-		gtk_action_set_sensitive(self->entire_source, FALSE);
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(previous_section), FALSE);
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(next_section), FALSE);
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(decrease_restriction), FALSE);
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(entire_source), FALSE);
 		gtk_text_buffer_place_cursor(buffer, &start);
 		return;
 	}
 
-	gtk_action_set_sensitive(self->previous_section, TRUE);
-	gtk_action_set_sensitive(self->decrease_restriction, TRUE);
-	gtk_action_set_sensitive(self->entire_source, TRUE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(previous_section), TRUE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(decrease_restriction), TRUE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(entire_source), TRUE);
 
 	GtkTextIter mid;
 	gtk_text_buffer_get_iter_at_line(buffer, &mid, startline);
@@ -1011,7 +1014,7 @@ i7_document_show_heading(I7Document *self, GtkTreePath *path)
 		{
 			/* otherwise, there is no next heading, display until the end of the
 			source text */
-			gtk_action_set_sensitive(self->next_section, FALSE);
+			g_simple_action_set_enabled(G_SIMPLE_ACTION(next_section), FALSE);
 			return;
 		}
 
@@ -1023,7 +1026,7 @@ i7_document_show_heading(I7Document *self, GtkTreePath *path)
 	gtk_text_buffer_get_iter_at_line(buffer, &mid, endline);
 	gtk_text_buffer_apply_tag(buffer, priv->invisible_tag, &mid, &end);
 
-	gtk_action_set_sensitive(self->next_section, TRUE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(next_section), TRUE);
 }
 
 GtkTreePath *
@@ -1155,10 +1158,14 @@ i7_document_show_entire_source(I7Document *self)
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	gtk_text_buffer_remove_tag(buffer, priv->invisible_tag, &start, &end);
 
-	gtk_action_set_sensitive(self->previous_section, FALSE);
-	gtk_action_set_sensitive(self->next_section, FALSE);
-	gtk_action_set_sensitive(self->decrease_restriction, FALSE);
-	gtk_action_set_sensitive(self->entire_source, FALSE);
+	GAction *previous_section = g_action_map_lookup_action(G_ACTION_MAP(self), "previous-section");
+	GAction *next_section = g_action_map_lookup_action(G_ACTION_MAP(self), "next-section");
+	GAction *decrease_restriction = g_action_map_lookup_action(G_ACTION_MAP(self), "decrease-restriction");
+	GAction *entire_source = g_action_map_lookup_action(G_ACTION_MAP(self), "entire-source");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(previous_section), FALSE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(next_section), FALSE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(decrease_restriction), FALSE);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(entire_source), FALSE);
 
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = gtk_tree_path_new_first();
@@ -1236,51 +1243,12 @@ i7_document_clear_progress(I7Document *document)
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(document->progressbar), NULL);
 }
 
-static void
-on_menu_item_select(GtkMenuItem *item, GtkStatusbar *statusbar)
-{
-	gchar *hint = NULL;
-	g_object_get(gtk_activatable_get_related_action(GTK_ACTIVATABLE(item)),
-		"tooltip", &hint,
-		NULL);
-	if(hint) {
-		guint id = gtk_statusbar_get_context_id(statusbar, "MenuItemHints");
-		gtk_statusbar_push(statusbar, id, hint);
-		g_free(hint);
-	}
-}
-
-static void
-on_menu_item_deselect(GtkMenuItem *item, GtkStatusbar *statusbar)
-{
-	guint id = gtk_statusbar_get_context_id(statusbar, "MenuItemHints");
-	gtk_statusbar_pop(statusbar, id);
-}
-
-/* Helper function to attach the menu tooltips of widget to the statusbar */
-static void
-attach_menu_hints(GtkWidget *widget, gpointer statusbar)
-{
-	if(GTK_IS_MENU_ITEM(widget)) {
-		GtkWidget *submenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(widget));
-		if(submenu)
-			gtk_container_foreach(GTK_CONTAINER(submenu), attach_menu_hints, statusbar);
-		g_signal_connect(widget, "select", G_CALLBACK(on_menu_item_select), statusbar);
-		g_signal_connect(widget, "deselect", G_CALLBACK(on_menu_item_deselect), statusbar);
-	}
-}
-
-void
-i7_document_attach_menu_hints(I7Document *document, GtkMenuBar *menu)
-{
-	gtk_container_foreach(GTK_CONTAINER(menu), attach_menu_hints, GTK_STATUSBAR(document->statusbar));
-}
-
 void
 i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 {
 	/* Set the default value for the next time a window is opened */
-	GSettings *state = i7_app_get_state(i7_app_get());
+	I7App *theapp = I7_APP(g_application_get_default());
+	GSettings *state = i7_app_get_state(theapp);
 	g_settings_set_boolean(state, PREFS_STATE_SPELL_CHECK, spellcheck);
 
 	I7_DOCUMENT_GET_CLASS(document)->set_spellcheck(document, spellcheck);
@@ -1296,10 +1264,10 @@ void
 i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
 	/* Set the default value for the next time a window is opened */
-	GSettings *state = i7_app_get_state(i7_app_get());
+	I7App *theapp = I7_APP(g_application_get_default());
+	GSettings *state = i7_app_get_state(theapp);
 	g_settings_set_boolean(state, PREFS_STATE_ELASTIC_TABSTOPS, elastic);
 
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(document->enable_elastic_tabstops), elastic);
 	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabstops(document, elastic);
 }
 
@@ -1337,7 +1305,7 @@ gboolean
 i7_document_download_single_extension(I7Document *self, GFile *remote_file, const char *author, const char *title)
 {
 	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 
 	gboolean success = i7_app_download_extension(theapp, remote_file, NULL, (GFileProgressCallback)single_download_progress, self, &error);
 
@@ -1421,7 +1389,7 @@ void
 i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, gpointer data)
 {
 	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
 	priv->cancel_download = g_cancellable_new();

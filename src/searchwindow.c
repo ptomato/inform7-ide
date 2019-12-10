@@ -149,9 +149,10 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		break;
 	case I7_RESULT_TYPE_EXTENSION:
 	{
-		I7Document *ext = i7_app_get_already_open(i7_app_get(), file);
+		I7App *theapp = I7_APP(g_application_get_default());
+		I7Document *ext = i7_app_get_already_open(theapp, file);
 		if(ext == NULL) {
-			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), file, FALSE));
+			ext = I7_DOCUMENT(i7_extension_new_from_file(theapp, file, FALSE));
 		}
 		i7_document_jump_to_line(ext, lineno);
 	}
@@ -779,7 +780,8 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 void
 i7_search_window_search_extensions(I7SearchWindow *self)
 {
-	i7_app_foreach_installed_extension(i7_app_get(), FALSE, NULL, NULL,
+	I7App *theapp = I7_APP(g_application_get_default());
+	i7_app_foreach_installed_extension(theapp, FALSE, NULL, NULL,
 	    (I7AppExtensionFunc)extension_search_result, self, NULL);
 }
 

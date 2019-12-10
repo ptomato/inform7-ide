@@ -385,18 +385,16 @@ load_blorb_resource(ChimaraResourceType usage, uint32_t resnum, I7Story *self)
 void
 on_game_started(ChimaraGlk *game, I7Story *self)
 {
-	GtkActionGroup *group = i7_story_get_story_action_group(self);
-	GtkAction *stop = gtk_action_group_get_action(group, "stop");
-	gtk_action_set_sensitive(stop, TRUE);
+	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), TRUE);
 }
 
 /* Set the "stop" action to be insensitive when the game finishes */
 void
 on_game_stopped(ChimaraGlk *game, I7Story *self)
 {
-	GtkActionGroup *group = i7_story_get_story_action_group(self);
-	GtkAction *stop = gtk_action_group_get_action(group, "stop");
-	gtk_action_set_sensitive(stop, FALSE);
+	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), FALSE);
 }
 
 /* Grab commands entered by the user and store them in the skein */

@@ -22,6 +22,6 @@
 
 #include <gtk/gtk.h>
 
-GtkWidget *create_welcome_dialog(void);
+GtkWidget *create_welcome_dialog(GtkApplication *app);
 
 #endif

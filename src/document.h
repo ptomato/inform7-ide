@@ -1,4 +1,4 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
+/* Copyright (C) 2008–2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@
 #define I7_DOCUMENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), I7_TYPE_DOCUMENT, I7DocumentClass))
 
 typedef struct {
-	GtkWindowClass parent_class;
+	GtkApplicationWindowClass parent_class;
 
 	/* Private pure virtual */
 	gchar * (*extract_title)();
@@ -57,9 +57,8 @@ typedef struct {
 } I7DocumentClass;
 
 typedef struct {
-	GtkWindow parent_instance;
+	GtkApplicationWindow parent_instance;
 
-	GtkUIManager *ui_manager;
 	GtkWidget *box;
 	GtkWidget *toolbar;
 	GtkWidget *statusline;
@@ -91,19 +90,6 @@ typedef struct {
 	GtkWidget *multi_download_dialog;
 	GtkWidget *download_label;
 	GtkWidget *download_progress;
-
-	GtkAction *undo;
-	GtkAction *redo;
-	GtkAction *current_section_only;
-	GtkAction *increase_restriction;
-	GtkAction *decrease_restriction;
-	GtkAction *entire_source;
-	GtkAction *previous_section;
-	GtkAction *next_section;
-	GtkAction *autocheck_spelling;
-	GtkAction *check_spelling;
-	GtkAction *view_toolbar;
-	GtkAction *enable_elastic_tabstops;
 } I7Document;
 
 typedef enum  {
@@ -141,7 +127,6 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 #define INDEX_TABS         "Index"
 
 GType i7_document_get_type(void) G_GNUC_CONST;
-void i7_document_add_menus_and_findbar(I7Document *self);
 GFile *i7_document_get_file(I7Document *self);
 gchar *i7_document_get_display_name(I7Document *self);
 void i7_document_set_file(I7Document *self, GFile *file);
@@ -192,8 +177,6 @@ void i7_document_display_progress_busy(I7Document *self);
 void i7_document_display_progress_percentage(I7Document *self, double fraction);
 void i7_document_display_progress_message(I7Document *self, const char *message);
 void i7_document_clear_progress(I7Document *self);
-
-void i7_document_attach_menu_hints(I7Document *self, GtkMenuBar *menu);
 
 void i7_document_set_spellcheck(I7Document *self, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *self);

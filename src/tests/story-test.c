@@ -67,7 +67,7 @@ queue_up_expected_messages(void)
 void
 test_story_materials_file(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	while(gtk_events_pending())
 		gtk_main_iteration();
 
@@ -94,7 +94,7 @@ test_story_materials_file(void)
 void
 test_story_old_materials_file(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	while(gtk_events_pending())
 		gtk_main_iteration();
 
@@ -121,7 +121,7 @@ test_story_old_materials_file(void)
 void
 test_story_renames_materials_file(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	while(gtk_events_pending())
 		gtk_main_iteration();
 

@@ -51,7 +51,8 @@ set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 		mypaths[i] = g_strdup(paths[i]);
 
 	/* Get data dir */
-	GFile *languages_dir = i7_app_get_data_file(i7_app_get(), "highlighting");
+	I7App *theapp = I7_APP(g_application_get_default());
+	GFile *languages_dir = i7_app_get_data_file(theapp, "highlighting");
 	mypaths[i++] = g_file_get_path(languages_dir);
 	g_object_unref(languages_dir);
 	mypaths[i] = NULL;

@@ -49,13 +49,6 @@ const char * const i7_panel_index_names[] = {
 };
 
 typedef struct {
-	/* Action Groups */
-	GtkUIManager *ui_manager;
-	GtkActionGroup *common_action_group;
-	GtkActionGroup *skein_action_group;
-	GtkActionGroup *transcript_action_group;
-	GtkActionGroup *documentation_action_group;
-	GtkActionGroup *extensions_action_group;
 	/* History list */
 	GQueue *history; /* "front" is more recent, "back" is older */
 	guint current;
@@ -74,8 +67,6 @@ G_DEFINE_TYPE_WITH_PRIVATE(I7Panel, i7_panel, GTK_TYPE_VBOX);
 static GFile *
 find_real_file_for_inform_uri_scheme(const char *path)
 {
-	I7App *theapp = i7_app_get();
-
 	/* Remove %xx escapes */
 	g_autofree char *unescaped = g_uri_unescape_string(path, "");
 
@@ -198,7 +189,7 @@ js_paste_code(WebKitUserContentManager *content, WebKitJavascriptResult *js_mess
 		return;
 
 	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	gchar *unescaped = g_regex_replace_eval(theapp->regices[I7_APP_REGEX_UNICODE_ESCAPE], code, -1, 0, 0, unescape_unicode, NULL, &error);
 	if(!unescaped) {
 		WARN(_("Cannot unescape unicode characters"), error);
@@ -352,49 +343,53 @@ finally:
 /* ACTIONS */
 
 /* Go to the previously viewed pane in this panel */
-void
-action_back(GtkAction *back, I7Panel *self)
+static void
+action_back(GSimpleAction *back, GVariant *parameter, I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
-	if(priv->current == 0)
-		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "forward"), TRUE);
+	if (priv->current == 0) {
+		GAction *forward = g_action_map_lookup_action(G_ACTION_MAP(self->actions), "forward");
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(forward), TRUE);
+	}
 
 	priv->current++;
 	history_goto_current(self);
 
 	if(priv->current == g_queue_get_length(priv->history) - 1)
-		gtk_action_set_sensitive(back, FALSE);
+		g_simple_action_set_enabled(back, FALSE);
 }
 
 /* Go forward to the next viewed pane in this panel (after having gone back
  * before) */
-void
-action_forward(GtkAction *forward, I7Panel *self)
+static void
+action_forward(GSimpleAction *forward, GVariant *parameter, I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
-	if(priv->current == g_queue_get_length(priv->history) - 1)
-		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
+	if (priv->current == g_queue_get_length(priv->history) - 1) {
+		GAction *back = g_action_map_lookup_action(G_ACTION_MAP(self->actions), "back");
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(back), TRUE);
+	}
 
 	priv->current--;
 	history_goto_current(self);
 
 	if(priv->current == 0)
-		gtk_action_set_sensitive(forward, FALSE);
+		g_simple_action_set_enabled(forward, FALSE);
 }
 
-/* Pop up a menu of all the Skein labels, on the Labels button */
-void
-action_labels(GtkAction *action, I7Panel *panel)
+static void
+action_jump_to_node(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
-	gtk_menu_popup_at_widget(GTK_MENU(panel->labels_menu), GTK_WIDGET(panel->labels),
-		GDK_GRAVITY_SOUTH_WEST, GDK_GRAVITY_NORTH_WEST, NULL);
+	uintptr_t node = g_variant_get_uint64(parameter);
+	I7SkeinView *skein_view = I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]);
+	i7_skein_view_show_node(skein_view, I7_NODE(node), I7_REASON_USER_ACTION);
 }
 
 /* Open the Skein layout dialog */
-void
-action_layout(GtkAction *action, I7Panel *panel)
+static void
+action_layout(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	GSettings *skein_settings = g_settings_new(SCHEMA_SKEIN);
@@ -416,8 +411,8 @@ action_layout(GtkAction *action, I7Panel *panel)
 }
 
 /* Open the Skein trimming dialog */
-void
-action_trim(GtkAction *action, I7Panel *panel)
+static void
+action_trim(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	I7Skein *skein = i7_story_get_skein(story);
@@ -436,14 +431,15 @@ action_trim(GtkAction *action, I7Panel *panel)
 /*
  * action_play_all:
  * @action: not used
+ * @parameter: not used
  * @panel: the panel that this action was triggered on
  *
  * Signal handler for the action connected to the "Play All" button in the panel
  * toolbar when the Skein panel is displayed. Plays all the nodes currently
  * blessed in the Skein.
  */
-void
-action_play_all(GtkAction *action, I7Panel *panel)
+static void
+action_play_all(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	i7_story_compile(story, FALSE, FALSE, (CompileActionFunc)i7_story_run_compiler_output_and_entire_skein, NULL);
@@ -452,6 +448,7 @@ action_play_all(GtkAction *action, I7Panel *panel)
 /*
  * action_bless_all:
  * @action: not used
+ * @parameter: not used
  * @panel: the panel that this action was triggered on
  * 
  * Signal handler for the action connected to the "Bless All" button in the
@@ -459,8 +456,8 @@ action_play_all(GtkAction *action, I7Panel *panel)
  * currently shown in the transcript. (From the skein's "current node" up to
  * the root node.)
  */
-void
-action_bless_all(GtkAction *action, I7Panel *panel)
+static void
+action_bless_all(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	I7Skein *skein = i7_story_get_skein(story);
@@ -484,13 +481,14 @@ action_bless_all(GtkAction *action, I7Panel *panel)
 /*
  * action_panel_previous_difference:
  * @action: not used
+ * @parameter: not used
  * @panel: panel this action was triggered on
  *
  * Signal handler for the action connected to the "Previous Difference" button
  * in the panel toolbar when the Transcript panel is displayed.
  */
-void
-action_panel_previous_difference(GtkAction *action, I7Panel *panel)
+static void
+action_panel_previous_difference(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	i7_story_previous_difference(story);
@@ -499,13 +497,14 @@ action_panel_previous_difference(GtkAction *action, I7Panel *panel)
 /*
  * action_panel_next_difference:
  * @action: not used
+ * @parameter: not used
  * @panel: panel this action was triggered on
  *
  * Signal handler for the action connected to the "Next Difference" button in
  * the panel toolbar when the Transcript panel is displayed.
  */
-void
-action_panel_next_difference(GtkAction *action, I7Panel *panel)
+static void
+action_panel_next_difference(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	i7_story_next_difference(story);
@@ -514,13 +513,14 @@ action_panel_next_difference(GtkAction *action, I7Panel *panel)
 /*
  * action_panel_next_difference_skein:
  * @action: not used
+ * @parameter: not used
  * @panel: panel this action was triggered on
  *
  * Signal handler for the action connected to the "Next Difference in Skein"
  * button in the panel toolbar when the Transcript panel is displayed.
  */
-void
-action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
+static void
+action_panel_next_difference_skein(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
 	i7_story_next_difference_skein(story);
@@ -529,8 +529,8 @@ action_panel_next_difference_skein(GtkAction *action, I7Panel *panel)
 /* Signal handler for the action connected to the "Home" button in the panel
 toolbar when the Documentation panel is displayed. Displays index.html from the
 documentation. */
-void
-action_contents(GtkAction *action, I7Panel *panel)
+static void
+action_contents(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	i7_panel_goto_doc_uri(panel, "inform:///index.html");
 }
@@ -538,8 +538,8 @@ action_contents(GtkAction *action, I7Panel *panel)
 /* Signal handler for the action connected to the "Examples" button in the panel
 toolbar when the Documentation panel is displayed. Displays
 examples_alphabetical.html from the documentation. */
-void
-action_examples(GtkAction *action, I7Panel *panel)
+static void
+action_examples(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	i7_panel_goto_doc_uri(panel, "inform:///examples_alphabetical.html");
 }
@@ -547,8 +547,8 @@ action_examples(GtkAction *action, I7Panel *panel)
 /* Signal handler for the action connected to the "General Index" button in the
 panel toolbar when the Documentation panel is displayed. Displays
 general_index.html from the documentation. */
-void
-action_general_index(GtkAction *action, I7Panel *panel)
+static void
+action_general_index(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	i7_panel_goto_doc_uri(panel, "inform:///general_index.html");
 }
@@ -556,10 +556,11 @@ action_general_index(GtkAction *action, I7Panel *panel)
 /* Signal handler for the action connected to the "Home" button in the panel
 toolbar when the Extensions panel is displayed. Displays
 Documentation/Extensions.html from the user's extensions folder. */
-void
-action_extensions_home(GtkAction *action, I7Panel *panel)
+static void
+action_extensions_home(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
-	GFile *docs_file = i7_app_get_extension_home_page(i7_app_get());
+	I7App *theapp = I7_APP(g_application_get_default());
+	GFile *docs_file = i7_app_get_extension_home_page(theapp);
 	i7_panel_goto_extensions_docpage(panel, docs_file);
 	g_object_unref(docs_file);
 }
@@ -567,10 +568,11 @@ action_extensions_home(GtkAction *action, I7Panel *panel)
 /* Signal handler for the action connected to the "Definitions" button in the
 panel toolbar when the Extensions panel is displayed. Displays
 Documentation/ExtIndex.html from the user's extensions folder. */
-void
-action_definitions(GtkAction *action, I7Panel *panel)
+static void
+action_definitions(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
-	GFile *docs_file = i7_app_get_extension_index_page(i7_app_get());
+	I7App *theapp = I7_APP(g_application_get_default());
+	GFile *docs_file = i7_app_get_extension_index_page(theapp);
 	i7_panel_goto_extensions_docpage(panel, docs_file);
 	g_object_unref(docs_file);
 }
@@ -578,12 +580,12 @@ action_definitions(GtkAction *action, I7Panel *panel)
 /* Helper function: turn everything back to normal when the Public Library is
 loaded */
 static void
-on_public_library_load_changed(WebKitWebView *html, WebKitLoadEvent status, GtkAction *action)
+on_public_library_load_changed(WebKitWebView *html, WebKitLoadEvent status, GSimpleAction *action)
 {
 	if(status != WEBKIT_LOAD_FINISHED)
 		return;
-	gtk_action_set_sensitive(action, TRUE);
-	i7_app_set_busy(i7_app_get(), FALSE);
+	g_simple_action_set_enabled(action, TRUE);
+	g_application_unmark_busy(g_application_get_default());
 	g_signal_handlers_disconnect_by_func(html, on_public_library_load_changed, action);
 }
 
@@ -667,24 +669,51 @@ add_user_content(WebKitUserContentManager *content, I7App *theapp)
 /* Signal handler for the action connected to the "Public Library" button in the
 panel toolbar when the Extensions panel is displayed. Displays the Inform public
 extensions library website. */
-void
-action_public_library(GtkAction *action, I7Panel *panel)
+static void
+action_public_library(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	WebKitWebView *html = WEBKIT_WEB_VIEW(panel->tabs[I7_PANE_EXTENSIONS]);
 
 	/* First clear the webview, gray out the button, and set the cursor busy so
 	that the button doesn't seem broken */
 	html_load_blank(html);
-	gtk_action_set_sensitive(action, FALSE);
-	i7_app_set_busy(i7_app_get(), TRUE);
+	g_simple_action_set_enabled(action, FALSE);
+	g_application_mark_busy(g_application_get_default());
 	g_signal_connect(html, "load-changed", G_CALLBACK(on_public_library_load_changed), action);
 	g_signal_connect(html, "load-failed", G_CALLBACK(on_public_library_load_failed), NULL);
 
 	I7PanelPrivate *priv = i7_panel_get_instance_private(panel);
 	webkit_user_content_manager_remove_all_scripts(priv->content);
-	add_user_content(priv->content, i7_app_get());
+	add_user_content(priv->content, I7_APP(g_application_get_default()));
 
 	webkit_web_view_load_uri(html, PUBLIC_LIBRARY_HOME_URI);
+}
+
+typedef void (*ActionCallback)(GSimpleAction *action, GVariant *param, gpointer data);
+
+static void
+create_panel_actions(I7Panel *self)
+{
+	const GActionEntry actions[] = {
+		{ "forward", (ActionCallback)action_forward },
+		{ "back", (ActionCallback)action_back },
+		{ "play-all-blessed", (ActionCallback)action_play_all },
+		{ "trim", (ActionCallback)action_trim },
+		{ "layout", (ActionCallback)action_layout },
+		{ "jump-to-node", (ActionCallback)action_jump_to_node, "t" },
+		{ "bless-all", (ActionCallback)action_bless_all },
+		{ "previous-difference", (ActionCallback)action_panel_previous_difference },
+		{ "next-difference", (ActionCallback)action_panel_next_difference },
+		{ "next-difference-skein", (ActionCallback)action_panel_next_difference_skein },
+		{ "goto-general-index", (ActionCallback)action_general_index },
+		{ "goto-examples", (ActionCallback)action_examples },
+		{ "goto-home", (ActionCallback)action_contents },
+		{ "goto-extensions-home", (ActionCallback)action_extensions_home },
+		{ "goto-definitions", (ActionCallback)action_definitions },
+		{ "goto-public-library", (ActionCallback)action_public_library },
+	};
+	self->actions = g_simple_action_group_new();
+	g_action_map_add_action_entries(G_ACTION_MAP(self->actions), actions, G_N_ELEMENTS(actions), self);
 }
 
 void
@@ -711,8 +740,7 @@ static void
 i7_panel_init(I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
-	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	int foo;
 
@@ -732,36 +760,15 @@ i7_panel_init(I7Panel *self)
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/panel.ui");
 	gtk_builder_connect_signals(builder, self);
 
-	/* Make the action groups */
-	priv->common_action_group = GTK_ACTION_GROUP(load_object(builder, "panel_actions"));
-	priv->skein_action_group = GTK_ACTION_GROUP(load_object(builder, "skein_actions"));
-	priv->transcript_action_group = GTK_ACTION_GROUP(load_object(builder, "transcript_actions"));
-	priv->documentation_action_group = GTK_ACTION_GROUP(load_object(builder, "documentation_actions"));
-	priv->extensions_action_group = GTK_ACTION_GROUP(load_object(builder, "extensions_actions"));
-
-	/* Build the toolbar from the GtkUIManager file. The UI manager owns the action groups now. */
-	priv->ui_manager = gtk_ui_manager_new();
-	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->common_action_group, 0);
-	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->skein_action_group, 0);
-	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->transcript_action_group, 0);
-	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->documentation_action_group, 0);
-	gtk_ui_manager_insert_action_group(priv->ui_manager, priv->extensions_action_group, 0);
-	gtk_ui_manager_add_ui_from_resource(priv->ui_manager, "/com/inform7/IDE/ui/panel.uimanager.xml", &error);
-	if(error)
-		ERROR(_("Building menus failed"), error);
-	self->toolbar = gtk_ui_manager_get_widget(priv->ui_manager, "/PanelToolbar");
-	gtk_toolbar_set_icon_size(GTK_TOOLBAR(self->toolbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(self->toolbar), GTK_TOOLBAR_BOTH_HORIZ);
-
-	/* Add the Labels menu; apparently GtkUIManager can't build menu tool items */
-	self->labels = gtk_menu_tool_button_new(NULL, NULL);
-	gtk_toolbar_insert(GTK_TOOLBAR(self->toolbar), self->labels, 3);
-	self->labels_menu = gtk_menu_new();
-	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self->labels), self->labels_menu);
-	self->labels_action = gtk_action_group_get_action(priv->skein_action_group, "labels");
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(self->labels), self->labels_action);
+	create_panel_actions(self);
+	GAction *back = g_action_map_lookup_action(G_ACTION_MAP(self->actions), "back");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(back), FALSE);
+	GAction *forward = g_action_map_lookup_action(G_ACTION_MAP(self->actions), "forward");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(forward), FALSE);
 
 	/* Reparent the widgets into our new VBox */
+	self->toolbar = GTK_WIDGET(load_object(builder, "toolbar"));
+	gtk_widget_insert_action_group(self->toolbar, "panel", G_ACTION_GROUP(self->actions));
 	self->notebook = GTK_WIDGET(load_object(builder, "panel"));
 	gtk_box_pack_start(GTK_BOX(self), self->toolbar, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(self), self->notebook, TRUE, TRUE, 0);
@@ -818,6 +825,25 @@ i7_panel_init(I7Panel *self)
 	LOAD_WIDGET(inform6_scrolledwindow);
 	LOAD_WIDGET(transcript_menu);
 	g_object_ref(self->transcript_menu);
+	LOAD_WIDGET(labels);
+	LOAD_WIDGET(layout);
+	LOAD_WIDGET(trim);
+	LOAD_WIDGET(play_all_blessed);
+	LOAD_WIDGET(next_difference_skein);
+	LOAD_WIDGET(next_difference);
+	LOAD_WIDGET(previous_difference);
+	LOAD_WIDGET(bless_all);
+	LOAD_WIDGET(goto_home);
+	LOAD_WIDGET(goto_examples);
+	LOAD_WIDGET(goto_general_index);
+	LOAD_WIDGET(goto_extensions_home);
+	LOAD_WIDGET(goto_definitions);
+	LOAD_WIDGET(goto_public_library);
+
+	/* Add the Labels menu */
+	self->labels_menu = g_menu_new();
+	GtkWidget *labels_menu = gtk_menu_new_from_model(G_MENU_MODEL(self->labels_menu));
+	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self->labels), labels_menu);
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
@@ -882,10 +908,8 @@ static void
 i7_panel_finalize(GObject *object)
 {
 	I7Panel *self = I7_PANEL(object);
-	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
 	history_free_queue(self);
-	g_object_unref(priv->ui_manager);
 	g_object_unref(self->transcript_menu);
 
 	G_OBJECT_CLASS(i7_panel_parent_class)->finalize(object);
@@ -930,31 +954,25 @@ i7_panel_class_init(I7PanelClass *klass)
 void
 on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Panel *self)
 {
-	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
+	bool skein = page_num == I7_PANE_SKEIN;
+	bool transcript = page_num == I7_PANE_TRANSCRIPT;
+	bool documentation = page_num == I7_PANE_DOCUMENTATION;
+	bool extensions = page_num == I7_PANE_EXTENSIONS;
 
-	gboolean skein = FALSE, transcript = FALSE, documentation = FALSE, extensions = FALSE;
-
-	switch(page_num) {
-		case I7_PANE_SKEIN:
-			skein = TRUE;
-			break;
-		case I7_PANE_TRANSCRIPT:
-			transcript = TRUE;
-			break;
-		case I7_PANE_DOCUMENTATION:
-			documentation = TRUE;
-			break;
-		case I7_PANE_EXTENSIONS:
-			extensions = TRUE;
-			break;
-		default:
-			;
-	}
-
-	gtk_action_group_set_visible(priv->skein_action_group, skein);
-	gtk_action_group_set_visible(priv->transcript_action_group, transcript);
-	gtk_action_group_set_visible(priv->documentation_action_group, documentation);
-	gtk_action_group_set_visible(priv->extensions_action_group, extensions);
+	gtk_widget_set_visible(self->labels, skein);
+	gtk_widget_set_visible(self->layout, skein);
+	gtk_widget_set_visible(self->trim, skein);
+	gtk_widget_set_visible(self->play_all_blessed, skein);
+	gtk_widget_set_visible(self->next_difference_skein, transcript);
+	gtk_widget_set_visible(self->next_difference, transcript);
+	gtk_widget_set_visible(self->previous_difference, transcript);
+	gtk_widget_set_visible(self->bless_all, transcript);
+	gtk_widget_set_visible(self->goto_home, documentation);
+	gtk_widget_set_visible(self->goto_examples, documentation);
+	gtk_widget_set_visible(self->goto_general_index, documentation);
+	gtk_widget_set_visible(self->goto_extensions_home, extensions);
+	gtk_widget_set_visible(self->goto_definitions, extensions);
+	gtk_widget_set_visible(self->goto_public_library, extensions);
 }
 
 /* Internal function: given a filename, determine whether it is one of the HTML
@@ -1076,11 +1094,12 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			GFile *real_file = get_case_insensitive_extension(file);
 			g_object_unref(file);
 			/* Check if we need to open the extension read-only */
-			GFile *user_file = i7_app_get_extension_file(i7_app_get(), NULL, NULL);
+			I7App *theapp = I7_APP(g_application_get_default());
+			GFile *user_file = i7_app_get_extension_file(theapp, NULL, NULL);
 			gboolean readonly = !g_file_has_prefix(real_file, user_file);
 			g_object_unref(user_file);
 
-			I7Extension *ext = i7_extension_new_from_file(i7_app_get(), real_file, readonly);
+			I7Extension *ext = i7_extension_new_from_file(theapp, real_file, readonly);
 			if(ext != NULL) {
 				if(sscanf(anchor, "#line%u", &line))
 					i7_source_view_jump_to_line(ext->sourceview, line);
@@ -1289,7 +1308,9 @@ history_empty_forward_queue(I7Panel *self)
 	for(count = 0; count < priv->current; count++)
 		i7_panel_history_free(g_queue_pop_head(priv->history));
 	priv->current = 0;
-	gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "forward"), FALSE);
+
+	GAction *forward = g_action_map_lookup_action(G_ACTION_MAP(self->actions), "forward");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(forward), FALSE);
 }
 
 /* Empty the forward queue and push a new item to the front of the history */
@@ -1298,8 +1319,10 @@ i7_panel_push_history_item(I7Panel *self, I7PanelHistory *item)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 
-	if(priv->current == g_queue_get_length(priv->history) - 1)
-		gtk_action_set_sensitive(gtk_action_group_get_action(priv->common_action_group, "back"), TRUE);
+	if (priv->current == g_queue_get_length(priv->history) - 1) {
+		GAction *back = g_action_map_lookup_action(G_ACTION_MAP(self->actions), "back");
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(back), TRUE);
+	}
 
 	history_empty_forward_queue(self);
 	g_queue_push_head(priv->history, item);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2014, 2015 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2014, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -108,7 +108,8 @@ void
 on_notify_elastic_tabstops(I7Story *story)
 {
 	gboolean value = i7_story_get_elastic_tabstops(story);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(story)->enable_elastic_tabstops), value);
+	GAction *enable_elastic_tabstops = g_action_map_lookup_action(G_ACTION_MAP(story), "enable-elastic-tabstops");
+	g_simple_action_set_state(G_SIMPLE_ACTION(enable_elastic_tabstops), g_variant_new_boolean(value));
 	i7_source_view_set_elastic_tabstops(story->panel[LEFT]->sourceview, value);
 	i7_source_view_set_elastic_tabstops(story->panel[RIGHT]->sourceview, value);
 }

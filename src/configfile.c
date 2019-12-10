@@ -96,20 +96,28 @@ static void
 on_config_font_set_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	i7_app_update_css(theapp);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data))
+			i7_document_update_fonts(I7_DOCUMENT(iter->data));
+	}
 }
 
 static void
 on_config_custom_font_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	if(g_settings_get_enum(prefs, PREFS_FONT_SET) == FONT_CUSTOM) {
 		i7_app_update_css(theapp);
-		i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+		GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+		for (GList *iter = windows; iter != NULL; iter = iter->next) {
+			if (I7_IS_DOCUMENT(iter->data))
+				i7_document_update_fonts(I7_DOCUMENT(iter->data));
+		}
 	}
 }
 
@@ -117,16 +125,22 @@ static void
 on_config_font_size_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	i7_app_update_css(theapp);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_sizes, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data)) {
+			I7Document *document = I7_DOCUMENT(iter->data);
+			i7_document_update_fonts(document);
+			i7_document_update_font_sizes(document);
+		}
+	}
 }
 
 static void
 on_config_style_scheme_changed(GSettings *settings, const char *key)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 
 	char *newvalue = g_settings_get_string(settings, key);
 	/* TODO: validate new value? */
@@ -134,8 +148,14 @@ on_config_style_scheme_changed(GSettings *settings, const char *key)
 	/* update application to reflect new value */
 	select_style_scheme(theapp->prefs->schemes_view, newvalue);
 	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_styles, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data)) {
+			I7Document *document = I7_DOCUMENT(iter->data);
+			i7_document_update_fonts(document);
+			i7_document_update_font_styles(document);
+		}
+	}
 
 	g_free(newvalue);
 }
@@ -150,42 +170,55 @@ on_config_tab_width_changed(GSettings *settings, const char *key)
 		newvalue = DEFAULT_TAB_WIDTH;
 
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	update_tabs(theapp->prefs->tab_example);
 	update_tabs(theapp->prefs->source_example);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data))
+			i7_document_update_tabs(I7_DOCUMENT(iter->data));
+	}
 }
 
 static void
 on_config_indent_wrapped_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	update_tabs(theapp->prefs->tab_example);
 	update_tabs(theapp->prefs->source_example);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_indent_tags, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data)) {
+			I7Document *document = I7_DOCUMENT(iter->data);
+			i7_document_update_tabs(document);
+			i7_document_update_indent_tags(document, NULL, NULL);
+		}
+	}
 }
 
 static void
 on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)i7_document_refresh_elastic_tabstops, NULL);
-}
-
-static void
-set_glulx_interpreter(I7Document *document, gpointer data)
-{
-	if(I7_IS_STORY(document))
-		i7_story_set_use_git(I7_STORY(document), GPOINTER_TO_INT(data));
+	I7App *theapp = I7_APP(g_application_get_default());
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data))
+			i7_document_refresh_elastic_tabstops(I7_DOCUMENT(iter->data));
+	}
 }
 
 static void
 on_config_use_interpreter_changed(GSettings *settings, const char *key)
 {
 	int newvalue = g_settings_get_enum(settings, key);
-	i7_app_foreach_document(i7_app_get(), set_glulx_interpreter, GINT_TO_POINTER(newvalue));
+	I7App *theapp = I7_APP(g_application_get_default());
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_STORY(iter->data))
+			i7_story_set_use_git(I7_STORY(iter->data), newvalue);
+	}
 }
 
 static void
@@ -193,7 +226,16 @@ on_config_debug_log_visible_changed(GSettings *settings, const char *key)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
-	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)(newvalue? i7_story_add_debug_tabs : i7_story_remove_debug_tabs), NULL);
+	I7App *theapp = I7_APP(g_application_get_default());
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_STORY(iter->data)) {
+			if (newvalue)
+				i7_story_add_debug_tabs(I7_STORY(iter->data));
+			else
+				i7_story_remove_debug_tabs(I7_STORY(iter->data));
+		}
+	}
 }
 
 struct KeyToMonitor {
@@ -238,8 +280,7 @@ init_config_file(GSettings *prefs)
 char *
 get_font_family(void)
 {
-	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
+	GSettings *prefs = i7_app_get_prefs(I7_APP(g_application_get_default()));
 
 	switch(g_settings_get_enum(prefs, PREFS_FONT_SET)) {
 		case FONT_MONOSPACE:
@@ -256,7 +297,7 @@ get_font_family(void)
 double
 get_font_size(void)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	double size;
 
 	switch(g_settings_get_enum(i7_app_get_prefs(theapp), PREFS_FONT_SIZE)) {
