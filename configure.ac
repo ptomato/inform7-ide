@@ -275,7 +275,9 @@ AC_DEFINE_UNQUOTED([COPYRIGHT_YEAR], ["$COPYRIGHT_YEAR"], [Year this program was
 # to use all the parameters passed to a callback.
 # Justification for -Wno-cast-function-type: GLib relies heavily on casting
 # callbacks from one type to another, and requires a compiler that allows it.
-AX_APPEND_COMPILE_FLAGS([-Wall -Wextra -Wno-unused-parameter -Wno-cast-function-type],
+# Justification for -Wno-missing-field-initializers: initializing GActionEntry
+# would get quite tedious.
+AX_APPEND_COMPILE_FLAGS([-Wall -Wextra -Wno-unused-parameter -Wno-cast-function-type -Wno-missing-field-initializers],
 	[WARNINGFLAGS])
 AC_SUBST([WARNINGFLAGS])
 AX_APPEND_COMPILE_FLAGS([-Wno-unused-result], [INWEB_EXTRAFLAGS])
