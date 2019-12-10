@@ -25,10 +25,8 @@
 void
 test_app_create(void)
 {
-	I7App *theapp = i7_app_get();
-
+	g_autoptr(I7App) theapp = i7_app_new();
 	g_assert(I7_IS_APP(theapp));
-	g_assert_cmpint(i7_app_get_num_open_documents(theapp), ==, 0);
 }
 
 static void
@@ -47,7 +45,7 @@ void
 test_app_files(void)
 {
 	GFile *file;
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 
 	file = i7_app_get_data_file(theapp, "Extensions");
 	check_file(file, "Extensions");
@@ -65,7 +63,7 @@ void
 test_app_extensions_install_remove(void)
 {
 	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	GError *err = NULL;
 	char *contents;
 
@@ -103,7 +101,7 @@ test_app_extensions_install_remove(void)
 void
 test_app_extensions_get_builtin(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	gboolean builtin;
 	char *version_string;
 
@@ -127,7 +125,7 @@ test_app_extensions_get_builtin(void)
 void
 test_app_extensions_get_version(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	char *version_string;
 
 	/* Test that a nonexistent extension returns NULL */
@@ -159,7 +157,7 @@ void
 test_app_extensions_case_insensitive(void)
 {
 	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 
 	/* Install test extension */
 	i7_app_install_extension(theapp, file);
@@ -227,7 +225,7 @@ find_test_color_scheme(GtkSourceStyleScheme *scheme, gboolean *found)
 void
 test_app_colorscheme_install_remove(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	GFile *file = g_file_new_for_path("tests/test_color_scheme.xml");
 
 	/* Test installing */
@@ -261,7 +259,7 @@ test_app_colorscheme_install_remove(void)
 void
 test_app_colorscheme_get_current(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 
 	GtkSourceStyleScheme *scheme = i7_app_get_current_color_scheme(theapp);
 	GSettings *prefs = i7_app_get_prefs(theapp);

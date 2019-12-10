@@ -17,6 +17,8 @@
 
 #include "config.h"
 
+#include <inttypes.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -257,37 +259,11 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 #undef ADD_SEPARATOR
 #undef ADD_IMAGE_MENU_ITEM
 
-typedef struct {
-	I7SkeinView *skein_view;
-	I7Node *node;
-} I7LabelsMenuCallbackData;
-
-static void
-labels_menu_callback_data_free(I7LabelsMenuCallbackData *data)
-{
-	g_slice_free(I7LabelsMenuCallbackData, data);
-}
-
-static void
-jump_to_node(GtkMenuItem *menuitem, I7LabelsMenuCallbackData *data)
-{
-	i7_skein_view_show_node(data->skein_view, data->node, I7_REASON_USER_ACTION);
-}
-
 static void
 create_labels_menu(I7SkeinNodeLabel *nodelabel, I7Panel *panel)
 {
-	GtkWidget *item = gtk_menu_item_new_with_label(nodelabel->label);
-	gtk_widget_show(item);
-
-	/* Create a one-off callback data structure */
-	I7LabelsMenuCallbackData *data = g_slice_new0(I7LabelsMenuCallbackData);
-	data->skein_view = I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]);
-	data->node = nodelabel->node;
-
-	g_signal_connect_data(item, "activate", G_CALLBACK(jump_to_node),
-	    data, (GClosureNotify)labels_menu_callback_data_free, 0);
-	gtk_menu_shell_append(GTK_MENU_SHELL(panel->labels_menu), item);
+	g_autofree char *detailed_action = g_strdup_printf("panel.jump-to-node(uint64 %" PRIuPTR ")", (uintptr_t)nodelabel->node);
+	g_menu_append(panel->labels_menu, nodelabel->label, detailed_action);
 }
 
 void
@@ -295,12 +271,7 @@ on_labels_changed(I7Skein *skein, I7Panel *panel)
 {
 	GSList *labels = i7_skein_get_labels(skein);
 
-	/* Empty the menu */
-	gtk_container_foreach(GTK_CONTAINER(panel->labels_menu), (GtkCallback)gtk_widget_destroy, NULL);
-
-	/* Set insensitive if empty */
-	gtk_widget_set_sensitive(GTK_WIDGET(panel->labels), (labels != NULL));
-	gtk_action_set_sensitive(panel->labels_action, (labels != NULL));
+	g_menu_remove_all(panel->labels_menu);
 
 	/* Create a new menu */
 	g_slist_foreach(labels, (GFunc)create_labels_menu, panel);

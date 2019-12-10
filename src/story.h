@@ -95,8 +95,6 @@ GFile *i7_story_get_old_materials_file(I7Story *self);
 GFile *i7_story_get_materials_file(I7Story *self);
 const gchar *i7_story_get_extension(I7Story *self);
 void i7_story_foreach_panel(I7Story *self, I7PanelForeachFunc func, void *data);
-GtkActionGroup *i7_story_get_story_action_group(I7Story *self);
-GtkActionGroup *i7_story_get_compile_action_group(I7Story *self);
 GFile *i7_story_get_copy_blorb_dest_file(I7Story *self);
 void i7_story_set_copy_blorb_dest_file(I7Story *self, GFile *file);
 GFile *i7_story_get_compiler_output_file(I7Story *self);
@@ -117,8 +115,8 @@ void on_panel_jump_to_line(I7Panel *panel, unsigned line, I7Story *self);
 gboolean reindex_headings(GtkTextBuffer *buffer, I7Document *document);
 
 /* Results pane, story-results.c */
-void i7_story_add_debug_tabs(I7Document *document);
-void i7_story_remove_debug_tabs(I7Document *document);
+void i7_story_add_debug_tabs(I7Story *story);
+void i7_story_remove_debug_tabs(I7Story *story);
 GtkSourceBuffer *create_inform6_source_buffer(void);
 
 /* Index pane, story-index.c */

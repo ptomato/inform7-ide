@@ -100,8 +100,9 @@ on_newdialog_cancel(GtkAssistant *assistant, I7NewProjectOptions *options)
 	gtk_widget_destroy(GTK_WIDGET(assistant));
 	new_project_options_free(options);
 	/* If we aren't editing a story, go back to the welcome dialog */
-	if(i7_app_get_num_open_documents(i7_app_get()) == 0) {
-		GtkWidget *welcome_dialog = create_welcome_dialog();
+	GtkApplication *theapp = GTK_APPLICATION(g_application_get_default());
+	if (gtk_application_get_windows(theapp) == NULL) {
+		GtkWidget *welcome_dialog = create_welcome_dialog(theapp);
 		gtk_widget_show(welcome_dialog);
 	}
 }
@@ -186,7 +187,7 @@ void
 on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptions *options)
 {
 	char *text, *dirpath;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	switch(gtk_assistant_get_current_page(assistant)) {
@@ -223,7 +224,7 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
 	char *filename;
 	GFile *file;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	/* Save the author name to the config file */
@@ -233,12 +234,12 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 		case I7_NEW_PROJECT_INFORM7_STORY:
 			filename = g_strconcat(options->name, ".inform", NULL);
 			file = g_file_get_child(options->directory, filename);
-			i7_story_new(i7_app_get(), file, options->name, options->author);
+			i7_story_new(theapp, file, options->name, options->author);
 			break;
 		case I7_NEW_PROJECT_INFORM7_EXTENSION:
 			filename = g_strconcat(options->name, ".i7x", NULL);
 			file = g_file_get_child(options->directory, filename);
-			i7_extension_new(i7_app_get(), file, options->name, options->author);
+			i7_extension_new(theapp, file, options->name, options->author);
 			break;
 		default:
 			on_newdialog_cancel(assistant, options);

@@ -38,6 +38,7 @@
 #include "file.h"
 #include "lang.h"
 #include "prefs.h"
+#include "welcomedialog.h"
 
 #define EXTENSIONS_BASE_PATH "Inform", "Extensions"
 #define EXTENSION_HOME_PATH "Inform", "Documentation", "Extensions.html"
@@ -55,11 +56,10 @@
 	"    downloadMultipleExtensions() { window.webkit.messageHandlers.downloadMultipleExtensions.postMessage(...arguments); }" \
 	"};"
 
-/* The singleton application class; should be derived from GtkApplication when
- porting to GTK 3. Contains the following global miscellaneous stuff:
- - an action group containing actions that would be valid even if there were no
-   document open (even though there is no menu at present when no document is
-   open.)
+/* The singleton application class. Contains the following global miscellaneous
+ stuff:
+ - actions that would be valid even if there were no document open (even though
+   there is no menu at present when no document is open.)
  - the list of open documents.
  - information about the paths to project data and executable files.
  - the file monitor for the extension directory.
@@ -70,12 +70,6 @@
 */
 
 typedef struct {
-	/* Action Groups */
-	GtkActionGroup *app_action_group;
-	/* List of open documents */
-	GSList *document_list;
-	/* Whether the splash screen is currently displaying */
-	gboolean splash_screen_active;
 	/* Application directories */
 	GFile *datadir;
 	GFile *libexecdir;
@@ -96,7 +90,7 @@ typedef struct {
 	WebKitUserScript *content_javascript;
 } I7AppPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, GTK_TYPE_APPLICATION);
 
 typedef struct {
 	gchar *regex;
@@ -134,6 +128,54 @@ create_color_scheme_manager(I7App *self)
 	return manager;
 }
 
+typedef void (*ActionCallback)(GSimpleAction *, GVariant *, void *);
+
+static void
+create_app_actions(I7App *self)
+{
+	const GActionEntry actions[] = {
+		{ "new", (ActionCallback)action_new },
+		{ "open", (ActionCallback)action_open },
+		{ "open-recent", (ActionCallback)action_open_recent, "(ss)" },
+		{ "install-extension", (ActionCallback)action_install_extension },
+		{ "open-extension", (ActionCallback)action_open_extension, "(sb)" },
+		{ "quit", (ActionCallback)action_quit },
+		{ "preferences", (ActionCallback)action_preferences },
+		{ "visit-inform7-com", (ActionCallback)action_visit_inform7_com },
+		{ "suggest-feature", (ActionCallback)action_suggest_feature },
+		{ "report-bug", (ActionCallback)action_report_bug },
+		{ "about", (ActionCallback)action_about },
+	};
+	g_action_map_add_action_entries(G_ACTION_MAP(self), actions, G_N_ELEMENTS(actions), self);
+}
+
+static void
+rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
+{
+	GList *recent = gtk_recent_manager_get_items(manager);
+	GMenu *recent_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "recent");
+	g_menu_remove_all(recent_menu);
+
+	for (GList *iter = recent; iter != NULL; iter = g_list_next(iter)) {
+		g_autoptr(GtkRecentInfo) info = gtk_recent_info_ref(iter->data);
+		if (gtk_recent_info_has_application(info, "Inform 7")) {
+			const char *group = NULL;
+			if (gtk_recent_info_has_group(info, "inform7_project"))
+				group = "inform7_project";
+			else if (gtk_recent_info_has_group(info, "inform7_extension"))
+				group = "inform7_extension";
+			else if (gtk_recent_info_has_group(info, "inform7_builtin"))
+				group = "inform7_builtin";
+			else
+				continue;
+
+			g_autofree char *action = g_strdup_printf("app.open-recent(('%s','%s'))", gtk_recent_info_get_uri(info), group);
+			GMenuItem *item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
+			g_menu_append_item(recent_menu, item);
+		}
+	}
+}
+
 static void
 i7_app_init(I7App *self)
 {
@@ -167,21 +209,11 @@ i7_app_init(I7App *self)
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/gnome-inform7.ui");
 	gtk_builder_connect_signals(builder, self);
 
-	/* Make the action group and ref it so that it won't be owned by whatever
-	UI manager it's inserted into */
-	priv->app_action_group = GTK_ACTION_GROUP(load_object(builder, "app_actions"));
-	g_object_ref(priv->app_action_group);
+	create_app_actions(self);
 
-	/* Add a filter to the Open Recent menu (can be removed once Glade supports
-	building GtkRecentFilters) */
-	GtkAction *recent = GTK_ACTION(load_object(builder, "open_recent"));
-	GtkRecentFilter *filter = gtk_recent_filter_new();
-	gtk_recent_filter_add_group(filter, "inform7_project");
-	gtk_recent_filter_add_group(filter, "inform7_extension");
-	gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent), filter);
+	GtkRecentManager *default_recent_manager = gtk_recent_manager_get_default();
+	g_signal_connect(default_recent_manager, "changed", G_CALLBACK(rebuild_recent_menu), self);
 
-	priv->document_list = NULL;
-	priv->splash_screen_active = TRUE;
 	priv->installed_extensions = GTK_TREE_STORE(load_object(builder, "installed_extensions_store"));
 	g_object_ref(priv->installed_extensions);
 	/* Set print settings to NULL, since they are not remembered across
@@ -243,7 +275,6 @@ i7_app_finalize(GObject *object)
 	if(self->prefs)
 		g_slice_free(I7PrefsWidgets, self->prefs);
 	g_object_unref(priv->installed_extensions);
-	g_object_unref(priv->app_action_group);
 	g_object_unref(priv->color_scheme_manager);
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
@@ -257,91 +288,80 @@ i7_app_finalize(GObject *object)
 }
 
 static void
-i7_app_class_init(I7AppClass *klass)
+i7_app_activate(GApplication *app)
 {
-	GObjectClass* object_class = G_OBJECT_CLASS(klass);
-	object_class->finalize = i7_app_finalize;
-}
-
-/* Function to get the singleton application object. */
-I7App *
-i7_app_get(void)
-{
-	static I7App *theapp = NULL;
-
-	if(G_UNLIKELY(theapp == NULL)) {
-		theapp = I7_APP(g_object_new(I7_TYPE_APP, NULL));
-
-		/* Do any setup activities for the application that require calling
-		 i7_app_get() */
-		populate_schemes_list(theapp->prefs->schemes_list);
-		/* Set up Natural Inform highlighting on the example buffer */
-		GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example)));
-		set_buffer_language(buffer, "inform7");
-		gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
+	/* If no windows were opened from command line arguments */
+	if (gtk_application_get_windows(GTK_APPLICATION(app)) == NULL) {
+		/* Create the splash window */
+		GtkWidget *welcomedialog = create_welcome_dialog(GTK_APPLICATION(app));
+		gtk_widget_show_all(welcomedialog);
 	}
-
-	return theapp;
 }
 
 /* Detect the type of document represented by @filename and open it. If that
  document is already open, then bring its window to the front. */
-void
-i7_app_open(I7App *self, GFile *file)
+static void
+i7_app_open(GApplication *app, GFile **files, int n_files, const char *hint)
 {
-	I7Document *dupl = i7_app_get_already_open(self, file);
-	if(dupl) {
-		gtk_window_present(GTK_WINDOW(dupl));
-		return;
+	I7App *self = I7_APP(app);
+
+	for (int index = 0; index < n_files; index++) {
+		I7Document *dupl = i7_app_get_already_open(self, files[index]);
+		if (dupl) {
+			gtk_window_present(GTK_WINDOW(dupl));
+			continue;
+		}
+
+		if (g_file_query_exists(files[index], NULL)) {
+			if (g_file_query_file_type(files[index], G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
+				i7_story_new_from_file(self, files[index]);
+				/* TODO make sure story.ni exists */
+			} /* else */
+				/* TODO Use is_valid_extension to check if they're extensions and then open them */
+		}
 	}
-
-	if(g_file_query_exists(file, NULL)) {
-		if(g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
-			i7_story_new_from_file(self, file);
-			/* TODO make sure story.ni exists */
-		} /* else */
-			/* TODO Use is_valid_extension to check if they're extensions and then open them */
-	}
 }
 
-/* Insert the application's private action group into a GtkUIManager */
-void
-i7_app_insert_action_groups(I7App *self, GtkUIManager *manager)
+static void
+i7_app_class_init(I7AppClass *klass)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	gtk_ui_manager_insert_action_group(manager, priv->app_action_group, 0);
+	GObjectClass* object_class = G_OBJECT_CLASS(klass);
+	object_class->finalize = i7_app_finalize;
+
+	GApplicationClass *application_class = G_APPLICATION_CLASS(klass);
+	application_class->activate = i7_app_activate;
+	application_class->open = i7_app_open;
 }
 
-/* Add @document to the list of open documents */
-void
-i7_app_register_document(I7App *self, I7Document *document)
+I7App *
+i7_app_new(void)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	priv->document_list = g_slist_prepend(priv->document_list, document);
-}
+	I7App *theapp = I7_APP(g_object_new(I7_TYPE_APP,
+		"application-id", "com.inform7.IDE",
+		"flags", G_APPLICATION_HANDLES_OPEN,
+		NULL));
 
-/* Remove @document from the list of open documents */
-void
-i7_app_remove_document(I7App *self, I7Document *document)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	priv->document_list = g_slist_remove(priv->document_list, document);
+	/* Do any setup activities for the application that require calling
+	 g_application_get_default(), e.g. for access to GSettings */
+	populate_schemes_list(theapp->prefs->schemes_list);
+	/* Set up Natural Inform highlighting on the example buffer */
+	GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example)));
+	set_buffer_language(buffer, "inform7");
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 
-	if(i7_app_get_num_open_documents(self) == 0 && !i7_app_get_splash_screen_active(self))
-		gtk_main_quit();
+	return theapp;
 }
 
 /* Custom search function for invocation of g_slist_find_custom() in
 i7_app_get_already_open() below */
-static gboolean
-document_compare_file(const I7Document *document, GFile *file)
+static int
+document_compare_file(GtkWindow *window, GFile *file)
 {
-	GFile *document_file = i7_document_get_file(document);
+	if (!I7_IS_DOCUMENT(window))
+		return 1;
 
-	gboolean equal = g_file_equal(file, document_file);
-
-	g_object_unref(document_file);
-	return equal? 0 : 1;
+	g_autoptr(GFile) document_file = i7_document_get_file(I7_DOCUMENT(window));
+	return g_file_equal(file, document_file)? 0 : 1;
 }
 
 /**
@@ -357,71 +377,19 @@ document_compare_file(const I7Document *document, GFile *file)
 I7Document *
 i7_app_get_already_open(I7App *self, const GFile *file)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GSList *node = g_slist_find_custom(priv->document_list, file, (GCompareFunc)document_compare_file);
+	GList *document_list = gtk_application_get_windows(GTK_APPLICATION(self));
+	GList *node = g_list_find_custom(document_list, file, (GCompareFunc)document_compare_file);
 	if(node)
 		return node->data;
 	return NULL;
-}
-
-/* Return the number of documents currently open. */
-gint
-i7_app_get_num_open_documents(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return g_slist_length(priv->document_list);
 }
 
 /* Close all story windows, no cancelling allowed */
 void
 i7_app_close_all_documents(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	g_slist_foreach(priv->document_list, (GFunc)i7_document_close, NULL);
-	g_slist_foreach(priv->document_list, (GFunc)gtk_widget_destroy, NULL);
-	priv->document_list = NULL;
-	gtk_main_quit();
-}
-
-/* Carry out @func for each document window. To do something to each story or
- extension window only, call this function and check for I7_IS_STORY() in your
- callback function. */
-void
-i7_app_foreach_document(I7App *self, I7DocumentForeachFunc func, gpointer data)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	g_slist_foreach(priv->document_list, (GFunc)func, data);
-}
-
-/**
- * i7_app_get_splash_screen_active:
- * @self: the app
- *
- * Gets whether the splash screen (welcome dialog) is currently displaying. If
- * it is, the program should not quit even if all document windows are closed.
- *
- * Returns: %TRUE if splash screen is active, %FALSE otherwise.
- */
-gboolean
-i7_app_get_splash_screen_active(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->splash_screen_active;
-}
-
-/**
- * i7_app_set_splash_screen_active:
- * @self: the app
- * @active: %TRUE if splash screen should be active, %FALSE otherwise.
- *
- * Sets whether the splash screen (welcome dialog) is currently displaying. If
- * it is, the program should not quit even if all document windows are closed.
- */
-void
-i7_app_set_splash_screen_active(I7App *self, gboolean active)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	priv->splash_screen_active = active;
+	GList *document_list = gtk_application_get_windows(GTK_APPLICATION(self));
+	g_list_foreach(document_list, (GFunc)i7_document_close, NULL);
 }
 
 /* Callback for file monitor on extensions directory; run the census if a file
@@ -1081,7 +1049,7 @@ add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(i7_app_get(), firstline, &version, &title, NULL)) {
+	if(!is_valid_extension(I7_APP(g_application_get_default()), firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;
@@ -1120,7 +1088,7 @@ add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter 
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(i7_app_get(), firstline, &version, &title, NULL)) {
+	if(!is_valid_extension(I7_APP(g_application_get_default()), firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;
@@ -1442,14 +1410,22 @@ i7_app_get_installed_extensions_tree(I7App *self)
 	return priv->installed_extensions;
 }
 
-/* Regenerate the installed extensions submenu attached to @parent_item */
-static void
-rebuild_extensions_menu(GtkWidget *parent_item, I7App *self)
+/* Regenerate the installed extensions submenu */
+void
+i7_app_update_extensions_menu(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GtkTreeModel *model = GTK_TREE_MODEL(priv->installed_extensions);
 	GtkTreeIter author, title;
-	GtkWidget *authormenu = gtk_menu_new();
+	GMenu *extensions_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "extensions");
+	g_menu_remove_all(extensions_menu);
+
+	GError *error = NULL;
+	g_autoptr(GIcon) builtin_emblem = g_icon_new_for_string("inform7-builtin", &error);
+	if (!builtin_emblem) {
+		g_warning("Cannot build builtin extension icon: %s", error->message);
+		g_clear_error(&error);
+	}
 
 	gtk_tree_model_get_iter_first(model, &author);
 	do {
@@ -1458,11 +1434,7 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *self)
 
 		if(gtk_tree_model_iter_children(model, &title, &author))
 		{
-			GtkWidget *authoritem = gtk_menu_item_new_with_label(authorname);
-			gtk_widget_show(authoritem);
-			gtk_menu_shell_append(GTK_MENU_SHELL(authormenu), authoritem);
-
-			GtkWidget *extmenu = gtk_menu_new();
+			GMenu *extmenu = g_menu_new();
 			do {
 				char *extname;
 				GFile *extension_file;
@@ -1472,42 +1444,23 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *self)
 					I7_APP_EXTENSION_READ_ONLY, &readonly,
 					I7_APP_EXTENSION_FILE, &extension_file,
 					-1);
-				GtkWidget *extitem;
+				g_autofree char *uri = g_file_get_uri(extension_file);
+				GMenuItem *extitem = g_menu_item_new(extname, NULL);
 				if(readonly) {
-					extitem = gtk_menu_item_new();
-					GtkWidget *image = gtk_image_new_from_icon_name("inform7-builtin", GTK_ICON_SIZE_MENU);
-					GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-					GtkWidget *label = gtk_label_new(extname);
-					gtk_container_add(GTK_CONTAINER(box), image);
-					gtk_container_add(GTK_CONTAINER(box), label);
-					gtk_container_add(GTK_CONTAINER(extitem),box);
-					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), extension_file);
+					g_menu_item_set_icon(extitem, builtin_emblem);
+					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, TRUE);
 				} else {
-					extitem = gtk_menu_item_new_with_label(extname);
-					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), extension_file);
+					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, FALSE);
 				}
-				gtk_widget_show_all(extitem);
-				gtk_menu_shell_append(GTK_MENU_SHELL(extmenu), extitem);
+				g_menu_append_item(extmenu, extitem);
 
 				g_free(extname);
 				g_object_unref(extension_file);
 
 			} while(gtk_tree_model_iter_next(model, &title));
-			gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), extmenu);
+			g_menu_append_submenu(extensions_menu, authorname, G_MENU_MODEL(extmenu));
 		}
 	} while(gtk_tree_model_iter_next(model, &author));
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(parent_item), authormenu);
-}
-
-/* Rebuild all the Open Installed Extensions submenus in existence, by calling
- rebuild_extensions_menu() on all proxies of the "open_extension" action */
-void
-i7_app_update_extensions_menu(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GSList *proxies = gtk_action_get_proxies(gtk_action_group_get_action(priv->app_action_group, "open_extension"));
-	/* do not free list */
-	g_slist_foreach(proxies, (GFunc)rebuild_extensions_menu, self);
 }
 
 /* Getter function for the global print settings object */
@@ -1579,34 +1532,6 @@ i7_app_update_css(I7App *self)
 	g_autoptr(GError) error = NULL;
 	if (!gtk_css_provider_load_from_data(priv->font_settings_provider, css, -1, &error))
 		g_warning("Invalid CSS: %s", error->message);
-}
-
-/* Helper function: change the cursor of @toplevel's GdkWindow to @cursor.
- Called by g_list_foreach() in i7_app_set_busy() below. */
-static void
-set_cursor(GtkWindow *toplevel, const char *name)
-{
-	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(toplevel));
-	if (window) {
-		g_autoptr(GdkCursor) cursor = NULL;
-		if (name)
-			cursor = gdk_cursor_new_from_name(gdk_window_get_display(window), name);
-		gdk_window_set_cursor(window, cursor);
-	}
-}
-
-/* Change the cursor in all application windows to GDK_WATCH if @busy is TRUE,
- or to the default cursor if @busy is FALSE. */
-void
-i7_app_set_busy(I7App *self, gboolean busy)
-{
-	GList *windows = gtk_window_list_toplevels();
-	if(busy) {
-		g_list_foreach(windows, (GFunc)set_cursor, "wait");
-	} else
-		g_list_foreach(windows, (GFunc)set_cursor, NULL);
-	gdk_flush();
-	g_list_free(windows);
 }
 
 /**

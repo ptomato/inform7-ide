@@ -57,11 +57,11 @@ enum _I7AppExtensionsColumns {
 typedef void (*I7DocumentForeachFunc)(I7Document *, gpointer);
 
 typedef struct {
-	GObjectClass parent_class;
+	GtkApplicationClass parent_class;
 } I7AppClass;
 
 typedef struct {
-	GObject parent_instance;
+	GtkApplication parent_instance;
 
 	/* Public preferences dialog */
 	I7PrefsWidgets *prefs;
@@ -92,18 +92,10 @@ typedef gpointer (*I7AppAuthorFunc)(GFileInfo *info, gpointer data);
 typedef void (*I7AppExtensionFunc)(GFile *parent, GFileInfo *info, gpointer author_result, gpointer data);
 
 GType i7_app_get_type(void) G_GNUC_CONST;
-I7App *i7_app_get(void);
-void i7_app_open(I7App *self, GFile *file);
-void i7_app_insert_action_groups(I7App *self, GtkUIManager *manager);
+I7App *i7_app_new(void);
 
-void i7_app_register_document(I7App *self, I7Document *document);
-void i7_app_remove_document(I7App *self, I7Document *document);
 I7Document *i7_app_get_already_open(I7App *self, const GFile *file);
-gint i7_app_get_num_open_documents(I7App *self);
 void i7_app_close_all_documents(I7App *self);
-void i7_app_foreach_document(I7App *self, I7DocumentForeachFunc func, void *data);
-gboolean i7_app_get_splash_screen_active(I7App *self);
-void i7_app_set_splash_screen_active(I7App *self, gboolean active);
 
 void i7_app_monitor_extensions_directory(I7App *self);
 void i7_app_stop_monitoring_extensions_directory(I7App *self);
@@ -126,6 +118,7 @@ GFile *i7_app_get_config_dir(I7App *self);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *self);
 void i7_app_update_extensions_menu(I7App *self);
+const char *i7_app_lookup_action_tooltip(I7App *self, const char *action_name, GVariant *target_value);
 
 GtkPrintSettings *i7_app_get_print_settings(I7App *self);
 void i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings);
@@ -136,8 +129,6 @@ GtkSourceStyleSchemeManager *i7_app_get_color_scheme_manager(I7App *self);
 
 void i7_app_present_prefs_window(I7App *self);
 void i7_app_update_css(I7App *self);
-
-void i7_app_set_busy(I7App *self, gboolean busy);
 
 GFile *i7_app_get_last_opened_project(I7App *self);
 

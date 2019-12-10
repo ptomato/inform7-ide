@@ -25,10 +25,9 @@
 
 GObject *load_object(GtkBuilder *builder, const gchar *name);
 
-/* Shortcuts for loading public widget and action pointers in _init() functions.
+/* Shortcut for loading a public widget pointer in _init() functions.
 The object being init'ed must be called 'self'. */
 #define LOAD_WIDGET(name) self->name = GTK_WIDGET(load_object(builder, G_STRINGIFY(name)))
-#define LOAD_ACTION(group, name) self->name = gtk_action_group_get_action(group, G_STRINGIFY(name))
 
 /* Arbitrarily putting this here; bracket a section of code to be timed in
  between START_TIMER and STOP_TIMER. */
