@@ -956,9 +956,6 @@ i7_story_init(I7Story *self)
 	
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
-	g_object_set(priv->skein,
-		"unlocked-color", "#6865FF",
-		NULL);
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
 	g_signal_connect(priv->skein, "differs-badge-activate", G_CALLBACK(on_differs_badge_activate), self);
 	g_signal_connect(priv->skein, "modified", G_CALLBACK(on_skein_modified), self);
