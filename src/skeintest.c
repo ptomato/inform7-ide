@@ -277,7 +277,6 @@ main(int argc, char **argv)
 	g_signal_connect(vspacing, "value-changed", G_CALLBACK(vspacing_changed), w);
 	g_object_set(w->skein,
 		"vertical-spacing", 75.0,
-		"unlocked-color", "#6865FF",
 		NULL);
 	g_signal_connect(w->skein, "node-activate", G_CALLBACK(on_node_activate), w->view);
 	g_signal_connect(w->skein, "node-menu-popup", G_CALLBACK(on_node_popup), w->view);
