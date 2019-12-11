@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2015 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2015, 2019 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,8 +44,6 @@ typedef struct _I7SkeinPrivate
 
 	gdouble hspacing;
 	gdouble vspacing;
-	GdkColor locked;
-	GdkColor unlocked;
 
 	GooCanvasLineDash *locked_dash;
 	GooCanvasLineDash *unlocked_dash;
@@ -74,8 +72,6 @@ enum
 	PROP_PLAYED_NODE,
 	PROP_HORIZONTAL_SPACING,
 	PROP_VERTICAL_SPACING,
-	PROP_LOCKED_COLOR,
-	PROP_UNLOCKED_COLOR
 };
 
 static guint i7_skein_signals[LAST_SIGNAL] = { 0 };
@@ -149,9 +145,6 @@ i7_skein_init(I7Skein *self)
 	priv->locked_dash = goo_canvas_line_dash_new(0);
 	priv->unlocked_dash = goo_canvas_line_dash_new(2, 5.0, 5.0);
 
-	gdk_color_parse("black", &priv->locked);
-	gdk_color_parse("black", &priv->unlocked);
-
 	priv->settings = g_settings_new("com.inform7.IDE.preferences.skein");
 	g_settings_bind(priv->settings, "horizontal-spacing", self, "horizontal-spacing", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(priv->settings, "vertical-spacing", self, "vertical-spacing", G_SETTINGS_BIND_DEFAULT);
@@ -177,16 +170,6 @@ i7_skein_set_property(GObject *self, guint prop_id, const GValue *value, GParamS
 			priv->vspacing = g_value_get_double(value);
 			g_object_notify(self, "vertical-spacing");
 			g_signal_emit_by_name(self, "needs-layout");
-			break;
-		case PROP_LOCKED_COLOR:
-			gdk_color_parse(g_value_get_string(value), &priv->locked);
-			g_object_notify(self, "locked-color");
-			/* TODO: Change the color of all the locked threads */
-			break;
-		case PROP_UNLOCKED_COLOR:
-			gdk_color_parse(g_value_get_string(value), &priv->unlocked);
-			g_object_notify(self, "unlocked-color");
-			/* TODO: Change the color of all the unlocked threads */
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
@@ -300,14 +283,6 @@ i7_skein_class_init(I7SkeinClass *klass)
 		g_param_spec_double("vertical-spacing", "Vertical spacing",
 			"Pixels of vertical space between skein items",
 			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
-	g_object_class_install_property(object_class, PROP_LOCKED_COLOR,
-		g_param_spec_string("locked-color", "Locked color",
-			"Color of locked threads",
-			"black", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | flags));
-	g_object_class_install_property(object_class, PROP_UNLOCKED_COLOR,
-		g_param_spec_string("unlocked-color", "Unlocked color",
-			"Color of unlocked threads",
-			"black", G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | flags));
 }
 
 /* TREE MODEL INTERFACE IMPLEMENTATION */
@@ -1002,15 +977,6 @@ i7_skein_reset(I7Skein *self, gboolean current)
 	i7_skein_set_played_node(self, priv->root);
 }
 
-static guint
-rgba_from_gdk_color(GdkColor *color)
-{
-	return (color->red >> 8) << 24
-		| (color->green >> 8) << 16
-		| (color->blue >> 8) << 8
-		| 0xFF;
-}
-
 static void
 draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 {
@@ -1038,19 +1004,30 @@ draw_tree(I7Skein *self, I7Node *node, GooCanvas *canvas)
 		}
 
 		gboolean in_current_thread = i7_skein_is_node_in_current_thread(self, node);
-		
-		if(i7_node_get_locked(node))
+		GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(canvas));
+		GdkRGBA stroke_color;
+		GtkStateFlags state = gtk_style_context_get_state(style);
+		gtk_style_context_save(style);
+
+		if (i7_node_get_locked(node)) {
+			gtk_style_context_add_class(style, "locked-thread");
+			gtk_style_context_get_color(style, state, &stroke_color);
 			g_object_set(node->tree_item,
-				"stroke-color-rgba", rgba_from_gdk_color(&priv->locked),
+				"stroke-color-gdk-rgba", &stroke_color,
 			    "line-dash", priv->locked_dash,
 				"line-width", in_current_thread? 4.0 : 1.5,
 				NULL);
-		else
+		} else {
+			gtk_style_context_add_class(style, "unlocked-thread");
+			gtk_style_context_get_color(style, state, &stroke_color);
 			g_object_set(node->tree_item,
-				"stroke-color-rgba", rgba_from_gdk_color(&priv->unlocked),
+				"stroke-color-gdk-rgba", &stroke_color,
 				"line-dash", priv->unlocked_dash,
 				"line-width", in_current_thread? 4.0 : 1.5,
 				NULL);
+		}
+
+		gtk_style_context_restore(style);
 
 		goo_canvas_item_model_lower(node->tree_item, NULL); /* put at bottom */
 	}
