@@ -75,7 +75,7 @@ set_drag_cursor(I7SkeinView *self, gboolean dragging)
 		GdkDisplay *display = gtk_widget_get_display(widget);
 		g_autoptr(GdkCursor) cursor = gdk_cursor_new_for_display(display, GDK_FLEUR);
 		gdk_window_set_cursor(gtk_widget_get_window(widget), cursor);
-		gdk_flush();
+		gdk_display_flush(display);
 	} else {
 		gdk_window_set_cursor(gtk_widget_get_window(widget), NULL);
 	}
