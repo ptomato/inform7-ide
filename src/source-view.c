@@ -28,8 +28,6 @@
 #include "error.h"
 #include "source-view.h"
 
-#define CONTENTS_FALLBACK_BG_COLOR "#FFFFBF"
-#define CONTENTS_FALLBACK_FG_COLOR "black"
 #define DEFAULT_ENGLISH_VARIANT "en_CA"  /* ha! */
 
 /* TYPE SYSTEM */
@@ -70,17 +68,6 @@ i7_source_view_init(I7SourceView *self)
 	self->message = GTK_WIDGET(load_object(builder, "message"));
 	self->previous = GTK_WIDGET(load_object(builder, "previous"));
 	self->next = GTK_WIDGET(load_object(builder, "next"));
-
-	/* Change the color of the Contents page */
-	GdkColor bg, fg;
-	/* Look up the colors in the theme; if they aren't specified, use defaults */
-	GtkStyle *style = gtk_rc_get_style(GTK_WIDGET(self->headings));
-	if(!gtk_style_lookup_color(style, "text_color", &fg))
-		gdk_color_parse(CONTENTS_FALLBACK_FG_COLOR, &fg);
-	if(!gtk_style_lookup_color(style, "info_bg_color", &bg))
-		gdk_color_parse(CONTENTS_FALLBACK_BG_COLOR, &bg);
-	gtk_widget_modify_base(self->headings, GTK_STATE_NORMAL, &bg);
-	gtk_widget_modify_base(self->message, GTK_STATE_NORMAL, &bg);
 
 	gtk_range_set_value(GTK_RANGE(self->heading_depth), I7_DEPTH_PARTS_AND_HIGHER);
 
