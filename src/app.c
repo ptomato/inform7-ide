@@ -45,16 +45,6 @@
 #define EXTENSION_INDEX_PATH "Inform", "Documentation", "ExtIndex.html"
 #define EXTENSION_DOCS_BASE_PATH "Inform", "Documentation", "Extensions"
 #define EXTENSION_DOWNLOAD_TIMEOUT_S 15
-#define CONTENT_JAVASCRIPT_SOURCE \
-	"window.Project = {" \
-	"    selectView() { window.webkit.messageHandlers.selectView.postMessage(...arguments); }" \
-	"    pasteCode() { window.webkit.messageHandlers.pasteCode.postMessage(...arguments); }" \
-	"    openFile() { window.webkit.messageHandlers.openFile.postMessage(...arguments); }" \
-	"    openUrl() { window.webkit.messageHandlers.openUrl.postMessage(...arguments); }" \
-	"    askInterfaceForLocalVersion() { window.webkit.messageHandlers.askInterfaceForLocalVersion.postMessage(...arguments); }" \
-	"    askInterfaceForLocalVersionText() { window.webkit.messageHandlers.askInterfaceForLocalVersionText.postMessage(...arguments); }" \
-	"    downloadMultipleExtensions() { window.webkit.messageHandlers.downloadMultipleExtensions.postMessage(...arguments); }" \
-	"};"
 
 /* The singleton application class. Contains the following global miscellaneous
  stuff:
@@ -86,8 +76,6 @@ typedef struct {
 	GSettings *prefs_settings;
 	GSettings *state_settings;
 	GtkCssProvider *font_settings_provider;
-	/* JavaScript code for documentation panes */
-	WebKitUserScript *content_javascript;
 } I7AppPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, GTK_TYPE_APPLICATION);
@@ -257,11 +245,6 @@ i7_app_init(I7App *self)
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
 	priv->color_scheme_manager = create_color_scheme_manager(self);
-
-	static const char *javascript_allowed_uris[] = { "inform:///*", NULL };
-	priv->content_javascript = webkit_user_script_new(CONTENT_JAVASCRIPT_SOURCE,
-		WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
-		javascript_allowed_uris, NULL);
 }
 
 static void
@@ -1608,22 +1591,6 @@ i7_app_get_state(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	return priv->state_settings;
-}
-
-/*
- * i7_app_get_content_javascript:
- * @self: the application singleton
- *
- * Gets the #WebKitUserScript object that defines the custom JavaScript
- * functions used in documentation webviews.
- *
- * Returns: (transfer none): #WebKitUserScript object
- */
-WebKitUserScript *
-i7_app_get_content_javascript(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->content_javascript;
 }
 
 /* Private method. For access to priv->color_scheme_manager in app-colorscheme.c

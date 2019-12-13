@@ -53,6 +53,7 @@ typedef struct {
 	guint current;
 	/* Webview settings */
 	WebKitSettings *websettings;
+	WebKitUserContentManager *content;
 } I7PanelPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7Panel, i7_panel, GTK_TYPE_VBOX);
@@ -206,6 +207,16 @@ handle_library_uri(WebKitURISchemeRequest *request, I7Panel *panel)
 }
 
 /* JAVASCRIPT METHODS */
+
+static const char *CONTENT_JAVASCRIPT_SOURCE =
+	"window.Project = {"
+	"    selectView() { window.webkit.messageHandlers.selectView.postMessage([...arguments]); },"
+	"    pasteCode() { window.webkit.messageHandlers.pasteCode.postMessage([...arguments]); },"
+	"    openFile() { window.webkit.messageHandlers.openFile.postMessage([...arguments]); },"
+	"    openUrl() { window.webkit.messageHandlers.openUrl.postMessage([...arguments]); },"
+	"    askInterfaceForLocalVersion() { window.webkit.messageHandlers.askInterfaceForLocalVersion.postMessage([...arguments]); }"
+	"    askInterfaceForLocalVersionText() { window.webkit.messageHandlers.askInterfaceForLocalVersionText.postMessage([...arguments]); }"
+	"    downloadMultipleExtensions() { window.webkit.messageHandlers.downloadMultipleExtensions.postMessage([...arguments]); },";
 
 /* The 'selectView()' function in JavaScript. Emits the 'select-view' signal,
 which the Story is listening for, so that it can preferably open the requested
@@ -878,6 +889,7 @@ i7_panel_init(I7Panel *self)
 	g_type_ensure(WEBKIT_TYPE_WEB_CONTEXT);
 	g_type_ensure(WEBKIT_TYPE_SETTINGS);
 	g_type_ensure(WEBKIT_TYPE_WEB_VIEW);
+	g_type_ensure(WEBKIT_TYPE_USER_CONTENT_MANAGER);
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/panel.ui");
 	gtk_builder_connect_signals(builder, self);
 
@@ -998,24 +1010,34 @@ i7_panel_init(I7Panel *self)
 	// WebKitWebFrame *frame = webkit_web_view_get_main_frame(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]));
 	// g_signal_connect(frame, "scrollbars-policy-changed", G_CALLBACK(on_documentation_scrollbar_policy_changed), NULL);
 
-	WebKitUserContentManager *content = webkit_user_content_manager_new();
-	if (!webkit_user_content_manager_register_script_message_handler(content, "selectView") ||
-	    !webkit_user_content_manager_register_script_message_handler(content, "pasteCode") ||
-	    !webkit_user_content_manager_register_script_message_handler(content, "openFile") ||
-	    !webkit_user_content_manager_register_script_message_handler(content, "openUrl") ||
-	    !webkit_user_content_manager_register_script_message_handler(content, "askInterfaceForLocalVersion") ||
-	    !webkit_user_content_manager_register_script_message_handler(content, "askInterfaceForLocalVersionText") ||
-	    !webkit_user_content_manager_register_script_message_handler(content, "downloadMultipleExtensions")) {
+	priv->content = WEBKIT_USER_CONTENT_MANAGER(load_object(builder, "content"));
+	if (!webkit_user_content_manager_register_script_message_handler(priv->content, "selectView") ||
+	    !webkit_user_content_manager_register_script_message_handler(priv->content, "pasteCode") ||
+	    !webkit_user_content_manager_register_script_message_handler(priv->content, "openFile") ||
+	    !webkit_user_content_manager_register_script_message_handler(priv->content, "openUrl") ||
+	    !webkit_user_content_manager_register_script_message_handler(priv->content, "askInterfaceForLocalVersion") ||
+	    !webkit_user_content_manager_register_script_message_handler(priv->content, "askInterfaceForLocalVersionText") ||
+	    !webkit_user_content_manager_register_script_message_handler(priv->content, "downloadMultipleExtensions")) {
 		g_error("Problem registering JavaScript message handlers");
 	}
-	g_signal_connect(content, "script-message-received::selectView", G_CALLBACK(js_select_view), self);
-	g_signal_connect(content, "script-message-received::pasteCode", G_CALLBACK(js_paste_code), self);
-	g_signal_connect(content, "script-message-received::openFile", G_CALLBACK(js_open_file), self);
-	g_signal_connect(content, "script-message-received::openUrl", G_CALLBACK(js_open_url), self);
-	g_signal_connect(content, "script-message-received::askInterfaceForLocalVersion", G_CALLBACK(js_local_version_compare), self);
-	g_signal_connect(content, "script-message-received::askInterfaceForLocalVersionText", G_CALLBACK(js_get_local_version), self);
-	g_signal_connect(content, "script-message-received::downloadMultipleExtensions", G_CALLBACK(js_download_multi), self);
-	webkit_user_content_manager_add_script(content, i7_app_get_content_javascript(theapp));
+	g_signal_connect(priv->content, "script-message-received::selectView", G_CALLBACK(js_select_view), self);
+	g_signal_connect(priv->content, "script-message-received::pasteCode", G_CALLBACK(js_paste_code), self);
+	g_signal_connect(priv->content, "script-message-received::openFile", G_CALLBACK(js_open_file), self);
+	g_signal_connect(priv->content, "script-message-received::openUrl", G_CALLBACK(js_open_url), self);
+	g_signal_connect(priv->content, "script-message-received::askInterfaceForLocalVersion", G_CALLBACK(js_local_version_compare), self);
+	g_signal_connect(priv->content, "script-message-received::askInterfaceForLocalVersionText", G_CALLBACK(js_get_local_version), self);
+	g_signal_connect(priv->content, "script-message-received::downloadMultipleExtensions", G_CALLBACK(js_download_multi), self);
+
+	static const char *javascript_allowed_uris[] = {
+		"about:blank",
+		"inform:///*",
+		PUBLIC_LIBRARY_URI "*",
+		NULL,
+	};
+	g_autoptr(WebKitUserScript) content_javascript = webkit_user_script_new(CONTENT_JAVASCRIPT_SOURCE,
+		WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START,
+		javascript_allowed_uris, NULL);
+	webkit_user_content_manager_add_script(priv->content, content_javascript);
 
 	/* Load the documentation and extension pages */
 	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), "inform:///index.html");

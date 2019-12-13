@@ -144,6 +144,4 @@ GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
 GSettings *i7_app_get_state(I7App *self);
 GSettings *i7_app_get_prefs(I7App *self);
 
-WebKitUserScript *i7_app_get_content_javascript(I7App *self);
-
 #endif /* _APP_H_ */
