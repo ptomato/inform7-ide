@@ -43,7 +43,7 @@ AS_IF([${NI} | $GREP $VERSION > /dev/null], [AC_MSG_RESULT([$VERSION])], [
 	IMPORTANT NOTE! You must download version $VERSION of the appropriate
 	compiler package from inform7.com and put the file `ni' into the
 	directory `${srcdir}/src/ni'.
-	(Try http://inform7.com/download/content/$VERSION/I7_${VERSION}_Linux_all.tar.gz)])
+	(Try http://inform7.com/apps/$VERSION/I7_${VERSION}_Linux_all.tar.gz)])
 ])
 
 ### DECLARE OPTIONS ############################################################
