@@ -25,7 +25,6 @@
 
 char *read_source_file(GFile *file);
 void set_source_text(GtkSourceBuffer *buffer, gchar *text);
-GFile *get_file_from_save_dialog(I7Document *document, GFile *default_file);
 void delete_build_files(I7Story *story);
 GFile *get_case_insensitive_extension(GFile *file);
 gboolean make_directory_unless_exists(GFile *file, GCancellable *cancellable, GError **error);

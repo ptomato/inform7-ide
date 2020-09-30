@@ -40,6 +40,7 @@ typedef struct {
 	GtkTextView * (*get_default_view)();
 	gboolean (*save)();
 	void (*save_as)();
+	GFile *(*run_save_dialog)();
 	void (*scroll_to_selection)();
 	void (*update_tabs)();
 	void (*update_fonts)();
@@ -155,6 +156,7 @@ void i7_document_monitor_file(I7Document *document, GFile *file);
 void i7_document_stop_file_monitor(I7Document *document);
 gboolean i7_document_save(I7Document *document);
 void i7_document_save_as(I7Document *document, GFile *file);
+GFile *i7_document_run_save_dialog(I7Document *self, GFile *default_file);
 gboolean i7_document_verify_save(I7Document *document);
 gboolean i7_document_can_revert(I7Document *self);
 void i7_document_revert(I7Document *self);

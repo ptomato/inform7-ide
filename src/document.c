@@ -474,6 +474,12 @@ i7_document_save_as(I7Document *document, GFile *file)
 	I7_DOCUMENT_GET_CLASS(document)->save_as(document, file);
 }
 
+GFile *
+i7_document_run_save_dialog(I7Document *self, GFile *default_file)
+{
+	return I7_DOCUMENT_GET_CLASS(self)->run_save_dialog(self, default_file);
+}
+
 /* Helper function: display a dialog box asking for confirmation of save.
 Optionally allow canceling. (If the window is being forced to close, for
 example, then the user shouldn't be allowed to cancel.) */

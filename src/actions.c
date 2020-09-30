@@ -183,7 +183,7 @@ action_save(GtkAction *action, I7Document *document)
 void
 action_save_as(GtkAction *action, I7Document *document)
 {
-	GFile *file = get_file_from_save_dialog(document, NULL);
+	GFile *file = i7_document_run_save_dialog(document, NULL);
 	if(file) {
 		i7_document_set_file(document, file);
 		/* This hack is convenient so that if you save a built-in (read-only)
@@ -199,7 +199,7 @@ action_save_as(GtkAction *action, I7Document *document)
 void
 action_save_copy(GtkAction *action, I7Document *document)
 {
-	GFile *file = get_file_from_save_dialog(document, NULL);
+	GFile *file = i7_document_run_save_dialog(document, NULL);
 	if(file) {
 		i7_document_save_as(document, file);
 		g_object_unref(file);

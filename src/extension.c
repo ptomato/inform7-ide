@@ -163,7 +163,7 @@ i7_extension_save(I7Document *document)
 	if(file && g_file_query_exists(file, NULL))
 		i7_document_save_as(document, file);
 	else {
-		GFile *newfile = get_file_from_save_dialog(document, file);
+		GFile *newfile = i7_document_run_save_dialog(document, file);
 		if(!newfile)
 			return FALSE;
 		i7_document_set_file(document, newfile);
@@ -249,6 +249,58 @@ i7_extension_save_as(I7Document *document, GFile *file)
 	i7_document_set_modified(document, FALSE);
 
 	i7_document_remove_status_message(document, FILE_OPERATIONS);
+}
+
+static GFile *
+i7_extension_run_save_dialog(I7Document *document, GFile *default_file)
+{
+	/* Create a file chooser */
+	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_SAVE,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+		NULL);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
+
+	if (default_file) {
+		if (g_file_query_exists(default_file, NULL)) {
+			gtk_file_chooser_set_file(GTK_FILE_CHOOSER(dialog), default_file, NULL); /* ignore errors */
+		} else {
+			/* gtk_file_chooser_set_file() doesn't set the name if the file
+			doesn't exist, i.e. the user created a new document */
+			gtk_file_chooser_set_current_folder_file(GTK_FILE_CHOOSER(dialog), default_file, NULL); /* ignore errors */
+			char *display_name = file_get_display_name(default_file);
+			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), display_name);
+			g_free(display_name);
+		}
+	}
+
+	GtkFileFilter *filter = gtk_file_filter_new();
+	gtk_file_filter_add_pattern(filter, "*.i7x");
+	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
+		char *basename = g_file_get_basename(file);
+
+		/* Make sure it has a .i7x suffix */
+		if(!g_str_has_suffix(basename, ".i7x")) {
+			char *newbasename = g_strconcat(basename, ".i7x", NULL);
+			GFile *parent = g_file_get_parent(file);
+
+			g_object_unref(file);
+			file = g_file_get_child(parent, newbasename);
+			g_free(newbasename);
+			g_object_unref(parent);
+		}
+
+		gtk_widget_destroy(dialog);
+		g_free(basename);
+		return file;
+	} else {
+		gtk_widget_destroy(dialog);
+		return NULL;
+	}
 }
 
 static GtkTextView *
@@ -491,6 +543,7 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->get_default_view = i7_extension_get_default_view;
 	document_class->save = i7_extension_save;
 	document_class->save_as = i7_extension_save_as;
+	document_class->run_save_dialog = i7_extension_run_save_dialog;
 	document_class->scroll_to_selection = i7_extension_scroll_to_selection;
 	document_class->update_tabs = i7_extension_update_tabs;
 	document_class->update_fonts = i7_extension_update_fonts;
