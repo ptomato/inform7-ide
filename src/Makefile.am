@@ -215,7 +215,10 @@ git_la_SOURCES = \
     chimara/interpreters/git/search.c \
     chimara/interpreters/git/terp.c \
     chimara/interpreters/git/accel.c
-git_la_CPPFLAGS = -I$(top_srcdir)/src/chimara/libchimara
+git_la_CPPFLAGS = \
+	-I$(top_srcdir)/src/chimara/libchimara \
+	-I$(top_builddir)/src/chimara/interpreters/git \
+	$(NULL)
 git_la_CFLAGS = -DCHIMARA_EXTENSIONS -DUSE_INLINE $(GIT_EXTRAFLAGS)
 git_la_LDFLAGS = -module $(PLUGIN_LIBTOOL_FLAGS)
 

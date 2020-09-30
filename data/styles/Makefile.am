@@ -11,6 +11,6 @@ EXTRA_DIST = styles.its
 MAINTAINERCLEANFILES = styles.pot
 
 styles.pot: $(dist_styles_DATA) styles.its
-	$(ITSTOOL) -i styles.its -o $@ $(dist_styles_DATA)
+	$(ITSTOOL) -i $(srcdir)/styles.its -o $@ $(addprefix $(srcdir)/,$(dist_styles_DATA))
 
 -include $(top_srcdir)/git.mk
