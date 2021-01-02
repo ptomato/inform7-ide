@@ -212,11 +212,6 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 			gtk_assistant_set_page_complete(assistant, page, TRUE);
 			break;
 	}
-	GdkPixbuf *icon = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
-		"inform7", 128, 0, NULL); /* just set NULL on failure */
-	gtk_assistant_set_page_side_image(assistant, page, icon);
-	if(icon)
-		g_object_unref(icon);
 }
 
 void
