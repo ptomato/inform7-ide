@@ -561,9 +561,6 @@ i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 			gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_icon_name("document-save-as", GTK_ICON_SIZE_BUTTON));
 			gtk_widget_show(button);
 			gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
-			gtk_dialog_set_alternative_button_order(GTK_DIALOG(dialog),
-				GTK_RESPONSE_ACCEPT, GTK_RESPONSE_CANCEL,
-				-1);
 			gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
 
 			int response = gtk_dialog_run(GTK_DIALOG(dialog));
