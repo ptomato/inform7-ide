@@ -10,43 +10,6 @@
     <property name="can-focus">False</property>
     <property name="icon-name">emblem-default</property>
   </object>
-  <object class="GtkMenu" id="transcript_menu">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkMenuItem" id="transcript_menu_bless">
-        <property name="label" translatable="yes" comments="Transcript panel">_Bless</property>
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="use-underline">True</property>
-        <signal name="activate" handler="on_transcript_menu_bless" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="transcript_menu_separator">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="transcript_menu_play_to_here">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes" comments="Transcript panel">_Play to Here</property>
-        <property name="use-underline">True</property>
-        <signal name="activate" handler="on_transcript_menu_play_to_here" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkMenuItem" id="transcript_menu_show_knot">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes" comments="Transcript panel">_Show Knot</property>
-        <property name="use-underline">True</property>
-        <signal name="activate" handler="on_transcript_menu_show_knot" swapped="no"/>
-      </object>
-    </child>
-  </object>
   <object class="GtkLabel" id="source_pane_label">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -324,6 +287,43 @@
         <property name="expand">False</property>
         <property name="homogeneous">True</property>
       </packing>
+    </child>
+  </object>
+  <object class="GtkMenu" id="transcript_menu">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkMenuItem" id="transcript_menu_bless">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes" comments="Transcript panel">_Bless</property>
+        <property name="use-underline">True</property>
+        <signal name="activate" handler="on_transcript_menu_bless" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="transcript_menu_separator">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="transcript_menu_play_to_here">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes" comments="Transcript panel">_Play to Here</property>
+        <property name="use-underline">True</property>
+        <signal name="activate" handler="on_transcript_menu_play_to_here" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="transcript_menu_show_knot">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label" translatable="yes" comments="Transcript panel">_Show Knot</property>
+        <property name="use-underline">True</property>
+        <signal name="activate" handler="on_transcript_menu_show_knot" swapped="no"/>
+      </object>
     </child>
   </object>
   <object class="WebKitWebContext" type-func="webkit_web_context_get_type" id="webcontext"/>
@@ -876,97 +876,91 @@
             <property name="label-yalign">0</property>
             <property name="shadow-type">none</property>
             <child>
-              <object class="GtkAlignment" id="settings_format_alignment">
+              <object class="GtkBox" id="settings_format_vbox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="left-padding">12</property>
+                <property name="margin-start">12</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="settings_format_vbox">
+                  <object class="GtkLabel" id="settings_zcode_format_label">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="settings_zcode_format_label">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes" comments="Settings panel">Inform translates the source text into a story file which can have either of two standard formats. You can change your mind about the format at any time, but some language features require Glulx to be used.</property>
-                        <property name="wrap">True</property>
-                        <property name="wrap-mode">word-char</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">6</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="z8">
-                        <property name="label" translatable="yes" comments="Settings panel">Z-Code Version _8 (medium-sized textual projects: most portable)</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="glulx">
-                        <property name="label" translatable="yes" comments="Settings panel">_Glulx (large and multimedia projects: most capable)</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-indicator">True</property>
-                        <property name="group">z8</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="settings_blorb_label">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes" comments="Settings panel">When released, the story file is normally bound up into a Blorb file along with bibliographic data, cover art and any other resources it needs. If you need the raw story file, uncheck this option.</property>
-                        <property name="wrap">True</property>
-                        <property name="wrap-mode">word-char</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">6</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="blorb">
-                        <property name="label" translatable="yes" comments="Settings panel">Bind up into a _Blorb file on release</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw-indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
+                    <property name="label" translatable="yes" comments="Settings panel">Inform translates the source text into a story file which can have either of two standard formats. You can change your mind about the format at any time, but some language features require Glulx to be used.</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">6</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="z8">
+                    <property name="label" translatable="yes" comments="Settings panel">Z-Code Version _8 (medium-sized textual projects: most portable)</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="use-underline">True</property>
+                    <property name="draw-indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="glulx">
+                    <property name="label" translatable="yes" comments="Settings panel">_Glulx (large and multimedia projects: most capable)</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="use-underline">True</property>
+                    <property name="draw-indicator">True</property>
+                    <property name="group">z8</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="settings_blorb_label">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes" comments="Settings panel">When released, the story file is normally bound up into a Blorb file along with bibliographic data, cover art and any other resources it needs. If you need the raw story file, uncheck this option.</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">6</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="blorb">
+                    <property name="label" translatable="yes" comments="Settings panel">Bind up into a _Blorb file on release</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="use-underline">True</property>
+                    <property name="active">True</property>
+                    <property name="draw-indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">4</property>
+                  </packing>
                 </child>
               </object>
             </child>
@@ -993,48 +987,42 @@
             <property name="label-xalign">0</property>
             <property name="shadow-type">none</property>
             <child>
-              <object class="GtkAlignment" id="settings_randomness_alignment">
+              <object class="GtkBox" id="settings_randomness_vbox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="left-padding">12</property>
+                <property name="margin-start">12</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="settings_randomness_vbox">
+                  <object class="GtkLabel" id="nobble_rng_label">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="nobble_rng_label">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes" comments="Settings panel">If the story involves randomised outcomes or events, it may be harder to check with the Replay options or with TEST commands, because the same input may produce different results every time. This option makes testing more predictable. (It has no effect on the final Release version, which will still be randomised.)</property>
-                        <property name="wrap">True</property>
-                        <property name="wrap-mode">word-char</property>
-                        <property name="xalign">0</property>
-                        <property name="yalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="padding">6</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="nobble_rng">
-                        <property name="label" translatable="yes" comments="Settings panel">Make _random outcomes more predictable when testing</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">False</property>
-                        <property name="use-underline">True</property>
-                        <property name="draw-indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="label" translatable="yes" comments="Settings panel">If the story involves randomised outcomes or events, it may be harder to check with the Replay options or with TEST commands, because the same input may produce different results every time. This option makes testing more predictable. (It has no effect on the final Release version, which will still be randomised.)</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">6</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="nobble_rng">
+                    <property name="label" translatable="yes" comments="Settings panel">Make _random outcomes more predictable when testing</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="use-underline">True</property>
+                    <property name="draw-indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
             </child>
