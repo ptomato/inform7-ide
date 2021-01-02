@@ -263,8 +263,8 @@ main(int argc, char **argv)
 	w->view = i7_skein_view_new();
 	GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
-	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
-	GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
+	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	GtkWidget *hspacing = gtk_hscale_new_with_range(20.0, 100.0, 1.0);
 	GtkWidget *vspacing = gtk_hscale_new_with_range(20.0, 100.0, 1.0);
 

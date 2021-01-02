@@ -57,7 +57,7 @@ typedef struct {
 	WebKitUserContentManager *content;
 } I7PanelPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE(I7Panel, i7_panel, GTK_TYPE_VBOX);
+G_DEFINE_TYPE_WITH_PRIVATE(I7Panel, i7_panel, GTK_TYPE_BOX);
 
 /* URI SCHEME HANDLERS */
 
@@ -905,6 +905,12 @@ history_free_queue(I7Panel *self)
 }
 
 static void
+i7_panel_constructed(GObject *object)
+{
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(object), GTK_ORIENTATION_VERTICAL);
+}
+
+static void
 i7_panel_finalize(GObject *object)
 {
 	I7Panel *self = I7_PANEL(object);
@@ -919,6 +925,7 @@ static void
 i7_panel_class_init(I7PanelClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS(klass);
+	object_class->constructed = i7_panel_constructed;
 	object_class->finalize = i7_panel_finalize;
 
 	i7_panel_signals[SELECT_VIEW_SIGNAL] = g_signal_new("select-view",

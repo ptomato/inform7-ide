@@ -92,7 +92,7 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 2);
 
-	content_hbox = gtk_hbox_new(FALSE, 12);
+	content_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(content_hbox), 6);
 
 	image = gtk_image_new_from_icon_name("dialog-error", GTK_ICON_SIZE_DIALOG);
