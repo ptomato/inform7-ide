@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2015, 2019 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2015, 2019, 2021 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -97,7 +97,8 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 
 	image = gtk_image_new_from_icon_name("dialog-error", GTK_ICON_SIZE_DIALOG);
 	gtk_box_pack_start(GTK_BOX(content_hbox), image, FALSE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(image), 0.5, 0);
+	gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(image, GTK_ALIGN_START);
 
 	message = g_strdup_printf("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s\n\n%s", what_failed, why_failed, suggestions);
 	label = g_object_new(GTK_TYPE_LABEL,
