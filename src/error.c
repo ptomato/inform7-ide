@@ -75,7 +75,7 @@ error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...)
 void
 extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *why_failed, const char *suggestions)
 {
-	GtkWidget *dialog, *vbox, *content_hbox, *action_area, *ok, *image, *label;
+	GtkWidget *dialog, *vbox, *content_hbox, *ok, *image, *label;
 	char *message;
 
 	g_return_if_fail(what_failed);
@@ -112,11 +112,6 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 
 	gtk_box_pack_start(GTK_BOX(content_hbox), label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), content_hbox, TRUE, TRUE, 0);
-
-	action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
-	gtk_container_set_border_width(GTK_CONTAINER(action_area), 5);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(action_area), GTK_BUTTONBOX_END);
-	gtk_box_set_spacing(GTK_BOX(action_area), 10);
 
 	ok = gtk_button_new_with_mnemonic(_("_OK"));
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), ok, GTK_RESPONSE_OK);
