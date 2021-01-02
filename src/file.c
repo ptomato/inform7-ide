@@ -395,7 +395,7 @@ show_uri_in_browser(const char *uri, GtkWindow *parent, const char *display_name
 
 	GError *error = NULL;
 
-	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	gboolean success = gtk_show_uri_on_window(parent, uri, GDK_CURRENT_TIME, &error);
 	if (!success) {
 		error_dialog(parent, error,
 			/* TRANSLATORS: %s can be a URL, a filename, or a noun like "the
@@ -429,7 +429,7 @@ show_uri_externally(const char *uri, GtkWindow *parent, const char *display_name
 
 	GError *error = NULL;
 
-	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	gboolean success = gtk_show_uri_on_window(parent, uri, GDK_CURRENT_TIME, &error);
 	if (!success) {
 		error_dialog(parent, error,
 			/* TRANSLATORS: %s can be a URL, a filename, or a noun like "the
@@ -454,7 +454,7 @@ show_file_in_browser(GFile *file, GtkWindow *parent)
 
 	GError *error = NULL;
 	char *uri = g_file_get_uri(file);
-	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	gboolean success = gtk_show_uri_on_window(parent, uri, GDK_CURRENT_TIME, &error);
 	if(!success) {
 		char *display_name = file_get_display_name(file);
 		error_dialog(parent, error,
