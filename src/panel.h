@@ -72,7 +72,7 @@ typedef enum {
 } I7PaneIndexTab;
 
 typedef struct {
-	GtkVBox parent_instance;
+	GtkBox parent_instance;
 	/* Public pointers to widgets for convenience */
 	GtkWidget *toolbar;
 	GtkWidget *notebook;
@@ -109,7 +109,7 @@ typedef struct {
 } I7Panel;
 
 typedef struct {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 	void (*select_view)(I7Panel *self, I7PanelPane pane);
 	void (*paste_code)(I7Panel *self, gchar *text);
 	void (*jump_to_line)(I7Panel *self, guint line);
