@@ -1,4 +1,4 @@
-/*  Copyright (C) 2008, 2009, 2010 P. F. Chimento
+/*  Copyright (C) 2008, 2009, 2010, 2021 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -26,9 +26,6 @@
 
 #include "document.h"
 #include "searchwindow.h"
-
-#define FINDBAR_NOT_FOUND_FALLBACK_BG_COLOR "#F03838"
-#define FINDBAR_NOT_FOUND_FALLBACK_FG_COLOR "black"
 
 /* THE "SEARCH ENGINE" */
 
@@ -252,20 +249,12 @@ i7_document_unhighlight_quicksearch(I7Document *self)
 void
 i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found)
 {
+	GtkStyleContext *style = gtk_widget_get_style_context(self->findbar_entry);
 	if(not_found) {
-		GdkColor bg, fg;
-		/* Look up the colors in the theme, otherwise use fallback colors */
-		GtkStyle *style = gtk_rc_get_style(self->findbar_entry);
-		if(!gtk_style_lookup_color(style, "text_color", &fg))
-			gdk_color_parse(FINDBAR_NOT_FOUND_FALLBACK_FG_COLOR, &fg);
-		if(!gtk_style_lookup_color(style, "error_bg_color", &bg))
-			gdk_color_parse(FINDBAR_NOT_FOUND_FALLBACK_BG_COLOR, &bg);
-		gtk_widget_modify_base(self->findbar_entry, GTK_STATE_NORMAL, &bg);
-		gtk_widget_modify_text(self->findbar_entry, GTK_STATE_NORMAL, &fg);
+		gtk_style_context_add_class(style, "error");
 		i7_document_flash_status_message(self, _("Phrase not found"), SEARCH_OPERATIONS);
 	} else {
-		gtk_widget_modify_base(self->findbar_entry, GTK_STATE_NORMAL, NULL);
-		gtk_widget_modify_text(self->findbar_entry, GTK_STATE_NORMAL, NULL);
+		gtk_style_context_remove_class(style, "error");
 	}
 }
 
