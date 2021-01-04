@@ -16,7 +16,7 @@
 #include "error.h"
 #include "prefs.h"
 
-#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-3.0"
+#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-4"
 
 enum SchemesListColumns {
 	ID_COLUMN = 0,

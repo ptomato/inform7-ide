@@ -8,7 +8,7 @@ definitely vary on distros that aren’t Debian derivatives.
 $ sudo apt-get update && apt-get upgrade -y && apt-get install -y \
     libcanberra-gtk3-module dbus-x11 ninja-build virtualenv \
     libxml2-dev pkg-config libglib2.0-dev libgoocanvas-2.0-dev \
-    libwebkit2gtk-4.0-dev libgtksourceview-3.0-dev libgspell-1-dev \
+    libwebkit2gtk-4.0-dev libgtksourceview-4-dev libgspell-1-dev \
     libplist-dev desktop-file-utils libgstreamer1.0-dev \
     gstreamer1.0-plugins-bad gstreamer1.0-plugins-good \
     gstreamer1.0-tools git build-essential

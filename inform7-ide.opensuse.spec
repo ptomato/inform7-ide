@@ -29,7 +29,7 @@ BuildRequires:  fdupes
 BuildRequires:  libplist-devel
 BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
-BuildRequires:  gtksourceview3-devel
+BuildRequires:  gtksourceview4-devel
 BuildRequires:  gspell-devel
 BuildRequires:  libwebkit2gtk3-devel
 BuildRequires:  lzma

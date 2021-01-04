@@ -18,7 +18,7 @@ BuildRequires: xz-lzma-compat
 BuildRequires: libplist-devel
 BuildRequires: glib2-devel >= 2.52
 BuildRequires: gtk3-devel >= 3.22
-BuildRequires: gtksourceview3-devel
+BuildRequires: gtksourceview4-devel
 BuildRequires: gspell-devel
 BuildRequires: webkit2gtk3-devel
 BuildRequires: goocanvas2-devel
