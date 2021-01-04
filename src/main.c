@@ -91,11 +91,6 @@ main(int argc, char *argv[])
 
 	gtk_init(&argc, &argv);
 
-	/* Workaround for GTK 2 bug for people using Oxygen or QtCurve themes:
-	https://bugzilla.gnome.org/show_bug.cgi?id=729651 */
-	gtk_rc_parse_string("style 'workaround' { GtkComboBox::appears-as-list = 0 }"
-		"class '*' style : highest 'workaround'");
-
 	/* Initialize the Inform 7 application */
 	/* TRANSLATORS: this is the human-readable application name */
 	g_set_application_name(_("Inform 7"));
