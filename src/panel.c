@@ -1054,7 +1054,8 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 	} else if(strcmp(scheme, "inform") == 0) {
 		/* The inform: protocol can mean files in any of several different
 		locations */
-		gboolean load_in_extensions_pane = g_str_has_prefix(uri, "inform://Extensions");
+		gboolean load_in_extensions_pane = g_str_has_prefix(uri, "inform://Extensions") ||
+			g_str_has_suffix(uri, "pl404.html");
 		/* Most of them are only to be loaded in the documentation pane, but extension
 		documentation should be loaded in the extensions pane. */
 		if (load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS])) {
