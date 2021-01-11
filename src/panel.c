@@ -1007,10 +1007,13 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 	if(scheme == NULL)
 		scheme = g_strdup("file");
 
+	g_debug("Decide navigation policy %s", uri);
+
 	if(strcmp(scheme, "about") == 0 || strcmp(scheme, "resource") == 0) {
 		/* These are protocols that we explicitly allow WebKit to load */
 		g_free(scheme);
 		webkit_policy_decision_use(decision);
+		g_debug("- about or resource: USE");
 		return TRUE;  /* handled */
 
 	} else if(strcmp(scheme, "file") == 0) {
@@ -1021,6 +1024,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		char *path = g_filename_from_uri(uri, NULL, NULL);
 		if (path == NULL) {
 			webkit_policy_decision_use(decision);
+			g_debug("- file with no filename: USE");
 			return TRUE;  /* handled */
 		}
 		char *filename = g_path_get_basename(path);
@@ -1037,6 +1041,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		I7PaneIndexTab tabnum = filename_to_index_tab(filename);
 		if (tabnum == I7_INDEX_TAB_NONE) {
 			webkit_policy_decision_use(decision);
+			g_debug("- don't know where to display this file: USE");
 			return TRUE;  /* handled */
 		}
 
@@ -1045,10 +1050,12 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			g_signal_emit_by_name(self, "display-index-page", tabnum, param);
 			g_free(filename);
 			webkit_policy_decision_ignore(decision);
+			g_debug("- index file, page %u (at %s): IGNORE", tabnum, param);
 			return TRUE;  /* handled */
 		}
 		g_free(filename);
 		webkit_policy_decision_use(decision);
+		g_debug("- display in this webview: USE");
 		return TRUE;  /* handled */
 
 	} else if(strcmp(scheme, "inform") == 0) {
@@ -1062,6 +1069,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			g_signal_emit_by_name(self, "display-extensions-docpage", uri);
 			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
+			g_debug("- display inform document in extensions pane: IGNORE");
 			return TRUE;  /* handled */
 		} else if (!load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION])) {
 			/* Others should be loaded in the documentation pane; if this is another
@@ -1069,24 +1077,28 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			g_signal_emit_by_name(self, "display-docpage", uri);
 			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
+			g_debug("- display inform document in documentation pane: IGNORE");
 			return TRUE;  /* handled */
 		}
 
 		webkit_policy_decision_use(decision);
+		g_debug("- display inform document in this webview: USE");
 		return TRUE;  /* handled */
 
 	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
 		/* Allow the Public Library website, but nothing else */
 		if (g_str_has_prefix(uri, PUBLIC_LIBRARY_HOME_URI)) {
 			webkit_policy_decision_use(decision);
+			g_debug("- display http page in this webview: USE");
 			return TRUE;  /* handled */
 		}
 
 		show_uri_in_browser(uri,
 			GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(self))), NULL);
+		g_debug("- show http or mailto in browser: IGNORE");
 
 	} else if(strcmp(scheme, "source") == 0) {
-		guint line;
+		guint line = 0;
 		gchar *path = g_strdup(uri + strlen("source:"));
 		gchar *ptr = strrchr(path, '#');
 		gchar *anchor = g_strdup(ptr);
@@ -1096,6 +1108,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		if(strcmp(path, "story.ni") == 0) {
 			if(sscanf(anchor, "#line%u", &line))
 				g_signal_emit_by_name(self, "jump-to-line", line);
+			g_debug("- jump to source line %u: IGNORE", line);
 		} else {
 			GFile *file = g_file_new_for_path(path);
 			/* Else it's a link to an extension, open it in a new window */
@@ -1111,6 +1124,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			if(ext != NULL) {
 				if(sscanf(anchor, "#line%u", &line))
 					i7_source_view_jump_to_line(ext->sourceview, line);
+				g_debug("- jump to source line %u of extension %s: IGNORE", line, path);
 			}
 		}
 		g_free(path);
@@ -1123,6 +1137,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(self)));
 		gboolean success = i7_document_download_single_extension(doc, remote_file, author, title);
 
+		g_debug("- library download %s by %s (id %s): IGNORE", title, author, id);
 		g_object_unref(remote_file);
 		g_free(author);
 		g_free(title);
