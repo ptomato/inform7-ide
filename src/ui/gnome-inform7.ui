@@ -3,57 +3,6 @@
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <requires lib="gtksourceview" version="3.0"/>
-  <object class="GtkListStore" id="font_set_model">
-    <columns>
-      <!-- column-name item -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Use font from theme</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Use monospace font from theme</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Use custom font</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="font_size_model">
-    <columns>
-      <!-- column-name item -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Standard</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Medium</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Large</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes" comments="Font settings panel">Huge</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="glulx_terps_model">
-    <columns>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes" comments="Advanced settings panel">Glulxe (default)</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes" comments="Advanced settings panel">git</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkTreeStore" id="installed_extensions_store">
     <columns>
       <!-- column-name text -->
@@ -83,6 +32,16 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
       <!-- column-name description -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkSourceBuffer" id="tab_buffer">
+    <property name="text" translatable="yes" comments="Editing settings panel - Make sure to keep TAB characters ('\t') between the words">	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab</property>
+    <property name="highlight-syntax">False</property>
+    <property name="highlight-matching-brackets">False</property>
+    <property name="implicit-trailing-newline">False</property>
+  </object>
+  <object class="GtkAdjustment" id="tab_ruler_adjustment">
+    <property name="upper">32</property>
+    <property name="step-increment">1</property>
   </object>
   <object class="GtkDialog" id="prefs_dialog">
     <property name="can-focus">False</property>
@@ -380,26 +339,6 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="font_set">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="model">font_set_model</property>
-                            <property name="active">0</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="font_set_renderer"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left-attach">1</property>
-                            <property name="top-attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkLabel" id="label42">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
@@ -426,26 +365,6 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="font_size">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="model">font_size_model</property>
-                            <property name="active">0</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="font_size_renderer"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left-attach">1</property>
-                            <property name="top-attach">3</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkFontButton" id="custom_font">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -462,6 +381,39 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                           <packing>
                             <property name="left-attach">1</property>
                             <property name="top-attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="font_set">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                            <items>
+                              <item translatable="yes">Use font from theme</item>
+                              <item translatable="yes">Use monospace font from theme</item>
+                              <item translatable="yes">Use custom font</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="font_size">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="halign">start</property>
+                            <items>
+                              <item translatable="yes">Standard</item>
+                              <item translatable="yes">Medium</item>
+                              <item translatable="yes">Large</item>
+                              <item translatable="yes">Huge</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">3</property>
                           </packing>
                         </child>
                       </object>
@@ -512,6 +464,9 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                                 <property name="show-expanders">False</property>
                                 <property name="tooltip-column">2</property>
                                 <signal name="cursor-changed" handler="on_styles_list_cursor_changed" swapped="no"/>
+                                <child internal-child="selection">
+                                  <object class="GtkTreeSelection"/>
+                                </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="schemes_column">
                                     <child>
@@ -1038,17 +993,14 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="glulx_combo">
+                          <object class="GtkComboBoxText" id="glulx_combo">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="halign">start</property>
-                            <property name="model">glulx_terps_model</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="cellrenderertext1"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
+                            <items>
+                              <item translatable="yes">Glulxe (default)</item>
+                              <item translatable="yes">git</item>
+                            </items>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -1184,14 +1136,5 @@ The Customs Wharf is a room. [change the description if the cask is open] "Amid 
     <action-widgets>
       <action-widget response="0">prefs_close</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkSourceBuffer" id="tab_buffer">
-    <property name="text" translatable="yes" comments="Editing settings panel - Make sure to keep TAB characters ('\t') between the words">	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab	Tab</property>
-    <property name="highlight-syntax">False</property>
-    <property name="highlight-matching-brackets">False</property>
-  </object>
-  <object class="GtkAdjustment" id="tab_ruler_adjustment">
-    <property name="upper">32</property>
-    <property name="step-increment">1</property>
   </object>
 </interface>
