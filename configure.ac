@@ -181,7 +181,7 @@ AS_IF([test "x$with_sound" != "xno"],
 PKG_CHECK_MODULES([INFORM7], [
 	gdk-3.0
 	glib-2.0 >= 2.44
-	gtk+-3.0 >= 3.16
+	gtk+-3.0 >= 3.22
 	gio-2.0 >= 2.30
 	gtksourceview-3.0
 	webkit2gtk-4.0
