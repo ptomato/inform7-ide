@@ -15,8 +15,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include <string.h>
+
 #include <glib.h>
+
 #include "app-test.h"
 #include "app.h"
 #include "configfile.h"
