@@ -4,15 +4,16 @@
 
 Name: gnome-inform7
 Version: 6M62
-Release: 1.fc22
+Release: 2%{?dist}
 
 URL: http://inform7.com/
 License: GPLv3
 
-Group: Development/Languages
-Source: http://inform7.com/download/content/6M62/gnome-inform7-6M62.tar.xz
+Source0: https://github.com/ptomato/gnome-inform7/releases/download/%{version}/gnome-inform7-%{version}.tar.xz
+Source1: http://inform7.com/apps/%{version}/I7_%{version}_Linux_all.tar.gz
 
 # Build requirements:
+BuildRequires: meson >= 0.55
 # Extra build tools
 BuildRequires: gettext
 BuildRequires: pkgconfig
@@ -21,7 +22,7 @@ BuildRequires: xz-lzma-compat
 BuildRequires: libuuid-devel
 BuildRequires: glib2-devel >= 2.44
 BuildRequires: gtk3-devel >= 3.22
-BuildRequires: gtksourceview4-devel
+BuildRequires: gtksourceview3-devel
 BuildRequires: gtkspell3-devel
 BuildRequires: webkit2gtk3-devel
 BuildRequires: goocanvas2-devel
@@ -30,7 +31,6 @@ BuildRequires: gstreamer1-plugins-base
 BuildRequires: gstreamer1-plugins-good
 BuildRequires: gstreamer1-plugins-bad-free
 BuildRequires: gstreamer1-plugins-bad-free-extras
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
 
@@ -39,18 +39,30 @@ GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
 development environment for Inform 7. Inform 7 is a "natural" programming
 language for writing interactive fiction (also known as text adventures.)
 
+# wat, definition of meson macro has builddir and srcdir swapped?!
+%global _vpath_srcdir %{name}-%{version}
+
 %prep
-%setup -q
+%autosetup -c
+%setup -T -D -a 1
+cd inform7-%{version}
+tar xvf inform7-compilers_%{version}_%{_arch}.tar.gz
+cp share/inform7/Compilers/ni ../%{_vpath_srcdir}/src/ni/
+cd ..
 
 %build
-%configure --enable-manuals --with-sound=gstreamer
-make
+%set_build_flags
+%{shrink:%{__meson} --buildtype=plain --prefix=%{_prefix} --libdir=%{_libdir}
+   --libexecdir=%{_libexecdir} --bindir=%{_bindir} --sbindir=%{_sbindir}
+   --includedir=%{_includedir} --datadir=%{_datadir} --mandir=%{_mandir}
+   --infodir=%{_infodir} --localedir=%{_datadir}/locale
+   --sysconfdir=%{_sysconfdir} --localstatedir=%{_localstatedir}
+   --sharedstatedir=%{_sharedstatedir} --wrap-mode=%{__meson_wrap_mode}
+   --auto-features=%{__meson_auto_features} %{_vpath_builddir} %{_vpath_srcdir}}
+%meson_build
 
 %install
-rm -rf %{buildroot}
-make install DESTDIR=%{buildroot}
-# Clean out files that should not be part of the rpm.
-%{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
+%meson_install
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -67,9 +79,6 @@ fi
 %posttrans
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-
-%clean
-rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
@@ -122,9 +131,6 @@ rm -rf %{buildroot}
 %lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/%{name}.mo
 %{_bindir}/gnome-inform7
 %{pkglibexecdir}/cBlorb
-%{pkgdocdir}/cBlorb/Complete.html
-%{pkgdocdir}/cBlorb/crumbs.gif
-%{pkgdocdir}/cBlorb/inweb.css
 %{pkglibdir}/frotz.so
 %{pkgdocdir}/frotz/AUTHORS
 %{pkgdocdir}/frotz/COPYING
@@ -140,6 +146,8 @@ rm -rf %{buildroot}
 %{pkglibexecdir}/ni
 
 %changelog
+* Sun Jan 17 2021 Philip Chimento <philip.chimento@gmail.com> - 6M62-2
+- Bring spec file up to date with newer library versions and build system
 * Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com> - 6M62-1
 - Repackaged to Build 6M62.
 * Sat Oct 10 2015 Philip Chimento <philip.chimento@gmail.com>

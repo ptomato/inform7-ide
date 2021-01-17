@@ -27,10 +27,10 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
-#ifdef E2FS_UUID
+#if E2FS_UUID
 #  include <uuid/uuid.h> /* Use e2fsprogs uuid */
 #else
-#  ifdef HAVE_OSSP_UUID_H
+#  if HAVE_OSSP_UUID_H
 #    include <ossp/uuid.h> /* Otherwise, it is OSSP uuid */
 #  else
 #    include <uuid.h> /* May be in uuid.h */

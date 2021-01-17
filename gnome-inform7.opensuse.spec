@@ -28,7 +28,7 @@ Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Lin
 BuildRequires:  fdupes
 BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
-BuildRequires:  gtksourceview4-devel
+BuildRequires:  gtksourceview3-devel
 BuildRequires:  gtkspell3-devel
 BuildRequires:  libwebkit2gtk3-devel
 BuildRequires:  lzma
@@ -59,13 +59,6 @@ adventures.).
 %prep
 %setup -q
 %setup -T -D -a 1
-
-# Remove git update rows from autogen.sh
-sed -i -e '/^git .*/d' autogen.sh
-
-# Adjust required gettext version for openSUSE
-# FIXME: remove this for the next major release!
-sed -i -e 's/^AM_GNU_GETTEXT_VERSION(.*$/AM_GNU_GETTEXT_VERSION([0.19.2])/g' configure.ac
 
 cd inform7-%{version}
 %ifarch x86_64
