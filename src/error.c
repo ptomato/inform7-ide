@@ -85,7 +85,6 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 	dialog = g_object_new(GTK_TYPE_DIALOG,
 		"border-width", 6,
 		"resizable", FALSE,
-		"has-separator", FALSE,
 		"transient-for", parent,
 		NULL);
 
