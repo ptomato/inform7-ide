@@ -68,6 +68,17 @@ on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 		gtk_widget_destroy(welcomedialog);
 }
 
+void
+on_last_project_query_done(GFile *last_project, GAsyncResult *result, GtkWidget *reopen_button)
+{
+	/* ignore errors; just keep the button inactive */
+	g_autoptr(GFileInfo) info = g_file_query_info_finish(last_project, result, NULL);
+	g_object_unref(last_project);
+	if (!info)
+		return;
+	gtk_widget_set_sensitive(reopen_button, TRUE);
+}
+
 GtkWidget *
 create_welcome_dialog(GtkApplication *theapp)
 {
@@ -77,9 +88,13 @@ create_welcome_dialog(GtkApplication *theapp)
 	gtk_window_set_application(GTK_WINDOW(retval), theapp);
 
 	/* If there is no "last project", make the reopen button inactive */
-	g_autoptr(GFile) last_project = i7_app_get_last_opened_project(I7_APP(theapp));
-	if (last_project)
-		gtk_widget_set_sensitive(GTK_WIDGET(load_object(builder, "welcome_reopen_button")), TRUE);
+	GFile *last_project = i7_app_get_last_opened_project(I7_APP(theapp));
+	if (last_project) {
+		GtkWidget *reopen_button = GTK_WIDGET(load_object(builder, "welcome_reopen_button"));
+		g_file_query_info_async(g_steal_pointer(&last_project), G_FILE_ATTRIBUTE_STANDARD_TYPE,
+			G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, NULL,
+			(GAsyncReadyCallback)on_last_project_query_done, reopen_button);
+	}
 
 	return retval;
 }
