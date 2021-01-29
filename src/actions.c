@@ -113,12 +113,9 @@ action_import_into_skein(GSimpleAction *action, GVariant *parameter, I7Story *st
 
 	/* Ask the user for a file to import */
 	/* TRANSLATORS: File->Import Into Skein... */
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Select the file to import into the skein"),
-		GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_OPEN,
-		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Open"), GTK_RESPONSE_ACCEPT,
-		NULL);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Select the file to import into the skein"),
+		GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
+
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
 	gtk_file_filter_set_name(filter1, _("Interpreter recording files (*.rec)"));
@@ -129,15 +126,13 @@ action_import_into_skein(GSimpleAction *action, GVariant *parameter, I7Story *st
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
 
-	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy(dialog);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
 		return;
-	}
 
 	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
-	gtk_widget_destroy(dialog);
 	if(!file)
 		return; /* Fail silently */
+	g_clear_object(&dialog);
 
 	/* Provide some visual feedback that the command did something */
 	if(!i7_skein_import(i7_story_get_skein(story), file, &err))

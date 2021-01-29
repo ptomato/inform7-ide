@@ -178,12 +178,8 @@ void
 on_style_add_clicked(GtkButton *button, I7App *app)
 {
 	/* From gedit/dialogs/gedit-preferences-dialog.c */
-	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Add Color Scheme"),
-		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN,
-		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Add"), GTK_RESPONSE_ACCEPT,
-		NULL);
-	gtk_window_set_destroy_with_parent(GTK_WINDOW(chooser), TRUE);
+	g_autoptr(GtkFileChooserNative) chooser = gtk_file_chooser_native_new(_("Add Color Scheme"),
+		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN, _("_Add"), NULL);
 
 	/* Filters */
 	GtkFileFilter *filter = gtk_file_filter_new();
@@ -197,18 +193,12 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 	gtk_file_filter_add_pattern(filter, "*");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
 
-	gtk_dialog_set_default_response(GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT);
-
-	if(gtk_dialog_run(GTK_DIALOG(chooser)) != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy(chooser);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(chooser)) != GTK_RESPONSE_ACCEPT)
 		return;
-	}
 
 	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(chooser));
 	if(!file)
 		return;
-
-	gtk_widget_destroy(chooser);
 
 	const char *scheme_id = i7_app_install_color_scheme(app, file);
 	g_object_unref(file);
@@ -434,11 +424,8 @@ install_extensions(GFile *file, I7App *app)
 void
 on_extensions_add_clicked(GtkButton *button, I7App *app)
 {
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Select the extensions to install"),
-		GTK_WINDOW(app->prefs->window), GTK_FILE_CHOOSER_ACTION_OPEN,
-		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Open"), GTK_RESPONSE_ACCEPT,
-		NULL);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Select the extensions to install"),
+		GTK_WINDOW(app->prefs->window), GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
 	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
@@ -450,10 +437,8 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
 
-	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy(dialog);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
 		return;
-	}
 
 	/* Install each selected extension */
 	GSList *extlist = gtk_file_chooser_get_files(GTK_FILE_CHOOSER(dialog));
@@ -462,7 +447,6 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	/* Free stuff */
 	g_slist_foreach(extlist, (GFunc)g_object_unref, NULL);
 	g_slist_free(extlist);
-	gtk_widget_destroy(dialog);
 }
 
 void
