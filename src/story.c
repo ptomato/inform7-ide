@@ -499,12 +499,8 @@ static GFile *
 i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 {
 	/* Create a file chooser */
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"),
-		GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER,
-		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Save"), GTK_RESPONSE_ACCEPT,
-		NULL);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Save File"),
+		GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER, _("Save"), NULL);
 
 	if (default_file) {
 		if (g_file_query_exists(default_file, NULL)) {
@@ -523,63 +519,54 @@ i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 	gtk_file_filter_add_pattern(filter, "*.inform");
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
-		char *basename = g_file_get_basename(file);
-
-		/* Make sure it has a .inform suffix */
-		if(!g_str_has_suffix(basename, ".inform")) {
-			char *newbasename = g_strconcat(basename, ".inform", NULL);
-			GFile *parent = g_file_get_parent(file);
-
-			g_object_unref(file);
-			file = g_file_get_child(parent, newbasename);
-
-			g_free(basename);
-			basename = newbasename;
-
-			g_object_unref(parent);
-		}
-
-		gtk_widget_destroy(dialog);
-
-		/* For "Select folder" mode, we must do our own confirmation */
-		/* Adapted from gtkfilechooserdefault.c */
-		/* Sourcefile is a workaround: if you type a new folder into the file
-		selection dialog, GTK will create that folder automatically and it
-		will then already exist */
-		GFile *sourcefile = g_file_get_child(file, "Source");
-		if (g_file_query_exists(file, NULL) && g_file_query_exists(sourcefile, NULL)) {
-			dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
-				_("A project named \"%s\" already exists. Do you want to replace it?"), basename);
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-				_("Replacing it will overwrite its contents."));
-			gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
-			GtkWidget *button = gtk_button_new_with_mnemonic(_("_Replace"));
-			gtk_widget_set_can_default(button, TRUE);
-			gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_icon_name("document-save-as", GTK_ICON_SIZE_BUTTON));
-			gtk_widget_show(button);
-			gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
-			gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-			int response = gtk_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
-
-			if (response != GTK_RESPONSE_ACCEPT) {
-				g_free(basename);
-				g_object_unref(sourcefile);
-				return i7_story_run_save_dialog(document, default_file);
-			}
-		}
-
-		g_free(basename);
-		g_object_unref(sourcefile);
-		return file;
-	} else {
-		gtk_widget_destroy(dialog);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
 		return NULL;
+
+	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
+	g_autofree char *basename = g_file_get_basename(file);
+
+	/* Make sure it has a .inform suffix */
+	if (!g_str_has_suffix(basename, ".inform")) {
+		char *newbasename = g_strconcat(basename, ".inform", NULL);
+		g_autoptr(GFile) parent = g_file_get_parent(file);
+
+		g_clear_object(&file);
+		file = g_file_get_child(parent, newbasename);
+
+		g_clear_pointer(&basename, g_free);
+		basename = newbasename;
 	}
+
+	g_clear_object(&dialog);
+
+	/* For "Select folder" mode, we must do our own confirmation */
+	/* Adapted from gtkfilechooserdefault.c */
+	/* Sourcefile is a workaround: if you type a new folder into the file
+	selection dialog, GTK will create that folder automatically and it
+	will then already exist */
+	g_autoptr(GFile) sourcefile = g_file_get_child(file, "Source");
+	if (g_file_query_exists(file, NULL) && g_file_query_exists(sourcefile, NULL)) {
+		GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
+			_("A project named \"%s\" already exists. Do you want to replace it?"), basename);
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+			_("Replacing it will overwrite its contents."));
+		gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+		GtkWidget *button = gtk_button_new_with_mnemonic(_("_Replace"));
+		gtk_widget_set_can_default(button, TRUE);
+		gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_icon_name("document-save-as", GTK_ICON_SIZE_BUTTON));
+		gtk_widget_show(button);
+		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
+		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+		int response = gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+
+		if (response != GTK_RESPONSE_ACCEPT)
+			return i7_story_run_save_dialog(document, default_file);
+	}
+
+	return file;
 }
 
 static GtkTextView *
@@ -1171,22 +1158,19 @@ i7_story_new_from_dialog(I7App *app)
 
 	/* Create a file chooser for *.inform. It actually selects folders, because
 	that's what Inform projects are. */
-	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Open Project"), NULL, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Open"), GTK_RESPONSE_ACCEPT,
-		NULL);
+	g_autoptr(GtkFileChooserNative) chooser = gtk_file_chooser_native_new(_("Open Project"), NULL,
+		GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, NULL, NULL);
 
 	//GtkFileFilter *filter = gtk_file_filter_new();
 	//gtk_file_filter_add_pattern(filter, "*.inform");
 	//gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(chooser), filter);
 
-	if(gtk_dialog_run(GTK_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) {
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(chooser)) == GTK_RESPONSE_ACCEPT) {
 		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(chooser));
 		story = i7_story_new_from_file(app, file);
 		g_object_unref(file);
 	}
 
-	gtk_widget_destroy(chooser);
 	return story;
 }
 

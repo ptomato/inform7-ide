@@ -755,11 +755,8 @@ i7_story_save_ifiction(I7Story *story)
 		g_free(name);
 
 		/* Create a file chooser */
-		GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save iFiction record"),
-			GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_SAVE,
-			_("_Cancel"), GTK_RESPONSE_CANCEL,
-			_("_Save"), GTK_RESPONSE_ACCEPT,
-			NULL);
+		g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Save iFiction record"),
+			GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
 		g_free(filename);
@@ -772,7 +769,7 @@ i7_story_save_ifiction(I7Story *story)
 		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
 		/* Copy the finished file to the chosen location */
-		if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+		if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 			GFile *dest_file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
 			GError *error = NULL;
 
@@ -782,7 +779,6 @@ i7_story_save_ifiction(I7Story *story)
 
 			g_object_unref(dest_file);
 		}
-		gtk_widget_destroy(dialog);
 	}
 	else
 		error_dialog(GTK_WINDOW(story), NULL,
@@ -817,11 +813,8 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 			gtk_file_filter_add_pattern(filter, "*.z?");
 			gtk_file_filter_add_pattern(filter, "*.zblorb");
 		}
-		GtkWidget *dialog = gtk_file_chooser_dialog_new(dialog_title,
-			GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_SAVE,
-			_("_Cancel"), GTK_RESPONSE_CANCEL,
-			_("_Save"), GTK_RESPONSE_ACCEPT,
-			NULL);
+		g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(dialog_title,
+			GTK_WINDOW(story), GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
 		gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 		char *curfilename = g_file_get_basename(compiler_output_file);
 		gchar *title = i7_document_get_display_name(I7_DOCUMENT(story));
@@ -839,10 +832,8 @@ i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 		g_free(suggestname);
 		gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
 
-		if(gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+		if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
 			file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
-
-		gtk_widget_destroy(dialog);
 	} else {
 		file = g_steal_pointer(&copy_blorb_dest_file);
 	}
