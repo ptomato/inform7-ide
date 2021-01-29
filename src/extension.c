@@ -250,11 +250,8 @@ static GFile *
 i7_extension_run_save_dialog(I7Document *document, GFile *default_file)
 {
 	/* Create a file chooser */
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_SAVE,
-		_("_Cancel"), GTK_RESPONSE_CANCEL,
-		_("_Save"), GTK_RESPONSE_ACCEPT,
-		NULL);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Save File"),
+		GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 
 	if (default_file) {
@@ -274,28 +271,19 @@ i7_extension_run_save_dialog(I7Document *document, GFile *default_file)
 	gtk_file_filter_add_pattern(filter, "*.i7x");
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
-		char *basename = g_file_get_basename(file);
-
-		/* Make sure it has a .i7x suffix */
-		if(!g_str_has_suffix(basename, ".i7x")) {
-			char *newbasename = g_strconcat(basename, ".i7x", NULL);
-			GFile *parent = g_file_get_parent(file);
-
-			g_object_unref(file);
-			file = g_file_get_child(parent, newbasename);
-			g_free(newbasename);
-			g_object_unref(parent);
-		}
-
-		gtk_widget_destroy(dialog);
-		g_free(basename);
-		return file;
-	} else {
-		gtk_widget_destroy(dialog);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
 		return NULL;
-	}
+
+	g_autoptr(GFile) file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
+	g_autofree char *basename = g_file_get_basename(file);
+
+	/* Make sure it has a .i7x suffix */
+	if(g_str_has_suffix(basename, ".i7x"))
+		return g_steal_pointer(&file);
+
+	g_autofree char *newbasename = g_strconcat(basename, ".i7x", NULL);
+	g_autoptr(GFile) parent = g_file_get_parent(file);
+	return g_file_get_child(parent, newbasename);
 }
 
 static GtkTextView *
