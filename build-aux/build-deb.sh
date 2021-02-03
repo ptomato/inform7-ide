@@ -14,7 +14,7 @@ dist_tarball="$builddir/meson-dist/$package-$version.tar.xz"
 arch=$(dpkg --print-architecture)
 
 if test ! -e "$dist_tarball"; then
-    echo "Please run 'meson dist -C $builddir --no-tests' first!"
+    echo "Please run 'meson dist -C $builddir --no-tests --include-subprojects' first!"
     exit 1
 fi
 

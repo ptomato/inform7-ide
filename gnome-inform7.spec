@@ -42,6 +42,11 @@ language for writing interactive fiction (also known as text adventures.)
 # wat, definition of meson macro has builddir and srcdir swapped?!
 %global _vpath_srcdir %{name}-%{version}
 
+%define pkgdatadir %{_datadir}/%{name}
+%define pkgdocdir %{_datadir}/doc/%{name}
+%define pkglibdir %{_libdir}/%{name}
+%define pkglibexecdir %{_libexecdir}/%{name}
+
 %prep
 %autosetup -c
 %setup -T -D -a 1
@@ -63,6 +68,10 @@ cd ..
 
 %install
 %meson_install
+rm -rf $RPM_BUILD_ROOT%{_includedir}
+rm -rf $RPM_BUILD_ROOT%{_libdir}/pkgconfig
+rm -rf $RPM_BUILD_ROOT%{_libexecdir}/chimara
+rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/chimara
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -82,10 +91,6 @@ fi
 
 %files
 %defattr(-, root, root)
-%define pkgdatadir %{_datadir}/%{name}
-%define pkgdocdir %{_datadir}/doc/%{name}
-%define pkglibdir %{_libdir}/%{name}
-%define pkglibexecdir %{_libexecdir}/%{name}
 %docdir %{pkgdocdir}
 %docdir %{pkgdatadir}/Documentation
 %{_datadir}/applications/com.inform7.IDE.desktop
@@ -130,16 +135,11 @@ fi
 %lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/%{name}.mo
 %lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/%{name}.mo
 %{_bindir}/gnome-inform7
+%{_libdir}/libchimara.so*
 %{pkglibexecdir}/cBlorb
 %{pkglibdir}/frotz.so
-%{pkgdocdir}/frotz/AUTHORS
-%{pkgdocdir}/frotz/COPYING
-%{pkgdocdir}/frotz/README
-%{pkgdocdir}/frotz/TODO
 %{pkglibdir}/git.so
-%{pkgdocdir}/git/README.txt
 %{pkglibdir}/glulxe.so
-%{pkgdocdir}/glulxe/README
 %{pkglibexecdir}/inform6
 %{pkgdocdir}/inform6/*.txt
 %{pkgdocdir}/inform6/ReleaseNotes.html
