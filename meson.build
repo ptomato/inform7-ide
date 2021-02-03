@@ -72,8 +72,6 @@ endif
 
 libxml = dependency('libxml-2.0')
 glib = dependency('glib-2.0', version: '>=2.44')
-gthread = dependency('gthread-2.0')
-gmodule = dependency('gmodule-2.0')
 gio = dependency('gio-2.0', version: '>=2.30')
 gdk = dependency('gdk-3.0')
 gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>=2.6')
@@ -82,24 +80,11 @@ gtk = dependency('gtk+-3.0', version: '>=3.22')
 gtksourceview = dependency('gtksourceview-3.0')
 gtkspell = dependency('gtkspell3-3.0')
 goocanvas = dependency('goocanvas-2.0')
-gstreamer = dependency('gstreamer-1.0', required: get_option('sound'))
 webkit = dependency('webkit2gtk-4.0')
 
-gstinspect = find_program('gst-inspect-1.0', required: get_option('sound'))
-if get_option('sound').enabled()
-    foreach plugin : ['giostreamsrc', 'typefind', 'audioconvert', 'volume',
-        'oggdemux', 'vorbisdec', 'autoaudiosink', 'aiffparse', 'modplug']
-        message('Checking GStreamer element @0@'.format(plugin))
-        if run_command(gstinspect, '--exists', plugin).returncode() != 0
-            error('''One or more required GStreamer elements were not found.
-    You will have to install your system's "base", "good", and "bad" plugins
-    packages. Try looking for names such as: gstreamer1-plugins-base,
-    gstreamer1-plugins-good, gstreamer1-plugins-bad-free,
-    gstreamer1-plugins-bad-free-extras, gstreamer1.0-plugins-base,
-    gstreamer1.0-plugins-good, gstreamer1.0-plugins-bad''')
-        endif
-    endforeach
-endif
+libchimara = dependency('chimara', fallback: ['chimara', 'libchimara_dep'],
+    default_options: ['bocfel=false', 'nitfol=false', 'player=false',
+        'introspection=false', 'plugindir=@0@'.format(pkglibdir)])
 
 ### CONFIGURE ##################################################################
 
@@ -119,7 +104,6 @@ config.set_quoted('COPYRIGHT_YEAR', copyright_year)
 
 config.set10('E2FS_UUID', uuid.found())
 config.set10('HAVE_OSSP_UUID_H', cc.check_header('ossp/uuid.h'))
-config.set10('HAVE_SOUND', get_option('sound').enabled())
 
 if glib.version().version_compare('>=2.60')
     config.set('GLIB_VERSION_MIN_REQUIRED', 'GLIB_VERSION_2_60')
