@@ -5,27 +5,6 @@ subdir('inform/licenses')
 
 install_data('ni/ni', install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
 
-osxcart_sources = [
-    'osxcart/osxcart/init.c',
-    'osxcart/osxcart/rtf.c',
-    'osxcart/osxcart/rtf-serialize.c',
-    'osxcart/osxcart/rtf-deserialize.c',
-    'osxcart/osxcart/rtf-document.c',
-    'osxcart/osxcart/rtf-fonttbl.c',
-    'osxcart/osxcart/rtf-colortbl.c',
-    'osxcart/osxcart/rtf-ignore.c',
-    'osxcart/osxcart/rtf-footnote.c',
-    'osxcart/osxcart/rtf-picture.c',
-    'osxcart/osxcart/rtf-field.c',
-    'osxcart/osxcart/rtf-stylesheet.c',
-    'osxcart/osxcart/rtf-langcode.c',
-    'osxcart/osxcart/rtf-state.c',
-]
-osxcart = static_library('osxcart', osxcart_sources,
-    include_directories: [top_include, 'osxcart'],
-    c_args: '-DG_LOG_DOMAIN="Osxcart"',
-    dependencies: [glib, gio, gdk, gdkpixbuf, gtk])
-
 generate_resource_xml = find_program('generate-resource-xml.sh')
 generated_gresource_xml = configure_file(input: inform_tarball,
     output: 'com.inform7.IDE.generated.gresource.xml',
@@ -47,22 +26,20 @@ gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
     'story-results.c', 'story-settings.c', 'story-skein.c', 'story-source.c',
     'story-transcript.c', 'transcript-diff.c', 'transcript-renderer.c',
     'welcomedialog.c', resources, resources_generated,
-    include_directories: [top_include, 'osxcart'],
+    include_directories: top_include,
     dependencies: [libm, libxml, glib, gio, gdk, gtk, gtksourceview, gtkspell,
-        goocanvas, plist, webkit, libchimara])
+        goocanvas, plist, webkit, ratify, libchimara])
 
 executable('gnome-inform7', 'main.c', export_dynamic: true,
     include_directories: '..', dependencies: [glib, gtk, gtksourceview],
-    link_with: osxcart, link_whole: gui,
-    install: true, install_dir: get_option('bindir'))
+    link_whole: gui, install: true, install_dir: get_option('bindir'))
 
 test_data_dir = meson.current_source_dir() / 'tests'
 test_inform7 = executable('test-inform7', 'tests/test.c', 'tests/app-test.c',
     'tests/skein-test.c', 'tests/story-test.c',
-    include_directories: [top_include, 'osxcart'],
+    include_directories: top_include,
     c_args: '-DTEST_DATA_DIR="@0@"'.format(test_data_dir),
-    dependencies: [glib, gtk, gtksourceview, goocanvas],
-    link_with: osxcart, link_whole: gui)
+    dependencies: [glib, gtk, gtksourceview, goocanvas], link_whole: gui)
 
 # Skip the /app/extensions and /story tests, because they are too tightly
 # coupled to the installed files, and and will fail.
@@ -77,6 +54,7 @@ skip_paths = [
 ]
 test_env = environment()
 test_env.append('LD_LIBRARY_PATH',
+    meson.build_root() / 'subprojects' / 'ratify',
     meson.build_root() / 'subprojects' / 'chimara' / 'libchimara')
 test_env.append('GSETTINGS_SCHEMA_DIR', meson.build_root())
 test_env.set('GSETTINGS_BACKEND', 'memory')

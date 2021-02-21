@@ -81,6 +81,9 @@ if not plist.found()
     plist = dependency('libplist')
 endif
 
+ratify = dependency('ratify-2', fallback: ['ratify', 'libratify_dep'],
+    default_options: ['introspection=disabled', 'gtk_doc=disabled',
+        'vapi=disabled'])
 libchimara = dependency('chimara', fallback: ['chimara', 'libchimara_dep'],
     default_options: ['bocfel=false', 'nitfol=false', 'player=false',
         'introspection=false', 'plugindir=@0@'.format(pkglibdir)])
