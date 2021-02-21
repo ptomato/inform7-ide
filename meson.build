@@ -76,6 +76,10 @@ gtksourceview = dependency('gtksourceview-3.0')
 gtkspell = dependency('gtkspell3-3.0')
 goocanvas = dependency('goocanvas-2.0')
 webkit = dependency('webkit2gtk-4.0')
+plist = dependency('libplist-2.0', required: false)
+if not plist.found()
+    plist = dependency('libplist')
+endif
 
 libchimara = dependency('chimara', fallback: ['chimara', 'libchimara_dep'],
     default_options: ['bocfel=false', 'nitfol=false', 'player=false',
