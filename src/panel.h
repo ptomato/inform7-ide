@@ -115,6 +115,7 @@ typedef struct {
 	void (*jump_to_line)(I7Panel *self, guint line);
 	void (*display_docpage)(I7Panel *self, gchar *uri);
 	void (*display_extensions_docpage)(I7Panel *self, char *uri);
+	void (*display_compiler_report)(I7Panel *self, char *uri);
 	void (*display_index_page)(I7Panel *self, I7PaneIndexTab tabnum);
 } I7PanelClass;
 
