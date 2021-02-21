@@ -21,7 +21,6 @@
 #include "config.h"
 
 #include <cairo.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <goocanvas.h>
