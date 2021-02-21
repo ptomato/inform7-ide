@@ -165,6 +165,14 @@ on_panel_display_extensions_docpage(I7Panel *panel, char *uri, I7Story *self)
 }
 
 static void
+on_panel_display_compiler_report(I7Panel *panel, char *uri, I7Story *self)
+{
+	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_RESULTS);
+	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->panel[side]->results_tabs[I7_RESULTS_TAB_REPORT]), uri);
+	i7_story_show_tab(self, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
+}
+
+static void
 ignore_script_finish(WebKitWebView *webview, GAsyncResult *res, void *data) {
 	g_autoptr(GError) error = NULL;
 	g_autoptr(WebKitJavascriptResult) js_result = webkit_web_view_run_javascript_finish(webview, res, &error);
@@ -810,6 +818,7 @@ story_init_panel(I7Story *self, I7Panel *panel)
 	g_signal_connect(panel, "jump-to-line", G_CALLBACK(on_panel_jump_to_line), self);
 	g_signal_connect(panel, "display-docpage", G_CALLBACK(on_panel_display_docpage), self);
 	g_signal_connect(panel, "display-extensions-docpage", G_CALLBACK(on_panel_display_extensions_docpage), self);
+	g_signal_connect(panel, "display-compiler-report", G_CALLBACK(on_panel_display_compiler_report), self);
 	g_signal_connect(panel, "display-index-page", G_CALLBACK(on_panel_display_index_page), self);
 	g_signal_connect(priv->skein, "labels-changed", G_CALLBACK(on_labels_changed), panel);
 	g_signal_connect(priv->skein, "show-node", G_CALLBACK(on_show_node), panel);
