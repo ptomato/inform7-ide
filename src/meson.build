@@ -51,7 +51,7 @@ gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
     'story-transcript.c', 'transcript-diff.c', 'transcript-renderer.c',
     'welcomedialog.c', resources, resources_generated,
     include_directories: [top_include, 'osxcart'],
-    dependencies: [libm, libxml, uuid, glib, gio, gdk, gtk, gtksourceview,
+    dependencies: [libm, libxml, glib, gio, gdk, gtk, gtksourceview,
         gtkspell, goocanvas, webkit, libchimara])
 
 executable('gnome-inform7', 'main.c', export_dynamic: true,
