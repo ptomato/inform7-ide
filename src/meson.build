@@ -7,9 +7,6 @@ install_data('ni/ni', install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
 
 osxcart_sources = [
     'osxcart/osxcart/init.c',
-    'osxcart/osxcart/plist.c',
-    'osxcart/osxcart/plist-write.c',
-    'osxcart/osxcart/plist-parser.c',
     'osxcart/osxcart/rtf.c',
     'osxcart/osxcart/rtf-serialize.c',
     'osxcart/osxcart/rtf-deserialize.c',
@@ -51,8 +48,8 @@ gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
     'story-transcript.c', 'transcript-diff.c', 'transcript-renderer.c',
     'welcomedialog.c', resources, resources_generated,
     include_directories: [top_include, 'osxcart'],
-    dependencies: [libm, libxml, glib, gio, gdk, gtk, gtksourceview,
-        gtkspell, goocanvas, webkit, libchimara])
+    dependencies: [libm, libxml, glib, gio, gdk, gtk, gtksourceview, gtkspell,
+        goocanvas, plist, webkit, libchimara])
 
 # install_rpath allows running from a non-system install path
 executable('gnome-inform7', 'main.c', export_dynamic: true,

@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2015, 2019 P. F. Chimento
+/* Copyright (C) 2006-2015, 2019, 2021 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
+#include <plist/plist.h>
 #include <webkit2/webkit2.h>
 
 #define INFORM6_COMPILER_NAME "inform6"
@@ -334,7 +335,12 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	GFile *file = i7_document_get_file(I7_DOCUMENT(data->story));
 	GFile *manifest_file = g_file_get_child(file, "manifest.plist");
 	g_object_unref(file);
-	PlistObject *manifest = plist_read_file(manifest_file, NULL, NULL);
+
+	g_autofree char *contents = NULL;
+	size_t length;
+	plist_t manifest = NULL;
+	if (g_file_load_contents(manifest_file, /* cancellable = */ NULL, &contents, &length, /* etag = */ NULL, /* error = */ NULL))
+		plist_from_xml(contents, length, &manifest);
 	g_object_unref(manifest_file);
 	/* If that failed, then silently keep the old manifest */
 	if (manifest)

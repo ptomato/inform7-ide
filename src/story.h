@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2019 P. F. Chimento
+/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2019, 2021 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
-#include <osxcart/plist.h>
+#include <plist/plist.h>
 
 #include "app.h"
 #include "document.h"
@@ -102,9 +102,9 @@ void i7_story_set_compiler_output_file(I7Story *self, GFile *file);
 void i7_story_clear_compile_output(I7Story *self);
 void i7_story_set_debug_log_contents(I7Story *self, const char *text);
 void i7_story_set_i6_source_contents(I7Story *self, const char *text);
-PlistObject *i7_story_get_manifest(I7Story *self);
-void i7_story_take_manifest(I7Story *self, PlistObject *manifest);
-PlistObject *i7_story_get_settings(I7Story *self);
+plist_t i7_story_get_manifest(I7Story *self);
+void i7_story_take_manifest(I7Story *self, plist_t manifest);
+plist_t i7_story_get_settings(I7Story *self);
 GtkTextBuffer *i7_story_get_progress_buffer(I7Story *self);
 I7Skein *i7_story_get_skein(I7Story *self);
 GSettings *i7_story_get_skein_settings(I7Story *self);
@@ -123,7 +123,7 @@ GtkSourceBuffer *create_inform6_source_buffer(void);
 void i7_story_reload_index_tabs(I7Story *self, gboolean wait);
 
 /* Settings pane, story-settings.c */
-PlistObject *create_default_settings(void);
+plist_t create_default_settings(void);
 void on_z8_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
 void on_glulx_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
 void on_notify_story_format(I7Story *self);
