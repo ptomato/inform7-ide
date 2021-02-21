@@ -26,6 +26,7 @@ Group:          Development/Languages/Other
 Source0:        https://github.com/ptomato/gnome-inform7/releases/download/6M62/Gnome_UI_Source_%{version}.tar.xz
 Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Linux_all.tar.gz
 BuildRequires:  fdupes
+BuildRequires:  libplist-devel
 BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
 BuildRequires:  gtksourceview3-devel

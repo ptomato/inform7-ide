@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2015, 2019 P. F. Chimento
+/* Copyright (C) 2006-2012, 2014, 2015, 2019, 2021 P. F. Chimento
  * This file is part of GNOME Inform 7.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -347,7 +347,7 @@ i7_story_set_use_git(I7Story *story, gboolean use_git)
 gchar *
 load_blorb_resource(ChimaraResourceType usage, uint32_t resnum, I7Story *self)
 {
-	PlistObject *manifest = i7_story_get_manifest(self);
+	plist_t manifest = i7_story_get_manifest(self);
 	g_return_val_if_fail(manifest, NULL);
 
 	/* Look up the filename in the manifest */
@@ -362,15 +362,15 @@ load_blorb_resource(ChimaraResourceType usage, uint32_t resnum, I7Story *self)
 			restype = "Graphics";
 			break;
 	}
-	PlistObject *manifest_entry = plist_object_lookup(manifest, restype, resstring, -1);
+	plist_t manifest_entry = plist_access_path(manifest, 2, restype, resstring);
 	g_return_val_if_fail(manifest_entry, NULL);
 	g_free(resstring);
 
 	/* Build the full path */
-	gchar *filename = g_strdup(manifest_entry->string.val);
+	g_autofree char *filename = NULL;
+	plist_get_string_val(manifest_entry, &filename);
 	GFile *materials_file = i7_story_get_materials_file(self);
 	GFile *resource_file = g_file_get_child(materials_file, filename);
-	g_free(filename);
 	g_object_unref(materials_file);
 
 	char *retval = g_file_get_path(resource_file);

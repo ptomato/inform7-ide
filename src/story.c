@@ -25,8 +25,8 @@
 #include <gtksourceview/gtksource.h>
 #include <libchimara/chimara-glk.h>
 #include <libchimara/chimara-if.h>
-#include <osxcart/plist.h>
 #include <osxcart/rtf.h>
+#include <plist/plist.h>
 #include <webkit2/webkit2.h>
 
 #include "actions.h"
@@ -63,9 +63,9 @@ typedef struct {
 	GtkTextBuffer *debug_log;
 	GtkSourceBuffer *i6_source;
 	/* The Settings.plist object */
-	PlistObject *settings;
+	plist_t settings;
 	/* The manifest.plist object */
-	PlistObject *manifest;
+	plist_t manifest;
 	/* Compiling */
 	CompileActionFunc compile_finished_callback;
 	void *compile_finished_callback_data;
@@ -473,11 +473,15 @@ i7_story_save_as(I7Document *document, GFile *file)
 	g_object_unref(notes_file);
 
 	/* Save the project settings */
+	char *xml = NULL;
+	uint32_t length;
+	plist_to_xml(priv->settings, &xml, &length);
 	GFile *settings_file = g_file_get_child(file, "Settings.plist");
-	if(!plist_write_file(priv->settings, settings_file, NULL, &err)) {
+	if (!g_file_replace_contents(settings_file, xml, length, NULL, FALSE, G_FILE_CREATE_NONE, NULL, /* cancellable = */ NULL, &err)) {
 		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the project settings. Your story will still be saved. Problem: "));
 		err = NULL;
 	}
+	free(xml);
 	g_object_unref(settings_file);
 
 	/* Delete the build files from the project directory */
@@ -1027,10 +1031,8 @@ i7_story_finalize(GObject *object)
 		g_object_unref(priv->copy_blorb_dest_file);
 	if(priv->compiler_output_file)
 		g_object_unref(priv->compiler_output_file);
-	if(priv->settings)
-		plist_object_free(priv->settings);
-	if(priv->manifest)
-		plist_object_free(priv->manifest);
+	g_clear_pointer(&priv->settings, plist_free);
+	g_clear_pointer(&priv->manifest, plist_free);
 	G_OBJECT_CLASS(i7_story_parent_class)->finalize(object);
 }
 
@@ -1280,22 +1282,26 @@ i7_story_open(I7Story *self, GFile *file)
 
 	/* Read the settings */
 	GFile *settings_file = g_file_get_child(file, "Settings.plist");
-	plist_object_free(priv->settings);
-	priv->settings = plist_read_file(settings_file, NULL, &err);
-	if(!priv->settings) {
+	g_clear_pointer(&priv->settings, plist_free);
+	g_autofree char *contents;
+	size_t length;
+	if (!g_file_load_contents(settings_file, /* cancellable = */ NULL, &contents, &length, NULL, &err)) {
 		priv->settings = create_default_settings();
 		error_dialog(window, err,
 			_("Could not open the project's settings file. "
 			"Using default settings."));
+	} else {
+		plist_from_xml(contents, length, &priv->settings);
 	}
 	g_object_unref(settings_file);
 
 	/* Silently convert old Z5 or Z6 projects to Z8 */
-	PlistObject *story_format = plist_object_lookup(priv->settings, "IFOutputSettings", "IFSettingZCodeVersion", -1);
+	plist_t story_format = plist_access_path(priv->settings, 2, "IFOutputSettings", "IFSettingZCodeVersion");
 	if(story_format) {
-		int format = plist_object_get_integer(story_format);
+		uint64_t format;
+		plist_get_uint_val(story_format, &format);
 		if(format == I7_STORY_FORMAT_Z5 || format == I7_STORY_FORMAT_Z6)
-			plist_object_set_integer(story_format, I7_STORY_FORMAT_Z8);
+			plist_set_uint_val(story_format, I7_STORY_FORMAT_Z8);
 	}
 
 	/* Update the GUI with the new settings */
@@ -1607,7 +1613,7 @@ i7_story_set_i6_source_contents(I7Story *self, const char *text)
 	gtk_text_buffer_set_text(GTK_TEXT_BUFFER(priv->i6_source), text, -1);
 }
 
-PlistObject *
+plist_t
 i7_story_get_manifest(I7Story *self)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
@@ -1616,14 +1622,14 @@ i7_story_get_manifest(I7Story *self)
 
 /* transfer full */
 void
-i7_story_take_manifest(I7Story *self, PlistObject *manifest)
+i7_story_take_manifest(I7Story *self, plist_t manifest)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
-	g_clear_pointer(&priv->manifest, plist_object_free);
+	g_clear_pointer(&priv->manifest, plist_free);
 	priv->manifest = manifest;
 }
 
-PlistObject *
+plist_t
 i7_story_get_settings(I7Story *self)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
