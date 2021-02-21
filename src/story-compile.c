@@ -310,11 +310,11 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 		 code should one occur, display the compiler's generated Problems.html*/
 		problems_file = g_file_get_child(data->builddir_file, "Problems.html");
 	} else {
-		g_autofree char *uri = g_strdup_printf("resource:///com/inform7/IDE/inform/en/Error%i.html", exit_code);
+		g_autofree char *uri = g_strdup_printf("inform:///en/Error%i.html", exit_code);
 		problems_file = g_file_new_for_uri(uri);
 		if (!g_file_query_exists(problems_file, NULL)) {
 			g_object_unref(problems_file);
-			problems_file = g_file_new_for_uri("resource:///com/inform7/IDE/inform/en/Error0.html");
+			problems_file = g_file_new_for_uri("inform:///en/Error0.html");
 		}
 	}
 
@@ -445,13 +445,13 @@ display_i6_status(CompilerData *data, gchar *text)
 		const char *msg = lines[line_ix];
 		if (strstr(msg, "rror:")) { /* "Error:", "Fatal error:" */
 			if (strstr(msg, "The memory setting ") && strstr(msg, " has been exceeded."))
-				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6MemorySetting.html";
+				load_uri = "inform:///en/ErrorI6MemorySetting.html";
 			else if (strstr(msg, "This program has overflowed the maximum readable-memory size of the "))
-				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6Readable.html";
+				load_uri = "inform:///en/ErrorI6Readable.html";
 			else if (strstr(msg, "The story file exceeds "))
-				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6TooBig.html";
+				load_uri = "inform:///en/ErrorI6TooBig.html";
 			else
-				load_uri = "resource:///com/inform7/IDE/inform/en/ErrorI6.html";
+				load_uri = "inform:///en/ErrorI6.html";
 			break;
 		}
 	}
@@ -545,7 +545,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 	/* Show the generic error page if the compiler exited with a nonzero code but
 	 no error was detected in the compiler output */
 	if (!data->results_file && exit_code != 0)
-		data->results_file = g_file_new_for_uri("resource:///com/inform7/IDE/inform/en/ErrorI6.html"); /* assumes reference */
+		data->results_file = g_file_new_for_uri("inform:///en/ErrorI6.html"); /* assumes reference */
 
 	FinishI6Data *ui_data = finish_i6_data_new(data->story, exit_code);
 	gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)ui_finish_i6_compiler, ui_data, (GDestroyNotify)finish_i6_data_free);

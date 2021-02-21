@@ -731,6 +731,7 @@ enum _I7PanelSignalType {
 	JUMP_TO_LINE_SIGNAL,
 	DISPLAY_DOCPAGE_SIGNAL,
 	DISPLAY_EXTENSIONS_DOCPAGE_SIGNAL,
+	DISPLAY_COMPILER_REPORT_SIGNAL,
 	DISPLAY_INDEX_PAGE_SIGNAL,
 	LAST_SIGNAL
 };
@@ -949,6 +950,11 @@ i7_panel_class_init(I7PanelClass *klass)
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
 		G_STRUCT_OFFSET(I7PanelClass, display_extensions_docpage), NULL, NULL,
 		g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
+	i7_panel_signals[DISPLAY_COMPILER_REPORT_SIGNAL] = g_signal_new(
+		"display-compiler-report",
+		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+		G_STRUCT_OFFSET(I7PanelClass, display_compiler_report), NULL, NULL,
+		g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
 	i7_panel_signals[DISPLAY_INDEX_PAGE_SIGNAL] = g_signal_new(
 		"display-index-page",
 		G_TYPE_FROM_CLASS(klass), G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
@@ -1063,15 +1069,26 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		locations */
 		gboolean load_in_extensions_pane = g_str_has_prefix(uri, "inform://Extensions") ||
 			g_str_has_suffix(uri, "pl404.html");
-		/* Most of them are only to be loaded in the documentation pane, but extension
-		documentation should be loaded in the extensions pane. */
+		gboolean load_in_report_tab = g_str_has_prefix(uri, "inform:///en") &&
+			!g_str_has_suffix(uri, "pl404.html");
+		/* Most of them are only to be loaded in the documentation pane, but
+		 * extension documentation should be loaded in the extensions pane, and
+		 * compiler error pages should be loaded in the Report tab of the
+		 * Results pane. */
 		if (load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS])) {
 			g_signal_emit_by_name(self, "display-extensions-docpage", uri);
 			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
 			g_debug("- display inform document in extensions pane: IGNORE");
 			return TRUE;  /* handled */
-		} else if (!load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION])) {
+		} else if (load_in_report_tab && webview != WEBKIT_WEB_VIEW(self->results_tabs[I7_RESULTS_TAB_REPORT])) {
+			g_signal_emit_by_name(self, "display-compiler-report", uri);
+			g_free(scheme);
+			webkit_policy_decision_ignore(decision);
+			g_debug("- display inform document in report tab: IGNORE");
+			return TRUE;  /* handled */
+		} else if (!load_in_extensions_pane && !load_in_report_tab &&
+				webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION])) {
 			/* Others should be loaded in the documentation pane; if this is another
 			pane, then redirect the request to the documentation pane */
 			g_signal_emit_by_name(self, "display-docpage", uri);
