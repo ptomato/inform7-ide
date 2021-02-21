@@ -25,7 +25,7 @@
 #include <gtksourceview/gtksource.h>
 #include <libchimara/chimara-glk.h>
 #include <libchimara/chimara-if.h>
-#include <osxcart/rtf.h>
+#include <ratify/rtf.h>
 #include <plist/plist.h>
 #include <webkit2/webkit2.h>
 

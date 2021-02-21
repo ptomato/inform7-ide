@@ -134,8 +134,10 @@ fi
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
 %lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/%{name}.mo
 %lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/%{name}.mo
+%lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/ratify-2.mo
 %{_bindir}/gnome-inform7
 %{_libdir}/libchimara.so*
+%{_libdir}/libratify-2.so*
 %{pkglibexecdir}/cBlorb
 %{pkglibdir}/frotz.so
 %{pkglibdir}/git.so
