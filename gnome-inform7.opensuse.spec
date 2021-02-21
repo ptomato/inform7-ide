@@ -33,7 +33,6 @@ BuildRequires:  gtkspell3-devel
 BuildRequires:  libwebkit2gtk3-devel
 BuildRequires:  lzma
 BuildRequires:  pkgconfig
-BuildRequires:  libuuid-devel
 BuildRequires:  update-desktop-files
 BuildRequires:  pkgconfig(gconf-2.0)
 BuildRequires:  pkgconfig(gtk+-3.0)
