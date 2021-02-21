@@ -65,13 +65,8 @@ find_program('xz')
 
 libm = cc.find_library('m', required: false)
 
-uuid = dependency('uuid', required: false)
-if not uuid.found()
-    uuid = dependency('ossp-uuid')
-endif
-
 libxml = dependency('libxml-2.0')
-glib = dependency('glib-2.0', version: '>=2.44')
+glib = dependency('glib-2.0', version: '>=2.52')
 gio = dependency('gio-2.0', version: '>=2.30')
 gdk = dependency('gdk-3.0')
 gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>=2.6')
@@ -101,9 +96,6 @@ config.set_quoted('INFORM6_COMPILER_VERSION', '6.33')
 # Get current year for updating copyrights
 copyright_year = run_command(date, '+%Y').stdout().strip()
 config.set_quoted('COPYRIGHT_YEAR', copyright_year)
-
-config.set10('E2FS_UUID', uuid.found())
-config.set10('HAVE_OSSP_UUID_H', cc.check_header('ossp/uuid.h'))
 
 if glib.version().version_compare('>=2.60')
     config.set('GLIB_VERSION_MIN_REQUIRED', 'GLIB_VERSION_2_60')

@@ -27,16 +27,6 @@
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
 
-#if E2FS_UUID
-#  include <uuid/uuid.h> /* Use e2fsprogs uuid */
-#else
-#  if HAVE_OSSP_UUID_H
-#    include <ossp/uuid.h> /* Otherwise, it is OSSP uuid */
-#  else
-#    include <uuid.h> /* May be in uuid.h */
-#  endif
-#endif
-
 #define INFORM6_COMPILER_NAME "inform6"
 
 #include "configfile.h"
@@ -144,33 +134,12 @@ prepare_ni_compiler(CompilerData *data)
 	/* Create the UUID file if needed */
 	GFile *uuid_file = g_file_get_child(data->input_file, "uuid.txt");
 	if(!g_file_query_exists(uuid_file, NULL)) {
-#ifdef E2FS_UUID /* code for e2fsprogs uuid */
-		uuid_t uuid;
-		gchar uuid_string[37];
-
-		uuid_generate_time(uuid);
-		uuid_unparse(uuid, uuid_string);
-#else /* code for OSSP UUID */
-		gchar *uuid_string = NULL; /* a new buffer is allocated if NULL */
-		uuid_t *uuid;
-
-		if(!((uuid_create(&uuid) == UUID_RC_OK)
-			&& (uuid_make(uuid, UUID_MAKE_V1) == UUID_RC_OK)
-			&& (uuid_export(uuid, UUID_FMT_STR, (void **)&uuid_string, NULL) == UUID_RC_OK)
-			&& (uuid_destroy(uuid) == UUID_RC_OK))) {
-			error_dialog(GTK_WINDOW(data->story), NULL, _("Error creating UUID."));
-			g_object_unref(uuid_file);
-			return;
-		}
-#endif /* UUID conditional */
+		g_autofree char *uuid_string = g_uuid_string_random();
 		if(!g_file_replace_contents(uuid_file, uuid_string, strlen(uuid_string), NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &err)) {
 			IO_ERROR_DIALOG(GTK_WINDOW(data->story), uuid_file, err, _("creating UUID file"));
 			g_object_unref(uuid_file);
 			return;
 		}
-#ifndef E2FS_UUID /* Only OSSP UUID */
-		free(uuid_string);
-#endif /* !OSSP_UUID */
 	}
 	g_object_unref(uuid_file);
 

@@ -19,8 +19,7 @@ BuildRequires: gettext
 BuildRequires: pkgconfig
 BuildRequires: xz-lzma-compat
 # Library devel packages:
-BuildRequires: libuuid-devel
-BuildRequires: glib2-devel >= 2.44
+BuildRequires: glib2-devel >= 2.52
 BuildRequires: gtk3-devel >= 3.22
 BuildRequires: gtksourceview3-devel
 BuildRequires: gtkspell3-devel
