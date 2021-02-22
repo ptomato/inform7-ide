@@ -1,24 +1,41 @@
 ---
-sudo: required
-dist: trusty
+dist: bionic
 language: c
-compiler:
-  - clang
-  - gcc
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq xvfb itstool libgoocanvas-dev libgtkspell-dev libgtksourceview2.0-dev libwebkitgtk-dev libgstreamer1.0-dev gstreamer1.0-tools gstreamer1.0-plugins-bad
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/gettext/autopoint_0.19.7-2ubuntu3_all.deb
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/gettext/gettext_0.19.7-2ubuntu3_amd64.deb
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/gcc-4.9/libgomp1_4.9.2-10ubuntu13_amd64.deb
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/gcc-4.9/gcc-4.9-base_4.9.2-10ubuntu13_amd64.deb
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/n/ncurses/libtinfo5_6.0+20160213-1ubuntu1_amd64.deb
-  - sudo dpkg -i libtinfo5_6.0+20160213-1ubuntu1_amd64.deb gcc-4.9-base_4.9.2-10ubuntu13_amd64.deb libgomp1_4.9.2-10ubuntu13_amd64.deb gettext_0.19.7-2ubuntu3_amd64.deb autopoint_0.19.7-2ubuntu3_all.deb
+addons:
+  apt:
+    packages:
+      - gettext
+      - git
+      - gstreamer1.0-plugins-bad
+      - gstreamer1.0-plugins-good
+      - gstreamer1.0-tools
+      - libgoocanvas-2.0-dev
+      - libgspell-1-dev
+      - libgstreamer1.0-dev
+      - libgtksourceview-3.0-dev
+      - libplist-dev
+      - libwebkit2gtk-4.0-dev
+      - libxml2-utils
+      - ninja-build
+      - python3-pip
+      - python3-setuptools
+      - shared-mime-info
+      - xvfb
+env:
+  - CFLAGS=-fdiagnostics-color
+
 # Make a fake NI compiler binary so we don't have to download a closed source blob
 before_script:
-  - echo echo `grep AC_INIT configure.ac | grep -oE '[0-9][A-Z][0-9]{2}'` >src/ni/ni
+  - echo '#!/bin/sh' >src/ni/ni
+  - echo echo Inform 7 build `head -n1 meson.build | grep -oE '[0-9][A-Z][0-9]{2}'` has started. >>src/ni/ni
   - chmod u+x src/ni/ni
-script: ./autogen.sh && ./configure --enable-distcheck --with-xvfb-tests && make all check distcheck
+  # Install a newer version of Meson
+  - pip3 install meson
+
+script:
+  - meson _build
+  - ninja -C _build
+  - xvfb-run -a meson test -C _build
+
 after_failure:
-  - test -f src/test-suite.log && cat src/test-suite.log
-  - test -f gnome-inform7-*/_build/src/test-suite.log && cat gnome-inform7-*/_build/src/test-suite.log
+  - cat _build/meson-logs/*.txt
