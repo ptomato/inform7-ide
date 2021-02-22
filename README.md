@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/ptomato/gnome-inform7.png?branch=master)](https://travis-ci.org/ptomato/gnome-inform7)
-
 This version of Inform 7 for the Gnome platform was created by Philip
 Chimento, based on a design by Graham Nelson and Andrew Hunter.
 See the file `AUTHORS.md` for more information on other
