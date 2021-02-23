@@ -23,6 +23,7 @@
 #include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gspell/gspell.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 
@@ -118,6 +119,52 @@ on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *s
 		g_cancellable_cancel(priv->cancel_download);
 }
 
+/* Helper function: run through the list of preferred system languages in order
+of preference until one is found that is a variant of English. If one is not
+found, then return NULL (disable spell checking). */
+static const GspellLanguage *
+get_nearest_system_language_to_english(void)
+{
+	const char * const *system_languages = g_get_language_names();
+	const GList *available = gspell_language_get_available();
+
+	for (const GList *iter = available; iter; iter = g_list_next(iter)) {
+		const GspellLanguage *language = (const GspellLanguage *)iter->data;
+		const char *code = gspell_language_get_code(language);
+
+		for (const char * const * candidate = system_languages; *candidate; candidate++) {
+			if (g_str_has_prefix(*candidate, "en") && strcmp(*candidate, code) == 0)
+				return language;
+		}
+	}
+
+	/* If none of the installed spelling dictionaries match a system language
+	 * that is English, then return any English spelling dictionary */
+	for (const GList *iter = available; iter; iter = g_list_next(iter)) {
+		const GspellLanguage *language = (const GspellLanguage *)iter->data;
+		const char *code = gspell_language_get_code(language);
+		if (g_str_has_prefix(code, "en"))
+			return language;
+	}
+
+	/* Fail relatively quietly if there's a problem */
+	g_warning("Error initializing spell checking. Is an English spelling "
+		"dictionary installed?");
+	return NULL;  /* no spell checking */
+}
+
+static void
+setup_spell_checking(GtkTextBuffer *buffer)
+{
+	const GspellLanguage *language = get_nearest_system_language_to_english();
+	GspellChecker* checker = gspell_checker_new(language);
+
+	GspellTextBuffer *spell_buffer = gspell_text_buffer_get_from_gtk_text_buffer(buffer);
+	gspell_text_buffer_set_spell_checker(spell_buffer, checker);
+
+	g_object_unref(checker);
+}
+
 typedef void (*ActionCallback)(GSimpleAction *, GVariant *, void *);
 
 static void
@@ -144,7 +191,6 @@ create_document_actions(I7Document *self)
 		{ "replace", (ActionCallback)action_replace },
 		{ "scroll-selection", (ActionCallback)action_scroll_selection },
 		{ "search", (ActionCallback)action_search },
-		{ "check-spelling", (ActionCallback)action_check_spelling },
 		{ "autocheck-spelling", NULL, NULL, "true", (ActionCallback)action_autocheck_spelling_toggle },
 		{ "view-toolbar", NULL, NULL, "true", (ActionCallback)action_view_toolbar_toggled },
 		{ "view-statusbar", NULL, NULL, "true", (ActionCallback)action_view_statusbar_toggled },
@@ -196,6 +242,8 @@ i7_document_init(I7Document *self)
 	priv->invisible_tag = GTK_TEXT_TAG(load_object(builder, "invisible_tag"));
 	gtk_text_tag_table_add(table, priv->invisible_tag);
 	/* do not unref table */
+	setup_spell_checking(GTK_TEXT_BUFFER(priv->buffer));
+
 	priv->heading_depth = I7_HEADING_PART;
 	priv->headings = GTK_TREE_STORE(load_object(builder, "headings_store"));
 	g_object_ref(priv->headings);
@@ -290,7 +338,6 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->expand_headings_view = NULL;
 	klass->highlight_search = NULL;
 	klass->set_spellcheck = NULL;
-	klass->check_spelling = NULL;
 	klass->set_elastic_tabstops = NULL;
 	klass->can_revert = NULL;
 	klass->revert = NULL;
@@ -1252,12 +1299,6 @@ i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 	g_settings_set_boolean(state, PREFS_STATE_SPELL_CHECK, spellcheck);
 
 	I7_DOCUMENT_GET_CLASS(document)->set_spellcheck(document, spellcheck);
-}
-
-void
-i7_document_check_spelling(I7Document *document)
-{
-	I7_DOCUMENT_GET_CLASS(document)->check_spelling(document);
 }
 
 void

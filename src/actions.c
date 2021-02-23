@@ -477,21 +477,12 @@ action_search(GSimpleAction *action, GVariant *parameter, I7Document *document)
 	gtk_window_present(GTK_WINDOW(document->search_files_dialog));
 }
 
-/* Edit->Recheck Document */
-void
-action_check_spelling(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	i7_document_check_spelling(document);
-}
-
 /* Edit->Autocheck Spelling */
 void
 action_autocheck_spelling_toggle(GSimpleAction *action, GVariant *state, I7Document *document)
 {
 	g_simple_action_set_state(action, state);
 	gboolean value = g_variant_get_boolean(state);
-	GAction *check_spelling = g_action_map_lookup_action(G_ACTION_MAP(document), "check-spelling");
-	g_simple_action_set_enabled(G_SIMPLE_ACTION(check_spelling), value);
 	i7_document_set_spellcheck(document, value);
 }
 
