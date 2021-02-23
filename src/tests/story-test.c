@@ -59,22 +59,12 @@ test_files_are_not_siblings(void)
 	g_object_unref(b);
 }
 
-static void
-queue_up_expected_messages(void)
-{
-	g_test_expect_message("Gtk", G_LOG_LEVEL_CRITICAL, "*assertion*GTK_IS_TEXT_MARK*failed*");
-	g_test_expect_message("Gtk", G_LOG_LEVEL_CRITICAL, "*assertion*GTK_IS_TEXT_MARK*failed*");
-	g_test_expect_message("Gtk", G_LOG_LEVEL_CRITICAL, "*assertion*GTK_IS_TEXT_MARK*failed*");
-}
-
 void
 test_story_materials_file(void)
 {
 	g_autoptr(I7App) theapp = i7_app_new();
 	while(gtk_events_pending())
 		gtk_main_iteration();
-
-	queue_up_expected_messages();
 
 	GFile *story_file = g_file_new_for_path("The Arrow of Time.inform");
 	I7Story *story = i7_story_new(theapp, story_file,
@@ -101,8 +91,6 @@ test_story_old_materials_file(void)
 	while(gtk_events_pending())
 		gtk_main_iteration();
 
-	queue_up_expected_messages();
-
 	GFile *story_file = g_file_new_for_path("The Arrow of Time.inform");
 	I7Story *story = i7_story_new(theapp, story_file,
 		"The Arrow of Time", "Eduard Blutig");
@@ -127,8 +115,6 @@ test_story_renames_materials_file(void)
 	g_autoptr(I7App) theapp = i7_app_new();
 	while(gtk_events_pending())
 		gtk_main_iteration();
-
-	queue_up_expected_messages();
 
 	GFile *materials_file = g_file_new_for_path(TEST_DATA_DIR "Hereafter.materials");
 	GFile *old_materials_file = g_file_new_for_path(TEST_DATA_DIR "Hereafter Materials");

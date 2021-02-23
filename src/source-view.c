@@ -19,8 +19,8 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gspell/gspell.h>
 #include <gtk/gtk.h>
-#include <gtkspell/gtkspell.h>
 
 #include "app.h"
 #include "builder.h"
@@ -28,27 +28,14 @@
 #include "error.h"
 #include "source-view.h"
 
-#define DEFAULT_ENGLISH_VARIANT "en_CA"  /* ha! */
-
 /* TYPE SYSTEM */
 
-typedef struct _I7SourceViewPrivate I7SourceViewPrivate;
-struct _I7SourceViewPrivate
-{
-	GtkSpellChecker *spell;
-};
-
 static GtkFrameClass *parent_class = NULL;
-G_DEFINE_TYPE_WITH_PRIVATE(I7SourceView, i7_source_view, GTK_TYPE_FRAME);
+G_DEFINE_TYPE(I7SourceView, i7_source_view, GTK_TYPE_FRAME);
 
 static void
 i7_source_view_init(I7SourceView *self)
 {
-	I7SourceViewPrivate *priv = i7_source_view_get_instance_private(self);
-
-	/* Set private data */
-	priv->spell = NULL;
-
 	/* Build the interface */
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/source.ui");
 	gtk_builder_connect_signals(builder, self);
@@ -161,55 +148,11 @@ i7_source_view_jump_to_line(I7SourceView *self, guint line)
 	gtk_widget_grab_focus(GTK_WIDGET(view));
 }
 
-/* Helper function: run through the list of preferred system language in order
-of preference until one is found that is a variant of English. If one is not
-found, then return the default English variant. */
-static const char *
-get_nearest_system_language_to_english(void)
-{
-	const char * const *system_languages = g_get_language_names();
-	const char * const *chosen_language;
-	const char *default_language = DEFAULT_ENGLISH_VARIANT;
-
-	for (chosen_language = system_languages; *chosen_language != NULL; chosen_language++) {
-		if (g_str_has_prefix(*chosen_language, "en"))
-			break;
-	}
-	if (*chosen_language == NULL)
-		chosen_language = &default_language;
-	return *chosen_language;
-}
-
 void
 i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 {
-	I7SourceViewPrivate *priv = i7_source_view_get_instance_private(self);
-
-	if(spellcheck) {
-		GError *error = NULL;
-		const char *language = get_nearest_system_language_to_english();
-
-		priv->spell = gtk_spell_checker_new();
-		/* Fail relatively quietly if there's a problem */
-		if(!gtk_spell_checker_set_language(priv->spell, language, &error)) {
-			g_warning("Error initializing spell checking: %s. Is your spelling "
-				"dictionary installed?", error->message);
-			g_error_free(error);
-		}
-		if (!gtk_spell_checker_attach(priv->spell, GTK_TEXT_VIEW(self->source)))
-			g_warning("Error initializing spell checking. Is your spelling "
-				"dictionary installed?");
-	} else {
-		g_clear_pointer(&priv->spell, gtk_spell_checker_detach);
-	}
-}
-
-void
-i7_source_view_check_spelling(I7SourceView *self)
-{
-	I7SourceViewPrivate *priv = i7_source_view_get_instance_private(self);
-	if(priv->spell)
-		gtk_spell_checker_recheck_all(priv->spell);
+	GspellTextView *spell_view = gspell_text_view_get_from_gtk_text_view(GTK_TEXT_VIEW(self->source));
+	gspell_text_view_set_inline_spell_checking(spell_view, spellcheck);
 }
 
 void

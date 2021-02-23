@@ -50,7 +50,6 @@ typedef struct {
 	void (*expand_headings_view)();
 	gboolean (*highlight_search)();
 	void (*set_spellcheck)();
-	void (*check_spelling)();
 	void (*set_elastic_tabstops)();
 	gboolean (*can_revert)();
 	void (*revert)();

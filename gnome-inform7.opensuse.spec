@@ -30,7 +30,7 @@ BuildRequires:  libplist-devel
 BuildRequires:  libgoocanvas3-devel
 BuildRequires:  graphviz
 BuildRequires:  gtksourceview3-devel
-BuildRequires:  gtkspell3-devel
+BuildRequires:  gspell-devel
 BuildRequires:  libwebkit2gtk3-devel
 BuildRequires:  lzma
 BuildRequires:  pkgconfig
