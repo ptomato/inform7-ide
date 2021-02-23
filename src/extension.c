@@ -389,12 +389,6 @@ i7_extension_set_spellcheck(I7Document *document, gboolean spellcheck)
 }
 
 static void
-i7_extension_check_spelling(I7Document *document)
-{
-	i7_source_view_check_spelling(I7_EXTENSION(document)->sourceview);
-}
-
-static void
 i7_extension_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
 	I7Extension *self = I7_EXTENSION(document);
@@ -517,7 +511,6 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->expand_headings_view = i7_extension_expand_headings_view;
 	document_class->highlight_search = i7_extension_highlight_search;
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
-	document_class->check_spelling = i7_extension_check_spelling;
 	document_class->set_elastic_tabstops = i7_extension_set_elastic_tabstops;
 	document_class->revert = i7_extension_revert;
 

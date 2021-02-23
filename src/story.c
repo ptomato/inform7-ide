@@ -770,13 +770,6 @@ i7_story_set_spellcheck(I7Document *document, gboolean spellcheck)
 	i7_source_view_set_spellcheck(I7_STORY(document)->panel[RIGHT]->sourceview, spellcheck);
 }
 
-static void
-i7_story_check_spelling(I7Document *document)
-{
-	i7_source_view_check_spelling(I7_STORY(document)->panel[LEFT]->sourceview);
-	i7_source_view_check_spelling(I7_STORY(document)->panel[RIGHT]->sourceview);
-}
-
 /* In addition to the logic in i7_document_can_revert(), also require that the
 story's GFile points to a directory. */
 static gboolean
@@ -1063,7 +1056,6 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->expand_headings_view = i7_story_expand_headings_view;
 	document_class->highlight_search = i7_story_highlight_search;
 	document_class->set_spellcheck = i7_story_set_spellcheck;
-	document_class->check_spelling = i7_story_check_spelling;
 	document_class->set_elastic_tabstops = i7_story_set_elastic_tabstops;
 	document_class->can_revert = i7_story_can_revert;
 	document_class->revert = i7_story_revert;
