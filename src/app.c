@@ -1,4 +1,4 @@
-/*  Copyright (C) 2007-2015, 2019 P. F. Chimento
+/*  Copyright (C) 2007-2015, 2019, 2021 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -216,11 +216,6 @@ i7_app_init(I7App *self)
 	}
 	g_object_unref(extensions_file);
 
-	/* Set up monitor for extensions directory */
-	i7_app_run_census(self, FALSE);
-	priv->extension_dir_monitor = NULL;
-	i7_app_monitor_extensions_directory(self);
-
 	/* Compile the regices */
 	I7AppRegexInfo regex_info[] = {
 		{ "^(?P<level>volume|book|part|chapter|section)\\s+(?P<secnum>.*?)(\\s+-\\s+(?P<sectitle>.*))?$", TRUE },
@@ -271,6 +266,20 @@ i7_app_finalize(GObject *object)
 }
 
 static void
+i7_app_startup(GApplication *app)
+{
+	I7App *self = I7_APP(app);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	G_APPLICATION_CLASS(i7_app_parent_class)->startup(app);
+
+	/* Set up monitor for extensions directory */
+	i7_app_run_census(self, FALSE);
+	priv->extension_dir_monitor = NULL;
+	i7_app_monitor_extensions_directory(self);
+}
+
+static void
 i7_app_activate(GApplication *app)
 {
 	/* If no windows were opened from command line arguments */
@@ -312,6 +321,7 @@ i7_app_class_init(I7AppClass *klass)
 	object_class->finalize = i7_app_finalize;
 
 	GApplicationClass *application_class = G_APPLICATION_CLASS(klass);
+	application_class->startup = i7_app_startup;
 	application_class->activate = i7_app_activate;
 	application_class->open = i7_app_open;
 }
@@ -404,9 +414,11 @@ void
 i7_app_stop_monitoring_extensions_directory(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	g_file_monitor_cancel(priv->extension_dir_monitor);
-	g_object_unref(priv->extension_dir_monitor);
-	priv->extension_dir_monitor = NULL;
+	if (priv->extension_dir_monitor) {
+		g_file_monitor_cancel(priv->extension_dir_monitor);
+		g_object_unref(priv->extension_dir_monitor);
+		priv->extension_dir_monitor = NULL;
+	}
 }
 
 /* Examines the @text (at least the first line) of an extension file to check
