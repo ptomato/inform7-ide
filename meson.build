@@ -120,7 +120,7 @@ i18n.merge_file(input: 'com.inform7.IDE.desktop.in',
     output: 'com.inform7.IDE.desktop', type: 'desktop', po_dir: 'po',
     install: true, install_dir: datadir / 'applications')
 i18n.merge_file(input: 'data/mime/inform7.xml.in', output: 'inform7.xml',
-    type: 'xml', po_dir: 'po',
+    type: 'xml', po_dir: 'po', data_dirs: meson.current_source_dir() / 'data',
     install: true, install_dir: datadir / 'mime' / 'packages')
 
 install_data('com.inform7.IDE.appdata.xml', install_dir: datadir / 'metainfo')
