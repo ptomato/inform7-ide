@@ -1,4 +1,4 @@
-/*  Copyright (C) 2011, 2012 P. F. Chimento
+/*  Copyright (C) 2011, 2012, 2021 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -66,7 +66,8 @@ test_app_files(void)
 void
 test_app_extensions_install_remove(void)
 {
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 	g_autoptr(I7App) theapp = i7_app_new();
 	GError *err = NULL;
 	char *contents;
@@ -78,7 +79,6 @@ test_app_extensions_install_remove(void)
 
 	/* Test installing */
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 	GFile *installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	check_file(installed_file, "Lickable Wallpaper.i7x");
 	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
@@ -116,9 +116,9 @@ test_app_extensions_get_builtin(void)
 	g_assert(builtin);
 
 	/* Test that non-builtin extension is not given as builtin */
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", &builtin);
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	g_assert(version_string != NULL);
@@ -137,9 +137,9 @@ test_app_extensions_get_version(void)
 	g_assert(version_string == NULL);
 
 	/* Test that "Title by Author begins here" is given as empty string */
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", NULL);
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	g_assert(version_string != NULL);
@@ -160,12 +160,12 @@ test_app_extensions_get_version(void)
 void
 test_app_extensions_case_insensitive(void)
 {
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 	g_autoptr(I7App) theapp = i7_app_new();
 
 	/* Install test extension */
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 
 	GFile *extensions_file = i7_app_get_extension_file(theapp, NULL, NULL);
 	GFile *child1 = g_file_get_child(extensions_file, "Regera Dowdy");
@@ -230,11 +230,11 @@ void
 test_app_colorscheme_install_remove(void)
 {
 	g_autoptr(I7App) theapp = i7_app_new();
-	GFile *file = g_file_new_for_path("tests/test_color_scheme.xml");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "test_color_scheme.xml", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 
 	/* Test installing */
 	const char *id = i7_app_install_color_scheme(theapp, file);
-	g_object_unref(file);
 	g_assert_cmpstr(id, ==, "test_color_scheme");
 
 	/* Check if the file is really installed */
