@@ -63,8 +63,6 @@ void
 test_story_materials_file(void)
 {
 	g_autoptr(I7App) theapp = i7_app_new();
-	while(gtk_events_pending())
-		gtk_main_iteration();
 
 	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "The Arrow of Time.inform", NULL);
 	g_autoptr(GFile) story_file = g_file_new_for_path(filename);
@@ -88,8 +86,6 @@ void
 test_story_old_materials_file(void)
 {
 	g_autoptr(I7App) theapp = i7_app_new();
-	while(gtk_events_pending())
-		gtk_main_iteration();
 
 	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "The Arrow of Time.inform", NULL);
 	g_autoptr(GFile) story_file = g_file_new_for_path(filename);
@@ -113,8 +109,6 @@ void
 test_story_renames_materials_file(void)
 {
 	g_autoptr(I7App) theapp = i7_app_new();
-	while(gtk_events_pending())
-		gtk_main_iteration();
 
 	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Hereafter.materials", NULL);
 	g_autoptr(GFile) materials_file = g_file_new_for_path(filename);
