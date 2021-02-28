@@ -959,7 +959,7 @@ i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFun
 			continue;
 
 		if(author_func)
-			author_result = author_func(author_info, author_func_data);
+			author_result = author_func(self, author_info, author_func_data);
 		else
 			author_result = NULL;
 
@@ -979,7 +979,7 @@ i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFun
 				continue;
 
 			if(extension_func)
-				extension_func(author_file, extension_info, author_result, extension_func_data);
+				extension_func(self, author_file, extension_info, author_result, extension_func_data);
 
 			g_object_unref(extension_info);
 		}
@@ -1008,7 +1008,7 @@ i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFun
 
 /* Helper function: Add author to tree store callback */
 static GtkTreeIter *
-add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
+add_author_to_tree_store(I7App *app, GFileInfo *info, GtkTreeStore *store)
 {
 	GtkTreeIter parent_iter;
 	const char *author_display_name = g_file_info_get_display_name(info);
@@ -1030,7 +1030,7 @@ add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
 
 /* Helper function: add extension to tree store as a non-built-in extension */
 static void
-add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+add_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
 	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
@@ -1044,7 +1044,7 @@ add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(I7_APP(g_application_get_default()), firstline, &version, &title, NULL)) {
+	if(!is_valid_extension(app, firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;
@@ -1069,7 +1069,7 @@ finally:
 /* Helper function: add extension to tree store as a built-in extension. Makes
  * sure that user-installed extensions override the built-in ones. */
 static void
-add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+add_builtin_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
 	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
@@ -1083,7 +1083,7 @@ add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter 
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(I7_APP(g_application_get_default()), firstline, &version, &title, NULL)) {
+	if(!is_valid_extension(app, firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;

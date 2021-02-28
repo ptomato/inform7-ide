@@ -746,7 +746,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 }
 
 static void
-extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
+extension_search_result(I7App *app, GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
 {
 	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GError *err = NULL;

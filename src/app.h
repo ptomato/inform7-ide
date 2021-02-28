@@ -72,6 +72,7 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7App, g_object_unref)
 
 /**
  * I7AppAuthorFunc:
+ * @app: the application
  * @info: the #GFileInfo for the author directory.
  * @data: user data to pass to the callback.
  *
@@ -79,9 +80,10 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7App, g_object_unref)
  * directory. May return a result, which is passed to #I7AppExtensionFunc for
  * each extension file found in that author directory.
  */
-typedef gpointer (*I7AppAuthorFunc)(GFileInfo *info, gpointer data);
+typedef void * (*I7AppAuthorFunc)(I7App *app, GFileInfo *info, void *data);
 /**
  * I7AppExtensionFunc:
+ * @app: the application
  * @parent: the #GFile for the extension file's parent.
  * @info: the #GFileInfo for the extension file.
  * @author_result: the return value of the #I7AppAuthorFunc for the parent.
@@ -90,7 +92,7 @@ typedef gpointer (*I7AppAuthorFunc)(GFileInfo *info, gpointer data);
  * Callback for enumerating installed extensions, called for each author
  * directory.
  */
-typedef void (*I7AppExtensionFunc)(GFile *parent, GFileInfo *info, gpointer author_result, gpointer data);
+typedef void (*I7AppExtensionFunc)(I7App *app, GFile *parent, GFileInfo *info, void *author_result, void *data);
 
 GType i7_app_get_type(void) G_GNUC_CONST;
 I7App *i7_app_new(void);
