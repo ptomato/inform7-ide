@@ -38,7 +38,6 @@ test_data_dir = meson.current_source_dir() / 'tests'
 test_inform7 = executable('test-inform7', 'tests/test.c', 'tests/app-test.c',
     'tests/skein-test.c', 'tests/story-test.c',
     include_directories: top_include,
-    c_args: '-DTEST_DATA_DIR="@0@"'.format(test_data_dir),
     dependencies: [glib, gtk, gtksourceview, goocanvas], link_whole: gui)
 
 # Skip the /app/extensions and /story tests, because they are too tightly
@@ -59,6 +58,8 @@ test_env.append('LD_LIBRARY_PATH',
 test_env.append('GSETTINGS_SCHEMA_DIR', meson.build_root())
 test_env.set('GSETTINGS_BACKEND', 'memory')
 test_env.set('NO_AT_BRIDGE', '1')
+test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
+test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
 test_env.set('GNOME_INFORM_DATA_DIR', meson.source_root() / 'data')
 test_env.set('GNOME_INFORM_LIBEXEC_DIR', meson.current_source_dir() / 'ni')
 test('inform7', test_inform7, protocol: 'tap', args: ['--tap'] + skip_paths,

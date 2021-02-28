@@ -1,4 +1,4 @@
-/*  Copyright (C) 2012 P. F. Chimento
+/*  Copyright (C) 2012, 2021 P. F. Chimento
  *  This file is part of GNOME Inform 7.
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,8 @@ test_skein_import(void)
 	GError *err = NULL;
 	I7Skein *skein = i7_skein_new();
 	I7Node *node = i7_skein_get_root_node(skein);
-	GFile *commands_file = g_file_new_for_path(TEST_DATA_DIR "commands.rec");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "commands.rec", NULL);
+	g_autoptr(GFile) commands_file = g_file_new_for_path(filename);
 	char * const commands[] = {
 		"- start -",
 		"look at wallpaper",
@@ -55,6 +56,5 @@ test_skein_import(void)
 		node = child_gnode? child_gnode->data : NULL;
 	}
 
-	g_object_unref(commands_file);
 	g_object_unref(skein);
 }
