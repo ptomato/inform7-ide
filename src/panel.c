@@ -640,10 +640,16 @@ build_extensions_javascript_source(I7App *app) {
 static void
 add_user_content(WebKitUserContentManager *content, I7App *theapp)
 {
-	static const char *javascript_allowed_uris[] = {
+	const char *home = g_get_home_dir();
+	g_autofree char *inform_dir_pattern = g_build_filename(home, "Inform", "*", NULL);
+	g_autoptr(GFile) inform_dir = g_file_new_for_path(inform_dir_pattern);
+	g_autofree char *inform_uri_pattern = g_file_get_uri(inform_dir);
+	const char *javascript_allowed_uris[] = {
 		"about:blank",
 		"inform:///*",
+		"inform://Extensions/*",
 		PUBLIC_LIBRARY_URI "*",
+		inform_uri_pattern,
 		NULL,
 	};
 
