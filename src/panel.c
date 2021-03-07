@@ -78,6 +78,9 @@ find_real_file_for_inform_uri_scheme(const char *path)
 		/* inform://Extensions is an exception; change it so it will be picked
 		 up by the last attempt below, in the home directory */
 		relative_path = g_build_filenamev(elements + 1);
+	} else if (elements[0] && elements[1] && !*elements[0] && strcmp(elements[1], "Extensions") == 0) {
+		/* same for inform:///Extensions and inform:/Extensions */
+		relative_path = g_build_filenamev(elements + 2);
 	} else
 		relative_path = g_build_filenamev(elements);
 
@@ -90,6 +93,13 @@ find_real_file_for_inform_uri_scheme(const char *path)
 
 	g_autoptr(GFile) home_file = g_file_new_for_path(g_get_home_dir());
 	parent = g_file_resolve_relative_path(home_file, "Inform/Documentation");
+	real_file = g_file_resolve_relative_path(parent, relative_path);
+	if(g_file_query_exists(real_file, NULL))
+		return g_steal_pointer(&real_file);
+	g_object_unref(g_steal_pointer(&real_file));
+	g_object_unref(g_steal_pointer(&parent));
+
+	parent = g_file_resolve_relative_path(home_file, "Inform/Documentation/Extensions");
 	real_file = g_file_resolve_relative_path(parent, relative_path);
 	if(g_file_query_exists(real_file, NULL))
 		return g_steal_pointer(&real_file);
