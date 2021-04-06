@@ -1,0 +1,167 @@
+---
+app-id: com.inform7.IDE
+runtime: org.gnome.Platform
+runtime-version: '3.38'
+sdk: org.gnome.Sdk
+finish-args:
+  - --socket=x11
+  - --share=ipc
+  - --socket=pulseaudio
+  - --filesystem=~/Inform/:create
+  # We need blanket access to the file system because the Inform compiler needs
+  # to be able to create a materials folder alongside the project folder. For
+  # now, limit it to the Documents folder, but we may need to expand this access
+  # to 'home' if users find this too restrictive.
+  # Issue: https://github.com/flatpak/xdg-desktop-portal/issues/463
+  - --filesystem=xdg-documents
+command: gnome-inform7
+build-options:
+  arch:
+    x86_64:
+      env:
+        INFORM7_ARCH: x86_64
+    i386:
+      env:
+        INFORM7_ARCH: i386
+    aarch64:
+      env:
+        INFORM7_ARCH: armv6lhf
+    arm:
+      env:
+        INFORM7_ARCH: armv6lhf
+modules:
+  - name: goocanvas
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/gtk-doc
+      - '*.la'
+    config-opts:
+      - --disable-introspection
+      - --disable-python
+      - --disable-gtk-doc
+      - --disable-static
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/goocanvas/2.0/goocanvas-2.0.4.tar.xz
+        sha256: c728e2b7d4425ae81b54e1e07a3d3c8a4bd6377a63cffa43006045bceaa92e90
+  - name: gspell
+    cleanup:
+      - /bin
+      - /include
+      - /lib/pkgconfig
+      - /share/gtk-doc
+      - '*.la'
+    config-opts:
+      - --disable-introspection
+      - --disable-gtk-doc
+      - --disable-vala
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/gspell/1.8/gspell-1.8.4.tar.xz
+        sha256: cf4d16a716e813449bd631405dc1001ea89537b8cdae2b8abfb3999212bd43b4
+  - name: plist
+    cleanup:
+      - /bin
+      - /include
+      - /lib/libplist++*
+      - /lib/pkgconfig
+      - /share/man
+      - '*.la'
+    config-opts:
+      - --without-cython
+      - --disable-static
+    sources:
+      - type: archive
+        url: https://github.com/libimobiledevice/libplist/releases/download/2.2.0/libplist-2.2.0.tar.bz2
+        sha256: 4a5517e5377ec421df84c586ba85bb4e1d26f11ad203d7d450a907c0156fbd9a
+  - name: gtksourceview
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /share/gtk-doc
+      - '*.la'
+      # Of the language definitions, we need the RelaxNG files and def.lang,
+      # everything else is never used
+      - /share/gtksourceview-3.0/language-specs/[a-ce-zA-Z]*.lang
+      - /share/gtksourceview-3.0/language-specs/d[a-df-z]*.lang
+      - /share/gtksourceview-3.0/language-specs/desktop.lang
+    config-opts:
+      - --disable-vala
+      - --disable-introspection
+      - --disable-gtk-doc
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-3.24.11.tar.xz
+        sha256: 691b074a37b2a307f7f48edc5b8c7afa7301709be56378ccf9cc9735909077fd
+  - name: ratify
+    cleanup:
+      - /include
+      - /lib/girepository-1.0
+      - /lib/pkgconfig
+    buildsystem: meson
+    config-opts:
+      - -Dintrospection=disabled
+      - -Dgtk_doc=disabled
+      - -Dvapi=disabled
+    sources:
+      - type: git
+        url: https://github.com/ptomato/ratify.git
+        branch: master
+        commit: f4d2d60ec73d5588e953650b3879e69a727f30ca
+  - name: modplug
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - '*.la'
+    sources:
+      - type: archive
+        url: http://sourceforge.net/projects/modplug-xmms/files/libmodplug/0.8.9.0/libmodplug-0.8.9.0.tar.gz
+        sha1: 9d18572f85fdd95091befa972ee5d94139dcefde
+  - name: gstreamer-plugins-bad
+    cleanup:
+      - /include
+      - /lib/libgst*.so*
+      - /lib/pkgconfig
+    buildsystem: meson
+    config-opts:
+      - -Dauto_features=disabled
+      - -Dmodplug=enabled
+    sources:
+      # Keep in sync with https://gitlab.com/freedesktop-sdk/freedesktop-sdk/
+      # components/gstreamer-plugins-bad.bst on the applicable release branch
+      - type: git
+        url: https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad.git
+        tag: '1.16.3'
+        commit: ee8144e98b084d75ffabaef0ef3dca2af8d72061
+  - name: chimara
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+      - /libexec
+      - /share/doc
+    buildsystem: meson
+    config-opts:
+      - -Dbocfel=false
+      - -Dnitfol=false
+      - -Dplayer=false
+      - -Dintrospection=false
+    sources:
+      - type: git
+        url: https://github.com/chimara/Chimara.git
+        branch: master
+  - name: gnome-inform7
+    buildsystem: meson
+    sources:
+      - type: archive
+        url: http://inform7.com/apps/6M62/I7_6M62_Linux_all.tar.gz
+        sha256: 684e33d37e6fd21a1822233ddf35937f3a365c4a366486a113c5f32015d93cbd
+      - type: git
+        url: https://github.com/ptomato/gnome-inform7.git
+        # path: ../
+        branch: gtk3
+      - type: shell
+        commands:
+          - tar -f inform7-compilers_6M62_${INFORM7_ARCH}.tar.gz -C src/ni/ -x share/inform7/Compilers/ni --strip-components=3
+
+...
