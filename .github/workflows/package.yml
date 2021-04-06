@@ -1,0 +1,20 @@
+---
+name: Build packages
+"on":
+  push:
+    branches: [master]
+jobs:
+  flatpak:
+    name: Flatpak
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-42
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
+        with:
+          branch: master
+          bundle: inform7-flatpak.flatpak
+          manifest-path: build-aux/com.inform7.IDE.yml
