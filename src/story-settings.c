@@ -34,7 +34,7 @@ insert_setting(plist_t dict, const char *key1, const char *key2, plist_t setting
 		category = plist_new_dict();
 		plist_dict_set_item(dict, key1, category);
 	}
-	plist_dict_set_item(dict, key2, setting);
+	plist_dict_set_item(category, key2, setting);
 }
 
 /* Initialize a new settings dictionary with the defaults for our port */
