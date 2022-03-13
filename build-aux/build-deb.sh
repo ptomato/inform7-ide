@@ -33,10 +33,11 @@ DEB_BUILD_MAINT_OPTIONS=hardening=-format debuild -rfakeroot -D -us -uc
 release=$(head -n1 debian/changelog | cut -f2 -d\( | cut -f1 -d\) | cut -f2 -d-)
 cd ..
 
+ls -la
 cp "$debsourcepkg" "${package}_$version-$release.dsc" \
     "${package}_$version-$release.debian.tar.xz" \
     "${package}_$version-${release}_$arch.deb" \
-    "${package}-dbgsym_$version-${release}_$arch.deb" ..
+    "${package}-dbgsym_$version-${release}_$arch.ddeb" ..
 cd ..
 
 rm -rf _deb_build
