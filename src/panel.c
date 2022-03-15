@@ -1317,6 +1317,7 @@ i7_panel_update_fonts(I7Panel *self)
 	g_object_set(G_OBJECT(settings),
 		"default-font-family", font,
 		"default-font-size", size,
+		"default-monospace-font-size", size,
 		NULL);
 
 	gchar *css = g_strdup_printf(
@@ -1347,7 +1348,6 @@ i7_panel_update_font_sizes(I7Panel *self)
 	g_object_set(G_OBJECT(settings),
 		"default-font-size", font_size,
 		"default-monospace-font-size", font_size,
-		"minimum-font-size", font_size,
 		NULL);
 }
 
