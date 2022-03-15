@@ -893,6 +893,9 @@ i7_panel_init(I7Panel *self)
 	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), "inform:///index.html");
 	g_autoptr(GFile) file = i7_app_get_extension_home_page(theapp);
 	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), file);
+
+	/* Set the initial font size */
+	i7_panel_update_fonts(self);
 }
 
 static void

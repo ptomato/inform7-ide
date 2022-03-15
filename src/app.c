@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2007-2015, 2019, 2021 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2007-2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -263,6 +263,9 @@ i7_app_startup(GApplication *app)
 	i7_app_run_census(self, FALSE);
 	priv->extension_dir_monitor = NULL;
 	i7_app_monitor_extensions_directory(self);
+
+	/* Set initial font sizes */
+	i7_app_update_css(self);
 }
 
 static void
