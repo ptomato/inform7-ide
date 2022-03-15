@@ -1,15 +1,11 @@
-#
-# Spec file for GNOME Inform 7
-#
-
-Name: gnome-inform7
+Name: inform7-ide
 Version: 6M62
 Release: 2%{?dist}
 
 URL: http://inform7.com/
 License: GPLv3
 
-Source0: https://github.com/ptomato/gnome-inform7/releases/download/%{version}/gnome-inform7-%{version}.tar.xz
+Source0: https://github.com/ptomato/gnome-inform7/releases/download/%{version}/inform7-ide-%{version}.tar.xz
 Source1: http://inform7.com/apps/%{version}/I7_%{version}_Linux_all.tar.gz
 
 # Build requirements:
@@ -35,9 +31,10 @@ BuildRequires: gstreamer1-plugins-bad-free-extras
 Summary: An IDE for the Inform 7 interactive fiction programming language
 
 %description
-GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
-development environment for Inform 7. Inform 7 is a "natural" programming
-language for writing interactive fiction (also known as text adventures.)
+The Inform 7 IDE is a port of the Mac OS X and Windows versions of the
+integrated development environment for Inform 7. Inform 7 is a "natural"
+programming language for writing interactive fiction (also known as text
+adventures.)
 
 # wat, definition of meson macro has builddir and srcdir swapped?!
 %global _vpath_srcdir %{name}-%{version}
@@ -135,7 +132,7 @@ fi
 %lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/%{name}.mo
 %lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/%{name}.mo
 %lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/ratify-2.mo
-%{_bindir}/gnome-inform7
+%{_bindir}/inform7-ide
 %{_libdir}/libchimara.so*
 %{_libdir}/libratify-2.so*
 %{pkglibexecdir}/cBlorb

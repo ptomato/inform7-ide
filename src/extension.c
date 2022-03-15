@@ -171,7 +171,7 @@ update_recent_extension_file(I7Extension *self, GFile *file, gboolean readonly)
 	char *groups_regular[] = { "inform7_extension", NULL };
 	GtkRecentData recent_data = {
 		NULL, NULL, "text/x-natural-inform", "Inform 7",
-		"gnome-inform7", NULL, FALSE
+		"inform7-ide", NULL, FALSE
 	};
 
 	recent_data.display_name = file_get_display_name(file);

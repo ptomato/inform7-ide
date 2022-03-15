@@ -34,7 +34,7 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 	const char *description = gtk_source_style_scheme_get_description(scheme);
 
 	/* We pick up system color schemes as well. These won't have translations in
-	the gnome-inform7 domain, so if we can't get a translation then we try it
+	the inform7-ide domain, so if we can't get a translation then we try it
 	again in GtkSourceView's translation domain. */
 	const char *try_name = gettext(name);
 	if (try_name == name) {  /* Pointer equality, not strcmp */

@@ -1,5 +1,5 @@
 #
-# Spec file for GNOME Inform 7 on OpenSUSE. Rename to gnome-inform7.spec.
+# Spec file for the Inform 7 IDE on OpenSUSE. Rename to inform7-ide.spec.
 #
 # Copyright (c) 2011 Malcolm J Lewis <malcolmlewis@opensuse.org>
 # Copyright (c) 2014 Vincent Petry <pvince81@opensuse.org>
@@ -16,7 +16,7 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-Name:           gnome-inform7
+Name:           inform7-ide
 Version:        6M62
 Release:        0
 License:        GPL-3.0
@@ -51,7 +51,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %lang_package
 
 %description
-GNOME Inform 7 is a port of the Mac OS X and Windows versions of the
+The Inform 7 IDE is a port of the Mac OS X and Windows versions of the
 integrated development environment for Inform 7. Inform 7 is a "natural"
 programming language for writing interactive fiction (also known as text
 adventures.).

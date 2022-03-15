@@ -26,6 +26,6 @@ if test ! -e "$sourcedir/I7_${version}_Linux_all.tar.gz"; then
 fi
 
 cp "$dist_tarball" "$sourcedir/"
-rpmbuild -ba gnome-inform7.spec
+rpmbuild -ba inform7-ide.spec
 
-cp "$rpmdir/$arch"/gnome-inform7-*.rpm "$srcrpmdir"/gnome-inform7-*.src.rpm .
+cp "$rpmdir/$arch"/inform7-ide-*.rpm "$srcrpmdir"/inform7-ide-*.src.rpm .

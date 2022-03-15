@@ -170,19 +170,19 @@ i7_app_init(I7App *self)
 		GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	/* Retrieve data directories if set externally */
-	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
+	const gchar *env = g_getenv("INFORM7_IDE_DATA_DIR");
 	if(env) {
 		priv->datadir = g_file_new_for_path(env);
 	} else {
-		char *path = g_build_filename(PACKAGE_DATA_DIR, "gnome-inform7", NULL);
+		char *path = g_build_filename(PACKAGE_DATA_DIR, "inform7-ide", NULL);
 		priv->datadir = g_file_new_for_path(path);
 		g_free(path);
 	}
 
-	env = g_getenv("GNOME_INFORM_LIBEXEC_DIR");
+	env = g_getenv("INFORM7_IDE_LIBEXEC_DIR");
 	priv->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
 
-	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/gnome-inform7.ui");
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/app.ui");
 	gtk_builder_connect_signals(builder, self);
 
 	create_app_actions(self);

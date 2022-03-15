@@ -1,4 +1,4 @@
-This version of Inform 7 for the Gnome platform was created by Philip
+This Inform 7 IDE for the GNOME platform was created by Philip
 Chimento, based on a design by Graham Nelson and Andrew Hunter.
 See the file `AUTHORS.md` for more information on other
 contributors.
@@ -10,9 +10,8 @@ tracker](http://inform7.com/mantis).
 
 ## Installation notes ##
 
-* The GNOME Inform 7 source code distribution does not include any
-  binaries.
-  If you compile GNOME Inform 7 from source, you will need to download
+* The Inform 7 IDE source code distribution does not include any binaries.
+  If you compile the Inform 7 IDE from source, you will need to download
   the Linux command-line package appropriate for your processor from
   <http://inform7.com> and put the `ni` file in the directory `src/ni`
   before doing `./configure`.

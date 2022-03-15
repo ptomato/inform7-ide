@@ -1,4 +1,4 @@
-project('gnome-inform7', 'c', version: '6M62', license: 'GPL-3.0-or-later',
+project('inform7-ide', 'c', version: '6M62', license: 'GPL-3.0-or-later',
     meson_version: '>=0.55.0')
 
 appname = meson.project_name()

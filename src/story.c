@@ -364,7 +364,7 @@ update_recent_story_file(I7Story *self, GFile *file)
 	char *groups[] = { "inform7_project", NULL };
 	GtkRecentData recent_data = {
 		NULL, NULL, "text/x-natural-inform", "Inform 7",
-		"gnome-inform7 %f", NULL, FALSE
+		"inform7-ide %f", NULL, FALSE
 	};
 
 	/* The display name is the project directory */

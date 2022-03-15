@@ -15,7 +15,7 @@ $ sudo apt-get update && apt-get upgrade -y && apt-get install -y \
 ```
 ## Meson
 
-gnome-inform7's requires meson >= 0.55.0. Debian Buster's is too old,
+Inform IDE requires meson >= 0.55.0. Debian Buster's is too old,
 but if you're or Debian Bullseye (or Sid) or Ubuntu 20.10 (or 21.04)
 could just apt install meson.
 
@@ -39,21 +39,21 @@ Once that’s done (still in the same gnome-inform7 directory as above):
 $ meson setup build
 $ cd build
 $ meson compile
-$ sudo meson install # WARNING! will overwrite any existing gnome-inform7 under /usr/local
+$ sudo meson install # WARNING! will overwrite any existing inform7-ide under /usr/local
 
 # now you can run it with
-$ LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu gnome-inform7
+$ LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu inform7-ide
 # or if you don't do meson install, run with:
-$ LD_LIBRARY_PATH=gnome-inform7/build/subprojects/ratify:gnome-inform7/build/subprojects/chimara gnome-inform7/build/src/gnome-inform7
+$ LD_LIBRARY_PATH=gnome-inform7/build/subprojects/ratify:gnome-inform7/build/subprojects/chimara gnome-inform7/build/src/inform7-ide
 ```
 
 Or for whichever of those is appropriate, you could put the following in a
-file called, say, gi7 and put it in /usr/local/bin or elsewhere in your PATH
-(doing a ``chmod +x gi7`` to ensure it's executable).
+file called, say, i7ide and put it in /usr/local/bin or elsewhere in your PATH
+(doing a ``chmod +x i7ide`` to ensure it's executable).
 
 ```
 #!/bin/bash
-LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu gnome-inform7 "$@" &
+LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu inform7-ide "$@" &
 ```
 
 To re-compile you can just go to gnome-inform7/build and run meson compile again.
@@ -63,7 +63,7 @@ or just explicitly run gnome-inform7/meson/bin/meson, e.g.,
 $ cd gnome-inform7/build
 $ ../meson/bin/meson compile
 
-Unless you've created a user dedicated to building gnome-inform7 (not a terrible idea),
+Unless you've created a user dedicated to building inform7-ide (not a terrible idea),
 I recommend against sourcing meson/bin/activate in your bashrc. When you use a virtualenv
 , for the duration of your session it's the python instance that takes priority, and
 it's a python that sees only the libraries you've installed there and not ones you may

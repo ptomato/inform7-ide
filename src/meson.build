@@ -31,7 +31,7 @@ gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
         goocanvas, plist, webkit, ratify, libchimara])
 
 # install_rpath allows running from a non-system install path
-executable('gnome-inform7', 'main.c', export_dynamic: true,
+executable('inform7-ide', 'main.c', export_dynamic: true,
     include_directories: '..', dependencies: [glib, gtk, gtksourceview],
     link_whole: gui, install: true, install_dir: get_option('bindir'),
     install_rpath: get_option('prefix') / get_option('libdir'))
@@ -62,7 +62,7 @@ test_env.set('GSETTINGS_BACKEND', 'memory')
 test_env.set('NO_AT_BRIDGE', '1')
 test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
 test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
-test_env.set('GNOME_INFORM_DATA_DIR', meson.source_root() / 'data')
-test_env.set('GNOME_INFORM_LIBEXEC_DIR', meson.current_source_dir() / 'ni')
+test_env.set('INFORM7_IDE_DATA_DIR', meson.source_root() / 'data')
+test_env.set('INFORM7_IDE_LIBEXEC_DIR', meson.current_source_dir() / 'ni')
 test('inform7', test_inform7, protocol: 'tap', args: ['--tap'] + skip_paths,
     env: test_env, depends: local_schemas)
