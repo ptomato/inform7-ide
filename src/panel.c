@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2015, 2018, 2019, 2021 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2015, 2018, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -1311,13 +1311,14 @@ i7_panel_update_fonts(I7Panel *self)
 	i7_panel_update_tabs(self);
 
 	g_autofree char *font = get_font_family();
-	unsigned size = get_font_size() * 12.0;
+	unsigned size_pt = get_font_size() * DEFAULT_SIZE_STANDARD;
+	unsigned size_px = webkit_settings_font_size_to_pixels(size_pt);
 
 	WebKitSettings *settings = priv->websettings;
 	g_object_set(G_OBJECT(settings),
 		"default-font-family", font,
-		"default-font-size", size,
-		"default-monospace-font-size", size,
+		"default-font-size", size_px,
+		"default-monospace-font-size", size_px,
 		NULL);
 
 	gchar *css = g_strdup_printf(
@@ -1333,7 +1334,8 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.input { color: #0000aa; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
-		size, font, size, (unsigned)(size * RELATIVE_SIZE_MEDIUM), size);
+		size_pt, font, size_pt, (unsigned)(size_pt * RELATIVE_SIZE_MEDIUM),
+		size_pt);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
 	g_free(css);
 }
@@ -1344,7 +1346,7 @@ i7_panel_update_font_sizes(I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	WebKitSettings *settings = priv->websettings;
-	unsigned font_size = get_font_size() * 12.0;
+	unsigned font_size = webkit_settings_font_size_to_pixels(get_font_size() * DEFAULT_SIZE_STANDARD);
 	g_object_set(G_OBJECT(settings),
 		"default-font-size", font_size,
 		"default-monospace-font-size", font_size,
