@@ -780,9 +780,6 @@ i7_panel_init(I7Panel *self)
 
 	/* Add the I7SourceView widget and connect the after handler of the switch-page signal */
 	self->sourceview = I7_SOURCE_VIEW(i7_source_view_new());
-	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->sourceview));
-	gtk_style_context_add_class(style, "font-family-setting");
-	gtk_style_context_add_class(style, "font-size-setting");
 	gtk_widget_show(GTK_WIDGET(self->sourceview));
 	GtkWidget *sourcelabel = GTK_WIDGET(load_object(builder, "source_pane_label"));
 	gtk_notebook_insert_page(GTK_NOTEBOOK(self->notebook), GTK_WIDGET(self->sourceview), sourcelabel, I7_PANE_SOURCE);

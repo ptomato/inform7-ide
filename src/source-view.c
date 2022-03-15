@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2011, 2015 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2011, 2015, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -45,6 +45,10 @@ i7_source_view_init(I7SourceView *self)
 	self->next = GTK_WIDGET(load_object(builder, "next"));
 
 	gtk_range_set_value(GTK_RANGE(self->heading_depth), I7_DEPTH_PARTS_AND_HIGHER);
+
+	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->source));
+	gtk_style_context_add_class(style, "font-family-setting");
+	gtk_style_context_add_class(style, "font-size-setting");
 
 	/* Turn to the default page */
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(self->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
