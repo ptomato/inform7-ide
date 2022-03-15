@@ -1031,26 +1031,6 @@ action_visit_inform7_com(GSimpleAction *action, GVariant *parameter, I7App *app)
 	show_uri_in_browser("http://inform7.com/", NULL, _("the Inform website"));
 }
 
-/* Help->Suggest a Feature */
-void
-action_suggest_feature(GSimpleAction *action, GVariant *parameter, I7App *app)
-{
-	show_uri_in_browser("http://inform7.uservoice.com/", NULL,
-		/* TRANSLATORS: This string is used in error messages and should fit in
-		the pattern "We couldn't show ___ in your browser" */
-		_("the Inform feature suggestion page"));
-}
-
-/* Help->Report a Bug */
-void
-action_report_bug(GSimpleAction *action, GVariant *parameter, I7App *app)
-{
-	show_uri_in_browser("http://inform7.com/mantis", NULL,
-		/* TRANSLATORS: This string is used in error messages and should fit in
-		the pattern "We couldn't show ___ in your browser" */
-		_("the Inform bug reports page"));
-}
-
 /* Help->About */
 void
 action_about(GSimpleAction *action, GVariant *parameter, I7App *app)
