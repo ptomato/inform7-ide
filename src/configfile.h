@@ -35,7 +35,7 @@ typedef enum {
 } I7PrefsInterpreter;
 
 /* Pango point sizes of text size options */
-#define DEFAULT_SIZE_STANDARD	12
+#define DEFAULT_SIZE_STANDARD 10
 #define RELATIVE_SIZE_STANDARD 1.0
 #define RELATIVE_SIZE_MEDIUM 1.2
 #define RELATIVE_SIZE_LARGE 1.4
