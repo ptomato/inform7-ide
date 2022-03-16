@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2015, 2019, 2021 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -913,7 +913,7 @@ i7_story_init(I7Story *self)
 	self->panel[RIGHT] = I7_PANEL(i7_panel_new());
 	i7_panel_reset_queue(self->panel[LEFT], I7_PANE_SOURCE, I7_SOURCE_VIEW_TAB_SOURCE, NULL);
 	i7_panel_goto_doc_uri(self->panel[LEFT], "inform:///index.html");
-	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, "inform:///index.html");
+	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, "about:blank");
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
 	gtk_paned_pack2(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[RIGHT]), TRUE, FALSE);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), self->facing_pages, TRUE, TRUE, 0);
@@ -1073,6 +1073,22 @@ i7_story_class_init(I7StoryClass *klass)
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
+static gboolean
+load_initial_html(I7Story *self) {
+	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, "inform:///index.html");
+	return G_SOURCE_REMOVE;
+}
+
+static void
+present(I7Story *self) {
+	/* Bring window to front */
+	gtk_widget_show(GTK_WIDGET(self));
+	gtk_window_present(GTK_WINDOW(self));
+
+	/* WebKit does not start loading while the widget is unmapped? */
+	g_idle_add_full(G_PRIORITY_LOW, (GSourceFunc)load_initial_html, self, NULL);
+}
+
 /* PUBLIC FUNCTIONS */
 
 I7Story *
@@ -1092,9 +1108,8 @@ i7_story_new(I7App *app, GFile *file, const char *title, const char *author)
 
 	g_application_unmark_busy(G_APPLICATION(app));
 
-	/* Bring window to front */
-	gtk_widget_show(GTK_WIDGET(story));
-	gtk_window_present(GTK_WINDOW(story));
+	present(story);
+
 	return story;
 }
 
@@ -1134,9 +1149,7 @@ i7_story_new_from_file(I7App *app, GFile *file)
 
 	g_application_unmark_busy(G_APPLICATION(app));
 
-	/* Bring window to front */
-	gtk_widget_show(GTK_WIDGET(story));
-	gtk_window_present(GTK_WINDOW(story));
+	present(story);
 
 	g_object_unref(real_file);
 
