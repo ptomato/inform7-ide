@@ -1310,8 +1310,9 @@ i7_panel_update_fonts(I7Panel *self)
 
 	i7_panel_update_tabs(self);
 
-	g_autofree char *font = get_font_family();
-	unsigned size_pt = get_font_size() * DEFAULT_SIZE_STANDARD;
+	I7App *theapp = I7_APP(g_application_get_default());
+	g_autofree char *font = i7_app_get_font_family(theapp);
+	unsigned size_pt = i7_app_get_font_scale(theapp) * DEFAULT_SIZE_STANDARD;
 	unsigned size_px = webkit_settings_font_size_to_pixels(size_pt);
 
 	WebKitSettings *settings = priv->websettings;
@@ -1346,7 +1347,8 @@ i7_panel_update_font_sizes(I7Panel *self)
 {
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	WebKitSettings *settings = priv->websettings;
-	unsigned font_size = webkit_settings_font_size_to_pixels(get_font_size() * DEFAULT_SIZE_STANDARD);
+	I7App *theapp = I7_APP(g_application_get_default());
+	unsigned font_size = webkit_settings_font_size_to_pixels(i7_app_get_font_scale(theapp) * DEFAULT_SIZE_STANDARD);
 	g_object_set(G_OBJECT(settings),
 		"default-font-size", font_size,
 		"default-monospace-font-size", font_size,

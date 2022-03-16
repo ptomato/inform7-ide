@@ -602,9 +602,10 @@ i7_story_update_tabs(I7Document *document)
 static PangoFontDescription *
 get_font_description(void)
 {
-	g_autofree char *font_family = get_font_family();
+	I7App *theapp = I7_APP(g_application_get_default());
+	g_autofree char *font_family = i7_app_get_font_family(theapp);
 	PangoFontDescription *font = pango_font_description_from_string(font_family);
-	double size = get_font_size() * DEFAULT_SIZE_STANDARD * PANGO_SCALE;
+	double size = i7_app_get_font_scale(theapp) * DEFAULT_SIZE_STANDARD * PANGO_SCALE;
 	if(pango_font_description_get_size_is_absolute(font))
 		size *= 96.0 / 72.0; /* a guess; not likely to be absolute anyway */
 	pango_font_description_set_size(font, size);

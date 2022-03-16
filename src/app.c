@@ -1498,8 +1498,8 @@ i7_app_update_css(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	g_autofree char *font_family = get_font_family();
-	double font_size = get_font_size();
+	g_autofree char *font_family = i7_app_get_font_family(self);
+	double font_size = i7_app_get_font_scale(self);
 	g_autofree char *css = g_strdup_printf(""
 	    ".font-family-setting {"
 	    "    font-family: '%s';"
@@ -1596,4 +1596,49 @@ i7_app_get_color_scheme_manager(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	return priv->color_scheme_manager;
+}
+
+/*
+ * i7_app_get_font_family:
+ * @self: the application singleton
+ *
+ * Returns: (transfer full): a string representing the font setting suitable to
+ *   use in CSS.
+ */
+char *
+i7_app_get_font_family(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SET)) {
+		case FONT_MONOSPACE:
+			return g_strdup("monospace");
+		case FONT_CUSTOM:
+			return g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
+		default:
+			return g_strdup("sans");
+	}
+}
+
+/*
+ * i7_app_get_font_scale:
+ * @self: the application singleton
+ *
+ * Returns: a relative font size (in ems) for the font size setting
+ */
+double
+i7_app_get_font_scale(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SIZE)) {
+		case FONT_SIZE_MEDIUM:
+			return RELATIVE_SIZE_MEDIUM;
+		case FONT_SIZE_LARGE:
+			return RELATIVE_SIZE_LARGE;
+		case FONT_SIZE_HUGE:
+			return RELATIVE_SIZE_HUGE;
+		default:
+			return RELATIVE_SIZE_STANDARD;
+	}
 }
