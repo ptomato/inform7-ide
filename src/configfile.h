@@ -11,9 +11,6 @@
 #include <glib.h>
 #include <pango/pango.h>
 
-#define STANDARD_FONT_FALLBACK "Sans 11"
-#define MONOSPACE_FONT_FALLBACK "Monospace 11"
-
 /* Three options for editor font */
 typedef enum {
 	FONT_STANDARD = 0,
