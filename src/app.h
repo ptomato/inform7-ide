@@ -123,6 +123,7 @@ void i7_app_update_css(I7App *self);
 
 char *i7_app_get_font_family(I7App *self);
 double i7_app_get_font_scale(I7App *self);
+double i7_app_get_font_size(I7App *self);
 
 GFile *i7_app_get_last_opened_project(I7App *self);
 

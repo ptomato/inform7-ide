@@ -1675,3 +1675,27 @@ i7_app_get_font_scale(I7App *self)
 			return RELATIVE_SIZE_STANDARD;
 	}
 }
+
+/*
+ * i7_app_get_font_size:
+ * @self: the application singleton
+ *
+ * Returns: an absolute font size for the font size setting in webviews and the
+ *   skein
+ */
+double
+i7_app_get_font_size(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	g_autofree char* font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
+	const char* ptr = strrchr(font, ' ');
+
+	int base = 0;
+	if (ptr)
+		base = atoi(ptr);
+	if (base < 1)
+		base = DEFAULT_SIZE_STANDARD;
+
+	return base * i7_app_get_font_scale(self);
+}

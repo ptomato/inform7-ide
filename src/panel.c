@@ -1312,8 +1312,8 @@ i7_panel_update_fonts(I7Panel *self)
 
 	I7App *theapp = I7_APP(g_application_get_default());
 	g_autofree char *font = i7_app_get_font_family(theapp);
-	unsigned size_pt = i7_app_get_font_scale(theapp) * DEFAULT_SIZE_STANDARD;
-	unsigned size_px = webkit_settings_font_size_to_pixels(size_pt);
+	double size_pt = i7_app_get_font_size(theapp);
+	unsigned size_px = webkit_settings_font_size_to_pixels((uint32_t)size_pt);
 
 	WebKitSettings *settings = priv->websettings;
 	g_object_set(G_OBJECT(settings),
@@ -1335,8 +1335,8 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.input { color: #0000aa; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
-		size_pt, font, size_pt, (unsigned)(size_pt * RELATIVE_SIZE_MEDIUM),
-		size_pt);
+		(unsigned)size_pt, font, (unsigned)size_pt,
+		(unsigned)(size_pt * RELATIVE_SIZE_MEDIUM), (unsigned)size_pt);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
 	g_free(css);
 }
@@ -1348,7 +1348,7 @@ i7_panel_update_font_sizes(I7Panel *self)
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	WebKitSettings *settings = priv->websettings;
 	I7App *theapp = I7_APP(g_application_get_default());
-	unsigned font_size = webkit_settings_font_size_to_pixels(i7_app_get_font_scale(theapp) * DEFAULT_SIZE_STANDARD);
+	unsigned font_size = webkit_settings_font_size_to_pixels(i7_app_get_font_size(theapp));
 	g_object_set(G_OBJECT(settings),
 		"default-font-size", font_size,
 		"default-monospace-font-size", font_size,
