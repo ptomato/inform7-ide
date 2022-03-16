@@ -60,6 +60,7 @@ typedef struct {
 	/* Color scheme manager */
 	GtkSourceStyleSchemeManager *color_scheme_manager;
 	/* Preferences settings */
+	GSettings *system_settings;
 	GSettings *prefs_settings;
 	GSettings *state_settings;
 	GtkCssProvider *font_settings_provider;
@@ -156,6 +157,7 @@ i7_app_init(I7App *self)
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GError *error = NULL;
 
+	priv->system_settings = g_settings_new(SCHEMA_SYSTEM);
 	priv->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
 	priv->state_settings = g_settings_new(SCHEMA_STATE);
 
@@ -223,6 +225,8 @@ i7_app_init(I7App *self)
 
 	/* Set up signals for GSettings keys. */
 	init_config_file(priv->prefs_settings);
+	g_signal_connect_swapped(priv->system_settings, "changed::document-font-name", G_CALLBACK(i7_app_update_css), self);
+	g_signal_connect_swapped(priv->system_settings, "changed::monospace-font-name", G_CALLBACK(i7_app_update_css), self);
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
 	priv->color_scheme_manager = create_color_scheme_manager(self);
@@ -240,6 +244,7 @@ i7_app_finalize(GObject *object)
 		g_slice_free(I7PrefsWidgets, self->prefs);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->color_scheme_manager);
+	g_object_unref(priv->system_settings);
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
 	g_clear_object(&priv->font_settings_provider);
@@ -1559,6 +1564,21 @@ i7_app_get_last_opened_project(I7App *self)
 }
 
 /*
+ * i7_app_get_system_settings:
+ * @self: the application singleton
+ *
+ * Gets the #GSettings object for the system settings.
+ *
+ * Returns: (transfer none): #GSettings
+ */
+GSettings *
+i7_app_get_system_settings(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	return priv->system_settings;
+}
+
+/*
  * i7_app_get_prefs:
  * @self: the application singleton
  *
@@ -1598,6 +1618,14 @@ i7_app_get_color_scheme_manager(I7App *self)
 	return priv->color_scheme_manager;
 }
 
+/* modifies string in place */
+static void
+remove_font_size(char *font) {
+	char *ptr = strrchr(font, ' ');
+	if (ptr)
+		*ptr = '\0';
+}
+
 /*
  * i7_app_get_font_family:
  * @self: the application singleton
@@ -1610,14 +1638,19 @@ i7_app_get_font_family(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
+	char *font;
 	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SET)) {
 		case FONT_MONOSPACE:
-			return g_strdup("monospace");
+			font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_MONOSPACE_FONT);
+			break;
 		case FONT_CUSTOM:
-			return g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
+			font = g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
+			break;
 		default:
-			return g_strdup("sans");
+			font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
 	}
+	remove_font_size(font);
+	return font;
 }
 
 /*

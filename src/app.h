@@ -135,6 +135,7 @@ gboolean i7_app_uninstall_color_scheme(I7App *self, const char *id);
 GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
 
 /* GSettings accessors */
+GSettings *i7_app_get_system_settings(I7App *self);
 GSettings *i7_app_get_state(I7App *self);
 GSettings *i7_app_get_prefs(I7App *self);
 

@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2015, 2019, 2021 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -286,6 +286,10 @@ i7_document_init(I7Document *self)
 		priv->buffer, "highlight-syntax",
 		G_SETTINGS_BIND_GET | G_SETTINGS_BIND_NO_SENSITIVITY);
 
+	GSettings *system_settings = i7_app_get_system_settings(theapp);
+	g_signal_connect_swapped(system_settings, "changed::document-font-name", G_CALLBACK(i7_document_update_fonts), self);
+	g_signal_connect_swapped(system_settings, "changed::monospace-font-name", G_CALLBACK(i7_document_update_fonts), self);
+
 	/* Show statusbar if necessary */
 	GAction *view_statusbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-statusbar");
 	g_simple_action_set_state(G_SIMPLE_ACTION(view_statusbar), g_settings_get_value(state, PREFS_STATE_SHOW_STATUSBAR));
@@ -296,6 +300,10 @@ i7_document_finalize(GObject *object)
 {
 	I7Document *self = I7_DOCUMENT(object);
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+
+	I7App *theapp = I7_APP(g_application_get_default());
+	GSettings *system_settings = i7_app_get_system_settings(theapp);
+	g_signal_handlers_disconnect_by_func(system_settings, i7_document_update_fonts, self);
 
 	if(priv->file)
 		g_object_unref(priv->file);

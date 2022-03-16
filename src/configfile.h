@@ -42,6 +42,7 @@ typedef enum {
 #define DEFAULT_TAB_WIDTH 8
 
 /* Schemas */
+#define SCHEMA_SYSTEM "org.gnome.desktop.interface"
 #define SCHEMA_PREFERENCES "com.inform7.IDE.preferences"
 #define SCHEMA_SKEIN "com.inform7.IDE.preferences.skein"
 #define SCHEMA_STATE "com.inform7.IDE.state"
@@ -77,6 +78,9 @@ typedef enum {
 
 #define PREFS_SKEIN_HORIZONTAL_SPACING  "horizontal-spacing"
 #define PREFS_SKEIN_VERTICAL_SPACING    "vertical-spacing"
+
+#define PREFS_SYSTEM_DOCUMENT_FONT  "document-font-name"
+#define PREFS_SYSTEM_MONOSPACE_FONT "monospace-font-name"
 
 extern const char *font_set_enum[], *font_size_enum[], *interpreter_enum[];
 
