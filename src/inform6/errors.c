@@ -2,8 +2,8 @@
 /*   "errors" : Warnings, errors and fatal errors                            */
 /*              (with error throwback code for RISC OS machines)             */
 /*                                                                           */
-/*   Part of Inform 6.33                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2015                                 */
+/*   Part of Inform 6.36                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2022                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
@@ -18,6 +18,8 @@ static char error_message_buff[ERROR_BUFLEN+4]; /* room for ellipsis */
 
 ErrorPosition ErrorReport;             /*  Maintained by "lexer.c"           */
 
+static char other_pos_buff[ERROR_BUFLEN+1];       /* Used by location_text() */
+
 static void print_preamble(void)
 {
     /*  Only really prints the preamble to an error or warning message:
@@ -30,7 +32,7 @@ static void print_preamble(void)
     int j, with_extension_flag = FALSE; char *p;
 
     j = ErrorReport.file_number;
-    if (j <= 0 || j > input_file) p = ErrorReport.source;
+    if (j <= 0 || j > total_files) p = ErrorReport.source;
     else p = InputFiles[j-1].filename;
 
     if (!p) p = "";
@@ -41,6 +43,22 @@ static void print_preamble(void)
 
             if (!(ErrorReport.main_flag)) printf("\"%s\", ", p);
             printf("line %d: ", ErrorReport.line_number);
+            
+            if (ErrorReport.orig_file) {
+                char *op;
+                if (ErrorReport.orig_file <= 0 || ErrorReport.orig_file > total_files)
+                    op = ErrorReport.orig_source;
+                else
+                    op = InputFiles[ErrorReport.orig_file-1].filename;
+                printf("(\"%s\"", op);
+                if (ErrorReport.orig_line) {
+                    printf(", %d", ErrorReport.orig_line);
+                    if (ErrorReport.orig_char) {
+                        printf(":%d", ErrorReport.orig_char);
+                    }
+                }
+                printf("): ");
+            }
             break;
 
         case 1:  /* Microsoft error message format */
@@ -51,14 +69,93 @@ static void print_preamble(void)
             }
             printf("%s", p);
             if (with_extension_flag) printf("%s", Source_Extension);
-            printf("(%d): ", ErrorReport.line_number);
+            printf("(%d)", ErrorReport.line_number);
+            
+            if (ErrorReport.orig_file) {
+                char *op;
+                if (ErrorReport.orig_file <= 0 || ErrorReport.orig_file > total_files)
+                    op = ErrorReport.orig_source;
+                else
+                    op = InputFiles[ErrorReport.orig_file-1].filename;
+                printf("|%s", op);
+                if (ErrorReport.orig_line) {
+                    printf("(%d", ErrorReport.orig_line);
+                    if (ErrorReport.orig_char) {
+                        printf(":%d", ErrorReport.orig_char);
+                    }
+                    printf(")");
+                }
+            }
+            
+            printf(": ");
             break;
 
         case 2:  /* Macintosh Programmer's Workshop error message format */
 
-            printf("File \"%s\"; Line %d\t# ", p, ErrorReport.line_number);
+            printf("File \"%s\"; Line %d", p, ErrorReport.line_number);
+            
+            if (ErrorReport.orig_file) {
+                char *op;
+                if (ErrorReport.orig_file <= 0 || ErrorReport.orig_file > total_files)
+                    op = ErrorReport.orig_source;
+                else
+                    op = InputFiles[ErrorReport.orig_file-1].filename;
+                printf(": (\"%s\"", op);
+                if (ErrorReport.orig_line) {
+                    printf("; Line %d", ErrorReport.orig_line);
+                    if (ErrorReport.orig_char) {
+                        printf("; Char %d", ErrorReport.orig_char);
+                    }
+                }
+                printf(")");
+            }
+
+            printf("\t# ");
             break;
     }
+}
+
+static char *location_text(brief_location report_line)
+{
+    int j;
+    char *p;
+    int len;
+
+    /* Convert the location to a brief string. 
+       (Some error messages need to report a secondary location.)
+       This uses the static buffer other_pos_buff. */
+    
+    ErrorPosition errpos;
+    errpos.file_number = -1;
+    errpos.source = NULL;
+    errpos.line_number = 0;
+    errpos.main_flag = 0;
+    errpos.orig_source = NULL;
+    export_brief_location(report_line, &errpos);
+    
+    j = errpos.file_number;
+    if (j <= 0 || j > total_files) p = errpos.source;
+    else p = InputFiles[j-1].filename;
+    
+    if (!p && errpos.line_number == 0) {
+        /* Special case */
+        strcpy(other_pos_buff, "compiler setup");
+        return other_pos_buff;
+    }
+    
+    if (!p) p = "";
+
+    len = 0;
+    
+    if (!(errpos.main_flag)) {
+        snprintf(other_pos_buff+len, ERROR_BUFLEN-len,
+                 "\"%s\", ", p);
+        len = strlen(other_pos_buff);
+    }
+    snprintf(other_pos_buff+len, ERROR_BUFLEN-len,
+             "line %d", errpos.line_number);
+
+    return other_pos_buff;
 }
 
 static void ellipsize_error_message_buff(void)
@@ -90,8 +187,6 @@ extern void fatalerror(char *s)
     if (temporary_files_switch) remove_temp_files();
     abort_transcript_file();
     free_arrays();
-    if (store_the_text)
-        my_free(&all_text,"transcription text");
     longjmp(g_fallback, 1);
 #endif
     exit(1);
@@ -115,16 +210,6 @@ extern void memory_out_error(int32 size, int32 howmany, char *name)
     fatalerror(error_message_buff);
 }
 
-extern void memoryerror(char *s, int32 size)
-{
-    snprintf(error_message_buff, ERROR_BUFLEN,
-        "The memory setting %s (which is %ld at present) has been \
-exceeded.  Try running Inform again with $%s=<some-larger-number> on the \
-command line.",s,(long int) size,s);
-    ellipsize_error_message_buff();
-    fatalerror(error_message_buff);
-}
-
 /* ------------------------------------------------------------------------- */
 /*   Survivable diagnostics:                                                 */
 /*      compilation errors   style 1                                         */
@@ -133,8 +218,6 @@ command line.",s,(long int) size,s);
 /*      compiler errors      style 4 (these should never happen and          */
 /*                                    indicate a bug in Inform)              */
 /* ------------------------------------------------------------------------- */
-
-static int errors[MAX_ERRORS];
 
 int no_errors, no_warnings, no_suppressed_warnings, no_link_errors,
     no_compiler_errors;
@@ -163,8 +246,6 @@ static void message(int style, char *s)
     ProcessEvents (&g_proc);
     if (g_proc != true)
     {   free_arrays();
-        if (store_the_text)
-            my_free(&all_text,"transcription text");
         close_all_source ();
         if (temporary_files_switch) remove_temp_files();
         abort_transcript_file();
@@ -185,7 +266,6 @@ static void message(int style, char *s)
 extern void error(char *s)
 {   if (no_errors == MAX_ERRORS)
         fatalerror("Too many errors: giving up");
-    errors[no_errors] = no_syntax_lines;
     message(1,s);
 }
 
@@ -202,15 +282,11 @@ extern void error_numbered(char *s1, int val)
     error(error_message_buff);
 }
 
-extern void error_named_at(char *s1, char *s2, int32 report_line)
+extern void error_named_at(char *s1, char *s2, brief_location report_line)
 {   int i;
 
     ErrorPosition E = ErrorReport;
-    if (report_line != -1)
-    {   ErrorReport.file_number = report_line/FILE_LINE_SCALE_FACTOR;
-        ErrorReport.line_number = report_line%FILE_LINE_SCALE_FACTOR;
-        ErrorReport.main_flag = (ErrorReport.file_number == 1);
-    }
+    export_brief_location(report_line, &ErrorReport);
 
     snprintf(error_message_buff, ERROR_BUFLEN,"%s \"%s\"",s1,s2);
     ellipsize_error_message_buff();
@@ -226,6 +302,12 @@ extern void no_such_label(char *lname)
 
 extern void ebf_error(char *s1, char *s2)
 {   snprintf(error_message_buff, ERROR_BUFLEN, "Expected %s but found %s", s1, s2);
+    ellipsize_error_message_buff();
+    error(error_message_buff);
+}
+
+extern void ebf_symbol_error(char *s1, char *name, char *type, brief_location report_line)
+{   snprintf(error_message_buff, ERROR_BUFLEN, "\"%s\" is a name already in use and may not be used as a %s (%s \"%s\" was defined at %s)", name, s1, type, name, location_text(report_line));
     ellipsize_error_message_buff();
     error(error_message_buff);
 }
@@ -283,6 +365,30 @@ extern void unicode_char_error(char *s, int32 uni)
     error(error_message_buff);
 }
 
+extern void error_max_dynamic_strings(int index)
+{
+    if (index >= 100)
+        snprintf(error_message_buff, ERROR_BUFLEN, "Only dynamic strings @00 to @99 may be used in Inform");
+    else if (index >= 96 && !glulx_mode)
+        snprintf(error_message_buff, ERROR_BUFLEN, "Only dynamic strings @00 to @95 may be used in Z-code");
+    else if (MAX_DYNAMIC_STRINGS == 32 && !glulx_mode)
+        snprintf(error_message_buff, ERROR_BUFLEN, "Only dynamic strings @00 to @%02d may be used, because $MAX_DYNAMIC_STRINGS has its default value of %d. Increase MAX_DYNAMIC_STRINGS.", MAX_DYNAMIC_STRINGS-1, MAX_DYNAMIC_STRINGS);
+    else
+        snprintf(error_message_buff, ERROR_BUFLEN, "Only dynamic strings @00 to @%02d may be used, because $MAX_DYNAMIC_STRINGS has been set to %d. Increase MAX_DYNAMIC_STRINGS.", MAX_DYNAMIC_STRINGS-1, MAX_DYNAMIC_STRINGS);
+
+    ellipsize_error_message_buff();
+    error(error_message_buff);
+}
+
+extern void error_max_abbreviations(int index)
+{
+    /* This is only called for Z-code. */
+    if (index >= 96)
+        error("The number of abbreviations has exceeded 96, the limit in Z-code");
+    else
+        error("The number of abbreviations has exceeded MAX_ABBREVS. Increase MAX_ABBREVS.");
+}
+
 /* ------------------------------------------------------------------------- */
 /*   Style 2: Warning message routines                                       */
 /* ------------------------------------------------------------------------- */
@@ -307,15 +413,19 @@ extern void warning_named(char *s1, char *s2)
     message(2,error_message_buff);
 }
 
-extern void dbnu_warning(char *type, char *name, int32 report_line)
+extern void symtype_warning(char *context, char *name, char *type, char *wanttype)
+{
+    if (nowarnings_switch) { no_suppressed_warnings++; return; }
+    snprintf(error_message_buff, ERROR_BUFLEN, "In %s, expected %s but found %s \"%s\"", context, wanttype, type, name);
+    ellipsize_error_message_buff();
+    message(2,error_message_buff);
+}
+
+extern void dbnu_warning(char *type, char *name, brief_location report_line)
 {   int i;
     ErrorPosition E = ErrorReport;
     if (nowarnings_switch) { no_suppressed_warnings++; return; }
-    if (report_line != -1)
-    {   ErrorReport.file_number = report_line/FILE_LINE_SCALE_FACTOR;
-        ErrorReport.line_number = report_line%FILE_LINE_SCALE_FACTOR;
-        ErrorReport.main_flag = (ErrorReport.file_number == 1);
-    }
+    export_brief_location(report_line, &ErrorReport);
     snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\" declared but not used", type, name);
     ellipsize_error_message_buff();
     i = concise_switch; concise_switch = TRUE;
@@ -324,7 +434,7 @@ extern void dbnu_warning(char *type, char *name, int32 report_line)
     ErrorReport = E;
 }
 
-extern void uncalled_routine_warning(char *type, char *name, int32 report_line)
+extern void uncalled_routine_warning(char *type, char *name, brief_location report_line)
 {   int i;
     /* This is called for functions which have been detected by the
        track-unused-routines module. These will often (but not always)
@@ -332,11 +442,7 @@ extern void uncalled_routine_warning(char *type, char *name, int32 report_line)
        than routine addresses. */
     ErrorPosition E = ErrorReport;
     if (nowarnings_switch) { no_suppressed_warnings++; return; }
-    if (report_line != -1)
-    {   ErrorReport.file_number = report_line/FILE_LINE_SCALE_FACTOR;
-        ErrorReport.line_number = report_line%FILE_LINE_SCALE_FACTOR;
-        ErrorReport.main_flag = (ErrorReport.file_number == 1);
-    }
+    export_brief_location(report_line, &ErrorReport);
     if (OMIT_UNUSED_ROUTINES)
         snprintf(error_message_buff, ERROR_BUFLEN, "%s \"%s\" unused and omitted", type, name);
     else
@@ -363,7 +469,6 @@ extern void obsolete_warning(char *s1)
 
 extern void link_error(char *s)
 {   if (no_errors==MAX_ERRORS) fatalerror("Too many errors: giving up");
-    errors[no_errors] = no_syntax_lines;
     message(3,s);
 }
 
@@ -472,10 +577,14 @@ extern void errors_begin_pass(void)
     ErrorReport.file_number = -1;
     ErrorReport.source = "<no text read yet>";
     ErrorReport.main_flag = FALSE;
+    ErrorReport.orig_source = NULL;
+    ErrorReport.orig_file = 0;
+    ErrorReport.orig_line = 0;
+    ErrorReport.orig_char = 0;
 }
 
 extern void errors_allocate_arrays(void)
-{   forerrors_buff = my_malloc(512, "errors buffer");
+{   forerrors_buff = my_malloc(FORERRORS_SIZE, "errors buffer");
 }
 
 extern void errors_free_arrays(void)

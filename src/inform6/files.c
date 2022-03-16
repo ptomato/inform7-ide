@@ -7,14 +7,19 @@
 /*             routines in "inform.c", since they are tied up with ICL       */
 /*             settings and are very host OS-dependent.                      */
 /*                                                                           */
-/*   Part of Inform 6.33                                                     */
-/*   copyright (c) Graham Nelson 1993 - 2015                                 */
+/*   Part of Inform 6.36                                                     */
+/*   copyright (c) Graham Nelson 1993 - 2022                                 */
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
 #include "header.h"
 
-int input_file;                         /* Number of source files so far     */
+int total_files;                        /* Number of files so far, including 
+                                           #include and #origsource files    */
+int total_input_files;                  /* Number of source files so far
+                                           (excludes #origsource)            */
+int current_input_file;                 /* Most recently-opened source file  */
+static int current_origsource_file;     /* Most recently-used #origsource    */
 
 int32 total_chars_read;                 /* Characters read in (from all
                                            source files put together)        */
@@ -30,10 +35,9 @@ static int checksum_count;              /* similarly                         */
 /*   level is only concerned with file names and handles.                    */
 /* ------------------------------------------------------------------------- */
 
-FileId *InputFiles=NULL;                /*  Ids for all the source files     */
-static char *filename_storage,          /*  Translated filenames             */
-            *filename_storage_p;
-static int filename_storage_left;
+FileId *InputFiles=NULL;                /*  Ids for all the source files
+                                            Allocated to total_files         */
+static memory_list InputFiles_memlist;
 
 /* ------------------------------------------------------------------------- */
 /*   When emitting debug information, we won't have addresses of routines,   */
@@ -100,26 +104,19 @@ extern void load_sourcefile(char *filename_given, int same_directory_flag)
     int x = 0;
     FILE *handle;
 
-    if (input_file == MAX_SOURCE_FILES)
-        memoryerror("MAX_SOURCE_FILES", MAX_SOURCE_FILES);
+    ensure_memory_list_available(&InputFiles_memlist, total_files+1);
 
     do
     {   x = translate_in_filename(x, name, filename_given, same_directory_flag,
-                (input_file==0)?1:0);
+                (total_files==0)?1:0);
         handle = fopen(name,"r");
     } while ((handle == NULL) && (x != 0));
 
-    if (filename_storage_left <= (int)strlen(name))
-        memoryerror("MAX_SOURCE_FILES", MAX_SOURCE_FILES);
-
-    filename_storage_left -= strlen(name)+1;
-    strcpy(filename_storage_p, name);
-    InputFiles[input_file].filename = filename_storage_p;
-
-    filename_storage_p += strlen(name)+1;
+    InputFiles[total_files].filename = my_malloc(strlen(name)+1, "filename storage");
+    strcpy(InputFiles[total_files].filename, name);
 
     if (debugfile_switch)
-    {   debug_file_printf("<source index=\"%d\">", input_file);
+    {   debug_file_printf("<source index=\"%d\">", total_files);
         debug_file_printf("<given-path>");
         debug_file_print_with_entities(filename_given);
         debug_file_printf("</given-path>");
@@ -134,20 +131,25 @@ extern void load_sourcefile(char *filename_given, int same_directory_flag)
         debug_file_printf("</source>");
     }
 
-    InputFiles[input_file].handle = handle;
-    if (InputFiles[input_file].handle==NULL)
+    InputFiles[total_files].handle = handle;
+    if (InputFiles[total_files].handle==NULL)
         fatalerror_named("Couldn't open source file", name);
+
+    InputFiles[total_files].is_input = TRUE;
 
     if (line_trace_level > 0) printf("\nOpening file \"%s\"\n",name);
 
-    input_file++;
+    total_files++;
+    total_input_files++;
+    current_input_file = total_files;
 }
 
 static void close_sourcefile(int file_number)
 {
     if (InputFiles[file_number-1].handle == NULL) return;
 
-    /*  Close this file.  */
+    /*  Close this file. But keep the InputFiles entry around, including
+        its filename. */
 
     if (ferror(InputFiles[file_number-1].handle))
         fatalerror_named("I/O failure: couldn't read from source file",
@@ -162,7 +164,61 @@ static void close_sourcefile(int file_number)
 
 extern void close_all_source(void)
 {   int i;
-    for (i=0; i<input_file; i++) close_sourcefile(i+1);
+    for (i=0; i<total_files; i++) close_sourcefile(i+1);
+}
+
+/* ------------------------------------------------------------------------- */
+/*   Register an #origsource filename. This goes in the InputFiles table,    */
+/*   but we do not open the file or advance current_input_file.              */
+/* ------------------------------------------------------------------------- */
+
+extern int register_orig_sourcefile(char *filename)
+{
+    int ix;
+    char *name;
+
+    /* If the filename has already been used as an origsource filename,
+       return that entry. We check the most-recently-used file first, and
+       then search the list. */
+    if (current_origsource_file > 0 && current_origsource_file <= total_files) {
+        if (!strcmp(filename, InputFiles[current_origsource_file-1].filename))
+            return current_origsource_file;
+    }
+
+    for (ix=0; ix<total_files; ix++) {
+        if (InputFiles[ix].is_input)
+            continue;
+        if (!strcmp(filename, InputFiles[ix].filename)) {
+            current_origsource_file = ix+1;
+            return current_origsource_file;
+        }
+    }
+
+    /* This filename has never been used before. Allocate a new InputFiles
+       entry. */
+
+    name = filename; /* no translation */
+
+    ensure_memory_list_available(&InputFiles_memlist, total_files+1);
+
+    InputFiles[total_files].filename = my_malloc(strlen(name)+1, "filename storage");
+    strcpy(InputFiles[total_files].filename, name);
+
+    if (debugfile_switch)
+    {   debug_file_printf("<source index=\"%d\">", total_files);
+        debug_file_printf("<given-path>");
+        debug_file_print_with_entities(filename);
+        debug_file_printf("</given-path>");
+        debug_file_printf("<language>Inform 7</language>");
+        debug_file_printf("</source>");
+    }
+
+    InputFiles[total_files].handle = NULL;
+    InputFiles[total_files].is_input = FALSE;
+
+    total_files++;
+    current_origsource_file = total_files;
+    return current_origsource_file;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -174,7 +230,7 @@ extern int file_load_chars(int file_number, char *buffer, int length)
 {
     int read_in; FILE *handle;
 
-    if (file_number-1 > input_file)
+    if (file_number-1 > total_files)
     {   buffer[0] = 0; return 1; }
 
     handle = InputFiles[file_number-1].handle;
@@ -376,6 +432,7 @@ static void output_file_z(void)
 
     if (temporary_files_switch)
     {   fclose(Temp2_fp);
+        Temp2_fp = NULL;
         fin=fopen(Temp2_Name,"rb");
         if (fin==NULL)
             fatalerror("I/O failure: couldn't reopen temporary file 2");
@@ -411,11 +468,11 @@ static void output_file_z(void)
     for (i=0; i<zcode_backpatch_size; i=i+3)
     {   int long_flag = TRUE;
         offset
-            = 256*read_byte_from_memory_block(&zcode_backpatch_table, i+1)
-              + read_byte_from_memory_block(&zcode_backpatch_table, i+2);
+            = 256*zcode_backpatch_table[i+1]
+              + zcode_backpatch_table[i+2];
         backpatch_error_flag = FALSE;
         backpatch_marker
-            = read_byte_from_memory_block(&zcode_backpatch_table, i);
+            = zcode_backpatch_table[i];
         if (backpatch_marker >= 0x80) long_flag = FALSE;
         backpatch_marker &= 0x7f;
         offset = offset + (backpatch_marker/32)*0x10000;
@@ -432,7 +489,7 @@ static void output_file_z(void)
                 while (j<offset && j<next_cons_check) {
                     /* get dummy value */
                     ((temporary_files_switch)?fgetc(fin):
-                        read_byte_from_memory_block(&zcode_area, j));
+                        zcode_area[j]);
                     j++;
                 }
             }
@@ -440,7 +497,7 @@ static void output_file_z(void)
                 while (j<offset && j<next_cons_check) {
                     size++;
                     sf_put((temporary_files_switch)?fgetc(fin):
-                        read_byte_from_memory_block(&zcode_area, j));
+                        zcode_area[j]);
                     j++;
                 }
             }
@@ -450,9 +507,9 @@ static void output_file_z(void)
 
         if (long_flag)
         {   int32 v = (temporary_files_switch)?fgetc(fin):
-                read_byte_from_memory_block(&zcode_area, j);
+                zcode_area[j];
             v = 256*v + ((temporary_files_switch)?fgetc(fin):
-                read_byte_from_memory_block(&zcode_area, j+1));
+                zcode_area[j+1]);
             j += 2;
             if (use_function) {
                 v = backpatch_value(v);
@@ -462,7 +519,7 @@ static void output_file_z(void)
         }
         else
         {   int32 v = (temporary_files_switch)?fgetc(fin):
-                read_byte_from_memory_block(&zcode_area, j);
+                zcode_area[j];
             j++;
             if (use_function) {
                 v = backpatch_value(v);
@@ -488,7 +545,7 @@ static void output_file_z(void)
             while (j<offset && j<next_cons_check) {
                 /* get dummy value */
                 ((temporary_files_switch)?fgetc(fin):
-                    read_byte_from_memory_block(&zcode_area, j));
+                    zcode_area[j]);
                 j++;
             }
         }
@@ -496,7 +553,7 @@ static void output_file_z(void)
             while (j<offset && j<next_cons_check) {
                 size++;
                 sf_put((temporary_files_switch)?fgetc(fin):
-                    read_byte_from_memory_block(&zcode_area, j));
+                    zcode_area[j]);
                 j++;
             }
         }
@@ -508,6 +565,7 @@ static void output_file_z(void)
     {   if (ferror(fin))
             fatalerror("I/O failure: couldn't read from temporary file 2");
         fclose(fin);
+        fin = NULL;
     }
 
     if (size_before_code + code_length != size)
@@ -522,6 +580,7 @@ static void output_file_z(void)
 
     if (temporary_files_switch)
     {   fclose(Temp1_fp);
+        Temp1_fp = NULL;
         fin=fopen(Temp1_Name,"rb");
         if (fin==NULL)
             fatalerror("I/O failure: couldn't reopen temporary file 1");
@@ -529,11 +588,12 @@ static void output_file_z(void)
         if (ferror(fin))
             fatalerror("I/O failure: couldn't read from temporary file 1");
         fclose(fin);
+        fin = NULL;
         remove(Temp1_Name); remove(Temp2_Name);
     }
     else
       for (i=0; i<static_strings_extent; i++) {
-        sf_put(read_byte_from_memory_block(&static_strings_area,i));
+        sf_put(static_strings_area[i]);
         size++;
       }
 
@@ -542,6 +602,7 @@ static void output_file_z(void)
     if (temporary_files_switch)
     {   if (module_switch)
         {   fclose(Temp3_fp);
+            Temp3_fp = NULL;
             fin=fopen(Temp3_Name,"rb");
             if (fin==NULL)
                 fatalerror("I/O failure: couldn't reopen temporary file 3");
@@ -549,19 +610,20 @@ static void output_file_z(void)
             if (ferror(fin))
                 fatalerror("I/O failure: couldn't read from temporary file 3");
             fclose(fin);
+            fin = NULL;
             remove(Temp3_Name);
         }
     }
     else
         if (module_switch)
             for (i=0; i<link_data_size; i++)
-                sf_put(read_byte_from_memory_block(&link_data_area,i));
+                sf_put(link_data_area[i]);
 
     if (module_switch)
     {   for (i=0; i<zcode_backpatch_size; i++)
-            sf_put(read_byte_from_memory_block(&zcode_backpatch_table, i));
+            sf_put(zcode_backpatch_table[i]);
         for (i=0; i<zmachine_backpatch_size; i++)
-            sf_put(read_byte_from_memory_block(&zmachine_backpatch_table, i));
+            sf_put(zmachine_backpatch_table[i]);
     }
 
     /*  (6)  Output null bytes to reach a multiple of 0.5K.                  */
@@ -763,6 +825,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
 
     if (temporary_files_switch)
     {   fclose(Temp2_fp);
+        Temp2_fp = NULL;
         fin=fopen(Temp2_Name,"rb");
         if (fin==NULL)
             fatalerror("I/O failure: couldn't reopen temporary file 2");
@@ -799,15 +862,15 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
         int data_len;
         int32 v;
         offset = 
-          (read_byte_from_memory_block(&zcode_backpatch_table, i+2) << 24)
-          | (read_byte_from_memory_block(&zcode_backpatch_table, i+3) << 16)
-          | (read_byte_from_memory_block(&zcode_backpatch_table, i+4) << 8)
-          | (read_byte_from_memory_block(&zcode_backpatch_table, i+5));
+          (zcode_backpatch_table[i+2] << 24)
+          | (zcode_backpatch_table[i+3] << 16)
+          | (zcode_backpatch_table[i+4] << 8)
+          | (zcode_backpatch_table[i+5]);
         backpatch_error_flag = FALSE;
         backpatch_marker =
-          read_byte_from_memory_block(&zcode_backpatch_table, i);
+          zcode_backpatch_table[i];
         data_len =
-          read_byte_from_memory_block(&zcode_backpatch_table, i+1);
+          zcode_backpatch_table[i+1];
 
         /* All code up until the next backpatch marker gets flushed out
            as-is. (Unless we're in a stripped-out function.) */
@@ -816,7 +879,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
                 while (j<offset && j<next_cons_check) {
                     /* get dummy value */
                     ((temporary_files_switch)?fgetc(fin):
-                        read_byte_from_memory_block(&zcode_area, j));
+                        zcode_area[j]);
                     j++;
                 }
             }
@@ -824,7 +887,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
                 while (j<offset && j<next_cons_check) {
                     size++;
                     sf_put((temporary_files_switch)?fgetc(fin):
-                        read_byte_from_memory_block(&zcode_area, j));
+                        zcode_area[j]);
                     j++;
                 }
             }
@@ -838,13 +901,13 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
 
         case 4:
           v = ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j));
+            zcode_area[j]);
           v = (v << 8) | ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j+1));
+            zcode_area[j+1]);
           v = (v << 8) | ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j+2));
+            zcode_area[j+2]);
           v = (v << 8) | ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j+3));
+            zcode_area[j+3]);
           j += 4;
           if (!use_function)
               break;
@@ -858,9 +921,9 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
 
         case 2:
           v = ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j));
+            zcode_area[j]);
           v = (v << 8) | ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j+1));
+            zcode_area[j+1]);
           j += 2;
           if (!use_function)
               break;
@@ -876,7 +939,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
 
         case 1:
           v = ((temporary_files_switch)?fgetc(fin):
-            read_byte_from_memory_block(&zcode_area, j));
+            zcode_area[j]);
           j += 1;
           if (!use_function)
               break;
@@ -912,7 +975,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
             while (j<offset && j<next_cons_check) {
                 /* get dummy value */
                 ((temporary_files_switch)?fgetc(fin):
-                    read_byte_from_memory_block(&zcode_area, j));
+                    zcode_area[j]);
                 j++;
             }
         }
@@ -920,7 +983,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
             while (j<offset && j<next_cons_check) {
                 size++;
                 sf_put((temporary_files_switch)?fgetc(fin):
-                    read_byte_from_memory_block(&zcode_area, j));
+                    zcode_area[j]);
                 j++;
             }
         }
@@ -932,6 +995,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
     {   if (ferror(fin))
             fatalerror("I/O failure: couldn't read from temporary file 2");
         fclose(fin);
+        fin = NULL;
     }
 
     if (size_before_code + code_length != size)
@@ -998,7 +1062,7 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
           if (temporary_files_switch)
             ch = fgetc(Temp1_fp);
           else
-            ch = read_byte_from_memory_block(&static_strings_area, ix);
+            ch = static_strings_area[ix];
           ix++;
           if (ix > static_strings_extent || ch < 0)
             compiler_error("Read too much not-yet-compressed text.");
@@ -1093,12 +1157,57 @@ game features require version 0x%08lx", (long)requested_glulx_version, (long)Ver
 
     }
     
-    /*  (4.5)  Output any null bytes (required to reach a GPAGESIZE address)
+    /*  (5)  Output static arrays (if any). */
+    {
+        /* We have to backpatch entries mentioned in staticarray_backpatch_table. */
+        int32 size_before_arrays = size;
+        int32 val, ix, jx;
+        for (ix=0, jx=0; ix<staticarray_backpatch_size; ix += 5) {
+            backpatch_error_flag = FALSE;
+            backpatch_marker = staticarray_backpatch_table[ix];
+            /* datalen is always 4 for array backpatching */
+            offset = 
+                (staticarray_backpatch_table[ix+1] << 24)
+                | (staticarray_backpatch_table[ix+2] << 16)
+                | (staticarray_backpatch_table[ix+3] << 8)
+                | (staticarray_backpatch_table[ix+4]);
+            while (jx<offset) {
+                sf_put(static_array_area[jx]);
+                size++;
+                jx++;
+            }
+
+            /* Write out the converted value of the backpatch marker. */
+            val = static_array_area[jx++];
+            val = (val << 8) | static_array_area[jx++];
+            val = (val << 8) | static_array_area[jx++];
+            val = (val << 8) | static_array_area[jx++];
+            val = backpatch_value(val);
+            sf_put((val >> 24) & 0xFF);
+            sf_put((val >> 16) & 0xFF);
+            sf_put((val >> 8) & 0xFF);
+            sf_put((val) & 0xFF);
+            size += 4;
+        }
+
+        /* Flush out the last bit of static_array_area, after the last backpatch marker. */
+        offset = static_array_area_size;
+        while (jx<offset) {
+            sf_put(static_array_area[jx]);
+            size++;
+            jx++;
+        }
+
+        if (size_before_arrays + static_array_area_size != size)
+            compiler_error("Static array output length did not match");
+    }
+
+    /*  (5.5)  Output any null bytes (required to reach a GPAGESIZE address)
              before RAMSTART. */
 
     while (size % GPAGESIZE) { sf_put(0); size++; }
 
-    /*  (5)  Output RAM. */
+    /*  (6)  Output RAM. */
 
     for (i=0; i<RAM_Size; i++)
     {   sf_put(zmachine_paged_memory[i]); size++;
@@ -1167,8 +1276,38 @@ extern void output_file(void)
 
 FILE *transcript_file_handle; int transcript_open;
 
-extern void write_to_transcript_file(char *text)
-{   fputs(text, transcript_file_handle);
+extern void write_to_transcript_file(char *text, int linetype)
+{
+    if (TRANSCRIPT_FORMAT == 1) {
+        char ch = '?';
+        switch (linetype) {
+            case STRCTX_INFO:
+                ch = 'I'; break;
+            case STRCTX_GAME:
+                ch = 'G'; break;
+            case STRCTX_GAMEOPC:
+                ch = 'H'; break;
+            case STRCTX_VENEER:
+                ch = 'V'; break;
+            case STRCTX_VENEEROPC:
+                ch = 'W'; break;
+            case STRCTX_LOWSTRING:
+                ch = 'L'; break;
+            case STRCTX_ABBREV:
+                ch = 'A'; break;
+            case STRCTX_DICT:
+                ch = 'D'; break;
+            case STRCTX_OBJNAME:
+                ch = 'O'; break;
+            case STRCTX_SYMBOL:
+                ch = 'S'; break;
+            case STRCTX_INFIX:
+                ch = 'X'; break;
+        }
+        fputc(ch, transcript_file_handle);
+        fputs(": ", transcript_file_handle);
+    }
+    fputs(text, transcript_file_handle);
     fputc('\n', transcript_file_handle);
 }
 
@@ -1182,9 +1321,16 @@ extern void open_transcript_file(char *what_of)
 
     transcript_open = TRUE;
 
-    sprintf(topline_buffer, "Transcript of the text of \"%s\"\n\
-[From %s]\n", what_of, banner_line);
-    write_to_transcript_file(topline_buffer);
+    sprintf(topline_buffer, "Transcript of the text of \"%s\"", what_of);
+    write_to_transcript_file(topline_buffer, STRCTX_INFO);
+    sprintf(topline_buffer, "[From %s]", banner_line);
+    write_to_transcript_file(topline_buffer, STRCTX_INFO);
+    if (TRANSCRIPT_FORMAT == 1) {
+        write_to_transcript_file("[I:info, G:game text, V:veneer text, L:lowmem string, A:abbreviation, D:dict word, O:object name, S:symbol, X:infix]", STRCTX_INFO);
+        if (!glulx_mode)
+            write_to_transcript_file("[H:game text inline in opcode, W:veneer text inline in opcode]", STRCTX_INFO);
+    }
+    write_to_transcript_file("",  STRCTX_INFO);
 }
 
 extern void abort_transcript_file(void)
@@ -1198,9 +1344,11 @@ extern void close_transcript_file(void)
     char sn_buffer[7];
 
     write_serial_number(sn_buffer);
-    sprintf(botline_buffer, "\n[End of transcript: release %d.%s]\n",
+    sprintf(botline_buffer, "[End of transcript: release %d, serial %s]",
         release_number, sn_buffer);
-    write_to_transcript_file(botline_buffer);
+    write_to_transcript_file("",  STRCTX_INFO);
+    write_to_transcript_file(botline_buffer, STRCTX_INFO);
+    write_to_transcript_file("",  STRCTX_INFO);
 
     if (ferror(transcript_file_handle))
         fatalerror("I/O failure: couldn't write to transcript file");
@@ -1347,10 +1495,26 @@ static void write_debug_location_internals(debug_location location)
     }
 }
 
+static void write_debug_location_origsource_internals(debug_location location)
+{   debug_file_printf
+        ("<file-index>%d</file-index>", location.orig_file_index - 1);
+    if (location.orig_beg_line_number)
+        debug_file_printf
+            ("<line>%d</line>", location.orig_beg_line_number);
+    if (location.orig_beg_char_number)
+        debug_file_printf
+            ("<character>%d</character>", location.orig_beg_char_number);
+}
+
 extern void write_debug_location(debug_location location)
 {   if (location.file_index && location.file_index != 255)
     {   debug_file_printf("<source-code-location>");
         write_debug_location_internals(location);
+        debug_file_printf("</source-code-location>");
+    }
+    if (location.orig_file_index)
+    {   debug_file_printf("<source-code-location>");
+        write_debug_location_origsource_internals(location);
         debug_file_printf("</source-code-location>");
     }
 }
@@ -1364,6 +1528,11 @@ extern void write_debug_locations(debug_locations locations)
             write_debug_location_internals(current->location);
             debug_file_printf("</source-code-location>");
         }
+        if (locations.location.orig_file_index)
+        {   debug_file_printf("<source-code-location>");
+            write_debug_location_origsource_internals(locations.location);
+            debug_file_printf("</source-code-location>");
+        }
     }
     else
     {   write_debug_location(locations.location);
@@ -1371,45 +1540,45 @@ extern void write_debug_locations(debug_locations locations)
 }
 
 extern void write_debug_optional_identifier(int32 symbol_index)
-{   if (stypes[symbol_index] != ROUTINE_T)
+{   if (symbols[symbol_index].type != ROUTINE_T)
     {   compiler_error
             ("Attempt to write a replaceable identifier for a non-routine");
     }
-    if (replacement_debug_backpatch_positions[symbol_index].valid)
+    if (symbol_debug_info[symbol_index].replacement_backpatch_pos.valid)
     {   if (fsetpos
                 (Debug_fp,
-                 &replacement_debug_backpatch_positions[symbol_index].position))
+                 &symbol_debug_info[symbol_index].replacement_backpatch_pos.position))
         {   fatalerror("I/O failure: can't seek in debugging information file");
         }
         debug_file_printf
             ("<identifier artificial=\"true\">%s "
                  "(superseded replacement)</identifier>",
-             symbs[symbol_index]);
+             symbols[symbol_index].name);
         if (fseek(Debug_fp, 0L, SEEK_END))
         {   fatalerror("I/O failure: can't seek in debugging information file");
         }
     }
     fgetpos
-      (Debug_fp, &replacement_debug_backpatch_positions[symbol_index].position);
-    replacement_debug_backpatch_positions[symbol_index].valid = TRUE;
-    debug_file_printf("<identifier>%s</identifier>", symbs[symbol_index]);
+      (Debug_fp, &symbol_debug_info[symbol_index].replacement_backpatch_pos.position);
+    symbol_debug_info[symbol_index].replacement_backpatch_pos.valid = TRUE;
+    debug_file_printf("<identifier>%s</identifier>", symbols[symbol_index].name);
     /* Space for:       artificial="true" (superseded replacement) */
     debug_file_printf("                                           ");
 }
 
 extern void write_debug_symbol_backpatch(int32 symbol_index)
-{   if (symbol_debug_backpatch_positions[symbol_index].valid) {
+{   if (symbol_debug_info[symbol_index].backpatch_pos.valid) {
         compiler_error("Symbol entry incorrectly reused in debug information "
                        "file backpatching");
     }
-    fgetpos(Debug_fp, &symbol_debug_backpatch_positions[symbol_index].position);
-    symbol_debug_backpatch_positions[symbol_index].valid = TRUE;
+    fgetpos(Debug_fp, &symbol_debug_info[symbol_index].backpatch_pos.position);
+    symbol_debug_info[symbol_index].backpatch_pos.valid = TRUE;
     /* Reserve space for up to 10 digits plus a negative sign. */
     debug_file_printf("*BACKPATCH*");
 }
 
 extern void write_debug_symbol_optional_backpatch(int32 symbol_index)
-{   if (symbol_debug_backpatch_positions[symbol_index].valid) {
+{   if (symbol_debug_info[symbol_index].backpatch_pos.valid) {
         compiler_error("Symbol entry incorrectly reused in debug information "
                        "file backpatching");
     }
@@ -1418,8 +1587,8 @@ extern void write_debug_symbol_optional_backpatch(int32 symbol_index)
        so that we'll be in the same case as above if the symbol is eventually
        defined. */
     debug_file_printf("<value>");
-    fgetpos(Debug_fp, &symbol_debug_backpatch_positions[symbol_index].position);
-    symbol_debug_backpatch_positions[symbol_index].valid = TRUE;
+    fgetpos(Debug_fp, &symbol_debug_info[symbol_index].backpatch_pos.position);
+    symbol_debug_info[symbol_index].backpatch_pos.valid = TRUE;
     debug_file_printf("*BACKPATCH*</value>");
 }
 
@@ -1535,18 +1704,18 @@ extern void end_writing_debug_sections(int32 end_address)
 }
 
 extern void write_debug_undef(int32 symbol_index)
-{   if (!symbol_debug_backpatch_positions[symbol_index].valid)
+{   if (!symbol_debug_info[symbol_index].backpatch_pos.valid)
     {   compiler_error
             ("Attempt to erase debugging information never written or since "
                 "erased");
     }
-    if (stypes[symbol_index] != CONSTANT_T)
+    if (symbols[symbol_index].type != CONSTANT_T)
     {   compiler_error
             ("Attempt to erase debugging information for a non-constant "
              "because of an #undef");
     }
     if (fsetpos
-         (Debug_fp, &symbol_debug_backpatch_positions[symbol_index].position))
+         (Debug_fp, &symbol_debug_info[symbol_index].backpatch_pos.position))
     {   fatalerror("I/O failure: can't seek in debugging information file");
     }
     /* There are 7 characters in ``<value>''. */
@@ -1556,7 +1725,7 @@ extern void write_debug_undef(int32 symbol_index)
     /* Overwrite:      <value>*BACKPATCH*</value> */
     debug_file_printf("                          ");
     nullify_debug_file_position
-        (&symbol_debug_backpatch_positions[symbol_index]);
+        (&symbol_debug_info[symbol_index].backpatch_pos);
     if (fseek(Debug_fp, 0L, SEEK_END))
     {   fatalerror("I/O failure: can't seek in debugging information file");
     }
@@ -1587,14 +1756,13 @@ static void apply_debug_information_backpatches
 static void apply_debug_information_symbol_backpatches()
 {   int backpatch_symbol;
     for (backpatch_symbol = no_symbols; backpatch_symbol--;)
-    {   if (symbol_debug_backpatch_positions[backpatch_symbol].valid)
+    {   if (symbol_debug_info[backpatch_symbol].backpatch_pos.valid)
         {   if (fsetpos(Debug_fp,
-                        &symbol_debug_backpatch_positions
-                            [backpatch_symbol].position))
+                        &symbol_debug_info[backpatch_symbol].backpatch_pos.position))
             {   fatalerror
                     ("I/O failure: can't seek in debugging information file");
             }
-            debug_file_printf("%11d", svals[backpatch_symbol]);
+            debug_file_printf("%11d", symbols[backpatch_symbol].value);
         }
     }
 }
@@ -1678,10 +1846,13 @@ extern void check_temp_files(void)
 
 extern void remove_temp_files(void)
 {   if (Temp1_fp != NULL) fclose(Temp1_fp);
+    Temp1_fp = NULL;
     if (Temp2_fp != NULL) fclose(Temp2_fp);
+    Temp2_fp = NULL;
     remove(Temp1_Name); remove(Temp2_Name);
     if (module_switch)
     {   if (Temp3_fp != NULL) fclose(Temp3_fp);
+        Temp3_fp = NULL;
         remove(Temp3_Name);
     }
 }
@@ -1700,7 +1871,11 @@ extern void init_files_vars(void)
 }
 
 extern void files_begin_prepass(void)
-{   input_file = 0;
+{   
+    total_files = 0;
+    total_input_files = 0;
+    current_input_file = 0;
+    current_origsource_file = 0;
 }
 
 extern void files_begin_pass(void)
@@ -1724,10 +1899,9 @@ static void initialise_accumulator
 }
 
 extern void files_allocate_arrays(void)
-{   filename_storage = my_malloc(MAX_SOURCE_FILES*64, "filename storage");
-    filename_storage_p = filename_storage;
-    filename_storage_left = MAX_SOURCE_FILES*64;
-    InputFiles = my_malloc(MAX_SOURCE_FILES*sizeof(FileId), 
+{
+    initialise_memory_list(&InputFiles_memlist,
+        sizeof(FileId), 16, (void**)&InputFiles,
         "input file storage");
     if (debugfile_switch)
     {   if (glulx_mode)
@@ -1756,8 +1930,14 @@ static void tear_down_accumulator(debug_backpatch_accumulator *accumulator)
 }
 
 extern void files_free_arrays(void)
-{   my_free(&filename_storage, "filename storage");
-    my_free(&InputFiles, "input file storage");
+{
+    int ix;
+    for (ix=0; ix<total_files; ix++)
+    {
+        my_free(&InputFiles[ix].filename, "filename storage");
+    }
+    deallocate_memory_list(&InputFiles_memlist);
+    
     if (debugfile_switch)
     {   if (!glulx_mode)
         {   tear_down_accumulator(&object_backpatch_accumulator);

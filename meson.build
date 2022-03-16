@@ -97,7 +97,7 @@ config.set_quoted('GETTEXT_PACKAGE', appname)
 config.set_quoted('PACKAGE_VERSION', version)
 
 # Inform 6 version that goes along with this release
-config.set_quoted('INFORM6_COMPILER_VERSION', '6.33')
+config.set_quoted('INFORM6_COMPILER_VERSION', '6.36')
 
 # Get current year for updating copyrights
 copyright_year = run_command(date, '+%Y').stdout().strip()
