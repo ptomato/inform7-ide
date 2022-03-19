@@ -17,9 +17,6 @@
 
 #include "transcript-renderer.h"
 
-/* Below this width, the outputs will likely wrap to the point of unreadability */
-#define TRANSCRIPT_RENDERER_MIN_WIDTH 200
-
 typedef enum {
 	CANT_COMPARE = -1,
 	NO_MATCH,
@@ -198,7 +195,7 @@ i7_cell_renderer_transcript_get_preferred_width(GtkCellRenderer *renderer, GtkWi
 	I7CellRendererTranscriptPrivate *priv = i7_cell_renderer_transcript_get_instance_private(self);
 
 	if (min_width)
-		*min_width = TRANSCRIPT_RENDERER_MIN_WIDTH;
+		*min_width = priv->default_width;
 	if (natural_width)
 		*natural_width = priv->default_width;
 }
