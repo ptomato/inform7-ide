@@ -1307,15 +1307,11 @@ i7_panel_update_tabs(I7Panel *self)
 void
 i7_panel_update_fonts(I7Panel *self)
 {
-	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
-
 	i7_panel_update_tabs(self);
 
 	I7App *theapp = I7_APP(g_application_get_default());
 	g_autofree char *font = i7_app_get_font_family(theapp);
 	double size_pt = i7_app_get_font_size(theapp);
-	webkit_settings_set_default_font_family(priv->websettings, font);
-
 	gchar *css = g_strdup_printf(
 		"grid.normal { font-size: %u; }"
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
