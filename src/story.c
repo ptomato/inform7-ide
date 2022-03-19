@@ -604,12 +604,7 @@ get_font_description(void)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
 	g_autofree char *font_family = i7_app_get_font_family(theapp);
-	PangoFontDescription *font = pango_font_description_from_string(font_family);
-	double size = i7_app_get_font_size(theapp) * PANGO_SCALE;
-	if(pango_font_description_get_size_is_absolute(font))
-		size *= 96.0 / 72.0; /* a guess; not likely to be absolute anyway */
-	pango_font_description_set_size(font, size);
-	return font;
+	return pango_font_description_from_string(font_family);
 }
 
 /* Update the fonts in this main window, but not the
@@ -636,13 +631,9 @@ i7_story_update_font_sizes(I7Document *document)
 	if(!I7_IS_STORY(document))
 		return;
 	I7Story *self = I7_STORY(document);
-	I7StoryPrivate *priv = i7_story_get_instance_private(self);
 
 	i7_panel_update_font_sizes(self->panel[LEFT]);
 	i7_panel_update_font_sizes(self->panel[RIGHT]);
-	PangoFontDescription *font = get_font_description();
-	i7_skein_set_font(priv->skein, font);
-	pango_font_description_free(font);
 }
 
 static void

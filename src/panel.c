@@ -1341,7 +1341,7 @@ i7_panel_update_fonts(I7Panel *self)
 	g_free(css);
 }
 
-/* Update the font sizes of WebViews in this pane */
+/* Update the font sizes of WebViews and Skein in this pane */
 void
 i7_panel_update_font_sizes(I7Panel *self)
 {
@@ -1353,6 +1353,9 @@ i7_panel_update_font_sizes(I7Panel *self)
 		"default-font-size", font_size,
 		"default-monospace-font-size", font_size,
 		NULL);
+
+	double scale = i7_app_get_font_scale(theapp);
+	goo_canvas_set_scale(GOO_CANVAS(self->tabs[I7_PANE_SKEIN]), scale);
 }
 
 /* Empty the list of pages to go forward to */
