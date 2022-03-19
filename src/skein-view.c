@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2010, 2011, 2019 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2010, 2011, 2019, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -234,56 +234,44 @@ i7_skein_view_get_skein(I7SkeinView *self)
 	return priv->skein;
 }
 
-static gboolean
-on_edit_popup_key_press(GtkWidget *entry, GdkEventKey *event, GtkWidget *edit_popup)
+static void
+on_edit_popover_notify_visible(GtkWidget *edit_popover)
 {
-	switch(event->keyval) {
-	case GDK_KEY_Escape:
-		gtk_widget_destroy(edit_popup);
-		return TRUE;
-	case GDK_KEY_Return:
-	case GDK_KEY_KP_Enter:
-		{
-			I7Node *node = I7_NODE(g_object_get_data(G_OBJECT(edit_popup), "node"));
-			void (*func)(I7Node *, const gchar *) = g_object_get_data(G_OBJECT(edit_popup), "callback");
-			func(node, gtk_entry_get_text(GTK_ENTRY(entry)));
-			gtk_widget_destroy(edit_popup);
-			return TRUE;
-		}
-	}
-	return FALSE; /* event not handled */
+	if (!gtk_widget_get_visible(edit_popover))
+		gtk_widget_destroy(edit_popover);
+}
+
+static void
+on_edit_entry_activate(GtkEntry *entry, GtkPopover *edit_popover)
+{
+	I7Node *node = I7_NODE(g_object_get_data(G_OBJECT(edit_popover), "node"));
+	void (*func)(I7Node *, const gchar *) = g_object_get_data(G_OBJECT(edit_popover), "callback");
+	func(node, gtk_entry_get_text(entry));
+
+	gtk_popover_popdown(edit_popover);
 }
 
 static GtkWidget *
-popup_edit_window(GtkWidget *parent, gint x, gint y, const gchar *text)
+popup_edit_window(I7SkeinView *self, const GdkRectangle* rect, const gchar *text)
 {
-	gint px, py;
-	gdk_window_get_origin(gtk_widget_get_window(parent), &px, &py);
-
-	GtkWidget *edit_popup = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	/* stackoverflow.com/questions/1925568/how-to-give-keyboard-focus-to-a-pop-up-gtk-window */
-	gtk_widget_set_can_focus(edit_popup, TRUE);
-	gtk_window_set_decorated(GTK_WINDOW(edit_popup), FALSE);
-	gtk_window_set_type_hint(GTK_WINDOW(edit_popup), GDK_WINDOW_TYPE_HINT_POPUP_MENU);
-	gtk_window_set_transient_for(GTK_WINDOW(edit_popup), GTK_WINDOW(parent));
-	gtk_window_set_gravity(GTK_WINDOW(edit_popup), GDK_GRAVITY_CENTER);
+	GtkWidget *edit_popover = gtk_popover_new(GTK_WIDGET(self));
+	gtk_popover_set_pointing_to(GTK_POPOVER(edit_popover), rect);
+	gtk_popover_set_modal(GTK_POPOVER(edit_popover), TRUE);
 
 	GtkWidget *entry = gtk_entry_new();
 	gtk_widget_add_events(entry, GDK_FOCUS_CHANGE_MASK);
 	gtk_entry_set_text(GTK_ENTRY(entry), text);
 
 	gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
-	gtk_container_add(GTK_CONTAINER(edit_popup), entry);
-	g_signal_connect_swapped(entry, "focus-out-event", G_CALLBACK(gtk_widget_destroy), edit_popup);
-	g_signal_connect(entry, "key-press-event", G_CALLBACK(on_edit_popup_key_press), edit_popup);
+	gtk_container_add(GTK_CONTAINER(edit_popover), entry);
 
-	gtk_widget_show_all(edit_popup);
-	gtk_window_move(GTK_WINDOW(edit_popup), x + px, y + py);
-	/* GDK_GRAVITY_CENTER seems to have no effect? */
-	gtk_widget_grab_focus(entry);
-	gtk_window_present(GTK_WINDOW(edit_popup));
+	g_signal_connect(edit_popover, "notify::visible", G_CALLBACK(on_edit_popover_notify_visible), edit_popover);
+	g_signal_connect(entry, "activate", G_CALLBACK(on_edit_entry_activate), edit_popover);
 
-	return edit_popup;
+	gtk_widget_show_all(entry);
+	gtk_popover_popup(GTK_POPOVER(edit_popover));
+
+	return edit_popover;
 }
 
 void
@@ -292,14 +280,13 @@ i7_skein_view_edit_node(I7SkeinView *self, I7Node *node)
 	GdkRectangle rect;
 	if(!i7_node_get_command_coordinates(node, &rect, GOO_CANVAS(self)))
 		return;
-	GtkWidget *parent = gtk_widget_get_toplevel(GTK_WIDGET(self));
 	gchar *command = i7_node_get_command(node);
-	GtkWidget *edit_popup = popup_edit_window(parent, rect.x, rect.y, command);
+	GtkWidget *edit_popover = popup_edit_window(self, &rect, command);
 	g_free(command);
 
 	/* Associate this window with the node we are editing */
-	g_object_set_data(G_OBJECT(edit_popup), "node", node);
-	g_object_set_data(G_OBJECT(edit_popup), "callback", i7_node_set_command);
+	g_object_set_data(G_OBJECT(edit_popover), "node", node);
+	g_object_set_data(G_OBJECT(edit_popover), "callback", i7_node_set_command);
 }
 
 void
@@ -308,14 +295,13 @@ i7_skein_view_edit_label(I7SkeinView *self, I7Node *node)
 	GdkRectangle rect;
 	if(!i7_node_get_label_coordinates(node, &rect, GOO_CANVAS(self)))
 		return;
-	GtkWidget *parent = gtk_widget_get_toplevel(GTK_WIDGET(self));
 	gchar *label = i7_node_get_label(node);
-	GtkWidget *edit_popup = popup_edit_window(parent, rect.x, rect.y, label);
+	GtkWidget *edit_popover = popup_edit_window(self, &rect, label);
 	g_free(label);
 
 	/* Associate this window with the node we are editing */
-	g_object_set_data(G_OBJECT(edit_popup), "node", node);
-	g_object_set_data(G_OBJECT(edit_popup), "callback", i7_node_set_label);
+	g_object_set_data(G_OBJECT(edit_popover), "node", node);
+	g_object_set_data(G_OBJECT(edit_popover), "callback", i7_node_set_label);
 }
 
 void
