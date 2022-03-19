@@ -896,6 +896,7 @@ i7_panel_init(I7Panel *self)
 
 	/* Set the initial font size */
 	i7_panel_update_fonts(self);
+    i7_panel_update_font_sizes(self);
 }
 
 static void
@@ -1313,14 +1314,7 @@ i7_panel_update_fonts(I7Panel *self)
 	I7App *theapp = I7_APP(g_application_get_default());
 	g_autofree char *font = i7_app_get_font_family(theapp);
 	double size_pt = i7_app_get_font_size(theapp);
-	unsigned size_px = webkit_settings_font_size_to_pixels((uint32_t)size_pt);
-
-	WebKitSettings *settings = priv->websettings;
-	g_object_set(G_OBJECT(settings),
-		"default-font-family", font,
-		"default-font-size", size_px,
-		"default-monospace-font-size", size_px,
-		NULL);
+	webkit_settings_set_default_font_family(priv->websettings, font);
 
 	gchar *css = g_strdup_printf(
 		"grid.normal { font-size: %u; }"
@@ -1345,17 +1339,14 @@ i7_panel_update_fonts(I7Panel *self)
 void
 i7_panel_update_font_sizes(I7Panel *self)
 {
-	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
-	WebKitSettings *settings = priv->websettings;
 	I7App *theapp = I7_APP(g_application_get_default());
-	unsigned font_size = webkit_settings_font_size_to_pixels(i7_app_get_font_size(theapp));
-	g_object_set(G_OBJECT(settings),
-		"default-font-size", font_size,
-		"default-monospace-font-size", font_size,
-		NULL);
-
 	double scale = i7_app_get_font_scale(theapp);
+	webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->results_tabs[I7_RESULTS_TAB_REPORT]), scale);
+	for (int ix = 0; ix < I7_INDEX_NUM_TABS; ix++)
+		webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->index_tabs[ix]), scale);
 	goo_canvas_set_scale(GOO_CANVAS(self->tabs[I7_PANE_SKEIN]), scale);
+    webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), scale);
+    webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), scale);
 }
 
 /* Empty the list of pages to go forward to */
