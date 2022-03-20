@@ -1091,7 +1091,7 @@ add_builtin_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, 
 			I7_APP_EXTENSION_TEXT, title,
 			I7_APP_EXTENSION_VERSION, version,
 			I7_APP_EXTENSION_READ_ONLY, TRUE,
-			I7_APP_EXTENSION_ICON, "inform7-builtin",
+			I7_APP_EXTENSION_ICON, "com.inform7.IDE.builtin",
 			I7_APP_EXTENSION_FILE, extension_file,
 			-1);
 	}
@@ -1409,7 +1409,7 @@ i7_app_update_extensions_menu(I7App *self)
 	GMenu *extensions_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "extensions");
 	g_menu_remove_all(extensions_menu);
 
-	g_autoptr(GIcon) builtin_emblem = g_themed_icon_new("inform7-builtin");
+	g_autoptr(GIcon) builtin_emblem = g_themed_icon_new("com.inform7.IDE.builtin");
 
 	gtk_tree_model_get_iter_first(model, &author);
 	do {

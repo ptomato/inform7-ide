@@ -954,7 +954,7 @@ action_open_materials_folder(GSimpleAction *action, GVariant *parameter, I7Story
 				IO_ERROR_DIALOG(GTK_WINDOW(story), materials_file, error, _("creating Materials folder"));
 				goto finally;
 			}
-			file_set_custom_icon(materials_file, "application-x-inform-materials");
+			file_set_custom_icon(materials_file, "com.inform7.IDE.application-x-inform-materials");
 		} else
 			goto finally;
 	}

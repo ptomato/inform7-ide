@@ -363,7 +363,7 @@ update_recent_story_file(I7Story *self, GFile *file)
 	 "inform7_builtin" to determine how to open a file from the recent manager */
 	char *groups[] = { "inform7_project", NULL };
 	GtkRecentData recent_data = {
-		NULL, NULL, "text/x-natural-inform", "Inform 7",
+		NULL, NULL, "com.inform7.IDE.text/x-natural-inform", "Inform 7",
 		"inform7-ide %f", NULL, FALSE
 	};
 
@@ -484,10 +484,10 @@ i7_story_save_as(I7Document *document, GFile *file)
 	delete_build_files(self);
 
 	/* Set the folder icon to be the Inform 7 project icon */
-	file_set_custom_icon(file, "application-x-inform");
+	file_set_custom_icon(file, "com.inform7.IDE.application-x-inform");
 	GFile *materials_file = i7_story_get_materials_file(self);
 	if(file_exists_and_is_dir(materials_file))
-		file_set_custom_icon(materials_file, "application-x-inform-materials");
+		file_set_custom_icon(materials_file, "com.inform7.IDE.application-x-inform-materials");
 	g_object_unref(materials_file);
 
 	i7_document_set_modified(document, FALSE);
@@ -1322,7 +1322,7 @@ i7_story_open(I7Story *self, GFile *file)
 				g_message("Error copying old Materials folder to new one: %s", error->message);
 				g_clear_error(&error);
 			} else {
-				file_set_custom_icon(materials_file, "application-x-inform-materials");
+				file_set_custom_icon(materials_file, "com.inform7.IDE.application-x-inform-materials");
 			}
 		}
 		g_object_unref(old_materials_file);

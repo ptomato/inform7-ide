@@ -119,7 +119,8 @@ subdir('po')
 i18n.merge_file(input: 'com.inform7.IDE.desktop.in',
     output: 'com.inform7.IDE.desktop', type: 'desktop', po_dir: 'po',
     install: true, install_dir: datadir / 'applications')
-i18n.merge_file(input: 'data/mime/inform7.xml.in', output: 'inform7.xml',
+i18n.merge_file(input: 'data/mime/com.inform7.IDE.xml.in',
+    output: 'com.inform7.IDE.xml',
     type: 'xml', po_dir: 'po', data_dirs: meson.current_source_dir() / 'data',
     install: true, install_dir: datadir / 'mime' / 'packages')
 
@@ -138,18 +139,18 @@ install_subdir('data/styles', install_dir: pkgdatadir,
 # Named Icons
 # -----------
 # com.inform7.IDE.png: named application icon (inform.iconset)
-# inform7-builtin.png: named icon for built-in extension
-# inform7-materials.png: named emblem for materials folder
+# com.inform7.IDE.builtin.png: named icon for built-in extension
+# com.inform7.IDE.materials.png: named emblem for materials folder
 #
 # MIME types
 # ----------
-# application/x-inform: Inform 7 project (informfile.iconset)
-# application/x-inform-materials: Materials folder (materialsfile.iconset)
-# application/x-inform-skein+xml: Skein file (skeinfile.iconset)
-# text/x-inform: Inform 6 source code (i6file.iconset, inffile.iconset)
-# text/x-natural-inform: Inform 7 source code (i7file.iconset, nifile.iconset)
-# text/x-natural-inform-extension: Extension file (i7xfile.iconset)
-# text/x-blurb: Blurb file (blurbfile.iconset)
+# com.inform7.IDE.application/x-inform: Inform 7 project (informfile.iconset)
+# com.inform7.IDE.application/x-inform-materials: Materials folder (materialsfile.iconset)
+# com.inform7.IDE.application/x-inform-skein+xml: Skein file (skeinfile.iconset)
+# com.inform7.IDE.text/x-inform: Inform 6 source code (i6file.iconset, inffile.iconset)
+# com.inform7.IDE.text/x-natural-inform: Inform 7 source code (i7file.iconset, nifile.iconset)
+# com.inform7.IDE.text/x-natural-inform-extension: Extension file (i7xfile.iconset)
+# com.inform7.IDE.text/x-blurb: Blurb file (blurbfile.iconset)
 
 icondir = datadir / 'icons' / 'hicolor'
 install_subdir('pixmaps/16x16', install_dir: icondir)

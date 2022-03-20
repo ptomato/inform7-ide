@@ -115,18 +115,18 @@ fi
 %{pkgdatadir}/Templates/Vorple/soundmanager2.swf
 %{pkgdatadir}/highlighting/*.lang
 %{pkgdatadir}/styles/*.xml
-%{_datadir}/icons/hicolor/*/actions/inform7-builtin.png
+%{_datadir}/icons/hicolor/*/actions/com.inform7.IDE.builtin.png
 %{_datadir}/icons/hicolor/*/apps/com.inform7.IDE.png
-%{_datadir}/icons/hicolor/*/emblems/inform7-materials.png
-%{_datadir}/icons/hicolor/*/mimetypes/application-x-inform.png
-%{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-materials.png
-%{_datadir}/icons/hicolor/*/mimetypes/application-x-inform-skein+xml.png
-%{_datadir}/icons/hicolor/*/mimetypes/text-x-inform.png
-%{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform.png
-%{_datadir}/icons/hicolor/*/mimetypes/text-x-natural-inform-extension.png
-%{_datadir}/icons/hicolor/*/mimetypes/text-x-blurb.png
+%{_datadir}/icons/hicolor/*/emblems/com.inform7.IDE.materials.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.application-x-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.application-x-inform-materials.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.application-x-inform-skein+xml.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.text-x-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.text-x-natural-inform.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.text-x-natural-inform-extension.png
+%{_datadir}/icons/hicolor/*/mimetypes/com.inform7.IDE.text-x-blurb.png
 %{_datadir}/glib-2.0/schemas/com.inform7.IDE.gschema.xml
-%{_datadir}/mime/packages/inform7.xml
+%{_datadir}/mime/packages/com.inform7.IDE.xml
 %lang(de) %{_datadir}/locale/de/LC_MESSAGES/%{name}.mo
 %lang(es) %{_datadir}/locale/es/LC_MESSAGES/%{name}.mo
 %lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/%{name}.mo
