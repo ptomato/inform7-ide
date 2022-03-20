@@ -495,6 +495,18 @@ i7_story_save_as(I7Document *document, GFile *file)
 	i7_document_remove_status_message(document, FILE_OPERATIONS);
 }
 
+static void
+finish_delete_extra_folder(GFile *file, GAsyncResult *res)
+{
+	g_autoptr(GError) error = NULL;
+	if (!g_file_delete_finish(file, res, &error) &&
+		!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) &&
+		!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_NOT_EMPTY)) {
+		g_warning("Error deleting extra folder: %s", error->message);
+	}
+	g_object_unref(file);
+}
+
 static GFile *
 i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 {
@@ -527,6 +539,14 @@ i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 
 	/* Make sure it has a .inform suffix */
 	if (!g_str_has_suffix(basename, ".inform")) {
+		/* GTK will have created the folder automatically already due to
+		 * GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER. If the user didn't type the
+		 * .inform extension (probably the usual case), we'll end up with an
+		 * extra empty folder without .inform at the end. Delete it. */
+		g_object_ref(file);
+		g_file_delete_async(file, G_PRIORITY_LOW, /* cancellable = */ NULL,
+			(GAsyncReadyCallback)finish_delete_extra_folder, NULL);
+
 		char *newbasename = g_strconcat(basename, ".inform", NULL);
 		g_autoptr(GFile) parent = g_file_get_parent(file);
 
