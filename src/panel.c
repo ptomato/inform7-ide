@@ -1322,11 +1322,12 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.alert { color: #aa0000; font-weight: bold; }"
 		"buffer.note { color: #aaaa00; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
-		"buffer.input { color: #0000aa; font-style: italic; }"
+		"buffer.input { font-size: %u; color: #0000aa; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
 		(unsigned)size_pt, font, (unsigned)size_pt,
-		(unsigned)(size_pt * RELATIVE_SIZE_MEDIUM), (unsigned)size_pt);
+		(unsigned)(size_pt * RELATIVE_SIZE_MEDIUM), (unsigned)size_pt,
+		(unsigned)size_pt);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
 	g_free(css);
 }
