@@ -656,10 +656,6 @@ ui_finish_compiling(CompilerData *data)
 
 	i7_story_set_compile_actions_enabled(data->story, TRUE);
 
-	/* Update */
-	while(gtk_events_pending())
-		gtk_main_iteration();
-
 	/* Call the user callback */
 	if (data->success)
 		(data->callback)(data->story, data->callback_data);
