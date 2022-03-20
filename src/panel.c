@@ -1073,6 +1073,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		/* The inform: protocol can mean files in any of several different
 		locations */
 		gboolean load_in_extensions_pane = g_str_has_prefix(uri, "inform://Extensions") ||
+			g_str_has_prefix(uri, "inform:/Extensions") ||
 			g_str_has_suffix(uri, "pl404.html");
 		gboolean load_in_report_tab = g_str_has_prefix(uri, "inform:///en") &&
 			!g_str_has_suffix(uri, "pl404.html");
