@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2011, 2013, 2019 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2011, 2013, 2019, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -267,9 +267,11 @@ on_labels_changed(I7Skein *skein, I7Panel *panel)
 }
 
 void
-on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Panel *panel)
+on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Story *self)
 {
-	i7_skein_view_show_node(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), node, why);
+    I7StoryPanel which = i7_story_choose_panel(self, I7_PANE_SKEIN);
+	i7_skein_view_show_node(I7_SKEIN_VIEW(self->panel[which]->tabs[I7_PANE_SKEIN]), node, why);
+    i7_story_show_pane(self, I7_PANE_SKEIN);
 }
 
 void

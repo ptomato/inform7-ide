@@ -873,7 +873,6 @@ action_show_last_command_skein(GSimpleAction *action, GVariant *parameter, I7Sto
 {
 	I7Skein *skein = i7_story_get_skein(story);
 	g_signal_emit_by_name(skein, "show-node", I7_REASON_USER_ACTION, i7_skein_get_played_node(skein));
-	i7_story_show_pane(story, I7_PANE_SKEIN);
 }
 
 /* Replay->Find Previous Changed Command */
