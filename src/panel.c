@@ -1318,6 +1318,7 @@ i7_panel_update_fonts(I7Panel *self)
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
 	    "buffer.default { font-family: '%s'; }"
 		"buffer.normal { font-size: %u; }"
+        "buffer.emphasized { font-size: %u; font-style: italic; }"
 		"buffer.header { font-size: %u; font-weight: bold; }"
 		"buffer.subheader { font-size: %u; font-weight: bold; }"
 		"buffer.alert { color: #aa0000; font-weight: bold; }"
@@ -1326,7 +1327,7 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.input { font-size: %u; color: #0000aa; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
-		(unsigned)size_pt, font, (unsigned)size_pt,
+		(unsigned)size_pt, font, (unsigned)size_pt, (unsigned)size_pt,
 		(unsigned)(size_pt * RELATIVE_SIZE_MEDIUM), (unsigned)size_pt,
 		(unsigned)size_pt);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
