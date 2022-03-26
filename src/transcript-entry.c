@@ -26,6 +26,7 @@ struct _I7TranscriptEntry {
 	GtkLabel *command_label;
 	GtkLabel *transcript_label;
 	GtkLabel *expected_label;
+	GtkRevealer *bless_revealer;
 
 	unsigned long on_skein_notify_current_node_handler;
 	unsigned long on_node_notify_transcript_text_handler;
@@ -64,18 +65,21 @@ update_text(I7TranscriptEntry *self)
 			gtk_style_context_remove_class(style, "no-match");
 			gtk_style_context_remove_class(style, "near-match");
 			gtk_style_context_remove_class(style, "exact-match");
+			gtk_revealer_set_reveal_child(self->bless_revealer, TRUE);
 			break;
 		case I7_NODE_NO_MATCH:
 			gtk_style_context_add_class(style, "no-match");
 			gtk_style_context_remove_class(style, "no-expected");
 			gtk_style_context_remove_class(style, "near-match");
 			gtk_style_context_remove_class(style, "exact-match");
+			gtk_revealer_set_reveal_child(self->bless_revealer, TRUE);
 			break;
 		case I7_NODE_NEAR_MATCH:
 			gtk_style_context_add_class(style, "near-match");
 			gtk_style_context_remove_class(style, "no-expected");
 			gtk_style_context_remove_class(style, "no-match");
 			gtk_style_context_remove_class(style, "exact-match");
+			gtk_revealer_set_reveal_child(self->bless_revealer, TRUE);
 			break;
 		case I7_NODE_EXACT_MATCH:
 		default:
@@ -83,6 +87,7 @@ update_text(I7TranscriptEntry *self)
 			gtk_style_context_remove_class(style, "no-expected");
 			gtk_style_context_remove_class(style, "no-match");
 			gtk_style_context_remove_class(style, "near-match");
+			gtk_revealer_set_reveal_child(self->bless_revealer, FALSE);
 			break;
 	}
 }
@@ -202,6 +207,7 @@ i7_transcript_entry_class_init(I7TranscriptEntryClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7TranscriptEntry, command_label);
 	gtk_widget_class_bind_template_child(widget_class, I7TranscriptEntry, transcript_label);
 	gtk_widget_class_bind_template_child(widget_class, I7TranscriptEntry, expected_label);
+	gtk_widget_class_bind_template_child(widget_class, I7TranscriptEntry, bless_revealer);
 	gtk_widget_class_bind_template_callback(widget_class, on_transcript_entry_blessed);
 	gtk_widget_class_bind_template_callback(widget_class, on_transcript_entry_play_to_here);
 	gtk_widget_class_bind_template_callback(widget_class, on_transcript_entry_show_knot);
