@@ -33,6 +33,7 @@
 #include "skein-view.h"
 #include "source-view.h"
 #include "story.h"
+#include "transcript-entry.h"
 
 enum {
 	PROP_0,
@@ -73,7 +74,6 @@ G_DEFINE_TYPE_WITH_PRIVATE(I7Story, i7_story, I7_TYPE_DOCUMENT);
 void on_skein_modified(I7Skein *, I7Story *);
 void on_node_activate(I7Skein *, I7Node *, I7Story *);
 void on_node_popup(I7SkeinView *, I7Node *);
-void on_differs_badge_activate(I7Skein *, I7Node *, I7Story *);
 void on_labels_changed(I7Skein *, I7Panel *);
 void on_show_node(I7Skein *, I7SkeinShowNodeReason, I7Node *, I7Panel *);
 /* Defined in story-game.c */
@@ -789,6 +789,14 @@ i7_story_revert(I7Document *document)
 	g_object_unref(file);
 }
 
+static GtkWidget *
+transcript_create_list_widget(void *item, void *data)
+{
+	if (!item)
+		return NULL;
+	return i7_transcript_entry_new(I7_NODE(item));
+}
+
 /* TYPE SYSTEM */
 
 static void
@@ -814,7 +822,7 @@ story_init_panel(I7Story *self, I7Panel *panel)
 	g_signal_connect(panel, "display-compiler-report", G_CALLBACK(on_panel_display_compiler_report), self);
 	g_signal_connect(panel, "display-index-page", G_CALLBACK(on_panel_display_index_page), self);
 	g_signal_connect(priv->skein, "labels-changed", G_CALLBACK(on_labels_changed), panel);
-	g_signal_connect(priv->skein, "show-node", G_CALLBACK(on_show_node), panel);
+	g_signal_connect(priv->skein, "show-node", G_CALLBACK(on_show_node), self);
 	g_signal_connect(panel->tabs[I7_PANE_SKEIN], "node-menu-popup", G_CALLBACK(on_node_popup), NULL);
 	g_signal_connect(panel->tabs[I7_PANE_STORY], "started", G_CALLBACK(on_game_started), self);
 	g_signal_connect(panel->tabs[I7_PANE_STORY], "stopped", G_CALLBACK(on_game_stopped), self);
@@ -827,7 +835,8 @@ story_init_panel(I7Story *self, I7Panel *panel)
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_DEBUGGING]), priv->debug_log);
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->results_tabs[I7_RESULTS_TAB_INFORM6]), GTK_TEXT_BUFFER(priv->i6_source));
 	i7_skein_view_set_skein(I7_SKEIN_VIEW(panel->tabs[I7_PANE_SKEIN]), priv->skein);
-	gtk_tree_view_set_model(GTK_TREE_VIEW(panel->tabs[I7_PANE_TRANSCRIPT]), GTK_TREE_MODEL(priv->skein));
+	gtk_list_box_bind_model(GTK_LIST_BOX(panel->tabs[I7_PANE_TRANSCRIPT]), G_LIST_MODEL(priv->skein),
+		transcript_create_list_widget, NULL, NULL);
 
 	gtk_actionable_set_action_name(GTK_ACTIONABLE(panel->sourceview->previous), "win.previous-section");
 	gtk_actionable_set_action_name(GTK_ACTIONABLE(panel->sourceview->next), "win.next-section");
@@ -947,7 +956,7 @@ i7_story_init(I7Story *self)
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
-	g_signal_connect(priv->skein, "differs-badge-activate", G_CALLBACK(on_differs_badge_activate), self);
+	g_signal_connect_swapped(priv->skein, "differs-badge-activate", G_CALLBACK(i7_story_show_node_in_transcript), self);
 	g_signal_connect(priv->skein, "modified", G_CALLBACK(on_skein_modified), self);
 	priv->skein_settings = g_settings_new("com.inform7.IDE.preferences.skein");
 	g_settings_bind(priv->skein_settings, "horizontal-spacing",

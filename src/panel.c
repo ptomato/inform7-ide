@@ -26,7 +26,6 @@
 #include "html.h"
 #include "panel.h"
 #include "skein-view.h"
-#include "transcript-renderer.h"
 
 #define PUBLIC_LIBRARY_URI "http://www.emshort.com/pl/"
 #define PUBLIC_LIBRARY_HOME_URI PUBLIC_LIBRARY_URI "index.html"
@@ -803,21 +802,6 @@ i7_panel_init(I7Panel *self)
 	chimara_glk_set_interactive(CHIMARA_GLK(game), TRUE);
 	chimara_glk_set_protect(CHIMARA_GLK(game), FALSE);
 
-	/* Add the transcript cell renderer */
-	self->transcript_cell = GTK_CELL_RENDERER(i7_cell_renderer_transcript_new());
-	gtk_cell_renderer_set_padding(self->transcript_cell, 4, 4);
-	self->transcript_column = GTK_TREE_VIEW_COLUMN(load_object(builder, "transcript_column"));
-	gtk_tree_view_column_pack_start(self->transcript_column, self->transcript_cell, TRUE);
-	gtk_tree_view_column_set_attributes(self->transcript_column, self->transcript_cell,
-	    "command", I7_SKEIN_COLUMN_COMMAND,
-	    "transcript-text", I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
-	    "expected-text", I7_SKEIN_COLUMN_EXPECTED_TEXT,
-	    "match-type", I7_SKEIN_COLUMN_MATCH_TYPE,
-	    "current", I7_SKEIN_COLUMN_CURRENT,
-	    "played", I7_SKEIN_COLUMN_PLAYED,
-	    "changed", I7_SKEIN_COLUMN_CHANGED,
-	    NULL);
-	
 	/* Save public pointers to specific widgets */
 	LOAD_WIDGET(z8);
 	LOAD_WIDGET(glulx);
@@ -825,8 +809,6 @@ i7_panel_init(I7Panel *self)
 	LOAD_WIDGET(nobble_rng);
 	LOAD_WIDGET(debugging_scrolledwindow);
 	LOAD_WIDGET(inform6_scrolledwindow);
-	LOAD_WIDGET(transcript_menu);
-	g_object_ref(self->transcript_menu);
 	LOAD_WIDGET(labels);
 	LOAD_WIDGET(layout);
 	LOAD_WIDGET(trim);
@@ -922,7 +904,6 @@ i7_panel_finalize(GObject *object)
 	I7Panel *self = I7_PANEL(object);
 
 	history_free_queue(self);
-	g_object_unref(self->transcript_menu);
 
 	G_OBJECT_CLASS(i7_panel_parent_class)->finalize(object);
 }

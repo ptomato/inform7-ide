@@ -72,7 +72,6 @@ typedef struct {
 	GtkWidget *nobble_rng;
 	GtkWidget *debugging_scrolledwindow;
 	GtkWidget *inform6_scrolledwindow;
-	GtkWidget *transcript_menu;
 	GtkWidget *labels;
 	GtkWidget *layout;
 	GtkWidget *trim;

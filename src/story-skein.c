@@ -46,13 +46,6 @@ on_node_activate(I7Skein *skein, I7Node *newnode, I7Story *story)
 	}
 }
 
-void
-on_differs_badge_activate(I7Skein *skein, I7Node *node, I7Story *story)
-{
-	i7_story_show_node_in_transcript(story, node);
-	i7_story_show_pane(story, I7_PANE_TRANSCRIPT);
-}
-
 typedef struct {
 	I7Node *node;
 	I7Skein *skein;
@@ -84,7 +77,7 @@ on_popup_menu_edit_label(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 static void
 on_popup_menu_show_in_transcript(GtkMenuItem *menuitem, I7PopupMenuCallbackData *data)
 {
-	on_differs_badge_activate(data->skein, data->node, data->story);
+    i7_story_show_node_in_transcript(data->story, data->node);
 	g_slice_free(I7PopupMenuCallbackData, data);
 }
 
@@ -271,7 +264,8 @@ on_show_node(I7Skein *skein, I7SkeinShowNodeReason why, I7Node *node, I7Story *s
 {
     I7StoryPanel which = i7_story_choose_panel(self, I7_PANE_SKEIN);
 	i7_skein_view_show_node(I7_SKEIN_VIEW(self->panel[which]->tabs[I7_PANE_SKEIN]), node, why);
-    i7_story_show_pane(self, I7_PANE_SKEIN);
+    if (why != I7_REASON_COMMAND)
+        i7_story_show_pane(self, I7_PANE_SKEIN);
 }
 
 void

@@ -1,11 +1,12 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2013, 2015, 2019 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2013, 2015, 2019, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
 
 #include <errno.h>
+#include <stdbool.h>
 
 #include <gio/gio.h>
 #include <glib/gi18n.h>
@@ -64,11 +65,11 @@ enum
 
 static guint i7_skein_signals[LAST_SIGNAL] = { 0 };
 
-static void i7_skein_tree_model_init(GtkTreeModelIface *iface);
+static void i7_skein_list_model_init(GListModelInterface *iface);
 
 G_DEFINE_TYPE_EXTENDED(I7Skein, i7_skein, GOO_TYPE_CANVAS_GROUP_MODEL, 0,
 	G_ADD_PRIVATE(I7Skein)
-    G_IMPLEMENT_INTERFACE(GTK_TYPE_TREE_MODEL, i7_skein_tree_model_init));
+    G_IMPLEMENT_INTERFACE(G_TYPE_LIST_MODEL, i7_skein_list_model_init));
 
 /* SIGNAL HANDLERS */
 
@@ -95,27 +96,12 @@ on_node_label_notify(I7Node *node, GParamSpec *pspec, I7Skein *self)
 }
 
 static void
-on_node_transcript_notify(I7Node *node, GParamSpec *pspec, I7Skein *self)
-{
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-	if(!i7_skein_is_node_in_current_thread(self, node))
-		return;
-	GtkTreePath *path = gtk_tree_path_new_from_indices(g_node_depth(node->gnode) - 1, -1);
-	GtkTreeIter iter = { .stamp = priv->stamp, .user_data = node };
-	gtk_tree_model_row_changed(GTK_TREE_MODEL(self), path, &iter);
-	gtk_tree_path_free(path);
-}
-
-static void
 node_listen(I7Skein *self, I7Node *node)
 {
 	g_signal_connect(node, "notify::command", G_CALLBACK(on_node_layout_notify), self);
-	g_signal_connect(node, "notify::command", G_CALLBACK(on_node_transcript_notify), self);
 	g_signal_connect(node, "notify::label", G_CALLBACK(on_node_label_notify), self);
 	g_signal_connect(node, "notify::transcript-text", G_CALLBACK(on_node_other_notify), self);
-	g_signal_connect(node, "notify::transcript-text", G_CALLBACK(on_node_transcript_notify), self);
 	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_layout_notify), self);
-	g_signal_connect(node, "notify::expected-text", G_CALLBACK(on_node_transcript_notify), self);
 	g_signal_connect(node, "notify::locked", G_CALLBACK(on_node_layout_notify), self);
 }
 
@@ -273,282 +259,58 @@ i7_skein_class_init(I7SkeinClass *klass)
 			20.0, 100.0, 40.0, G_PARAM_READWRITE | flags));
 }
 
-/* TREE MODEL INTERFACE IMPLEMENTATION */
+/* LIST MODEL INTERFACE IMPLEMENTATION */
 
-static G_GNUC_CONST GtkTreeModelFlags
-i7_skein_get_flags(GtkTreeModel *model)
+static GType
+i7_skein_get_item_type(GListModel *model)
 {
-	return GTK_TREE_MODEL_LIST_ONLY | GTK_TREE_MODEL_ITERS_PERSIST;
+	return I7_TYPE_NODE;
 }
 
-static G_GNUC_CONST int
-i7_skein_get_n_columns(GtkTreeModel *model)
-{
-	return I7_SKEIN_NUM_COLUMNS;
-}
-
-static G_GNUC_CONST GType
-i7_skein_get_column_type(GtkTreeModel *model, int ncol)
-{
-	switch(ncol) {
-		case I7_SKEIN_COLUMN_COMMAND:
-		case I7_SKEIN_COLUMN_TRANSCRIPT_TEXT:
-		case I7_SKEIN_COLUMN_EXPECTED_TEXT:
-			return G_TYPE_STRING;
-		case I7_SKEIN_COLUMN_MATCH_TYPE:
-			return G_TYPE_INT;
-		case I7_SKEIN_COLUMN_CURRENT:
-		case I7_SKEIN_COLUMN_PLAYED:
-		case I7_SKEIN_COLUMN_CHANGED:
-			return G_TYPE_BOOLEAN;
-		case I7_SKEIN_COLUMN_NODE_PTR:
-			return I7_TYPE_NODE;
-		default:
-			g_assert_not_reached();
-	}
-}
-
-/* We fill in the first user_data field of GtkTreeIter with a pointer to the
- I7Node referenced by the iter. */
-static gboolean
-i7_skein_get_iter(GtkTreeModel *model, GtkTreeIter *iter, GtkTreePath *path)
+static unsigned
+i7_skein_get_n_items(GListModel *model)
 {
 	I7Skein *self = I7_SKEIN(model);
 	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
 
-	int i = gtk_tree_path_get_indices(path)[0];
 	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-	int thread_depth = g_node_depth(last->gnode) - 1;
+	return g_node_depth(last->gnode);
+}
+
+static void *
+i7_skein_get_item(GListModel *model, unsigned pos)
+{
+	I7Skein *self = I7_SKEIN(model);
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
+
+	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
+	unsigned thread_depth = g_node_depth(last->gnode) - 1;
 	/* g_node_depth returns 0 for NULL and 1 for the root node */
-	
-	if(i > thread_depth)
-		return FALSE;
 
-	iter->stamp = priv->stamp;
-	
-	if(i == 0) {
-		iter->user_data = priv->root;
-		return TRUE;
-	}
-	if(i == thread_depth) {
-		iter->user_data = last;
-		return TRUE;
-	}
-	
-	/* Make the uninitialized iterator point to the i'th node between the root
-	 node and the bottom of the current node's thread */
-	GNode *gnode = last->gnode;
-	for( ; thread_depth > i; thread_depth--)
+	if (pos > thread_depth)
+		return NULL;
+
+	if (pos == 0)
+		return g_object_ref(priv->root);
+
+	if (pos == thread_depth)
+		return g_object_ref(last);
+
+	/* Return the pos'th node between the root node and the bottom of the
+	 * current node's thread */
+	GNode *gnode;
+	for (gnode = last->gnode; thread_depth > pos; thread_depth--)
 		gnode = gnode->parent;
-	
-	iter->user_data = gnode->data;
-	return TRUE;
-}
 
-static GtkTreePath *
-i7_skein_get_path(GtkTreeModel *model, GtkTreeIter *iter)
-{
-	I7Skein *self = I7_SKEIN(model);
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-	
-	g_return_val_if_fail(VALID_ITER(iter, priv), NULL);
-
-	GtkTreePath *path = gtk_tree_path_new();
-	int index = g_node_depth(((I7Node *)iter->user_data)->gnode) - 1;
-	gtk_tree_path_append_index(path, index);
-	return path;
+	return g_object_ref(gnode->data);
 }
 
 static void
-i7_skein_get_value(GtkTreeModel *model, GtkTreeIter *iter, int column, GValue *value)
+i7_skein_list_model_init(GListModelInterface *iface)
 {
-	I7Skein *self = I7_SKEIN(model);
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-	
-	g_return_if_fail(VALID_ITER(iter, priv));
-	g_return_if_fail(column >= 0 && column < I7_SKEIN_NUM_COLUMNS);
-
-	switch(column) {
-		case I7_SKEIN_COLUMN_COMMAND:
-			g_value_init(value, G_TYPE_STRING);
-			g_value_take_string(value, i7_node_get_command(iter->user_data));
-			break;
-		case I7_SKEIN_COLUMN_TRANSCRIPT_TEXT:
-			g_value_init(value, G_TYPE_STRING);
-			g_value_set_string(value, i7_node_get_transcript_pango_string(iter->user_data));
-			break;
-		case I7_SKEIN_COLUMN_EXPECTED_TEXT:
-			g_value_init(value, G_TYPE_STRING);
-			g_value_set_string(value, i7_node_get_expected_pango_string(iter->user_data));
-			break;
-		case I7_SKEIN_COLUMN_MATCH_TYPE:
-			g_value_init(value, G_TYPE_INT);
-			g_value_set_int(value, i7_node_get_match_type(iter->user_data));
-			break;
-		case I7_SKEIN_COLUMN_CURRENT:
-			g_value_init(value, G_TYPE_BOOLEAN);
-			g_value_set_boolean(value, priv->current == iter->user_data);
-			break;
-		case I7_SKEIN_COLUMN_PLAYED:
-			g_value_init(value, G_TYPE_BOOLEAN);
-			g_value_set_boolean(value, priv->played == iter->user_data);
-			break;
-		case I7_SKEIN_COLUMN_CHANGED:
-			g_value_init(value, G_TYPE_BOOLEAN);
-			g_value_set_boolean(value, i7_node_get_changed(iter->user_data));
-			break;
-		case I7_SKEIN_COLUMN_NODE_PTR:
-			g_value_init(value, I7_TYPE_NODE);
-			g_value_set_object(value, iter->user_data);
-			break;
-		default:
-			g_assert_not_reached();
-	}
-}
-
-/* Invalidate an iter on this model */
-static void
-invalidate_iter(GtkTreeIter *iter)
-{
-	iter->stamp = 0;
-	iter->user_data = NULL;
-}
-
-static gboolean
-i7_skein_iter_next(GtkTreeModel *model, GtkTreeIter *iter)
-{
-	I7Skein *self = I7_SKEIN(model);
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-	
-	g_return_val_if_fail(VALID_ITER(iter, priv), FALSE);
-
-	/* Don't go beyond the bottom of "current" node's thread (end of the list) */
-	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-	if(iter->user_data == last) {
-		invalidate_iter(iter);
-		return FALSE;
-	}
-	
-	GNode *gnode = ((I7Node *)iter->user_data)->gnode;
-
-	for(gnode = gnode->children; gnode; gnode = gnode->next) {
-		if(i7_node_in_thread(gnode->data, last))
-			break;
-	}
-	g_assert(gnode);
-
-	iter->user_data = gnode->data;
-	return TRUE;
-}
-
-static gboolean
-i7_skein_iter_children(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent)
-{
-	/* This is a list, nodes have no children */
-	if(parent) {
-		invalidate_iter(iter);
-		return FALSE;
-	}
-
-	/* If parent was NULL, return the root node */
-	I7Skein *self = I7_SKEIN(model);
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-
-	iter->stamp = priv->stamp;
-	iter->user_data = priv->root;
-	return TRUE;
-}
-
-static G_GNUC_CONST gboolean
-i7_skein_iter_has_child(GtkTreeModel *model, GtkTreeIter *iter)
-{
-	return FALSE;
-}
-
-static int
-i7_skein_iter_n_children(GtkTreeModel *model, GtkTreeIter *iter)
-{
-	I7Skein *self = I7_SKEIN(model);
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-
-	/* If iter is NULL, return the number of toplevel nodes, i.e. the length of
-	 the list */
-	if(!iter) {
-		I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-		return g_node_depth(last->gnode);
-	}
-	return 0;
-}
-
-static gboolean
-i7_skein_iter_nth_child(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent, int n)
-{
-	/* This is a list, nodes have no children */
-	if(parent) {
-		invalidate_iter(iter);
-		return FALSE;
-	}
-
-	/* If parent was NULL, return the n'th toplevel node, i.e. the n'th node in
-	 the list*/
-	I7Skein *self = I7_SKEIN(model);
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-
-	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-	int thread_depth = g_node_depth(last->gnode) - 1;
-	/* g_node_depth returns 0 for NULL and 1 for the root node */
-	
-	if(n > thread_depth) {
-		invalidate_iter(iter);
-		return FALSE;
-	}
-
-	iter->stamp = priv->stamp;
-	
-	if(n == 0) {
-		iter->user_data = priv->root;
-		return TRUE;
-	}
-	if(n == thread_depth) {
-		iter->user_data = last;
-		return TRUE;
-	}
-	
-	/* Make the uninitialized iterator point to the i'th node between the root
-	 node and the bottom of the current node's thread */
-	GNode *gnode = last->gnode;
-	for( ; thread_depth > n; thread_depth--)
-		gnode = gnode->parent;
-	
-	iter->user_data = gnode->data;
-	return TRUE;
-}
-
-static gboolean
-i7_skein_iter_parent(GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *child)
-{
-	/* This is a list, nodes have no parents */
-	invalidate_iter(iter);
-	return FALSE;
-}
-
-static void
-i7_skein_tree_model_init(GtkTreeModelIface *iface)
-{
-	iface->get_flags = i7_skein_get_flags;
-	iface->get_n_columns = i7_skein_get_n_columns;
-	iface->get_column_type = i7_skein_get_column_type;
-	iface->get_iter = i7_skein_get_iter;
-	iface->get_path = i7_skein_get_path;
-	iface->get_value = i7_skein_get_value;
-	iface->iter_next = i7_skein_iter_next;
-	iface->iter_children = i7_skein_iter_children;
-	iface->iter_has_child = i7_skein_iter_has_child;
-	iface->iter_n_children = i7_skein_iter_n_children;
-	iface->iter_nth_child = i7_skein_iter_nth_child;
-	iface->iter_parent = i7_skein_iter_parent;
-	iface->ref_node = NULL; /* optional */
-	iface->unref_node = NULL; /* optional */
+	iface->get_item_type = i7_skein_get_item_type;
+	iface->get_n_items = i7_skein_get_n_items;
+	iface->get_item = i7_skein_get_item;
 }
 
 /* PUBLIC FUNCTIONS */
@@ -591,41 +353,41 @@ i7_skein_set_current_node(I7Skein *self, I7Node *node)
 	I7Node *old_last = i7_skein_get_thread_bottom(self, priv->current);
 	/* New end of the list */
 	I7Node *last = i7_skein_get_thread_bottom(self, node);
-	GNode *gnode = old_last->gnode;
-	
-	/* Emit row-inserted and row-deleted signals on our tree model interface */
+
+	priv->current = node;
+
+	/* Emit items-changed on our list model interface */
 	if(old_last != last) {
+		unsigned removed = 0;
+		unsigned added = 0;
+
 		/* Find a common ancestor of the old and new list bottoms */
-		int depth = g_node_depth(gnode) - 1;
-		for( ; gnode && !i7_node_in_thread(gnode->data, last); gnode = gnode->parent) {
-			GtkTreePath *path = gtk_tree_path_new_from_indices(depth--, -1);
-			gtk_tree_model_row_deleted(GTK_TREE_MODEL(self), path);
-			gtk_tree_path_free(path);
+		GNode *gnode = old_last->gnode;
+		unsigned depth = g_node_depth(gnode);
+		while (gnode && !i7_node_in_thread(gnode->data, last)) {
+			depth--;
+			removed++;
+			gnode = gnode->parent;
 		}
+
 		/* gnode is now the common ancestor, possibly the root node if no
 		 common ancestor, or possibly NULL if the tree is being rebuilt; in
-		 the latter case, first add the root node to the model */
+		 the latter case, count the new root node as added */
 		if(gnode == NULL) {
 			gnode = priv->root->gnode;
-			GtkTreePath *path = gtk_tree_path_new_from_indices(0, -1);
-			GtkTreeIter iter = { .stamp = priv->stamp, .user_data = priv->root };
-			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-			gtk_tree_path_free(path);
-			depth = 0;
+			added++;
 		}
 		while(gnode != last->gnode) {
 			for(gnode = gnode->children; gnode; gnode = gnode->next) {
 				if(i7_node_in_thread(gnode->data, last))
 					break;
 			}
-			GtkTreePath *path = gtk_tree_path_new_from_indices(++depth, -1);
-			GtkTreeIter iter = { .stamp = priv->stamp, .user_data = gnode->data };
-			gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-			gtk_tree_path_free(path);
+			added++;
 		}
+
+		g_list_model_items_changed(G_LIST_MODEL(self), depth, removed, added);
 	}
-	
-	priv->current = node;
+
 	g_object_notify(G_OBJECT(self), "current-node");
 	g_signal_emit_by_name(self, "needs-layout");
 }
@@ -1084,43 +846,6 @@ i7_skein_schedule_draw(I7Skein *self, GooCanvas *canvas)
 	gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)idle_draw, draw_data, (GDestroyNotify)destroy_draw_data);
 }
 
-/* Remove all the rows from the tree model, in preparation for a complicated
- * modification */
-static void
-remove_all_from_model(I7Skein *self)
-{
-	int nrows = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self), NULL);
-	int count;
-	for(count = nrows - 1; count >= 0; count--) {
-		GtkTreePath *path = gtk_tree_path_new_from_indices(count, -1);
-		gtk_tree_model_row_deleted(GTK_TREE_MODEL(self), path);
-		gtk_tree_path_free(path);
-	}
-}
-
-/* Put all the rows of the current thread back in the tree model, after
- * finishing a complicated modification */
-static void
-reinstate_all_in_model(I7Skein *self)
-{
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
-	I7Node *last = i7_skein_get_thread_bottom(self, priv->current);
-	GNode *gnode = priv->root->gnode;
-	while(gnode) {
-		int depth = g_node_depth(gnode) - 1;
-		GtkTreePath *path = gtk_tree_path_new_from_indices(depth, -1);
-		GtkTreeIter iter = { .stamp = priv->stamp, .user_data = gnode->data };
-		gtk_tree_model_row_inserted(GTK_TREE_MODEL(self), path, &iter);
-		gtk_tree_path_free(path);
-
-		/* Advance to the next node in the thread */
-		for(gnode = gnode->children; gnode; gnode = gnode->next) {
-			if(i7_node_in_thread(gnode->data, last))
-				break;
-		}
-	}
-}
-
 /* Add a new node with the given command, under the played node. Unless there
  is already a node with that command. In either case, return a pointer to that
  node. */
@@ -1140,12 +865,10 @@ i7_skein_new_command(I7Skein *self, const gchar *command)
 		node = i7_node_new(node_command, "", "", "", TRUE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 		node_listen(self, node);
 
-		gboolean remove = i7_skein_is_node_in_current_thread(self, priv->played);
-		if(remove)
-		   remove_all_from_model(self);
+		bool emit = i7_skein_is_node_in_current_thread(self, priv->played);
 		g_node_append(priv->played->gnode, node->gnode);
-		if(remove)
-			reinstate_all_in_model(self);
+		if (emit)
+			g_list_model_items_changed(G_LIST_MODEL(self), g_node_depth(node->gnode) - 1, 0, 1);
 		node_added = TRUE;
 	}
 	g_free(node_command);
@@ -1252,9 +975,10 @@ i7_skein_add_new(I7Skein *self, I7Node *node)
 	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, newnode);
 
-	remove_all_from_model(self);
+	bool emit = i7_skein_is_node_in_current_thread(self, node);
 	g_node_append(node->gnode, newnode->gnode);
-	reinstate_all_in_model(self);
+	if (emit)
+		g_list_model_items_changed(G_LIST_MODEL(self), g_node_depth(newnode->gnode) - 1, 0, 1);
 
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
@@ -1268,11 +992,12 @@ i7_skein_add_new_parent(I7Skein *self, I7Node *node)
 	I7Node *newnode = i7_node_new("", "", "", "", FALSE, FALSE, FALSE, 0, GOO_CANVAS_ITEM_MODEL(self));
 	node_listen(self, newnode);
 
-	remove_all_from_model(self);
+	bool emit = i7_skein_is_node_in_current_thread(self, node);
 	g_node_insert(node->gnode->parent, g_node_child_position(node->gnode->parent, node->gnode), newnode->gnode);
 	g_node_unlink(node->gnode);
 	g_node_append(newnode->gnode, node->gnode);
-	reinstate_all_in_model(self);
+	if (emit)
+		g_list_model_items_changed(G_LIST_MODEL(self), g_node_depth(newnode->gnode) - 1, 0, 1);
 
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
@@ -1293,12 +1018,10 @@ i7_skein_remove_all(I7Skein *self, I7Node *node)
 		i7_skein_set_played_node(self, priv->root);
 	if(i7_skein_is_node_in_current_thread(self, node))
 		i7_skein_set_current_node(self, priv->root);
-	
-	remove_all_from_model(self);
+
 	g_node_unlink(node->gnode);
 	g_node_traverse(node->gnode, G_POST_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)remove_node_from_canvas, self);
-	reinstate_all_in_model(self);
-	
+
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
 	return TRUE;
@@ -1317,7 +1040,6 @@ i7_skein_remove_single(I7Skein *self, I7Node *node)
 	if(i7_skein_is_node_in_current_thread(self, node))
 		i7_skein_set_current_node(self, priv->root);
 
-	remove_all_from_model(self);
 	if(!G_NODE_IS_LEAF(node->gnode)) {
 		int i;
 		for(i = g_node_n_children(node->gnode) - 1; i >= 0; i--) {
@@ -1328,8 +1050,7 @@ i7_skein_remove_single(I7Skein *self, I7Node *node)
 	}
 	g_node_unlink(node->gnode);
 	remove_node_from_canvas(node->gnode, self);
-	reinstate_all_in_model(self);
-	
+
 	g_signal_emit_by_name(self, "needs-layout");
 	g_signal_emit_by_name(self, "modified");
 	return TRUE;
