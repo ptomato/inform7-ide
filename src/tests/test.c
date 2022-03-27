@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2011, 2012, 2014 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2011, 2012, 2014, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -10,6 +10,7 @@
 
 #include "app.h"
 #include "app-test.h"
+#include "difftest.h"
 #include "skein-test.h"
 #include "story-test.h"
 
@@ -26,6 +27,10 @@ main(int argc, char **argv)
 	g_test_add_func("/app/extensions/case-insensitive", test_app_extensions_case_insensitive);
 	g_test_add_func("/app/colorscheme/install-remove", test_app_colorscheme_install_remove);
 	g_test_add_func("/app/colorscheme/get-current", test_app_colorscheme_get_current);
+
+	g_test_add_func("/diffs/same", test_diffs_same);
+	g_test_add_func("/diffs/whitespace", test_diffs_whitespace);
+	g_test_add_func("/diffs/different", test_diffs_different);
 
 	g_test_add_func("/skein/import", test_skein_import);
 

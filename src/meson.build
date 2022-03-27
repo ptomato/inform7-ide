@@ -37,8 +37,8 @@ executable('inform7-ide', 'main.c', export_dynamic: true,
     install_rpath: get_option('prefix') / get_option('libdir'))
 
 test_data_dir = meson.current_source_dir() / 'tests'
-test_inform7 = executable('test-inform7', 'tests/test.c', 'tests/app-test.c',
-    'tests/skein-test.c', 'tests/story-test.c',
+test_inform7 = executable('test-inform7', 'tests/difftest.c', 'tests/test.c',
+    'tests/app-test.c', 'tests/skein-test.c', 'tests/story-test.c',
     include_directories: top_include,
     dependencies: [glib, gtk, gtksourceview, goocanvas], link_whole: gui)
 
