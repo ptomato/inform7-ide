@@ -164,7 +164,6 @@ create_document_actions(I7Document *self)
 		{ "save-copy", (ActionCallback)action_save_copy },
 		{ "revert", (ActionCallback)action_revert },
 		{ "page-setup", (ActionCallback)action_page_setup },
-		{ "print-preview", (ActionCallback)action_print_preview },
 		{ "print", (ActionCallback)action_print },
 		{ "close", (ActionCallback)action_close },
 		{ "undo", (ActionCallback)action_undo },

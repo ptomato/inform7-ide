@@ -24,7 +24,6 @@ void action_save_as(GSimpleAction *action, GVariant *parameter, I7Document *docu
 void action_save_copy(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_revert(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_page_setup(GSimpleAction *action, GVariant *parameter, I7Document *document);
-void action_print_preview(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_print(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_close(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_quit(GSimpleAction *action, GVariant *parameter, I7App *app);

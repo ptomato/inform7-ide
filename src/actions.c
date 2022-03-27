@@ -260,29 +260,6 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	gtk_print_operation_set_n_pages(print, gtk_source_print_compositor_get_n_pages(compositor));
 }
 
-/* File->Print Preview... */
-void
-action_print_preview(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	GError *error = NULL;
-	I7App *theapp = I7_APP(g_application_get_default());
-	GtkPrintOperation *print = gtk_print_operation_new();
-	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
-
-	if(settings)
-		gtk_print_operation_set_print_settings(print, settings);
-
-	g_signal_connect(print, "begin-print", G_CALLBACK(on_begin_print), document);
-
-	GtkPrintOperationResult result = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PREVIEW, GTK_WINDOW(document), &error);
-	if(result == GTK_PRINT_OPERATION_RESULT_APPLY)
-		i7_app_set_print_settings(theapp, g_object_ref(gtk_print_operation_get_print_settings(print)));
-	else if(result == GTK_PRINT_OPERATION_RESULT_ERROR)
-		/* TRANSLATORS: File->Print Preview... */
-		error_dialog(GTK_WINDOW(document), error, _("There was an error printing: "));
-	g_object_unref(print);
-}
-
 /* File->Print... */
 void
 action_print(GSimpleAction *action, GVariant *parameter, I7Document *document)
