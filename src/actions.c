@@ -191,21 +191,6 @@ action_revert(GSimpleAction *action, GVariant *parameter, I7Document *document)
 	i7_document_revert(document);
 }
 
-/* File->Page Setup... */
-void
-action_page_setup(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	I7App *theapp = I7_APP(g_application_get_default());
-	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
-
-	if(!settings)
-		settings = gtk_print_settings_new();
-
-	GtkPageSetup *new_page_setup = gtk_print_run_page_setup_dialog(GTK_WINDOW(document), i7_app_get_page_setup(theapp), settings);
-
-	i7_app_set_page_setup(theapp, new_page_setup);
-}
-
 /* Callback for drawing a page to the output when requested. Just use the
  standard GtkSourcePrintCompositor way of doing it, no customizations. */
 static void
@@ -241,11 +226,6 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	gtk_source_print_compositor_set_wrap_mode(compositor, GTK_WRAP_WORD_CHAR);
 	g_autofree char *fontstring = i7_app_get_font_family(theapp);
 	gtk_source_print_compositor_set_body_font_name(compositor, fontstring);
-	GtkPageSetup *setup = i7_app_get_page_setup(theapp);
-	gtk_source_print_compositor_set_top_margin(compositor, gtk_page_setup_get_top_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
-	gtk_source_print_compositor_set_bottom_margin(compositor, gtk_page_setup_get_bottom_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
-	gtk_source_print_compositor_set_left_margin(compositor, gtk_page_setup_get_left_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
-	gtk_source_print_compositor_set_right_margin(compositor, gtk_page_setup_get_right_margin(setup, GTK_UNIT_MM), GTK_UNIT_MM);
 
 	/* Display a notification in the status bar while paginating */
 	i7_document_display_status_message(document, _("Paginating..."), PRINT_OPERATIONS);
@@ -267,6 +247,7 @@ action_print(GSimpleAction *action, GVariant *parameter, I7Document *document)
 	GError *error = NULL;
 	I7App *theapp = I7_APP(g_application_get_default());
 	GtkPrintOperation *print = gtk_print_operation_new();
+	gtk_print_operation_set_embed_page_setup(print, TRUE);
 	GtkPrintSettings *settings = i7_app_get_print_settings(theapp);
 
 	if(settings)

@@ -113,8 +113,6 @@ const char *i7_app_lookup_action_tooltip(I7App *self, const char *action_name, G
 
 GtkPrintSettings *i7_app_get_print_settings(I7App *self);
 void i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings);
-GtkPageSetup *i7_app_get_page_setup(I7App *self);
-void i7_app_set_page_setup(I7App *self, GtkPageSetup *setup);
 
 GtkSourceStyleSchemeManager *i7_app_get_color_scheme_manager(I7App *self);
 

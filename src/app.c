@@ -56,7 +56,6 @@ typedef struct {
 	GtkTreeStore *installed_extensions;
 	/* Current print settings */
 	GtkPrintSettings *print_settings;
-	GtkPageSetup *page_setup;
 	/* Color scheme manager */
 	GtkSourceStyleSchemeManager *color_scheme_manager;
 	/* Preferences settings */
@@ -195,7 +194,6 @@ i7_app_init(I7App *self)
 	/* Set print settings to NULL, since they are not remembered across
 	application runs (yet) */
 	priv->print_settings = NULL;
-	priv->page_setup = gtk_page_setup_new();
 
 	/* Create the Inform dir if it doesn't already exist */
 	GFile *extensions_file = i7_app_get_extension_file(self, NULL, NULL);
@@ -1463,24 +1461,6 @@ i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings)
 	if(priv->print_settings)
 		g_object_unref(priv->print_settings);
 	priv->print_settings = settings;
-}
-
-/* Getter function for the global page setup object */
-GtkPageSetup *
-i7_app_get_page_setup(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->page_setup;
-}
-
-/* Setter function for the global page setup object */
-void
-i7_app_set_page_setup(I7App *self, GtkPageSetup *setup)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	if(priv->page_setup)
-		g_object_unref(priv->page_setup);
-	priv->page_setup = setup;
 }
 
 /* Bring the preferences dialog to the front */
