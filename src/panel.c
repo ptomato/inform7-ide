@@ -384,45 +384,24 @@ action_jump_to_node(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 	i7_skein_view_show_node(skein_view, I7_NODE(node), I7_REASON_USER_ACTION);
 }
 
-/* Open the Skein layout dialog */
+/* Open the Skein layout popover */
 static void
 action_layout(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
-	GSettings *skein_settings = g_settings_new(SCHEMA_SKEIN);
-
-	/* Save old values in case the user decides to cancel */
-	double old_horizontal_spacing = g_settings_get_double(skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING);
-	double old_vertical_spacing = g_settings_get_double(skein_settings, PREFS_SKEIN_VERTICAL_SPACING);
-
-	int response = 1; /* 1 = "Use defaults" */
-	while(response == 1)
-		response = gtk_dialog_run(GTK_DIALOG(story->skein_spacing_dialog));
-		/* If "Use defaults" clicked, then restart the dialog */
-	gtk_widget_hide(story->skein_spacing_dialog);
-
-	if(response != GTK_RESPONSE_OK) {
-		g_settings_set_double(skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING, old_horizontal_spacing);
-		g_settings_set_double(skein_settings, PREFS_SKEIN_VERTICAL_SPACING, old_vertical_spacing);
-	}
+    GtkPopover *popover = GTK_POPOVER(story->skein_spacing_popover);
+    gtk_popover_set_relative_to(popover, panel->layout);
+    gtk_popover_popup(popover);
 }
 
-/* Open the Skein trimming dialog */
+/* Open the Skein trimming popover */
 static void
 action_trim(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
 	I7Story *story = I7_STORY(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
-	I7Skein *skein = i7_story_get_skein(story);
-
-	int response = gtk_dialog_run(GTK_DIALOG(story->skein_trim_dialog));
-	gtk_widget_hide(story->skein_trim_dialog);
-
-	if(response == GTK_RESPONSE_OK) {
-		int pruning = 31 - (int)gtk_range_get_value(GTK_RANGE(story->skein_trim_slider));
-		if(pruning < 1)
-			pruning = 1;
-		i7_skein_trim(skein, i7_skein_get_root_node(skein), pruning);
-	}
+    GtkPopover *popover = GTK_POPOVER(story->skein_trim_popover);
+    gtk_popover_set_relative_to(popover, panel->trim);
+    gtk_popover_popup(popover);
 }
 
 /*

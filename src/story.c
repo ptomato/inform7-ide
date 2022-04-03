@@ -918,11 +918,10 @@ i7_story_init(I7Story *self)
 	LOAD_WIDGET(facing_pages);
 	LOAD_WIDGET(notes_window);
 	LOAD_WIDGET(notes_view);
-	LOAD_WIDGET(skein_spacing_dialog);
+	LOAD_WIDGET(skein_spacing_popover);
 	LOAD_WIDGET(skein_spacing_horizontal);
 	LOAD_WIDGET(skein_spacing_vertical);
-	LOAD_WIDGET(skein_spacing_use_defaults);
-	LOAD_WIDGET(skein_trim_dialog);
+	LOAD_WIDGET(skein_trim_popover);
 	LOAD_WIDGET(skein_trim_slider);
 
 	/* Build the Open Extensions menu */
@@ -1026,10 +1025,10 @@ i7_story_init(I7Story *self)
 	g_simple_action_set_state(G_SIMPLE_ACTION(autocheck_spelling), spell_check_default);
 	i7_document_set_spellcheck(I7_DOCUMENT(self), g_variant_get_boolean(spell_check_default));
 
-	/* Make the Skein dialogs transient */
-	gtk_window_set_transient_for(GTK_WINDOW(self->skein_spacing_dialog), GTK_WINDOW(self));
-	gtk_window_set_transient_for(GTK_WINDOW(self->skein_trim_dialog), GTK_WINDOW(self));
-	
+	/* Retain the Skein popovers since they are not held by any other widget */
+	g_object_ref(self->skein_spacing_popover);
+    g_object_ref(self->skein_trim_popover);
+
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_storywindow_delete_event), NULL);
 }
@@ -1037,6 +1036,7 @@ i7_story_init(I7Story *self)
 static void
 i7_story_finalize(GObject *object)
 {
+    I7Story *self = I7_STORY(object);
 	I7StoryPrivate *priv = i7_story_get_instance_private(I7_STORY(object));
 	if(priv->copy_blorb_dest_file)
 		g_object_unref(priv->copy_blorb_dest_file);
@@ -1044,6 +1044,8 @@ i7_story_finalize(GObject *object)
 		g_object_unref(priv->compiler_output_file);
 	g_clear_pointer(&priv->settings, plist_free);
 	g_clear_pointer(&priv->manifest, plist_free);
+    g_clear_object(&self->skein_spacing_popover);
+    g_clear_object(&self->skein_trim_popover);
 	G_OBJECT_CLASS(i7_story_parent_class)->finalize(object);
 }
 

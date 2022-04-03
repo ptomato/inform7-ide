@@ -54,13 +54,12 @@ typedef struct {
 	GtkWidget *notes_view;
 	I7Panel *panel[I7_STORY_NUM_PANELS];
 
-	/* "Skein spacing options" dialog widgets */
-	GtkWidget *skein_spacing_dialog;
+	/* "Skein spacing options" popover widgets */
+	GtkWidget *skein_spacing_popover;  /* owned */
 	GtkWidget *skein_spacing_horizontal;
 	GtkWidget *skein_spacing_vertical;
-	GtkWidget *skein_spacing_use_defaults;
-	/* "Skein trim" dialog widgets */
-	GtkWidget *skein_trim_dialog;
+	/* "Skein trim" popover widgets */
+	GtkWidget *skein_trim_popover;  /* owned */
 	GtkWidget *skein_trim_slider;
 } I7Story;
 

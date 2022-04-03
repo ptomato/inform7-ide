@@ -274,4 +274,19 @@ on_skein_spacing_use_defaults_clicked(GtkButton *button, I7Story *self)
 	GSettings *skein_settings = i7_story_get_skein_settings(self);
 	g_settings_reset(skein_settings, PREFS_SKEIN_HORIZONTAL_SPACING);
 	g_settings_reset(skein_settings, PREFS_SKEIN_VERTICAL_SPACING);
+
+    gtk_popover_popdown(GTK_POPOVER(self->skein_spacing_popover));
+}
+
+void
+on_skein_trim_button_clicked(GtkButton *button, I7Story *self)
+{
+    I7Skein *skein = i7_story_get_skein(self);
+
+    int pruning = 31 - (int)gtk_range_get_value(GTK_RANGE(self->skein_trim_slider));
+    if (pruning < 1)
+        pruning = 1;
+    i7_skein_trim(skein, i7_skein_get_root_node(skein), pruning);
+
+    gtk_popover_popdown(GTK_POPOVER(self->skein_trim_popover));
 }
