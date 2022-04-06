@@ -231,7 +231,7 @@ i7_skein_class_init(I7SkeinClass *klass)
 	i7_skein_signals[SHOW_NODE] = g_signal_new("show-node",
 		G_OBJECT_CLASS_TYPE(klass), 0,
 		G_STRUCT_OFFSET(I7SkeinClass, show_node), NULL, NULL,
-		g_cclosure_marshal_VOID__UINT_POINTER, G_TYPE_NONE, 2,
+		/* marshaller = */ NULL, G_TYPE_NONE, 2,
 		G_TYPE_UINT, I7_TYPE_NODE);
 	/* modified - skein has been modified since last save */
 	i7_skein_signals[MODIFIED] = g_signal_new("modified",
