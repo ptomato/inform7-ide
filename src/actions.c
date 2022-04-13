@@ -421,6 +421,7 @@ action_search(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	gtk_widget_show(document->search_files_dialog);
 	gtk_window_present(GTK_WINDOW(document->search_files_dialog));
+    gtk_widget_grab_focus(document->search_files_entry);
 }
 
 /* Edit->Autocheck Spelling */
