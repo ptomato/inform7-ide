@@ -23,7 +23,7 @@ License:        GPL-3.0
 Summary:        The Inform 7 interactive fiction programming environment
 Url:            http://inform7.com/
 Group:          Development/Languages/Other
-Source0:        https://github.com/ptomato/gnome-inform7/releases/download/6M62/Gnome_UI_Source_%{version}.tar.xz
+Source0:        https://github.com/ptomato/inform7-ide/releases/download/6M62/Gnome_UI_Source_%{version}.tar.xz
 Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Linux_all.tar.gz
 BuildRequires:  fdupes
 BuildRequires:  libplist-devel

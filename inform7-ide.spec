@@ -5,7 +5,7 @@ Release: 2%{?dist}
 URL: http://inform7.com/
 License: GPLv3
 
-Source0: https://github.com/ptomato/gnome-inform7/releases/download/%{version}/inform7-ide-%{version}.tar.xz
+Source0: https://github.com/ptomato/inform7-ide/releases/download/%{version}/inform7-ide-%{version}.tar.xz
 Source1: http://inform7.com/apps/%{version}/I7_%{version}_Linux_all.tar.gz
 
 # Build requirements:

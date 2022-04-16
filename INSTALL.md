@@ -26,22 +26,22 @@ but if you're on Debian Bullseye (or later) or Ubuntu 20.10 (or later)
 you could just `apt install meson` instead of the below.
 
 ```
-$ git clone https://github.com/ptomato/gnome-inform7.git
-$ cd gnome-inform7
+$ git clone https://github.com/ptomato/inform7-ide.git
+$ cd inform7-ide
 $ virtualenv --python=python3 meson
 $ source meson/bin/activate
 $ pip install meson==0.55
 ```
 
 At this point you have to manually copy the appropriate `ni` binary
-for your architecture to `gnome-inform7/src/ni/ni` -– if you already
+for your architecture to `inform7-ide/src/ni/ni` -– if you already
 have Inform 7 installed, you already have a copy, probably in
 `/usr/local/libexec/ni`, otherwise find it in
 [the compiler package](http://inform7.com/apps/6M62/I7_6M62_Linux_all.tar.gz).
 
 ## Build and run for testing
 
-Once that’s done (still in the same `gnome-inform7` directory as above):
+Once that’s done (still in the same `inform7-ide` directory as above):
 
 ```
 $ meson _build
