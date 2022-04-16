@@ -1007,7 +1007,7 @@ action_about(GSimpleAction *action, GVariant *parameter, I7App *app)
 		"    Graham Nelson\n"
 		"    Andrew Plotkin\n"
 		"\n");
-	g_string_append(builder, _("Inform front-end written by:"));
+	g_string_append(builder, _("Inform app for Linux written by:"));
 	g_string_append(builder, "\n"
 		"    Philip Chimento\n"
 		"\n");
@@ -1015,19 +1015,29 @@ action_about(GSimpleAction *action, GVariant *parameter, I7App *app)
 	g_string_append(builder, "\n"
 		"    Adam Thornton\n"
 		"    Alan de Smet\n"
+		"    Andrew Geng\n"
 		"    Bart Massey\n"
+		"    Ben Kirwin\n"
 		"    Daniel Nilsson\n"
 		"    David Leverton\n"
+		"    Dominic Delabruere\n"
+		"    Ed Swartz\n"
 		"    Evil Tabby Cat\n"
 		"    Eric Forgeot\n"
+		"    Ian D. Bollinger\n"
+		"    interactivefiction\n"
 		"    Jonathan Liu\n"
+		"    Josh Giesbrecht\n"
 		"    Leandro Ribeiro\n"
 		"    Matteo Settenvini\n"
+		"    pteromys\n"
 		"    St\u00E9phane Aulery\n"
 		"    Vincent Petry\n"
-		"    Zachary Amsden\n");
-	g_string_append(builder, _("In addition, Andrew Hunter's OS X version\n"
-		"and David Kinder's Windows version\n"
+		"    Zachary Amsden\n"
+		"    Zed Lopez\n");
+	g_string_append(builder, _("In addition, the source code of the macOS app\n"
+		" (by Andrew Hunter and Toby Nelson)\n"
+		"and the Windows app (by David Kinder)\n"
 		"proved invaluable."));
 	g_string_append(builder, "\n\n");
 	g_string_append(builder, _("Interface designed by:"));
