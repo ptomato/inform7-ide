@@ -20,7 +20,7 @@ Name:           inform7-ide
 Version:        6M62
 Release:        0
 License:        GPL-3.0
-Summary:        Inform 7 interactive fiction programming language IDE
+Summary:        The Inform 7 interactive fiction programming environment
 Url:            http://inform7.com/
 Group:          Development/Languages/Other
 Source0:        https://github.com/ptomato/gnome-inform7/releases/download/6M62/Gnome_UI_Source_%{version}.tar.xz
@@ -51,10 +51,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %lang_package
 
 %description
-The Inform 7 IDE is a port of the Mac OS X and Windows versions of the
-integrated development environment for Inform 7. Inform 7 is a "natural"
-programming language for writing interactive fiction (also known as text
-adventures.).
+Inform is a design system for interactive fiction based on natural
+language, a new medium of writing which came out of the "text adventure"
+games of the 1980s.
+It has been used by many leading writers of IF over the last twenty
+years, for projects ranging from historical reconstructions, through
+games, to art pieces, which have won numerous awards and competitions.
 
 %prep
 %setup -q
