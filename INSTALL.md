@@ -1,8 +1,13 @@
-# Install prerequisites
+# Installation instructions
 
-The following works for Debian Buster. Steps would be extremely close
-on recent Ubuntus but exact package names may vary and will
-definitely vary on distros that aren’t Debian derivatives.
+These are installation instructions for Debian Linux distributions,
+particularly Debian Buster. The steps will be fairly close on other
+versions of Debian, as well as recent versions of Ubuntu.
+
+## Install prerequisites
+
+Exact package names may vary and will definitely vary on distros that
+aren’t Debian derivatives.
 
 ```
 $ sudo apt-get update && apt-get upgrade -y && apt-get install -y \
@@ -13,60 +18,80 @@ $ sudo apt-get update && apt-get upgrade -y && apt-get install -y \
     gstreamer1.0-plugins-bad gstreamer1.0-plugins-good \
     gstreamer1.0-tools git build-essential
 ```
+
 ## Meson
 
 Inform IDE requires meson >= 0.55.0. Debian Buster's is too old,
-but if you're or Debian Bullseye (or Sid) or Ubuntu 20.10 (or 21.04)
-could just apt install meson.
+but if you're on Debian Bullseye (or later) or Ubuntu 20.10 (or later)
+you could just `apt install meson` instead of the below.
 
 ```
-$ git clone -b gtk3 https://github.com/ptomato/gnome-inform7.git
+$ git clone https://github.com/ptomato/gnome-inform7.git
 $ cd gnome-inform7
 $ virtualenv --python=python3 meson
 $ source meson/bin/activate
 $ pip install meson==0.55
 ```
-At this point you have to manually copy the appropriate ni binary
-for your architecture to gnome-inform7/src/ni/ni -– if you already
+
+At this point you have to manually copy the appropriate `ni` binary
+for your architecture to `gnome-inform7/src/ni/ni` -– if you already
 have Inform 7 installed, you already have a copy, probably in
-/usr/local/libexec/ni , otherwise find it in
+`/usr/local/libexec/ni`, otherwise find it in
+[the compiler package](http://inform7.com/apps/6M62/I7_6M62_Linux_all.tar.gz).
 
-http://inform7.com/apps/6M62/I7_6M62_Linux_all.tar.gz
+## Build and run for testing
 
-Once that’s done (still in the same gnome-inform7 directory as above):
+Once that’s done (still in the same `gnome-inform7` directory as above):
 
 ```
-$ meson setup build
-$ cd build
-$ meson compile
-$ sudo meson install # WARNING! will overwrite any existing inform7-ide under /usr/local
+$ meson _build
+```
 
-# now you can run it with
+Now you can compile and run it, for testing, with
+
+```
+$ ./build-aux/run_uninstalled.sh
+```
+
+## System-wide installation
+
+To install it in your system, do the following.
+Note that this will **overwrite** any existing copy of inform7-ide under
+`/usr/local`.
+
+```
+$ meson _build -Dprefix=/usr/local
+$ ninja -C _build
+$ sudo ninja -C _build install
+```
+
+Now you can run it with
+
+```
 $ LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu inform7-ide
-# or if you don't do meson install, run with:
-$ LD_LIBRARY_PATH=gnome-inform7/build/subprojects/ratify:gnome-inform7/build/subprojects/chimara gnome-inform7/build/src/inform7-ide
 ```
 
-Or for whichever of those is appropriate, you could put the following in a
-file called, say, i7ide and put it in /usr/local/bin or elsewhere in your PATH
-(doing a ``chmod +x i7ide`` to ensure it's executable).
+Or you could put the following in a file called, say, `i7ide` and put it in
+`/usr/local/bin` or `~/.local/bin` or elsewhere in your `PATH` (doing a
+`chmod +x i7ide` to ensure it's executable).
 
 ```
 #!/bin/bash
 LD_LIBRARY_PATH=/usr/local/lib/x86_64-linux-gnu inform7-ide "$@" &
 ```
 
-To re-compile you can just go to gnome-inform7/build and run meson compile again.
-Sourcing meson/bin/activate just puts meson/bin in your PATH. So you can do that,
-or just explicitly run gnome-inform7/meson/bin/meson, e.g.,
+## Notes
 
-$ cd gnome-inform7/build
-$ ../meson/bin/meson compile
+* If you are upgrading from version 5J39 or earlier, and you are having
+  problems with extensions, you may have to delete your `~/Inform`
+  directory and reinstall your extensions.
+* If you have installed a pre-release package, you may need to first
+  remove it entirely before you install an official release.
+* If you were using the virtualenv / `source meson/bin/activate` method
+  of installing Meson, you will have to run `source meson/bin/activate`
+  every time you go to build Inform 7 again in a new terminal window.
 
-Unless you've created a user dedicated to building inform7-ide (not a terrible idea),
 I recommend against sourcing meson/bin/activate in your bashrc. When you use a virtualenv
 , for the duration of your session it's the python instance that takes priority, and
 it's a python that sees only the libraries you've installed there and not ones you may
 have installed system-wide.
-
-
