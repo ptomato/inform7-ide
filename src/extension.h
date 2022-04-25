@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2012 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2010, 2012 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #ifndef _EXTENSION_H_
@@ -47,7 +35,7 @@ typedef struct {
 GType i7_extension_get_type(void) G_GNUC_CONST;
 I7Extension *i7_extension_new(I7App *app, GFile *file, const char *title, const char *author);
 I7Extension *i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly);
-gboolean i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly);
-void i7_extension_set_read_only(I7Extension *extension, gboolean readonly);
+gboolean i7_extension_open(I7Extension *self, GFile *file, gboolean readonly);
+void i7_extension_set_read_only(I7Extension *self, gboolean readonly);
 
 #endif /* _EXTENSION_H_ */

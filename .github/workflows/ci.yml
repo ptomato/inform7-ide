@@ -1,0 +1,50 @@
+---
+name: CI workflow
+"on": [push]
+env:
+  CFLAGS: -fdiagnostics-color
+jobs:
+  run-tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: install-deps
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install \
+            gettext \
+            gstreamer1.0-plugins-bad \
+            gstreamer1.0-plugins-good \
+            gstreamer1.0-tools \
+            libgoocanvas-2.0-dev \
+            libgspell-1-dev \
+            libgstreamer1.0-dev \
+            libgtksourceview-4-dev \
+            libplist-dev \
+            libwebkit2gtk-4.0-dev \
+            libxml2-utils \
+            meson \
+            ninja-build
+
+      - name: upgrade-meson
+        run: pip3 install --upgrade meson
+
+      - uses: actions/checkout@v2
+
+      # Make a fake NI compiler binary so we don't have to download a closed
+      # source blob
+      - name: create-fake-ni-binary
+        run: |
+          echo '#!/bin/sh' >src/ni/ni
+          echo echo Inform 7 build \
+            $(grep '^compiler_version =' meson.build | \
+              grep -oE '[0-9][A-Z][0-9]{2}') has started. >>src/ni/ni
+          chmod u+x src/ni/ni
+
+      - name: configure
+        run: meson _build
+
+      - name: build
+        run: ninja -C _build
+
+      - name: test
+        run: xvfb-run -a meson test -C _build

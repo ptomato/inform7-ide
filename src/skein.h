@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2011 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #ifndef _SKEIN_H_
@@ -21,7 +9,6 @@
 #include "config.h"
 
 #include <cairo.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <goocanvas.h>
@@ -33,18 +20,6 @@ typedef enum {
 	I7_REASON_TRANSCRIPT,
 	I7_REASON_USER_ACTION
 } I7SkeinShowNodeReason;
-
-enum {
-	I7_SKEIN_COLUMN_COMMAND,
-	I7_SKEIN_COLUMN_TRANSCRIPT_TEXT,
-	I7_SKEIN_COLUMN_EXPECTED_TEXT,
-	I7_SKEIN_COLUMN_MATCH_TYPE,
-	I7_SKEIN_COLUMN_CURRENT,
-	I7_SKEIN_COLUMN_PLAYED,
-	I7_SKEIN_COLUMN_CHANGED,
-	I7_SKEIN_COLUMN_NODE_PTR,
-	I7_SKEIN_NUM_COLUMNS
-};
 
 G_BEGIN_DECLS
 

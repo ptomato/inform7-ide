@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2011, 2013, 2019 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #ifndef CONFIG_FILE_H
@@ -22,9 +10,6 @@
 
 #include <glib.h>
 #include <pango/pango.h>
-
-#define STANDARD_FONT_FALLBACK "Sans 11"
-#define MONOSPACE_FONT_FALLBACK "Monospace 11"
 
 /* Three options for editor font */
 typedef enum {
@@ -47,7 +32,7 @@ typedef enum {
 } I7PrefsInterpreter;
 
 /* Pango point sizes of text size options */
-#define DEFAULT_SIZE_STANDARD	12
+#define DEFAULT_SIZE_STANDARD 10
 #define RELATIVE_SIZE_STANDARD 1.0
 #define RELATIVE_SIZE_MEDIUM 1.2
 #define RELATIVE_SIZE_LARGE 1.4
@@ -57,6 +42,7 @@ typedef enum {
 #define DEFAULT_TAB_WIDTH 8
 
 /* Schemas */
+#define SCHEMA_SYSTEM "org.gnome.desktop.interface"
 #define SCHEMA_PREFERENCES "com.inform7.IDE.preferences"
 #define SCHEMA_SKEIN "com.inform7.IDE.preferences.skein"
 #define SCHEMA_STATE "com.inform7.IDE.state"
@@ -93,14 +79,13 @@ typedef enum {
 #define PREFS_SKEIN_HORIZONTAL_SPACING  "horizontal-spacing"
 #define PREFS_SKEIN_VERTICAL_SPACING    "vertical-spacing"
 
+#define PREFS_SYSTEM_DOCUMENT_FONT  "document-font-name"
+#define PREFS_SYSTEM_MONOSPACE_FONT "monospace-font-name"
+
 extern const char *font_set_enum[], *font_size_enum[], *interpreter_enum[];
 
 GVariant *settings_enum_set_mapping(const GValue *property_value, const GVariantType *expected_type, char **enum_values);
 gboolean settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum_values);
 void init_config_file(GSettings *prefs);
-PangoFontDescription *get_desktop_standard_font(void);
-PangoFontDescription *get_desktop_monospace_font(void);
-gint get_font_size(PangoFontDescription *font);
-PangoFontDescription *get_font_description(void);
 
 #endif

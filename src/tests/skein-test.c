@@ -1,23 +1,14 @@
-/*  Copyright (C) 2012 P. F. Chimento
- *  This file is part of GNOME Inform 7.
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2012, 2021 Philip Chimento <philip.chimento@gmail.com>
  */
 
+#include "config.h"
+
 #include <glib.h>
-#include "skein.h"
+
 #include "node.h"
+#include "skein.h"
 
 void
 test_skein_import(void)
@@ -25,7 +16,8 @@ test_skein_import(void)
 	GError *err = NULL;
 	I7Skein *skein = i7_skein_new();
 	I7Node *node = i7_skein_get_root_node(skein);
-	GFile *commands_file = g_file_new_for_path(TEST_DATA_DIR "commands.rec");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "commands.rec", NULL);
+	g_autoptr(GFile) commands_file = g_file_new_for_path(filename);
 	char * const commands[] = {
 		"- start -",
 		"look at wallpaper",
@@ -52,6 +44,5 @@ test_skein_import(void)
 		node = child_gnode? child_gnode->data : NULL;
 	}
 
-	g_object_unref(commands_file);
 	g_object_unref(skein);
 }

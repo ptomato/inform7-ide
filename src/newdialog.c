@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2013, 2019 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -100,8 +88,9 @@ on_newdialog_cancel(GtkAssistant *assistant, I7NewProjectOptions *options)
 	gtk_widget_destroy(GTK_WIDGET(assistant));
 	new_project_options_free(options);
 	/* If we aren't editing a story, go back to the welcome dialog */
-	if(i7_app_get_num_open_documents(i7_app_get()) == 0) {
-		GtkWidget *welcome_dialog = create_welcome_dialog();
+	GtkApplication *theapp = GTK_APPLICATION(g_application_get_default());
+	if (gtk_application_get_windows(theapp) == NULL) {
+		GtkWidget *welcome_dialog = create_welcome_dialog(theapp);
 		gtk_widget_show(welcome_dialog);
 	}
 }
@@ -186,7 +175,7 @@ void
 on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptions *options)
 {
 	char *text, *dirpath;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	switch(gtk_assistant_get_current_page(assistant)) {
@@ -211,11 +200,6 @@ on_newdialog_prepare(GtkAssistant *assistant, GtkWidget *page, I7NewProjectOptio
 			gtk_assistant_set_page_complete(assistant, page, TRUE);
 			break;
 	}
-	GdkPixbuf *icon = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(),
-		"inform7", 128, 0, NULL); /* just set NULL on failure */
-	gtk_assistant_set_page_side_image(assistant, page, icon);
-	if(icon)
-		g_object_unref(icon);
 }
 
 void
@@ -223,7 +207,7 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 {
 	char *filename;
 	GFile *file;
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	/* Save the author name to the config file */
@@ -233,12 +217,12 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 		case I7_NEW_PROJECT_INFORM7_STORY:
 			filename = g_strconcat(options->name, ".inform", NULL);
 			file = g_file_get_child(options->directory, filename);
-			i7_story_new(i7_app_get(), file, options->name, options->author);
+			i7_story_new(theapp, file, options->name, options->author);
 			break;
 		case I7_NEW_PROJECT_INFORM7_EXTENSION:
 			filename = g_strconcat(options->name, ".i7x", NULL);
 			file = g_file_get_child(options->directory, filename);
-			i7_extension_new(i7_app_get(), file, options->name, options->author);
+			i7_extension_new(theapp, file, options->name, options->author);
 			break;
 		default:
 			on_newdialog_cancel(assistant, options);
@@ -249,6 +233,8 @@ on_newdialog_close(GtkAssistant *assistant, I7NewProjectOptions *options)
 
 	new_project_options_free(options);
 	gtk_widget_destroy(GTK_WIDGET(assistant));
+
+	g_application_release(g_application_get_default());
 }
 
 static gboolean
@@ -267,9 +253,8 @@ create_new_dialog(void)
 	I7NewProjectOptions *options = g_slice_new0(I7NewProjectOptions);
 	options->type = I7_NEW_PROJECT_INFORM7_STORY;
 
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "newdialog.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, options);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/newdialog.ui");
+	gtk_builder_connect_signals(builder, options);
 	options->assistant = GTK_WIDGET(load_object(builder, "newdialog"));
 	options->label = GTK_WIDGET(load_object(builder, "project_type_description"));
 	options->author_box = GTK_WIDGET(load_object(builder, "new_author"));
@@ -318,7 +303,8 @@ create_new_dialog(void)
 	gtk_tree_selection_select_path(select, default_path);
 	gtk_tree_path_free(default_path);
 
-	g_object_unref(builder);
+	/* This is for all intents and purposes an application window */
+	g_application_hold(g_application_get_default());
 
 	return options->assistant;
 }

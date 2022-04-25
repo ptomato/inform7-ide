@@ -1,22 +1,14 @@
-/*  Copyright (C) 2011, 2012 P. F. Chimento
- *  This file is part of GNOME Inform 7.
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2011, 2012, 2021 Philip Chimento <philip.chimento@gmail.com>
  */
 
+#include "config.h"
+
 #include <string.h>
+
 #include <glib.h>
+
 #include "app-test.h"
 #include "app.h"
 #include "configfile.h"
@@ -25,10 +17,8 @@
 void
 test_app_create(void)
 {
-	I7App *theapp = i7_app_get();
-
+	g_autoptr(I7App) theapp = i7_app_new();
 	g_assert(I7_IS_APP(theapp));
-	g_assert_cmpint(i7_app_get_num_open_documents(theapp), ==, 0);
 }
 
 static void
@@ -47,25 +37,16 @@ void
 test_app_files(void)
 {
 	GFile *file;
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 
-	file = i7_app_check_data_file(theapp, "Extensions");
-	check_file(file, "Extensions");
+	file = i7_app_get_data_file(theapp, "styles");
+	check_file(file, "styles");
 
-	file = i7_app_check_data_file_va(theapp, "ui", "gnome-inform7.ui", NULL);
-	check_file(file, "gnome-inform7.ui");
-	
-	file = i7_app_get_data_file(theapp, "Extensions");
-	check_file(file, "Extensions");
-
-	file = i7_app_get_data_file_va(theapp, "ui", "gnome-inform7.ui", NULL);
-	check_file(file, "gnome-inform7.ui");
+	file = i7_app_get_data_file_va(theapp, "highlighting", "inform.lang", NULL);
+	check_file(file, "inform.lang");
 
 	file = i7_app_get_binary_file(theapp, "ni");
 	check_file(file, "ni");
-
-	g_assert(i7_app_check_data_file(theapp, "nonexistent") == NULL);
-	g_assert(i7_app_check_data_file_va(theapp, "nonexistent", "nonexistent", NULL) == NULL);
 
 	/* TODO: How to test the functions that open an error dialog when they fail? */
 }
@@ -73,8 +54,9 @@ test_app_files(void)
 void
 test_app_extensions_install_remove(void)
 {
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
-	I7App *theapp = i7_app_get();
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
+	g_autoptr(I7App) theapp = i7_app_new();
 	GError *err = NULL;
 	char *contents;
 
@@ -85,7 +67,6 @@ test_app_extensions_install_remove(void)
 
 	/* Test installing */
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 	GFile *installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	check_file(installed_file, "Lickable Wallpaper.i7x");
 	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
@@ -112,7 +93,7 @@ test_app_extensions_install_remove(void)
 void
 test_app_extensions_get_builtin(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	gboolean builtin;
 	char *version_string;
 
@@ -123,9 +104,9 @@ test_app_extensions_get_builtin(void)
 	g_assert(builtin);
 
 	/* Test that non-builtin extension is not given as builtin */
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", &builtin);
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	g_assert(version_string != NULL);
@@ -136,7 +117,7 @@ test_app_extensions_get_builtin(void)
 void
 test_app_extensions_get_version(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 	char *version_string;
 
 	/* Test that a nonexistent extension returns NULL */
@@ -144,9 +125,9 @@ test_app_extensions_get_version(void)
 	g_assert(version_string == NULL);
 
 	/* Test that "Title by Author begins here" is given as empty string */
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", NULL);
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	g_assert(version_string != NULL);
@@ -167,12 +148,12 @@ test_app_extensions_get_version(void)
 void
 test_app_extensions_case_insensitive(void)
 {
-	GFile *file = g_file_new_for_path("tests/Lickable Wallpaper.i7x");
-	I7App *theapp = i7_app_get();
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
+	g_autoptr(I7App) theapp = i7_app_new();
 
 	/* Install test extension */
 	i7_app_install_extension(theapp, file);
-	g_object_unref(file);
 
 	GFile *extensions_file = i7_app_get_extension_file(theapp, NULL, NULL);
 	GFile *child1 = g_file_get_child(extensions_file, "Regera Dowdy");
@@ -236,12 +217,12 @@ find_test_color_scheme(GtkSourceStyleScheme *scheme, gboolean *found)
 void
 test_app_colorscheme_install_remove(void)
 {
-	I7App *theapp = i7_app_get();
-	GFile *file = g_file_new_for_path("tests/test_color_scheme.xml");
+	g_autoptr(I7App) theapp = i7_app_new();
+	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "test_color_scheme.xml", NULL);
+	g_autoptr(GFile) file = g_file_new_for_path(filename);
 
 	/* Test installing */
 	const char *id = i7_app_install_color_scheme(theapp, file);
-	g_object_unref(file);
 	g_assert_cmpstr(id, ==, "test_color_scheme");
 
 	/* Check if the file is really installed */
@@ -270,7 +251,7 @@ test_app_colorscheme_install_remove(void)
 void
 test_app_colorscheme_get_current(void)
 {
-	I7App *theapp = i7_app_get();
+	g_autoptr(I7App) theapp = i7_app_new();
 
 	GtkSourceStyleScheme *scheme = i7_app_get_current_color_scheme(theapp);
 	GSettings *prefs = i7_app_get_prefs(theapp);

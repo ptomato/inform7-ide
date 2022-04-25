@@ -1,18 +1,6 @@
-/* Copyright (C) 2008 Zachary Amsden
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2008 Zachary Amsden
  */
 
 #include "config.h"
@@ -22,9 +10,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcelanguagemanager.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "error.h"
@@ -40,7 +26,7 @@ set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 	gchar **mypaths;
 	int dirs, i;
 
-	lmanager = GTK_SOURCE_LANGUAGE_MANAGER(g_object_new(GTK_TYPE_SOURCE_LANGUAGE_MANAGER, NULL));
+	lmanager = gtk_source_language_manager_new();
 
 	/* Get and count the default paths, then add our custom language
 	definitions to the set. */
@@ -53,7 +39,8 @@ set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 		mypaths[i] = g_strdup(paths[i]);
 
 	/* Get data dir */
-	GFile *languages_dir = i7_app_get_data_file(i7_app_get(), "highlighting");
+	I7App *theapp = I7_APP(g_application_get_default());
+	GFile *languages_dir = i7_app_get_data_file(theapp, "highlighting");
 	mypaths[i++] = g_file_get_path(languages_dir);
 	g_object_unref(languages_dir);
 	mypaths[i] = NULL;

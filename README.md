@@ -1,30 +1,40 @@
-[![Build Status](https://travis-ci.org/ptomato/gnome-inform7.png?branch=master)](https://travis-ci.org/ptomato/gnome-inform7)
+## About Inform
 
-This version of Inform 7 for the Gnome platform was created by Philip
-Chimento, based on a design by Graham Nelson and Andrew Hunter.
-See the file `AUTHORS.md` for more information on other
-contributors.
+Inform is a design system for interactive fiction based on natural
+language, a new medium of writing which came out of the "text adventure"
+games of the 1980s.
+It has been used by many leading writers of IF over the last twenty
+years, for projects ranging from historical reconstructions, through
+games, to art pieces, which have won numerous awards and competitions.
 
-## To report bugs ##
+Inform's educational users span a uniquely wide age range, from primary
+schools to graduate computer science classes.
+Although Inform has also been used for commercial commissions, in
+architecture, in the games industry and in advertising (most recently
+for a major 2014 product launch), its primary aim is to help and to
+encourage individual writers to express themselves in a new medium.
+In a single evening with Inform, it's possible to write a vignette and
+publish it as an interactive website, playable on any browser.
 
-Point your browser to [the official Inform 7 bug
-tracker](http://inform7.com/mantis).
+The Inform project was created by Graham Nelson in 1993 and first came
+to the Macintosh Programmer's Workshop in 1995, and is now available as
+an app.
+It combines the core Inform software with full documentation, including
+two books and nearly 500 fully working Examples.
+Connecting to the Inform website, it can automatically download and
+update extensions from a fully curated Public Library used by the
+world-wide Inform community.
+The app offers richly detailed indexing of projects and scales from tiny
+fictions like "Kate is a woman in the Research Lab" right up to enormous
+imaginary worlds whose source text runs to over 3 million words.
+Features for automated testing, packaging and releasing round out a
+fully-featured development environment for IF.
 
-## Installation notes ##
-
-* The GNOME Inform 7 source code distribution does not include any
-  binaries.
-  If you compile GNOME Inform 7 from source, you will need to download
-  the Linux command-line package appropriate for your processor from
-  <http://inform7.com> and put the `ni` file in the directory `src/ni`
-  before doing `./configure`.
-* If you are upgrading from version 5J39 or earlier, and you are having
-  problems with extensions, you may have to delete your `~/Inform`
-  directory and reinstall your extensions.
-
----
-
-Wherever a copyright is listed with a range of years (e.g. Copyright
-2006-2015), the copyright should be understood to cover all the years in
-that range, inclusive.
-(See <http://www.gnu.org/licenses/gpl-howto.en.html>)
+Inform is free, with no strings attached.
+What you make with it is yours, to publish on your website, sell, or
+give to your friends.
+There's a vibrant community of users who welcome newcomers (and the app
+will help you find a high-traffic forum for discussions).
+Lastly, Inform is continuously maintained and developed.
+All bug reports are examined and acted on (and the app will show you how
+to post them).

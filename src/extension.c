@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2013, 2015 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2013, 2015, 2019 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -20,7 +8,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceiter.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "configfile.h"
@@ -39,25 +27,22 @@ struct _I7ExtensionPrivate
 	gboolean elastic;
 };
 
-#define I7_EXTENSION_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_EXTENSION, I7ExtensionPrivate))
-#define I7_EXTENSION_USE_PRIVATE(o,n) I7ExtensionPrivate *n = I7_EXTENSION_PRIVATE(o)
-
-G_DEFINE_TYPE(I7Extension, i7_extension, I7_TYPE_DOCUMENT);
+G_DEFINE_TYPE_WITH_PRIVATE(I7Extension, i7_extension, I7_TYPE_DOCUMENT);
 
 /* SIGNAL HANDLERS */
 
 static void
-on_heading_depth_value_changed(GtkRange *range, I7Extension *extension)
+on_heading_depth_value_changed(GtkRange *range, I7Extension *self)
 {
 	double value = gtk_range_get_value(range);
-	i7_document_set_headings_filter_level(I7_DOCUMENT(extension), (gint)value);
+	i7_document_set_headings_filter_level(I7_DOCUMENT(self), (int)value);
 }
 
 /* Save window size */
 static void
 save_extwindow_size(GtkWindow *window)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *state = i7_app_get_state(theapp);
 	int w, h;
 
@@ -70,48 +55,42 @@ on_extensionwindow_delete_event(GtkWidget *window, GdkEvent *event)
 {
 	if(i7_document_verify_save(I7_DOCUMENT(window))) {
 		save_extwindow_size(GTK_WINDOW(window));
-		i7_app_remove_document(i7_app_get(), I7_DOCUMENT(window));
 		return FALSE;
 	}
 	return TRUE;
 }
 
 static void
-on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Extension *extension)
+on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_num, I7Extension *self)
 {
 	if(page_num != I7_SOURCE_VIEW_TAB_CONTENTS)
 		return;
-	i7_document_reindex_headings(I7_DOCUMENT(extension));
+	i7_document_reindex_headings(I7_DOCUMENT(self));
 }
 
 static void
-on_headings_row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn *column, I7Extension *extension)
+on_headings_row_activated(GtkTreeView *view, GtkTreePath *path, GtkTreeViewColumn *column, I7Extension *self)
 {
-	GtkTreePath *real_path = i7_document_get_child_path(I7_DOCUMENT(extension), path);
-	i7_document_show_heading(I7_DOCUMENT(extension), real_path);
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(extension->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
+	I7Document *document = I7_DOCUMENT(self);
+	GtkTreePath *real_path = i7_document_get_child_path(document, path);
+	i7_document_show_heading(document, real_path);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(self->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
 }
 
 static void
-on_previous_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extension *extension)
+on_previous_action_notify_enabled(GObject *action, GParamSpec *paramspec, I7Extension *self)
 {
-	gboolean sensitive;
-	g_object_get(action, "sensitive", &sensitive, NULL);
-	if(sensitive)
-		gtk_widget_show(extension->sourceview->previous);
-	else
-		gtk_widget_hide(extension->sourceview->previous);
+	gboolean enabled;
+	g_object_get(action, "enabled", &enabled, NULL);
+	gtk_widget_set_visible(self->sourceview->previous, enabled);
 }
 
 static void
-on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extension *extension)
+on_next_action_notify_enabled(GObject *action, GParamSpec *paramspec, I7Extension *self)
 {
-	gboolean sensitive;
-	g_object_get(action, "sensitive", &sensitive, NULL);
-	if(sensitive)
-		gtk_widget_show(extension->sourceview->next);
-	else
-		gtk_widget_hide(extension->sourceview->next);
+	gboolean enabled;
+	g_object_get(action, "enabled", &enabled, NULL);
+	gtk_widget_set_visible(self->sourceview->next, enabled);
 }
 
 /* IMPLEMENTATIONS OF VIRTUAL FUNCTIONS */
@@ -119,7 +98,7 @@ on_next_action_notify_sensitive(GObject *action, GParamSpec *paramspec, I7Extens
 static gchar *
 i7_extension_extract_title(I7Document *document, gchar *text)
 {
-	I7App *app = i7_app_get();
+	I7App *app = I7_APP(g_application_get_default());
 	GMatchInfo *match = NULL;
 
 	if(!g_regex_match(app->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
@@ -145,7 +124,8 @@ otherwise ask for a new location */
 static gboolean
 i7_extension_save(I7Document *document)
 {
-	if(I7_EXTENSION_PRIVATE(document)->readonly) {
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(I7_EXTENSION(document));
+	if (priv->readonly) {
 		GtkWidget *dialog = gtk_message_dialog_new_with_markup(GTK_WINDOW(document), GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
 			_("<big><b>You are editing a built-in Inform extension.</b></big>"));
@@ -180,7 +160,7 @@ i7_extension_save(I7Document *document)
 
 /* Update the list of recently used files */
 static void
-update_recent_extension_file(I7Extension *extension, GFile *file, gboolean readonly)
+update_recent_extension_file(I7Extension *self, GFile *file, gboolean readonly)
 {
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
 	char *uri = g_file_get_uri(file);
@@ -190,8 +170,8 @@ update_recent_extension_file(I7Extension *extension, GFile *file, gboolean reado
 	char *groups_readonly[] = { "inform7_builtin", NULL };
 	char *groups_regular[] = { "inform7_extension", NULL };
 	GtkRecentData recent_data = {
-		NULL, NULL, "text/x-natural-inform", "Inform 7",
-		"gnome-inform7", NULL, FALSE
+		NULL, NULL, "com.inform7.IDE.text/x-natural-inform", "Inform 7",
+		"inform7-ide", NULL, FALSE
 	};
 
 	recent_data.display_name = file_get_display_name(file);
@@ -199,7 +179,7 @@ update_recent_extension_file(I7Extension *extension, GFile *file, gboolean reado
 	/* Use the "begins here" line as the description,
 	 retrieved from the first line of the text */
 	GtkTextIter start, end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self)));
 	gtk_text_buffer_get_iter_at_line(buffer, &start, 0);
 	gtk_text_buffer_get_iter_at_line(buffer, &end, 0);
 	gtk_text_iter_forward_to_line_end(&end);
@@ -258,11 +238,8 @@ static GFile *
 i7_extension_run_save_dialog(I7Document *document, GFile *default_file)
 {
 	/* Create a file chooser */
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"), GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_SAVE,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-		NULL);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER_ON_PARENT);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Save File"),
+		GTK_WINDOW(document), GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
 	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog), TRUE);
 
 	if (default_file) {
@@ -282,28 +259,19 @@ i7_extension_run_save_dialog(I7Document *document, GFile *default_file)
 	gtk_file_filter_add_pattern(filter, "*.i7x");
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-		GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
-		char *basename = g_file_get_basename(file);
-
-		/* Make sure it has a .i7x suffix */
-		if(!g_str_has_suffix(basename, ".i7x")) {
-			char *newbasename = g_strconcat(basename, ".i7x", NULL);
-			GFile *parent = g_file_get_parent(file);
-
-			g_object_unref(file);
-			file = g_file_get_child(parent, newbasename);
-			g_free(newbasename);
-			g_object_unref(parent);
-		}
-
-		gtk_widget_destroy(dialog);
-		g_free(basename);
-		return file;
-	} else {
-		gtk_widget_destroy(dialog);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
 		return NULL;
-	}
+
+	g_autoptr(GFile) file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(dialog));
+	g_autofree char *basename = g_file_get_basename(file);
+
+	/* Make sure it has a .i7x suffix */
+	if(g_str_has_suffix(basename, ".i7x"))
+		return g_steal_pointer(&file);
+
+	g_autofree char *newbasename = g_strconcat(basename, ".i7x", NULL);
+	g_autoptr(GFile) parent = g_file_get_parent(file);
+	return g_file_get_child(parent, newbasename);
 }
 
 static GtkTextView *
@@ -331,14 +299,6 @@ i7_extension_update_tabs(I7Document *document)
 	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(I7_EXTENSION(document)->sourceview->source));
 }
 
-static gboolean
-update_font_tabs(GtkSourceView *view)
-{
-	update_font(GTK_WIDGET(view));
-	update_tabs(view);
-	return FALSE; /* one-shot idle function */
-}
-
 /* Update the fonts in this extension window, but not the
 widgets that only need their font size updated */
 static void
@@ -346,7 +306,7 @@ i7_extension_update_fonts(I7Document *document)
 {
 	if(!I7_IS_EXTENSION(document))
 		return;
-	g_idle_add((GSourceFunc)update_font_tabs, GTK_SOURCE_VIEW(I7_EXTENSION(document)->sourceview->source));
+	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(I7_EXTENSION(document)->sourceview->source));
 }
 
 static void
@@ -364,14 +324,9 @@ i7_extension_expand_headings_view(I7Document *document)
 static gboolean
 do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextIter *startpos, GtkTextIter *start, GtkTextIter *end)
 {
-	if(GTK_IS_SOURCE_VIEW(view)) {
-		if(forward)
-			return gtk_source_iter_forward_search(startpos, text, GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY | GTK_SOURCE_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-		return gtk_source_iter_backward_search(startpos, text, GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY | GTK_SOURCE_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-	}
 	if(forward)
-		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY, start, end, NULL);
-	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY, start, end, NULL);
+		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
+	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
 }
 
 static gboolean
@@ -422,25 +377,21 @@ i7_extension_set_spellcheck(I7Document *document, gboolean spellcheck)
 }
 
 static void
-i7_extension_check_spelling(I7Document *document)
-{
-	i7_source_view_check_spelling(I7_EXTENSION(document)->sourceview);
-}
-
-static void
 i7_extension_set_elastic_tabstops(I7Document *document, gboolean elastic)
 {
-	I7_EXTENSION_USE_PRIVATE(document, priv);
+	I7Extension *self = I7_EXTENSION(document);
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
 	priv->elastic = elastic;
-	i7_source_view_set_elastic_tabstops(I7_EXTENSION(document)->sourceview, elastic);
+	i7_source_view_set_elastic_tabstops(self->sourceview, elastic);
 }
 
 static void
 i7_extension_revert(I7Document *document)
 {
-	I7_EXTENSION_USE_PRIVATE(document, priv);
+	I7Extension *self = I7_EXTENSION(document);
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
 	GFile *file = i7_document_get_file(document);
-	i7_extension_open(I7_EXTENSION(document), file, priv->readonly);
+	i7_extension_open(self, file, priv->readonly);
 	g_object_unref(file);
 }
 
@@ -449,38 +400,29 @@ i7_extension_revert(I7Document *document)
 static void
 i7_extension_init(I7Extension *self)
 {
-	I7_EXTENSION_USE_PRIVATE(self, priv);
-	GError *error = NULL;
-	I7App *theapp = i7_app_get();
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *state = i7_app_get_state(theapp);
 
 	priv->readonly = FALSE;
 
-	/* Build the menus and toolbars from the GtkUIManager file */
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "extension.uimanager.xml", NULL);
-	char *path = g_file_get_path(file);
-	gtk_ui_manager_add_ui_from_file(I7_DOCUMENT(self)->ui_manager, path, &error);
-	g_free(path);
-	g_object_unref(file);
-	if(error)
-		ERROR(_("Building menus failed"), error);
-	GtkWidget *menu = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/ExtensionMenubar");
-	I7_DOCUMENT(self)->toolbar = gtk_ui_manager_get_widget(I7_DOCUMENT(self)->ui_manager, "/ExtensionToolbar");
-	gtk_widget_set_no_show_all(I7_DOCUMENT(self)->toolbar, TRUE);
-	i7_document_add_menus_and_findbar(I7_DOCUMENT(self));
+	/* Build the interface */
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/story.ui");
+	gtk_builder_connect_signals(builder, self);
+
+	/* Build the toolbars */
+	I7_DOCUMENT(self)->toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "extension-toolbar"));
 
 	/* Build the rest of the interface */
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), menu, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->findbar, FALSE, FALSE, 0);
 
 	/* Create source view */
 	self->sourceview = I7_SOURCE_VIEW(i7_source_view_new());
+	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->sourceview));
+	gtk_style_context_add_class(style, "font-family-setting");
+	gtk_style_context_add_class(style, "font-size-setting");
 	gtk_widget_show(GTK_WIDGET(self->sourceview));
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), GTK_WIDGET(self->sourceview), TRUE, TRUE, 0);
-
-	/* Set up the signals to do the menu hints in the statusbar */
-	i7_document_attach_menu_hints(I7_DOCUMENT(self), GTK_MENU_BAR(menu));
 
 	/* Build the Open Extensions menu */
 	i7_app_update_extensions_menu(theapp);
@@ -505,27 +447,30 @@ i7_extension_init(I7Extension *self)
 	gtk_tree_view_set_model(GTK_TREE_VIEW(self->sourceview->headings), i7_document_get_headings(I7_DOCUMENT(self)));
 
 	/* Connect the Previous Section and Next Section actions to the up and down buttons */
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(self->sourceview->previous), I7_DOCUMENT(self)->previous_section);
-	gtk_activatable_set_related_action(GTK_ACTIVATABLE(self->sourceview->next), I7_DOCUMENT(self)->next_section);
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(self->sourceview->previous), "win.previous-section");
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(self->sourceview->next), "win.next-section");
 
 	/* We don't need to keep a reference to the buffer and model anymore */
 	g_object_unref(buffer);
 	g_object_unref(i7_document_get_headings(I7_DOCUMENT(self)));
 
 	/* Set up the Previous Section and Next Section actions to synch with the buttons */
-	g_signal_connect(I7_DOCUMENT(self)->previous_section, "notify::sensitive", G_CALLBACK(on_previous_action_notify_sensitive), self);
-	g_signal_connect(I7_DOCUMENT(self)->next_section, "notify::sensitive", G_CALLBACK(on_next_action_notify_sensitive), self);
 	/* For some reason this needs to be triggered even if the buttons are set to invisible in Glade */
-	gtk_action_set_sensitive(I7_DOCUMENT(self)->previous_section, FALSE);
-	gtk_action_set_sensitive(I7_DOCUMENT(self)->next_section, FALSE);
+	GAction *previous_section = g_action_map_lookup_action(G_ACTION_MAP(self), "previous-section");
+	g_signal_connect(previous_section, "notify::enabled", G_CALLBACK(on_previous_action_notify_enabled), self);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(previous_section), FALSE);
+	GAction *next_section = g_action_map_lookup_action(G_ACTION_MAP(self), "next-section");
+	g_signal_connect(next_section, "notify::enabled", G_CALLBACK(on_next_action_notify_enabled), self);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(next_section), FALSE);
 
 	/* Set font sizes, etc. */
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
 	/* Set spell checking */
-	gboolean spell_check_default = g_settings_get_boolean(state, PREFS_STATE_SPELL_CHECK);
-	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(I7_DOCUMENT(self)->autocheck_spelling), spell_check_default);
-	i7_document_set_spellcheck(I7_DOCUMENT(self), spell_check_default);
+	GVariant *spell_check_default = g_settings_get_value(state, PREFS_STATE_SPELL_CHECK);
+	GAction *autocheck_spelling = g_action_map_lookup_action(G_ACTION_MAP(self), "autocheck-spelling");
+	g_simple_action_set_state(G_SIMPLE_ACTION(autocheck_spelling), spell_check_default);
+	i7_document_set_spellcheck(I7_DOCUMENT(self), g_variant_get_boolean(spell_check_default));
 
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_extensionwindow_delete_event), NULL);
@@ -554,14 +499,11 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->expand_headings_view = i7_extension_expand_headings_view;
 	document_class->highlight_search = i7_extension_highlight_search;
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
-	document_class->check_spelling = i7_extension_check_spelling;
 	document_class->set_elastic_tabstops = i7_extension_set_elastic_tabstops;
 	document_class->revert = i7_extension_revert;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_extension_finalize;
-
-	g_type_class_add_private(klass, sizeof(I7ExtensionPrivate));
 }
 
 /* PUBLIC FUNCTIONS */
@@ -569,16 +511,15 @@ i7_extension_class_init(I7ExtensionClass *klass)
 I7Extension *
 i7_extension_new(I7App *app, GFile *file, const char *title, const char *author)
 {
-	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION, NULL));
+	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION,
+		"application", app,
+		NULL));
 
 	i7_document_set_file(I7_DOCUMENT(extension), file);
 
 	gchar *text = g_strconcat(title, " by ", author, " begins here.\n\n", title, " ends here.\n", NULL);
 	i7_document_set_source_text(I7_DOCUMENT(extension), text);
 	i7_document_set_modified(I7_DOCUMENT(extension), TRUE);
-
-	/* Add document to global list */
-	i7_app_register_document(app, I7_DOCUMENT(extension));
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(extension));
@@ -595,14 +536,13 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 		return NULL;
 	}
 
-	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION, NULL));
+	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION,
+		"application", app,
+		NULL));
 	if(!i7_extension_open(extension, file, readonly)) {
 		gtk_widget_destroy(GTK_WIDGET(extension));
 		return NULL;
 	}
-
-	/* Add document to global list */
-	i7_app_register_document(app, I7_DOCUMENT(extension));
 
 	/* Bring window to front */
 	gtk_widget_show(GTK_WIDGET(extension));
@@ -612,7 +552,7 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 
 /**
  * i7_extension_open:
- * @extension: the extension object
+ * @self: the extension object
  * @file: a #GFile to open
  * @readonly: whether to open @file as a built-in extension or not
  *
@@ -621,33 +561,35 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
  * Returns: %TRUE if successful, %FALSE if not.
  */
 gboolean
-i7_extension_open(I7Extension *extension, GFile *file, gboolean readonly)
+i7_extension_open(I7Extension *self, GFile *file, gboolean readonly)
 {
-	i7_document_set_file(I7_DOCUMENT(extension), file);
+	I7Document *document = I7_DOCUMENT(self);
+
+	i7_document_set_file(document, file);
 
 	/* If it was a built-in extension, set it read-only */
-	i7_extension_set_read_only(extension, readonly);
+	i7_extension_set_read_only(self, readonly);
 
 	/* Read the source */
 	char *text = read_source_file(file);
 	if(!text)
 		goto fail;
 
-	update_recent_extension_file(extension, file, readonly);
+	update_recent_extension_file(self, file, readonly);
 
 	/* Watch for changes to the source file */
-	i7_document_monitor_file(I7_DOCUMENT(extension), file);
+	i7_document_monitor_file(document, file);
 
 	/* Write the source to the source buffer, clearing the undo history */
-	i7_document_set_source_text(I7_DOCUMENT(extension), text);
+	i7_document_set_source_text(document, text);
 	g_free(text);
 
 	GtkTextIter start;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(extension)));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(document));
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_place_cursor(buffer, &start);
 
-	i7_document_set_modified(I7_DOCUMENT(extension), FALSE);
+	i7_document_set_modified(document, FALSE);
 
 	return TRUE;
 
@@ -657,7 +599,8 @@ fail:
 }
 
 void
-i7_extension_set_read_only(I7Extension *extension, gboolean readonly)
+i7_extension_set_read_only(I7Extension *self, gboolean readonly)
 {
-	I7_EXTENSION_PRIVATE(extension)->readonly = readonly;
+	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
+	priv->readonly = readonly;
 }

@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2013, 2019 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -20,7 +8,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceview.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "builder.h"
@@ -28,7 +16,7 @@
 #include "error.h"
 #include "prefs.h"
 
-#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-2.0"
+#define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-4"
 
 enum SchemesListColumns {
 	ID_COLUMN = 0,
@@ -46,7 +34,7 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 	const char *description = gtk_source_style_scheme_get_description(scheme);
 
 	/* We pick up system color schemes as well. These won't have translations in
-	the gnome-inform7 domain, so if we can't get a translation then we try it
+	the inform7-ide domain, so if we can't get a translation then we try it
 	again in GtkSourceView's translation domain. */
 	const char *try_name = gettext(name);
 	if (try_name == name) {  /* Pointer equality, not strcmp */
@@ -74,7 +62,7 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 void
 populate_schemes_list(GtkListStore *list)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	gtk_list_store_clear(list);
 	i7_app_foreach_color_scheme(theapp, (GFunc)store_color_scheme, list);
@@ -163,12 +151,11 @@ on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
-		I7App *theapp = i7_app_get();
-		GSettings *prefs = i7_app_get_prefs(theapp);
+		GSettings *prefs = i7_app_get_prefs(app);
 		gchar *id;
 		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
 		g_settings_set_string(prefs, PREFS_STYLE_SCHEME, id);
-		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(i7_app_get(), id));
+		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(app, id));
 		g_free(id);
 	} else {
 		; /* Do nothing; no selection */
@@ -179,12 +166,8 @@ void
 on_style_add_clicked(GtkButton *button, I7App *app)
 {
 	/* From gedit/dialogs/gedit-preferences-dialog.c */
-	GtkWidget *chooser = gtk_file_chooser_dialog_new(_("Add Color Scheme"),
-		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_ADD, GTK_RESPONSE_ACCEPT,
-		NULL);
-	gtk_window_set_destroy_with_parent(GTK_WINDOW(chooser), TRUE);
+	g_autoptr(GtkFileChooserNative) chooser = gtk_file_chooser_native_new(_("Add Color Scheme"),
+		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN, _("_Add"), NULL);
 
 	/* Filters */
 	GtkFileFilter *filter = gtk_file_filter_new();
@@ -198,18 +181,12 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 	gtk_file_filter_add_pattern(filter, "*");
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(chooser), filter);
 
-	gtk_dialog_set_default_response(GTK_DIALOG(chooser), GTK_RESPONSE_ACCEPT);
-
-	if(gtk_dialog_run(GTK_DIALOG(chooser)) != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy(chooser);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(chooser)) != GTK_RESPONSE_ACCEPT)
 		return;
-	}
 
 	GFile *file = gtk_file_chooser_get_file(GTK_FILE_CHOOSER(chooser));
 	if(!file)
 		return;
-
-	gtk_widget_destroy(chooser);
 
 	const char *scheme_id = i7_app_install_color_scheme(app, file);
 	g_object_unref(file);
@@ -221,8 +198,7 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 
 	populate_schemes_list(app->prefs->schemes_list);
 
-	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
+	GSettings *prefs = i7_app_get_prefs(app);
 	g_settings_set_string(prefs, PREFS_STYLE_SCHEME, scheme_id);
 }
 
@@ -277,8 +253,7 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 
 			populate_schemes_list(app->prefs->schemes_list);
 
-			I7App *theapp = i7_app_get();
-			GSettings *prefs = i7_app_get_prefs(theapp);
+			GSettings *prefs = i7_app_get_prefs(app);
 			g_settings_set(prefs, PREFS_STYLE_SCHEME, new_id);
 
 			g_free(new_id);
@@ -324,6 +299,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 	GFile *file;
 	GFileInfo *file_info;
 	gchar *type_name = NULL;
+	I7App *theapp = I7_APP(g_application_get_default());
 
 	/* Check that we got data from source */
 	if(selectiondata == NULL || gtk_selection_data_get_length(selectiondata) < 0)
@@ -361,7 +337,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 			while((entry_info = g_file_enumerator_next_file(dir, NULL, &err)) != NULL) {
 				if(g_file_info_get_file_type(entry_info) != G_FILE_TYPE_DIRECTORY) {
 					GFile *extension_file = g_file_get_child(file, g_file_info_get_name(entry_info));
-					i7_app_install_extension(i7_app_get(), extension_file);
+					i7_app_install_extension(theapp, extension_file);
 					g_object_unref(extension_file);
 				}
 				g_object_unref(entry_info);
@@ -376,7 +352,7 @@ on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_co
 
 		} else {
 			/* just install it */
-			i7_app_install_extension(i7_app_get(), file);
+			i7_app_install_extension(theapp, file);
 		}
 
 		g_object_unref(file_info);
@@ -436,11 +412,8 @@ install_extensions(GFile *file, I7App *app)
 void
 on_extensions_add_clicked(GtkButton *button, I7App *app)
 {
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(
-	  _("Select the extensions to install"),
-	  GTK_WINDOW(app->prefs->window),
-	  GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-	  GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Select the extensions to install"),
+		GTK_WINDOW(app->prefs->window), GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
 	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
 	/* Create appropriate file filters */
 	GtkFileFilter *filter1 = gtk_file_filter_new();
@@ -452,10 +425,8 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
 
-	if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
-		gtk_widget_destroy(dialog);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
 		return;
-	}
 
 	/* Install each selected extension */
 	GSList *extlist = gtk_file_chooser_get_files(GTK_FILE_CHOOSER(dialog));
@@ -464,7 +435,6 @@ on_extensions_add_clicked(GtkButton *button, I7App *app)
 	/* Free stuff */
 	g_slist_foreach(extlist, (GFunc)g_object_unref, NULL);
 	g_slist_free(extlist);
-	gtk_widget_destroy(dialog);
 }
 
 void
@@ -511,18 +481,8 @@ on_extensions_remove_clicked(GtkButton *button, I7App *app)
 gboolean
 update_style(GtkSourceBuffer *buffer)
 {
-	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(i7_app_get()));
-	return FALSE; /* one-shot idle function */
-}
-
-/* Change the font that this widget uses */
-gboolean
-update_font(GtkWidget *widget)
-{
-	PangoFontDescription *font = get_font_description();
-	gtk_widget_modify_font(widget, font);
-	pango_font_description_free(font);
-
+	I7App *theapp = I7_APP(g_application_get_default());
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 	return FALSE; /* one-shot idle function */
 }
 
@@ -530,7 +490,7 @@ update_font(GtkWidget *widget)
 gboolean
 update_tabs(GtkSourceView *view)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	unsigned spaces = g_settings_get_uint(prefs, PREFS_TAB_WIDTH);
 	if(spaces == 0)

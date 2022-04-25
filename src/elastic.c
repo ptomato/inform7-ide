@@ -1,20 +1,8 @@
-/* Copyright (C) 2006-2010, 2011, 2013 P. F. Chimento
- * Portions copyright (C) 2007 Nick Gravgaard (based on
- * gedit-elastictabstops-plugin.c, released 2007-09-16)
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2011, 2013 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2007 Nick Gravgaard
+ * SPDX-FileComment: based on gedit-elastictabstops-plugin.c, released 2007-09-16
  */
 
 #include "config.h"
@@ -53,7 +41,7 @@ find_tab(gunichar ch)
 static void
 stretch_tabstops(GtkTextBuffer *textbuffer, GtkTextView *view, GtkTextTag *tag, GtkTextIter *block_start, GtkTextIter *block_end)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GtkTextIter cell_start, current_pos, line_end;
 	guint max_tabs = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(tag), "elastictabstops-numtabs"));

@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2015 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2012, 2015, 2019, 2021 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -75,7 +63,7 @@ error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...)
 void
 extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *why_failed, const char *suggestions)
 {
-	GtkWidget *dialog, *vbox, *content_hbox, *action_area, *ok, *image, *label;
+	GtkWidget *dialog, *vbox, *content_hbox, *ok, *image, *label;
 	char *message;
 
 	g_return_if_fail(what_failed);
@@ -85,19 +73,19 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 	dialog = g_object_new(GTK_TYPE_DIALOG,
 		"border-width", 6,
 		"resizable", FALSE,
-		"has-separator", FALSE,
 		"transient-for", parent,
 		NULL);
 
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 2);
 
-	content_hbox = gtk_hbox_new(FALSE, 12);
+	content_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(content_hbox), 6);
 
-	image = gtk_image_new_from_stock(GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_DIALOG);
+	image = gtk_image_new_from_icon_name("dialog-error", GTK_ICON_SIZE_DIALOG);
 	gtk_box_pack_start(GTK_BOX(content_hbox), image, FALSE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(image), 0.5, 0);
+	gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(image, GTK_ALIGN_START);
 
 	message = g_strdup_printf("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s\n\n%s", what_failed, why_failed, suggestions);
 	label = g_object_new(GTK_TYPE_LABEL,
@@ -113,12 +101,7 @@ extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *wh
 	gtk_box_pack_start(GTK_BOX(content_hbox), label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), content_hbox, TRUE, TRUE, 0);
 
-	action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
-	gtk_container_set_border_width(GTK_CONTAINER(action_area), 5);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(action_area), GTK_BUTTONBOX_END);
-	gtk_box_set_spacing(GTK_BOX(action_area), 10);
-
-	ok = gtk_button_new_from_stock(GTK_STOCK_OK);
+	ok = gtk_button_new_with_mnemonic(_("_OK"));
 	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), ok, GTK_RESPONSE_OK);
 	gtk_widget_set_can_default(ok, TRUE);
 

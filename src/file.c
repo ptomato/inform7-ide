@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2013, 2014, 2015 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2015 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -96,7 +84,7 @@ from the project directory */
 void
 delete_build_files(I7Story *story)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	if(g_settings_get_boolean(prefs, PREFS_CLEAN_BUILD_FILES)) {
@@ -395,7 +383,7 @@ show_uri_in_browser(const char *uri, GtkWindow *parent, const char *display_name
 
 	GError *error = NULL;
 
-	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	gboolean success = gtk_show_uri_on_window(parent, uri, GDK_CURRENT_TIME, &error);
 	if (!success) {
 		error_dialog(parent, error,
 			/* TRANSLATORS: %s can be a URL, a filename, or a noun like "the
@@ -429,7 +417,7 @@ show_uri_externally(const char *uri, GtkWindow *parent, const char *display_name
 
 	GError *error = NULL;
 
-	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	gboolean success = gtk_show_uri_on_window(parent, uri, GDK_CURRENT_TIME, &error);
 	if (!success) {
 		error_dialog(parent, error,
 			/* TRANSLATORS: %s can be a URL, a filename, or a noun like "the
@@ -454,7 +442,7 @@ show_file_in_browser(GFile *file, GtkWindow *parent)
 
 	GError *error = NULL;
 	char *uri = g_file_get_uri(file);
-	gboolean success = gtk_show_uri(NULL, uri, GDK_CURRENT_TIME, &error);
+	gboolean success = gtk_show_uri_on_window(parent, uri, GDK_CURRENT_TIME, &error);
 	if(!success) {
 		char *display_name = file_get_display_name(file);
 		error_dialog(parent, error,

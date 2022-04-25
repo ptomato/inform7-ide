@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2011, 2013 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -21,15 +9,13 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceview.h>
-#include <gtksourceview/gtksourcebuffer.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "configfile.h"
 #include "document.h"
 #include "panel.h"
 #include "story.h"
-#include "story-private.h"
 
 /* Following two functions adapted from gtksourceview. We could use
 gtk_source_view_set_auto_indent(), but that auto-indents leading spaces as well
@@ -61,7 +47,7 @@ compute_indentation(GtkSourceView *source, GtkTextIter *cur)
 gboolean
 on_source_key_press_event(GtkSourceView *source, GdkEventKey *event, I7SourceView *view)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(source));
 
@@ -108,7 +94,7 @@ on_source_key_press_event(GtkSourceView *source, GdkEventKey *event, I7SourceVie
 void
 after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED))
@@ -125,7 +111,7 @@ after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkT
 void
 after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gchar *text, gint len, I7Document *document)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
 	if(g_settings_get_boolean(prefs, PREFS_INDENT_WRAPPED)) {

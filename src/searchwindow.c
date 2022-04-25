@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2012, 2014, 2015 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2012, 2014, 2015, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -22,7 +10,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceiter.h>
 #include <libxml/HTMLparser.h>
 #include <webkit2/webkit2.h>
 
@@ -97,16 +84,40 @@ struct _I7SearchWindowPrivate
 	I7SearchType algorithm;
 };
 
-#define I7_SEARCH_WINDOW_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE((o), I7_TYPE_SEARCH_WINDOW, I7SearchWindowPrivate))
-#define I7_SEARCH_WINDOW_USE_PRIVATE(o,n) I7SearchWindowPrivate *n = I7_SEARCH_WINDOW_PRIVATE(o)
+G_DEFINE_TYPE_WITH_PRIVATE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
 
 /* CALLBACKS */
+
+typedef struct {
+	GtkWindow *win;
+	GFile *temp_file;
+} CopyResourceClosure;
+
+/* Rarely-used callback for showing documentation page in browser after copying
+ * the GResource to a temporary file where the browser can see it. This happpens
+ * when searching an extension project (no facing pages).
+ * Note: this won't work under Flatpak, but it's a rare case and will go away
+ * when we have the new Extension projects with facing pages */
+void
+finish_copy_resource_to_temp(GFile *resource, GAsyncResult *res, CopyResourceClosure *data)
+{
+	g_autoptr(GtkWindow) win = data->win;
+	g_autoptr(GFile) temp_file = data->temp_file;
+	g_clear_pointer(&data, g_free);
+
+	GError *error = NULL;
+	if (!g_file_copy_finish(resource, res, &error)) {
+		g_warning("Couldn't open temporary file for browser: %s", error->message);
+		return;
+	}
+	show_file_in_browser(temp_file, win);
+}
 
 /* Callback for double-clicking on one of the search results */
 void
 on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 	g_return_if_fail(model);
@@ -131,17 +142,34 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		 is a story with facing pages. Otherwise, open the documentation in
 		 the web browser. */
 		if(I7_IS_STORY(priv->document)) {
+			g_autofree char *page = g_file_get_basename(file);
+			g_autofree char *uri = g_strconcat("inform:///", page, NULL);
+			g_autoptr(GFile) inform_file = g_file_new_for_uri(uri);
 			/* Jump to the proper example */
-			char *filepath = g_file_get_path(file);
 			if(anchor != NULL) {
-				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), file, anchor);
+				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), inform_file, anchor);
 				g_free(anchor);
-			} else
-				i7_story_show_docpage(I7_STORY(priv->document), file);
-
-			g_free(filepath);
+			} else {
+				i7_story_show_docpage(I7_STORY(priv->document), inform_file);
+			}
 		} else {
-			show_file_in_browser(file, GTK_WINDOW(self));
+			/* Copy the GResource to a temporary file so it's available to the
+			 * browser */
+			g_autoptr(GError) error = NULL;
+			g_autoptr(GFileIOStream) stream = NULL;
+			g_autoptr(GFile) temp_file = g_file_new_tmp("inform-documentation-XXXXXX", &stream, &error);
+			if (temp_file == NULL) {
+				g_warning("Couldn't open temporary file for browser: %s", error->message);
+				break;
+			}
+
+			CopyResourceClosure *data = g_new(CopyResourceClosure, 1);
+			data->temp_file = g_steal_pointer(&temp_file);
+			data->win = GTK_WINDOW(g_object_ref(self));
+
+			g_file_copy_async(file, data->temp_file, G_FILE_COPY_OVERWRITE, G_PRIORITY_DEFAULT,
+				/* cancellable = */ NULL, /* progress_callback = */ NULL, /* data = */ NULL,
+				(GAsyncReadyCallback)finish_copy_resource_to_temp, data);
 		}
 	}
 		break;
@@ -150,9 +178,10 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		break;
 	case I7_RESULT_TYPE_EXTENSION:
 	{
-		I7Document *ext = i7_app_get_already_open(i7_app_get(), file);
+		I7App *theapp = I7_APP(g_application_get_default());
+		I7Document *ext = i7_app_get_already_open(theapp, file);
 		if(ext == NULL) {
-			ext = I7_DOCUMENT(i7_extension_new_from_file(i7_app_get(), file, FALSE));
+			ext = I7_DOCUMENT(i7_extension_new_from_file(theapp, file, FALSE));
 		}
 		i7_document_jump_to_line(ext, lineno);
 	}
@@ -209,7 +238,7 @@ result_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel 
 static void
 location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	I7ResultType type;
 	guint lineno;
@@ -285,12 +314,10 @@ type_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *m
 
 /* TYPE SYSTEM */
 
-G_DEFINE_TYPE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
-
 static void
 i7_search_window_init(I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	priv->document = NULL;
 	priv->text = NULL;
@@ -306,9 +333,8 @@ i7_search_window_init(I7SearchWindow *self)
 	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
 
 	/* Build the interface from the builder file */
-	GFile *file = i7_app_get_data_file_va(i7_app_get(), "ui", "searchwindow.ui", NULL);
-	GtkBuilder *builder = create_new_builder(file, self);
-	g_object_unref(file);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/searchwindow.ui");
+	gtk_builder_connect_signals(builder, self);
 
 	/* Build the rest of the interface */
 	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
@@ -328,25 +354,20 @@ i7_search_window_init(I7SearchWindow *self)
 	LOAD_WIDGET(search_text);
 	LOAD_WIDGET(results_view);
 	LOAD_WIDGET(spinner);
-
-	/* Builder object not needed anymore */
-	g_object_unref(builder);
 }
 
 static void
-i7_search_window_finalize(GObject *self)
+i7_search_window_finalize(GObject *object)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(I7_SEARCH_WINDOW(object));
 	g_free(priv->text);
 
-	G_OBJECT_CLASS(i7_search_window_parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_search_window_parent_class)->finalize(object);
 }
 
 static void
 i7_search_window_class_init(I7SearchWindowClass *klass)
 {
-	g_type_class_add_private(klass, sizeof(I7SearchWindowPrivate));
-
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->finalize = i7_search_window_finalize;
 }
@@ -356,7 +377,7 @@ i7_search_window_class_init(I7SearchWindowClass *klass)
 static void
 update_label(I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	gchar *label = g_strdup_printf(_("Search results for: \"%s\""), priv->text);
 	gtk_label_set_text(GTK_LABEL(self->search_text), label);
 	g_free(label);
@@ -478,9 +499,16 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 	doctext->file = g_object_ref(file);
 	ctxt->doctext = doctext;
 
-	char *path = g_file_get_path(file);
-	htmlSAXParseFile(path, NULL, &i7_html_sax, ctxt);
-	g_free(path);
+	g_autoptr(GError) error = NULL;
+	g_autofree char *html_contents = NULL;
+	/* file is in a GResource in memory, this doesn't block */
+	if (!g_file_load_contents(doctext->file, /* cancellable = */ NULL,
+		&html_contents, /* length = */ NULL, /* etag = */ NULL, &error)) {
+		g_autofree char *uri = g_file_get_uri(doctext->file);
+		g_warning("Error loading documentation resource '%s': %s", uri, error->message);
+		return NULL;
+	}
+	htmlSAXParseDoc((xmlChar*)html_contents, NULL, &i7_html_sax, ctxt);
 
 	doctext->body = g_string_free(ctxt->chars, FALSE);
 	GSList *retval = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
@@ -489,7 +517,7 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 }
 
 /* Borrow from document-search.c */
-extern gboolean find_no_wrap(const GtkTextIter *, const gchar *, gboolean, GtkSourceSearchFlags, I7SearchType, GtkTextIter *, GtkTextIter *);
+extern gboolean find_no_wrap(const GtkTextIter *, const gchar *, gboolean, GtkTextSearchFlags, I7SearchType, GtkTextIter *, GtkTextIter *);
 
 /* Helper function: extract some characters of context around the match, with
  the match itself highlighted in bold. String must be freed. */
@@ -519,15 +547,15 @@ extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *ma
 static void
 search_documentation(DocText *doctext, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
+	g_autoptr(GtkTextBuffer) buffer = gtk_text_buffer_new(NULL);
 	gtk_text_buffer_set_text(buffer, doctext->body, -1);
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		priv->algorithm, &match_start, &match_end))
 	{
 		while(gtk_events_pending())
@@ -554,8 +582,6 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 		g_free(context);
 		g_free(location);
 	}
-
-	g_object_unref(buffer);
 }
 
 /* Helper functions: start and stop the spinner, and keep it hidden when it is
@@ -581,7 +607,7 @@ GtkWidget *
 i7_search_window_new(I7Document *document, const gchar *text, gboolean ignore_case, I7SearchType algorithm)
 {
 	I7SearchWindow *self = I7_SEARCH_WINDOW(g_object_new(I7_TYPE_SEARCH_WINDOW, NULL));
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	priv->document = document;
 	priv->text = g_strdup(text);
@@ -608,7 +634,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 	GError *err;
 
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
-		GFile *doc_file = i7_app_get_data_file_va(i7_app_get(), "Documentation", NULL);
+		g_autoptr(GFile) doc_file = g_file_new_for_uri("resource:///com/inform7/IDE/inform");
 
 		GFileEnumerator *docdir;
 		if((docdir = g_file_enumerate_children(doc_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err)) == NULL) {
@@ -649,7 +675,6 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 				g_slist_free(doctexts);
 			}
 		}
-		g_object_unref(doc_file);
 
 		stop_spinner(self);
 		update_label(self);
@@ -665,7 +690,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 void
 i7_search_window_search_project(I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(priv->document));
@@ -674,7 +699,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 	start_spinner(self);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		priv->algorithm, &match_start, &match_end))
 	{
 		while(gtk_events_pending())
@@ -709,14 +734,13 @@ i7_search_window_search_project(I7SearchWindow *self)
 }
 
 static void
-extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
+extension_search_result(I7App *app, GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
 {
-	I7_SEARCH_WINDOW_USE_PRIVATE(self, priv);
+	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GError *err = NULL;
 	const char *basename = g_file_info_get_name(info);
 	GFile *file = g_file_get_child(parent, basename);
 	char *contents;
-	GtkTextBuffer *buffer;
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
 
@@ -733,7 +757,7 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 		return;
 	}
 
-	buffer = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
+	g_autoptr(GtkTextBuffer) buffer = gtk_text_buffer_new(NULL);
 	gtk_text_buffer_set_text(buffer, contents, -1);
 	g_free(contents);
 
@@ -742,7 +766,7 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 	start_spinner(self);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_SOURCE_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		priv->algorithm, &match_start, &match_end))
 	{
 		unsigned lineno;
@@ -776,7 +800,6 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 
 	stop_spinner(self);
 
-	g_object_unref(buffer);
 	g_object_unref(file);
 }
 
@@ -789,7 +812,8 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 void
 i7_search_window_search_extensions(I7SearchWindow *self)
 {
-	i7_app_foreach_installed_extension(i7_app_get(), FALSE, NULL, NULL,
+	I7App *theapp = I7_APP(g_application_get_default());
+	i7_app_foreach_installed_extension(theapp, FALSE, NULL, NULL,
 	    (I7AppExtensionFunc)extension_search_result, self, NULL);
 }
 

@@ -1,18 +1,6 @@
-/*  Copyright (C) 2007-2015 P. F. Chimento
- *  This file is part of GNOME Inform 7.
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2007-2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -27,10 +15,9 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourcestyleschememanager.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
-#include "app-private.h"
 #include "actions.h"
 #include "builder.h"
 #include "configfile.h"
@@ -38,6 +25,7 @@
 #include "file.h"
 #include "lang.h"
 #include "prefs.h"
+#include "welcomedialog.h"
 
 #define EXTENSIONS_BASE_PATH "Inform", "Extensions"
 #define EXTENSION_HOME_PATH "Inform", "Documentation", "Extensions.html"
@@ -45,11 +33,10 @@
 #define EXTENSION_DOCS_BASE_PATH "Inform", "Documentation", "Extensions"
 #define EXTENSION_DOWNLOAD_TIMEOUT_S 15
 
-/* The singleton application class; should be derived from GtkApplication when
- porting to GTK 3. Contains the following global miscellaneous stuff:
- - an action group containing actions that would be valid even if there were no
-   document open (even though there is no menu at present when no document is
-   open.)
+/* The singleton application class. Contains the following global miscellaneous
+ stuff:
+ - actions that would be valid even if there were no document open (even though
+   there is no menu at present when no document is open.)
  - the list of open documents.
  - information about the paths to project data and executable files.
  - the file monitor for the extension directory.
@@ -59,7 +46,26 @@
  - various compiled regices for use elsewhere in the program.
 */
 
-G_DEFINE_TYPE(I7App, i7_app, G_TYPE_OBJECT);
+typedef struct {
+	/* Application directories */
+	GFile *datadir;
+	GFile *libexecdir;
+	/* File monitor for extension directory */
+	GFileMonitor *extension_dir_monitor;
+	/* Tree of installed extensions */
+	GtkTreeStore *installed_extensions;
+	/* Current print settings */
+	GtkPrintSettings *print_settings;
+	/* Color scheme manager */
+	GtkSourceStyleSchemeManager *color_scheme_manager;
+	/* Preferences settings */
+	GSettings *system_settings;
+	GSettings *prefs_settings;
+	GSettings *state_settings;
+	GtkCssProvider *font_settings_provider;
+} I7AppPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, GTK_TYPE_APPLICATION);
 
 typedef struct {
 	gchar *regex;
@@ -97,66 +103,104 @@ create_color_scheme_manager(I7App *self)
 	return manager;
 }
 
+typedef void (*ActionCallback)(GSimpleAction *, GVariant *, void *);
+
+static void
+create_app_actions(I7App *self)
+{
+	const GActionEntry actions[] = {
+		{ "new", (ActionCallback)action_new },
+		{ "open", (ActionCallback)action_open },
+		{ "open-recent", (ActionCallback)action_open_recent, "(ss)" },
+		{ "install-extension", (ActionCallback)action_install_extension },
+		{ "open-extension", (ActionCallback)action_open_extension, "(sb)" },
+		{ "quit", (ActionCallback)action_quit },
+		{ "preferences", (ActionCallback)action_preferences },
+		{ "visit-inform7-com", (ActionCallback)action_visit_inform7_com },
+		{ "about", (ActionCallback)action_about },
+	};
+	g_action_map_add_action_entries(G_ACTION_MAP(self), actions, G_N_ELEMENTS(actions), self);
+}
+
+static void
+rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
+{
+	GList *recent = gtk_recent_manager_get_items(manager);
+	GMenu *recent_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "recent");
+	g_menu_remove_all(recent_menu);
+
+	for (GList *iter = recent; iter != NULL; iter = g_list_next(iter)) {
+		GtkRecentInfo *info = gtk_recent_info_ref(iter->data);
+		if (gtk_recent_info_has_application(info, "Inform 7")) {
+			const char *group = NULL;
+			if (gtk_recent_info_has_group(info, "inform7_project"))
+				group = "inform7_project";
+			else if (gtk_recent_info_has_group(info, "inform7_extension"))
+				group = "inform7_extension";
+			else if (gtk_recent_info_has_group(info, "inform7_builtin"))
+				group = "inform7_builtin";
+			else
+				continue;
+
+			g_autofree char *action = g_strdup_printf("app.open-recent(('%s','%s'))", gtk_recent_info_get_uri(info), group);
+			GMenuItem *item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
+			g_menu_append_item(recent_menu, item);
+		}
+		gtk_recent_info_unref(info);
+	}
+}
+
 static void
 i7_app_init(I7App *self)
 {
-	I7_APP_USE_PRIVATE(self, priv);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GError *error = NULL;
 
+	priv->system_settings = g_settings_new(SCHEMA_SYSTEM);
 	priv->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
 	priv->state_settings = g_settings_new(SCHEMA_STATE);
-	priv->desktop_settings = g_settings_new("org.gnome.desktop.interface");
+
+	priv->font_settings_provider = gtk_css_provider_new();
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(priv->font_settings_provider),
+		GTK_STYLE_PROVIDER_PRIORITY_USER);
+	g_autoptr(GtkCssProvider) css = gtk_css_provider_new();
+	gtk_css_provider_load_from_resource(css, "/com/inform7/IDE/ui/application.css");
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(css),
+		GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
 	/* Retrieve data directories if set externally */
-	const gchar *env = g_getenv("GNOME_INFORM_DATA_DIR");
+	const gchar *env = g_getenv("INFORM7_IDE_DATA_DIR");
 	if(env) {
 		priv->datadir = g_file_new_for_path(env);
 	} else {
-		char *path = g_build_filename(PACKAGE_DATA_DIR, "gnome-inform7", NULL);
+		char *path = g_build_filename(PACKAGE_DATA_DIR, "inform7-ide", NULL);
 		priv->datadir = g_file_new_for_path(path);
 		g_free(path);
 	}
 
-	env = g_getenv("GNOME_INFORM_LIBEXEC_DIR");
+	env = g_getenv("INFORM7_IDE_LIBEXEC_DIR");
 	priv->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
 
-	GFile *builderfile = i7_app_get_data_file(self, "ui/gnome-inform7.ui");
-	GtkBuilder *builder = create_new_builder(builderfile, self);
-	g_object_unref(builderfile);
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/app.ui");
+	gtk_builder_connect_signals(builder, self);
 
-	/* Make the action group and ref it so that it won't be owned by whatever
-	UI manager it's inserted into */
-	priv->app_action_group = GTK_ACTION_GROUP(load_object(builder, "app_actions"));
-	g_object_ref(priv->app_action_group);
+	create_app_actions(self);
 
-	/* Add a filter to the Open Recent menu (can be removed once Glade supports
-	building GtkRecentFilters) */
-	GtkAction *recent = GTK_ACTION(load_object(builder, "open_recent"));
-	GtkRecentFilter *filter = gtk_recent_filter_new();
-	gtk_recent_filter_add_group(filter, "inform7_project");
-	gtk_recent_filter_add_group(filter, "inform7_extension");
-	gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent), filter);
+	GtkRecentManager *default_recent_manager = gtk_recent_manager_get_default();
+	g_signal_connect(default_recent_manager, "changed", G_CALLBACK(rebuild_recent_menu), self);
 
-	priv->document_list = NULL;
-	priv->splash_screen_active = TRUE;
 	priv->installed_extensions = GTK_TREE_STORE(load_object(builder, "installed_extensions_store"));
 	g_object_ref(priv->installed_extensions);
 	/* Set print settings to NULL, since they are not remembered across
 	application runs (yet) */
 	priv->print_settings = NULL;
-	priv->page_setup = gtk_page_setup_new();
 
-	/* Create the Gnome Inform7 dir if it doesn't already exist */
+	/* Create the Inform dir if it doesn't already exist */
 	GFile *extensions_file = i7_app_get_extension_file(self, NULL, NULL);
 	if(!make_directory_unless_exists(extensions_file, NULL, &error)) {
 		IO_ERROR_DIALOG(NULL, extensions_file, error, _("creating the Inform directory"));
 	}
 	g_object_unref(extensions_file);
-
-	/* Set up monitor for extensions directory */
-	i7_app_run_census(self, FALSE);
-	priv->extension_dir_monitor = NULL;
-	i7_app_monitor_extensions_directory(self);
 
 	/* Compile the regices */
 	I7AppRegexInfo regex_info[] = {
@@ -179,128 +223,135 @@ i7_app_init(I7App *self)
 
 	/* Set up signals for GSettings keys. */
 	init_config_file(priv->prefs_settings);
-
-	g_object_unref(builder);
+	g_signal_connect_swapped(priv->system_settings, "changed::document-font-name", G_CALLBACK(i7_app_update_css), self);
+	g_signal_connect_swapped(priv->system_settings, "changed::monospace-font-name", G_CALLBACK(i7_app_update_css), self);
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
 	priv->color_scheme_manager = create_color_scheme_manager(self);
 }
 
 static void
-i7_app_finalize(GObject *self)
+i7_app_finalize(GObject *object)
 {
-	I7_APP_USE_PRIVATE(self, priv);
+	I7App *self = I7_APP(object);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	g_object_unref(priv->datadir);
 	g_object_unref(priv->libexecdir);
-	i7_app_stop_monitoring_extensions_directory(I7_APP(self));
-	if(I7_APP(self)->prefs)
-		g_slice_free(I7PrefsWidgets, I7_APP(self)->prefs);
+	i7_app_stop_monitoring_extensions_directory(self);
+	if(self->prefs)
+		g_slice_free(I7PrefsWidgets, self->prefs);
 	g_object_unref(priv->installed_extensions);
-	g_object_unref(priv->app_action_group);
 	g_object_unref(priv->color_scheme_manager);
+	g_object_unref(priv->system_settings);
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
+	g_clear_object(&priv->font_settings_provider);
 
 	int i;
 	for(i = 0; i < I7_APP_NUM_REGICES; i++)
-		g_regex_unref(I7_APP(self)->regices[i]);
+		g_regex_unref(self->regices[i]);
 
-	G_OBJECT_CLASS(i7_app_parent_class)->finalize(self);
+	G_OBJECT_CLASS(i7_app_parent_class)->finalize(object);
+}
+
+static void
+i7_app_startup(GApplication *app)
+{
+	I7App *self = I7_APP(app);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	G_APPLICATION_CLASS(i7_app_parent_class)->startup(app);
+
+	/* Set up monitor for extensions directory */
+	i7_app_run_census(self, FALSE);
+	priv->extension_dir_monitor = NULL;
+	i7_app_monitor_extensions_directory(self);
+
+	/* Set initial font sizes */
+	i7_app_update_css(self);
+}
+
+static void
+i7_app_activate(GApplication *app)
+{
+	/* If no windows were opened from command line arguments */
+	if (gtk_application_get_windows(GTK_APPLICATION(app)) == NULL) {
+		/* Create the splash window */
+		GtkWidget *welcomedialog = create_welcome_dialog(GTK_APPLICATION(app));
+		gtk_widget_show_all(welcomedialog);
+	}
+}
+
+/* Detect the type of document represented by @filename and open it. If that
+ document is already open, then bring its window to the front. */
+static void
+i7_app_open(GApplication *app, GFile **files, int n_files, const char *hint)
+{
+	I7App *self = I7_APP(app);
+
+	for (int index = 0; index < n_files; index++) {
+		I7Document *dupl = i7_app_get_already_open(self, files[index]);
+		if (dupl) {
+			gtk_window_present(GTK_WINDOW(dupl));
+			continue;
+		}
+
+		if (g_file_query_exists(files[index], NULL)) {
+			if (g_file_query_file_type(files[index], G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
+				i7_story_new_from_file(self, files[index]);
+				/* TODO make sure story.ni exists */
+			} /* else */
+				/* TODO Use is_valid_extension to check if they're extensions and then open them */
+		}
+	}
 }
 
 static void
 i7_app_class_init(I7AppClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS(klass);
-
-	g_type_class_add_private(klass, sizeof(I7AppPrivate));
-
 	object_class->finalize = i7_app_finalize;
+
+	GApplicationClass *application_class = G_APPLICATION_CLASS(klass);
+	application_class->startup = i7_app_startup;
+	application_class->activate = i7_app_activate;
+	application_class->open = i7_app_open;
 }
 
-/* Function to get the singleton application object. */
 I7App *
-i7_app_get(void)
+i7_app_new(void)
 {
-	static I7App *theapp = NULL;
+	I7App *theapp = I7_APP(g_object_new(I7_TYPE_APP,
+		"application-id", "com.inform7.IDE",
+		"flags", G_APPLICATION_HANDLES_OPEN,
+		NULL));
 
-	if(G_UNLIKELY(theapp == NULL)) {
-		theapp = I7_APP(g_object_new(I7_TYPE_APP, NULL));
-
-		/* Do any setup activities for the application that require calling
-		 i7_app_get() */
-		populate_schemes_list(theapp->prefs->schemes_list);
-		/* Set up Natural Inform highlighting on the example buffer */
-		GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example)));
-		set_buffer_language(buffer, "inform7");
-		gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
-	}
+	/* Do any setup activities for the application that require calling
+	 g_application_get_default(), e.g. for access to GSettings */
+	populate_schemes_list(theapp->prefs->schemes_list);
+	/* Set up Natural Inform highlighting on the example buffer */
+	GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example)));
+	set_buffer_language(buffer, "inform7");
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
 
 	return theapp;
 }
 
-/* Detect the type of document represented by @filename and open it. If that
- document is already open, then bring its window to the front. */
-void
-i7_app_open(I7App *app, GFile *file)
-{
-	I7Document *dupl = i7_app_get_already_open(app, file);
-	if(dupl) {
-		gtk_window_present(GTK_WINDOW(dupl));
-		return;
-	}
-
-	if(g_file_query_exists(file, NULL)) {
-		if(g_file_query_file_type(file, G_FILE_QUERY_INFO_NONE, NULL) == G_FILE_TYPE_DIRECTORY) {
-			i7_story_new_from_file(app, file);
-			/* TODO make sure story.ni exists */
-		} /* else */
-			/* TODO Use is_valid_extension to check if they're extensions and then open them */
-	}
-}
-
-/* Insert the application's private action group into a GtkUIManager */
-void
-i7_app_insert_action_groups(I7App *app, GtkUIManager *manager)
-{
-	I7_APP_USE_PRIVATE(app, priv);
-	gtk_ui_manager_insert_action_group(manager, priv->app_action_group, 0);
-}
-
-/* Add @document to the list of open documents */
-void
-i7_app_register_document(I7App *app, I7Document *document)
-{
-	I7_APP_USE_PRIVATE(app, priv);
-	priv->document_list = g_slist_prepend(priv->document_list, document);
-}
-
-/* Remove @document from the list of open documents */
-void
-i7_app_remove_document(I7App *app, I7Document *document)
-{
-	I7_APP_PRIVATE(app)->document_list = g_slist_remove(I7_APP_PRIVATE(app)->document_list, document);
-
-	if(i7_app_get_num_open_documents(app) == 0 && !i7_app_get_splash_screen_active(app))
-		gtk_main_quit();
-}
-
 /* Custom search function for invocation of g_slist_find_custom() in
 i7_app_get_already_open() below */
-static gboolean
-document_compare_file(const I7Document *document, GFile *file)
+static int
+document_compare_file(GtkWindow *window, GFile *file)
 {
-	GFile *document_file = i7_document_get_file(document);
+	if (!I7_IS_DOCUMENT(window))
+		return 1;
 
-	gboolean equal = g_file_equal(file, document_file);
-
-	g_object_unref(document_file);
-	return equal? 0 : 1;
+	g_autoptr(GFile) document_file = i7_document_get_file(I7_DOCUMENT(window));
+	return g_file_equal(file, document_file)? 0 : 1;
 }
 
 /**
  * i7_app_get_already_open:
- * @app: the application
+ * @self: the application
  * @file: a #GFile
  *
  * Check to see if @file is already open in this instance of the application.
@@ -309,107 +360,57 @@ document_compare_file(const I7Document *document, GFile *file)
  * otherwise.
  */
 I7Document *
-i7_app_get_already_open(I7App *app, const GFile *file)
+i7_app_get_already_open(I7App *self, const GFile *file)
 {
-	I7_APP_USE_PRIVATE(app, priv);
-	GSList *node = g_slist_find_custom(priv->document_list, file, (GCompareFunc)document_compare_file);
+	GList *document_list = gtk_application_get_windows(GTK_APPLICATION(self));
+	GList *node = g_list_find_custom(document_list, file, (GCompareFunc)document_compare_file);
 	if(node)
 		return node->data;
 	return NULL;
 }
 
-/* Return the number of documents currently open. */
-gint
-i7_app_get_num_open_documents(I7App *app)
-{
-	I7_APP_USE_PRIVATE(app, priv);
-	return g_slist_length(priv->document_list);
-}
-
 /* Close all story windows, no cancelling allowed */
 void
-i7_app_close_all_documents(I7App *app)
+i7_app_close_all_documents(I7App *self)
 {
-	I7_APP_USE_PRIVATE(app, priv);
-	g_slist_foreach(priv->document_list, (GFunc)i7_document_close, NULL);
-	g_slist_foreach(priv->document_list, (GFunc)gtk_widget_destroy, NULL);
-	priv->document_list = NULL;
-	gtk_main_quit();
-}
-
-/* Carry out @func for each document window. To do something to each story or
- extension window only, call this function and check for I7_IS_STORY() in your
- callback function. */
-void
-i7_app_foreach_document(I7App *app, I7DocumentForeachFunc func, gpointer data)
-{
-	I7_APP_USE_PRIVATE(app, priv);
-	g_slist_foreach(priv->document_list, (GFunc)func, data);
-}
-
-/**
- * i7_app_get_splash_screen_active:
- * @app: the app
- *
- * Gets whether the splash screen (welcome dialog) is currently displaying. If
- * it is, the program should not quit even if all document windows are closed.
- *
- * Returns: %TRUE if splash screen is active, %FALSE otherwise.
- */
-gboolean
-i7_app_get_splash_screen_active(I7App *app)
-{
-	I7AppPrivate *priv = I7_APP_PRIVATE(app);
-	return priv->splash_screen_active;
-}
-
-/**
- * i7_app_set_splash_screen_active:
- * @app: the app
- * @active: %TRUE if splash screen should be active, %FALSE otherwise.
- *
- * Sets whether the splash screen (welcome dialog) is currently displaying. If
- * it is, the program should not quit even if all document windows are closed.
- */
-void
-i7_app_set_splash_screen_active(I7App *app, gboolean active)
-{
-	I7AppPrivate *priv = I7_APP_PRIVATE(app);
-	priv->splash_screen_active = active;
+	GList *document_list = gtk_application_get_windows(GTK_APPLICATION(self));
+	g_list_foreach(document_list, (GFunc)i7_document_close, NULL);
 }
 
 /* Callback for file monitor on extensions directory; run the census if a file
  was created or deleted */
 static void
-extension_dir_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFileMonitorEvent event_type, I7App *app)
+extension_dir_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFileMonitorEvent event_type, I7App *self)
 {
 	if(event_type == G_FILE_MONITOR_EVENT_CREATED || event_type == G_FILE_MONITOR_EVENT_DELETED)
-		i7_app_run_census(app, FALSE);
+		i7_app_run_census(self, FALSE);
 }
 
 /* Set up a file monitor for the user's extensions directory */
 void
-i7_app_monitor_extensions_directory(I7App *app)
+i7_app_monitor_extensions_directory(I7App *self)
 {
-	I7_APP_USE_PRIVATE(app, priv);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GError *error = NULL;
-	if(!I7_APP_PRIVATE(app)->extension_dir_monitor) {
-		GFile *extdir = i7_app_get_extension_file(app, NULL, NULL);
+	if(!priv->extension_dir_monitor) {
+		GFile *extdir = i7_app_get_extension_file(self, NULL, NULL);
 		priv->extension_dir_monitor = g_file_monitor_directory(extdir, G_FILE_MONITOR_NONE, NULL, &error);
 		g_object_unref(extdir);
 	}
 
-	g_signal_connect(G_OBJECT(priv->extension_dir_monitor), "changed", G_CALLBACK(extension_dir_changed), app);
+	g_signal_connect(G_OBJECT(priv->extension_dir_monitor), "changed", G_CALLBACK(extension_dir_changed), self);
 }
 
 /* Turn off the file monitor on the user's extensions directory */
 void
-i7_app_stop_monitoring_extensions_directory(I7App *app)
+i7_app_stop_monitoring_extensions_directory(I7App *self)
 {
-	I7_APP_USE_PRIVATE(app, priv);
-	g_file_monitor_cancel(priv->extension_dir_monitor);
-	g_object_unref(priv->extension_dir_monitor);
-	priv->extension_dir_monitor = NULL;
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	if (priv->extension_dir_monitor) {
+		g_file_monitor_cancel(priv->extension_dir_monitor);
+		g_object_unref(priv->extension_dir_monitor);
+		priv->extension_dir_monitor = NULL;
+	}
 }
 
 /* Examines the @text (at least the first line) of an extension file to check
@@ -421,14 +422,14 @@ the values returned in @name and @author must be freed, and the value in
 @version must be freed if it is not NULL. It is okay to pass NULL for @version,
 @name, and @author, in which case nothing will be stored there. */
 static gboolean
-is_valid_extension(I7App *app, const char *text, char **version, char **name, char **author)
+is_valid_extension(I7App *self, const char *text, char **version, char **name, char **author)
 {
 	g_return_val_if_fail(text != NULL, FALSE);
 
 	GMatchInfo *match = NULL;
 	char *matched_name, *matched_author;
 
-	if(!g_regex_match(app->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
+	if(!g_regex_match(self->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
 		g_match_info_free(match);
 		return FALSE;
 	}
@@ -469,13 +470,13 @@ read_first_line(GFile *file, GCancellable *cancellable, GError **error)
 
 /**
  * i7_app_install_extension:
- * @app: the application
+ * @self: the application
  * @file: a #GFile
  *
  * Install the extension @file into the user's extensions directory.
  */
 void
-i7_app_install_extension(I7App *app, GFile *file)
+i7_app_install_extension(I7App *self, GFile *file)
 {
 	g_return_if_fail(file);
 	GError *err = NULL;
@@ -490,7 +491,7 @@ i7_app_install_extension(I7App *app, GFile *file)
 	/* Make sure the file is actually an Inform 7 extension */
 	gchar *name = NULL;
 	gchar *author = NULL;
-	if(!is_valid_extension(app, text, NULL, &name, &author)) {
+	if(!is_valid_extension(self, text, NULL, &name, &author)) {
 		char *display_name = file_get_display_name(file);
 		error_dialog(NULL, NULL, _("The file '%s' does not seem to be an "
 		  "extension. Extensions should be saved as UTF-8 text format files, "
@@ -504,17 +505,17 @@ i7_app_install_extension(I7App *app, GFile *file)
 	g_free(text);
 
 	/* Turn off the file monitor */
-	i7_app_stop_monitoring_extensions_directory(app);
+	i7_app_stop_monitoring_extensions_directory(self);
 
 	/* Create the directory for that author if it does not exist already */
-	GFile *dir = i7_app_get_extension_file(app, author, NULL);
+	GFile *dir = i7_app_get_extension_file(self, author, NULL);
 
 	if(!make_directory_unless_exists(dir, NULL, &err)) {
 		error_dialog_file_operation(NULL, dir, err, I7_FILE_ERROR_OTHER, _("creating a directory"));
 		g_free(name);
 		g_free(author);
 		g_object_unref(dir);
-		i7_app_monitor_extensions_directory(app);
+		i7_app_monitor_extensions_directory(self);
 		return;
 	}
 
@@ -536,7 +537,7 @@ i7_app_install_extension(I7App *app, GFile *file)
 			g_object_unref(canonical_target);
 			g_free(name);
 			g_free(author);
-			i7_app_monitor_extensions_directory(app);
+			i7_app_monitor_extensions_directory(self);
 			return;
 		}
 		gtk_widget_destroy(dialog);
@@ -550,7 +551,7 @@ i7_app_install_extension(I7App *app, GFile *file)
 		error_dialog_file_operation(NULL, canonical_target, err, I7_FILE_ERROR_OTHER, _("copying a file"));
 		g_object_unref(target);
 		g_object_unref(canonical_target);
-		i7_app_monitor_extensions_directory(app);
+		i7_app_monitor_extensions_directory(self);
 		return;
 	}
 	g_object_unref(canonical_target);
@@ -563,10 +564,10 @@ i7_app_install_extension(I7App *app, GFile *file)
 	}
 
 	g_object_unref(target);
-	i7_app_monitor_extensions_directory(app);
+	i7_app_monitor_extensions_directory(self);
 
 	/* Index the new extensions, in the foreground */
-	i7_app_run_census(app, TRUE);
+	i7_app_run_census(self, TRUE);
 }
 
 /*
@@ -601,16 +602,16 @@ remove_i7x_from_file(GFile *file)
 
 /* Delete extension and remove author dir if empty */
 void
-i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
+i7_app_delete_extension(I7App *self, char *author, char *extname)
 {
 	GFile *file, *file_lc, *file_noext, *file_lc_noext, *author_dir, *author_dir_lc;
 	char *extname_lc;
 	GError *err = NULL;
 
-	i7_app_stop_monitoring_extensions_directory(app);
+	i7_app_stop_monitoring_extensions_directory(self);
 
 	/* Get references to the various possible versions of this filename */
-	file = i7_app_get_extension_file(app, author, extname);
+	file = i7_app_get_extension_file(self, author, extname);
 	file_noext = remove_i7x_from_file(file);
 
 	/* Remove extension, try versions with and without .i7x */
@@ -626,7 +627,7 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 	/* Remove lowercase symlink to extension (holdover from previous versions
 	of Inform) */
 	extname_lc = g_utf8_strdown(extname, -1);
-	file_lc = i7_app_get_extension_file(app, author, extname_lc);
+	file_lc = i7_app_get_extension_file(self, author, extname_lc);
 	file_lc_noext = remove_i7x_from_file(file_lc);
 	g_object_unref(file_lc);
 
@@ -641,7 +642,7 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 	g_object_unref(file_lc_noext);
 
 	/* Remove author directory if empty */
-	author_dir = i7_app_get_extension_file(app, author, NULL);
+	author_dir = i7_app_get_extension_file(self, author, NULL);
 	if(!g_file_delete(author_dir, NULL, &err)) {
 		/* if the directory isn't empty, continue; but if it failed for any
 		other reason, display an error */
@@ -656,7 +657,7 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 	/* Remove lowercase symlink to author directory (holdover from previous
 	versions of Inform) */
 	gchar *author_lc = g_utf8_strdown(author, -1);
-	author_dir_lc = i7_app_get_extension_file(app, author_lc, NULL);
+	author_dir_lc = i7_app_get_extension_file(self, author_lc, NULL);
 	g_free(author_lc);
 	/* Only do this if the symlink actually exists */
 	if(file_exists_and_is_symlink(author_dir_lc)) {
@@ -667,10 +668,10 @@ i7_app_delete_extension(I7App *app, gchar *author, gchar *extname)
 	g_object_unref(author_dir_lc);
 
 finally:
-	i7_app_monitor_extensions_directory(app);
+	i7_app_monitor_extensions_directory(self);
 
 	/* Index the new extensions, in the foreground */
-	i7_app_run_census(app, TRUE);
+	i7_app_run_census(self, TRUE);
 }
 
 /* Helper function: when a multiple extension download operation is cancelled,
@@ -691,7 +692,7 @@ cancel_extension_download(GCancellable *inner_cancellable)
 
 /**
  * i7_app_download_extension:
- * @app: the app
+ * @self: the app
  * @file: #GFile reference to a URI from which to download the extension
  * @cancellable: (allow-none): #GCancellable which will stop the operation, or
  * %NULL
@@ -709,7 +710,7 @@ cancel_extension_download(GCancellable *inner_cancellable)
  * @error is set.
  */
 gboolean
-i7_app_download_extension(I7App *app, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, gpointer progress_callback_data, GError **error)
+i7_app_download_extension(I7App *self, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, gpointer progress_callback_data, GError **error)
 {
 	if(g_cancellable_set_error_if_cancelled(cancellable, error))
 		return FALSE;
@@ -737,7 +738,7 @@ i7_app_download_extension(I7App *app, GFile *file, GCancellable *cancellable, GF
 	if(!success)
 		return FALSE;
 
-	i7_app_install_extension(app, destination_file);
+	i7_app_install_extension(self, destination_file);
 	return TRUE;
 }
 
@@ -842,7 +843,7 @@ get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter
 
 /**
  * i7_app_get_extension_version:
- * @app: the app
+ * @self: the app
  * @author: the author of the extension
  * @title: the title of the extension
  * @builtin: (allow-none): return location for a boolean
@@ -856,9 +857,10 @@ get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter
  * or %NULL if the extension is not installed.
  */
 char *
-i7_app_get_extension_version(I7App *app, const char *author, const char *title, gboolean *builtin)
+i7_app_get_extension_version(I7App *self, const char *author, const char *title, gboolean *builtin)
 {
-	GtkTreeModel *store = GTK_TREE_MODEL(I7_APP_PRIVATE(app)->installed_extensions);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	GtkTreeModel *store = GTK_TREE_MODEL(priv->installed_extensions);
 	GtkTreeIter parent_iter, child_iter;
 	char *version;
 	gboolean readonly;
@@ -883,19 +885,18 @@ i7_app_get_extension_version(I7App *app, const char *author, const char *title, 
  and @extname, if not NULL; return the author directory if @extname is NULL;
  return the built-in extensions path if both are NULL. */
 static GFile *
-get_builtin_extension_file(I7App *app, const gchar *author,
-	const gchar *extname)
+get_builtin_extension_file(I7App *self, const char *author,	const char *extname)
 {
 	if(!author)
-		return i7_app_get_data_file_va(app, "Extensions", NULL);
+		return i7_app_get_data_file_va(self, "Extensions", NULL);
 	if(!extname)
-		return i7_app_get_data_file_va(app, "Extensions", author, NULL);
-	return i7_app_get_data_file_va(app, "Extensions", author, extname, NULL);
+		return i7_app_get_data_file_va(self, "Extensions", author, NULL);
+	return i7_app_get_data_file_va(self, "Extensions", author, extname, NULL);
 }
 
 /**
  * i7_app_foreach_installed_extension:
- * @app: the app
+ * @self: the app
  * @builtin: whether to iterate over the built-in extensions or the
  * user-installed ones
  * @author_func: (allow-none) (scope call): a function to call for each author
@@ -917,7 +918,7 @@ get_builtin_extension_file(I7App *app, const gchar *author,
  * @author_func, if both of them are not %NULL.
  */
 void
-i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc author_func, gpointer author_func_data, I7AppExtensionFunc extension_func, gpointer extension_func_data, GDestroyNotify free_author_result)
+i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFunc author_func, void *author_func_data, I7AppExtensionFunc extension_func, void *extension_func_data, GDestroyNotify free_author_result)
 {
 	GError *err = NULL;
 	GFile *root_file;
@@ -926,9 +927,9 @@ i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc
 	gpointer author_result;
 
 	if(builtin)
-		root_file = get_builtin_extension_file(app, NULL, NULL);
+		root_file = get_builtin_extension_file(self, NULL, NULL);
 	else
-		root_file = i7_app_get_extension_file(app, NULL, NULL);
+		root_file = i7_app_get_extension_file(self, NULL, NULL);
 
 	root_dir = g_file_enumerate_children(root_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err);
 	if(!root_dir) {
@@ -950,7 +951,7 @@ i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc
 			continue;
 
 		if(author_func)
-			author_result = author_func(author_info, author_func_data);
+			author_result = author_func(self, author_info, author_func_data);
 		else
 			author_result = NULL;
 
@@ -970,7 +971,7 @@ i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc
 				continue;
 
 			if(extension_func)
-				extension_func(author_file, extension_info, author_result, extension_func_data);
+				extension_func(self, author_file, extension_info, author_result, extension_func_data);
 
 			g_object_unref(extension_info);
 		}
@@ -999,7 +1000,7 @@ i7_app_foreach_installed_extension(I7App *app, gboolean builtin, I7AppAuthorFunc
 
 /* Helper function: Add author to tree store callback */
 static GtkTreeIter *
-add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
+add_author_to_tree_store(I7App *app, GFileInfo *info, GtkTreeStore *store)
 {
 	GtkTreeIter parent_iter;
 	const char *author_display_name = g_file_info_get_display_name(info);
@@ -1021,7 +1022,7 @@ add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
 
 /* Helper function: add extension to tree store as a non-built-in extension */
 static void
-add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+add_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
 	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
@@ -1035,7 +1036,7 @@ add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(i7_app_get(), firstline, &version, &title, NULL)) {
+	if(!is_valid_extension(app, firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;
@@ -1060,7 +1061,7 @@ finally:
 /* Helper function: add extension to tree store as a built-in extension. Makes
  * sure that user-installed extensions override the built-in ones. */
 static void
-add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+add_builtin_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
 	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
@@ -1074,7 +1075,7 @@ add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter 
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(i7_app_get(), firstline, &version, &title, NULL)) {
+	if(!is_valid_extension(app, firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;
@@ -1088,7 +1089,7 @@ add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter 
 			I7_APP_EXTENSION_TEXT, title,
 			I7_APP_EXTENSION_VERSION, version,
 			I7_APP_EXTENSION_READ_ONLY, TRUE,
-			I7_APP_EXTENSION_ICON, "inform7-builtin",
+			I7_APP_EXTENSION_ICON, "com.inform7.IDE.builtin",
 			I7_APP_EXTENSION_FILE, extension_file,
 			-1);
 	}
@@ -1102,22 +1103,23 @@ finally:
 /* Helper function: look in the user's extensions directory and the built-in one
  and list all the extensions there in the application's extensions tree */
 static gboolean
-update_installed_extensions_tree(I7App *app)
+update_installed_extensions_tree(I7App *self)
 {
-	GtkTreeStore *store = I7_APP_PRIVATE(app)->installed_extensions;
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	GtkTreeStore *store = priv->installed_extensions;
 	gtk_tree_store_clear(store);
 
-	i7_app_foreach_installed_extension(app, FALSE,
+	i7_app_foreach_installed_extension(self, FALSE,
 	    (I7AppAuthorFunc)add_author_to_tree_store, store,
 	    (I7AppExtensionFunc)add_extension_to_tree_store, store,
 	    (GDestroyNotify)gtk_tree_iter_free);
-	i7_app_foreach_installed_extension(app, TRUE,
+	i7_app_foreach_installed_extension(self, TRUE,
 	    (I7AppAuthorFunc)add_author_to_tree_store, store,
 	    (I7AppExtensionFunc)add_builtin_extension_to_tree_store, store,
 	    (GDestroyNotify)gtk_tree_iter_free);
 
 	/* Rebuild the Open Extension menus */
-	i7_app_update_extensions_menu(app);
+	i7_app_update_extensions_menu(self);
 
 	return FALSE; /* one-shot idle function */
 }
@@ -1125,10 +1127,10 @@ update_installed_extensions_tree(I7App *app)
 /* Start the compiler running the census of extensions. If @wait is FALSE, do it
  in the background. */
 void
-i7_app_run_census(I7App *app, gboolean wait)
+i7_app_run_census(I7App *self, gboolean wait)
 {
-	GFile *ni_binary = i7_app_get_binary_file(app, "ni");
-	GFile *builtin_extensions = i7_app_get_internal_dir(app);
+	GFile *ni_binary = i7_app_get_binary_file(self, "ni");
+	GFile *builtin_extensions = i7_app_get_internal_dir(self);
 
 	/* Build the command line */
 	gchar **commandline = g_new(gchar *, 5);
@@ -1146,12 +1148,12 @@ i7_app_run_census(I7App *app, gboolean wait)
 		g_spawn_sync(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
 			| G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
 			NULL, NULL, NULL, NULL, NULL, NULL);
-		update_installed_extensions_tree(app);
+		update_installed_extensions_tree(self);
 	} else {
 		g_spawn_async(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
 			| G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
 			NULL, NULL, NULL, NULL);
-		g_idle_add((GSourceFunc)update_installed_extensions_tree, app);
+		g_idle_add((GSourceFunc)update_installed_extensions_tree, self);
 	}
 
 	g_strfreev(commandline);
@@ -1159,7 +1161,7 @@ i7_app_run_census(I7App *app, gboolean wait)
 
 /**
  * i7_app_get_extension_file:
- * @app: the application
+ * @self: the application
  * @author: (allow-none): the extension author
  * @extname: (allow-none): the extensions name, with or without .i7x
  *
@@ -1170,7 +1172,7 @@ i7_app_run_census(I7App *app, gboolean wait)
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname)
+i7_app_get_extension_file(I7App *self, const char *author, const char *extname)
 {
 	char *path;
 
@@ -1196,7 +1198,7 @@ i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname)
 
 /**
  * i7_app_get_extension_docpage:
- * @app: the application
+ * @self: the application
  * @author: (allow-none): the extension author
  * @extname: (allow-none): the extension name, without .i7x
  *
@@ -1208,7 +1210,7 @@ i7_app_get_extension_file(I7App *app, const gchar *author, const gchar *extname)
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_docpage(I7App *app, const char *author, const char *extname)
+i7_app_get_extension_docpage(I7App *self, const char *author, const char *extname)
 {
 	char *path;
 
@@ -1226,7 +1228,7 @@ i7_app_get_extension_docpage(I7App *app, const char *author, const char *extname
 
 /**
  * i7_app_get_extension_home_page:
- * @app: the application
+ * @se;f: the application
  *
  * Returns the home page for installed extensions (by default,
  * $HOME/Inform/Documentation/Extensions.html.)
@@ -1234,7 +1236,7 @@ i7_app_get_extension_docpage(I7App *app, const char *author, const char *extname
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_home_page(I7App *app)
+i7_app_get_extension_home_page(I7App *self)
 {
 	char *path = g_build_filename(g_get_home_dir(), EXTENSION_HOME_PATH, NULL);
 	GFile *retval = g_file_new_for_path(path);
@@ -1244,7 +1246,7 @@ i7_app_get_extension_home_page(I7App *app)
 
 /**
  * i7_app_get_extension_index_page:
- * @app: the application
+ * @self: the application
  *
  * Returns the definitions index page for installed extensions (by default,
  * $HOME/Inform/Documentation/ExtIndex.html.)
@@ -1252,7 +1254,7 @@ i7_app_get_extension_home_page(I7App *app)
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_index_page(I7App *app)
+i7_app_get_extension_index_page(I7App *self)
 {
 	char *path = g_build_filename(g_get_home_dir(), EXTENSION_INDEX_PATH, NULL);
 	GFile *retval = g_file_new_for_path(path);
@@ -1262,7 +1264,7 @@ i7_app_get_extension_index_page(I7App *app)
 
 /**
  * i7_app_get_internal_dir:
- * @app: the app
+ * @self: the app
  *
  * Gets a reference to the application data directory, or in other words the
  * directory which the NI compiler considers to be the "internal" directory.
@@ -1270,14 +1272,15 @@ i7_app_get_extension_index_page(I7App *app)
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_internal_dir(I7App *app)
+i7_app_get_internal_dir(I7App *self)
 {
-	return g_object_ref(I7_APP_PRIVATE(app)->datadir);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	return g_object_ref(priv->datadir);
 }
 
 /**
  * i7_app_get_data_file:
- * @app: the app
+ * @self: the app
  * @filename: the basename of the data file
  *
  * Locates @filename in the application data directory. If it is not found,
@@ -1287,9 +1290,10 @@ i7_app_get_internal_dir(I7App *app)
  * found.
  */
 GFile *
-i7_app_get_data_file(I7App *app, const char *filename)
+i7_app_get_data_file(I7App *self, const char *filename)
 {
-	GFile *retval = g_file_get_child(I7_APP_PRIVATE(app)->datadir, filename);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	GFile *retval = g_file_get_child(priv->datadir, filename);
 
 	if(g_file_query_exists(retval, NULL))
 		return retval;
@@ -1302,7 +1306,7 @@ i7_app_get_data_file(I7App *app, const char *filename)
 
 /**
  * i7_app_get_data_file_va:
- * @app: the app
+ * @self: the app
  * @path1: first component of the path
  * @...: subsequent path components, ending with %NULL.
  *
@@ -1314,13 +1318,14 @@ i7_app_get_data_file(I7App *app, const char *filename)
  * found.
  */
 GFile *
-i7_app_get_data_file_va(I7App *app, const char *path1, ...)
+i7_app_get_data_file_va(I7App *self, const char *path1, ...)
 {
 	va_list ap;
 	GFile *retval, *previous;
 	char *arg, *lastarg = NULL;
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	retval = previous = g_file_get_child(I7_APP_PRIVATE(app)->datadir, path1);
+	retval = previous = g_file_get_child(priv->datadir, path1);
 
 	va_start(ap, path1);
 	while((arg = va_arg(ap, char *)) != NULL) {
@@ -1341,69 +1346,8 @@ i7_app_get_data_file_va(I7App *app, const char *path1, ...)
 }
 
 /**
- * i7_app_check_data_file:
- * @app: the app
- * @filename: the basename of the data file
- *
- * Locates @filename in the application data directory. Used when we do not
- * necessarily want to display an error if it does not exist.
- *
- * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
- * found.
- */
-GFile *
-i7_app_check_data_file(I7App *app, const char *filename)
-{
-	GFile *retval = g_file_get_child(I7_APP_PRIVATE(app)->datadir, filename);
-
-	if(!g_file_query_exists(retval, NULL)) {
-		g_object_unref(retval);
-		return NULL;
-	}
-
-	return retval;
-}
-
-/**
- * i7_app_check_data_file_va:
- * @app: the app
- * @path1: first component of the path
- * @...: subsequent path components, ending with %NULL.
- *
- * Locates a file in a subdirectory of the application data directory. Used when
- * we do not necessarily want to display an error if it does not exist.
- *
- * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
- * found.
- */
-GFile *
-i7_app_check_data_file_va(I7App *app, const char *path1, ...)
-{
-	va_list ap;
-	GFile *retval, *previous;
-	char *arg;
-
-	retval = previous = g_file_get_child(I7_APP_PRIVATE(app)->datadir, path1);
-
-	va_start(ap, path1);
-	while((arg = va_arg(ap, char *)) != NULL) {
-		retval = g_file_get_child(previous, arg);
-		g_object_unref(previous);
-		previous = retval;
-	}
-	va_end(ap);
-
-	if(!g_file_query_exists(retval, NULL)) {
-		g_object_unref(retval);
-		return NULL;
-	}
-
-	return retval;
-}
-
-/**
  * i7_app_get_binary_file:
- * @app: the app
+ * @self: the app
  * @filename: the basename of the file
  *
  * Locates @filename in the application libexec directory. If it is not found,
@@ -1413,9 +1357,10 @@ i7_app_check_data_file_va(I7App *app, const char *path1, ...)
  * found.
  */
 GFile *
-i7_app_get_binary_file(I7App *app, const char *filename)
+i7_app_get_binary_file(I7App *self, const char *filename)
 {
-	GFile *retval = g_file_get_child(I7_APP_PRIVATE(app)->libexecdir, filename);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	GFile *retval = g_file_get_child(priv->libexecdir, filename);
 
 	if(g_file_query_exists(retval, NULL))
 		return retval;
@@ -1446,18 +1391,23 @@ i7_app_get_config_dir(I7App *self)
 
 /* Getter function for installed extensions tree (transfer none). */
 GtkTreeStore *
-i7_app_get_installed_extensions_tree(I7App *app)
+i7_app_get_installed_extensions_tree(I7App *self)
 {
-	return I7_APP_PRIVATE(app)->installed_extensions;
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	return priv->installed_extensions;
 }
 
-/* Regenerate the installed extensions submenu attached to @parent_item */
-static void
-rebuild_extensions_menu(GtkWidget *parent_item, I7App *app)
+/* Regenerate the installed extensions submenu */
+void
+i7_app_update_extensions_menu(I7App *self)
 {
-	GtkTreeModel *model = GTK_TREE_MODEL(I7_APP_PRIVATE(app)->installed_extensions);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	GtkTreeModel *model = GTK_TREE_MODEL(priv->installed_extensions);
 	GtkTreeIter author, title;
-	GtkWidget *authormenu = gtk_menu_new();
+	GMenu *extensions_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "extensions");
+	g_menu_remove_all(extensions_menu);
+
+	g_autoptr(GIcon) builtin_emblem = g_themed_icon_new("com.inform7.IDE.builtin");
 
 	gtk_tree_model_get_iter_first(model, &author);
 	do {
@@ -1466,11 +1416,7 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *app)
 
 		if(gtk_tree_model_iter_children(model, &title, &author))
 		{
-			GtkWidget *authoritem = gtk_menu_item_new_with_label(authorname);
-			gtk_widget_show(authoritem);
-			gtk_menu_shell_append(GTK_MENU_SHELL(authormenu), authoritem);
-
-			GtkWidget *extmenu = gtk_menu_new();
+			GMenu *extmenu = g_menu_new();
 			do {
 				char *extname;
 				GFile *extension_file;
@@ -1480,109 +1426,81 @@ rebuild_extensions_menu(GtkWidget *parent_item, I7App *app)
 					I7_APP_EXTENSION_READ_ONLY, &readonly,
 					I7_APP_EXTENSION_FILE, &extension_file,
 					-1);
-				GtkWidget *extitem;
+				g_autofree char *uri = g_file_get_uri(extension_file);
+				GMenuItem *extitem = g_menu_item_new(extname, NULL);
 				if(readonly) {
-					extitem = gtk_image_menu_item_new_with_label(extname);
-					GtkWidget *image = gtk_image_new_from_icon_name("inform7-builtin", GTK_ICON_SIZE_MENU);
-					gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(extitem), image);
-					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_readonly_activate), extension_file);
+					g_menu_item_set_icon(extitem, builtin_emblem);
+					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, TRUE);
 				} else {
-					extitem = gtk_menu_item_new_with_label(extname);
-					g_signal_connect(extitem, "activate", G_CALLBACK(on_open_extension_activate), extension_file);
+					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, FALSE);
 				}
-				gtk_widget_show(extitem);
-				gtk_menu_shell_append(GTK_MENU_SHELL(extmenu), extitem);
+				g_menu_append_item(extmenu, extitem);
 
 				g_free(extname);
 				g_object_unref(extension_file);
 
 			} while(gtk_tree_model_iter_next(model, &title));
-			gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), extmenu);
+			g_menu_append_submenu(extensions_menu, authorname, G_MENU_MODEL(extmenu));
 		}
 	} while(gtk_tree_model_iter_next(model, &author));
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(parent_item), authormenu);
-}
-
-/* Rebuild all the Open Installed Extensions submenus in existence, by calling
- rebuild_extensions_menu() on all proxies of the "open_extension" action */
-void
-i7_app_update_extensions_menu(I7App *app)
-{
-	GSList *proxies = gtk_action_get_proxies(gtk_action_group_get_action(I7_APP_PRIVATE(app)->app_action_group, "open_extension"));
-	/* do not free list */
-	g_slist_foreach(proxies, (GFunc)rebuild_extensions_menu, app);
 }
 
 /* Getter function for the global print settings object */
 GtkPrintSettings *
-i7_app_get_print_settings(I7App *app)
+i7_app_get_print_settings(I7App *self)
 {
-	return I7_APP_PRIVATE(app)->print_settings;
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	return priv->print_settings;
 }
 
 /* Setter function for the global print settings object */
 void
-i7_app_set_print_settings(I7App *app, GtkPrintSettings *settings)
+i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings)
 {
-	I7AppPrivate *priv = I7_APP_PRIVATE(app);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	if(priv->print_settings)
 		g_object_unref(priv->print_settings);
 	priv->print_settings = settings;
 }
 
-/* Getter function for the global page setup object */
-GtkPageSetup *
-i7_app_get_page_setup(I7App *app)
-{
-	return I7_APP_PRIVATE(app)->page_setup;
-}
-
-/* Setter function for the global page setup object */
-void
-i7_app_set_page_setup(I7App *app, GtkPageSetup *setup)
-{
-	I7AppPrivate *priv = I7_APP_PRIVATE(app);
-	if(priv->page_setup)
-		g_object_unref(priv->page_setup);
-	priv->page_setup = setup;
-}
-
 /* Bring the preferences dialog to the front */
 void
-i7_app_present_prefs_window(I7App *app)
+i7_app_present_prefs_window(I7App *self)
 {
-	gtk_window_present(GTK_WINDOW(app->prefs->window));
+	gtk_window_present(GTK_WINDOW(self->prefs->window));
 }
 
-/* Helper function: change the cursor of @toplevel's GdkWindow to @cursor.
- Called by g_list_foreach() in i7_app_set_busy() below. */
-static void
-set_cursor(GtkWindow *toplevel, GdkCursor *cursor)
-{
-	GdkWindow *window = gtk_widget_get_window(GTK_WIDGET(toplevel));
-	if(window)
-		gdk_window_set_cursor(window, cursor);
-}
-
-/* Change the cursor in all application windows to GDK_WATCH if @busy is TRUE,
- or to the default cursor if @busy is FALSE. */
+/*
+ * i7_app_update_css:
+ * @self: the app
+ *
+ * Update the global font settings CSS provider, so that any widgets with the
+ * style classes "font-family-setting" or "font-size-setting" get their font
+ * style updated.
+ */
 void
-i7_app_set_busy(I7App *app, gboolean busy)
+i7_app_update_css(I7App *self)
 {
-	GList *windows = gtk_window_list_toplevels();
-	if(busy) {
-		GdkCursor *cursor = gdk_cursor_new(GDK_WATCH);
-		g_list_foreach(windows, (GFunc)set_cursor, cursor);
-		gdk_cursor_unref(cursor);
-	} else
-		g_list_foreach(windows, (GFunc)set_cursor, NULL);
-	gdk_flush();
-	g_list_free(windows);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	g_autofree char *font_family = i7_app_get_font_family(self);
+	double font_size = i7_app_get_font_scale(self);
+	g_autofree char *css = g_strdup_printf(""
+	    ".font-family-setting {"
+	    "    font-family: '%s';"
+	    "}"
+	    ".font-size-setting {"
+	    "    font-size: %.1fem;"
+	    "}", font_family, font_size);
+
+	g_autoptr(GError) error = NULL;
+	if (!gtk_css_provider_load_from_data(priv->font_settings_provider, css, -1, &error))
+		g_warning("Invalid CSS: %s", error->message);
 }
 
 /**
  * i7_app_get_last_opened_project:
- * @app: the app
+ * @self: the app
  *
  * Looks for the story (not extension file) that was last opened.
  *
@@ -1591,7 +1509,7 @@ i7_app_set_busy(I7App *app, gboolean busy)
  * installed, or the recent documents history has been cleared.)
  */
 GFile *
-i7_app_get_last_opened_project(I7App *app)
+i7_app_get_last_opened_project(I7App *self)
 {
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
 	GList *recent = gtk_recent_manager_get_items(manager);
@@ -1626,23 +1544,38 @@ i7_app_get_last_opened_project(I7App *app)
 }
 
 /*
+ * i7_app_get_system_settings:
+ * @self: the application singleton
+ *
+ * Gets the #GSettings object for the system settings.
+ *
+ * Returns: (transfer none): #GSettings
+ */
+GSettings *
+i7_app_get_system_settings(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	return priv->system_settings;
+}
+
+/*
  * i7_app_get_prefs:
- * @app: the application singleton
+ * @self: the application singleton
  *
  * Gets the #GSettings object for the application preferences.
  *
  * Returns: #GSettings
  */
 GSettings *
-i7_app_get_prefs(I7App *app)
+i7_app_get_prefs(I7App *self)
 {
-	I7_APP_USE_PRIVATE(app, priv);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	return priv->prefs_settings;
 }
 
 /*
  * i7_app_get_state:
- * @app: the application singleton
+ * @self: the application singleton
  *
  * Gets the #GSettings object for the application state that is saved between
  * runs.
@@ -1650,23 +1583,99 @@ i7_app_get_prefs(I7App *app)
  * Returns: #GSettings
  */
 GSettings *
-i7_app_get_state(I7App *app)
+i7_app_get_state(I7App *self)
 {
-	I7_APP_USE_PRIVATE(app, priv);
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	return priv->state_settings;
 }
 
-/*
- * i7_app_get_desktop_settings:
- * @app: the application singleton
- *
- * Gets the #GSettings object for the desktop-wide Gnome preferences.
- *
- * Returns: #GSettings for org.gnome.desktop.interface
- */
-GSettings *
-i7_app_get_desktop_settings(I7App *app)
+/* Private method. For access to priv->color_scheme_manager in app-colorscheme.c
+ * so that files can stay separated by topic. */
+GtkSourceStyleSchemeManager *
+i7_app_get_color_scheme_manager(I7App *self)
 {
-	I7_APP_USE_PRIVATE(app, priv);
-	return priv->desktop_settings;
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	return priv->color_scheme_manager;
+}
+
+/* modifies string in place */
+static void
+remove_font_size(char *font) {
+	char *ptr = strrchr(font, ' ');
+	if (ptr)
+		*ptr = '\0';
+}
+
+/*
+ * i7_app_get_font_family:
+ * @self: the application singleton
+ *
+ * Returns: (transfer full): a string representing the font setting suitable to
+ *   use in CSS.
+ */
+char *
+i7_app_get_font_family(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	char *font;
+	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SET)) {
+		case FONT_MONOSPACE:
+			font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_MONOSPACE_FONT);
+			break;
+		case FONT_CUSTOM:
+			font = g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
+			break;
+		default:
+			font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
+	}
+	remove_font_size(font);
+	return font;
+}
+
+/*
+ * i7_app_get_font_scale:
+ * @self: the application singleton
+ *
+ * Returns: a relative font size (in ems) for the font size setting
+ */
+double
+i7_app_get_font_scale(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SIZE)) {
+		case FONT_SIZE_MEDIUM:
+			return RELATIVE_SIZE_MEDIUM;
+		case FONT_SIZE_LARGE:
+			return RELATIVE_SIZE_LARGE;
+		case FONT_SIZE_HUGE:
+			return RELATIVE_SIZE_HUGE;
+		default:
+			return RELATIVE_SIZE_STANDARD;
+	}
+}
+
+/*
+ * i7_app_get_font_size:
+ * @self: the application singleton
+ *
+ * Returns: an absolute font size for the font size setting in webviews and the
+ *   skein
+ */
+double
+i7_app_get_font_size(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	g_autofree char* font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
+	const char* ptr = strrchr(font, ' ');
+
+	int base = 0;
+	if (ptr)
+		base = atoi(ptr);
+	if (base < 1)
+		base = DEFAULT_SIZE_STANDARD;
+
+	return base * i7_app_get_font_scale(self);
 }

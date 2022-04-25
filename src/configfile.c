@@ -1,18 +1,6 @@
-/* Copyright (C) 2006-2009, 2010, 2011, 2013, 2015 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2006-2011, 2013, 2015, 2019 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -21,7 +9,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <gtksourceview/gtksourceview.h>
+#include <gtksourceview/gtksource.h>
 
 #include "app.h"
 #include "builder.h"
@@ -32,9 +20,6 @@
 const char *font_set_enum[] = { "Standard", "Monospace", "Custom", NULL };
 const char *font_size_enum[] = { "Standard", "Medium", "Large", "Huge", NULL };
 const char *interpreter_enum[] = { "Glulxe (default)", "Git", NULL };
-
-#define DESKTOP_PREFS_STANDARD_FONT   "font-name"
-#define DESKTOP_PREFS_MONOSPACE_FONT  "monospace-font-name"
 
 /*
  * settings_enum_set_mapping:
@@ -99,22 +84,28 @@ static void
 on_config_font_set_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
-	update_font(GTK_WIDGET(theapp->prefs->source_example));
-	update_font(GTK_WIDGET(theapp->prefs->tab_example));
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+	I7App *theapp = I7_APP(g_application_get_default());
+	i7_app_update_css(theapp);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data))
+			i7_document_update_fonts(I7_DOCUMENT(iter->data));
+	}
 }
 
 static void
 on_config_custom_font_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 	if(g_settings_get_enum(prefs, PREFS_FONT_SET) == FONT_CUSTOM) {
-		update_font(GTK_WIDGET(theapp->prefs->source_example));
-		update_font(GTK_WIDGET(theapp->prefs->tab_example));
-		i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
+		i7_app_update_css(theapp);
+		GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+		for (GList *iter = windows; iter != NULL; iter = iter->next) {
+			if (I7_IS_DOCUMENT(iter->data))
+				i7_document_update_fonts(I7_DOCUMENT(iter->data));
+		}
 	}
 }
 
@@ -122,17 +113,22 @@ static void
 on_config_font_size_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
-	update_font(GTK_WIDGET(theapp->prefs->source_example));
-	update_font(GTK_WIDGET(theapp->prefs->tab_example));
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_sizes, NULL);
+	I7App *theapp = I7_APP(g_application_get_default());
+	i7_app_update_css(theapp);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data)) {
+			I7Document *document = I7_DOCUMENT(iter->data);
+			i7_document_update_fonts(document);
+			i7_document_update_font_sizes(document);
+		}
+	}
 }
 
 static void
 on_config_style_scheme_changed(GSettings *settings, const char *key)
 {
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 
 	char *newvalue = g_settings_get_string(settings, key);
 	/* TODO: validate new value? */
@@ -140,8 +136,14 @@ on_config_style_scheme_changed(GSettings *settings, const char *key)
 	/* update application to reflect new value */
 	select_style_scheme(theapp->prefs->schemes_view, newvalue);
 	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_fonts, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_font_styles, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data)) {
+			I7Document *document = I7_DOCUMENT(iter->data);
+			i7_document_update_fonts(document);
+			i7_document_update_font_styles(document);
+		}
+	}
 
 	g_free(newvalue);
 }
@@ -156,42 +158,55 @@ on_config_tab_width_changed(GSettings *settings, const char *key)
 		newvalue = DEFAULT_TAB_WIDTH;
 
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	update_tabs(theapp->prefs->tab_example);
 	update_tabs(theapp->prefs->source_example);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data))
+			i7_document_update_tabs(I7_DOCUMENT(iter->data));
+	}
 }
 
 static void
 on_config_indent_wrapped_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	I7App *theapp = i7_app_get();
+	I7App *theapp = I7_APP(g_application_get_default());
 	update_tabs(theapp->prefs->tab_example);
 	update_tabs(theapp->prefs->source_example);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_tabs, NULL);
-	i7_app_foreach_document(theapp, (I7DocumentForeachFunc)i7_document_update_indent_tags, NULL);
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data)) {
+			I7Document *document = I7_DOCUMENT(iter->data);
+			i7_document_update_tabs(document);
+			i7_document_update_indent_tags(document, NULL, NULL);
+		}
+	}
 }
 
 static void
 on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
-	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)i7_document_refresh_elastic_tabstops, NULL);
-}
-
-static void
-set_glulx_interpreter(I7Document *document, gpointer data)
-{
-	if(I7_IS_STORY(document))
-		i7_story_set_use_git(I7_STORY(document), GPOINTER_TO_INT(data));
+	I7App *theapp = I7_APP(g_application_get_default());
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_DOCUMENT(iter->data))
+			i7_document_refresh_elastic_tabstops(I7_DOCUMENT(iter->data));
+	}
 }
 
 static void
 on_config_use_interpreter_changed(GSettings *settings, const char *key)
 {
 	int newvalue = g_settings_get_enum(settings, key);
-	i7_app_foreach_document(i7_app_get(), set_glulx_interpreter, GINT_TO_POINTER(newvalue));
+	I7App *theapp = I7_APP(g_application_get_default());
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_STORY(iter->data))
+			i7_story_set_use_git(I7_STORY(iter->data), newvalue);
+	}
 }
 
 static void
@@ -199,7 +214,16 @@ on_config_debug_log_visible_changed(GSettings *settings, const char *key)
 {
 	gboolean newvalue = g_settings_get_boolean(settings, key);
 	/* update application to reflect new value */
-	i7_app_foreach_document(i7_app_get(), (I7DocumentForeachFunc)(newvalue? i7_story_add_debug_tabs : i7_story_remove_debug_tabs), NULL);
+	I7App *theapp = I7_APP(g_application_get_default());
+	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
+	for (GList *iter = windows; iter != NULL; iter = iter->next) {
+		if (I7_IS_STORY(iter->data)) {
+			if (newvalue)
+				i7_story_add_debug_tabs(I7_STORY(iter->data));
+			else
+				i7_story_remove_debug_tabs(I7_STORY(iter->data));
+		}
+	}
 }
 
 struct KeyToMonitor {
@@ -234,111 +258,3 @@ init_config_file(GSettings *prefs)
 		}
 	}
 }
-
-/* Desktop preferences stuff: */
-
-/*
- * get_desktop_standard_font:
- *
- * Return the Gnome desktop document font as a font description. Must be freed.
- */
-PangoFontDescription *
-get_desktop_standard_font(void)
-{
-	I7App *theapp = i7_app_get();
-	PangoFontDescription *retval;
-	char *font = g_settings_get_string(i7_app_get_desktop_settings(theapp), DESKTOP_PREFS_STANDARD_FONT);
-	if(!font)
-		return pango_font_description_from_string(STANDARD_FONT_FALLBACK);
-	retval = pango_font_description_from_string(font);
-	g_free(font);
-	return retval;
-}
-
-/*
- * get_desktop_monospace_font:
- *
- * Return the Gnome desktop monospace font as a font description. Must be freed.
- */
-PangoFontDescription *
-get_desktop_monospace_font(void)
-{
-	I7App *theapp = i7_app_get();
-	PangoFontDescription *retval;
-	char *font = g_settings_get_string(i7_app_get_desktop_settings(theapp), DESKTOP_PREFS_MONOSPACE_FONT);
-	if(!font)
-		return pango_font_description_from_string(MONOSPACE_FONT_FALLBACK);
-	retval = pango_font_description_from_string(font);
-	g_free(font);
-	return retval;
-}
-
-/*
- * get_font_family:
- *
- * Return a font description for the font setting. Must be freed.
- */
-static PangoFontDescription *
-get_font_family(void)
-{
-	I7App *theapp = i7_app_get();
-	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	switch(g_settings_get_enum(prefs, PREFS_FONT_SET)) {
-		case FONT_MONOSPACE:
-			return get_desktop_monospace_font();
-		case FONT_CUSTOM:
-		{
-			char *customfont = g_settings_get_string(prefs, PREFS_CUSTOM_FONT);
-			PangoFontDescription *retval;
-			if(customfont) {
-				retval = pango_font_description_from_string(customfont);
-				g_free(customfont);
-				return retval;
-			}
-			/* else fall through */
-		}
-		default:
-			;
-	}
-	return get_desktop_standard_font();
-}
-
-/* Return the font size in Pango units for the font size setting */
-gint
-get_font_size(PangoFontDescription *font)
-{
-	I7App *theapp = i7_app_get();
-	double size = pango_font_description_get_size(font);
-
-	if(pango_font_description_get_size_is_absolute(font))
-		size *= 96.0 / 72.0; /* a guess; not likely to be absolute anyway */
-	if(size == 0.0)
-		size = DEFAULT_SIZE_STANDARD * PANGO_SCALE;
-
-	switch(g_settings_get_enum(i7_app_get_prefs(theapp), PREFS_FONT_SIZE)) {
-		case FONT_SIZE_MEDIUM:
-			size *= RELATIVE_SIZE_MEDIUM;
-			break;
-		case FONT_SIZE_LARGE:
-			size *= RELATIVE_SIZE_LARGE;
-			break;
-		case FONT_SIZE_HUGE:
-			size *= RELATIVE_SIZE_HUGE;
-			break;
-		default:
-			size *= RELATIVE_SIZE_STANDARD;
-	}
-	return size;
-}
-
-/* Get the current font as a PangoFontDescription.
-Must be freed with pango_font_description_free. */
-PangoFontDescription *
-get_font_description(void)
-{
-	PangoFontDescription *font = get_font_family();
-	pango_font_description_set_size(font, get_font_size(font));
-	return font;
-}
-

@@ -1,18 +1,6 @@
-/* Copyright (C) 2008, 2009, 2010, 2011, 2014, 2015 P. F. Chimento
- * This file is part of GNOME Inform 7.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2008-2011, 2014, 2015, 2019 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #ifndef _PANEL_H_
@@ -72,49 +60,71 @@ typedef enum {
 } I7PaneIndexTab;
 
 typedef struct {
-	GtkVBox parent_instance;
+	GtkBox parent_instance;
 	/* Public pointers to widgets for convenience */
 	GtkWidget *toolbar;
 	GtkWidget *notebook;
 	I7SourceView *sourceview;
-	GtkToolItem *labels;
-	GtkWidget *labels_menu;
-	GtkAction *labels_action;
+	GMenu *labels_menu;
 	GtkWidget *z8;
 	GtkWidget *glulx;
 	GtkWidget *blorb;
 	GtkWidget *nobble_rng;
 	GtkWidget *debugging_scrolledwindow;
 	GtkWidget *inform6_scrolledwindow;
-	GtkWidget *transcript_menu;
+	GtkWidget *labels;
+	GtkWidget *layout;
+	GtkWidget *trim;
+	GtkWidget *play_all_blessed;
+	GtkWidget *next_difference_skein;
+	GtkWidget *next_difference;
+	GtkWidget *previous_difference;
+	GtkWidget *bless_all;
+	GtkWidget *goto_home;
+	GtkWidget *goto_examples;
+	GtkWidget *goto_general_index;
+	GtkWidget *goto_extensions_home;
+	GtkWidget *goto_definitions;
+	GtkWidget *goto_public_library;
 	GtkTreeViewColumn *transcript_column;
 	GtkCellRenderer *transcript_cell;
 	GtkWidget *tabs[I7_PANEL_NUM_PANES];
 	GtkWidget *source_tabs[I7_SOURCE_VIEW_NUM_TABS];
 	GtkWidget *results_tabs[I7_RESULTS_NUM_TABS];
 	GtkWidget *index_tabs[I7_INDEX_NUM_TABS];
+	GSimpleActionGroup *actions;
 } I7Panel;
 
 typedef struct {
-	GtkVBoxClass parent_class;
+	GtkBoxClass parent_class;
 	void (*select_view)(I7Panel *self, I7PanelPane pane);
 	void (*paste_code)(I7Panel *self, gchar *text);
 	void (*jump_to_line)(I7Panel *self, guint line);
 	void (*display_docpage)(I7Panel *self, gchar *uri);
 	void (*display_extensions_docpage)(I7Panel *self, char *uri);
+	void (*display_compiler_report)(I7Panel *self, char *uri);
 	void (*display_index_page)(I7Panel *self, I7PaneIndexTab tabnum);
 } I7PanelClass;
+
+typedef struct {
+  I7PanelPane pane;
+  int tab;
+  char *page;
+} I7PanelHistory;
 
 extern const char * const i7_panel_index_names[];
 
 GType i7_panel_get_type() G_GNUC_CONST;
 GtkWidget *i7_panel_new();
-void i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, GFile *page_file);
+void i7_panel_reset_queue(I7Panel *self, I7PanelPane pane, int tab, const char *page_uri);
 void i7_panel_goto_docpage(I7Panel *self, GFile *file);
+void i7_panel_goto_doc_uri(I7Panel *self, const char *uri);
 void i7_panel_goto_docpage_at_anchor(I7Panel *self, GFile *file, const char *anchor);
 void i7_panel_goto_extensions_docpage(I7Panel *self, GFile *file);
 void i7_panel_update_tabs(I7Panel *self);
 void i7_panel_update_fonts(I7Panel *self);
 void i7_panel_update_font_sizes(I7Panel *self);
+void i7_panel_push_history_item(I7Panel *self, I7PanelHistory *item);
+I7PanelHistory *i7_panel_get_current_history_item(I7Panel *self);
 
 #endif /* _PANEL_H_ */

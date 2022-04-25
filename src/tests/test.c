@@ -1,24 +1,16 @@
-/*  Copyright (C) 2011, 2012, 2014 P. F. Chimento
- *  This file is part of GNOME Inform 7.
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2011, 2012, 2014, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
+
+#include "config.h"
 
 #include <glib.h>
 #include <gtk/gtk.h>
+
 #include "app.h"
 #include "app-test.h"
+#include "difftest.h"
 #include "skein-test.h"
 #include "story-test.h"
 
@@ -35,6 +27,10 @@ main(int argc, char **argv)
 	g_test_add_func("/app/extensions/case-insensitive", test_app_extensions_case_insensitive);
 	g_test_add_func("/app/colorscheme/install-remove", test_app_colorscheme_install_remove);
 	g_test_add_func("/app/colorscheme/get-current", test_app_colorscheme_get_current);
+
+	g_test_add_func("/diffs/same", test_diffs_same);
+	g_test_add_func("/diffs/whitespace", test_diffs_whitespace);
+	g_test_add_func("/diffs/different", test_diffs_different);
 
 	g_test_add_func("/skein/import", test_skein_import);
 
