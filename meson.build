@@ -1,8 +1,9 @@
-project('inform7-ide', 'c', version: '6M62', license: 'GPL-3.0-or-later',
+project('inform7-ide', 'c', version: '2.0.0', license: 'GPL-3.0-or-later',
     meson_version: '>=0.55.0')
 
 appname = meson.project_name()
-version = meson.project_version()
+app_version = meson.project_version()
+compiler_version = '6M62'
 
 gnome = import('gnome')
 i18n = import('i18n')
@@ -19,23 +20,23 @@ if not ni.found()
     compiler package from inform7.org and put the file `ni' into the
     directory `@1@/src/ni'.
     (Try http://inform7.com/apps/@0@/I7_@0@_Linux_all.tar.gz)
-    '''.format(version, meson.current_source_dir()))
+    '''.format(compiler_version, meson.current_source_dir()))
 endif
 ni_output = run_command(ni).stdout()
 ni_version = ni_output.split()[3]
-if ni_version != version
+if ni_version != compiler_version
     error('''You have version @0@ of ni
     in src/ni. This version of Inform 7 will only work with version @1@.
     IMPORTANT NOTE! You must download version @1@ of the appropriate
     compiler package from inform7.com and put the file `ni' into the
     directory `@2@/src/ni'.
     (Try http://inform7.com/apps/@1@/I7_@1@_Linux_all.tar.gz)
-    '''.format(ni_version, version, meson.current_source_dir()))
+    '''.format(ni_version, compiler_version, meson.current_source_dir()))
 endif
 
 ### DEFINE VARIABLES ###########################################################
 
-inform_tarball = files('data/Inform_@0@_data.tar.lz'.format(version))
+inform_tarball = files('data/Inform_@0@_data.tar.lz'.format(compiler_version))
 
 datadir = get_option('datadir')
 pkgdatadir = datadir / appname
@@ -94,10 +95,11 @@ config = configuration_data()
 config.set_quoted('PACKAGE', appname)
 config.set_quoted('PACKAGE_NAME', appname)
 config.set_quoted('GETTEXT_PACKAGE', appname)
-config.set_quoted('PACKAGE_VERSION', version)
+config.set_quoted('PACKAGE_VERSION', app_version)
 
-# Inform 6 version that goes along with this release
+# Inform versions that go along with this release
 config.set_quoted('INFORM6_COMPILER_VERSION', '6.36')
+config.set_quoted('INFORM7_COMPILER_VERSION', compiler_version)
 
 # Get current year for updating copyrights
 copyright_year = run_command(date, '+%Y').stdout().strip()

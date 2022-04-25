@@ -36,8 +36,8 @@ jobs:
         run: |
           echo '#!/bin/sh' >src/ni/ni
           echo echo Inform 7 build \
-            $(head -n1 meson.build | grep -oE '[0-9][A-Z][0-9]{2}') has \
-            started. >>src/ni/ni
+            $(grep '^compiler_version =' meson.build | \
+              grep -oE '[0-9][A-Z][0-9]{2}') has started. >>src/ni/ni
           chmod u+x src/ni/ni
 
       - name: configure

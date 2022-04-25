@@ -1086,9 +1086,10 @@ action_about(GSimpleAction *action, GVariant *parameter, I7App *app)
 	char *translator_credits = g_string_free(builder, FALSE);
 
 	gtk_show_about_dialog(NULL,
-		"program-name", "Inform",
+		"program-name", "Inform App",
 		"copyright", copyright,
-		"comments", "Inform (" INFORM6_COMPILER_VERSION "/" PACKAGE_VERSION ")",
+        "version", PACKAGE_VERSION,
+		"comments", "Inform Compiler " INFORM7_COMPILER_VERSION " (+ Inform " INFORM6_COMPILER_VERSION ")",
 		"website", "http://inform7.com",
 		"website-label", "inform7.com",
 		/* TRANSLATORS: Caution, UTF8 right arrow */

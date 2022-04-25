@@ -1,12 +1,14 @@
 Name: inform7-ide
-Version: 6M62
-Release: 2%{?dist}
+Version: 2.0.0
+Release: 1%{?dist}
+
+%define compiler_version 6M62
 
 URL: http://inform7.com/
 License: GPLv3
 
 Source0: https://github.com/ptomato/inform7-ide/releases/download/%{version}/inform7-ide-%{version}.tar.xz
-Source1: http://inform7.com/apps/%{version}/I7_%{version}_Linux_all.tar.gz
+Source1: http://inform7.com/apps/%{compiler_version}/I7_%{compiler_version}_Linux_all.tar.gz
 
 # Build requirements:
 BuildRequires: meson >= 0.55
@@ -49,8 +51,8 @@ games, to art pieces, which have won numerous awards and competitions.
 %prep
 %autosetup -c
 %setup -T -D -a 1
-cd inform7-%{version}
-tar xvf inform7-compilers_%{version}_%{_arch}.tar.gz
+cd inform7-%{compiler_version}
+tar xvf inform7-compilers_%{compiler_version}_%{_arch}.tar.gz
 cp share/inform7/Compilers/ni ../%{_vpath_srcdir}/src/ni/
 cd ..
 
@@ -146,7 +148,7 @@ fi
 %{pkglibexecdir}/ni
 
 %changelog
-* Sun Jan 17 2021 Philip Chimento <philip.chimento@gmail.com> - 6M62-2
+* Tue Apr 19 2022 Philip Chimento <philip.chimento@gmail.com> - 2.0.0-1
 - Bring spec file up to date with newer library versions and build system
 * Sun Jan 10 2016 Philip Chimento <philip.chimento@gmail.com> - 6M62-1
 - Repackaged to Build 6M62.

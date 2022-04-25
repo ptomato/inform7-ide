@@ -20,8 +20,9 @@ sourcedir=$(rpm --eval %_sourcedir)
 srcrpmdir=$(rpm --eval %_srcrpmdir)
 arch=$(rpm --eval %_target_cpu)
 
-if test ! -e "$sourcedir/I7_${version}_Linux_all.tar.gz"; then
-    wget "http://inform7.com/apps/$version/I7_${version}_Linux_all.tar.gz" \
+compiler_version=$(ls data/Inform_*_data.* | grep -oE '[0-9][A-Z][0-9]{2}')
+if test ! -e "$sourcedir/I7_${compiler_version}_Linux_all.tar.gz"; then
+    wget "http://inform7.com/apps/$compiler_version/I7_${compiler_version}_Linux_all.tar.gz" \
         -P "$sourcedir"
 fi
 

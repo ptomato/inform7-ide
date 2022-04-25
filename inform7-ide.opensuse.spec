@@ -16,15 +16,17 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+%define compiler_version 6M62
+
 Name:           inform7-ide
-Version:        6M62
+Version:        2.0.0
 Release:        0
 License:        GPL-3.0
 Summary:        The Inform 7 interactive fiction programming environment
 Url:            http://inform7.com/
 Group:          Development/Languages/Other
-Source0:        https://github.com/ptomato/inform7-ide/releases/download/6M62/Gnome_UI_Source_%{version}.tar.xz
-Source1:        http://inform7.com/download/content/%{version}/I7_%{version}_Linux_all.tar.gz
+Source0:        https://github.com/ptomato/inform7-ide/releases/download/%{version}/inform7-ide-%{version}.tar.xz
+Source1:        http://inform7.com/apps/%{compiler_version}/I7_%{compiler_version}_Linux_all.tar.gz
 BuildRequires:  fdupes
 BuildRequires:  libplist-devel
 BuildRequires:  libgoocanvas3-devel
@@ -62,12 +64,12 @@ games, to art pieces, which have won numerous awards and competitions.
 %setup -q
 %setup -T -D -a 1
 
-cd inform7-%{version}
+cd inform7-%{compiler_version}
 %ifarch x86_64
-tar xvf inform7-compilers_%{version}_x86_64.tar.gz
+tar xvf inform7-compilers_%{compiler_version}_x86_64.tar.gz
 cp share/inform7/Compilers/ni ../src/ni/
 %else
-tar xvf inform7-compilers_%{version}_i386.tar.gz
+tar xvf inform7-compilers_%{compiler_version}_i386.tar.gz
 cp share/inform7/Compilers/ni ../src/ni/
 %endif
 cd ..
@@ -116,6 +118,8 @@ find %{buildroot} -type f -name "*.la" -delete -print
 #%files lang -f %{name}.lang
 
 %changelog
+* Tue Apr 19 2022 Philip Chimento <philip.chimento@gmail.com> - 2.0.0
+- Bumped version to new versioning scheme 2.0.0
 * Sun Feb 7 2016 Vincent Petry <pvince81@opensuse.org>
 - Updated Source0 URL
 - Added patch for gettext version
