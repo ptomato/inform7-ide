@@ -40,7 +40,8 @@ enum {
 	PROP_STORY_FORMAT,
 	PROP_MAKE_BLORB,
 	PROP_NOBBLE_RNG,
-	PROP_ELASTIC_TABSTOPS
+	PROP_ELASTIC_TABSTOPS,
+	PROP_LANGUAGE_VERSION,
 };
 
 typedef struct {
@@ -270,6 +271,9 @@ i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GPara
 		case PROP_ELASTIC_TABSTOPS:
 			i7_document_set_elastic_tabstops(I7_DOCUMENT(self), g_value_get_boolean(value));
 			break;
+		case PROP_LANGUAGE_VERSION:
+			i7_story_set_language_version(self, g_value_get_string(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
@@ -293,6 +297,9 @@ i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec 
 			break;
 		case PROP_ELASTIC_TABSTOPS:
 			g_value_set_boolean(value, i7_story_get_elastic_tabstops(self));
+			break;
+		case PROP_LANGUAGE_VERSION:
+			g_value_take_string(value, i7_story_get_language_version(self));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -812,6 +819,7 @@ story_init_panel(I7Story *self, I7Panel *panel)
 	g_signal_connect(panel->glulx, "toggled", G_CALLBACK(on_glulx_button_toggled), self);
 	g_object_bind_property(self, "create-blorb", panel->blorb, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 	g_object_bind_property(self, "nobble-rng", panel->nobble_rng, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+	g_object_bind_property(self, "language-version", panel->language_version_chooser, "active-id", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 	g_signal_connect(panel->tabs[I7_PANE_SOURCE], "switch-page", G_CALLBACK(on_source_notebook_switch_page), self);
 	g_signal_connect(panel->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS], "row-activated", G_CALLBACK(on_headings_row_activated), self);
 	g_signal_connect(panel, "select-view", G_CALLBACK(on_panel_select_view), self);
@@ -1092,6 +1100,10 @@ i7_story_class_init(I7StoryClass *klass)
 	g_object_class_install_property(object_class, PROP_ELASTIC_TABSTOPS,
 		g_param_spec_boolean("elastic-tabstops", "Elastic Tabstops",
 			"IFMiscSettings->IFSettingElasticTabs", FALSE,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property(object_class, PROP_LANGUAGE_VERSION,
+		g_param_spec_string("language-version", "Version of Inform to use",
+			"IFOutputSettings->IFSettingCompilerVersion", "****",
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 

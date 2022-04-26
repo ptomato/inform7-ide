@@ -123,6 +123,8 @@ gboolean i7_story_get_nobble_rng(I7Story *self);
 void i7_story_set_nobble_rng(I7Story *self, gboolean nobble_rng);
 gboolean i7_story_get_elastic_tabstops(I7Story *self);
 void i7_story_set_elastic_tabstops(I7Story *self, gboolean elastic_tabstops);
+char *i7_story_get_language_version(I7Story *self);
+void i7_story_set_language_version(I7Story *self, const char *ver);
 
 /* Compiling, story-compile.c */
 void i7_story_compile(I7Story *self, gboolean release, gboolean refresh, CompileActionFunc callback, void *callback_data);

@@ -1,11 +1,12 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2011, 2014, 2015, 2019, 2021 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2011, 2014, 2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <plist/plist.h>
 
@@ -52,6 +53,9 @@ create_default_settings()
 	/* IFOutputSettings->IFSettingNobbleRng (FALSE) */
 	obj = plist_new_bool(FALSE);
 	insert_setting(dict, "IFOutputSettings", "IFSettingNobbleRng", obj);
+	/* IFOutputSettings->IFSettingCompilerVersion ("****", meaning 'current') */
+	obj = plist_new_string("****");
+	insert_setting(dict, "IFOutputSettings", "IFSettingCompilerVersion", obj);
 
 	return dict;
 }
@@ -95,6 +99,23 @@ on_notify_elastic_tabstops(I7Story *story)
 	g_simple_action_set_state(G_SIMPLE_ACTION(enable_elastic_tabstops), g_variant_new_boolean(value));
 	i7_source_view_set_elastic_tabstops(story->panel[LEFT]->sourceview, value);
 	i7_source_view_set_elastic_tabstops(story->panel[RIGHT]->sourceview, value);
+}
+
+void
+on_language_version_chooser_changed(GtkComboBox *chooser, GtkLabel *description)
+{
+	const char *id = gtk_combo_box_get_active_id(chooser);
+	g_return_if_fail(id != NULL);
+
+	const char *copy;
+	if (strcmp(id, "6M62") == 0) {
+		copy = _("With this option set, Inform always compiles your "
+			"project using version 6M62.");
+	} else {
+		copy = _("With this option set, Inform always uses the latest "
+			"version of the lanugage to compile your project.");
+	}
+	gtk_label_set_label(description, copy);
 }
 
 /* These 'get' functions provide for a default value even though we initialize a
@@ -247,4 +268,46 @@ i7_story_set_elastic_tabstops(I7Story *self, gboolean elastic_tabstops)
 		plist_set_bool_val(obj, elastic_tabstops);
 		g_object_notify(G_OBJECT(self), "elastic-tabstops");
 	}
+}
+
+char *
+i7_story_get_language_version(I7Story *self)
+{
+	g_return_val_if_fail(self || I7_IS_STORY(self), NULL);
+
+	plist_t settings = i7_story_get_settings(self);
+	plist_t obj = plist_access_path(settings, 2, "IFOutputSettings", "IFSettingCompilerVersion");
+	if (!obj)
+		return FALSE;  /* Default value */
+
+	char *plist_val;
+	plist_get_string_val(obj, &plist_val);
+	char *retval = g_strdup(plist_val);
+	/*plist_mem_*/free(plist_val);
+	return retval;
+}
+
+void
+i7_story_set_language_version(I7Story *self, const char *ver)
+{
+	g_return_if_fail(self || I7_IS_STORY(self));
+
+	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
+
+	plist_t settings = i7_story_get_settings(self);
+	plist_t obj = plist_access_path(settings, 2, "IFOutputSettings", "IFSettingCompilerVersion");
+	if (!obj) {
+		obj = plist_new_string(ver);
+		insert_setting(settings, "IFOutputSettings", "IFSettingCompilerVersion", obj);
+		g_object_notify(G_OBJECT(self), "language-version");
+		return;
+	}
+
+	char *plist_val;
+	plist_get_string_val(obj, &plist_val);
+	if (strcmp(plist_val, ver) != 0) {
+		plist_set_string_val(obj, ver);
+		g_object_notify(G_OBJECT(self), "language-version");
+	}
+	/*plist_mem_*/free(plist_val);
 }

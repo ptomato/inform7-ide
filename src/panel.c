@@ -786,6 +786,7 @@ i7_panel_init(I7Panel *self)
 	LOAD_WIDGET(glulx);
 	LOAD_WIDGET(blorb);
 	LOAD_WIDGET(nobble_rng);
+	LOAD_WIDGET(language_version_chooser);
 	LOAD_WIDGET(debugging_scrolledwindow);
 	LOAD_WIDGET(inform6_scrolledwindow);
 	LOAD_WIDGET(labels);
@@ -807,6 +808,11 @@ i7_panel_init(I7Panel *self)
 	self->labels_menu = g_menu_new();
 	GtkWidget *labels_menu = gtk_menu_new_from_model(G_MENU_MODEL(self->labels_menu));
 	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self->labels), labels_menu);
+
+	/* Populate the language version chooser */
+	GtkComboBoxText *chooser = GTK_COMBO_BOX_TEXT(self->language_version_chooser);
+	gtk_combo_box_text_append(chooser, "****", _("Current"));
+	gtk_combo_box_text_append(chooser, "6M62", _("Inform 6M62, December 2015"));
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
