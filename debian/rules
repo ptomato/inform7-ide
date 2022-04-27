@@ -12,6 +12,20 @@
 %:
 	dh $@
 
+override_dh_auto_configure:
+	sed -e 's:inform7-ide/::g' build-aux/make-integration-settings.mk \
+    	> make-integration-settings.mk
+	sed -i -e 's:inform7-ide/::g' \
+		inform/resources/Documentation/indoc-instructions.txt
+
+override_dh_auto_build:
+	bash inweb/scripts/first.sh linux
+	bash intest/scripts/first.sh
+	cd inform; bash scripts/first.sh
+	make -C inform forceintegration
+	dh_auto_configure
+	dh_auto_build
+
 override_dh_auto_test:
 
 override_dh_auto_install:

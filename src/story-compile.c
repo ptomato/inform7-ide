@@ -594,12 +594,11 @@ start_cblorb_compiler(CompilerData *data)
 	GFile *cblorb = i7_app_get_binary_file(theapp, "cBlorb");
 
 	/* Build the command line */
-	gchar **commandline = g_new(gchar *, 5);
+	g_auto(GStrv) commandline = g_new(gchar *, 4);
 	commandline[0] = g_file_get_path(cblorb);
-	commandline[1] = g_strdup("-unix");
-	commandline[2] = g_strdup("Release.blurb");
-	commandline[3] = g_file_get_path(data->output_file);
-	commandline[4] = NULL;
+	commandline[1] = g_strdup("Release.blurb");
+	commandline[2] = g_file_get_path(data->output_file);
+	commandline[3] = NULL;
 
 	g_object_unref(cblorb);
 
@@ -608,8 +607,6 @@ start_cblorb_compiler(CompilerData *data)
 		(IOHookFunc *)parse_cblorb_output, data->story, TRUE, FALSE);
 	/* set up a watch for the exit status */
 	g_child_watch_add(child_pid, (GChildWatchFunc)finish_cblorb_compiler, data);
-
-	g_strfreev(commandline);
 }
 
 static gboolean

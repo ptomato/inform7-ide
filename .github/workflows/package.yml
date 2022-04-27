@@ -3,6 +3,15 @@ name: Build packages
 "on":
   push:
     branches: [main]
+
+env:
+  inweb_commit: 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
+  intest_commit: 06c8a4f57f104fa12abcf478371748b5bd829c7b
+  inform_commit: 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+  version: '2.0.0'
+  QA_RPATHS: 1
+  DEB_BUILD_MAINT_OPTIONS: hardening=-format
+
 jobs:
   flatpak:
     name: Flatpak
@@ -19,30 +28,12 @@ jobs:
           bundle: inform7-flatpak.flatpak
           manifest-path: build-aux/com.inform7.IDE.yml
 
-  download-ni:
-    name: Download NI
-    runs-on: ubuntu-latest
-    steps:
-      - name: cache-ni
-        id: cache-ni
-        uses: actions/cache@v2
-        with:
-          path: I7_6M62_Linux_all.tar.gz
-          key: download-6M62-20220313.2
-          restore-keys: download-6M62
-
-      - name: download-ni
-        if: steps.cache-ni.outputs.cache-hit != 'true'
-        run: curl -O "http://inform7.com/apps/6M62/I7_6M62_Linux_all.tar.gz"
-
   rpm:
     name: RPM
     runs-on: ubuntu-latest
     container:
       image: registry.fedoraproject.org/fedora:35
-    needs: download-ni
     steps:
-      # restoring the cache silently fails without zstd
       - name: install-deps
         run: |
           dnf install -y \
@@ -60,38 +51,78 @@ jobs:
             gtk3-devel \
             gtksourceview4-devel \
             libplist-devel \
-            jq \
             meson \
             rpm-build \
-            webkit2gtk3-devel \
-            wget \
-            xz-lzma-compat \
-            zstd
+            rsync \
+            webkit2gtk3-devel
 
-      - uses: actions/checkout@v2
-
-      - name: restore-cache
-        uses: actions/cache@v2
+      - name: Checkout Inweb
+        uses: actions/checkout@v3
         with:
-          path: I7_6M62_Linux_all.tar.gz
-          key: download-6M62
+          repository: ganelson/inweb
+          ref: 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
+          path: inweb
 
-      - name: copy-and-unpack-ni
+      - name: Checkout Intest
+        uses: actions/checkout@v3
+        with:
+          repository: ganelson/intest
+          ref: 06c8a4f57f104fa12abcf478371748b5bd829c7b
+          path: intest
+
+      - name: Checkout Inform
+        uses: actions/checkout@v3
+        with:
+          repository: ganelson/inform
+          ref: 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+          path: inform
+
+      - name: Checkout Inform IDE
+        uses: actions/checkout@v3
+        with:
+          path: inform7-ide
+
+      - name: Download subprojects
+        run: |
+          cd inform7-ide
+          meson subprojects download chimara ratify
+
+      - name: Create Archives
+        # The RPM spec file assumes .zip sources of the Intools that are
+        # downloaded from GitHub's "archive" API endpoint. However, for whatever
+        # reason that endpoint doesn't work reliably in this CI environment, and
+        # sometimes downloads 0-size files. So we use "git archive", and add an
+        # appropriate directory prefix and name the file after the commit hash.
+        #
+        # For the inform7-ide-2.0.0.tar.xz, the RPM spec file expects an archive
+        # output by meson dist --include-subprojects. However, for whatever
+        # reason, that doesn't work either in this CI environment. We get the
+        # message "meson dist only works in a git checkout". So, we download the
+        # subprojects in the previous step, and archive the directory with tar,
+        # making sure to put the files in the expected inform7-ide-2.0.0/ path.
         run: |
           mkdir -p /github/home/rpmbuild/SOURCES/
-          cp I7_6M62_Linux_all.tar.gz /github/home/rpmbuild/SOURCES/
-          tar xzf I7_6M62_Linux_all.tar.gz
-          tar -f inform7-6M62/inform7-compilers_6M62_x86_64.tar.gz  -C src/ni/ \
-            -x share/inform7/Compilers/ni --strip-components=3
-
-      - name: configure
-        run: meson _build
-
-      - name: package-tarball
-        run: meson dist -C _build --no-tests --include-subprojects
+          cd inweb
+          git archive -o "/github/home/rpmbuild/SOURCES/$inweb_commit.zip" \
+            --prefix="inweb-$inweb_commit/" $inweb_commit
+          cd ../intest
+          git archive -o  "/github/home/rpmbuild/SOURCES/$intest_commit.zip" \
+            --prefix="intest-$intest_commit/" $intest_commit
+          cd ../inform
+          git archive -o "/github/home/rpmbuild/SOURCES/$inform_commit.zip" \
+            --prefix="inform-$inform_commit/" $inform_commit
+          cd ..
+          tar cJf "/github/home/rpmbuild/SOURCES/inform7-ide-$version.tar.xz" \
+            --xform "s:^inform7-ide/:inform7-ide-$version/:" inform7-ide
 
       - name: build-rpm
-        run: build-aux/build-rpm.sh _build
+        run: |
+          cd inform7-ide
+          rpmbuild -ba inform7-ide.spec
+          cd ..
+          cp "$(rpm --eval %_rpmdir)/$(rpm --eval %_target_cpu)"/inform7-*.rpm \
+            "$(rpm --eval %_srcrpmdir)"/inform7-*.src.rpm .
+          ls -l
 
       - uses: actions/upload-artifact@v1
         with:
@@ -101,7 +132,6 @@ jobs:
   deb:
     name: Debian
     runs-on: ubuntu-latest
-    needs: download-ni
     steps:
       - name: install-deps
         run: |
@@ -111,7 +141,6 @@ jobs:
             devscripts \
             gstreamer1.0-plugins-bad \
             gstreamer1.0-tools \
-            jq \
             libgoocanvas-2.0-dev \
             libgspell-1-dev \
             libgstreamer1.0-dev \
@@ -127,30 +156,63 @@ jobs:
           curl -O http://ftp.osuosl.org/pub/ubuntu/pool/universe/m/meson/meson_0.57.0+really0.56.2-0.1_all.deb
           sudo dpkg -i meson_0.57.0+really0.56.2-0.1_all.deb
 
-      - uses: actions/checkout@v2
+      - name: Checkout Inform IDE
+        uses: actions/checkout@v3
 
-      - name: restore-cache
-        uses: actions/cache@v2
+      - name: Checkout Inweb
+        uses: actions/checkout@v3
         with:
-          path: I7_6M62_Linux_all.tar.gz
-          key: download-6M62
+          repository: ganelson/inweb
+          ref: 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
+          path: inweb
 
-      - name: unpack-ni
+      - name: Checkout Intest
+        uses: actions/checkout@v3
+        with:
+          repository: ganelson/intest
+          ref: 06c8a4f57f104fa12abcf478371748b5bd829c7b
+          path: intest
+
+      - name: Checkout Inform
+        uses: actions/checkout@v3
+        with:
+          repository: ganelson/inform
+          ref: 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+          path: inform
+
+      - name: Download subprojects
+        run: meson subprojects download chimara ratify
+
+      - name: Create Archives
+        # Here, we have to create the files somewhat differently than for
+        # building the RPM package. Debian has quite a lot stricter requirements
+        # for how subsequent source packages can be packed and unpacked. We once
+        # again use git archive, but here the tarballs from GitHub's API
+        # endpoint are not sufficient.
+        #
+        # For the inform7-ide-2.0.0.tar.xz, we do the same trick as above with
+        # RPM, but we have to be more careful about what we put in the archive.
         run: |
-          tar xzf I7_6M62_Linux_all.tar.gz
-          tar -f inform7-6M62/inform7-compilers_6M62_x86_64.tar.gz  -C src/ni/ \
-            -x share/inform7/Compilers/ni --strip-components=3
-
-      - name: configure
-        run: meson _build
-
-      - name: package-tarball
-        run: meson dist -C _build --no-tests --include-subprojects
+          cd inweb
+          git archive -o "../../inform7-ide_$version.orig-inweb.tar.gz" \
+            $inweb_commit
+          cd ../intest
+          git archive -o  "../../inform7-ide_$version.orig-intest.tar.gz" \
+            $intest_commit
+          cd ../inform
+          git archive -o "../../inform7-ide_$version.orig-inform.tar.gz" \
+            $inform_commit
+          cd ..
+          tar cJf "../inform7-ide_$version.orig.tar.xz" \
+            --xform "s:^:inform7-ide-$version/:" \
+            COPYING ChangeLog INSTALL.md README.md com.inform7.IDE.* \
+            meson.build *.spec *.xml \
+            .github .tx build-aux data debian pixmaps po src subprojects
 
       - name: build-deb
-        run: build-aux/build-deb.sh _build
+        run: debuild -rfakeroot -D -us -uc
 
       - uses: actions/upload-artifact@v1
         with:
           name: Debian package
-          path: inform7-ide_2.0.0-1_amd64.deb
+          path: ../inform7-ide_2.0.0-1_amd64.deb

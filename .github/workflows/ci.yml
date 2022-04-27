@@ -30,15 +30,13 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      # Make a fake NI compiler binary so we don't have to download a closed
-      # source blob
-      - name: create-fake-ni-binary
+      # Make fake Inform binaries so we don't have to download and build them
+      # just to run the UI tests
+      - name: create-fake-inform7-data
         run: |
-          echo '#!/bin/sh' >src/ni/ni
-          echo echo Inform 7 build \
-            $(grep '^compiler_version =' meson.build | \
-              grep -oE '[0-9][A-Z][0-9]{2}') has started. >>src/ni/ni
-          chmod u+x src/ni/ni
+          mkdir intools
+          touch intools/{ni,inform6,cBlorb}
+          chmod a+x intools/ni
 
       - name: configure
         run: meson _build

@@ -1,17 +1,14 @@
-subdir('inweb')
-subdir('cBlorb')
-subdir('inform6')
 subdir('inform/licenses')
 
-install_data('ni/ni', install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
-
-generate_resource_xml = find_program('generate-resource-xml.sh')
-generated_gresource_xml = configure_file(input: inform_tarball,
+generate_resource_xml = find_program('generate-resource-xml.py')
+# The "input" argument is bogus here. This is a workaround for
+# https://github.com/mesonbuild/meson/issues/10367
+generated_gresource_xml = configure_file(
+    input: generate_resource_xml.full_path(),
     output: 'com.inform7.IDE.generated.gresource.xml',
-    command: [generate_resource_xml, inform_tarball, '@OUTPUT@'])
+    command: [generate_resource_xml, meson.current_source_dir(), '@OUTPUT@'])
 resources_generated = gnome.compile_resources('resources-generated',
-    generated_gresource_xml, c_name: 'i7g',
-    source_dir: meson.current_build_dir())
+    generated_gresource_xml, c_name: 'i7g')
 
 resources = gnome.compile_resources('resources',
     'com.inform7.IDE.gresource.xml', dependencies: license_html, c_name: 'i7',
@@ -62,7 +59,7 @@ test_env.set('GSETTINGS_BACKEND', 'memory')
 test_env.set('NO_AT_BRIDGE', '1')
 test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
 test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
-test_env.set('INFORM7_IDE_DATA_DIR', meson.source_root() / 'data')
-test_env.set('INFORM7_IDE_LIBEXEC_DIR', meson.current_source_dir() / 'ni')
+test_env.set('INFORM7_IDE_DATA_DIR', meson.project_source_root() / 'data')
+test_env.set('INFORM7_IDE_LIBEXEC_DIR', meson.project_source_root() / 'intools')
 test('inform7', test_inform7, protocol: 'tap', args: ['--tap'] + skip_paths,
     env: test_env, depends: local_schemas)
