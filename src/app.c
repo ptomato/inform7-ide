@@ -1133,30 +1133,27 @@ i7_app_run_census(I7App *self, gboolean wait)
 	GFile *builtin_extensions = i7_app_get_internal_dir(self);
 
 	/* Build the command line */
-	gchar **commandline = g_new(gchar *, 5);
+	g_auto(GStrv) commandline = g_new(char *, 6);
 	commandline[0] = g_file_get_path(ni_binary);
 	commandline[1] = g_strdup("-internal");
 	commandline[2] = g_file_get_path(builtin_extensions);
 	commandline[3] = g_strdup("-census");
-	commandline[4] = NULL;
+	commandline[4] = g_strdup("-silence");
+	commandline[5] = NULL;
 
 	g_object_unref(ni_binary);
 	g_object_unref(builtin_extensions);
 
 	/* Run the census */
 	if(wait) {
-		g_spawn_sync(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
-			| G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+		g_spawn_sync(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH,
 			NULL, NULL, NULL, NULL, NULL, NULL);
 		update_installed_extensions_tree(self);
 	} else {
-		g_spawn_async(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
-			| G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+		g_spawn_async(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH,
 			NULL, NULL, NULL, NULL);
 		g_idle_add((GSourceFunc)update_installed_extensions_tree, self);
 	}
-
-	g_strfreev(commandline);
 }
 
 /**
