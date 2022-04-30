@@ -10,7 +10,9 @@ Exact package names may vary and will definitely vary on distros that
 aren’t Debian derivatives.
 
 ```
-$ sudo apt-get update && apt-get upgrade -y && apt-get install -y \
+$ sudo apt-get update
+$ sudo apt-get upgrade -y
+$ sudo apt-get install -y \
     libcanberra-gtk3-module dbus-x11 ninja-build virtualenv \
     libxml2-dev pkg-config libglib2.0-dev libgoocanvas-2.0-dev \
     libwebkit2gtk-4.0-dev libgtksourceview-4-dev libgspell-1-dev \
