@@ -810,9 +810,7 @@ i7_panel_init(I7Panel *self)
 	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self->labels), labels_menu);
 
 	/* Populate the language version chooser */
-	GtkComboBoxText *chooser = GTK_COMBO_BOX_TEXT(self->language_version_chooser);
-	gtk_combo_box_text_append(chooser, "****", _("Current"));
-	gtk_combo_box_text_append(chooser, "6M62", _("Inform 6M62, December 2015"));
+	i7_app_foreach_retrospective(theapp, (I7AppRetrospectiveFunc)gtk_combo_box_text_append, self->language_version_chooser);
 
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;

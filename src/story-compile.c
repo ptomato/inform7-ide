@@ -186,26 +186,13 @@ static void
 start_ni_compiler(CompilerData *data)
 {
 	/* Build the command line */
-	GPtrArray *args = g_ptr_array_new_full(7, g_free); /* usual number of args */
 	I7App *theapp = I7_APP(g_application_get_default());
-	GFile *ni_compiler = i7_app_get_binary_file(theapp, "ni");
-	GFile *internal_dir = i7_app_get_internal_dir(theapp);
-	g_ptr_array_add(args, g_file_get_path(ni_compiler));
-	g_ptr_array_add(args, g_strdup("-internal"));
-	g_ptr_array_add(args, g_file_get_path(internal_dir));
-	g_ptr_array_add(args, g_strconcat("-format=", i7_story_get_extension(data->story), NULL));
-	g_ptr_array_add(args, g_strdup("-project"));
-	g_ptr_array_add(args, g_file_get_path(data->input_file));
-	if(!data->use_debug_flags)
-		g_ptr_array_add(args, g_strdup("-release")); /* Omit "not for relase" material */
-	if(i7_story_get_nobble_rng(data->story))
-		g_ptr_array_add(args, g_strdup("-rng"));
-	g_ptr_array_add(args, NULL);
 
-	g_object_unref(ni_compiler);
-	g_object_unref(internal_dir);
-
-	char **commandline = (char **)g_ptr_array_free(args, FALSE);
+	g_autofree char *version_id = i7_story_get_language_version(data->story);
+	I7StoryFormat format = i7_story_get_story_format(data->story);
+	bool reproducible = i7_story_get_nobble_rng(data->story);
+	g_auto(GStrv) commandline = i7_app_get_inform_command_line(theapp, version_id,
+		format, data->use_debug_flags, reproducible, data->input_file);
 
 	/* Run the command and pipe its output to the text buffer. Also pipe stderr
 	through a function that analyzes the progress messages and puts them in the
@@ -216,8 +203,6 @@ start_ni_compiler(CompilerData *data)
 								FALSE, TRUE);
 	/* set up a watch for the exit status */
 	g_child_watch_add(pid, (GChildWatchFunc)finish_ni_compiler, data);
-
-	g_strfreev(commandline);
 }
 
 typedef struct {
@@ -591,16 +576,9 @@ static void
 start_cblorb_compiler(CompilerData *data)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
-	GFile *cblorb = i7_app_get_binary_file(theapp, "cBlorb");
 
-	/* Build the command line */
-	g_auto(GStrv) commandline = g_new(gchar *, 4);
-	commandline[0] = g_file_get_path(cblorb);
-	commandline[1] = g_strdup("Release.blurb");
-	commandline[2] = g_file_get_path(data->output_file);
-	commandline[3] = NULL;
-
-	g_object_unref(cblorb);
+	g_autofree char *version_id = i7_story_get_language_version(data->story);
+	g_auto(GStrv) commandline = i7_app_get_inblorb_command_line(theapp, version_id, data->output_file);
 
 	GPid child_pid = run_command_hook(data->input_file, commandline,
 		i7_story_get_progress_buffer(data->story),

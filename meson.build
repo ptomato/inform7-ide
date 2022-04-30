@@ -100,6 +100,13 @@ subdir('po')
 install_data('intools/cBlorb', 'intools/inform6', 'intools/ni',
     install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
 
+foreach build : ['6L02', '6L38', '6M62']
+    install_data('retrospective/@0@/cBlorb'.format(build),
+        'retrospective/@0@/ni'.format(build),
+        install_dir: pkglibexecdir / 'retrospective' / build,
+        install_mode: 'rwxr-xr-x')
+endforeach
+
 i18n.merge_file(input: 'com.inform7.IDE.desktop.in',
     output: 'com.inform7.IDE.desktop', type: 'desktop', po_dir: 'po',
     install: true, install_dir: datadir / 'applications')
@@ -125,6 +132,19 @@ install_subdir('data/Templates', install_dir: pkgdatadir)
 install_subdir('data/highlighting', install_dir: pkgdatadir)
 install_subdir('data/styles', install_dir: pkgdatadir,
     exclude_files: ['styles.its', 'styles.pot', 'update-pot.sh'])
+
+retrospective_data_dirs = {
+    '6L02': ['Extensions', 'I6T', 'Outcome Pages'],
+    '6L38': ['Internal', 'Outcome Pages'],
+    '6M62': ['Internal', 'Outcome Pages'],
+}
+foreach build, internal_dirs : retrospective_data_dirs
+    retrospectivedir = pkgdatadir / 'retrospective' / build
+    foreach internal_dir : internal_dirs
+        install_subdir('retrospective/@0@/@1@'.format(build, internal_dir),
+            install_dir: retrospectivedir)
+    endforeach
+endforeach
 
 # Named Icons
 # -----------

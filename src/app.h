@@ -9,6 +9,7 @@
 #include "config.h"
 
 #include <stdarg.h>
+#include <stdbool.h>
 
 #include <glib-object.h>
 #include <glib.h>
@@ -102,9 +103,11 @@ GFile *i7_app_get_extension_docpage(I7App *self, const char *author, const char 
 GFile *i7_app_get_extension_home_page(I7App *self);
 GFile *i7_app_get_extension_index_page(I7App *self);
 GFile *i7_app_get_internal_dir(I7App *self);
+GFile *i7_app_get_retrospective_internal_dir(I7App *self, const char *build);
 GFile *i7_app_get_data_file(I7App *self, const char *filename);
 GFile *i7_app_get_data_file_va(I7App *self, const char *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_get_binary_file(I7App *self, const char *filename);
+GFile *i7_app_get_retrospective_binary_file(I7App *self, const char *build, const char *filename);
 GFile *i7_app_get_config_dir(I7App *self);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *self);
@@ -137,5 +140,16 @@ GtkSourceStyleScheme *i7_app_get_current_color_scheme(I7App *self);
 GSettings *i7_app_get_system_settings(I7App *self);
 GSettings *i7_app_get_state(I7App *self);
 GSettings *i7_app_get_prefs(I7App *self);
+
+/* Retrospective functions, in app-retrospective.c */
+
+typedef void (*I7AppRetrospectiveFunc)(void *data, const char *id, const char *display_name, const char *description);
+bool i7_app_is_valid_retrospective_id(I7App *self, const char *id);
+const char *i7_app_get_retrospective_display_name(I7App *self, const char *id);
+const char *i7_app_get_retrospective_description(I7App *self, const char *id);
+void i7_app_foreach_retrospective(I7App *self, I7AppRetrospectiveFunc func, void *data);
+
+char **i7_app_get_inform_command_line(I7App *self, const char *version_id, int /* I7StoryFormat */ format, bool debug, bool reproducible, GFile *project_file);
+char **i7_app_get_inblorb_command_line(I7App *self, const char *version_id, GFile *blorb_file);
 
 #endif /* _APP_H_ */

@@ -12,17 +12,18 @@ resources_generated = gnome.compile_resources('resources-generated',
 
 resources = gnome.compile_resources('resources',
     'com.inform7.IDE.gresource.xml', dependencies: license_html, c_name: 'i7',
-    source_dir: meson.current_build_dir())
+    source_dir: [meson.current_build_dir(),
+        meson.source_root() / 'retrospective'])
 
 gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
-    'builder.c', 'configfile.c', 'document.c', 'document-search.c', 'elastic.c',
-    'error.c', 'extension.c', 'file.c', 'history.c', 'html.c', 'lang.c',
-    'newdialog.c', 'node.c', 'notepad.c', 'panel.c', 'prefs.c',
-    'searchwindow.c', 'skein.c', 'skein-view.c', 'source-view.c', 'spawn.c',
-    'story.c', 'story-compile.c', 'story-game.c', 'story-index.c',
-    'story-results.c', 'story-settings.c', 'story-skein.c', 'story-source.c',
-    'story-transcript.c', 'transcript-diff.c', 'transcript-entry.c',
-    'welcomedialog.c', resources, resources_generated,
+    'app-retrospective.c', 'builder.c', 'configfile.c', 'document.c',
+    'document-search.c', 'elastic.c', 'error.c', 'extension.c', 'file.c',
+    'history.c', 'html.c', 'lang.c', 'newdialog.c', 'node.c', 'notepad.c',
+    'panel.c', 'prefs.c', 'searchwindow.c', 'skein.c', 'skein-view.c',
+    'source-view.c', 'spawn.c', 'story.c', 'story-compile.c', 'story-game.c',
+    'story-index.c', 'story-results.c', 'story-settings.c', 'story-skein.c',
+    'story-source.c', 'story-transcript.c', 'transcript-diff.c',
+    'transcript-entry.c', 'welcomedialog.c', resources, resources_generated,
     include_directories: top_include,
     dependencies: [libm, libxml, glib, gio, gdk, gtk, gtksourceview, gspell,
         goocanvas, plist, webkit, ratify, libchimara])

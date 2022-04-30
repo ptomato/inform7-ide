@@ -76,6 +76,8 @@ bash intest/scripts/first.sh
 cd inform
 bash scripts/first.sh
 make forceintegration
+make retrospective
+cp -R retrospective ../%{name}-%{version}/
 cd ..
 %{shrink:%{__meson} --buildtype=plain --prefix=%{_prefix} --libdir=%{_libdir}
    --libexecdir=%{_libexecdir} --bindir=%{_bindir} --sbindir=%{_sbindir}
@@ -167,6 +169,52 @@ fi
 %{pkgdatadir}/Templates/Quixe/waiting.gif
 %{pkgdatadir}/highlighting/*.lang
 %{pkgdatadir}/styles/*.xml
+%{pkgdatadir}/retrospective/6L02/Extensions/Emily*Short/*.i7x
+%{pkgdatadir}/retrospective/6L02/Extensions/Eric*Eve/*.i7x
+%{pkgdatadir}/retrospective/6L02/Extensions/Graham*Nelson/*.i7x
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/*.i6t
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/*.jpg
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/*.html
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/*.pdf
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Languages/*/Syntax.preform
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Languages/*/about.txt
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Languages/*/flag.png
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Classic/*.html
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Parchment/*.css
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Parchment/*.gif
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Parchment/*.js
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Parchment/*.txt
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Quixe/*.css
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Quixe/*.gif
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Quixe/*.js
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Quixe/*.txt
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Standard/*.css
+%{pkgdatadir}/retrospective/6L02/Extensions/Reserved/Templates/Standard/*.html
+%{pkgdatadir}/retrospective/6L02/Outcome*Pages/*.html
+%{pkgdatadir}/retrospective/6L02/Outcome*Pages/texts.txt
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Extensions/Emily*Short/*.i7x
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Extensions/Eric*Eve/*.i7x
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Extensions/Graham*Nelson/*.i7x
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/I6T/*.i6t
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Languages/*/Syntax.preform
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Languages/*/about.txt
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Languages/*/flag.png
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Miscellany/*.jpg
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Miscellany/*.html
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Miscellany/*.pdf
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Classic/*.html
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Parchment/*.css
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Parchment/*.gif
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Parchment/*.js
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Parchment/*.txt
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Quixe/*.css
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Quixe/*.gif
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Quixe/*.js
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Quixe/*.txt
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Standard/*.css
+%{pkgdatadir}/retrospective/{6L38,6M62}/Internal/Templates/Standard/*.html
+%{pkgdatadir}/retrospective/{6L38,6M62}/Outcome*Pages/*.html
+%{pkgdatadir}/retrospective/{6L38,6M62}/Outcome*Pages/texts.txt
 %{_datadir}/icons/hicolor/*/actions/com.inform7.IDE.builtin.png
 %{_datadir}/icons/hicolor/*/apps/com.inform7.IDE.png
 %{_datadir}/icons/hicolor/*/emblems/com.inform7.IDE.materials.png
@@ -193,6 +241,8 @@ fi
 %{pkglibdir}/glulxe.so
 %{pkglibexecdir}/inform6
 %{pkglibexecdir}/ni
+%{pkglibexecdir}/retrospective/*/cBlorb
+%{pkglibexecdir}/retrospective/*/ni
 
 %changelog
 * Tue Apr 19 2022 Philip Chimento <philip.chimento@gmail.com> - 2.0.0-1
