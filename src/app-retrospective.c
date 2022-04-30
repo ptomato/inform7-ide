@@ -132,16 +132,20 @@ i7_app_get_retrospective_description(I7App *self, const char *id)
 }
 
 static const char *
-get_inform_format_arg(ArgsStyle style, I7StoryFormat format)
+get_inform_format_arg(ArgsStyle style, I7StoryFormat format, bool debug)
 {
 	switch(format) {
 		case I7_STORY_FORMAT_Z8:
 			if (style == INFORM_9_1)
 				return "-extension=z8";
+			if (style == INFORM_10_1)
+				return debug ? "-format=Inform6/16d" : "-format=Inform6/16";
 			return "-format=z8";
 		case I7_STORY_FORMAT_GLULX:
 			if (style == INFORM_9_1)
 				return "-extension=ulx";
+			if (style == INFORM_10_1)
+				return debug ? "-format=Inform6/32d" : "-format=Inform6/32";
 			return "-format=ulx";
 		default:
 			;
@@ -177,7 +181,7 @@ i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, 
 		g_ptr_array_add(builder, g_strdup("-internal"));
 	g_ptr_array_add(builder, internal_path);
 
-	g_ptr_array_add(builder, g_strdup(get_inform_format_arg(style, (I7StoryFormat)format)));
+	g_ptr_array_add(builder, g_strdup(get_inform_format_arg(style, (I7StoryFormat)format, debug)));
 
 	char *project_path = g_file_get_path(project_file);
 	if (style == INFORM_9_1)
