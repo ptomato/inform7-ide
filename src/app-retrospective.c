@@ -163,7 +163,7 @@ i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, 
 
 	g_autoptr(GFile) inform_compiler = NULL;
 	if (style == INFORM_10_1)
-		inform_compiler = i7_app_get_binary_file(self, "ni");
+		inform_compiler = i7_app_get_binary_file(self, "inform7");
 	else
 		inform_compiler = i7_app_get_retrospective_binary_file(self, version_id, "ni");
 	char *inform_path = g_file_get_path(inform_compiler);
@@ -209,7 +209,7 @@ i7_app_get_inblorb_command_line(I7App *self, const char *version_id, GFile *blor
 
 	g_autoptr(GFile) inblorb = NULL;
 	if (style == INFORM_10_1)
-		inblorb = i7_app_get_binary_file(self, "cBlorb");
+		inblorb = i7_app_get_binary_file(self, "inblorb");
 	else
 		inblorb = i7_app_get_retrospective_binary_file(self, version_id, "cBlorb");
 	char *inblorb_path = g_file_get_path(inblorb);

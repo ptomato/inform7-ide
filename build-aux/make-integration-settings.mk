@@ -18,9 +18,9 @@ BUILTINHTMLINNER = ../inform7-ide/src/inform/en
 # Various executables are copied into the BUILTINCOMPS folder, but their
 # filenames when copied there have sometimes differed between platforms.
 
-INBLORBNAME = cBlorb
+INBLORBNAME = inblorb
 INFORM6NAME = inform6
-INFORM7NAME = ni
+INFORM7NAME = inform7
 INTESTNAME = intest
 
 # Indoc options for generating the inside-the-application documentation:

@@ -235,12 +235,12 @@ fi
 %{_bindir}/inform7-ide
 %{_libdir}/libchimara.so*
 %{_libdir}/libratify-2.so*
-%{pkglibexecdir}/cBlorb
+%{pkglibexecdir}/inblorb
 %{pkglibdir}/frotz.so
 %{pkglibdir}/git.so
 %{pkglibdir}/glulxe.so
 %{pkglibexecdir}/inform6
-%{pkglibexecdir}/ni
+%{pkglibexecdir}/inform7
 %{pkglibexecdir}/retrospective/*/cBlorb
 %{pkglibexecdir}/retrospective/*/ni
 

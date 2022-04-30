@@ -1138,7 +1138,7 @@ update_installed_extensions_tree(I7App *self)
 void
 i7_app_run_census(I7App *self, gboolean wait)
 {
-	GFile *ni_binary = i7_app_get_binary_file(self, "ni");
+	GFile *ni_binary = i7_app_get_binary_file(self, "inform7");
 	GFile *builtin_extensions = i7_app_get_internal_dir(self);
 
 	/* Build the command line */
@@ -1273,7 +1273,8 @@ i7_app_get_extension_index_page(I7App *self)
  * @self: the app
  *
  * Gets a reference to the application data directory, or in other words the
- * directory which the NI compiler considers to be the "internal" directory.
+ * directory which the Inform 7 compiler considers to be the "internal"
+ * directory.
  *
  * Returns: (transfer full): a new #GFile.
  */
@@ -1297,8 +1298,8 @@ missing_data_file(const char *filename)
  * @self: the app
  * @build: the build number of the retrospective, e.g. "6M62"
  *
- * Gets a reference to the directory which version @build of the NI compiler
- * considers to be the "internal" directory.
+ * Gets a reference to the directory which version @build of the Inform 7
+ * compiler considers to be the "internal" directory.
  * If it is not found, displays an error dialog asking the user to reinstall the
  * application.
  *

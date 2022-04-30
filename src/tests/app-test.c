@@ -45,8 +45,8 @@ test_app_files(void)
 	file = i7_app_get_data_file_va(theapp, "highlighting", "inform.lang", NULL);
 	check_file(file, "inform.lang");
 
-	file = i7_app_get_binary_file(theapp, "ni");
-	check_file(file, "ni");
+	file = i7_app_get_binary_file(theapp, "inform7");
+	check_file(file, "inform7");
 
 	/* TODO: How to test the functions that open an error dialog when they fail? */
 }

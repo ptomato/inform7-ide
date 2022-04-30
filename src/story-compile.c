@@ -40,9 +40,9 @@ typedef struct _CompilerData {
 } CompilerData;
 
 /* Declare these functions static so they can stay in this order */
-static void prepare_ni_compiler(CompilerData *data);
-static void start_ni_compiler(CompilerData *data);
-static void finish_ni_compiler(GPid pid, gint status, CompilerData *data);
+static void prepare_i7_compiler(CompilerData *data);
+static void start_i7_compiler(CompilerData *data);
+static void finish_i7_compiler(GPid pid, gint status, CompilerData *data);
 static void prepare_i6_compiler(CompilerData *data);
 static void start_i6_compiler(CompilerData *data);
 static void finish_i6_compiler(GPid pid, gint status, CompilerData *data);
@@ -107,14 +107,15 @@ i7_story_compile(I7Story *self, gboolean release, gboolean refresh, CompileActio
 	data->output_file = g_file_get_child(data->builddir_file, filename);
 	g_free(filename);
 
-	prepare_ni_compiler(data);
-	start_ni_compiler(data);
+	prepare_i7_compiler(data);
+	start_i7_compiler(data);
 }
 
 
-/* Set everything up for using the NI compiler. Called from the main thread. */
+/* Set everything up for using the Inform 7 compiler. Called from the main
+ * thread. */
 static void
-prepare_ni_compiler(CompilerData *data)
+prepare_i7_compiler(CompilerData *data)
 {
 	GError *err = NULL;
 
@@ -164,11 +165,11 @@ ui_display_progress_percentage(ProgressPercentageData *data)
 	return G_SOURCE_REMOVE;
 }
 
-/* Display the NI compiler's status in the app status bar. This function is
- called from a child process watch, so the GDK lock is not held and must be
- acquired for any GUI calls. */
+/* Display the Inform 7 compiler's status in the app status bar. This function
+ * is called from a child process watch, so the GDK lock is not held and must be
+ * acquired for any GUI calls. */
 static void
-display_ni_status(I7Document *document, gchar *text)
+display_i7_status(I7Document *document, gchar *text)
 {
 	gint percent;
 	gchar *message;
@@ -180,10 +181,10 @@ display_ni_status(I7Document *document, gchar *text)
 	}
 }
 
-/* Start the NI compiler and set up the callback for when it is finished. Called
- from the main thread.*/
+/* Start the Inform 7 compiler and set up the callback for when it is finished.
+ * Called from the main thread.*/
 static void
-start_ni_compiler(CompilerData *data)
+start_i7_compiler(CompilerData *data)
 {
 	/* Build the command line */
 	I7App *theapp = I7_APP(g_application_get_default());
@@ -199,28 +200,28 @@ start_ni_compiler(CompilerData *data)
 	progress bar. */
 	GPid pid = run_command_hook(data->builddir_file, commandline,
 								i7_story_get_progress_buffer(data->story),
-								(IOHookFunc *)display_ni_status, data->story,
+								(IOHookFunc *)display_i7_status, data->story,
 								FALSE, TRUE);
 	/* set up a watch for the exit status */
-	g_child_watch_add(pid, (GChildWatchFunc)finish_ni_compiler, data);
+	g_child_watch_add(pid, (GChildWatchFunc)finish_i7_compiler, data);
 }
 
 typedef struct {
 	I7Story *story;
 	GFile *builddir_file;
-} FinishNIData;
+} FinishI7Data;
 
-static FinishNIData *
-finish_ni_data_new(I7Story *story, GFile *builddir)
+static FinishI7Data *
+finish_i7_data_new(I7Story *story, GFile *builddir)
 {
-	FinishNIData *retval = g_new0(FinishNIData, 1);
+	FinishI7Data *retval = g_new0(FinishI7Data, 1);
 	retval->story = g_object_ref(story);
 	retval->builddir_file = g_object_ref(builddir);
 	return retval;
 }
 
 static void
-finish_ni_data_free(FinishNIData *data)
+finish_i7_data_free(FinishI7Data *data)
 {
 	g_object_unref(data->story);
 	g_object_unref(data->builddir_file);
@@ -228,7 +229,7 @@ finish_ni_data_free(FinishNIData *data)
 }
 
 static gboolean
-ui_finish_ni_compiler(FinishNIData *data)
+ui_finish_i7_compiler(FinishI7Data *data)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
@@ -267,13 +268,13 @@ ui_finish_ni_compiler(FinishNIData *data)
 	return G_SOURCE_REMOVE;
 }
 
-/* Display any errors from the NI compiler and continue on. This function is
- called from a child process watch, so any GUI calls must be done asynchronously
- from here. */
+/* Display any errors from the Inform 7 compiler and continue on. This function
+ * is called from a child process watch, so any GUI calls must be done
+ * asynchronously from here. */
 static void
-finish_ni_compiler(GPid pid, gint status, CompilerData *data)
+finish_i7_compiler(GPid pid, gint status, CompilerData *data)
 {
-	/* Get the ni.exe exit code */
+	/* Get the inform7 exit code */
 	int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
 
 	/* Display the appropriate HTML error or success page */
@@ -294,8 +295,8 @@ finish_ni_compiler(GPid pid, gint status, CompilerData *data)
 	g_clear_object(&data->results_file);
 	data->results_file = problems_file; /* assumes reference */
 
-	FinishNIData *ui_data = finish_ni_data_new(data->story, data->builddir_file);
-	gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)ui_finish_ni_compiler, ui_data, (GDestroyNotify)finish_ni_data_free);
+	FinishI7Data *ui_data = finish_i7_data_new(data->story, data->builddir_file);
+	gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)ui_finish_i7_compiler, ui_data, (GDestroyNotify)finish_i7_data_free);
 
 	/* Stop here and show the Results/Report tab if there was an error */
 	if(exit_code != 0) {

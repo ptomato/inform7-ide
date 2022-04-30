@@ -12,8 +12,8 @@ cc = meson.get_compiler('c')
 ### CHECK FOR PRESENCE OF COMPILER #############################################
 
 # not "required" because we want to print a more informative error message
-ni = find_program('intools/ni', required: false)
-if not ni.found()
+inform7 = find_program('intools/inform7', required: false)
+if not inform7.found()
     error('''I couldn't find the Inform
     compiler or its data files. You must first build the Inform compiler. See
     INSTALL.md for instructions.''')
@@ -97,7 +97,7 @@ local_schemas = gnome.compile_schemas()  # Needed for tests
 subdir('src')
 subdir('po')
 
-install_data('intools/cBlorb', 'intools/inform6', 'intools/ni',
+install_data('intools/inblorb', 'intools/inform6', 'intools/inform7',
     install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
 
 foreach build : ['6L02', '6L38', '6M62']

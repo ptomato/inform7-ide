@@ -14,9 +14,9 @@ BUILTINHTMLINNER = /app/tmp/inform/en
 # Names of the tools and options are the same as in the regular Linux build,
 # except we have an Indoc profile that installs to /app/tmp
 
-INBLORBNAME = cBlorb
+INBLORBNAME = inblorb
 INFORM6NAME = inform6
-INFORM7NAME = ni
+INFORM7NAME = inform7
 INTESTNAME = intest
 
 INDOCOPTS = gnome_flatpak_app
