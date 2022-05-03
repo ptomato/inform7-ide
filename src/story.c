@@ -1346,6 +1346,7 @@ i7_story_open(I7Story *self, GFile *file)
 	g_object_notify(object, "create-blorb");
 	g_object_notify(object, "nobble-rng");
 	g_object_notify(object, "elastic-tabstops");
+    g_object_notify(object, "language-version");
 
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(self, FALSE);
