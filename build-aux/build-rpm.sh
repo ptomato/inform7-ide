@@ -27,6 +27,8 @@ if test ! -e "$sourcedir/I7_${compiler_version}_Linux_all.tar.gz"; then
 fi
 
 cp "$dist_tarball" "$sourcedir/"
-rpmbuild -ba inform7-ide.spec
+# rpath is set in meson.build so that we can run from a non-system install path;
+# this is harmless otherwise, but needs to be enabled with QA_RPATHS
+QA_RPATHS=1 rpmbuild -ba inform7-ide.spec
 
 cp "$rpmdir/$arch"/inform7-ide-*.rpm "$srcrpmdir"/inform7-ide-*.src.rpm .
