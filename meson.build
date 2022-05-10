@@ -131,7 +131,7 @@ install_data('com.inform7.IDE.appdata.xml', install_dir: datadir / 'metainfo')
 install_data('com.inform7.IDE.gschema.xml',
     install_dir: datadir / 'glib-2.0' / 'schemas')
 
-install_data('ChangeLog', 'COPYING', 'README.md', install_dir: pkgdocsdir)
+install_data('COPYING', 'README.md', install_dir: pkgdocsdir)
 
 install_subdir('data/highlighting', install_dir: pkgdatadir)
 install_subdir('data/styles', install_dir: pkgdatadir,

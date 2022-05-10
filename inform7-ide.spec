@@ -96,7 +96,6 @@ fi
 %docdir %{pkgdatadir}/Documentation
 %{_datadir}/applications/com.inform7.IDE.desktop
 %{_datadir}/metainfo/com.inform7.IDE.appdata.xml
-%{pkgdocdir}/ChangeLog
 %{pkgdocdir}/COPYING
 %{pkgdocdir}/README.md
 %{pkgdatadir}/uninstall_manifest.txt
