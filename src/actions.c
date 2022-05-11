@@ -1089,7 +1089,6 @@ action_about(GSimpleAction *action, GVariant *parameter, I7App *app)
 		"program-name", "Inform App",
 		"copyright", copyright,
         "version", PACKAGE_VERSION,
-		"comments", "Inform Compiler " INFORM7_COMPILER_VERSION " (+ Inform " INFORM6_COMPILER_VERSION ")",
 		"website", "http://inform7.com",
 		"website-label", "inform7.com",
 		/* TRANSLATORS: Caution, UTF8 right arrow */

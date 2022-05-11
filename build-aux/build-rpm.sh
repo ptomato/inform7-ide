@@ -6,6 +6,10 @@ if test -z "$builddir"; then
     exit 1
 fi
 
+inweb_commit=2aca05e8e28c6385ade2a0637d9a79adbede9bb5
+intest_commit=06c8a4f57f104fa12abcf478371748b5bd829c7b
+inform_commit=7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+
 package=$(meson introspect "$builddir" --projectinfo | jq -r .descriptive_name)
 version=$(meson introspect "$builddir" --projectinfo | jq -r .version)
 dist_tarball="$builddir/meson-dist/$package-$version.tar.xz"
@@ -20,9 +24,16 @@ sourcedir=$(rpm --eval %_sourcedir)
 srcrpmdir=$(rpm --eval %_srcrpmdir)
 arch=$(rpm --eval %_target_cpu)
 
-compiler_version=$(ls data/Inform_*_data.* | grep -oE '[0-9][A-Z][0-9]{2}')
-if test ! -e "$sourcedir/I7_${compiler_version}_Linux_all.tar.gz"; then
-    wget "http://inform7.com/apps/$compiler_version/I7_${compiler_version}_Linux_all.tar.gz" \
+if test ! -e "$sourcedir/$inweb_commit.zip"; then
+    wget "https://github.com/ganelson/inweb/archive/$inweb_commit.zip" \
+        -P "$sourcedir"
+fi
+if test ! -e "$sourcedir/$intest_commit.zip"; then
+    wget "https://github.com/ganelson/intest/archive/$intest_commit.zip" \
+        -P "$sourcedir"
+fi
+if test ! -e "$sourcedir/$inform_commit.zip"; then
+    wget "https://github.com/ganelson/inform/archive/$inform_commit.zip" \
         -P "$sourcedir"
 fi
 

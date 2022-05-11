@@ -18,6 +18,7 @@
 #include <gtksourceview/gtksource.h>
 
 #include "app.h"
+#include "app-retrospective.h"
 #include "actions.h"
 #include "builder.h"
 #include "configfile.h"
@@ -58,6 +59,9 @@ typedef struct {
 	GtkPrintSettings *print_settings;
 	/* Color scheme manager */
 	GtkSourceStyleSchemeManager *color_scheme_manager;
+	/* Parsed contents of retrospective.txt (string -> RetrospectiveData) */
+	char **retrospective_ids;
+	GHashTable *retrospective_entries;
 	/* Preferences settings */
 	GSettings *system_settings;
 	GSettings *prefs_settings;
@@ -228,6 +232,9 @@ i7_app_init(I7App *self)
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
 	priv->color_scheme_manager = create_color_scheme_manager(self);
+
+	/* Parse the retrospective.txt file */
+	parse_retrospective_txt(&priv->retrospective_entries, &priv->retrospective_ids);
 }
 
 static void
@@ -242,6 +249,8 @@ i7_app_finalize(GObject *object)
 		g_slice_free(I7PrefsWidgets, self->prefs);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->color_scheme_manager);
+	g_clear_pointer(&priv->retrospective_ids, g_strfreev);
+	g_clear_pointer(&priv->retrospective_entries, g_hash_table_destroy);
 	g_object_unref(priv->system_settings);
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
@@ -1129,34 +1138,31 @@ update_installed_extensions_tree(I7App *self)
 void
 i7_app_run_census(I7App *self, gboolean wait)
 {
-	GFile *ni_binary = i7_app_get_binary_file(self, "ni");
+	GFile *ni_binary = i7_app_get_binary_file(self, "inform7");
 	GFile *builtin_extensions = i7_app_get_internal_dir(self);
 
 	/* Build the command line */
-	gchar **commandline = g_new(gchar *, 5);
+	g_auto(GStrv) commandline = g_new(char *, 6);
 	commandline[0] = g_file_get_path(ni_binary);
 	commandline[1] = g_strdup("-internal");
 	commandline[2] = g_file_get_path(builtin_extensions);
 	commandline[3] = g_strdup("-census");
-	commandline[4] = NULL;
+	commandline[4] = g_strdup("-silence");
+	commandline[5] = NULL;
 
 	g_object_unref(ni_binary);
 	g_object_unref(builtin_extensions);
 
 	/* Run the census */
 	if(wait) {
-		g_spawn_sync(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
-			| G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+		g_spawn_sync(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH,
 			NULL, NULL, NULL, NULL, NULL, NULL);
 		update_installed_extensions_tree(self);
 	} else {
-		g_spawn_async(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
-			| G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+		g_spawn_async(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH,
 			NULL, NULL, NULL, NULL);
 		g_idle_add((GSourceFunc)update_installed_extensions_tree, self);
 	}
-
-	g_strfreev(commandline);
 }
 
 /**
@@ -1267,7 +1273,8 @@ i7_app_get_extension_index_page(I7App *self)
  * @self: the app
  *
  * Gets a reference to the application data directory, or in other words the
- * directory which the NI compiler considers to be the "internal" directory.
+ * directory which the Inform 7 compiler considers to be the "internal"
+ * directory.
  *
  * Returns: (transfer full): a new #GFile.
  */
@@ -1276,6 +1283,42 @@ i7_app_get_internal_dir(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	return g_object_ref(priv->datadir);
+}
+
+static void *
+missing_data_file(const char *filename)
+{
+	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
+		"Please reinstall Inform 7."), filename);
+	return NULL;
+}
+
+/**
+ * i7_app_get_retrospective_internal_dir:
+ * @self: the app
+ * @build: the build number of the retrospective, e.g. "6M62"
+ *
+ * Gets a reference to the directory which version @build of the Inform 7
+ * compiler considers to be the "internal" directory.
+ * If it is not found, displays an error dialog asking the user to reinstall the
+ * application.
+ *
+ * Returns: (transfer full): a new #GFile.
+ */
+GFile *
+i7_app_get_retrospective_internal_dir(I7App *self, const char *build)
+{
+    I7AppPrivate *priv = i7_app_get_instance_private(self);
+    g_autoptr(GFile) dir1 = g_file_get_child(priv->datadir, "retrospective");
+    g_autoptr(GFile) dir2 = g_file_get_child(dir1, build);
+    g_autoptr(GFile) retval = g_file_get_child(dir2, g_str_equal(build, "6L02") ? "Extensions" : "Internal");
+
+    if (!g_file_query_exists(retval, NULL)) {
+        g_autofree char *display_name = g_build_filename("retrospective", build, NULL);
+        return missing_data_file(display_name);
+    }
+
+    return g_steal_pointer(&retval);
 }
 
 /**
@@ -1299,9 +1342,7 @@ i7_app_get_data_file(I7App *self, const char *filename)
 		return retval;
 
 	g_object_unref(retval);
-	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
-		"Please reinstall Inform 7."), filename);
-	return NULL;
+	return missing_data_file(filename);
 }
 
 /**
@@ -1340,9 +1381,7 @@ i7_app_get_data_file_va(I7App *self, const char *path1, ...)
 		return retval;
 
 	g_object_unref(retval);
-	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
-		"Please reinstall Inform 7."), lastarg); /* argument before NULL */
-	return NULL;
+	return missing_data_file(lastarg);  /* argument before NULL */
 }
 
 /**
@@ -1366,9 +1405,37 @@ i7_app_get_binary_file(I7App *self, const char *filename)
 		return retval;
 
 	g_object_unref(retval);
-	error_dialog(NULL, NULL, _("An application file, %s, was not found. "
-		"Please reinstall Inform 7."), filename);
-	return NULL;
+	return missing_data_file(filename);
+}
+
+/**
+ * i7_app_get_retrospective_binary_file:
+ * @self: the app
+ * @build: the build number of the retrospective, e.g. "6M62"
+ * @filename: the basename of the file, e.g. "cBlorb"
+ *
+ * Locates @filename in the retrospective section of the application libexec
+ * directory.
+ * If it is not found, displays an error dialog asking the user to reinstall the
+ * application.
+ *
+ * Returns: (transfer full): a new #GFile pointing to @filename, or %NULL if not
+ * found.
+ */
+GFile *
+i7_app_get_retrospective_binary_file(I7App *self, const char *build, const char *filename)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+	g_autoptr(GFile) dir1 = g_file_get_child(priv->libexecdir, "retrospective");
+	g_autoptr(GFile) dir2 = g_file_get_child(dir1, build);
+	g_autoptr(GFile) retval = g_file_get_child(dir2, filename);
+
+	if (!g_file_query_exists(retval, NULL)) {
+		g_autofree char *display_name = g_build_filename("retrospective", build, filename, NULL);
+		return missing_data_file(display_name);
+	}
+
+	return g_steal_pointer(&retval);
 }
 
 /**
@@ -1678,4 +1745,41 @@ i7_app_get_font_size(I7App *self)
 		base = DEFAULT_SIZE_STANDARD;
 
 	return base * i7_app_get_font_scale(self);
+}
+
+bool
+i7_app_is_valid_retrospective_id(I7App *self, const char *id)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	for (char **ptr = priv->retrospective_ids; *ptr != NULL; ptr++) {
+		if (strcmp(*ptr, id) == 0)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+/* Private function for app-retrospective.h: Return the RetrospectiveData record
+ * for the given build number ID. */
+const RetrospectiveData *
+get_retrospective_data(I7App *self, const char *id)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	RetrospectiveData *retval = g_hash_table_lookup(priv->retrospective_entries, id);
+	if (!retval)
+		g_error("Retrospective data '%s' not found", id);
+	return retval;
+}
+
+void
+i7_app_foreach_retrospective(I7App *self, I7AppRetrospectiveFunc func, void *data)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	for (char **ptr = priv->retrospective_ids; *ptr != NULL; ptr++) {
+		const RetrospectiveData *record = g_hash_table_lookup(priv->retrospective_entries, *ptr);
+		g_assert(record);
+		func(data, *ptr, record->display_name, record->description);
+	}
 }

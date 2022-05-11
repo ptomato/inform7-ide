@@ -30,15 +30,17 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      # Make a fake NI compiler binary so we don't have to download a closed
-      # source blob
-      - name: create-fake-ni-binary
+      # Make fake Inform binaries so we don't have to download and build them
+      # just to run the UI tests
+      - name: create-fake-inform7-data
         run: |
-          echo '#!/bin/sh' >src/ni/ni
-          echo echo Inform 7 build \
-            $(grep '^compiler_version =' meson.build | \
-              grep -oE '[0-9][A-Z][0-9]{2}') has started. >>src/ni/ni
-          chmod u+x src/ni/ni
+          mkdir intools
+          touch intools/{inform7,inform6,inblorb}
+          chmod a+x intools/inform7
+          mkdir -p retrospective/6{L02,L38,M62}
+          touch retrospective/6{L02,L38,M62}/ni
+          touch retrospective/6{L02,L38,M62}/cBlorb
+          touch retrospective/retrospective.txt
 
       - name: configure
         run: meson _build

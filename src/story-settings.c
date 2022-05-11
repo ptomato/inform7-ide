@@ -107,14 +107,8 @@ on_language_version_chooser_changed(GtkComboBox *chooser, GtkLabel *description)
 	const char *id = gtk_combo_box_get_active_id(chooser);
 	g_return_if_fail(id != NULL);
 
-	const char *copy;
-	if (strcmp(id, "6M62") == 0) {
-		copy = _("With this option set, Inform always compiles your "
-			"project using version 6M62.");
-	} else {
-		copy = _("With this option set, Inform always uses the latest "
-			"version of the lanugage to compile your project.");
-	}
+	I7App *theapp = I7_APP(g_application_get_default());
+	const char *copy = i7_app_get_retrospective_description(theapp, id);
 	gtk_label_set_label(description, copy);
 }
 
@@ -293,6 +287,12 @@ i7_story_set_language_version(I7Story *self, const char *ver)
 	g_return_if_fail(self || I7_IS_STORY(self));
 
 	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
+
+	I7App *theapp = I7_APP(g_application_get_default());
+	if (!i7_app_is_valid_retrospective_id(theapp, ver)) {
+		g_warning("Unknown compiler version '%s', defaulting to current version", ver);
+		ver = "****";
+	}
 
 	plist_t settings = i7_story_get_settings(self);
 	plist_t obj = plist_access_path(settings, 2, "IFOutputSettings", "IFSettingCompilerVersion");

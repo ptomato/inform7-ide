@@ -1,42 +1,25 @@
 project('inform7-ide', 'c', version: '2.0.0', license: 'GPL-3.0-or-later',
-    meson_version: '>=0.55.0')
+    meson_version: '>=0.56.0')
 
 appname = meson.project_name()
 app_version = meson.project_version()
-compiler_version = '6M62'
 
 gnome = import('gnome')
 i18n = import('i18n')
 
 cc = meson.get_compiler('c')
 
-### CHECK FOR PROPER NI EXECUTABLE #############################################
+### CHECK FOR PRESENCE OF COMPILER #############################################
 
 # not "required" because we want to print a more informative error message
-ni = find_program('src/ni/ni', required: false)
-if not ni.found()
-    error('''ni not found in src/ni.
-    IMPORTANT NOTE! You must download version @0@ of the appropriate
-    compiler package from inform7.org and put the file `ni' into the
-    directory `@1@/src/ni'.
-    (Try http://inform7.com/apps/@0@/I7_@0@_Linux_all.tar.gz)
-    '''.format(compiler_version, meson.current_source_dir()))
-endif
-ni_output = run_command(ni).stdout()
-ni_version = ni_output.split()[3]
-if ni_version != compiler_version
-    error('''You have version @0@ of ni
-    in src/ni. This version of Inform 7 will only work with version @1@.
-    IMPORTANT NOTE! You must download version @1@ of the appropriate
-    compiler package from inform7.com and put the file `ni' into the
-    directory `@2@/src/ni'.
-    (Try http://inform7.com/apps/@1@/I7_@1@_Linux_all.tar.gz)
-    '''.format(ni_version, compiler_version, meson.current_source_dir()))
+inform7 = find_program('intools/inform7', required: false)
+if not inform7.found()
+    error('''I couldn't find the Inform
+    compiler or its data files. You must first build the Inform compiler. See
+    INSTALL.md for instructions.''')
 endif
 
 ### DEFINE VARIABLES ###########################################################
-
-inform_tarball = files('data/Inform_@0@_data.tar.lz'.format(compiler_version))
 
 datadir = get_option('datadir')
 pkgdatadir = datadir / appname
@@ -97,10 +80,6 @@ config.set_quoted('PACKAGE_NAME', appname)
 config.set_quoted('GETTEXT_PACKAGE', appname)
 config.set_quoted('PACKAGE_VERSION', app_version)
 
-# Inform versions that go along with this release
-config.set_quoted('INFORM6_COMPILER_VERSION', '6.36')
-config.set_quoted('INFORM7_COMPILER_VERSION', compiler_version)
-
 # Get current year for updating copyrights
 copyright_year = run_command(date, '+%Y').stdout().strip()
 config.set_quoted('COPYRIGHT_YEAR', copyright_year)
@@ -118,6 +97,16 @@ local_schemas = gnome.compile_schemas()  # Needed for tests
 subdir('src')
 subdir('po')
 
+install_data('intools/inblorb', 'intools/inform6', 'intools/inform7',
+    install_dir: pkglibexecdir, install_mode: 'rwxr-xr-x')
+
+foreach build : ['6L02', '6L38', '6M62']
+    install_data('retrospective/@0@/cBlorb'.format(build),
+        'retrospective/@0@/ni'.format(build),
+        install_dir: pkglibexecdir / 'retrospective' / build,
+        install_mode: 'rwxr-xr-x')
+endforeach
+
 i18n.merge_file(input: 'com.inform7.IDE.desktop.in',
     output: 'com.inform7.IDE.desktop', type: 'desktop', po_dir: 'po',
     install: true, install_dir: datadir / 'applications')
@@ -133,9 +122,29 @@ install_data('com.inform7.IDE.gschema.xml',
 
 install_data('COPYING', 'README.md', install_dir: pkgdocsdir)
 
+install_subdir('data/Extensions', install_dir: pkgdatadir)
+install_subdir('data/HTML', install_dir: pkgdatadir)
+install_subdir('data/Inter', install_dir: pkgdatadir)
+install_subdir('data/Languages', install_dir: pkgdatadir)
+install_subdir('data/Miscellany', install_dir: pkgdatadir)
+install_subdir('data/Pipelines', install_dir: pkgdatadir)
+install_subdir('data/Templates', install_dir: pkgdatadir)
 install_subdir('data/highlighting', install_dir: pkgdatadir)
 install_subdir('data/styles', install_dir: pkgdatadir,
     exclude_files: ['styles.its', 'styles.pot', 'update-pot.sh'])
+
+retrospective_data_dirs = {
+    '6L02': ['Extensions', 'I6T', 'Outcome Pages'],
+    '6L38': ['Internal', 'Outcome Pages'],
+    '6M62': ['Internal', 'Outcome Pages'],
+}
+foreach build, internal_dirs : retrospective_data_dirs
+    retrospectivedir = pkgdatadir / 'retrospective' / build
+    foreach internal_dir : internal_dirs
+        install_subdir('retrospective/@0@/@1@'.format(build, internal_dir),
+            install_dir: retrospectivedir)
+    endforeach
+endforeach
 
 # Named Icons
 # -----------
@@ -161,7 +170,5 @@ install_subdir('pixmaps/64x64', install_dir: icondir)
 install_subdir('pixmaps/128x128', install_dir: icondir)
 install_subdir('pixmaps/256x256', install_dir: icondir)
 
-meson.add_install_script('build-aux/unpack-inform-data.sh', inform_tarball,
-    pkgdatadir)
 # Script adapted from GNOME Notes's build system
 meson.add_install_script('build-aux/meson_post_install.py', abs_datadir)
