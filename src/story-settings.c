@@ -272,7 +272,7 @@ i7_story_get_language_version(I7Story *self)
 	plist_t settings = i7_story_get_settings(self);
 	plist_t obj = plist_access_path(settings, 2, "IFOutputSettings", "IFSettingCompilerVersion");
 	if (!obj)
-		return FALSE;  /* Default value */
+		return g_strdup("****");  /* Default value */
 
 	char *plist_val;
 	plist_get_string_val(obj, &plist_val);
