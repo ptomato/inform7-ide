@@ -394,10 +394,12 @@ update_recent_story_file(I7Story *self, GFile *file)
 	g_free(uri);
 }
 
+typedef GFile FileRemoveFromRecent;
+
 /* Remove a file from the recently used list of files, e.g. if it failed to
 open */
 static void
-remove_recent_story_file(GFile *file)
+remove_recent_story_file(FileRemoveFromRecent *file)
 {
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
 	char *uri = get_recent_uri_for_story_file(file);
@@ -405,6 +407,11 @@ remove_recent_story_file(GFile *file)
 	/* ignore error */
 	g_free(uri);
 }
+
+/* This allows automatically cleaning up the entry from the recent files list
+ * if the file failed to open, by declaring a g_autoptr(FileRemoveFromRecent).
+ * Use g_steal_pointer on success. */
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(FileRemoveFromRecent, remove_recent_story_file);
 
 /* Save story in the given directory  */
 static void
@@ -1216,7 +1223,7 @@ i7_story_new_from_dialog(I7App *app)
 /* Read a project directory, loading all the appropriate files into story and
 returning success */
 gboolean
-i7_story_open(I7Story *self, GFile *file)
+i7_story_open(I7Story *self, GFile *input_file)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
 	I7Document *document = I7_DOCUMENT(self);
@@ -1224,14 +1231,14 @@ i7_story_open(I7Story *self, GFile *file)
 	GObject *object = G_OBJECT(self);
 	GError *err = NULL;
 
+	g_autoptr(FileRemoveFromRecent) file = g_object_ref(input_file);
+
 	GFile *source_file = g_file_get_child(file, "Source");
 	GFile *story_file = g_file_get_child(source_file, "story.ni");
 	g_object_unref(source_file);
 
-	g_object_ref(file);
-
 	/* Make sure that the file has the proper extension */
-	char *display_name = file_get_display_name(file);
+	g_autofree char *display_name = file_get_display_name(file);
 	if(!g_str_has_suffix(display_name, ".inform")) {
 
 		if(g_file_query_exists(story_file, NULL)) {
@@ -1252,7 +1259,7 @@ i7_story_open(I7Story *self, GFile *file)
 			if(file == NULL) {
 				IO_ERROR_DIALOG(window, old_file, err, _("renaming the project file to a .inform extension"));
 				file = old_file;
-				goto fail;
+				return FALSE;
 			}
 			g_object_unref(old_file);
 			g_free(new_name);
@@ -1274,17 +1281,16 @@ i7_story_open(I7Story *self, GFile *file)
 			g_free(path);
 			gtk_dialog_run(GTK_DIALOG(dialog));
 			gtk_widget_destroy(dialog);
-			goto fail;
+			return FALSE;
 		}
 	}
-	g_free(display_name);
 
 	i7_document_set_file(document, file);
 
 	/* Read the source */
 	char *text = read_source_file(story_file);
 	if(!text)
-		goto fail2;
+		return FALSE;
 
 	update_recent_story_file(self, file);
 
@@ -1320,7 +1326,7 @@ i7_story_open(I7Story *self, GFile *file)
 	/* Read the settings */
 	GFile *settings_file = g_file_get_child(file, "Settings.plist");
 	g_clear_pointer(&priv->settings, plist_free);
-	g_autofree char *contents;
+	g_autofree char *contents = NULL;
 	size_t length;
 	if (!g_file_load_contents(settings_file, /* cancellable = */ NULL, &contents, &length, NULL, &err)) {
 		priv->settings = create_default_settings();
@@ -1379,15 +1385,8 @@ i7_story_open(I7Story *self, GFile *file)
 
 	i7_document_set_modified(document, FALSE);
 
-	g_object_unref(file);
+	g_object_unref(g_steal_pointer(&file));
 	return TRUE;
-
-fail:
-	g_free(display_name);
-fail2:
-	remove_recent_story_file(file);
-	g_object_unref(file);
-	return FALSE;
 }
 
 /**
