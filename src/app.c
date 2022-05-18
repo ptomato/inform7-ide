@@ -146,7 +146,8 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 			else
 				continue;
 
-			g_autofree char *action = g_strdup_printf("app.open-recent(('%s','%s'))", gtk_recent_info_get_uri(info), group);
+            g_autofree char *escaped_uri = g_strescape(gtk_recent_info_get_uri(info), NULL);
+			g_autofree char *action = g_strdup_printf("app.open-recent((\"%s\",'%s'))", escaped_uri, group);
 			GMenuItem *item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
 			g_menu_append_item(recent_menu, item);
 		}
