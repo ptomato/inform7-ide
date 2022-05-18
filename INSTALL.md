@@ -23,7 +23,7 @@ $ sudo apt-get install -y \
 
 ## Meson
 
-Inform IDE requires meson >= 0.55.0. Debian Buster's is too old,
+Inform IDE requires meson >= 0.56.0. Debian Buster's is too old,
 but if you're on Debian Bullseye (or later) or Ubuntu 20.10 (or later)
 you could just `apt install meson` instead of the below.
 
@@ -32,18 +32,57 @@ $ git clone https://github.com/ptomato/inform7-ide.git
 $ cd inform7-ide
 $ virtualenv --python=python3 meson
 $ source meson/bin/activate
-$ pip install meson==0.55
+$ pip install meson==0.56
 ```
 
-At this point you have to manually copy the appropriate `ni` binary
-for your architecture to `inform7-ide/src/ni/ni` -– if you already
-have Inform 7 installed, you already have a copy, probably in
-`/usr/local/libexec/ni`, otherwise find it in
-[the compiler package](http://inform7.com/apps/6M62/I7_6M62_Linux_all.tar.gz).
+## Inform
+
+You also have to get Inform, the compiler.
+Currently, the way to do this is to check out the repositories and build it
+yourself.
+There are instructions in the `README.md` files of the inweb, intest, and inform
+repositories, but they are summarized below for convenience:
+
+```bash
+$ cd ..
+$ git clone https://github.com/ganelson/inweb.git
+$ bash inweb/scripts/first.sh linux
+$ git clone https://github.com/ganelson/intest.git
+$ bash intest/scripts/first.sh
+$ git clone https://github.com/ganelson/inform.git
+$ cd inform
+$ bash scripts/first.sh
+```
+
+(That's just for the first build.
+If you already built Inform once, and are just updating it after pulling from
+GitHub, then instead go into the `inform` directory and do this:)
+
+```bash
+$ make -C .. -f inweb/inweb.mk
+$ make -C .. -f intest/intest.mk
+$ make
+```
+
+Regardless of whether this was a first build or a subsequent build, now do the
+following to copy the files into the inform7-ide checkout:
+
+```bash
+$ make forceintegration
+$ make retrospective
+$ cp -R retrospective ../inform7-ide/
+```
 
 ## Build and run for testing
 
-Once that’s done (still in the same `inform7-ide` directory as above):
+Once that’s done, go back to the `inform7-ide` directory as above:
+
+```bash
+$ cd ../inform7-ide
+```
+
+Then you can prepare the build. If you built the Inform compiler correctly, the
+following command should not complain about being unable to find files:
 
 ```
 $ meson _build
