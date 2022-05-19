@@ -64,14 +64,24 @@ $ make -C .. -f intest/intest.mk
 $ make
 ```
 
-Regardless of whether this was a first build or a subsequent build, now do the
-following to copy the files into the inform7-ide checkout:
+Regardless of whether this was a first build or a subsequent build, you now need
+to copy a file that tells where to install the Inform compiler and its
+materials, to a place where the Inform build process can find it:
+
+```bash
+$ cp inform7-ide/build-aux/make-integration-settings.mk .
+```
+
+Now do the following to install the files into the inform7-ide checkout:
 
 ```bash
 $ make forceintegration
 $ make retrospective
 $ cp -R retrospective ../inform7-ide/
 ```
+
+(On subsequent builds, you don't need to keep copying
+`make-integration-settings.mk`.)
 
 ## Build and run for testing
 
