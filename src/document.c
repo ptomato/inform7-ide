@@ -92,11 +92,27 @@ filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *self)
 	return depth <= priv->heading_depth;
 }
 
-void
-on_findbar_close_clicked(GtkToolButton *button, I7Document *document)
+static void
+close_findbar(I7Document *self)
 {
-	gtk_widget_hide(document->findbar);
-	i7_document_unhighlight_quicksearch(document);
+	gtk_widget_hide(self->findbar);
+	i7_document_unhighlight_quicksearch(self);
+}
+
+void
+on_findbar_close_clicked(GtkToolButton *button, I7Document *self)
+{
+	close_findbar(self);
+}
+
+gboolean
+on_findbar_entry_key_release_event(GtkEntry *entry, GdkEventKey *event, I7Document *self)
+{
+	if (event->keyval == GDK_KEY_Escape) {
+		close_findbar(self);
+		return GDK_EVENT_STOP;
+	}
+	return GDK_EVENT_PROPAGATE;
 }
 
 void
