@@ -924,7 +924,7 @@ i7_story_init(I7Story *self)
 	/* Set the initial visible state of the toolbar based on the most recent
 	choice the user made */
 	GAction *view_toolbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-toolbar");
-	g_simple_action_set_state(G_SIMPLE_ACTION(view_toolbar), g_settings_get_value(state, PREFS_STATE_SHOW_TOOLBAR));
+	g_action_change_state(view_toolbar, g_settings_get_value(state, PREFS_STATE_SHOW_TOOLBAR));
 
 	/* Build the rest of the interface */
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
@@ -966,7 +966,7 @@ i7_story_init(I7Story *self)
 	priv->compiler_output_file = NULL;
 	priv->test_me = FALSE;
 	priv->manifest = NULL;
-	
+
 	/* Set up the Skein */
 	priv->skein = i7_skein_new();
 	g_signal_connect(priv->skein, "node-activate", G_CALLBACK(on_node_activate), self);
