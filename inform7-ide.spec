@@ -19,6 +19,7 @@ BuildRequires: meson >= 0.56
 # Extra build tools
 BuildRequires: gettext
 BuildRequires: pkgconfig
+BuildRequires: gcc-c++
 # Library devel packages:
 BuildRequires: libplist-devel
 BuildRequires: glib2-devel >= 2.52
