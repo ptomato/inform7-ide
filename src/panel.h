@@ -85,7 +85,6 @@ typedef struct {
 	GtkWidget *goto_examples;
 	GtkWidget *goto_general_index;
 	GtkWidget *goto_extensions_home;
-	GtkWidget *goto_definitions;
 	GtkWidget *goto_public_library;
 	GtkTreeViewColumn *transcript_column;
 	GtkCellRenderer *transcript_cell;

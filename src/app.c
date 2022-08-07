@@ -1252,24 +1252,6 @@ i7_app_get_extension_home_page(I7App *self)
 }
 
 /**
- * i7_app_get_extension_index_page:
- * @self: the application
- *
- * Returns the definitions index page for installed extensions (by default,
- * $HOME/Inform/Documentation/ExtIndex.html.)
- *
- * Returns: (transfer full): a new #GFile.
- */
-GFile *
-i7_app_get_extension_index_page(I7App *self)
-{
-	char *path = g_build_filename(g_get_home_dir(), EXTENSION_INDEX_PATH, NULL);
-	GFile *retval = g_file_new_for_path(path);
-	g_free(path);
-	return retval;
-}
-
-/**
  * i7_app_get_internal_dir:
  * @self: the app
  *
