@@ -246,7 +246,7 @@ on_download_succeeded_script_finished(WebKitWebView *webview, GAsyncResult *res,
 	}
 }
 
-/* Helper function: Converts a library:/ URI to a real http:// URI, extracting
+/* Helper function: Converts a library:/ URI to a real https:// URI, extracting
 other information from the URI. Assumes an id parameter is given and that it is
 the only (last?) query parameter. Unref return value when done */
 static GFile *
@@ -1072,7 +1072,8 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		g_debug("- display inform document in this webview: USE");
 		return TRUE;  /* handled */
 
-	} else if(strcmp(scheme, "http") == 0 || strcmp(scheme, "mailto") == 0) {
+	} else if (strcmp(scheme, "https") == 0 || strcmp(scheme, "http") == 0 ||
+			strcmp(scheme, "mailto") == 0) {
 		/* Allow the Public Library website, but nothing else */
 		if (g_str_has_prefix(uri, PUBLIC_LIBRARY_HOME_URI)) {
 			webkit_policy_decision_use(decision);
