@@ -27,8 +27,8 @@
 #include "panel.h"
 #include "skein-view.h"
 
-#define PUBLIC_LIBRARY_URI "http://www.emshort.com/pl/"
-#define PUBLIC_LIBRARY_HOME_URI PUBLIC_LIBRARY_URI "index.html"
+#define PUBLIC_LIBRARY_URI "https://ganelson.github.io/inform-public-library/"
+#define PUBLIC_LIBRARY_HOME_URI PUBLIC_LIBRARY_URI "index-linux.html"
 
 const char * const i7_panel_index_names[] = {
 	"Welcome.html", "Contents.html", "Actions.html", "Kinds.html",
