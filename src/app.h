@@ -101,7 +101,6 @@ void i7_app_run_census(I7App *self, gboolean wait);
 GFile *i7_app_get_extension_file(I7App *self, const gchar *author, const char *extname);
 GFile *i7_app_get_extension_docpage(I7App *self, const char *author, const char *extname);
 GFile *i7_app_get_extension_home_page(I7App *self);
-GFile *i7_app_get_extension_index_page(I7App *self);
 GFile *i7_app_get_internal_dir(I7App *self);
 GFile *i7_app_get_retrospective_internal_dir(I7App *self, const char *build);
 GFile *i7_app_get_data_file(I7App *self, const char *filename);

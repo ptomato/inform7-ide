@@ -541,18 +541,6 @@ action_extensions_home(GSimpleAction *action, GVariant *parameter, I7Panel *pane
 	g_object_unref(docs_file);
 }
 
-/* Signal handler for the action connected to the "Definitions" button in the
-panel toolbar when the Extensions panel is displayed. Displays
-Documentation/ExtIndex.html from the user's extensions folder. */
-static void
-action_definitions(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
-{
-	I7App *theapp = I7_APP(g_application_get_default());
-	GFile *docs_file = i7_app_get_extension_index_page(theapp);
-	i7_panel_goto_extensions_docpage(panel, docs_file);
-	g_object_unref(docs_file);
-}
-
 /* Helper function: turn everything back to normal when the Public Library is
 loaded */
 static void
@@ -691,7 +679,6 @@ create_panel_actions(I7Panel *self)
 		{ "goto-examples", (ActionCallback)action_examples },
 		{ "goto-home", (ActionCallback)action_contents },
 		{ "goto-extensions-home", (ActionCallback)action_extensions_home },
-		{ "goto-definitions", (ActionCallback)action_definitions },
 		{ "goto-public-library", (ActionCallback)action_public_library },
 	};
 	self->actions = g_simple_action_group_new();
@@ -801,7 +788,6 @@ i7_panel_init(I7Panel *self)
 	LOAD_WIDGET(goto_examples);
 	LOAD_WIDGET(goto_general_index);
 	LOAD_WIDGET(goto_extensions_home);
-	LOAD_WIDGET(goto_definitions);
 	LOAD_WIDGET(goto_public_library);
 
 	/* Add the Labels menu */
@@ -953,7 +939,6 @@ on_notebook_switch_page(GtkNotebook *notebook, GtkWidget *page, unsigned page_nu
 	gtk_widget_set_visible(self->goto_examples, documentation);
 	gtk_widget_set_visible(self->goto_general_index, documentation);
 	gtk_widget_set_visible(self->goto_extensions_home, extensions);
-	gtk_widget_set_visible(self->goto_definitions, extensions);
 	gtk_widget_set_visible(self->goto_public_library, extensions);
 }
 
