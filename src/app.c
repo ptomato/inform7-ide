@@ -1685,6 +1685,23 @@ i7_app_get_font_family(I7App *self)
 }
 
 /*
+ * i7_app_get_ui_font:
+ * @self: the application singleton
+ *
+ * Returns: (transfer full): a string representing the font family used in the
+ * UI, to set in WebViews used as part of the UI.
+ */
+char *
+i7_app_get_ui_font(I7App *self)
+{
+	I7AppPrivate *priv = i7_app_get_instance_private(self);
+
+	char *font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_UI_FONT);
+	remove_font_size(font);
+	return font;
+}
+
+/*
  * i7_app_get_font_scale:
  * @self: the application singleton
  *

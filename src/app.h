@@ -122,6 +122,7 @@ void i7_app_present_prefs_window(I7App *self);
 void i7_app_update_css(I7App *self);
 
 char *i7_app_get_font_family(I7App *self);
+char *i7_app_get_ui_font(I7App *self);
 double i7_app_get_font_scale(I7App *self);
 double i7_app_get_font_size(I7App *self);
 
