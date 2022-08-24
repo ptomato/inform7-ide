@@ -8,9 +8,9 @@ if test -z "$builddir"; then
     exit 1
 fi
 
-inweb_commit=2aca05e8e28c6385ade2a0637d9a79adbede9bb5
-intest_commit=06c8a4f57f104fa12abcf478371748b5bd829c7b
-inform_commit=7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+inweb_ref=v7.2.0
+intest_ref=v2.1.0
+inform_ref=v10.1.2
 
 package=$(meson introspect "$builddir" --projectinfo | jq -r .descriptive_name)
 version=$(meson introspect "$builddir" --projectinfo | jq -r .version)
@@ -38,7 +38,7 @@ cd "$debsourcedir"
 # component, or dpkg-unpack will not unpack them correctly.
 
 if test ! -e "../$package_$version.orig-inweb.tar.gz"; then
-    wget "https://api.github.com/repos/ganelson/inweb/tarball/$inweb_commit" \
+    wget "https://api.github.com/repos/ganelson/inweb/tarball/$inweb_ref" \
         -O inweb.tar.gz
     mkdir inweb
     tar xzf inweb.tar.gz -C inweb --strip-components=1
@@ -46,7 +46,7 @@ if test ! -e "../$package_$version.orig-inweb.tar.gz"; then
     rm inweb.tar.gz
 fi
 if test ! -e "../$package_$version.orig-intest.tar.gz"; then
-    wget "https://api.github.com/repos/ganelson/intest/tarball/$intest_commit" \
+    wget "https://api.github.com/repos/ganelson/intest/tarball/$intest_ref" \
         -O intest.tar.gz
     mkdir intest
     tar xzf intest.tar.gz -C intest --strip-components=1
@@ -54,7 +54,7 @@ if test ! -e "../$package_$version.orig-intest.tar.gz"; then
     rm intest.tar.gz
 fi
 if test ! -e "../$package_$version.orig-inform.tar.gz"; then
-    wget "https://api.github.com/repos/ganelson/inform/tarball/$inform_commit" \
+    wget "https://api.github.com/repos/ganelson/inform/tarball/$inform_ref" \
         -O inform.tar.gz
     mkdir inform
     tar xzf inform.tar.gz -C inform --strip-components=1

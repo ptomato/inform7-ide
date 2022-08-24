@@ -5,14 +5,17 @@ Release: 1%{?dist}
 URL: http://inform7.com/
 License: GPLv3
 
-%define inweb_commit 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
-%define intest_commit 06c8a4f57f104fa12abcf478371748b5bd829c7b
-%define inform_commit 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+%define inweb_ref v7.2.0
+%define intest_ref v2.1.0
+%define inform_ref v10.1.2
+%define inweb_short_sha 60735b4
+%define intest_short_sha 45b6278
+%define inform_short_sha 1f43d73
 
 Source0: https://github.com/ptomato/inform7-ide/releases/download/%{version}/inform7-ide-%{version}.tar.xz
-Source1: https://github.com/ganelson/inweb/archive/refs/heads/%{inweb_commit}.zip
-Source2: https://github.com/ganelson/intest/archive/refs/heads/%{intest_commit}.zip
-Source3: https://github.com/ganelson/inform/archive/refs/heads/%{inform_commit}.zip
+Source1: https://github.com/ganelson/inweb/archive/refs/tags/%{inweb_ref}#/ganelson-inweb-%{inweb_ref}-0-g%{inweb_short_sha}.tar.gz
+Source2: https://github.com/ganelson/intest/archive/refs/tags/%{intest_ref}#/ganelson-intest-%{intest_ref}-0-g%{intest_short_sha}.tar.gz
+Source3: https://github.com/ganelson/inform/archive/refs/tags/%{inform_ref}#/ganelson-inform-%{inform_ref}-0-g%{inform_short_sha}.tar.gz
 
 # Build requirements:
 BuildRequires: meson >= 0.56
@@ -53,9 +56,9 @@ games, to art pieces, which have won numerous awards and competitions.
 %define pkglibexecdir %{_libexecdir}/%{name}
 
 %prep
-rm -rf inweb inweb-*
-rm -rf intest intest-*
-rm -rf inform inform-*
+rm -rf inweb ganelson-inweb-%{inweb_short_sha}
+rm -rf intest ganelson-intest-%{intest_short_sha}
+rm -rf inform ganelson-inform-%{inform_short_sha}
 %setup -b 1
 %setup -b 2
 %setup -b 3
@@ -63,9 +66,9 @@ rm -rf inform inform-*
 sed -e 's/%{name}/%{name}-%{version}/g' build-aux/make-integration-settings.mk \
     > ../make-integration-settings.mk
 cd ..
-mv inweb-%{inweb_commit} inweb
-mv intest-%{intest_commit} intest
-mv inform-%{inform_commit} inform
+mv ganelson-inweb-%{inweb_short_sha} inweb
+mv ganelson-intest-%{intest_short_sha} intest
+mv ganelson-inform-%{inform_short_sha} inform
 sed -i -e 's/%{name}/%{name}-%{version}/g' \
     inform/resources/Documentation/indoc-instructions.txt
 
@@ -128,37 +131,21 @@ fi
 %{pkgdatadir}/HTML/*.html
 %{pkgdatadir}/HTML/*.js
 %{pkgdatadir}/HTML/xrefs.txt
-%{pkgdatadir}/Inter/BasicInformExtrasKit/Contents.w
-%{pkgdatadir}/Inter/BasicInformExtrasKit/kit_metadata.txt
-%{pkgdatadir}/Inter/BasicInformExtrasKit/arch-*.interb
-%{pkgdatadir}/Inter/BasicInformExtrasKit/Sections/*.i6t
-%{pkgdatadir}/Inter/BasicInformKit/Contents.w
-%{pkgdatadir}/Inter/BasicInformKit/kit_metadata.txt
-%{pkgdatadir}/Inter/BasicInformKit/arch-*.interb
-%{pkgdatadir}/Inter/BasicInformKit/Sections/*.i6t
-%{pkgdatadir}/Inter/BasicInformKit/kinds/*.neptune
-%{pkgdatadir}/Inter/CommandParserKit/Contents.w
-%{pkgdatadir}/Inter/CommandParserKit/kit_metadata.txt
-%{pkgdatadir}/Inter/CommandParserKit/arch-*.interb
-%{pkgdatadir}/Inter/CommandParserKit/Sections/*.i6t
-%{pkgdatadir}/Inter/CommandParserKit/kinds/*.neptune
-%{pkgdatadir}/Inter/EnglishLanguageKit/Contents.w
-%{pkgdatadir}/Inter/EnglishLanguageKit/kit_metadata.txt
-%{pkgdatadir}/Inter/EnglishLanguageKit/arch-*.interb
-%{pkgdatadir}/Inter/EnglishLanguageKit/Sections/*.i6t
-%{pkgdatadir}/Inter/WorldModelKit/Contents.w
-%{pkgdatadir}/Inter/WorldModelKit/kit_metadata.txt
-%{pkgdatadir}/Inter/WorldModelKit/arch-*.interb
-%{pkgdatadir}/Inter/WorldModelKit/Sections/*.i6t
-%{pkgdatadir}/Inter/WorldModelKit/kinds/*.neptune
+%{pkgdatadir}/Inter/*/Contents.w
+%{pkgdatadir}/Inter/*/kit_metadata.json
+%{pkgdatadir}/Inter/*/arch-*.interb
+%{pkgdatadir}/Inter/*/Sections/*.i6t
+%{pkgdatadir}/Inter/*/kinds/*.neptune
 %{pkgdatadir}/Languages/*/Index.txt
 %{pkgdatadir}/Languages/*/Syntax.preform
-%{pkgdatadir}/Languages/*/about.txt
 %{pkgdatadir}/Languages/*/flag.png
+%{pkgdatadir}/Languages/*/language_metadata.json
 %{pkgdatadir}/Miscellany/Basic.indext
 %{pkgdatadir}/Miscellany/Standard.indext
 %{pkgdatadir}/Miscellany/inform7_clib.c
 %{pkgdatadir}/Miscellany/inform7_clib.h
+%{pkgdatadir}/Miscellany/registry.jsonr
+%{pkgdatadir}/Miscellany/resource.jsonr
 %{pkgdatadir}/Miscellany/*.jpg
 %{pkgdatadir}/Miscellany/*.pdf
 %{pkgdatadir}/Pipelines/*.interpipeline

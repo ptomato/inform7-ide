@@ -14,6 +14,7 @@ BUILTINCOMPS = ../inform7-ide/intools
 INTERNAL = ../inform7-ide/data
 BUILTINHTML = ../inform7-ide/src/inform
 BUILTINHTMLINNER = ../inform7-ide/src/inform/en
+ADVICEHTML = ../inform7-ide/src/inform/en
 
 # Various executables are copied into the BUILTINCOMPS folder, but their
 # filenames when copied there have sometimes differed between platforms.
@@ -26,6 +27,7 @@ INTESTNAME = intest
 # Indoc options for generating the inside-the-application documentation:
 
 INDOCOPTS = gnome_app
+HTMLPLATFORM = linux
 
 # For reasons to do with CSS, the following should be "-nofont" for Windows:
 

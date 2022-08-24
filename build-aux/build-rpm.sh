@@ -6,9 +6,9 @@ if test -z "$builddir"; then
     exit 1
 fi
 
-inweb_commit=2aca05e8e28c6385ade2a0637d9a79adbede9bb5
-intest_commit=06c8a4f57f104fa12abcf478371748b5bd829c7b
-inform_commit=7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+inweb_ref=v7.2.0
+intest_ref=v2.1.0
+inform_ref=v10.1.2
 
 package=$(meson introspect "$builddir" --projectinfo | jq -r .descriptive_name)
 version=$(meson introspect "$builddir" --projectinfo | jq -r .version)
@@ -24,17 +24,17 @@ sourcedir=$(rpm --eval %_sourcedir)
 srcrpmdir=$(rpm --eval %_srcrpmdir)
 arch=$(rpm --eval %_target_cpu)
 
-if test ! -e "$sourcedir/$inweb_commit.zip"; then
-    wget "https://github.com/ganelson/inweb/archive/$inweb_commit.zip" \
-        -P "$sourcedir"
+if ! ls "$sourcedir"/ganelson-inweb-$inweb_ref-*.tar.gz >/dev/null; then
+    wget "https://api.github.com/repos/ganelson/inweb/tarball/$inweb_ref" \
+        --content-disposition -P "$sourcedir"
 fi
-if test ! -e "$sourcedir/$intest_commit.zip"; then
-    wget "https://github.com/ganelson/intest/archive/$intest_commit.zip" \
-        -P "$sourcedir"
+if ! ls "$sourcedir"/ganelson-intest-$intest_ref-*.tar.gz >/dev/null; then
+    wget "https://api.github.com/repos/ganelson/intest/tarball/$intest_ref" \
+        --content-disposition -P "$sourcedir"
 fi
-if test ! -e "$sourcedir/$inform_commit.zip"; then
-    wget "https://github.com/ganelson/inform/archive/$inform_commit.zip" \
-        -P "$sourcedir"
+if ! ls "$sourcedir"/ganelson-inform-$inform_ref-*.tar.gz >/dev/null; then
+    wget "https://api.github.com/repos/ganelson/inform/tarball/$inform_ref" \
+        --content-disposition -P "$sourcedir"
 fi
 
 cp "$dist_tarball" "$sourcedir/"
