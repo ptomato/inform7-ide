@@ -78,7 +78,8 @@ cd ..
 bash inweb/scripts/first.sh linux
 bash intest/scripts/first.sh
 cd inform
-bash scripts/first.sh
+# Work around UB and/or miscompilation with -O2 -fstack-protector-strong
+CFLAGS='-O0 -fPIE' bash scripts/first.sh
 make forceintegration
 make retrospective
 cp -R retrospective ../%{name}-%{version}/
