@@ -10,6 +10,7 @@ BUILTINCOMPS = /app/tmp/intools
 INTERNAL = /app/tmp/data
 BUILTINHTML = /app/tmp/inform
 BUILTINHTMLINNER = /app/tmp/inform/en
+ADVICEHTML = /app/tmp/inform/en
 
 # Names of the tools and options are the same as in the regular Linux build,
 # except we have an Indoc profile that installs to /app/tmp
@@ -20,4 +21,5 @@ INFORM7NAME = inform7
 INTESTNAME = intest
 
 INDOCOPTS = gnome_flatpak_app
+HTMLPLATFORM = linux
 INRTPSOPTS = -font

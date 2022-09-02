@@ -5,9 +5,12 @@ name: Build packages
     branches: [main]
 
 env:
-  inweb_commit: 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
-  intest_commit: 06c8a4f57f104fa12abcf478371748b5bd829c7b
-  inform_commit: 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+  inweb_tag: v7.2.0
+  intest_tag: v2.1.0
+  inform_tag: v10.1.2
+  inweb_short_sha: 60735b4
+  intest_short_sha: 45b6278
+  inform_short_sha: 1f43d73
   version: '2.0.0'
   QA_RPATHS: 1
   DEB_BUILD_MAINT_OPTIONS: hardening=-format
@@ -61,21 +64,21 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ganelson/inweb
-          ref: 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
+          ref: v7.2.0
           path: inweb
 
       - name: Checkout Intest
         uses: actions/checkout@v3
         with:
           repository: ganelson/intest
-          ref: 06c8a4f57f104fa12abcf478371748b5bd829c7b
+          ref: v2.1.0
           path: intest
 
       - name: Checkout Inform
         uses: actions/checkout@v3
         with:
           repository: ganelson/inform
-          ref: 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+          ref: v10.1.2
           path: inform
 
       - name: Checkout Inform IDE
@@ -104,14 +107,17 @@ jobs:
         run: |
           mkdir -p /github/home/rpmbuild/SOURCES/
           cd inweb
-          git archive -o "/github/home/rpmbuild/SOURCES/$inweb_commit.zip" \
-            --prefix="inweb-$inweb_commit/" $inweb_commit
+          git archive -o \
+            "/github/home/rpmbuild/SOURCES/ganelson-inweb-$inweb_tag-0-g$inweb_short_sha.tar.gz" \
+            --prefix="ganelson-inweb-$inweb_short_sha/" $inweb_short_sha
           cd ../intest
-          git archive -o  "/github/home/rpmbuild/SOURCES/$intest_commit.zip" \
-            --prefix="intest-$intest_commit/" $intest_commit
+          git archive -o \
+            "/github/home/rpmbuild/SOURCES/ganelson-intest-$intest_tag-0-g$intest_short_sha.tar.gz" \
+            --prefix="ganelson-intest-$intest_short_sha/" $intest_short_sha
           cd ../inform
-          git archive -o "/github/home/rpmbuild/SOURCES/$inform_commit.zip" \
-            --prefix="inform-$inform_commit/" $inform_commit
+          git archive -o \
+            "/github/home/rpmbuild/SOURCES/ganelson-inform-$inform_tag-0-g$inform_short_sha.tar.gz" \
+            --prefix="ganelson-inform-$inform_short_sha/" $inform_short_sha
           cd ..
           tar cJf "/github/home/rpmbuild/SOURCES/inform7-ide-$version.tar.xz" \
             --xform "s:^inform7-ide/:inform7-ide-$version/:" inform7-ide
@@ -154,8 +160,8 @@ jobs:
 
       - name: upgrade-meson
         run: |
-          curl -O http://ftp.osuosl.org/pub/ubuntu/pool/universe/m/meson/meson_0.57.0+really0.56.2-0.1_all.deb
-          sudo dpkg -i meson_0.57.0+really0.56.2-0.1_all.deb
+          curl -O http://ftp.osuosl.org/pub/ubuntu/pool/universe/m/meson/meson_0.61.2-1_all.deb
+          sudo dpkg -i meson_0.61.2-1_all.deb
 
       - name: Checkout Inform IDE
         uses: actions/checkout@v3
@@ -164,21 +170,21 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ganelson/inweb
-          ref: 2aca05e8e28c6385ade2a0637d9a79adbede9bb5
+          ref: v7.2.0
           path: inweb
 
       - name: Checkout Intest
         uses: actions/checkout@v3
         with:
           repository: ganelson/intest
-          ref: 06c8a4f57f104fa12abcf478371748b5bd829c7b
+          ref: v2.1.0
           path: intest
 
       - name: Checkout Inform
         uses: actions/checkout@v3
         with:
           repository: ganelson/inform
-          ref: 7f7deec532d7c92ce14c2ba161f1fa6ae0677a85
+          ref: v10.1.2
           path: inform
 
       - name: Download subprojects
@@ -196,13 +202,13 @@ jobs:
         run: |
           cd inweb
           git archive -o "../../inform7-ide_$version.orig-inweb.tar.gz" \
-            $inweb_commit
+            $inweb_short_sha
           cd ../intest
           git archive -o  "../../inform7-ide_$version.orig-intest.tar.gz" \
-            $intest_commit
+            $intest_short_sha
           cd ../inform
           git archive -o "../../inform7-ide_$version.orig-inform.tar.gz" \
-            $inform_commit
+            $inform_short_sha
           cd ..
           tar cJf "../inform7-ide_$version.orig.tar.xz" \
             --xform "s:^:inform7-ide-$version/:" \
