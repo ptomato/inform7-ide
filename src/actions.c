@@ -988,6 +988,16 @@ action_visit_inform7_com(GSimpleAction *action, GVariant *parameter, I7App *app)
 	show_uri_in_browser("http://inform7.com/", NULL, _("the Inform website"));
 }
 
+/* Help->Report a Bug */
+void
+action_report_bug(GSimpleAction *action, GVariant *parameter, I7App *app)
+{
+	show_uri_in_browser("https://inform7.atlassian.net/jira/software/c/projects/I7/issues", NULL,
+		/* TRANSLATORS: This string is used in error messages and should fit in
+		the pattern "We couldn't show ___ in your browser" */
+		_("the Inform bug reports page"));
+}
+
 /* Help->About */
 void
 action_about(GSimpleAction *action, GVariant *parameter, I7App *app)

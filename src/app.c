@@ -121,6 +121,7 @@ create_app_actions(I7App *self)
 		{ "quit", (ActionCallback)action_quit },
 		{ "preferences", (ActionCallback)action_preferences },
 		{ "visit-inform7-com", (ActionCallback)action_visit_inform7_com },
+        { "report-bug", (ActionCallback)action_report_bug },
 		{ "about", (ActionCallback)action_about },
 	};
 	g_action_map_add_action_entries(G_ACTION_MAP(self), actions, G_N_ELEMENTS(actions), self);
