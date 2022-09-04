@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2013, 2019 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2013, 2019, 2022 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -247,7 +247,7 @@ project_type_selection_function(GtkTreeSelection *selection, GtkTreeModel *model
 }
 
 GtkWidget *
-create_new_dialog(void)
+create_new_dialog(I7NewDialogAction action)
 {
 	/* Create data object to be passed to the callbacks */
 	I7NewProjectOptions *options = g_slice_new0(I7NewProjectOptions);
@@ -302,6 +302,13 @@ create_new_dialog(void)
 	gtk_tree_view_expand_to_path(tree, default_path);
 	gtk_tree_selection_select_path(select, default_path);
 	gtk_tree_path_free(default_path);
+
+	if (action != I7_NEW_DIALOG_CHOOSE_TYPE) {
+		/* Skip the first page if the project type was already picked as part of
+		 * the requested action */
+		options->type = action == I7_NEW_DIALOG_CREATE_STORY ? I7_NEW_PROJECT_INFORM7_STORY : I7_NEW_PROJECT_INFORM7_EXTENSION;
+		gtk_assistant_set_current_page(GTK_ASSISTANT(options->assistant), 1);
+	}
 
 	/* This is for all intents and purposes an application window */
 	g_application_hold(g_application_get_default());
