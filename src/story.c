@@ -6,6 +6,7 @@
 #include "config.h"
 
 #include <errno.h>
+#include <stdbool.h>
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -521,6 +522,28 @@ finish_delete_extra_folder(GFile *file, GAsyncResult *res)
 	g_object_unref(file);
 }
 
+static bool
+confirm_overwrite_project(GtkWindow *parent_window, const char *display_basename)
+{
+	GtkWidget* dialog = gtk_message_dialog_new(parent_window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
+		_("A project named \"%s\" already exists. Do you want to replace it?"), display_basename);
+	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+		_("Replacing it will overwrite its contents."));
+	gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+	GtkWidget *button = gtk_button_new_with_mnemonic(_("_Replace"));
+	gtk_widget_set_can_default(button, TRUE);
+	gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_icon_name("document-save-as", GTK_ICON_SIZE_BUTTON));
+	gtk_widget_show(button);
+	gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
+	gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+
+	int response = gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
+
+	return response == GTK_RESPONSE_ACCEPT;
+}
+
 static GFile *
 i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 {
@@ -580,23 +603,7 @@ i7_story_run_save_dialog(I7Document *document, GFile *default_file)
 	will then already exist */
 	g_autoptr(GFile) sourcefile = g_file_get_child(file, "Source");
 	if (g_file_query_exists(file, NULL) && g_file_query_exists(sourcefile, NULL)) {
-		GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
-			_("A project named \"%s\" already exists. Do you want to replace it?"), basename);
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-			_("Replacing it will overwrite its contents."));
-		gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
-		GtkWidget *button = gtk_button_new_with_mnemonic(_("_Replace"));
-		gtk_widget_set_can_default(button, TRUE);
-		gtk_button_set_image(GTK_BUTTON(button), gtk_image_new_from_icon_name("document-save-as", GTK_ICON_SIZE_BUTTON));
-		gtk_widget_show(button);
-		gtk_dialog_add_action_widget(GTK_DIALOG(dialog), button, GTK_RESPONSE_ACCEPT);
-		gtk_dialog_set_default_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
-
-		int response = gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
-
-		if (response != GTK_RESPONSE_ACCEPT)
+        if (!confirm_overwrite_project(NULL, basename))
 			return i7_story_run_save_dialog(document, default_file);
 	}
 

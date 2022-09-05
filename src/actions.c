@@ -33,7 +33,7 @@
 void
 action_new(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
-	GtkWidget *newdialog = create_new_dialog();
+	GtkWidget *newdialog = create_new_dialog(I7_NEW_DIALOG_CHOOSE_TYPE);
 	gtk_widget_show(newdialog);
 }
 

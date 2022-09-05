@@ -20,7 +20,7 @@ void
 on_welcome_new_button_clicked(GtkButton *button, I7App *app)
 {
 	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	GtkWidget *newdialog = create_new_dialog();
+	GtkWidget *newdialog = create_new_dialog(I7_NEW_DIALOG_CHOOSE_TYPE);
 	gtk_widget_destroy(welcomedialog);
 	gtk_widget_show(newdialog);
 }

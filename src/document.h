@@ -119,7 +119,7 @@ gchar *i7_document_get_display_name(I7Document *self);
 void i7_document_set_file(I7Document *self, GFile *file);
 GtkSourceBuffer *i7_document_get_buffer(I7Document *self);
 GtkTextView *i7_document_get_default_view(I7Document *self);
-void i7_document_set_source_text(I7Document *self, gchar *text);
+void i7_document_set_source_text(I7Document *self, const char *text);
 gchar *i7_document_get_source_text(I7Document *self);
 gboolean i7_document_get_modified(I7Document *self);
 void i7_document_set_modified(I7Document *self, gboolean modified);

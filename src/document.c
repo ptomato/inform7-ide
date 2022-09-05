@@ -424,7 +424,7 @@ i7_document_get_default_view(I7Document *document)
 
 /* Write the source to the source buffer & clear the undo history */
 void
-i7_document_set_source_text(I7Document *self, gchar *text)
+i7_document_set_source_text(I7Document *self, const char *text)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	GtkSourceBuffer *buffer = priv->buffer;
