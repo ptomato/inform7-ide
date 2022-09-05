@@ -63,6 +63,8 @@ typedef struct {
 	GtkWidget *skein_trim_slider;
 } I7Story;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7Story, g_object_unref);
+
 typedef void (*CompileActionFunc)(I7Story *, gpointer);
 typedef void (*I7PanelForeachFunc)(I7Story *, I7Panel *, gpointer);
 
