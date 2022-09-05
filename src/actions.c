@@ -161,6 +161,19 @@ action_save_copy(GSimpleAction *action, GVariant *parameter, I7Document *documen
 	GFile *file = i7_document_run_save_dialog(document, NULL);
 	if(file) {
 		i7_document_save_as(document, file);
+
+		/* We are saving a copy, not forking the project to a different name as
+		 * we do with Save As; so here we keep the IFID. */
+		g_autoptr(GFile) original_project = i7_document_get_file(document);
+		g_autoptr(GFile) original_ifid = g_file_get_child(original_project, "uuid.txt");
+		g_autoptr(GFile) new_ifid = g_file_get_child(file, "uuid.txt");
+		g_autoptr(GError) error = NULL;
+		if (!g_file_copy(original_ifid, new_ifid, G_FILE_COPY_OVERWRITE | G_FILE_COPY_TARGET_DEFAULT_PERMS,
+			/* cancellable = */ NULL, /* progress_callback = */ NULL, NULL, &error)) {
+			/* If we couldn't copy, then create a new UUID on next compile */
+			g_warning("Couldn't copy IFID to new project: %s", error->message);
+		}
+
 		g_object_unref(file);
 	}
 }
