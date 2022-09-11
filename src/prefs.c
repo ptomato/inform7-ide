@@ -102,8 +102,6 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	BIND(PREFS_CUSTOM_FONT, "custom_font", "font-name");
 	BIND(PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", "active");
 	BIND(PREFS_AUTO_INDENT, "auto_indent", "active");
-	BIND(PREFS_INTELLIGENCE, "follow_symbols", "active");
-	BIND(PREFS_INTELLIGENCE, "auto_number", "sensitive");
 	BIND(PREFS_AUTO_NUMBER, "auto_number", "active");
 	BIND(PREFS_CLEAN_BUILD_FILES, "clean_build_files", "active");
 	BIND(PREFS_CLEAN_BUILD_FILES, "clean_index_files", "sensitive");

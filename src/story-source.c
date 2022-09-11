@@ -94,11 +94,6 @@ on_source_key_press_event(GtkSourceView *source, GdkEventKey *event, I7SourceVie
 void
 after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkTextIter *end, I7Document *document)
 {
-	I7App *theapp = I7_APP(g_application_get_default());
-	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
-		return;
 	/* Reindex the section headings anytime text is deleted, because running after
 	the default signal handler means we have no access to the deleted text. */
 	i7_document_reindex_headings(document);
@@ -108,13 +103,6 @@ after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, GtkT
 void
 after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, gchar *text, gint len, I7Document *document)
 {
-	I7App *theapp = I7_APP(g_application_get_default());
-	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	/* Return if we are not doing intelligent symbol following */
-	if(!g_settings_get_boolean(prefs, PREFS_INTELLIGENCE))
-		return;
-
 	/* For any text, a section heading might have been entered or changed, so
 	reindex the section headings */
 	i7_document_reindex_headings(document);

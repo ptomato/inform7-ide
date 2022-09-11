@@ -57,7 +57,6 @@ typedef enum {
 #define PREFS_TABSTOPS_PADDING     "elastic-tabstops-padding"
 #define PREFS_SYNTAX_HIGHLIGHTING  "syntax-highlighting"
 #define PREFS_AUTO_INDENT          "auto-indent"
-#define PREFS_INTELLIGENCE         "intelligence"
 #define PREFS_AUTO_NUMBER          "auto-number"
 #define PREFS_INTERPRETER          "interpreter"
 #define PREFS_CLEAN_BUILD_FILES    "clean-build-files"
