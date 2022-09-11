@@ -169,23 +169,6 @@ on_config_tab_width_changed(GSettings *settings, const char *key)
 }
 
 static void
-on_config_indent_wrapped_changed(GSettings *settings, const char *key)
-{
-	/* update application to reflect new value */
-	I7App *theapp = I7_APP(g_application_get_default());
-	update_tabs(theapp->prefs->tab_example);
-	update_tabs(theapp->prefs->source_example);
-	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
-	for (GList *iter = windows; iter != NULL; iter = iter->next) {
-		if (I7_IS_DOCUMENT(iter->data)) {
-			I7Document *document = I7_DOCUMENT(iter->data);
-			i7_document_update_tabs(document);
-			i7_document_update_indent_tags(document, NULL, NULL);
-		}
-	}
-}
-
-static void
 on_config_elastic_tabstops_padding_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
@@ -237,7 +220,6 @@ static struct KeyToMonitor keys_to_monitor[] = {
 	{ "font-size", on_config_font_size_changed },
 	{ "style-scheme", on_config_style_scheme_changed },
 	{ "tab-width", on_config_tab_width_changed },
-	{ "indent-wrapped", on_config_indent_wrapped_changed },
 	{ "show-debug-log", on_config_debug_log_visible_changed },
 	{ "use-interpreter", on_config_use_interpreter_changed },
 	{ "elastic-tabstops-padding",on_config_elastic_tabstops_padding_changed }

@@ -143,7 +143,6 @@ void i7_document_update_fonts(I7Document *self);
 void i7_document_update_font_sizes(I7Document *self);
 void i7_document_update_font_styles(I7Document *self);
 void i7_document_refresh_elastic_tabstops(I7Document *self);
-void i7_document_update_indent_tags(I7Document *self, GtkTextIter *orig_start, GtkTextIter *orig_end);
 gboolean i7_document_iter_is_invisible(I7Document *self, GtkTextIter *iter);
 
 void i7_document_expand_headings_view(I7Document *self);
