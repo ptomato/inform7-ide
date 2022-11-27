@@ -40,6 +40,7 @@ typedef enum {
 
 /* Other various settings */
 #define DEFAULT_TAB_WIDTH 8
+#define DEFAULT_STYLE_SCHEME "light"
 
 /* Schemas */
 #define SCHEMA_SYSTEM "org.gnome.desktop.interface"

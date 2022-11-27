@@ -246,7 +246,7 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 					-1);
 
 			if(!new_id)
-				new_id = g_strdup("inform");
+				new_id = g_strdup(DEFAULT_STYLE_SCHEME);
 
 			populate_schemes_list(app->prefs->schemes_list);
 
