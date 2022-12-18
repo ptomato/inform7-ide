@@ -68,18 +68,37 @@ action_open_recent(GSimpleAction *action, GVariant *parameter, I7App *app)
 	}
 }
 
+/* Convenience function */
+static void
+install_extensions_and_free(GFile *file, I7App *app)
+{
+	i7_app_install_extension(app, file);
+	g_object_unref(file);
+}
+
 /* File->Install Extension... */
 void
 action_install_extension(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
-	/* Select the Extensions tab */
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(app->prefs->prefs_notebook), I7_PREFS_EXTENSIONS);
+	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Select the extensions to install"),
+		NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+	/* Create appropriate file filters */
+	GtkFileFilter *filter1 = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter1, _("Inform 7 Extensions (*.i7x)"));
+	gtk_file_filter_add_pattern(filter1, "*.i7x");
+	GtkFileFilter *filter2 = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter2, _("All Files"));
+	gtk_file_filter_add_pattern(filter2, "*");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
 
-	/* Show the preferences dialog */
-	i7_app_present_prefs_window(app);
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
+		return;
 
-	/* Pretend the user clicked the Add button */
-	g_signal_emit_by_name(app->prefs->extensions_add, "clicked");
+	/* Install each selected extension */
+	g_autoptr(GSList) extlist = gtk_file_chooser_get_files(GTK_FILE_CHOOSER(dialog));
+	g_slist_foreach(extlist, (GFunc)install_extensions_and_free, app);
 }
 
 /* File->Open Extension */

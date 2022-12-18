@@ -80,9 +80,6 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	self->style_remove = GTK_WIDGET(load_object(builder, "style_remove"));
 	self->tab_example = GTK_SOURCE_VIEW(load_object(builder, "tab_example"));
 	self->source_example = GTK_SOURCE_VIEW(load_object(builder, "source_example"));
-	self->extensions_view = GTK_TREE_VIEW(load_object(builder, "extensions_view"));
-	self->extensions_add = GTK_WIDGET(load_object(builder, "extensions_add"));
-	self->extensions_remove = GTK_WIDGET(load_object(builder, "extensions_remove"));
 	self->auto_number = GTK_WIDGET(load_object(builder, "auto_number"));
 	self->clean_index_files = GTK_WIDGET(load_object(builder, "clean_index_files"));
 	self->schemes_list = GTK_LIST_STORE(load_object(builder, "schemes_list"));
@@ -115,22 +112,9 @@ create_prefs_window(GSettings *prefs, GtkBuilder *builder)
 	g_settings_bind(prefs, PREFS_TAB_WIDTH,
 		gtk_range_get_adjustment(GTK_RANGE(load_object(builder, "tab_ruler"))), "value", G_SETTINGS_BIND_DEFAULT);
 
-	/* Only select one extension at a time */
-	GtkTreeSelection *select = gtk_tree_view_get_selection(self->extensions_view);
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
-
-	/* Connect the drag'n'drop stuff */
-	gtk_drag_dest_set(GTK_WIDGET(self->extensions_view),
-		GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT,
-		NULL, 0, GDK_ACTION_COPY);
-	/* For some reason GTK_DEST_DEFAULT_DROP causes two copies of every file to
-	be sent to the widget when dropped, so we omit that. Also,
-	GTK_DEST_DEFAULT_HIGHLIGHT seems to be broken. Including it anyway. */
-	gtk_drag_dest_add_uri_targets(GTK_WIDGET(self->extensions_view));
-
 	/* Do the style scheme list */
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
-	select = gtk_tree_view_get_selection(self->schemes_view);
+	GtkTreeSelection *select = gtk_tree_view_get_selection(self->schemes_view);
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_BROWSE);
 	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 
@@ -260,218 +244,12 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 	}
 }
 
-gboolean
-on_extensions_view_drag_drop(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, guint time)
-{
-	/* Iterate through the list of target types provided by the source */
-	GdkAtom target_type = NULL;
-	GList *iter;
-	for(iter = gdk_drag_context_list_targets(drag_context); iter != NULL; iter = g_list_next(iter)) {
-		gchar *type_name = gdk_atom_name(GDK_POINTER_TO_ATOM(iter->data));
-		/* Select 'text/uri-list' from the list of available targets */
-		if(!strcmp(type_name, "text/uri-list")) {
-			g_free(type_name);
-			target_type = GDK_POINTER_TO_ATOM(iter->data);
-			break;
-		}
-		g_free(type_name);
-	}
-	/* If URI list not supported, then cancel */
-	if(!target_type)
-		return FALSE;
-
-	/* Request the data from the source. */
-	gtk_drag_get_data(
-	  widget,         /* this widget, which will get 'drag-data-received' */
-	  drag_context,   /* represents the current state of the DnD */
-	  target_type,    /* the target type we want */
-	  time);            /* time stamp */
-	return TRUE;
-}
-
-
-void
-on_extensions_view_drag_data_received(GtkWidget *widget, GdkDragContext *drag_context, gint x, gint y, GtkSelectionData *selectiondata, guint info, guint time)
-{
-	GFile *file;
-	GFileInfo *file_info;
-	gchar *type_name = NULL;
-	I7App *theapp = I7_APP(g_application_get_default());
-
-	/* Check that we got data from source */
-	if(selectiondata == NULL || gtk_selection_data_get_length(selectiondata) < 0)
-		goto fail;
-
-	/* Check that we got the format we can use */
-	type_name = gdk_atom_name(gtk_selection_data_get_data_type(selectiondata));
-	if(strcmp(type_name, "text/uri-list") != 0)
-		goto fail;
-
-	/* Do stuff with the data */
-	char **extension_files = g_uri_list_extract_uris((char *)gtk_selection_data_get_data(selectiondata));
-	int foo;
-	/* Get a list of URIs to the dropped files */
-	for(foo = 0; extension_files[foo] != NULL; foo++) {
-		GError *err = NULL;
-		file = g_file_new_for_uri(extension_files[foo]);
-		file_info = g_file_query_info(file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, NULL, &err);
-		if(!file_info) {
-			IO_ERROR_DIALOG(NULL, file, err, _("accessing a URI"));
-			goto fail2;
-		}
-
-		/* Check whether a directory was dropped. if so, install contents */
-		/* NOTE: not recursive (that would be kind of silly anyway) */
-		if(g_file_info_get_file_type(file_info) == G_FILE_TYPE_DIRECTORY) {
-
-			GFileEnumerator *dir = g_file_enumerate_children(file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err);
-			if(!dir) {
-				IO_ERROR_DIALOG(NULL, file, err, _("opening a directory"));
-				goto fail3;
-			}
-
-			GFileInfo *entry_info;
-			while((entry_info = g_file_enumerator_next_file(dir, NULL, &err)) != NULL) {
-				if(g_file_info_get_file_type(entry_info) != G_FILE_TYPE_DIRECTORY) {
-					GFile *extension_file = g_file_get_child(file, g_file_info_get_name(entry_info));
-					i7_app_install_extension(theapp, extension_file);
-					g_object_unref(extension_file);
-				}
-				g_object_unref(entry_info);
-			}
-			g_file_enumerator_close(dir, NULL, &err);
-			g_object_unref(dir);
-
-			if(err) {
-				IO_ERROR_DIALOG(NULL, file, err, _("reading a directory"));
-				goto fail3;
-			}
-
-		} else {
-			/* just install it */
-			i7_app_install_extension(theapp, file);
-		}
-
-		g_object_unref(file_info);
-		g_object_unref(file);
-	}
-
-	g_strfreev(extension_files);
-	g_free(type_name);
-	gtk_drag_finish(drag_context, TRUE, FALSE, time);
-	return;
-
-fail3:
-	g_object_unref(file_info);
-fail2:
-	g_object_unref(file);
-	g_strfreev(extension_files);
-fail:
-	g_free(type_name);
-	gtk_drag_finish(drag_context, FALSE, FALSE, time);
-}
-
 gchar*
 on_tab_ruler_format_value(GtkScale *scale, gdouble value, I7App *app)
 {
 	if(value)
 		return g_strdup_printf(ngettext("1 space", "%.*f spaces", value), gtk_scale_get_digits(scale), value);
 	return g_strdup("default");
-}
-
-/* Check whether the user has selected something (not an author name) that can
-be removed, and if so, enable the remove button */
-void
-on_extensions_view_cursor_changed(GtkTreeView *view, I7App *app)
-{
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
-		gboolean readonly;
-		gtk_tree_model_get(model, &iter,
-			I7_APP_EXTENSION_READ_ONLY, &readonly,
-			-1);
-		gtk_widget_set_sensitive(app->prefs->extensions_remove, !readonly);
-		/* Only enable the "Remove" button if the selection is not read only */
-	} else
-		gtk_widget_set_sensitive(app->prefs->extensions_remove, FALSE);
-		/* if there is no selection */
-}
-
-/* Convenience function */
-static void
-install_extensions(GFile *file, I7App *app)
-{
-	i7_app_install_extension(app, file);
-}
-
-void
-on_extensions_add_clicked(GtkButton *button, I7App *app)
-{
-	g_autoptr(GtkFileChooserNative) dialog = gtk_file_chooser_native_new(_("Select the extensions to install"),
-		GTK_WINDOW(app->prefs->window), GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
-	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
-	/* Create appropriate file filters */
-	GtkFileFilter *filter1 = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter1, _("Inform 7 Extensions (*.i7x)"));
-	gtk_file_filter_add_pattern(filter1, "*.i7x");
-	GtkFileFilter *filter2 = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter2, _("All Files"));
-	gtk_file_filter_add_pattern(filter2, "*");
-	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
-	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
-
-	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT)
-		return;
-
-	/* Install each selected extension */
-	GSList *extlist = gtk_file_chooser_get_files(GTK_FILE_CHOOSER(dialog));
-	g_slist_foreach(extlist, (GFunc)install_extensions, app);
-
-	/* Free stuff */
-	g_slist_foreach(extlist, (GFunc)g_object_unref, NULL);
-	g_slist_free(extlist);
-}
-
-void
-on_extensions_remove_clicked(GtkButton *button, I7App *app)
-{
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(app->prefs->extensions_view);
-	if(!gtk_tree_selection_get_selected(selection, &model, &iter))
-		return;
-
-	gchar *extname, *author;
-	gboolean readonly;
-	GtkTreeIter parent;
-	gtk_tree_model_get(model, &iter,
-		I7_APP_EXTENSION_TEXT, &extname,
-		I7_APP_EXTENSION_READ_ONLY, &readonly,
-		-1);
-
-	/* Bail out if this is a built-in extension or it doesn't have an author in the tree */
-	if(readonly || !gtk_tree_model_iter_parent(model, &parent, &iter)) {
-		g_free(extname);
-		return;
-	}
-
-	gtk_tree_model_get(model, &parent, I7_APP_EXTENSION_TEXT, &author, -1);
-
-	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(app->prefs->window),
-		GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
-		/* TRANSLATORS: Are you sure you want to remove EXTENSION_NAME by AUTHOR_NAME?*/
-		_("Are you sure you want to remove %s by %s?"), extname, author);
-	gint result = gtk_dialog_run(GTK_DIALOG(dialog));
-	gtk_widget_destroy(dialog);
-
-	/* Delete the extension and remove its directory if empty */
-	if(result == GTK_RESPONSE_YES)
-		i7_app_delete_extension(app, author, extname);
-
-	g_free(extname);
-	g_free(author);
 }
 
 /* Update the highlighting styles for this buffer */

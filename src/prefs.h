@@ -22,9 +22,6 @@ typedef struct {
 	GtkWidget *style_remove;
 	GtkSourceView *tab_example;
 	GtkSourceView *source_example;
-	GtkTreeView *extensions_view;
-	GtkWidget *extensions_add;
-	GtkWidget *extensions_remove;
 	GtkWidget *auto_number;
 	GtkWidget *clean_index_files;
 	GtkListStore *schemes_list;
