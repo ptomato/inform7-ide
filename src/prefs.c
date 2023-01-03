@@ -25,6 +25,10 @@ enum SchemesListColumns {
 	NUM_SCHEMES_LIST_COLUMNS
 };
 
+G_DEFINE_TYPE(I7PrefsWindow, i7_prefs_window, GTK_TYPE_DIALOG);
+
+/* PRIVATE METHODS */
+
 /* Helper function: enumeration callback for each color scheme */
 static void
 store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
@@ -69,86 +73,73 @@ populate_schemes_list(GtkListStore *list)
 	select_style_scheme(theapp->prefs->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 }
 
-I7PrefsWidgets *
-create_prefs_window(GSettings *prefs, GtkBuilder *builder)
+void
+init_prefs_window(I7PrefsWindow *self, GSettings *prefs)
 {
-	I7PrefsWidgets *self = g_slice_new0(I7PrefsWidgets);
-
-	self->window = GTK_WIDGET(load_object(builder, "prefs_dialog"));
-	self->prefs_notebook = GTK_WIDGET(load_object(builder, "prefs_notebook"));
-	self->schemes_view = GTK_TREE_VIEW(load_object(builder, "schemes_view"));
-	self->style_remove = GTK_WIDGET(load_object(builder, "style_remove"));
-	self->tab_example = GTK_SOURCE_VIEW(load_object(builder, "tab_example"));
-	self->source_example = GTK_SOURCE_VIEW(load_object(builder, "source_example"));
-	self->auto_number = GTK_WIDGET(load_object(builder, "auto_number"));
-	self->clean_index_files = GTK_WIDGET(load_object(builder, "clean_index_files"));
-	self->schemes_list = GTK_LIST_STORE(load_object(builder, "schemes_list"));
-
 	/* Bind widgets to GSettings */
-#define BIND(key, obj, property) \
-	g_settings_bind(prefs, key, load_object(builder, obj), property, \
+#define BIND(key, member, property) \
+	g_settings_bind(prefs, key, self->member, property, \
 		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY)
-#define BIND_COMBO_BOX(key, obj, enum_values) \
+#define BIND_COMBO_BOX(key, member, enum_values) \
 	g_settings_bind_with_mapping(prefs, key, \
-		load_object(builder, obj), "active", \
+		self->member, "active", \
 		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY, \
 		(GSettingsBindGetMapping)settings_enum_get_mapping, \
 		(GSettingsBindSetMapping)settings_enum_set_mapping, \
 		enum_values, NULL)
-	BIND(PREFS_AUTHOR_NAME, "author_name", "text");
-	BIND(PREFS_CUSTOM_FONT, "custom_font", "font-name");
-	BIND(PREFS_SYNTAX_HIGHLIGHTING, "enable_highlighting", "active");
-	BIND(PREFS_AUTO_INDENT, "auto_indent", "active");
-	BIND(PREFS_AUTO_NUMBER, "auto_number", "active");
-	BIND(PREFS_CLEAN_BUILD_FILES, "clean_build_files", "active");
-	BIND(PREFS_CLEAN_BUILD_FILES, "clean_index_files", "sensitive");
-	BIND(PREFS_CLEAN_INDEX_FILES, "clean_index_files", "active");
-	BIND(PREFS_SHOW_DEBUG_LOG, "show_debug_tabs", "active");
-	BIND_COMBO_BOX(PREFS_FONT_SET, "font_set", font_set_enum);
-	BIND_COMBO_BOX(PREFS_FONT_SIZE, "font_size", font_size_enum);
-	BIND_COMBO_BOX(PREFS_INTERPRETER, "glulx_combo", interpreter_enum);
+	BIND(PREFS_AUTHOR_NAME, author_name, "text");
+	BIND(PREFS_CUSTOM_FONT, custom_font, "font-name");
+	BIND(PREFS_SYNTAX_HIGHLIGHTING, enable_highlighting, "active");
+	BIND(PREFS_AUTO_INDENT, auto_indent, "active");
+	BIND(PREFS_AUTO_NUMBER, auto_number, "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, clean_build_files, "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, clean_index_files, "sensitive");
+	BIND(PREFS_CLEAN_INDEX_FILES, clean_index_files, "active");
+	BIND(PREFS_SHOW_DEBUG_LOG, show_debug_tabs, "active");
+	BIND_COMBO_BOX(PREFS_FONT_SET, font_set, font_set_enum);
+	BIND_COMBO_BOX(PREFS_FONT_SIZE, font_size, font_size_enum);
+	BIND_COMBO_BOX(PREFS_INTERPRETER, glulx_combo, interpreter_enum);
 #undef BIND
 #undef BIND_COMBO_BOX
 	g_settings_bind(prefs, PREFS_TAB_WIDTH,
-		gtk_range_get_adjustment(GTK_RANGE(load_object(builder, "tab_ruler"))), "value", G_SETTINGS_BIND_DEFAULT);
+		gtk_range_get_adjustment(GTK_RANGE(self->tab_ruler)), "value", G_SETTINGS_BIND_DEFAULT);
 
 	/* Do the style scheme list */
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
 	GtkTreeSelection *select = gtk_tree_view_get_selection(self->schemes_view);
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_BROWSE);
 	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
-
-	return self;
 }
 
 /*
  * CALLBACKS
  */
 
-void
-on_styles_list_cursor_changed(GtkTreeView *view, I7App *app)
+static void
+on_styles_list_cursor_changed(GtkTreeView *view, I7PrefsWindow *self)
 {
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
+		I7App *app = I7_APP(g_application_get_default());
 		GSettings *prefs = i7_app_get_prefs(app);
 		gchar *id;
 		gtk_tree_model_get(model, &iter, ID_COLUMN, &id, -1);
 		g_settings_set_string(prefs, PREFS_STYLE_SCHEME, id);
-		gtk_widget_set_sensitive(app->prefs->style_remove, id && i7_app_color_scheme_is_user_scheme(app, id));
+		gtk_widget_set_sensitive(self->style_remove, id && i7_app_color_scheme_is_user_scheme(app, id));
 		g_free(id);
 	} else {
 		; /* Do nothing; no selection */
 	}
 }
 
-void
-on_style_add_clicked(GtkButton *button, I7App *app)
+static void
+on_style_add_clicked(GtkButton *button, I7PrefsWindow *self)
 {
 	/* From gedit/dialogs/gedit-preferences-dialog.c */
 	g_autoptr(GtkFileChooserNative) chooser = gtk_file_chooser_native_new(_("Add Color Scheme"),
-		GTK_WINDOW(app->prefs->window),	GTK_FILE_CHOOSER_ACTION_OPEN, _("_Add"), NULL);
+		GTK_WINDOW(self), GTK_FILE_CHOOSER_ACTION_OPEN, _("_Add"), NULL);
 
 	/* Filters */
 	GtkFileFilter *filter = gtk_file_filter_new();
@@ -169,24 +160,25 @@ on_style_add_clicked(GtkButton *button, I7App *app)
 	if(!file)
 		return;
 
+	I7App *app = I7_APP(g_application_get_default());
 	const char *scheme_id = i7_app_install_color_scheme(app, file);
 	g_object_unref(file);
 
 	if(!scheme_id) {
-		error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("The selected color scheme cannot be installed."));
+		error_dialog(GTK_WINDOW(self), NULL, _("The selected color scheme cannot be installed."));
 		return;
 	}
 
-	populate_schemes_list(app->prefs->schemes_list);
+	populate_schemes_list(self->schemes_list);
 
 	GSettings *prefs = i7_app_get_prefs(app);
 	g_settings_set_string(prefs, PREFS_STYLE_SCHEME, scheme_id);
 }
 
-void
-on_style_remove_clicked(GtkButton *button, I7App *app)
+static void
+on_style_remove_clicked(GtkButton *button, I7PrefsWindow *self)
 {
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(app->prefs->schemes_view);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(self->schemes_view);
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	if(gtk_tree_selection_get_selected(selection, &model, &iter)) {
@@ -197,8 +189,10 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 			NAME_COLUMN, &name,
 			-1);
 
+		I7App *app = I7_APP(g_application_get_default());
+
 		if(!i7_app_uninstall_color_scheme(app, id))
-			error_dialog(GTK_WINDOW(app->prefs->window), NULL, _("Could not remove color scheme \"%s\"."), name);
+			error_dialog(GTK_WINDOW(self), NULL, _("Could not remove color scheme \"%s\"."), name);
 		else {
 			gchar *new_id = NULL;
 			GtkTreeIter new_iter;
@@ -232,7 +226,7 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 			if(!new_id)
 				new_id = g_strdup(DEFAULT_STYLE_SCHEME);
 
-			populate_schemes_list(app->prefs->schemes_list);
+			populate_schemes_list(self->schemes_list);
 
 			GSettings *prefs = i7_app_get_prefs(app);
 			g_settings_set(prefs, PREFS_STYLE_SCHEME, new_id);
@@ -244,8 +238,8 @@ on_style_remove_clicked(GtkButton *button, I7App *app)
 	}
 }
 
-gchar*
-on_tab_ruler_format_value(GtkScale *scale, gdouble value, I7App *app)
+static char *
+on_tab_ruler_format_value(GtkScale *scale, double value, I7PrefsWindow *self)
 {
 	if(value)
 		return g_strdup_printf(ngettext("1 space", "%.*f spaces", value), gtk_scale_get_digits(scale), value);
@@ -296,4 +290,51 @@ select_style_scheme(GtkTreeView *view, const gchar *id)
 
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(view);
 	gtk_tree_selection_select_iter(selection, &iter);
+}
+
+/* TYPE SYSTEM */
+
+static void
+i7_prefs_window_init(I7PrefsWindow *self)
+{
+	gtk_widget_init_template(GTK_WIDGET(self));
+}
+
+static void
+i7_prefs_window_class_init(I7PrefsWindowClass *klass)
+{
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+	gtk_widget_class_set_template_from_resource(widget_class, "/com/inform7/IDE/ui/prefs.ui");
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, author_name);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, auto_indent);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, auto_number);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, clean_build_files);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, clean_index_files);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, custom_font);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, enable_highlighting);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_set);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_size);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, glulx_combo);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, prefs_notebook);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, schemes_list);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, schemes_view);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, show_debug_tabs);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, source_example);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, style_remove);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_example);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_ruler);
+	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_hide);
+	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_hide_on_delete);
+	gtk_widget_class_bind_template_callback(widget_class, on_style_add_clicked);
+	gtk_widget_class_bind_template_callback(widget_class, on_style_remove_clicked);
+	gtk_widget_class_bind_template_callback(widget_class, on_styles_list_cursor_changed);
+	gtk_widget_class_bind_template_callback(widget_class, on_tab_ruler_format_value);
+}
+
+/* PUBLIC API */
+
+I7PrefsWindow *
+i7_prefs_window_new(void)
+{
+	return I7_PREFS_WINDOW(g_object_new(I7_TYPE_PREFS_WINDOW, NULL));
 }

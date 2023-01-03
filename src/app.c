@@ -225,7 +225,8 @@ i7_app_init(I7App *self)
 			ERROR(_("Could not compile regex"), error);
 	}
 
-	self->prefs = create_prefs_window(priv->prefs_settings, builder);
+	self->prefs = i7_prefs_window_new();
+	init_prefs_window(self->prefs, priv->prefs_settings);
 
 	/* Set up signals for GSettings keys. */
 	init_config_file(priv->prefs_settings);
@@ -247,8 +248,7 @@ i7_app_finalize(GObject *object)
 	g_object_unref(priv->datadir);
 	g_object_unref(priv->libexecdir);
 	i7_app_stop_monitoring_extensions_directory(self);
-	if(self->prefs)
-		g_slice_free(I7PrefsWidgets, self->prefs);
+	g_clear_object(&self->prefs);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->color_scheme_manager);
 	g_clear_pointer(&priv->retrospective_ids, g_strfreev);
@@ -1518,7 +1518,7 @@ i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings)
 void
 i7_app_present_prefs_window(I7App *self)
 {
-	gtk_window_present(GTK_WINDOW(self->prefs->window));
+	gtk_window_present(GTK_WINDOW(self->prefs));
 }
 
 /*
