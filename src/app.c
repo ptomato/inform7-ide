@@ -225,9 +225,6 @@ i7_app_init(I7App *self)
 			ERROR(_("Could not compile regex"), error);
 	}
 
-	self->prefs = i7_prefs_window_new();
-	init_prefs_window(self->prefs, priv->prefs_settings);
-
 	/* Set up signals for GSettings keys. */
 	init_config_file(priv->prefs_settings);
 	g_signal_connect_swapped(priv->system_settings, "changed::document-font-name", G_CALLBACK(i7_app_update_css), self);
@@ -248,7 +245,6 @@ i7_app_finalize(GObject *object)
 	g_object_unref(priv->datadir);
 	g_object_unref(priv->libexecdir);
 	i7_app_stop_monitoring_extensions_directory(self);
-	g_clear_object(&self->prefs);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->color_scheme_manager);
 	g_clear_pointer(&priv->retrospective_ids, g_strfreev);
@@ -332,20 +328,10 @@ i7_app_class_init(I7AppClass *klass)
 I7App *
 i7_app_new(void)
 {
-	I7App *theapp = I7_APP(g_object_new(I7_TYPE_APP,
+	return I7_APP(g_object_new(I7_TYPE_APP,
 		"application-id", "com.inform7.IDE",
 		"flags", G_APPLICATION_HANDLES_OPEN,
 		NULL));
-
-	/* Do any setup activities for the application that require calling
-	 g_application_get_default(), e.g. for access to GSettings */
-	populate_schemes_list(theapp->prefs->schemes_list);
-	/* Set up Natural Inform highlighting on the example buffer */
-	GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example)));
-	set_buffer_language(buffer, "inform7");
-	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
-
-	return theapp;
 }
 
 /* Custom search function for invocation of g_slist_find_custom() in
@@ -1512,13 +1498,6 @@ i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings)
 	if(priv->print_settings)
 		g_object_unref(priv->print_settings);
 	priv->print_settings = settings;
-}
-
-/* Bring the preferences dialog to the front */
-void
-i7_app_present_prefs_window(I7App *self)
-{
-	gtk_window_present(GTK_WINDOW(self->prefs));
 }
 
 /*

@@ -14,6 +14,7 @@
 #include "builder.h"
 #include "configfile.h"
 #include "error.h"
+#include "lang.h"
 #include "prefs.h"
 
 #define DOMAIN_FOR_GTKSOURCEVIEW_COLOR_SCHEMES "gtksourceview-4"
@@ -25,7 +26,37 @@ enum SchemesListColumns {
 	NUM_SCHEMES_LIST_COLUMNS
 };
 
+const char *font_set_enum[] = { "Standard", "Monospace", "Custom", NULL };
+const char *font_size_enum[] = { "Standard", "Medium", "Large", "Huge", NULL };
+const char *interpreter_enum[] = { "Glulxe (default)", "Git", NULL };
+
+struct _I7PrefsWindow {
+	GtkDialog parent;
+
+	/* template children */
+	GtkEntry *author_name;
+	GtkCheckButton *auto_indent;
+	GtkCheckButton *clean_build_files;
+	GtkFontButton *custom_font;
+	GtkCheckButton *enable_highlighting;
+	GtkComboBoxText *font_set;
+	GtkComboBoxText *font_size;
+	GtkComboBoxText *glulx_combo;
+	GtkWidget *prefs_notebook;
+	GtkTreeView *schemes_view;
+	GtkCheckButton *show_debug_tabs;
+	GtkWidget *style_remove;
+	GtkSourceView *tab_example;
+	GtkScale *tab_ruler;
+	GtkSourceView *source_example;
+	GtkWidget *auto_number;
+	GtkWidget *clean_index_files;
+	GtkListStore *schemes_list;
+};
+
 G_DEFINE_TYPE(I7PrefsWindow, i7_prefs_window, GTK_TYPE_DIALOG);
+
+static void select_style_scheme(GtkTreeView *view, const char *id);
 
 /* PRIVATE METHODS */
 
@@ -63,57 +94,94 @@ store_color_scheme(GtkSourceStyleScheme *scheme, GtkListStore *list)
 		-1);
 }
 
-void
-populate_schemes_list(GtkListStore *list)
+static void
+populate_schemes_list(I7PrefsWindow *self, I7App *theapp)
 {
-	I7App *theapp = I7_APP(g_application_get_default());
-	GSettings *prefs = i7_app_get_prefs(theapp);
-	gtk_list_store_clear(list);
-	i7_app_foreach_color_scheme(theapp, (GFunc)store_color_scheme, list);
-	select_style_scheme(theapp->prefs->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
+	gtk_list_store_clear(self->schemes_list);
+	i7_app_foreach_color_scheme(theapp, (GFunc)store_color_scheme, self->schemes_list);
 }
 
-void
-init_prefs_window(I7PrefsWindow *self, GSettings *prefs)
+/*
+ * settings_enum_set_mapping:
+ * @property_value: value of the object property the setting is bound to.
+ * @expected_type: GVariant type the setting expects.
+ * @enum_values: an array of strings with %NULL as a sentinel at the end.
+ *
+ * Custom mapping function for setting combo boxes from enum GSettings keys.
+ *
+ * Returns: the #GVariant for the setting, or %NULL on failure.
+ */
+static GVariant *
+settings_enum_set_mapping(const GValue *property_value, const GVariantType *expected_type, char **enum_values)
 {
-	/* Bind widgets to GSettings */
-#define BIND(key, member, property) \
-	g_settings_bind(prefs, key, self->member, property, \
-		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY)
-#define BIND_COMBO_BOX(key, member, enum_values) \
-	g_settings_bind_with_mapping(prefs, key, \
-		self->member, "active", \
-		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY, \
-		(GSettingsBindGetMapping)settings_enum_get_mapping, \
-		(GSettingsBindSetMapping)settings_enum_set_mapping, \
-		enum_values, NULL)
-	BIND(PREFS_AUTHOR_NAME, author_name, "text");
-	BIND(PREFS_CUSTOM_FONT, custom_font, "font-name");
-	BIND(PREFS_SYNTAX_HIGHLIGHTING, enable_highlighting, "active");
-	BIND(PREFS_AUTO_INDENT, auto_indent, "active");
-	BIND(PREFS_AUTO_NUMBER, auto_number, "active");
-	BIND(PREFS_CLEAN_BUILD_FILES, clean_build_files, "active");
-	BIND(PREFS_CLEAN_BUILD_FILES, clean_index_files, "sensitive");
-	BIND(PREFS_CLEAN_INDEX_FILES, clean_index_files, "active");
-	BIND(PREFS_SHOW_DEBUG_LOG, show_debug_tabs, "active");
-	BIND_COMBO_BOX(PREFS_FONT_SET, font_set, font_set_enum);
-	BIND_COMBO_BOX(PREFS_FONT_SIZE, font_size, font_size_enum);
-	BIND_COMBO_BOX(PREFS_INTERPRETER, glulx_combo, interpreter_enum);
-#undef BIND
-#undef BIND_COMBO_BOX
-	g_settings_bind(prefs, PREFS_TAB_WIDTH,
-		gtk_range_get_adjustment(GTK_RANGE(self->tab_ruler)), "value", G_SETTINGS_BIND_DEFAULT);
+	int count = 0, index;
 
-	/* Do the style scheme list */
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
-	GtkTreeSelection *select = gtk_tree_view_get_selection(self->schemes_view);
-	gtk_tree_selection_set_mode(select, GTK_SELECTION_BROWSE);
-	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
+	g_assert(g_variant_type_equal(expected_type, G_VARIANT_TYPE_STRING));
+
+	/* Count the number of values */
+	while(enum_values[count])
+		count++;
+
+	index = g_value_get_int(property_value);
+	if(index >= count)
+		return NULL;
+	return g_variant_new_string(enum_values[index]);
+}
+
+/*
+ * settings_enum_get_mapping:
+ * @value: value for the object property, initialized to hold the proper type
+ * @settings_variant: value of the setting as a #GVariant
+ * @enum_values: an array of strings with %NULL as a sentinel at the end.
+ *
+ * Custom mapping function for setting combo boxes from enum GSettings keys.
+ *
+ * Returns: %TRUE if the conversion succeeded, %FALSE otherwise.
+ */
+static gboolean
+settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum_values)
+{
+	const char *settings_string = g_variant_get_string(settings_variant, NULL);
+	int count;
+	char **ptr;
+
+	g_assert(G_VALUE_HOLDS_INT(value));
+
+	for(count = 0, ptr = enum_values; *ptr; count++, ptr++) {
+		if(strcmp(*ptr, settings_string) == 0)
+			break;
+	}
+	if(*ptr == NULL)
+		return FALSE;
+
+	g_value_set_int(value, count);
+	return TRUE;
 }
 
 /*
  * CALLBACKS
  */
+
+static void
+on_config_style_scheme_changed(GSettings *settings, const char *key, I7PrefsWindow *self)
+{
+	g_autofree char *newvalue = g_settings_get_string(settings, key);
+
+	select_style_scheme(self->schemes_view, newvalue);
+	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(self->source_example))));
+}
+
+static void
+on_config_tab_width_changed(GSettings *settings, const char *key, I7PrefsWindow *self)
+{
+	unsigned newvalue = g_settings_get_uint(settings, key);
+
+	/* Use default if set to 0, as per schema description */
+	if (newvalue == 0)
+		newvalue = DEFAULT_TAB_WIDTH;
+
+	update_tabs(self->source_example);
+}
 
 static void
 on_styles_list_cursor_changed(GtkTreeView *view, I7PrefsWindow *self)
@@ -169,7 +237,7 @@ on_style_add_clicked(GtkButton *button, I7PrefsWindow *self)
 		return;
 	}
 
-	populate_schemes_list(self->schemes_list);
+	populate_schemes_list(self, app);
 
 	GSettings *prefs = i7_app_get_prefs(app);
 	g_settings_set_string(prefs, PREFS_STYLE_SCHEME, scheme_id);
@@ -226,7 +294,7 @@ on_style_remove_clicked(GtkButton *button, I7PrefsWindow *self)
 			if(!new_id)
 				new_id = g_strdup(DEFAULT_STYLE_SCHEME);
 
-			populate_schemes_list(self->schemes_list);
+			populate_schemes_list(self, app);
 
 			GSettings *prefs = i7_app_get_prefs(app);
 			g_settings_set(prefs, PREFS_STYLE_SCHEME, new_id);
@@ -269,7 +337,7 @@ update_tabs(GtkSourceView *view)
 	return FALSE; /* one-shot idle function */
 }
 
-void
+static void
 select_style_scheme(GtkTreeView *view, const gchar *id)
 {
 	GtkTreeModel *model = gtk_tree_view_get_model(view);
@@ -301,6 +369,28 @@ i7_prefs_window_init(I7PrefsWindow *self)
 }
 
 static void
+i7_prefs_window_constructed(GObject* object)
+{
+	I7PrefsWindow *self = I7_PREFS_WINDOW(object);
+
+	I7App *theapp = I7_APP(g_application_get_default());
+
+	populate_schemes_list(self, theapp);
+
+	/* Set up Natural Inform highlighting on the example buffer */
+	GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(self->source_example)));
+	set_buffer_language(buffer, "inform7");
+	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
+
+	/* Do the style scheme list */
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->schemes_list), 0, GTK_SORT_ASCENDING);
+	GtkTreeSelection *select = gtk_tree_view_get_selection(self->schemes_view);
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_BROWSE);
+
+	G_OBJECT_CLASS(i7_prefs_window_parent_class)->constructed(object);
+}
+
+static void
 i7_prefs_window_class_init(I7PrefsWindowClass *klass)
 {
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
@@ -323,12 +413,14 @@ i7_prefs_window_class_init(I7PrefsWindowClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, style_remove);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_example);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_ruler);
-	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_hide);
-	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_hide_on_delete);
+	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_destroy);
 	gtk_widget_class_bind_template_callback(widget_class, on_style_add_clicked);
 	gtk_widget_class_bind_template_callback(widget_class, on_style_remove_clicked);
 	gtk_widget_class_bind_template_callback(widget_class, on_styles_list_cursor_changed);
 	gtk_widget_class_bind_template_callback(widget_class, on_tab_ruler_format_value);
+
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	object_class->constructed = i7_prefs_window_constructed;
 }
 
 /* PUBLIC API */
@@ -337,4 +429,41 @@ I7PrefsWindow *
 i7_prefs_window_new(void)
 {
 	return I7_PREFS_WINDOW(g_object_new(I7_TYPE_PREFS_WINDOW, NULL));
+}
+
+void
+i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
+{
+	/* Bind widgets to GSettings */
+#define BIND(key, member, property) \
+	g_settings_bind(prefs, key, self->member, property, \
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY)
+#define BIND_COMBO_BOX(key, member, enum_values) \
+	g_settings_bind_with_mapping(prefs, key, \
+		self->member, "active", \
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY, \
+		(GSettingsBindGetMapping)settings_enum_get_mapping, \
+		(GSettingsBindSetMapping)settings_enum_set_mapping, \
+		enum_values, NULL)
+	BIND(PREFS_AUTHOR_NAME, author_name, "text");
+	BIND(PREFS_CUSTOM_FONT, custom_font, "font-name");
+	BIND(PREFS_SYNTAX_HIGHLIGHTING, enable_highlighting, "active");
+	BIND(PREFS_AUTO_INDENT, auto_indent, "active");
+	BIND(PREFS_AUTO_NUMBER, auto_number, "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, clean_build_files, "active");
+	BIND(PREFS_CLEAN_BUILD_FILES, clean_index_files, "sensitive");
+	BIND(PREFS_CLEAN_INDEX_FILES, clean_index_files, "active");
+	BIND(PREFS_SHOW_DEBUG_LOG, show_debug_tabs, "active");
+	BIND_COMBO_BOX(PREFS_FONT_SET, font_set, font_set_enum);
+	BIND_COMBO_BOX(PREFS_FONT_SIZE, font_size, font_size_enum);
+	BIND_COMBO_BOX(PREFS_INTERPRETER, glulx_combo, interpreter_enum);
+#undef BIND
+#undef BIND_COMBO_BOX
+	g_settings_bind(prefs, PREFS_TAB_WIDTH,
+		gtk_range_get_adjustment(GTK_RANGE(self->tab_ruler)), "value", G_SETTINGS_BIND_DEFAULT);
+
+	g_signal_connect(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self);
+	g_signal_connect(prefs, "changed::" PREFS_TAB_WIDTH, G_CALLBACK(on_config_tab_width_changed), self);
+
+	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 }

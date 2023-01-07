@@ -23,6 +23,7 @@
 #include "elastic.h"
 #include "error.h"
 #include "file.h"
+#include "prefs.h"
 
 typedef struct {
 	/* The file this document refers to */

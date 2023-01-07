@@ -82,10 +82,6 @@ typedef enum {
 #define PREFS_SYSTEM_DOCUMENT_FONT  "document-font-name"
 #define PREFS_SYSTEM_MONOSPACE_FONT "monospace-font-name"
 
-extern const char *font_set_enum[], *font_size_enum[], *interpreter_enum[];
-
-GVariant *settings_enum_set_mapping(const GValue *property_value, const GVariantType *expected_type, char **enum_values);
-gboolean settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum_values);
 void init_config_file(GSettings *prefs);
 
 #endif

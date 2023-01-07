@@ -25,6 +25,7 @@
 #include "history.h"
 #include "html.h"
 #include "panel.h"
+#include "prefs.h"
 #include "skein-view.h"
 #include "uri-scheme.h"
 

@@ -469,7 +469,11 @@ action_autocheck_spelling_toggle(GSimpleAction *action, GVariant *state, I7Docum
 void
 action_preferences(GSimpleAction *action, GVariant *parameter, I7App *app)
 {
-	i7_app_present_prefs_window(app);
+	I7PrefsWindow *win = i7_prefs_window_new();
+    GSettings *prefs = i7_app_get_prefs(app);
+    i7_prefs_window_bind_settings(win, prefs);
+	gtk_widget_show_all(GTK_WIDGET(win));
+	gtk_window_present(GTK_WINDOW(win));
 }
 
 /* View->Toolbar */
