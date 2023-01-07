@@ -33,15 +33,6 @@ typedef struct {
 I7PrefsWidgets *create_prefs_window(GSettings *prefs, GtkBuilder *builder);
 void populate_schemes_list(GtkListStore *list);
 
-/* The tabs in the preferences window */
-typedef enum {
-	I7_PREFS_AUTHOR,
-	I7_PREFS_EDITING,
-	I7_PREFS_FORMATTING,
-	I7_PREFS_EXTENSIONS,
-	I7_PREFS_ADVANCED
-} I7PrefsTabs;
-
 gboolean update_style(GtkSourceBuffer *buffer);
 gboolean update_tabs(GtkSourceView *view);
 void select_style_scheme(GtkTreeView *view, const gchar *id);
