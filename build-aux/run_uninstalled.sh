@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ninja -C _build || exit 1
+glib-compile-schemas . --targetdir=_build
 DESTDIR=$(pwd)/_install ninja -C _build install >/dev/null || exit 1
 INFORM7_IDE_DATA_DIR=_install/usr/local/share/inform7-ide \
     GSETTINGS_SCHEMA_DIR=_build \
