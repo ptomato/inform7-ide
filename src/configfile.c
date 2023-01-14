@@ -150,14 +150,14 @@ struct KeyToMonitor {
 };
 
 static struct KeyToMonitor keys_to_monitor[] = {
-	{ "font-set", on_config_font_set_changed },
-	{ "custom-font", on_config_custom_font_changed },
-	{ "font-size", on_config_font_size_changed },
-	{ "style-scheme", on_config_style_scheme_changed },
-	{ "tab-width", on_config_tab_width_changed },
-	{ "show-debug-log", on_config_debug_log_visible_changed },
-	{ "use-interpreter", on_config_use_interpreter_changed },
-	{ "elastic-tabstops-padding",on_config_elastic_tabstops_padding_changed }
+	{ PREFS_FONT_SET, on_config_font_set_changed },
+	{ PREFS_CUSTOM_FONT, on_config_custom_font_changed },
+	{ PREFS_FONT_SIZE, on_config_font_size_changed },
+	{ PREFS_STYLE_SCHEME, on_config_style_scheme_changed },
+	{ PREFS_TAB_WIDTH, on_config_tab_width_changed },
+	{ PREFS_SHOW_DEBUG_LOG, on_config_debug_log_visible_changed },
+	{ PREFS_INTERPRETER, on_config_use_interpreter_changed },
+	{ PREFS_TABSTOPS_PADDING,on_config_elastic_tabstops_padding_changed }
 };
 
 /* Set up signals for the config keys */
