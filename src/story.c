@@ -638,16 +638,6 @@ i7_story_update_tabs(I7Document *document)
 	i7_panel_update_tabs(story->panel[RIGHT]);
 }
 
-/* Get the current font as a PangoFontDescription, for I7Skein.
- * Must be freed with pango_font_description_free. */
-static PangoFontDescription *
-get_font_description(void)
-{
-	I7App *theapp = I7_APP(g_application_get_default());
-	g_autofree char *font_family = i7_app_get_font_family(theapp);
-	return pango_font_description_from_string(font_family);
-}
-
 /* Update the fonts in this main window, but not the
 widgets that only need their font size updated */
 static void
@@ -657,12 +647,12 @@ i7_story_update_fonts(I7Document *document)
 		return;
 	I7Story *self = I7_STORY(document);
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
+    I7App *theapp = I7_APP(g_application_get_default());
 
 	i7_panel_update_fonts(self->panel[LEFT]);
 	i7_panel_update_fonts(self->panel[RIGHT]);
-	PangoFontDescription *font = get_font_description();
+	g_autoptr(PangoFontDescription) font = i7_app_get_document_font_description(theapp);
 	i7_skein_set_font(priv->skein, font);
-	pango_font_description_free(font);
 }
 
 /* Update only the font sizes in this main window */

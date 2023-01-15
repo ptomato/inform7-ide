@@ -256,7 +256,7 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 		tabwidth = DEFAULT_TAB_WIDTH;
 	gtk_source_print_compositor_set_tab_width(compositor, tabwidth);
 	gtk_source_print_compositor_set_wrap_mode(compositor, GTK_WRAP_WORD_CHAR);
-	g_autofree char *fontstring = i7_app_get_font_family(theapp);
+	g_autofree char *fontstring = i7_app_get_document_font_string(theapp);
 	gtk_source_print_compositor_set_body_font_name(compositor, fontstring);
 
 	/* Display a notification in the status bar while paginating */

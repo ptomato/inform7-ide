@@ -1177,39 +1177,39 @@ i7_panel_update_fonts(I7Panel *self)
 	i7_panel_update_tabs(self);
 
 	I7App *theapp = I7_APP(g_application_get_default());
-	g_autofree char *font = i7_app_get_font_family(theapp);
-	double size_pt = i7_app_get_font_size(theapp);
+	g_autoptr(PangoFontDescription) desc = i7_app_get_document_font_description(theapp);
+    const char *font = pango_font_description_get_family(desc);
+    int size_pt = pango_font_description_get_size(desc) / PANGO_SCALE;
+
 	gchar *css = g_strdup_printf(
-		"grid.normal { font-size: %u; }"
+		"grid.normal { font-size: %d; }"
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
-	    "buffer.default { font-family: '%s'; }"
-		"buffer.normal { font-size: %u; }"
-        "buffer.emphasized { font-size: %u; font-style: italic; }"
-		"buffer.header { font-size: %u; font-weight: bold; }"
-		"buffer.subheader { font-size: %u; font-weight: bold; }"
+	    "buffer.default { font-family: '%s'; font-size: %d; }"
+		"buffer.normal { font-size: %d; }"
+        "buffer.emphasized { font-size: %d; font-style: italic; }"
+		"buffer.header { font-size: %d; font-weight: bold; }"
+		"buffer.subheader { font-size: %d; font-weight: bold; }"
 		"buffer.alert { color: #aa0000; font-weight: bold; }"
 		"buffer.note { color: #aaaa00; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
-		"buffer.input { font-size: %u; color: #0000aa; font-style: italic; }"
+		"buffer.input { font-size: %d; color: #0000aa; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
-		(unsigned)size_pt, font, (unsigned)size_pt, (unsigned)size_pt,
-		(unsigned)(size_pt * RELATIVE_SIZE_MEDIUM), (unsigned)size_pt,
-		(unsigned)size_pt);
+		size_pt, font, size_pt, size_pt, size_pt,
+		(int)(size_pt * RELATIVE_SIZE_MEDIUM), size_pt, size_pt);
 	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
 	g_free(css);
 }
 
-/* Update the font sizes of WebViews and Skein in this pane */
+/* Update the font sizes of WebViews in this pane */
 void
 i7_panel_update_font_sizes(I7Panel *self)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
-	double scale = i7_app_get_font_scale(theapp);
+	double scale = i7_app_get_docs_font_scale(theapp);
 	webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->results_tabs[I7_RESULTS_TAB_REPORT]), scale);
 	for (int ix = 0; ix < I7_INDEX_NUM_TABS; ix++)
 		webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->index_tabs[ix]), scale);
-	goo_canvas_set_scale(GOO_CANVAS(self->tabs[I7_PANE_SKEIN]), scale);
     webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), scale);
     webkit_web_view_set_zoom_level(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), scale);
 }

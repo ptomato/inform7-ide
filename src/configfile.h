@@ -11,19 +11,20 @@
 #include <glib.h>
 #include <pango/pango.h>
 
-/* Three options for editor font */
 typedef enum {
 	FONT_STANDARD = 0,
-	FONT_MONOSPACE = 1,
+	/* deprecated: FONT_MONOSPACE */
 	FONT_CUSTOM = 2
 } I7PrefsFont;
 
-/* Four different text size options */
 typedef enum {
-	FONT_SIZE_STANDARD = 0,
-	FONT_SIZE_MEDIUM = 1,
-	FONT_SIZE_LARGE = 2,
-	FONT_SIZE_HUGE = 3
+	FONT_SIZE_SMALLEST,
+	FONT_SIZE_SMALLER,
+	FONT_SIZE_SMALL,
+	FONT_SIZE_MEDIUM,
+	FONT_SIZE_LARGE,
+	FONT_SIZE_LARGER,
+	FONT_SIZE_LARGEST,
 } I7PrefsFontSize;
 
 typedef enum {
@@ -33,10 +34,13 @@ typedef enum {
 
 /* Pango point sizes of text size options */
 #define DEFAULT_SIZE_STANDARD 10
-#define RELATIVE_SIZE_STANDARD 1.0
-#define RELATIVE_SIZE_MEDIUM 1.2
-#define RELATIVE_SIZE_LARGE 1.4
-#define RELATIVE_SIZE_HUGE 1.8
+#define RELATIVE_SIZE_SMALLEST 0.5
+#define RELATIVE_SIZE_SMALLER 0.7
+#define RELATIVE_SIZE_SMALL 0.8
+#define RELATIVE_SIZE_MEDIUM 1.0
+#define RELATIVE_SIZE_LARGE 1.2
+#define RELATIVE_SIZE_LARGER 1.4
+#define RELATIVE_SIZE_LARGEST 1.8
 
 /* Other various settings */
 #define DEFAULT_TAB_WIDTH 8
@@ -52,7 +56,7 @@ typedef enum {
 #define PREFS_AUTHOR_NAME          "author-name"
 #define PREFS_FONT_SET             "font-set"
 #define PREFS_CUSTOM_FONT          "custom-font"
-#define PREFS_FONT_SIZE            "font-size"
+#define PREFS_DOCS_FONT_SIZE       "docs-font-size"
 #define PREFS_STYLE_SCHEME         "style-scheme"
 #define PREFS_TAB_WIDTH            "tab-width"
 #define PREFS_TABSTOPS_PADDING     "elastic-tabstops-padding"
@@ -80,7 +84,6 @@ typedef enum {
 
 #define PREFS_SYSTEM_UI_FONT        "font-name"
 #define PREFS_SYSTEM_DOCUMENT_FONT  "document-font-name"
-#define PREFS_SYSTEM_MONOSPACE_FONT "monospace-font-name"
 
 void init_config_file(GSettings *prefs);
 

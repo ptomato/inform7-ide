@@ -9,6 +9,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
+#include <handy.h>
 
 #include "app.h"
 #include "builder.h"
@@ -26,35 +27,76 @@ enum SchemesListColumns {
 	NUM_SCHEMES_LIST_COLUMNS
 };
 
-const char *font_set_enum[] = { "Standard", "Monospace", "Custom", NULL };
-const char *font_size_enum[] = { "Standard", "Medium", "Large", "Huge", NULL };
+#define FONT_STANDARD_STR "Standard"
+#define FONT_CUSTOM_STR "Custom"
+const char *font_size_enum[] = { "Smallest", "Smaller", "Small", "Medium", "Large", "Larger", "Largest", NULL };
 const char *interpreter_enum[] = { "Glulxe (default)", "Git", NULL };
 
+/* COMPAT: Use G_DEFINE_ENUM_TYPE in GLib >= 2.74 */
+static GType
+i7_prefs_font_size_get_type(void)
+{
+	static GType gtype = 0;
+	if (g_once_init_enter(&gtype)) {
+		static const GEnumValue values[] = {
+			{ FONT_SIZE_SMALLEST, "FONT_SIZE_SMALLEST", "smallest" },
+			{ FONT_SIZE_SMALLER, "FONT_SIZE_SMALLER", "smaller" },
+			{ FONT_SIZE_SMALL, "FONT_SIZE_SMALL", "small" },
+			{ FONT_SIZE_MEDIUM, "FONT_SIZE_MEDIUM", "medium" },
+			{ FONT_SIZE_LARGE, "FONT_SIZE_LARGE", "large" },
+			{ FONT_SIZE_LARGER, "FONT_SIZE_LARGER", "larger" },
+			{ FONT_SIZE_LARGEST, "FONT_SIZE_LARGEST", "largest" },
+			{ 0, NULL, NULL },
+		};
+		GType new_gtype = g_enum_register_static(g_intern_static_string("I7PrefsFontSize"), values);
+		g_once_init_leave(&gtype, new_gtype);
+	}
+	return gtype;
+}
+
+/* COMPAT: Use G_DEFINE_ENUM_TYPE in GLib >= 2.74 */
+static GType
+i7_prefs_interpreter_get_type(void)
+{
+	static GType gtype = 0;
+	if (g_once_init_enter(&gtype)) {
+		static const GEnumValue values[] = {
+			{ INTERPRETER_GLULXE, "INTERPRETER_GLULXE", "glulxe" },
+			{ INTERPRETER_GIT, "INTERPRETER_GIT", "git" },
+			{ 0, NULL, NULL },
+		};
+		GType new_gtype = g_enum_register_static(g_intern_static_string("I7PrefsInterpreter"), values);
+		g_once_init_leave(&gtype, new_gtype);
+	}
+	return gtype;
+}
+
 struct _I7PrefsWindow {
-	GtkDialog parent;
+	HdyPreferencesWindow parent;
 
 	/* template children */
 	GtkEntry *author_name;
-	GtkCheckButton *auto_indent;
-	GtkCheckButton *clean_build_files;
+	GtkSwitch *auto_indent;
+	GtkSwitch *clean_build_files;
+	HdyPreferencesGroup *color_group;
 	GtkFontButton *custom_font;
-	GtkCheckButton *enable_highlighting;
-	GtkComboBoxText *font_set;
-	GtkComboBoxText *font_size;
-	GtkComboBoxText *glulx_combo;
-	GtkWidget *prefs_notebook;
 	GtkTreeView *schemes_view;
-	GtkCheckButton *show_debug_tabs;
 	GtkWidget *style_remove;
-	GtkSourceView *tab_example;
-	GtkScale *tab_ruler;
 	GtkSourceView *source_example;
 	GtkWidget *auto_number;
 	GtkWidget *clean_index_files;
+	HdyComboRow *docs_font_size;
+	GtkSwitch *enable_fonts;
+	GtkSwitch *enable_highlighting;
+	HdyPreferencesGroup *font_group;
+	HdyComboRow *glulx_interpreter;
+	GtkButton *restore_default_font;
 	GtkListStore *schemes_list;
+	GtkSwitch *show_debug_tabs;
+	GtkSpinButton *tab_width;
 };
 
-G_DEFINE_TYPE(I7PrefsWindow, i7_prefs_window, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE(I7PrefsWindow, i7_prefs_window, HDY_TYPE_PREFERENCES_WINDOW);
 
 static void select_style_scheme(GtkTreeView *view, const char *id);
 
@@ -158,9 +200,35 @@ settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum
 	return TRUE;
 }
 
+static gboolean
+font_set_get_mapping(GValue *value, GVariant *settings_variant)
+{
+	g_assert(G_VALUE_HOLDS_BOOLEAN(value));
+
+	const char *settings_string = g_variant_get_string(settings_variant, NULL);
+	g_value_set_boolean(value, strcmp(settings_string, FONT_STANDARD_STR) != 0);
+	return TRUE;  /* handled */
+}
+
+static GVariant *
+font_set_set_mapping(const GValue *property_value, const GVariantType *expected_type)
+{
+	g_assert(g_variant_type_equal(expected_type, G_VARIANT_TYPE_STRING));
+
+	bool enable_fonts = g_value_get_boolean(property_value);
+	return g_variant_new_string(enable_fonts ? FONT_CUSTOM_STR : FONT_STANDARD_STR);
+}
+
 /*
  * CALLBACKS
  */
+
+static void
+on_config_syntax_highlighting_changed(GSettings *settings, const char *key, I7PrefsWindow *self)
+{
+	bool active = g_settings_get_boolean(settings, key);
+	gtk_source_buffer_set_highlight_syntax(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(self->source_example))), active);
+}
 
 static void
 on_config_style_scheme_changed(GSettings *settings, const char *key, I7PrefsWindow *self)
@@ -181,6 +249,39 @@ on_config_tab_width_changed(GSettings *settings, const char *key, I7PrefsWindow 
 		newvalue = DEFAULT_TAB_WIDTH;
 
 	update_tabs(self->source_example);
+}
+
+static void
+on_group_visibility_switch_active_notify(GtkSwitch *sw, GParamSpec *pspec, GtkWidget *group)
+{
+	bool active = gtk_switch_get_active(sw);
+	gtk_widget_set_no_show_all(group, !active);
+	if (active) {
+		gtk_widget_show_all(group);
+	} else {
+		gtk_widget_hide(group);
+	}
+}
+
+static void
+on_restore_default_font_clicked(GtkButton *restore, I7PrefsWindow *self)
+{
+	I7App *app = I7_APP(g_application_get_default());
+	GSettings *prefs = i7_app_get_prefs(app);
+
+	g_settings_reset(prefs, PREFS_CUSTOM_FONT);
+	g_settings_reset(prefs, PREFS_DOCS_FONT_SIZE);
+}
+
+static gboolean
+on_source_example_button_press_event(GtkSourceView *source_example, GdkEvent *event, I7PrefsWindow *self)
+{
+	unsigned button;
+	bool has_button = gdk_event_get_button(event, &button);
+	g_assert(has_button && "wrong event passed to button-press-event");
+	if (button == 3 /* right button */)
+		return GDK_EVENT_STOP;  /* prevent context menu */
+	return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -306,12 +407,20 @@ on_style_remove_clicked(GtkButton *button, I7PrefsWindow *self)
 	}
 }
 
-static char *
-on_tab_ruler_format_value(GtkScale *scale, double value, I7PrefsWindow *self)
+static gboolean
+on_tab_width_output(GtkSpinButton *tab_width, I7PrefsWindow *self)
 {
-	if(value)
-		return g_strdup_printf(ngettext("1 space", "%.*f spaces", value), gtk_scale_get_digits(scale), value);
-	return g_strdup("default");
+	GtkAdjustment *adjustment = gtk_spin_button_get_adjustment(tab_width);
+	double value = gtk_adjustment_get_value(adjustment);
+	g_autofree char *text = NULL;
+	if (value != 0.0) {
+		g_autofree char *text = g_strdup_printf(ngettext("1 space", "%.*f spaces", value), 0, value);
+		gtk_entry_set_text(GTK_ENTRY(tab_width), text);
+	} else {
+		gtk_entry_set_text(GTK_ENTRY(tab_width), _("default"));
+	}
+
+	return TRUE;  /* value handled */
 }
 
 /* Update the highlighting styles for this buffer */
@@ -360,6 +469,14 @@ select_style_scheme(GtkTreeView *view, const gchar *id)
 	gtk_tree_selection_select_iter(selection, &iter);
 }
 
+static char *
+enum_get_name(HdyEnumValueObject *enum_obj, void *data)
+{
+	const char **names = data;
+	int value = hdy_enum_value_object_get_value(enum_obj);
+	return g_strdup(names[value]);
+}
+
 /* TYPE SYSTEM */
 
 static void
@@ -374,6 +491,11 @@ i7_prefs_window_constructed(GObject* object)
 	I7PrefsWindow *self = I7_PREFS_WINDOW(object);
 
 	I7App *theapp = I7_APP(g_application_get_default());
+
+	hdy_combo_row_set_for_enum(self->glulx_interpreter, i7_prefs_interpreter_get_type(),
+		enum_get_name, interpreter_enum, NULL);
+	hdy_combo_row_set_for_enum(self->docs_font_size, i7_prefs_font_size_get_type(),
+		enum_get_name, font_size_enum, NULL);
 
 	populate_schemes_list(self, theapp);
 
@@ -400,24 +522,27 @@ i7_prefs_window_class_init(I7PrefsWindowClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, auto_number);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, clean_build_files);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, clean_index_files);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, color_group);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, custom_font);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, docs_font_size);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, enable_fonts);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, enable_highlighting);
-	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_set);
-	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_size);
-	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, glulx_combo);
-	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, prefs_notebook);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_group);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, glulx_interpreter);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, restore_default_font);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, schemes_list);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, schemes_view);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, show_debug_tabs);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, source_example);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, style_remove);
-	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_example);
-	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_ruler);
-	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_destroy);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, tab_width);
+	gtk_widget_class_bind_template_callback(widget_class, on_group_visibility_switch_active_notify);
+	gtk_widget_class_bind_template_callback(widget_class, on_restore_default_font_clicked);
+	gtk_widget_class_bind_template_callback(widget_class, on_source_example_button_press_event);
 	gtk_widget_class_bind_template_callback(widget_class, on_style_add_clicked);
 	gtk_widget_class_bind_template_callback(widget_class, on_style_remove_clicked);
 	gtk_widget_class_bind_template_callback(widget_class, on_styles_list_cursor_changed);
-	gtk_widget_class_bind_template_callback(widget_class, on_tab_ruler_format_value);
+	gtk_widget_class_bind_template_callback(widget_class, on_tab_width_output);
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
 	object_class->constructed = i7_prefs_window_constructed;
@@ -440,13 +565,13 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY)
 #define BIND_COMBO_BOX(key, member, enum_values) \
 	g_settings_bind_with_mapping(prefs, key, \
-		self->member, "active", \
+		self->member, "selected-index", \
 		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY, \
 		(GSettingsBindGetMapping)settings_enum_get_mapping, \
 		(GSettingsBindSetMapping)settings_enum_set_mapping, \
 		enum_values, NULL)
 	BIND(PREFS_AUTHOR_NAME, author_name, "text");
-	BIND(PREFS_CUSTOM_FONT, custom_font, "font-name");
+	BIND(PREFS_CUSTOM_FONT, custom_font, "font");
 	BIND(PREFS_SYNTAX_HIGHLIGHTING, enable_highlighting, "active");
 	BIND(PREFS_AUTO_INDENT, auto_indent, "active");
 	BIND(PREFS_AUTO_NUMBER, auto_number, "active");
@@ -454,21 +579,28 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 	BIND(PREFS_CLEAN_BUILD_FILES, clean_index_files, "sensitive");
 	BIND(PREFS_CLEAN_INDEX_FILES, clean_index_files, "active");
 	BIND(PREFS_SHOW_DEBUG_LOG, show_debug_tabs, "active");
-	BIND_COMBO_BOX(PREFS_FONT_SET, font_set, font_set_enum);
-	BIND_COMBO_BOX(PREFS_FONT_SIZE, font_size, font_size_enum);
-	BIND_COMBO_BOX(PREFS_INTERPRETER, glulx_combo, interpreter_enum);
+	BIND(PREFS_TAB_WIDTH, tab_width, "value");
+	BIND_COMBO_BOX(PREFS_DOCS_FONT_SIZE, docs_font_size, font_size_enum);
+	BIND_COMBO_BOX(PREFS_INTERPRETER, glulx_interpreter, interpreter_enum);
 #undef BIND
 #undef BIND_COMBO_BOX
-	g_settings_bind(prefs, PREFS_TAB_WIDTH,
-		gtk_range_get_adjustment(GTK_RANGE(self->tab_ruler)), "value", G_SETTINGS_BIND_DEFAULT);
+	g_settings_bind_with_mapping(prefs, PREFS_FONT_SET,
+		self->enable_fonts, "active",
+		G_SETTINGS_BIND_DEFAULT | G_SETTINGS_BIND_NO_SENSITIVITY,
+		(GSettingsBindGetMapping) font_set_get_mapping,
+		(GSettingsBindSetMapping) font_set_set_mapping,
+		NULL, NULL);
 
 	/* Connect signals to GSettings; ensure signal handlers are disconnected
 	 * when the preferences window is destroyed, because the GSettings will
 	 * outlive it */
 	g_signal_connect_object(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self, 0);
+	g_signal_connect_object(prefs, "changed::" PREFS_SYNTAX_HIGHLIGHTING, G_CALLBACK(on_config_syntax_highlighting_changed), self, 0);
 	g_signal_connect_object(prefs, "changed::" PREFS_TAB_WIDTH, G_CALLBACK(on_config_tab_width_changed), self, 0);
 
 	/* Set initial state for the widgets we just connected signals to */
 	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
+	if (!g_settings_get_boolean(prefs, PREFS_SYNTAX_HIGHLIGHTING))
+		gtk_source_buffer_set_highlight_syntax(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(self->source_example))), FALSE);
 	update_tabs(self->source_example);
 }

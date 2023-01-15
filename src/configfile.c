@@ -49,7 +49,7 @@ on_config_custom_font_changed(GSettings *settings, const char *key)
 }
 
 static void
-on_config_font_size_changed(GSettings *settings, const char *key)
+on_config_docs_font_size_changed(GSettings *settings, const char *key)
 {
 	/* update application to reflect new value */
 	I7App *theapp = I7_APP(g_application_get_default());
@@ -152,7 +152,7 @@ struct KeyToMonitor {
 static struct KeyToMonitor keys_to_monitor[] = {
 	{ PREFS_FONT_SET, on_config_font_set_changed },
 	{ PREFS_CUSTOM_FONT, on_config_custom_font_changed },
-	{ PREFS_FONT_SIZE, on_config_font_size_changed },
+	{ PREFS_DOCS_FONT_SIZE, on_config_docs_font_size_changed },
 	{ PREFS_STYLE_SCHEME, on_config_style_scheme_changed },
 	{ PREFS_TAB_WIDTH, on_config_tab_width_changed },
 	{ PREFS_SHOW_DEBUG_LOG, on_config_debug_log_visible_changed },
