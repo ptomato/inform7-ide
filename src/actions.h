@@ -58,7 +58,6 @@ void action_unindent(GSimpleAction *action, GVariant *parameter, I7Document *doc
 void action_comment_out_selection(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_uncomment_selection(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_renumber_all_sections(GSimpleAction *action, GVariant *parameter, I7Document *document);
-void action_enable_elastic_tabstops_toggled(GSimpleAction *action, GVariant *state, I7Document *document);
 void action_go(GSimpleAction *action, GVariant *parameter, I7Story *story);
 void action_test_me(GSimpleAction *action, GVariant *parameter, I7Story *story);
 void action_stop(GSimpleAction *action, GVariant *parameter, I7Story *story);

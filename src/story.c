@@ -41,7 +41,6 @@ enum {
 	PROP_STORY_FORMAT,
 	PROP_MAKE_BLORB,
 	PROP_NOBBLE_RNG,
-	PROP_ELASTIC_TABSTOPS,
 	PROP_LANGUAGE_VERSION,
 };
 
@@ -269,9 +268,6 @@ i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GPara
 		case PROP_NOBBLE_RNG:
 			i7_story_set_nobble_rng(self, g_value_get_boolean(value));
 			break;
-		case PROP_ELASTIC_TABSTOPS:
-			i7_document_set_elastic_tabstops(I7_DOCUMENT(self), g_value_get_boolean(value));
-			break;
 		case PROP_LANGUAGE_VERSION:
 			i7_story_set_language_version(self, g_value_get_string(value));
 			break;
@@ -295,9 +291,6 @@ i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec 
 			break;
 		case PROP_NOBBLE_RNG:
 			g_value_set_boolean(value, i7_story_get_nobble_rng(self));
-			break;
-		case PROP_ELASTIC_TABSTOPS:
-			g_value_set_boolean(value, i7_story_get_elastic_tabstops(self));
 			break;
 		case PROP_LANGUAGE_VERSION:
 			g_value_take_string(value, i7_story_get_language_version(self));
@@ -1026,7 +1019,6 @@ i7_story_init(I7Story *self)
 	g_object_bind_property(self->panel[LEFT]->z8, "active", self->panel[RIGHT]->z8, "active", G_BINDING_BIDIRECTIONAL);
 	g_object_bind_property(self->panel[LEFT]->glulx, "active", self->panel[RIGHT]->glulx, "active", G_BINDING_BIDIRECTIONAL);
 	g_signal_connect(self, "notify::story-format", G_CALLBACK(on_notify_story_format), NULL);
-	g_signal_connect(self, "notify::elastic-tabstops", G_CALLBACK(on_notify_elastic_tabstops), NULL);
 
 	/* Set font sizes, etc. */
 	i7_document_update_fonts(I7_DOCUMENT(self));
@@ -1079,7 +1071,6 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->expand_headings_view = i7_story_expand_headings_view;
 	document_class->highlight_search = i7_story_highlight_search;
 	document_class->set_spellcheck = i7_story_set_spellcheck;
-	document_class->set_elastic_tabstops = i7_story_set_elastic_tabstops;
 	document_class->can_revert = i7_story_can_revert;
 	document_class->revert = i7_story_revert;
 
@@ -1100,10 +1091,6 @@ i7_story_class_init(I7StoryClass *klass)
 	g_object_class_install_property(object_class, PROP_NOBBLE_RNG,
 		g_param_spec_boolean("nobble-rng", "Nobble RNG",
 			"IFOutputSettings->IFSettingNobbleRNG", FALSE,
-			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
-	g_object_class_install_property(object_class, PROP_ELASTIC_TABSTOPS,
-		g_param_spec_boolean("elastic-tabstops", "Elastic Tabstops",
-			"IFMiscSettings->IFSettingElasticTabs", FALSE,
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 	g_object_class_install_property(object_class, PROP_LANGUAGE_VERSION,
 		g_param_spec_string("language-version", "Version of Inform to use",
@@ -1348,7 +1335,6 @@ i7_story_open(I7Story *self, GFile *input_file)
 	g_object_notify(object, "story-format");
 	g_object_notify(object, "create-blorb");
 	g_object_notify(object, "nobble-rng");
-	g_object_notify(object, "elastic-tabstops");
     g_object_notify(object, "language-version");
 
 	/* Load index tabs if they exist */

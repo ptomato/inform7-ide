@@ -14,6 +14,7 @@
 #include "app.h"
 #include "builder.h"
 #include "configfile.h"
+#include "elastic.h"
 #include "error.h"
 #include "lang.h"
 #include "prefs.h"
@@ -86,6 +87,7 @@ struct _I7PrefsWindow {
 	GtkWidget *auto_number;
 	GtkWidget *clean_index_files;
 	HdyComboRow *docs_font_size;
+	GtkSwitch *elastic_tabs;
 	GtkSwitch *enable_fonts;
 	GtkSwitch *enable_highlighting;
 	HdyPreferencesGroup *font_group;
@@ -222,6 +224,17 @@ font_set_set_mapping(const GValue *property_value, const GVariantType *expected_
 /*
  * CALLBACKS
  */
+
+static void
+on_config_elastic_tabstops_changed(GSettings *prefs, const char *key, I7PrefsWindow *self)
+{
+	if (g_settings_get_boolean(prefs, key)) {
+		add_elastic_tabstops_to_view(GTK_TEXT_VIEW(self->source_example));
+		elastic_recalculate_view(GTK_TEXT_VIEW(self->source_example));
+	} else {
+		remove_elastic_tabstops_from_view(GTK_TEXT_VIEW(self->source_example));
+	}
+}
 
 static void
 on_config_syntax_highlighting_changed(GSettings *settings, const char *key, I7PrefsWindow *self)
@@ -525,6 +538,7 @@ i7_prefs_window_class_init(I7PrefsWindowClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, color_group);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, custom_font);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, docs_font_size);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, elastic_tabs);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, enable_fonts);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, enable_highlighting);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_group);
@@ -574,6 +588,7 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 	BIND(PREFS_CUSTOM_FONT, custom_font, "font");
 	BIND(PREFS_SYNTAX_HIGHLIGHTING, enable_highlighting, "active");
 	BIND(PREFS_AUTO_INDENT, auto_indent, "active");
+	BIND(PREFS_ELASTIC_TABSTOPS, elastic_tabs, "active");
 	BIND(PREFS_AUTO_NUMBER, auto_number, "active");
 	BIND(PREFS_CLEAN_BUILD_FILES, clean_build_files, "active");
 	BIND(PREFS_CLEAN_BUILD_FILES, clean_index_files, "sensitive");
@@ -594,11 +609,16 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 	/* Connect signals to GSettings; ensure signal handlers are disconnected
 	 * when the preferences window is destroyed, because the GSettings will
 	 * outlive it */
+	g_signal_connect_object(prefs, "changed::" PREFS_ELASTIC_TABSTOPS, G_CALLBACK(on_config_elastic_tabstops_changed), self, 0);
 	g_signal_connect_object(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self, 0);
 	g_signal_connect_object(prefs, "changed::" PREFS_SYNTAX_HIGHLIGHTING, G_CALLBACK(on_config_syntax_highlighting_changed), self, 0);
 	g_signal_connect_object(prefs, "changed::" PREFS_TAB_WIDTH, G_CALLBACK(on_config_tab_width_changed), self, 0);
 
 	/* Set initial state for the widgets we just connected signals to */
+	if (g_settings_get_boolean(prefs, PREFS_ELASTIC_TABSTOPS)) {
+		add_elastic_tabstops_to_view(GTK_TEXT_VIEW(self->source_example));
+		elastic_recalculate_view(GTK_TEXT_VIEW(self->source_example));
+	}
 	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 	if (!g_settings_get_boolean(prefs, PREFS_SYNTAX_HIGHLIGHTING))
 		gtk_source_buffer_set_highlight_syntax(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(self->source_example))), FALSE);

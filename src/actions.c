@@ -802,15 +802,6 @@ action_renumber_all_sections(GSimpleAction *action, GVariant *parameter, I7Docum
 	gtk_text_buffer_end_user_action(buffer);
 }
 
-/* Format->Enable Elastic Tabstops */
-void
-action_enable_elastic_tabstops_toggled(GSimpleAction *action, GVariant *state, I7Document *document)
-{
-	g_simple_action_set_state(action, state);
-	gboolean value = g_variant_get_boolean(state);
-	i7_document_set_elastic_tabstops(document, value);
-}
-
 /* Play->Go */
 void
 action_go(GSimpleAction *action, GVariant *parameter, I7Story *story)
