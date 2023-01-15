@@ -18,16 +18,6 @@ a polkadot jersey	1933	"King of the Mountains"
 a green jersey	1953	"highest point scorer on sprints"
 a white jersey	1975	"best cyclist aged 25 or less"</property>
   </object>
-  <object class="GtkListStore" id="schemes_list">
-    <columns>
-      <!-- column-name id -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-      <!-- column-name description -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkAdjustment" id="tab_ruler_adjustment">
     <property name="upper">32</property>
     <property name="step-increment">1</property>
@@ -172,95 +162,49 @@ a white jersey	1975	"best cyclist aged 25 or less"</property>
             <property name="can-focus">False</property>
             <property name="title" translatable="yes">Color Scheme</property>
             <child>
-              <!-- n-columns=1 n-rows=2 -->
-              <object class="GtkGrid">
+              <object class="HdyComboRow" id="color_scheme">
+                <property name="can-focus">False</property>
+                <property name="title" translatable="yes">Color scheme</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkToolbar">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">6</property>
-                <property name="column-spacing">6</property>
+                <property name="icon_size">2</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow17">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="vexpand">True</property>
-                    <property name="shadow-type">in</property>
-                    <property name="min-content-height">100</property>
-                    <child>
-                      <object class="GtkTreeView" id="schemes_view">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="tooltip-text" translatable="yes" comments="Editing settings panel">This selects a style for the color scheme and font effects used to display Inform source code.</property>
-                        <property name="model">schemes_list</property>
-                        <property name="headers-visible">False</property>
-                        <property name="search-column">1</property>
-                        <property name="show-expanders">False</property>
-                        <property name="tooltip-column">2</property>
-                        <signal name="cursor-changed" handler="on_styles_list_cursor_changed" swapped="no"/>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection"/>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn" id="schemes_column">
-                            <child>
-                              <object class="GtkCellRendererText" id="schemes_text"/>
-                              <attributes>
-                                <attribute name="text">1</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkToolbar">
+                  <object class="GtkToolButton" id="style_add">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="hexpand">True</property>
-                    <child>
-                      <object class="GtkToolButton" id="style_add">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="tooltip-text" translatable="yes" comments="Editing settings panel">Add a style scheme to the list</property>
-                        <property name="label" translatable="yes">_Add</property>
-                        <property name="use-underline">True</property>
-                        <property name="icon-name">list-add-symbolic</property>
-                        <signal name="clicked" handler="on_style_add_clicked" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkToolButton" id="style_remove">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="tooltip-text" translatable="yes" comments="Editing settings panel">Remove the selected style scheme from the list</property>
-                        <property name="label" translatable="yes">_Remove</property>
-                        <property name="use-underline">True</property>
-                        <property name="icon-name">list-remove-symbolic</property>
-                        <signal name="clicked" handler="on_style_remove_clicked" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <style>
-                      <class name="inline-toolbar"/>
-                    </style>
+                    <property name="tooltip-text" translatable="yes" comments="Editing settings panel">Add a style scheme to the list</property>
+                    <property name="label" translatable="yes">_Add</property>
+                    <property name="use-underline">True</property>
+                    <property name="icon-name">list-add-symbolic</property>
+                    <signal name="clicked" handler="on_style_add_clicked" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkToolButton" id="style_remove">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes" comments="Editing settings panel">Remove the selected style scheme from the list</property>
+                    <property name="label" translatable="yes">_Remove</property>
+                    <property name="use-underline">True</property>
+                    <property name="icon-name">list-remove-symbolic</property>
+                    <signal name="clicked" handler="on_style_remove_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <style>
+                  <class name="inline-toolbar"/>
+                </style>
               </object>
             </child>
           </object>
