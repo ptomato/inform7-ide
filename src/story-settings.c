@@ -60,48 +60,6 @@ create_default_settings()
 	return dict;
 }
 
-void
-on_z8_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	if(value)
-		i7_story_set_story_format(story, I7_STORY_FORMAT_Z8);
-}
-
-void
-on_glulx_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	if(value)
-		i7_story_set_story_format(story, I7_STORY_FORMAT_GLULX);
-}
-
-/* Select all the right buttons according to the story settings */
-void
-on_notify_story_format(I7Story *story)
-{
-	switch(i7_story_get_story_format(story)) {
-		case I7_STORY_FORMAT_GLULX:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->glulx), TRUE);
-			break;
-		case I7_STORY_FORMAT_Z8:
-		default:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z8), TRUE);
-	}
-	/* The property bindings ensure that we don't have to manually set the other ones */
-}
-
-void
-on_language_version_chooser_changed(GtkComboBox *chooser, GtkLabel *description)
-{
-	const char *id = gtk_combo_box_get_active_id(chooser);
-	g_return_if_fail(id != NULL);
-
-	I7App *theapp = I7_APP(g_application_get_default());
-	const char *copy = i7_app_get_retrospective_description(theapp, id);
-	gtk_label_set_label(description, copy);
-}
-
 /* These 'get' functions provide for a default value even though we initialize a
  dictionary with all the required keys; it may be that another port of Inform 7
  doesn't write all the keys */

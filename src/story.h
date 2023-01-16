@@ -113,9 +113,6 @@ void i7_story_reload_index_tabs(I7Story *self, gboolean wait);
 
 /* Settings pane, story-settings.c */
 plist_t create_default_settings(void);
-void on_z8_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
-void on_glulx_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
-void on_notify_story_format(I7Story *self);
 I7StoryFormat i7_story_get_story_format(I7Story *self);
 void i7_story_set_story_format(I7Story *self, I7StoryFormat format);
 gboolean i7_story_get_create_blorb(I7Story *self);

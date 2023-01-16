@@ -60,9 +60,8 @@ typedef struct {
 	GtkPrintSettings *print_settings;
 	/* Color scheme manager */
 	GtkSourceStyleSchemeManager *color_scheme_manager;
-	/* Parsed contents of retrospective.txt (string -> RetrospectiveData) */
-	char **retrospective_ids;
-	GHashTable *retrospective_entries;
+	/* Parsed contents of retrospective.txt (GListStore<I7Retrospective>) */
+    GListStore *retrospectives;
 	/* Preferences settings */
 	GSettings *system_settings;
 	GSettings *prefs_settings;
@@ -235,7 +234,7 @@ i7_app_init(I7App *self)
 	priv->color_scheme_manager = create_color_scheme_manager(self);
 
 	/* Parse the retrospective.txt file */
-	parse_retrospective_txt(&priv->retrospective_entries, &priv->retrospective_ids);
+	parse_retrospective_txt(&priv->retrospectives);
 }
 
 static void
@@ -248,8 +247,7 @@ i7_app_finalize(GObject *object)
 	i7_app_stop_monitoring_extensions_directory(self);
 	g_object_unref(priv->installed_extensions);
 	g_object_unref(priv->color_scheme_manager);
-	g_clear_pointer(&priv->retrospective_ids, g_strfreev);
-	g_clear_pointer(&priv->retrospective_entries, g_hash_table_destroy);
+	g_clear_object(&priv->retrospectives);
 	g_object_unref(priv->system_settings);
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
@@ -1715,34 +1713,19 @@ i7_app_is_valid_retrospective_id(I7App *self, const char *id)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	for (char **ptr = priv->retrospective_ids; *ptr != NULL; ptr++) {
-		if (strcmp(*ptr, id) == 0)
+	unsigned ix = 0;
+	I7Retrospective *record;
+	while ((record = g_list_model_get_item(G_LIST_MODEL(priv->retrospectives), ix++)) != NULL) {
+		const char *candidate = i7_retrospective_get_id(record);
+		if (strcmp(candidate, id) == 0)
 			return TRUE;
 	}
 	return FALSE;
 }
 
-/* Private function for app-retrospective.h: Return the RetrospectiveData record
- * for the given build number ID. */
-const RetrospectiveData *
-get_retrospective_data(I7App *self, const char *id)
+GListStore *
+i7_app_get_retrospectives(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	RetrospectiveData *retval = g_hash_table_lookup(priv->retrospective_entries, id);
-	if (!retval)
-		g_error("Retrospective data '%s' not found", id);
-	return retval;
-}
-
-void
-i7_app_foreach_retrospective(I7App *self, I7AppRetrospectiveFunc func, void *data)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	for (char **ptr = priv->retrospective_ids; *ptr != NULL; ptr++) {
-		const RetrospectiveData *record = g_hash_table_lookup(priv->retrospective_entries, *ptr);
-		g_assert(record);
-		func(data, *ptr, record->display_name, record->description);
-	}
+	return priv->retrospectives;
 }

@@ -139,11 +139,8 @@ GSettings *i7_app_get_prefs(I7App *self);
 
 /* Retrospective functions, in app-retrospective.c */
 
-typedef void (*I7AppRetrospectiveFunc)(void *data, const char *id, const char *display_name, const char *description);
 bool i7_app_is_valid_retrospective_id(I7App *self, const char *id);
-const char *i7_app_get_retrospective_display_name(I7App *self, const char *id);
-const char *i7_app_get_retrospective_description(I7App *self, const char *id);
-void i7_app_foreach_retrospective(I7App *self, I7AppRetrospectiveFunc func, void *data);
+GListStore *i7_app_get_retrospectives(I7App *self);
 
 char **i7_app_get_inform_command_line(I7App *self, const char *version_id, int /* I7StoryFormat */ format, bool debug, bool reproducible, GFile *project_file);
 char **i7_app_get_inblorb_command_line(I7App *self, const char *version_id, GFile *blorb_file);
