@@ -5,11 +5,12 @@ env:
   CFLAGS: -fdiagnostics-color
 jobs:
   run-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: install-deps
         run: |
           sudo apt-get update
+          sudo apt install -y libunwind-dev
           sudo apt-get -y install \
             gettext \
             gstreamer1.0-plugins-bad \
@@ -24,9 +25,6 @@ jobs:
             libxml2-utils \
             meson \
             ninja-build
-
-      - name: upgrade-meson
-        run: pip3 install --upgrade meson
 
       - uses: actions/checkout@v2
 
