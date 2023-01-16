@@ -17,67 +17,6 @@
 #include "error.h"
 #include "story.h"
 
-const char *font_set_enum[] = { "Standard", "Monospace", "Custom", NULL };
-const char *font_size_enum[] = { "Standard", "Medium", "Large", "Huge", NULL };
-const char *interpreter_enum[] = { "Glulxe (default)", "Git", NULL };
-
-/*
- * settings_enum_set_mapping:
- * @property_value: value of the object property the setting is bound to.
- * @expected_type: GVariant type the setting expects.
- * @enum_values: an array of strings with %NULL as a sentinel at the end.
- *
- * Custom mapping function for setting combo boxes from enum GSettings keys.
- *
- * Returns: the #GVariant for the setting, or %NULL on failure.
- */
-GVariant *
-settings_enum_set_mapping(const GValue *property_value, const GVariantType *expected_type, char **enum_values)
-{
-	int count = 0, index;
-
-	g_assert(g_variant_type_equal(expected_type, G_VARIANT_TYPE_STRING));
-
-	/* Count the number of values */
-	while(enum_values[count])
-		count++;
-
-	index = g_value_get_int(property_value);
-	if(index >= count)
-		return NULL;
-	return g_variant_new_string(enum_values[index]);
-}
-
-/*
- * settings_enum_get_mapping:
- * @value: value for the object property, initialized to hold the proper type
- * @settings_variant: value of the setting as a #GVariant
- * @enum_values: an array of strings with %NULL as a sentinel at the end.
- *
- * Custom mapping function for setting combo boxes from enum GSettings keys.
- *
- * Returns: %TRUE if the conversion succeeded, %FALSE otherwise.
- */
-gboolean
-settings_enum_get_mapping(GValue *value, GVariant *settings_variant, char **enum_values)
-{
-	const char *settings_string = g_variant_get_string(settings_variant, NULL);
-	int count;
-	char **ptr;
-
-	g_assert(G_VALUE_HOLDS_INT(value));
-
-	for(count = 0, ptr = enum_values; *ptr; count++, ptr++) {
-		if(strcmp(*ptr, settings_string) == 0)
-			break;
-	}
-	if(*ptr == NULL)
-		return FALSE;
-
-	g_value_set_int(value, count);
-	return TRUE;
-}
-
 /* ---------  Events from now on:   ------------ */
 
 static void
@@ -134,8 +73,6 @@ on_config_style_scheme_changed(GSettings *settings, const char *key)
 	/* TODO: validate new value? */
 
 	/* update application to reflect new value */
-	select_style_scheme(theapp->prefs->schemes_view, newvalue);
-	update_style(GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(theapp->prefs->source_example))));
 	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
 	for (GList *iter = windows; iter != NULL; iter = iter->next) {
 		if (I7_IS_DOCUMENT(iter->data)) {
@@ -159,29 +96,10 @@ on_config_tab_width_changed(GSettings *settings, const char *key)
 
 	/* update application to reflect new value */
 	I7App *theapp = I7_APP(g_application_get_default());
-	update_tabs(theapp->prefs->tab_example);
-	update_tabs(theapp->prefs->source_example);
 	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
 	for (GList *iter = windows; iter != NULL; iter = iter->next) {
 		if (I7_IS_DOCUMENT(iter->data))
 			i7_document_update_tabs(I7_DOCUMENT(iter->data));
-	}
-}
-
-static void
-on_config_indent_wrapped_changed(GSettings *settings, const char *key)
-{
-	/* update application to reflect new value */
-	I7App *theapp = I7_APP(g_application_get_default());
-	update_tabs(theapp->prefs->tab_example);
-	update_tabs(theapp->prefs->source_example);
-	GList *windows = gtk_application_get_windows(GTK_APPLICATION(theapp));
-	for (GList *iter = windows; iter != NULL; iter = iter->next) {
-		if (I7_IS_DOCUMENT(iter->data)) {
-			I7Document *document = I7_DOCUMENT(iter->data);
-			i7_document_update_tabs(document);
-			i7_document_update_indent_tags(document, NULL, NULL);
-		}
 	}
 }
 
@@ -232,15 +150,14 @@ struct KeyToMonitor {
 };
 
 static struct KeyToMonitor keys_to_monitor[] = {
-	{ "font-set", on_config_font_set_changed },
-	{ "custom-font", on_config_custom_font_changed },
-	{ "font-size", on_config_font_size_changed },
-	{ "style-scheme", on_config_style_scheme_changed },
-	{ "tab-width", on_config_tab_width_changed },
-	{ "indent-wrapped", on_config_indent_wrapped_changed },
-	{ "show-debug-log", on_config_debug_log_visible_changed },
-	{ "use-interpreter", on_config_use_interpreter_changed },
-	{ "elastic-tabstops-padding",on_config_elastic_tabstops_padding_changed }
+	{ PREFS_FONT_SET, on_config_font_set_changed },
+	{ PREFS_CUSTOM_FONT, on_config_custom_font_changed },
+	{ PREFS_FONT_SIZE, on_config_font_size_changed },
+	{ PREFS_STYLE_SCHEME, on_config_style_scheme_changed },
+	{ PREFS_TAB_WIDTH, on_config_tab_width_changed },
+	{ PREFS_SHOW_DEBUG_LOG, on_config_debug_log_visible_changed },
+	{ PREFS_INTERPRETER, on_config_use_interpreter_changed },
+	{ PREFS_TABSTOPS_PADDING,on_config_elastic_tabstops_padding_changed }
 };
 
 /* Set up signals for the config keys */

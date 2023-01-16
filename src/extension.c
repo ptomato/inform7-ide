@@ -17,6 +17,7 @@
 #include "extension.h"
 #include "file.h"
 #include "lang.h"
+#include "prefs.h"
 
 typedef struct _I7ExtensionPrivate I7ExtensionPrivate;
 struct _I7ExtensionPrivate

@@ -240,5 +240,15 @@ i7_app_get_current_color_scheme(I7App *self)
 	gchar *scheme_name = g_settings_get_string(prefs, PREFS_STYLE_SCHEME);
 	GtkSourceStyleScheme *scheme = gtk_source_style_scheme_manager_get_scheme(manager, scheme_name);
 	g_free(scheme_name);
+
+	if (!scheme) {
+		/* The scheme wasn't installed. This may be due to a custom scheme
+		 * getting uninstalled, but it also migrates the setting the first time
+		 * a version of Inform is installed with the new color schemes. */
+		scheme = gtk_source_style_scheme_manager_get_scheme(manager, DEFAULT_STYLE_SCHEME);
+		g_assert(scheme && DEFAULT_STYLE_SCHEME " style scheme must always be installed");
+		g_settings_set_string(prefs, PREFS_STYLE_SCHEME, DEFAULT_STYLE_SCHEME);
+	}
+
 	return scheme;
 }
