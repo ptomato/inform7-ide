@@ -462,8 +462,11 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 	g_settings_bind(prefs, PREFS_TAB_WIDTH,
 		gtk_range_get_adjustment(GTK_RANGE(self->tab_ruler)), "value", G_SETTINGS_BIND_DEFAULT);
 
-	g_signal_connect(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self);
-	g_signal_connect(prefs, "changed::" PREFS_TAB_WIDTH, G_CALLBACK(on_config_tab_width_changed), self);
+	/* Connect signals to GSettings; ensure signal handlers are disconnected
+	 * when the preferences window is destroyed, because the GSettings will
+	 * outlive it */
+	g_signal_connect_object(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self, 0);
+	g_signal_connect_object(prefs, "changed::" PREFS_TAB_WIDTH, G_CALLBACK(on_config_tab_width_changed), self, 0);
 
 	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
 }
