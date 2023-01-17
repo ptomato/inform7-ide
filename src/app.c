@@ -16,6 +16,7 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
+#include <handy.h>
 
 #include "app.h"
 #include "app-retrospective.h"
@@ -268,6 +269,8 @@ i7_app_startup(GApplication *app)
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
 	G_APPLICATION_CLASS(i7_app_parent_class)->startup(app);
+
+	hdy_init();
 
 	/* Set up monitor for extensions directory */
 	i7_app_run_census(self, FALSE);
@@ -1513,14 +1516,16 @@ i7_app_update_css(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	g_autofree char *font_family = i7_app_get_font_family(self);
-	double font_size = i7_app_get_font_scale(self);
+	g_autoptr(PangoFontDescription) desc = i7_app_get_document_font_description(self);
+	const char *font_family = pango_font_description_get_family(desc);
+	int font_size = pango_font_description_get_size(desc) / PANGO_SCALE;
+
 	g_autofree char *css = g_strdup_printf(""
 	    ".font-family-setting {"
 	    "    font-family: '%s';"
 	    "}"
 	    ".font-size-setting {"
-	    "    font-size: %.1fem;"
+	    "    font-size: %dpt;"
 	    "}", font_family, font_size);
 
 	g_autoptr(GError) error = NULL;
@@ -1628,39 +1633,35 @@ i7_app_get_color_scheme_manager(I7App *self)
 	return priv->color_scheme_manager;
 }
 
-/* modifies string in place */
-static void
-remove_font_size(char *font) {
-	char *ptr = strrchr(font, ' ');
-	if (ptr)
-		*ptr = '\0';
-}
-
 /*
- * i7_app_get_font_family:
+ * i7_app_get_document_font_string:
  * @self: the application singleton
  *
- * Returns: (transfer full): a string representing the font setting suitable to
- *   use in CSS.
+ * Returns: (transfer full): a string representing the font setting that can be
+ *   understood by PangoFontDescription.
  */
 char *
-i7_app_get_font_family(I7App *self)
+i7_app_get_document_font_string(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	char *font;
-	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SET)) {
-		case FONT_MONOSPACE:
-			font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_MONOSPACE_FONT);
-			break;
-		case FONT_CUSTOM:
-			font = g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
-			break;
-		default:
-			font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
-	}
-	remove_font_size(font);
-	return font;
+	if (g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SET) == FONT_CUSTOM)
+		return g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
+	return g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
+}
+
+/*
+ * i7_app_get_document_font_description:
+ * @self: the application singleton
+ *
+ * Returns: (transfer full): a PangoFontDescription representing the font
+ *   setting.
+ */
+PangoFontDescription *
+i7_app_get_document_font_description(I7App *self)
+{
+	g_autofree char *font = i7_app_get_document_font_string(self);
+	return pango_font_description_from_string(font);
 }
 
 /*
@@ -1675,56 +1676,38 @@ i7_app_get_ui_font(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	char *font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_UI_FONT);
-	remove_font_size(font);
-	return font;
+	return g_settings_get_string(priv->system_settings, PREFS_SYSTEM_UI_FONT);
 }
 
 /*
- * i7_app_get_font_scale:
+ * i7_app_get_docs_font_scale:
  * @self: the application singleton
  *
- * Returns: a relative font size (in ems) for the font size setting
+ * Returns: a relative font size (in ems) for the docs font size setting
  */
 double
-i7_app_get_font_scale(I7App *self)
+i7_app_get_docs_font_scale(I7App *self)
 {
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	switch(g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SIZE)) {
+	switch(g_settings_get_enum(priv->prefs_settings, PREFS_DOCS_FONT_SIZE)) {
+		case FONT_SIZE_SMALLEST:
+			return RELATIVE_SIZE_SMALLEST;
+		case FONT_SIZE_SMALLER:
+			return RELATIVE_SIZE_SMALLER;
+		case FONT_SIZE_SMALL:
+			return RELATIVE_SIZE_SMALL;
 		case FONT_SIZE_MEDIUM:
 			return RELATIVE_SIZE_MEDIUM;
 		case FONT_SIZE_LARGE:
 			return RELATIVE_SIZE_LARGE;
-		case FONT_SIZE_HUGE:
-			return RELATIVE_SIZE_HUGE;
+		case FONT_SIZE_LARGER:
+			return RELATIVE_SIZE_LARGER;
+		case FONT_SIZE_LARGEST:
+			return RELATIVE_SIZE_LARGEST;
 		default:
-			return RELATIVE_SIZE_STANDARD;
+			return RELATIVE_SIZE_MEDIUM;
 	}
-}
-
-/*
- * i7_app_get_font_size:
- * @self: the application singleton
- *
- * Returns: an absolute font size for the font size setting in webviews and the
- *   skein
- */
-double
-i7_app_get_font_size(I7App *self)
-{
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	g_autofree char* font = g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
-	const char* ptr = strrchr(font, ' ');
-
-	int base = 0;
-	if (ptr)
-		base = atoi(ptr);
-	if (base < 1)
-		base = DEFAULT_SIZE_STANDARD;
-
-	return base * i7_app_get_font_scale(self);
 }
 
 bool

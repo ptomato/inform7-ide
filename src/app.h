@@ -117,10 +117,10 @@ GtkSourceStyleSchemeManager *i7_app_get_color_scheme_manager(I7App *self);
 
 void i7_app_update_css(I7App *self);
 
-char *i7_app_get_font_family(I7App *self);
+char *i7_app_get_document_font_string(I7App *self);
+PangoFontDescription *i7_app_get_document_font_description(I7App *self);
 char *i7_app_get_ui_font(I7App *self);
-double i7_app_get_font_scale(I7App *self);
-double i7_app_get_font_size(I7App *self);
+double i7_app_get_docs_font_scale(I7App *self);
 
 GFile *i7_app_get_last_opened_project(I7App *self);
 

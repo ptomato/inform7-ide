@@ -92,16 +92,6 @@ on_notify_story_format(I7Story *story)
 }
 
 void
-on_notify_elastic_tabstops(I7Story *story)
-{
-	gboolean value = i7_story_get_elastic_tabstops(story);
-	GAction *enable_elastic_tabstops = g_action_map_lookup_action(G_ACTION_MAP(story), "enable-elastic-tabstops");
-	g_simple_action_set_state(G_SIMPLE_ACTION(enable_elastic_tabstops), g_variant_new_boolean(value));
-	i7_source_view_set_elastic_tabstops(story->panel[LEFT]->sourceview, value);
-	i7_source_view_set_elastic_tabstops(story->panel[RIGHT]->sourceview, value);
-}
-
-void
 on_language_version_chooser_changed(GtkComboBox *chooser, GtkLabel *description)
 {
 	const char *id = gtk_combo_box_get_active_id(chooser);
@@ -224,43 +214,6 @@ i7_story_set_nobble_rng(I7Story *self, gboolean nobble_rng)
 	if (value != nobble_rng) {
 		plist_set_bool_val(obj, nobble_rng);
 		g_object_notify(G_OBJECT(self), "nobble-rng");
-	}
-}
-
-gboolean
-i7_story_get_elastic_tabstops(I7Story *self)
-{
-	g_return_val_if_fail(self || I7_IS_STORY(self), 0);
-
-	plist_t settings = i7_story_get_settings(self);
-	plist_t obj = plist_access_path(settings, 2, "IFMiscSettings", "IFSettingElasticTabs");
-	if(!obj)
-		return FALSE; /* Default value */
-	uint8_t retval;
-	plist_get_bool_val(obj, &retval);
-	return retval;
-}
-
-void
-i7_story_set_elastic_tabstops(I7Story *self, gboolean elastic_tabstops)
-{
-	g_return_if_fail(self || I7_IS_STORY(self));
-
-	i7_document_set_modified(I7_DOCUMENT(self), TRUE);
-
-	plist_t settings = i7_story_get_settings(self);
-	plist_t obj = plist_access_path(settings, 2, "IFMiscSettings", "IFSettingElasticTabs");
-	if(!obj) {
-		obj = plist_new_bool(elastic_tabstops);
-		insert_setting(settings, "IFMiscSettings", "IFSettingElasticTabs", obj);
-		g_object_notify(G_OBJECT(self), "elastic-tabstops");
-		return;
-	}
-	uint8_t value;
-	plist_get_bool_val(obj, &value);
-	if (value != elastic_tabstops) {
-		plist_set_bool_val(obj, elastic_tabstops);
-		g_object_notify(G_OBJECT(self), "elastic-tabstops");
 	}
 }
 

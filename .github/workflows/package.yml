@@ -54,6 +54,7 @@ jobs:
             gstreamer1-plugins-good \
             gtk3-devel \
             gtksourceview4-devel \
+            libhandy-devel \
             libplist-devel \
             meson \
             rpm-build \
@@ -143,6 +144,7 @@ jobs:
       - name: install-deps
         run: |
           sudo apt-get update
+          sudo apt install -y libunwind-dev
           sudo apt-get -y install \
             debhelper \
             devscripts \
@@ -153,15 +155,11 @@ jobs:
             libgstreamer1.0-dev \
             libgtk-3-dev \
             libgtksourceview-4-dev \
+            libhandy-1-dev \
             libplist-dev \
             libwebkit2gtk-4.0-dev \
             libxml2-utils \
             meson
-
-      - name: upgrade-meson
-        run: |
-          curl -O http://ftp.osuosl.org/pub/ubuntu/pool/universe/m/meson/meson_0.61.2-1_all.deb
-          sudo dpkg -i meson_0.61.2-1_all.deb
 
       - name: Checkout Inform IDE
         uses: actions/checkout@v3

@@ -12,6 +12,7 @@
 
 #include "app.h"
 #include "builder.h"
+#include "configfile.h"
 #include "elastic.h"
 #include "error.h"
 #include "source-view.h"
@@ -71,6 +72,17 @@ i7_source_view_class_init(I7SourceViewClass *klass)
 
 /* SIGNAL HANDLERS */
 
+static void
+on_config_elastic_tabstops_changed(GSettings *prefs, const char *key, I7SourceView *self)
+{
+	if (g_settings_get_boolean(prefs, key)) {
+		add_elastic_tabstops_to_view(GTK_TEXT_VIEW(self->source));
+		elastic_recalculate_view(GTK_TEXT_VIEW(self->source));
+	} else {
+		remove_elastic_tabstops_from_view(GTK_TEXT_VIEW(self->source));
+	}
+}
+
 gchar *
 on_heading_depth_format_value(GtkScale *scale, gdouble value)
 {
@@ -91,6 +103,12 @@ GtkWidget *
 i7_source_view_new()
 {
 	return GTK_WIDGET(g_object_new(I7_TYPE_SOURCE_VIEW, NULL));
+}
+
+void
+i7_source_view_bind_settings(I7SourceView *self, GSettings *prefs)
+{
+	g_signal_connect(prefs, "changed::" PREFS_ELASTIC_TABSTOPS, G_CALLBACK(on_config_elastic_tabstops_changed), self);
 }
 
 void
@@ -145,14 +163,4 @@ i7_source_view_set_spellcheck(I7SourceView *self, gboolean spellcheck)
 {
 	GspellTextView *spell_view = gspell_text_view_get_from_gtk_text_view(GTK_TEXT_VIEW(self->source));
 	gspell_text_view_set_inline_spell_checking(spell_view, spellcheck);
-}
-
-void
-i7_source_view_set_elastic_tabstops(I7SourceView *self, gboolean elastic)
-{
-	if(elastic) {
-		add_elastic_tabstops_to_view(GTK_TEXT_VIEW(self->source));
-		elastic_recalculate_view(GTK_TEXT_VIEW(self->source));
-	} else
-		remove_elastic_tabstops_from_view(GTK_TEXT_VIEW(self->source));
 }

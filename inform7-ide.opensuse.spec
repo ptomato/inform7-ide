@@ -30,6 +30,7 @@ Source1:        http://inform7.com/apps/%{compiler_version}/I7_%{compiler_versio
 BuildRequires:  fdupes
 BuildRequires:  libplist-devel
 BuildRequires:  libgoocanvas3-devel
+BuildRequires:  libhandy-devel
 BuildRequires:  graphviz
 BuildRequires:  gtksourceview4-devel
 BuildRequires:  gspell-devel

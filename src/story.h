@@ -116,15 +116,12 @@ plist_t create_default_settings(void);
 void on_z8_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
 void on_glulx_button_toggled(GtkToggleButton *togglebutton, I7Story *self);
 void on_notify_story_format(I7Story *self);
-void on_notify_elastic_tabstops(I7Story *self);
 I7StoryFormat i7_story_get_story_format(I7Story *self);
 void i7_story_set_story_format(I7Story *self, I7StoryFormat format);
 gboolean i7_story_get_create_blorb(I7Story *self);
 void i7_story_set_create_blorb(I7Story *self, gboolean create_blorb);
 gboolean i7_story_get_nobble_rng(I7Story *self);
 void i7_story_set_nobble_rng(I7Story *self, gboolean nobble_rng);
-gboolean i7_story_get_elastic_tabstops(I7Story *self);
-void i7_story_set_elastic_tabstops(I7Story *self, gboolean elastic_tabstops);
 char *i7_story_get_language_version(I7Story *self);
 void i7_story_set_language_version(I7Story *self, const char *ver);
 

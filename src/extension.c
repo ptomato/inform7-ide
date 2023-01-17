@@ -24,8 +24,6 @@ struct _I7ExtensionPrivate
 {
 	/* Built-in extension or not */
 	gboolean readonly;
-	/* View with elastic tabstops (not saved) */
-	gboolean elastic;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7Extension, i7_extension, I7_TYPE_DOCUMENT);
@@ -378,15 +376,6 @@ i7_extension_set_spellcheck(I7Document *document, gboolean spellcheck)
 }
 
 static void
-i7_extension_set_elastic_tabstops(I7Document *document, gboolean elastic)
-{
-	I7Extension *self = I7_EXTENSION(document);
-	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
-	priv->elastic = elastic;
-	i7_source_view_set_elastic_tabstops(self->sourceview, elastic);
-}
-
-static void
 i7_extension_revert(I7Document *document)
 {
 	I7Extension *self = I7_EXTENSION(document);
@@ -404,6 +393,7 @@ i7_extension_init(I7Extension *self)
 	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
 	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *state = i7_app_get_state(theapp);
+    GSettings *prefs = i7_app_get_prefs(theapp);
 
 	priv->readonly = FALSE;
 
@@ -419,6 +409,7 @@ i7_extension_init(I7Extension *self)
 
 	/* Create source view */
 	self->sourceview = I7_SOURCE_VIEW(i7_source_view_new());
+    i7_source_view_bind_settings(self->sourceview, prefs);
 	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->sourceview));
 	gtk_style_context_add_class(style, "font-family-setting");
 	gtk_style_context_add_class(style, "font-size-setting");
@@ -500,7 +491,6 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->expand_headings_view = i7_extension_expand_headings_view;
 	document_class->highlight_search = i7_extension_highlight_search;
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
-	document_class->set_elastic_tabstops = i7_extension_set_elastic_tabstops;
 	document_class->revert = i7_extension_revert;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);

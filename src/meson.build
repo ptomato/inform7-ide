@@ -27,7 +27,7 @@ gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
     resources, resources_generated,
     include_directories: top_include,
     dependencies: [libm, libxml, glib, gio, gdk, gtk, gtksourceview, gspell,
-        goocanvas, plist, webkit, ratify, libchimara])
+        goocanvas, handy, plist, webkit, ratify, libchimara])
 
 # install_rpath allows running from a non-system install path
 executable('inform7-ide', 'main.c', export_dynamic: true,

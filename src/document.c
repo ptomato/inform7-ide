@@ -209,7 +209,6 @@ create_document_actions(I7Document *self)
 		{ "comment-out-selection", (ActionCallback)action_comment_out_selection },
 		{ "uncomment-selection", (ActionCallback)action_uncomment_selection },
 		{ "renumber-all-sections", (ActionCallback)action_renumber_all_sections },
-		{ "enable-elastic-tabstops", NULL, NULL, "true", (ActionCallback)action_enable_elastic_tabstops_toggled },
 	};
 	g_action_map_add_action_entries(G_ACTION_MAP(self), actions, G_N_ELEMENTS(actions), self);
 }
@@ -349,7 +348,6 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->expand_headings_view = NULL;
 	klass->highlight_search = NULL;
 	klass->set_spellcheck = NULL;
-	klass->set_elastic_tabstops = NULL;
 	klass->can_revert = NULL;
 	klass->revert = NULL;
 
@@ -1206,17 +1204,6 @@ i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 	g_settings_set_boolean(state, PREFS_STATE_SPELL_CHECK, spellcheck);
 
 	I7_DOCUMENT_GET_CLASS(document)->set_spellcheck(document, spellcheck);
-}
-
-void
-i7_document_set_elastic_tabstops(I7Document *document, gboolean elastic)
-{
-	/* Set the default value for the next time a window is opened */
-	I7App *theapp = I7_APP(g_application_get_default());
-	GSettings *state = i7_app_get_state(theapp);
-	g_settings_set_boolean(state, PREFS_STATE_ELASTIC_TABSTOPS, elastic);
-
-	I7_DOCUMENT_GET_CLASS(document)->set_elastic_tabstops(document, elastic);
 }
 
 /* Helper function: progress callback for downloading a single extension.

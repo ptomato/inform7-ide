@@ -38,7 +38,6 @@ typedef struct {
 	void (*expand_headings_view)();
 	gboolean (*highlight_search)();
 	void (*set_spellcheck)();
-	void (*set_elastic_tabstops)();
 	gboolean (*can_revert)();
 	void (*revert)();
 } I7DocumentClass;
@@ -166,7 +165,6 @@ void i7_document_clear_progress(I7Document *self);
 
 void i7_document_set_spellcheck(I7Document *self, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *self);
-void i7_document_set_elastic_tabstops(I7Document *self, gboolean elastic);
 
 gboolean i7_document_download_single_extension(I7Document *self, GFile *remote_file, const char *author, const char *title);
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, void *data);
