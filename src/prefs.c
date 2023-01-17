@@ -468,5 +468,7 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 	g_signal_connect_object(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self, 0);
 	g_signal_connect_object(prefs, "changed::" PREFS_TAB_WIDTH, G_CALLBACK(on_config_tab_width_changed), self, 0);
 
+	/* Set initial state for the widgets we just connected signals to */
 	select_style_scheme(self->schemes_view, g_settings_get_string(prefs, PREFS_STYLE_SCHEME));
+	update_tabs(self->source_example);
 }
