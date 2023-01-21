@@ -1161,11 +1161,6 @@ i7_story_init(I7Story *self)
 	/* Build the toolbars */
 	I7_DOCUMENT(self)->toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "main-toolbar"));
 
-	/* Set the initial visible state of the toolbar based on the most recent
-	choice the user made */
-	GAction *view_toolbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-toolbar");
-	g_action_change_state(view_toolbar, g_settings_get_value(state, PREFS_STATE_SHOW_TOOLBAR));
-
 	/* Build the rest of the interface */
 	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
 

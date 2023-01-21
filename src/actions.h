@@ -41,8 +41,6 @@ void action_search(GSimpleAction *action, GVariant *parameter, I7Document *docum
 void action_check_spelling(GSimpleAction *action, GVariant *parameter, I7Document *document);
 void action_autocheck_spelling_toggle(GSimpleAction *action, GVariant *state, I7Document *document);
 void action_preferences(GSimpleAction *action, GVariant *parameter, I7App *app);
-void action_view_toolbar_toggled(GSimpleAction *action, GVariant *state, I7Document *document);
-void action_view_statusbar_toggled(GSimpleAction *action, GVariant *state, I7Document *document);
 void action_view_notepad_toggled(GSimpleAction *action, GVariant *state, I7Story *story);
 void action_show_pane(GSimpleAction *action, GVariant *parameter, I7Story *story);
 void action_show_tab(GSimpleAction *action, GVariant *parameter, I7Story *story);

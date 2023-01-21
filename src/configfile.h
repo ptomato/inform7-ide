@@ -70,8 +70,6 @@ typedef enum {
 #define PREFS_SHOW_DEBUG_LOG       "show-debug-log"
 
 #define PREFS_STATE_SPELL_CHECK       "spell-check"
-#define PREFS_STATE_SHOW_TOOLBAR      "show-toolbar"
-#define PREFS_STATE_SHOW_STATUSBAR    "show-statusbar"
 #define PREFS_STATE_SHOW_NOTEPAD      "show-notepad"
 #define PREFS_STATE_WINDOW_SIZE       "app-window-size"
 #define PREFS_STATE_DIVIDER_POS       "divider-position"

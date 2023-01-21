@@ -195,8 +195,6 @@ create_document_actions(I7Document *self)
 		{ "scroll-selection", (ActionCallback)action_scroll_selection },
 		{ "search", (ActionCallback)action_search },
 		{ "autocheck-spelling", NULL, NULL, "true", (ActionCallback)action_autocheck_spelling_toggle },
-		{ "view-toolbar", NULL, NULL, "true", (ActionCallback)action_view_toolbar_toggled },
-		{ "view-statusbar", NULL, NULL, "true", (ActionCallback)action_view_statusbar_toggled },
 		{ "show-headings", (ActionCallback)action_show_headings },
 		{ "current-section-only", (ActionCallback)action_current_section_only },
 		{ "increase-restriction", (ActionCallback)action_increase_restriction },
@@ -221,7 +219,6 @@ i7_document_init(I7Document *self)
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
-	GSettings *state = i7_app_get_state(theapp);
 
 	/* Set the icon */
 	gtk_window_set_icon_name(GTK_WINDOW(self), "com.inform7.IDE");
@@ -303,10 +300,6 @@ i7_document_init(I7Document *self)
 	GSettings *system_settings = i7_app_get_system_settings(theapp);
 	g_signal_connect_swapped(system_settings, "changed::document-font-name", G_CALLBACK(i7_document_update_fonts), self);
 	g_signal_connect_swapped(system_settings, "changed::monospace-font-name", G_CALLBACK(i7_document_update_fonts), self);
-
-	/* Show statusbar if necessary */
-	GAction *view_statusbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-statusbar");
-	g_simple_action_set_state(G_SIMPLE_ACTION(view_statusbar), g_settings_get_value(state, PREFS_STATE_SHOW_STATUSBAR));
 }
 
 static void
