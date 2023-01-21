@@ -30,7 +30,6 @@
 #include "node.h"
 #include "panel.h"
 #include "project-settings.h"
-#include "searchwindow.h"
 #include "skein.h"
 #include "skein-view.h"
 #include "source-view.h"
@@ -235,22 +234,6 @@ on_facing_pages_set_focus_child(GtkContainer *container, GtkWidget *child, I7Sto
 		priv->last_focused = child;
 	/* Do not save the pointer if it is NULL: that means the focus left the
 	 widget */
-}
-
-void
-on_search_entry_activate(GtkEntry *entry, I7Story *self)
-{
-	const gchar *text = gtk_entry_get_text(entry);
-
-	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, TRUE, I7_SEARCH_CONTAINS);
-	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
-	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
-}
-
-void
-on_search_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event)
-{
-	gtk_entry_set_text(entry, "");
 }
 
 /* OVERRIDES */
@@ -1158,11 +1141,9 @@ i7_story_init(I7Story *self)
 	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), FALSE);
 
-	/* Build the toolbars */
-	I7_DOCUMENT(self)->toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "main-toolbar"));
-
-	/* Build the rest of the interface */
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
+	/* Build the title bar */
+	I7_DOCUMENT(self)->titlebar = GTK_HEADER_BAR(gtk_builder_get_object(builder, "titlebar"));
+	gtk_window_set_titlebar(GTK_WINDOW(self), GTK_WIDGET(I7_DOCUMENT(self)->titlebar));
 
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(facing_pages);

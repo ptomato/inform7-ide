@@ -24,6 +24,7 @@
 #include "error.h"
 #include "file.h"
 #include "prefs.h"
+#include "searchwindow.h"
 
 typedef struct {
 	/* The file this document refers to */
@@ -122,6 +123,22 @@ on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *s
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	if(response == GTK_RESPONSE_CANCEL)
 		g_cancellable_cancel(priv->cancel_download);
+}
+
+void
+on_search_entry_activate(GtkEntry *entry, I7Story *self)
+{
+	const char *text = gtk_entry_get_text(entry);
+
+	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, TRUE, I7_SEARCH_CONTAINS);
+	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
+	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
+}
+
+void
+on_search_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event)
+{
+	gtk_entry_set_text(entry, "");
 }
 
 /* Helper function: run through the list of preferred system languages in order
