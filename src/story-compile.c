@@ -384,7 +384,8 @@ ui_display_progress_busy(I7Document *document)
 }
 
 /* Pulse the progress bar every time the I6 compiler outputs a '#' (which
- happens whenever it has processed 100 source lines) and look for  This function is
+ happens whenever it has processed 100 source lines) and look for error messages
+ that indicate a particular error page should be displayed. This function is
  called from a child process watch, so any GUI calls must be done asynchronously
  from here. */
 static void
