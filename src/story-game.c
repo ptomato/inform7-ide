@@ -266,16 +266,21 @@ finally:
 void
 i7_story_run_compiler_output_and_entire_skein(I7Story *self)
 {
+	I7Skein *skein = i7_story_get_skein(self);
+	GSList *blessed_nodes = i7_skein_get_blessed_thread_ends(skein);
+	if (blessed_nodes == NULL) {
+		return;
+	}
+
 	struct RunSkeinData *data = g_slice_new0(struct RunSkeinData);
 	data->story = self;
-	data->skein = i7_story_get_skein(self);
+	data->skein = skein;
 
 	/* Make sure the interpreter is non-interactive */
 	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_STORY);
 	data->glk = CHIMARA_GLK(self->panel[side]->tabs[I7_PANE_STORY]);
 	chimara_glk_set_interactive(data->glk, FALSE);
-	
-	GSList *blessed_nodes = i7_skein_get_blessed_thread_ends(data->skein);
+
 	g_slist_foreach(blessed_nodes, (GFunc)run_entire_skein_loop, data);
 	g_slist_free(blessed_nodes);
 
