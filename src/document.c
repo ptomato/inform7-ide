@@ -1133,24 +1133,6 @@ i7_document_show_entire_source(I7Document *self)
 	priv->current_heading = gtk_tree_path_new_first();
 }
 
-/* Displays the message text in the status bar of the current window. */
-void
-i7_document_display_status_message(I7Document *self, const char *message, const char *context)
-{
-	GtkStatusbar *status = GTK_STATUSBAR(self->statusbar);
-	guint id = gtk_statusbar_get_context_id(status, context);
-	gtk_statusbar_pop(status, id);
-	gtk_statusbar_push(status, id, message);
-}
-
-void
-i7_document_remove_status_message(I7Document *self, const char *context)
-{
-	GtkStatusbar *status = GTK_STATUSBAR(self->statusbar);
-	guint id = gtk_statusbar_get_context_id(status, context);
-	gtk_statusbar_pop(status, id);
-}
-
 struct StatusData {
 	GtkStatusbar *status;
 	guint context_id;
@@ -1176,29 +1158,22 @@ i7_document_flash_status_message(I7Document *document, const gchar *message, con
 	g_timeout_add_seconds(1, (GSourceFunc)end_flash_message, data);
 }
 
-/* Pulses the progress bar */
-void
-i7_document_display_progress_busy(I7Document *document)
-{
-	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(document->progressbar));
-}
-
 /* Displays a percentage in the progress indicator */
-void
+static void
 i7_document_display_progress_percentage(I7Document *document, gdouble fraction)
 {
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), fraction);
 }
 
 /* Displays a message in the progress indicator */
-void
+static void
 i7_document_display_progress_message(I7Document *document, const gchar *message)
 {
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(document->progressbar), message);
 }
 
 /* Clears the message and progress percentage */
-void
+static void
 i7_document_clear_progress(I7Document *document)
 {
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), 0.0);

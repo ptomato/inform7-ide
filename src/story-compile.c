@@ -43,10 +43,8 @@ typedef struct _CompilerData {
 static void prepare_i7_compiler(CompilerData *data);
 static void start_i7_compiler(CompilerData *data);
 static void finish_i7_compiler(GPid pid, gint status, CompilerData *data);
-static void prepare_i6_compiler(CompilerData *data);
 static void start_i6_compiler(CompilerData *data);
 static void finish_i6_compiler(GPid pid, gint status, CompilerData *data);
-static void prepare_cblorb_compiler(CompilerData *data);
 static void start_cblorb_compiler(CompilerData *data);
 static void finish_cblorb_compiler(GPid pid, gint status, CompilerData *data);
 static void finish_compiling(CompilerData *data);
@@ -132,21 +130,18 @@ prepare_i7_compiler(CompilerData *data)
 		}
 	}
 	g_object_unref(uuid_file);
-
-	/* Display status message */
-	i7_document_display_status_message(I7_DOCUMENT(data->story), _("Compiling Inform 7 to Inform 6"), COMPILE_OPERATIONS);
 }
 
 typedef struct {
-	I7Document *document;
+	I7Story *story;
 	double fraction;
 } ProgressPercentageData;
 
 static ProgressPercentageData *
-progress_percentage_data_new(I7Document *document, double fraction)
+progress_percentage_data_new(I7Story *story, double fraction)
 {
 	ProgressPercentageData *retval = g_new0(ProgressPercentageData, 1);
-	retval->document = g_object_ref(document);
+	retval->story = g_object_ref(story);
 	retval->fraction = fraction;
 	return retval;
 }
@@ -154,28 +149,28 @@ progress_percentage_data_new(I7Document *document, double fraction)
 static void
 progress_percentage_data_free(ProgressPercentageData *data)
 {
-	g_object_unref(data->document);
+	g_object_unref(data->story);
 	g_free(data);
 }
 
 static gboolean
 ui_display_progress_percentage(ProgressPercentageData *data)
 {
-	i7_document_display_progress_percentage(data->document, data->fraction);
+	i7_blob_set_progress(data->story->blob, data->fraction);
 	return G_SOURCE_REMOVE;
 }
 
-/* Display the Inform 7 compiler's status in the app status bar. This function
+/* Display the Inform 7 compiler's status in the blob. This function
  * is called from a child process watch, so the GDK lock is not held and must be
  * acquired for any GUI calls. */
 static void
-display_i7_status(I7Document *document, gchar *text)
+display_i7_status(I7Story *story, const char *text)
 {
 	gint percent;
 	gchar *message;
 
 	if(sscanf(text, " ++ %d%% (%m[^)]", &percent, &message) == 2) {
-		ProgressPercentageData *data = progress_percentage_data_new(document, percent / 100.0);
+		ProgressPercentageData *data = progress_percentage_data_new(story, percent / 100.0);
 		gdk_threads_add_idle_full(G_PRIORITY_DEFAULT_IDLE, (GSourceFunc)ui_display_progress_percentage, data, (GDestroyNotify)progress_percentage_data_free);
 		free(message);
 	}
@@ -234,10 +229,6 @@ ui_finish_i7_compiler(FinishI7Data *data)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
-
-	/* Clear the progress indicator */
-	i7_document_remove_status_message(I7_DOCUMENT(data->story), COMPILE_OPERATIONS);
-	i7_document_clear_progress(I7_DOCUMENT(data->story));
 
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG)) {
 		/* Update */
@@ -328,24 +319,7 @@ finish_i7_compiler(GPid pid, gint status, CompilerData *data)
 		return;
 	}
 
-	prepare_i6_compiler(data);
 	start_i6_compiler(data);
-}
-
-static gboolean
-ui_prepare_i6_compiler(I7Document *document)
-{
-	i7_document_display_status_message(document, _("Running Inform 6..."), COMPILE_OPERATIONS);
-	return G_SOURCE_REMOVE;
-}
-
-/* Get ready to run the I6 compiler; right now this does almost nothing. This
- function is called from a child process watch, so GUI calls must be done
- asynchronously from here. */
-static void
-prepare_i6_compiler(CompilerData *data)
-{
-	gdk_threads_add_idle((GSourceFunc)ui_prepare_i6_compiler, I7_DOCUMENT(data->story));
 }
 
 /* Determine i6 compiler switches, given the compiler action and the virtual
@@ -379,7 +353,7 @@ get_i6_compiler_switches(gboolean use_debug_flags, int format)
 static gboolean
 ui_display_progress_busy(I7Document *document)
 {
-	i7_document_display_progress_busy(document);
+	i7_blob_pulse_progress(I7_STORY(document)->blob);
 	return G_SOURCE_REMOVE;
 }
 
@@ -493,10 +467,6 @@ finish_i6_data_free(FinishI6Data *data)
 static gboolean
 ui_finish_i6_compiler(FinishI6Data *data)
 {
-	/* Clear the progress indicator */
-	i7_document_remove_status_message(I7_DOCUMENT(data->story), COMPILE_OPERATIONS);
-	i7_document_clear_progress(I7_DOCUMENT(data->story));
-
 	/* Display the exit status of the I6 compiler in the Progress tab */
 	gchar *statusmsg = g_strdup_printf(_("\nCompiler finished with code %d\n"),
 	  data->exit_code);
@@ -540,23 +510,7 @@ finish_i6_compiler(GPid pid, gint status, CompilerData *data)
 		return;
 	}
 
-	prepare_cblorb_compiler(data);
 	start_cblorb_compiler(data);
-}
-
-static gboolean
-ui_prepare_cblorb_compiler(I7Document *document)
-{
-	i7_document_display_status_message(document, _("Running cBlorb..."), COMPILE_OPERATIONS);
-	return G_SOURCE_REMOVE;
-}
-
-/* Get ready to run the CBlorb compiler. This function is called from a child
- process watch, so any GUI calls must be done asynchronously from here. */
-static void
-prepare_cblorb_compiler(CompilerData *data)
-{
-	gdk_threads_add_idle((GSourceFunc)ui_prepare_cblorb_compiler, I7_DOCUMENT(data->story));
 }
 
 static void
@@ -590,21 +544,11 @@ start_cblorb_compiler(CompilerData *data)
 	g_child_watch_add(child_pid, (GChildWatchFunc)finish_cblorb_compiler, data);
 }
 
-static gboolean
-ui_finish_cblorb_compiler(I7Document *document)
-{
-	/* Clear the progress indicator */
-	i7_document_remove_status_message(document, COMPILE_OPERATIONS);
-	return G_SOURCE_REMOVE;
-}
-
 /* Display any errors from cBlorb. This function is called from a child process
  watch, so the GDK lock is not held and must be acquired for any GUI calls. */
 static void
 finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 {
-	gdk_threads_add_idle((GSourceFunc)ui_finish_cblorb_compiler, I7_DOCUMENT(data->story));
-
 	/* Get exit code from CBlorb */
 	int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
 
@@ -621,12 +565,6 @@ finish_cblorb_compiler(GPid pid, gint status, CompilerData *data)
 static gboolean
 ui_finish_compiling(CompilerData *data)
 {
-	/* Display status message */
-	i7_document_remove_status_message(I7_DOCUMENT(data->story), COMPILE_OPERATIONS);
-	i7_document_flash_status_message(I7_DOCUMENT(data->story),
-		data->success? _("Compiling succeeded.") : _("Compiling failed."),
-		COMPILE_OPERATIONS);
-
 	/* Switch the Results tab to the Report page */
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
 	html_load_file(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->results_tabs[I7_RESULTS_TAB_REPORT]), data->results_file);
@@ -733,6 +671,8 @@ project. This is a callback and the GDK lock is held when entering this
 void
 i7_story_save_compiler_output(I7Story *story, const gchar *dialog_title)
 {
+	i7_blob_clear_progress(story->blob);
+
 	GFile *file = NULL;
 	g_autoptr(GFile) copy_blorb_dest_file = i7_story_get_copy_blorb_dest_file(story);
 	g_autoptr(GFile) compiler_output_file = i7_story_get_compiler_output_file(story);

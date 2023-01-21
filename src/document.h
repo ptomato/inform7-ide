@@ -108,7 +108,6 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 /* Statusbar Contexts */
 #define FILE_OPERATIONS    "File"
 #define SEARCH_OPERATIONS  "Search"
-#define COMPILE_OPERATIONS "Compile"
 
 GType i7_document_get_type(void) G_GNUC_CONST;
 GFile *i7_document_get_file(I7Document *self);
@@ -153,13 +152,7 @@ GtkTreePath *i7_document_get_deeper_heading(I7Document *self);
 GtkTreePath *i7_document_get_deepest_heading(I7Document *self);
 void i7_document_show_entire_source(I7Document *self);
 
-void i7_document_display_status_message(I7Document *self, const char *message, const char *context);
-void i7_document_remove_status_message(I7Document *self, const char *context);
 void i7_document_flash_status_message(I7Document *self, const char *message, const char *context);
-void i7_document_display_progress_busy(I7Document *self);
-void i7_document_display_progress_percentage(I7Document *self, double fraction);
-void i7_document_display_progress_message(I7Document *self, const char *message);
-void i7_document_clear_progress(I7Document *self);
 
 void i7_document_set_spellcheck(I7Document *self, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *self);

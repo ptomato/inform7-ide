@@ -20,6 +20,7 @@
 
 #include "actions.h"
 #include "app.h"
+#include "blob.h"
 #include "builder.h"
 #include "configfile.h"
 #include "document.h"
@@ -1144,6 +1145,8 @@ i7_story_init(I7Story *self)
 	/* Build the title bar */
 	I7_DOCUMENT(self)->titlebar = GTK_HEADER_BAR(gtk_builder_get_object(builder, "titlebar"));
 	gtk_window_set_titlebar(GTK_WINDOW(self), GTK_WIDGET(I7_DOCUMENT(self)->titlebar));
+	self->blob = i7_blob_new();
+	gtk_header_bar_pack_end(I7_DOCUMENT(self)->titlebar, GTK_WIDGET(self->blob));
 
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(facing_pages);

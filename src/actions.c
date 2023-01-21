@@ -800,7 +800,7 @@ action_stop(GSimpleAction *action, GVariant *parameter, I7Story *story)
 void
 action_refresh_index(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
-	i7_story_compile(story, FALSE, TRUE, (CompileActionFunc)i7_story_show_pane, GUINT_TO_POINTER(I7_PANE_INDEX));
+	i7_story_compile(story, FALSE, TRUE, (CompileActionFunc)i7_story_finish_refresh_index, NULL);
 }
 
 /* Replay->Replay Last Commands */

@@ -16,7 +16,7 @@ resources = gnome.compile_resources('resources',
         meson.source_root() / 'retrospective'])
 
 gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
-    'app-retrospective.c', 'builder.c', 'configfile.c', 'document.c',
+    'app-retrospective.c', 'blob.c', 'builder.c', 'configfile.c', 'document.c',
     'document-search.c', 'elastic.c', 'error.c', 'extension.c', 'file.c',
     'history.c', 'html.c', 'lang.c', 'newdialog.c', 'node.c', 'notepad.c',
     'panel.c', 'prefs.c', 'project-settings.c', 'searchwindow.c', 'skein.c',
@@ -37,8 +37,9 @@ executable('inform7-ide', 'main.c', export_dynamic: true,
     install_rpath: get_option('prefix') / get_option('libdir'))
 
 test_data_dir = meson.current_source_dir() / 'tests'
-test_inform7 = executable('test-inform7', 'tests/difftest.c', 'tests/test.c',
-    'tests/app-test.c', 'tests/skein-test.c', 'tests/story-test.c',
+test_inform7 = executable('test-inform7', 'tests/app-test.c',
+    'tests/blob-test.c', 'tests/difftest.c', 'tests/skein-test.c',
+    'tests/story-test.c', 'tests/test.c',
     include_directories: top_include,
     dependencies: [glib, gtk, gtksourceview, goocanvas], link_whole: gui)
 
