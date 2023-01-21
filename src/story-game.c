@@ -5,6 +5,8 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <libchimara/chimara-glk.h>
@@ -20,24 +22,33 @@
  - methods for communicating with the Chimara interpreter
 */
 
+static bool
+load_and_start_interpreter(I7Story *self, ChimaraIF *glk)
+{
+	GError *err = NULL;
+
+	g_autoptr(GFile) compiler_output_file = i7_story_get_compiler_output_file(self);
+	if (!chimara_if_run_game_file(glk, compiler_output_file, &err)) {
+		error_dialog(GTK_WINDOW(self), err, _("Could not load interpreter: "));
+		return false;
+	}
+
+	return true;
+}
+
 /* Compile finished action: whatever the final product of the compiling process
  * was, tell Chimara to run it. */
 void
 i7_story_run_compiler_output(I7Story *self)
 {
-	GError *err = NULL;
-
 	/* Rewind the Skein to the beginning */
 	i7_skein_reset(i7_story_get_skein(self), TRUE);
 
 	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_STORY);
 	ChimaraIF *glk = CHIMARA_IF(self->panel[side]->tabs[I7_PANE_STORY]);
 
-	/* Load and start the interpreter */
-	g_autoptr(GFile) compiler_output_file = i7_story_get_compiler_output_file(self);
-	if (!chimara_if_run_game_file(glk, compiler_output_file, &err)) {
-		error_dialog(GTK_WINDOW(self), err, _("Could not load interpreter: "));
-	}
+	if (!load_and_start_interpreter(self, glk))
+		return;
 
 	/* Display and set the focus to the interpreter */
 	i7_story_show_pane(self, I7_PANE_STORY);
@@ -48,16 +59,11 @@ i7_story_run_compiler_output(I7Story *self)
 void
 i7_story_test_compiler_output(I7Story *self)
 {
-	GError *err = NULL;
-
 	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_STORY);
 	ChimaraIF *glk = CHIMARA_IF(self->panel[side]->tabs[I7_PANE_STORY]);
 
-	/* Load and start the interpreter */
-	g_autoptr(GFile) compiler_output_file = i7_story_get_compiler_output_file(self);
-	if (!chimara_if_run_game_file(glk, compiler_output_file, &err)) {
-		error_dialog(GTK_WINDOW(self), err, _("Could not load interpreter: "));
-	}
+	if (!load_and_start_interpreter(self, glk))
+		return;
 
 	/* Tell the interpreter to "test me" */
 	i7_skein_reset(i7_story_get_skein(self), TRUE);
@@ -94,8 +100,6 @@ on_waiting(ChimaraGlk *glk)
 static void
 play_commands(I7Story *self, GSList *commands, gboolean start_interpreter)
 {
-	GError *err = NULL;
-
 	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_STORY);
 	ChimaraIF *glk = CHIMARA_IF(self->panel[side]->tabs[I7_PANE_STORY]);
 
@@ -106,10 +110,8 @@ play_commands(I7Story *self, GSList *commands, gboolean start_interpreter)
 
 	/* Load and start the interpreter */
 	if(start_interpreter) {
-		g_autoptr(GFile) compiler_output_file = i7_story_get_compiler_output_file(self);
-		if(!chimara_if_run_game_file(glk, compiler_output_file, &err)) {
-			error_dialog(GTK_WINDOW(self), err, _("Could not load interpreter: "));
-		}
+		if (!load_and_start_interpreter(self, glk))
+			return;
 		i7_skein_reset(i7_story_get_skein(self), TRUE);
 	}
 
@@ -172,7 +174,6 @@ struct RunSkeinData {
 	I7Story *story;
 	I7Skein *skein;
 	ChimaraGlk *glk;
-	GFile *file_to_run;
 
 	GSList *commands;
 	unsigned long started_handler, waiting_handler;
@@ -222,8 +223,6 @@ it in preparation for the next knot. */
 static void
 run_entire_skein_loop(I7Node *node, struct RunSkeinData *data)
 {
-	GError *err = NULL;
-
 	data->commands = i7_skein_get_commands_to_node(data->skein, i7_skein_get_root_node(data->skein), node);
 
 	i7_skein_reset(data->skein, TRUE);
@@ -237,8 +236,7 @@ run_entire_skein_loop(I7Node *node, struct RunSkeinData *data)
 	data->finished = FALSE;
 
 	/* Start the interpreter */
-	if(!chimara_if_run_game_file(CHIMARA_IF(data->glk), data->file_to_run, &err)) {
-		error_dialog(GTK_WINDOW(data->story), err, _("Could not load interpreter: "));
+	if (!load_and_start_interpreter(data->story, CHIMARA_IF(data->glk))) {
 		g_signal_handler_disconnect(data->glk, data->waiting_handler);
 		g_signal_handler_disconnect(data->glk, data->started_handler);
 		goto finally;
@@ -271,7 +269,6 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *self)
 	struct RunSkeinData *data = g_slice_new0(struct RunSkeinData);
 	data->story = self;
 	data->skein = i7_story_get_skein(self);
-	data->file_to_run = i7_story_get_compiler_output_file(self);
 
 	/* Make sure the interpreter is non-interactive */
 	I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_STORY);
@@ -284,7 +281,6 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *self)
 
 	chimara_glk_set_interactive(data->glk, TRUE);
 
-	g_object_unref(data->file_to_run);
 	g_slice_free(struct RunSkeinData, data);
 }
 
