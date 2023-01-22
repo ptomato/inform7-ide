@@ -1449,7 +1449,7 @@ i7_app_update_extensions_menu(I7App *self)
 
 	gtk_tree_model_get_iter_first(model, &author);
 	do {
-		gchar *authorname;
+		g_autofree char *authorname = NULL;
 		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);
 
 		if(gtk_tree_model_iter_children(model, &title, &author))
