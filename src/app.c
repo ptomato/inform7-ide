@@ -425,25 +425,22 @@ is_valid_extension(I7App *self, const char *text, char **version, char **name, c
 	g_return_val_if_fail(text != NULL, FALSE);
 
 	GMatchInfo *match = NULL;
-	char *matched_name, *matched_author;
 
 	if(!g_regex_match(self->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
 		g_match_info_free(match);
 		return FALSE;
 	}
-	matched_name = g_match_info_fetch_named(match, "title");
-	matched_author = g_match_info_fetch_named(match, "author");
+	g_autofree char *matched_name = g_match_info_fetch_named(match, "title");
+	g_autofree char *matched_author = g_match_info_fetch_named(match, "author");
 	if(matched_name == NULL || matched_author == NULL) {
-		g_free(matched_name);
-		g_free(matched_author);
 		g_match_info_free(match);
 		return FALSE;
 	}
 
 	if(name != NULL)
-		*name = matched_name;
+		*name = g_steal_pointer(&matched_name);
 	if(author != NULL)
-		*author = matched_author;
+		*author = g_steal_pointer(&matched_author);
 	if(version != NULL)
 		*version = g_match_info_fetch_named(match, "version");
 

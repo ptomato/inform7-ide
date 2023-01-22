@@ -643,6 +643,7 @@ ui_finish_compiling(CompilerData *data)
 	g_object_unref(data->output_file);
 	g_object_unref(data->builddir_file);
 	g_clear_object(&data->results_file);
+    g_clear_pointer(&data->line_remainder, g_free);
 	g_slice_free(CompilerData, data);
 
 	return G_SOURCE_REMOVE;

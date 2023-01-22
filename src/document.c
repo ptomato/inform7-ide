@@ -365,7 +365,7 @@ i7_document_refresh_title(I7Document *self)
 
 	if(priv->modified)
 	{
-		gchar *title = g_strconcat("*", documentname, NULL);
+		g_autofree char *title = g_strconcat("*", documentname, NULL);
 		gtk_window_set_title(GTK_WINDOW(self), title);
 	}
 	else
