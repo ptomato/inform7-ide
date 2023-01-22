@@ -135,7 +135,7 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 	g_menu_remove_all(recent_menu);
 
 	for (GList *iter = recent; iter != NULL; iter = g_list_next(iter)) {
-		GtkRecentInfo *info = gtk_recent_info_ref(iter->data);
+		g_autoptr(GtkRecentInfo) info = iter->data;
 		if (gtk_recent_info_has_application(info, "Inform 7")) {
 			const char *group = NULL;
 			if (gtk_recent_info_has_group(info, "inform7_project"))
@@ -152,8 +152,8 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 			g_autoptr(GMenuItem) item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
 			g_menu_append_item(recent_menu, item);
 		}
-		gtk_recent_info_unref(info);
 	}
+    g_list_free(recent);
 }
 
 static void
