@@ -59,10 +59,10 @@ write_channel_hook(GIOChannel *ioc, GIOCondition cond, IOHookData *data)
 	/* data for us to read? */
 	if(cond & (G_IO_IN | G_IO_PRI)) {
 		GIOStatus result;
-		gchar scratch[BUFSIZE];
+		gchar scratch[BUFSIZE + 1];
 		gsize chars_read = 0;
 
-		memset(scratch, 0, BUFSIZE); /* clear the buffer */
+		memset(scratch, 0, BUFSIZE + 1); /* clear the buffer */
 		result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
 		  NULL);
 
