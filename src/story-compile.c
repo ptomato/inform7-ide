@@ -192,8 +192,9 @@ start_i7_compiler(CompilerData *data)
 	g_autofree char *version_id = i7_story_get_language_version(data->story);
 	I7StoryFormat format = i7_story_get_story_format(data->story);
 	bool reproducible = i7_story_get_nobble_rng(data->story);
+    bool basic_inform = i7_story_get_basic_inform(data->story);
 	g_auto(GStrv) commandline = i7_app_get_inform_command_line(theapp, version_id,
-		format, data->use_debug_flags, reproducible, data->input_file);
+		format, data->use_debug_flags, reproducible, basic_inform, data->input_file);
 
 	/* Run the command and pipe its output to the text buffer. Also pipe stderr
 	through a function that analyzes the progress messages and puts them in the

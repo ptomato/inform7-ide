@@ -154,7 +154,7 @@ get_inform_format_arg(ArgsStyle style, I7StoryFormat format, bool debug)
 }
 
 char **
-i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, bool debug, bool reproducible, GFile *project_file)
+i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, bool debug, bool reproducible, bool basic_inform, GFile *project_file)
 {
 	g_autoptr(GPtrArray) builder = g_ptr_array_new_with_free_func(g_free);
 
@@ -194,6 +194,11 @@ i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, 
 
 	if(reproducible)
 		g_ptr_array_add(builder, g_strdup("-rng"));
+
+    if (basic_inform) {
+        g_assert(style != INFORM_9_1 && style != INFORM_9_2);
+        g_ptr_array_add(builder, g_strdup("-basic"));
+    }
 
 	g_ptr_array_add(builder, NULL);
 	return (char **)g_ptr_array_steal(builder, NULL);

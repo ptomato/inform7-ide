@@ -35,6 +35,8 @@ struct _I7ProjectSettings {
 	HdyPreferencesPage parent;
 
 	/* template children */
+	GtkSwitch *basic_inform;
+	HdyActionRow *basic_inform_row;
 	GtkSwitch *blorb;
 	GtkSwitch *nobble_rng;
 	HdyComboRow *story_format;
@@ -138,6 +140,14 @@ on_language_version_selected_index_notify(HdyComboRow *language_version, GParamS
 	int ix = hdy_combo_row_get_selected_index(language_version);
 	I7Retrospective *record = I7_RETROSPECTIVE(g_list_model_get_item(G_LIST_MODEL(retrospectives), ix));
 	hdy_action_row_set_subtitle(HDY_ACTION_ROW(language_version), i7_retrospective_get_description(record));
+
+	const char *id = i7_retrospective_get_id(record);
+	if (g_str_equal(id, "6L02") || g_str_equal(id, "6L38") || g_str_equal(id, "6M62")) {
+		gtk_switch_set_active(self->basic_inform, FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(self->basic_inform_row), FALSE);
+	} else {
+		gtk_widget_set_sensitive(GTK_WIDGET(self->basic_inform_row), TRUE);
+	}
 }
 
 /* TYPE SYSTEM */
@@ -169,6 +179,8 @@ i7_project_settings_class_init(I7ProjectSettingsClass *klass)
 {
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 	gtk_widget_class_set_template_from_resource(widget_class, "/com/inform7/IDE/ui/project-settings.ui");
+	gtk_widget_class_bind_template_child(widget_class, I7ProjectSettings, basic_inform);
+	gtk_widget_class_bind_template_child(widget_class, I7ProjectSettings, basic_inform_row);
 	gtk_widget_class_bind_template_child(widget_class, I7ProjectSettings, blorb);
 	gtk_widget_class_bind_template_child(widget_class, I7ProjectSettings, nobble_rng);
 	gtk_widget_class_bind_template_child(widget_class, I7ProjectSettings, story_format);
@@ -197,4 +209,5 @@ i7_project_settings_bind_properties(I7ProjectSettings *self, I7Story *story)
 	g_object_bind_property(story, "nobble-rng", self->nobble_rng, "active", flags);
 	g_object_bind_property_full(story, "language-version", self->language_version, "selected-index", flags,
 		language_version_to_index, index_to_language_version, NULL, NULL);
+    g_object_bind_property(story, "basic-inform", self->basic_inform, "active", flags);
 }

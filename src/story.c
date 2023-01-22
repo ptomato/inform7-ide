@@ -43,6 +43,7 @@ enum {
 	PROP_MAKE_BLORB,
 	PROP_NOBBLE_RNG,
 	PROP_LANGUAGE_VERSION,
+    PROP_BASIC_INFORM,
 };
 
 typedef struct {
@@ -272,6 +273,9 @@ i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GPara
 		case PROP_LANGUAGE_VERSION:
 			i7_story_set_language_version(self, g_value_get_string(value));
 			break;
+		case PROP_BASIC_INFORM:
+			i7_story_set_basic_inform(self, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
@@ -295,6 +299,9 @@ i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec 
 			break;
 		case PROP_LANGUAGE_VERSION:
 			g_value_take_string(value, i7_story_get_language_version(self));
+			break;
+		case PROP_BASIC_INFORM:
+			g_value_set_boolean(value, i7_story_get_basic_inform(self));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -1088,6 +1095,10 @@ i7_story_class_init(I7StoryClass *klass)
 		g_param_spec_string("language-version", "Version of Inform to use",
 			"IFOutputSettings->IFSettingCompilerVersion", "****",
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property(object_class, PROP_BASIC_INFORM,
+		g_param_spec_boolean("basic-inform", "Use Basic Inform only",
+			"IFOutputSettings->IFSettingBasicInform", FALSE,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
 static gboolean
@@ -1328,6 +1339,7 @@ i7_story_open(I7Story *self, GFile *input_file)
 	g_object_notify(object, "create-blorb");
 	g_object_notify(object, "nobble-rng");
     g_object_notify(object, "language-version");
+    g_object_notify(object, "basic-inform");
 
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(self, FALSE);
