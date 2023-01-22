@@ -59,25 +59,17 @@ read_source_file(GFile *file)
  * FUNCTIONS FOR SAVING AND LOADING STUFF
  */
 
-/* Helper function to delete a file relative to the project path; does nothing
-if file does not exist */
-static void
-delete_from_project_dir(I7Story *story, GFile *root_file, const char *subdir, const char *filename)
-{
-	GFile *file_to_delete;
+typedef struct {
+	GQueue *q;  /* type GFile; own container and contents */
+	GApplication *app;  /* own a use count */
+} CleanFilesClosure;
 
-	if(subdir) {
-		GFile *child = g_file_get_child(root_file, subdir);
-		file_to_delete = g_file_get_child(child, filename);
-		g_object_unref(child);
-	} else
-		file_to_delete = g_file_get_child(root_file, filename);
-
-	g_file_delete(file_to_delete, NULL, NULL); /* ignore errors */
-
-	g_object_unref(file_to_delete);
-	i7_document_display_progress_busy(I7_DOCUMENT(story));
-}
+/* Declare these ahead so we can read them in approximately the order they occur */
+static void on_details_dir_enumerate_finish(GFile *, GAsyncResult *, CleanFilesClosure *);
+static void on_details_dir_next_files_finish(GFileEnumerator *, GAsyncResult *, CleanFilesClosure *);
+static void on_details_dir_close_finish(GFileEnumerator *, GAsyncResult *, GApplication *);
+static void delete_queue_async(CleanFilesClosure *);
+static void on_queue_delete_finished(GFile *, GAsyncResult *, CleanFilesClosure *);
 
 /* If the "delete build files" option is checked, delete all the build files
 from the project directory */
@@ -87,67 +79,172 @@ delete_build_files(I7Story *story)
 	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
 
-	if(g_settings_get_boolean(prefs, PREFS_CLEAN_BUILD_FILES)) {
-		i7_document_display_status_message(I7_DOCUMENT(story), _("Cleaning out build files..."), FILE_OPERATIONS);
+	if (!g_settings_get_boolean(prefs, PREFS_CLEAN_BUILD_FILES))
+		return;
 
-		GFile *storyname = i7_document_get_file(I7_DOCUMENT(story));
+	g_autoptr(GFile) storyname = i7_document_get_file(I7_DOCUMENT(story));
 
-		delete_from_project_dir(story, storyname, NULL, "Metadata.iFiction");
-		delete_from_project_dir(story, storyname, NULL, "Release.blurb");
-		delete_from_project_dir(story, storyname, "Build", "auto.inf");
-		delete_from_project_dir(story, storyname, "Build", "Debug log.txt");
-		delete_from_project_dir(story, storyname, "Build", "Map.eps");
-		/* output.z5 and .z6 are not created, but may be present in old projects */
-		delete_from_project_dir(story, storyname, "Build", "output.z5");
-		delete_from_project_dir(story, storyname, "Build", "output.z6");
-		delete_from_project_dir(story, storyname, "Build", "output.z8");
-		delete_from_project_dir(story, storyname, "Build", "output.ulx");
-		delete_from_project_dir(story, storyname, "Build", "Problems.html");
-		delete_from_project_dir(story, storyname, "Build", "gameinfo.dbg");
-		delete_from_project_dir(story, storyname, "Build", "temporary file.inf");
-		delete_from_project_dir(story, storyname, "Build", "temporary file 2.inf");
-		delete_from_project_dir(story, storyname, "Build", "StatusCblorb.html");
+	CleanFilesClosure *data = g_new0(CleanFilesClosure, 1);
+	data->q = g_queue_new();
+	data->app = G_APPLICATION(theapp);
 
-		if(g_settings_get_boolean(prefs, PREFS_CLEAN_INDEX_FILES)) {
-			delete_from_project_dir(story, storyname, "Index", "Actions.html");
-			delete_from_project_dir(story, storyname, "Index", "Contents.html");
-			delete_from_project_dir(story, storyname, "Index", "Headings.xml");
-			delete_from_project_dir(story, storyname, "Index", "Kinds.html");
-			delete_from_project_dir(story, storyname, "Index", "Phrasebook.html");
-			delete_from_project_dir(story, storyname, "Index", "Rules.html");
-			delete_from_project_dir(story, storyname, "Index", "Scenes.html");
-			delete_from_project_dir(story, storyname, "Index", "World.html");
+	g_queue_push_tail(data->q, g_file_get_child(storyname, "Metadata.iFiction"));
+	g_queue_push_tail(data->q, g_file_get_child(storyname, "Release.blurb"));
 
-			/* Delete the "Details" subdirectory */
+	g_autoptr(GFile) build_dir = g_file_get_child(storyname, "Build");
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "auto.inf"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "Debug log.txt"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "Map.eps"));
+	/* output.z5 and .z6 are not created, but may be present in old projects */
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "output.z5"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "output.z6"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "output.z8"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "output.ulx"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "Problems.html"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "gameinfo.dbg"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "temporary file.inf"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "temporary file 2.inf"));
+	g_queue_push_tail(data->q, g_file_get_child(build_dir, "StatusCblorb.html"));
 
-			GFile *temp = g_file_get_child(storyname, "Index");
-			GFile *details_file = g_file_get_child(temp, "Details");
-			g_object_unref(temp);
-			g_object_unref(storyname);
+	g_application_hold(data->app);
+    delete_queue_async(data);
+}
 
-			/* Remove each file in the directory */
-			GFileEnumerator *details_dir = g_file_enumerate_children(details_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, NULL, NULL);
-			if(details_dir) {
-				GFileInfo *info;
-				while((info = g_file_enumerator_next_file(details_dir, NULL, NULL)) != NULL) {
-					const char *child_name = g_file_info_get_name(info);
-					GFile *child = g_file_get_child(details_file, child_name);
-					g_file_delete(child, NULL, NULL);
-					g_object_unref(child);
-					g_object_unref(info);
-					i7_document_display_progress_busy(I7_DOCUMENT(story));
-				}
-				g_file_enumerator_close(details_dir, NULL, NULL);
-				g_object_unref(details_dir);
-			}
+void
+delete_index_files(I7Story *story)
+{
+	I7App *theapp = I7_APP(g_application_get_default());
+	GSettings *prefs = i7_app_get_prefs(theapp);
 
-			/* Remove the directory */
-			g_file_delete(details_file, NULL, NULL);
-			g_object_unref(details_file);
-		}
+	if (!g_settings_get_boolean(prefs, PREFS_CLEAN_INDEX_FILES))
+		return;
+
+	g_autoptr(GFile) storyname = i7_document_get_file(I7_DOCUMENT(story));
+
+	CleanFilesClosure *data = g_new0(CleanFilesClosure, 1);
+    data->q = g_queue_new();
+    data->app = G_APPLICATION(theapp);
+
+	g_autoptr(GFile) index_dir = g_file_get_child(storyname, "Index");
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Actions.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Contents.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Headings.xml"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Kinds.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Phrasebook.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Rules.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Scenes.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "Welcome.html"));
+	g_queue_push_tail(data->q, g_file_get_child(index_dir, "World.html"));
+
+	/* Delete the "Details" subdirectory */
+
+	g_autoptr(GFile) details_file = g_file_get_child(index_dir, "Details");
+
+	/* Remove each file in the directory */
+	g_application_hold(data->app);
+	g_file_enumerate_children_async(details_file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NONE, G_PRIORITY_LOW,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_details_dir_enumerate_finish, data);
+}
+
+/* Enough to cover the usual number of files in Index/Details */
+#define FILES_CHUNK_SIZE 100
+
+static void
+on_details_dir_enumerate_finish(GFile *details_file, GAsyncResult *res, CleanFilesClosure *data)
+{
+	GError *err = NULL;
+	g_autoptr(GFileEnumerator) details_dir = g_file_enumerate_children_finish(details_file, res, &err);
+	if (!details_dir) {
+		if (!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+			g_message("Failed to read contents of Index/Details: %s", err->message);
+
+		/* Can't read it, but try to remove the directory anyway */
+		g_queue_push_tail(data->q, g_object_ref(details_file));
+		delete_queue_async(data);
+		return;
 	}
-	i7_document_remove_status_message(I7_DOCUMENT(story), FILE_OPERATIONS);
-	i7_document_display_progress_percentage(I7_DOCUMENT(story), 0.0);
+
+	g_debug("Index clean: read contents of Index/Details");
+
+	g_file_enumerator_next_files_async(details_dir, FILES_CHUNK_SIZE, G_PRIORITY_LOW,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_details_dir_next_files_finish, data);
+}
+
+static void
+on_details_dir_next_files_finish(GFileEnumerator *details_dir, GAsyncResult *res, CleanFilesClosure *data)
+{
+	GList *infos = g_file_enumerator_next_files_finish(details_dir, res, /* error = */ NULL);
+	unsigned count = 0;
+	GFile *details_file = g_file_enumerator_get_container(details_dir);  /* owned by details_dir */
+	for (GList *iter = infos; iter != NULL; iter = iter->next) {
+		g_autoptr(GFileInfo) info = iter->data;
+		const char *child_name = g_file_info_get_name(info);
+		GFile* child = g_file_get_child(details_file, child_name);
+		g_queue_push_tail(data->q, child);
+		count++;
+	}
+	g_list_free(infos);
+	g_debug("Index clean: listed %u files in Index/Details", count);
+
+	if (count == FILES_CHUNK_SIZE) {
+		/* There are possibly more files to delete */
+		g_file_enumerator_next_files_async(details_dir, FILES_CHUNK_SIZE, G_PRIORITY_LOW,
+			/* cancellable = */ NULL, (GAsyncReadyCallback)on_details_dir_next_files_finish, data);
+		return;
+	}
+
+	g_application_hold(data->app);  /* Happens in parallel with deleting the queue */
+	g_file_enumerator_close_async(details_dir, G_PRIORITY_LOW,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_details_dir_close_finish, data->app);
+
+	/* Remove the directory */
+	g_queue_push_tail(data->q, g_object_ref(details_file));
+
+	delete_queue_async(data);
+}
+
+static void
+on_details_dir_close_finish(GFileEnumerator *details_dir, GAsyncResult *res, GApplication *app)
+{
+	if (!g_file_enumerator_close_finish(details_dir, res, /* error = */ NULL)) {
+		g_message("Failed to close Index/Details directory enumerator");
+	} else {
+		g_debug("Index clean: closed Index/Details listing");
+	}
+	g_application_release(app);
+}
+
+static void
+delete_queue_async(CleanFilesClosure *data)
+{
+	g_autoptr(GFile) file_to_delete = g_queue_pop_head(data->q);
+	if (!file_to_delete) {
+		g_application_release(data->app);
+		g_queue_free(data->q);
+		g_free(data);
+		g_debug("Finished cleaning list of files");
+		return;
+	}
+
+	g_file_delete_async(file_to_delete, G_PRIORITY_LOW, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_queue_delete_finished, data);
+}
+
+static void
+on_queue_delete_finished(GFile *file, GAsyncResult *res, CleanFilesClosure *data)
+{
+	GError *err = NULL;
+	g_file_delete_finish(file, res, &err);
+	g_autofree char *name = g_file_get_basename(file);
+	if (g_error_matches(err, G_IO_ERROR, G_IO_ERROR_NOT_FOUND) ||
+		g_error_matches(err, G_IO_ERROR, G_IO_ERROR_NOT_EMPTY)) {
+		/* nothing */
+	} else if (err) {
+		g_message("Failed to clean build file %s: %s", name, err->message);
+	} else {
+		g_debug("Cleaned build file %s", name);
+	}
+	delete_queue_async(data);
 }
 
 /*

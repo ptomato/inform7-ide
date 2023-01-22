@@ -127,6 +127,7 @@ on_storywindow_delete_event(GtkWidget *window, GdkEvent *event)
 	GFile *file = i7_document_get_file(I7_DOCUMENT(window));
 	if(file) {
 		delete_build_files(I7_STORY(window));
+		delete_index_files(I7_STORY(window));
 		g_object_unref(file);
 	}
 
@@ -498,6 +499,7 @@ i7_story_save_as(I7Document *document, GFile *file)
 
 	/* Delete the build files from the project directory */
 	delete_build_files(self);
+	delete_index_files(self);
 
 	/* Set the folder icon to be the Inform 7 project icon */
 	file_set_custom_icon(file, "com.inform7.IDE.application-x-inform");

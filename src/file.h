@@ -17,6 +17,7 @@
 char *read_source_file(GFile *file);
 void set_source_text(GtkSourceBuffer *buffer, gchar *text);
 void delete_build_files(I7Story *story);
+void delete_index_files(I7Story *story);
 GFile *get_case_insensitive_extension(GFile *file);
 gboolean make_directory_unless_exists(GFile *file, GCancellable *cancellable, GError **error);
 gboolean file_exists_and_is_dir(GFile *file);
