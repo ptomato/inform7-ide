@@ -20,6 +20,17 @@ typedef enum {
 	INFORM_9_1
 } ArgsStyle;
 
+/* Record parsed out of retrospective.txt */
+struct _I7Retrospective {
+	GObject parent;
+
+	char *id;
+	char *display_name;
+	char *description;
+};
+
+G_DEFINE_TYPE(I7Retrospective, i7_retrospective, G_TYPE_OBJECT);
+
 static ArgsStyle
 get_args_style(const char *version_id)
 {
@@ -28,14 +39,6 @@ get_args_style(const char *version_id)
 	if (g_str_equal(version_id, "6L38") || g_str_equal(version_id, "6M62"))
 		return INFORM_9_2;
 	return INFORM_10_1;
-}
-
-static void
-retrospective_free(RetrospectiveData *self)
-{
-	g_free(self->display_name);
-	g_free(self->description);
-	g_free(self);
 }
 
 /* Helper functions for asserting the retrospective.txt file has the correct
@@ -66,13 +69,12 @@ is_present(const char *str)
 	return g_strdup(str);
 }
 
-/* Parse the retrospective.txt file and store the relevant data in a hash table
- * (key: string, value: RetrospectiveData) */
+/* Parse the retrospective.txt file and store the relevant data in a list store
+ * (type: I7Retrospective) */
 void
-parse_retrospective_txt(GHashTable **entries_out, char ***ids_out)
+parse_retrospective_txt(GListStore **store_out)
 {
-	g_assert(entries_out);
-	g_assert(ids_out);
+	g_assert(store_out);
 
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GBytes) resource = g_resources_lookup_data("/com/inform7/IDE/retrospective.txt",
@@ -81,10 +83,7 @@ parse_retrospective_txt(GHashTable **entries_out, char ***ids_out)
 		g_error("failed to look up retrospective data: %s", error->message);
 	}
 
-	GHashTable *entries = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
-		(GDestroyNotify)retrospective_free);
-	/* COMPAT: Use GStrvBuilder in GLib >= 2.68 */
-	g_autoptr(GPtrArray) ids = g_ptr_array_new_with_free_func(g_free);
+	GListStore *store = g_list_store_new(I7_TYPE_RETROSPECTIVE);
 
 	size_t len;
 	const char *retrospective_content = g_bytes_get_data(resource, &len);
@@ -95,40 +94,40 @@ parse_retrospective_txt(GHashTable **entries_out, char ***ids_out)
 
 		g_auto(GStrv) parts = g_strsplit(g_strchomp(*line), "'", -1);
 
-		RetrospectiveData *record = g_new0(RetrospectiveData, 1);
+		I7Retrospective *record = g_object_new(I7_TYPE_RETROSPECTIVE, NULL);
 
 		/* Since the retrospective.txt file is built into Inform, we are
 		 * draconian about any irregularities in the file format. */
 		g_assert(is_empty(parts[0]));
-		char *build_num = is_present(parts[1]);
+		record->id = is_present(parts[1]);
 		g_assert(is_comma(parts[2]));
 		record->display_name = is_present(parts[3]);
 		g_assert(is_comma(parts[4]));
 		record->description = is_present(parts[5]);
 		g_assert(is_empty(parts[6]));
 
-		g_ptr_array_add(ids, g_strdup(build_num));
-		bool was_new = g_hash_table_insert(entries, build_num, record);
-		g_assert(was_new);
+		g_list_store_append(store, record);
 	}
 
-	g_ptr_array_add(ids, NULL);
-	*ids_out = (char **)g_ptr_array_steal(ids, NULL);
-	*entries_out = entries;
+	*store_out = store;
 }
 
 const char *
-i7_app_get_retrospective_display_name(I7App *self, const char *id)
+i7_retrospective_get_id(const I7Retrospective *self)
 {
-	const RetrospectiveData *record = get_retrospective_data(self, id);
-	return record->display_name;
+	return self->id;
 }
 
 const char *
-i7_app_get_retrospective_description(I7App *self, const char *id)
+i7_retrospective_get_display_name(const I7Retrospective *self)
 {
-	const RetrospectiveData *record = get_retrospective_data(self, id);
-	return record->description;
+	return self->display_name;
+}
+
+const char *
+i7_retrospective_get_description(const I7Retrospective *self)
+{
+	return self->description;
 }
 
 static const char *
@@ -155,7 +154,7 @@ get_inform_format_arg(ArgsStyle style, I7StoryFormat format, bool debug)
 }
 
 char **
-i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, bool debug, bool reproducible, GFile *project_file)
+i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, bool debug, bool reproducible, bool basic_inform, GFile *project_file)
 {
 	g_autoptr(GPtrArray) builder = g_ptr_array_new_with_free_func(g_free);
 
@@ -196,6 +195,11 @@ i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, 
 	if(reproducible)
 		g_ptr_array_add(builder, g_strdup("-rng"));
 
+    if (basic_inform) {
+        g_assert(style != INFORM_9_1 && style != INFORM_9_2);
+        g_ptr_array_add(builder, g_strdup("-basic"));
+    }
+
 	g_ptr_array_add(builder, NULL);
 	return (char **)g_ptr_array_steal(builder, NULL);
 }
@@ -225,4 +229,27 @@ i7_app_get_inblorb_command_line(I7App *self, const char *version_id, GFile *blor
 
 	g_ptr_array_add(builder, NULL);
 	return (char **)g_ptr_array_steal(builder, NULL);
+}
+
+/* TYPE SYSTEM */
+
+static void
+i7_retrospective_init(I7Retrospective *self)
+{
+}
+
+static void
+i7_retrospective_finalize(GObject *obj)
+{
+	I7Retrospective *self = I7_RETROSPECTIVE(obj);
+	g_clear_pointer(&self->id, g_free);
+	g_clear_pointer(&self->display_name, g_free);
+	g_clear_pointer(&self->description, g_free);
+}
+
+static void
+i7_retrospective_class_init(I7RetrospectiveClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	object_class->finalize = i7_retrospective_finalize;
 }

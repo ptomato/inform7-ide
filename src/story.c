@@ -29,6 +29,7 @@
 #include "lang.h"
 #include "node.h"
 #include "panel.h"
+#include "project-settings.h"
 #include "searchwindow.h"
 #include "skein.h"
 #include "skein-view.h"
@@ -42,6 +43,7 @@ enum {
 	PROP_MAKE_BLORB,
 	PROP_NOBBLE_RNG,
 	PROP_LANGUAGE_VERSION,
+    PROP_BASIC_INFORM,
 };
 
 typedef struct {
@@ -271,6 +273,9 @@ i7_story_set_property(GObject *object, guint prop_id, const GValue *value, GPara
 		case PROP_LANGUAGE_VERSION:
 			i7_story_set_language_version(self, g_value_get_string(value));
 			break;
+		case PROP_BASIC_INFORM:
+			i7_story_set_basic_inform(self, g_value_get_boolean(value));
+			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 	}
@@ -294,6 +299,9 @@ i7_story_get_property(GObject *object, guint prop_id, GValue *value, GParamSpec 
 			break;
 		case PROP_LANGUAGE_VERSION:
 			g_value_take_string(value, i7_story_get_language_version(self));
+			break;
+		case PROP_BASIC_INFORM:
+			g_value_set_boolean(value, i7_story_get_basic_inform(self));
 			break;
 		default:
 			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -812,11 +820,6 @@ story_init_panel(I7Story *self, I7Panel *panel)
 
 	/* Connect other signals and properties */
 	g_signal_connect(panel->sourceview->heading_depth, "value-changed", G_CALLBACK(on_heading_depth_value_changed), self);
-	g_signal_connect(panel->z8, "toggled", G_CALLBACK(on_z8_button_toggled), self);
-	g_signal_connect(panel->glulx, "toggled", G_CALLBACK(on_glulx_button_toggled), self);
-	g_object_bind_property(self, "create-blorb", panel->blorb, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-	g_object_bind_property(self, "nobble-rng", panel->nobble_rng, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-	g_object_bind_property(self, "language-version", panel->language_version_chooser, "active-id", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 	g_signal_connect(panel->tabs[I7_PANE_SOURCE], "switch-page", G_CALLBACK(on_source_notebook_switch_page), self);
 	g_signal_connect(panel->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS], "row-activated", G_CALLBACK(on_headings_row_activated), self);
 	g_signal_connect(panel, "select-view", G_CALLBACK(on_panel_select_view), self);
@@ -832,6 +835,7 @@ story_init_panel(I7Story *self, I7Panel *panel)
 	g_signal_connect(panel->tabs[I7_PANE_STORY], "started", G_CALLBACK(on_game_started), self);
 	g_signal_connect(panel->tabs[I7_PANE_STORY], "stopped", G_CALLBACK(on_game_stopped), self);
 	g_signal_connect(panel->tabs[I7_PANE_STORY], "command", G_CALLBACK(on_game_command), self);
+    i7_project_settings_bind_properties(I7_PROJECT_SETTINGS(panel->tabs[I7_PANE_SETTINGS]), self);
 
 	/* Connect various models to various views */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(panel->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]), GTK_TEXT_BUFFER(i7_document_get_buffer(I7_DOCUMENT(self))));
@@ -1015,11 +1019,6 @@ i7_story_init(I7Story *self)
 	if(g_settings_get_boolean(prefs, PREFS_SHOW_DEBUG_LOG))
 		i7_story_add_debug_tabs(self);
 
-	/* Connect the widgets on the Settings pane to the settings properties */
-	g_object_bind_property(self->panel[LEFT]->z8, "active", self->panel[RIGHT]->z8, "active", G_BINDING_BIDIRECTIONAL);
-	g_object_bind_property(self->panel[LEFT]->glulx, "active", self->panel[RIGHT]->glulx, "active", G_BINDING_BIDIRECTIONAL);
-	g_signal_connect(self, "notify::story-format", G_CALLBACK(on_notify_story_format), NULL);
-
 	/* Set font sizes, etc. */
 	i7_document_update_fonts(I7_DOCUMENT(self));
 
@@ -1095,6 +1094,10 @@ i7_story_class_init(I7StoryClass *klass)
 	g_object_class_install_property(object_class, PROP_LANGUAGE_VERSION,
 		g_param_spec_string("language-version", "Version of Inform to use",
 			"IFOutputSettings->IFSettingCompilerVersion", "****",
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+	g_object_class_install_property(object_class, PROP_BASIC_INFORM,
+		g_param_spec_boolean("basic-inform", "Use Basic Inform only",
+			"IFOutputSettings->IFSettingBasicInform", FALSE,
 			G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 }
 
@@ -1336,6 +1339,7 @@ i7_story_open(I7Story *self, GFile *input_file)
 	g_object_notify(object, "create-blorb");
 	g_object_notify(object, "nobble-rng");
     g_object_notify(object, "language-version");
+    g_object_notify(object, "basic-inform");
 
 	/* Load index tabs if they exist */
 	i7_story_reload_index_tabs(self, FALSE);

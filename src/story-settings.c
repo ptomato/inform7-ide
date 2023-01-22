@@ -5,6 +5,8 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -56,50 +58,11 @@ create_default_settings()
 	/* IFOutputSettings->IFSettingCompilerVersion ("****", meaning 'current') */
 	obj = plist_new_string("****");
 	insert_setting(dict, "IFOutputSettings", "IFSettingCompilerVersion", obj);
+    /* IFOutputSettings->IFSettingBasicInform (false) */
+    obj = plist_new_bool(false);
+    insert_setting(dict, "IFOutputSettings", "IFSettingBasicInform", obj);
 
 	return dict;
-}
-
-void
-on_z8_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	if(value)
-		i7_story_set_story_format(story, I7_STORY_FORMAT_Z8);
-}
-
-void
-on_glulx_button_toggled(GtkToggleButton *button, I7Story *story)
-{
-	gboolean value = gtk_toggle_button_get_active(button);
-	if(value)
-		i7_story_set_story_format(story, I7_STORY_FORMAT_GLULX);
-}
-
-/* Select all the right buttons according to the story settings */
-void
-on_notify_story_format(I7Story *story)
-{
-	switch(i7_story_get_story_format(story)) {
-		case I7_STORY_FORMAT_GLULX:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->glulx), TRUE);
-			break;
-		case I7_STORY_FORMAT_Z8:
-		default:
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(story->panel[LEFT]->z8), TRUE);
-	}
-	/* The property bindings ensure that we don't have to manually set the other ones */
-}
-
-void
-on_language_version_chooser_changed(GtkComboBox *chooser, GtkLabel *description)
-{
-	const char *id = gtk_combo_box_get_active_id(chooser);
-	g_return_if_fail(id != NULL);
-
-	I7App *theapp = I7_APP(g_application_get_default());
-	const char *copy = i7_app_get_retrospective_description(theapp, id);
-	gtk_label_set_label(description, copy);
 }
 
 /* These 'get' functions provide for a default value even though we initialize a
@@ -263,4 +226,41 @@ i7_story_set_language_version(I7Story *self, const char *ver)
 		g_object_notify(G_OBJECT(self), "language-version");
 	}
 	/*plist_mem_*/free(plist_val);
+}
+
+bool
+i7_story_get_basic_inform(I7Story *self)
+{
+    g_return_val_if_fail(self || I7_IS_STORY(self), false);
+
+    plist_t settings = i7_story_get_settings(self);
+    plist_t obj = plist_access_path(settings, 2, "IFOutputSettings", "IFSettingBasicInform");
+    if(!obj)
+        return false; /* Default value */
+    uint8_t retval;
+    plist_get_bool_val(obj, &retval);
+    return retval;
+}
+
+void
+i7_story_set_basic_inform(I7Story *self, bool basic_inform)
+{
+    g_return_if_fail(self || I7_IS_STORY(self));
+
+    i7_document_set_modified(I7_DOCUMENT(self), TRUE);
+
+    plist_t settings = i7_story_get_settings(self);
+    plist_t obj = plist_access_path(settings, 2, "IFOutputSettings", "IFSettingBasicInform");
+    if(!obj) {
+        obj = plist_new_bool(basic_inform);
+        insert_setting(settings, "IFOutputSettings", "IFSettingBasicInform", obj);
+        g_object_notify(G_OBJECT(self), "create-blorb");
+        return;
+    }
+    uint8_t value;
+    plist_get_bool_val(obj, &value);
+    if (value != basic_inform) {
+        plist_set_bool_val(obj, basic_inform);
+        g_object_notify(G_OBJECT(self), "create-blorb");
+    }
 }

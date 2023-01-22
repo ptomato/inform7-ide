@@ -66,11 +66,6 @@ typedef struct {
 	GtkWidget *notebook;
 	I7SourceView *sourceview;
 	GMenu *labels_menu;
-	GtkWidget *z8;
-	GtkWidget *glulx;
-	GtkWidget *blorb;
-	GtkWidget *nobble_rng;
-	GtkWidget *language_version_chooser;
 	GtkWidget *debugging_scrolledwindow;
 	GtkWidget *inform6_scrolledwindow;
 	GtkWidget *labels;

@@ -6,14 +6,20 @@
 #pragma once
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include "app.h"
 
-/* Record parsed out of retrospective.txt */
-typedef struct {
-	char *display_name;
-	char *description;
-} RetrospectiveData;
+G_BEGIN_DECLS
 
-void parse_retrospective_txt(GHashTable **entries_out, char ***ids_out);
-const RetrospectiveData *get_retrospective_data(I7App *app, const char *id);
+#define I7_TYPE_RETROSPECTIVE i7_retrospective_get_type()
+G_DECLARE_FINAL_TYPE(I7Retrospective, i7_retrospective, I7, RETROSPECTIVE, GObject)
+
+const char *i7_retrospective_get_id(const I7Retrospective *self);
+const char *i7_retrospective_get_display_name(const I7Retrospective *self);
+const char *i7_retrospective_get_description(const I7Retrospective *self);
+
+/* private */
+void parse_retrospective_txt(GListStore **store_out);
+
+G_END_DECLS

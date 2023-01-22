@@ -26,6 +26,7 @@
 #include "html.h"
 #include "panel.h"
 #include "prefs.h"
+#include "project-settings.h"
 #include "skein-view.h"
 #include "uri-scheme.h"
 
@@ -685,12 +686,13 @@ i7_panel_init(I7Panel *self)
 	chimara_glk_set_interactive(CHIMARA_GLK(game), TRUE);
 	chimara_glk_set_protect(CHIMARA_GLK(game), FALSE);
 
+    /* Add the Settings pane */
+    I7ProjectSettings *settings = i7_project_settings_new();
+    gtk_widget_show_all(GTK_WIDGET(settings));
+    GtkWidget *settings_label = GTK_WIDGET(load_object(builder, "settings_label"));
+    gtk_notebook_insert_page(GTK_NOTEBOOK(self->notebook), GTK_WIDGET(settings), settings_label, I7_PANE_SETTINGS);
+
 	/* Save public pointers to specific widgets */
-	LOAD_WIDGET(z8);
-	LOAD_WIDGET(glulx);
-	LOAD_WIDGET(blorb);
-	LOAD_WIDGET(nobble_rng);
-	LOAD_WIDGET(language_version_chooser);
 	LOAD_WIDGET(debugging_scrolledwindow);
 	LOAD_WIDGET(inform6_scrolledwindow);
 	LOAD_WIDGET(labels);
@@ -712,9 +714,6 @@ i7_panel_init(I7Panel *self)
 	GtkWidget *labels_menu = gtk_menu_new_from_model(G_MENU_MODEL(self->labels_menu));
 	gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(self->labels), labels_menu);
 
-	/* Populate the language version chooser */
-	i7_app_foreach_retrospective(theapp, (I7AppRetrospectiveFunc)gtk_combo_box_text_append, self->language_version_chooser);
-
 	/* Save the public pointers for all the tab arrays */
 	self->tabs[I7_PANE_SOURCE] = self->sourceview->notebook;
 	self->tabs[I7_PANE_RESULTS] = GTK_WIDGET(load_object(builder, "results_notebook"));
@@ -724,7 +723,7 @@ i7_panel_init(I7Panel *self)
 	self->tabs[I7_PANE_STORY] = game;
 	self->tabs[I7_PANE_DOCUMENTATION] = GTK_WIDGET(load_object(builder, "documentation"));
 	self->tabs[I7_PANE_EXTENSIONS] = GTK_WIDGET(load_object(builder, "extensions"));
-	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(load_object(builder, "settings"));
+	self->tabs[I7_PANE_SETTINGS] = GTK_WIDGET(settings);
 	self->source_tabs[I7_SOURCE_VIEW_TAB_CONTENTS] = self->sourceview->headings;
 	self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] = self->sourceview->source;
 	const gchar *results_tab_names[] = { "progress", "debugging", "report", "inform6" };
