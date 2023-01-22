@@ -149,7 +149,7 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 
             g_autofree char *escaped_uri = g_strescape(gtk_recent_info_get_uri(info), NULL);
 			g_autofree char *action = g_strdup_printf("app.open-recent((\"%s\",'%s'))", escaped_uri, group);
-			GMenuItem *item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
+			g_autoptr(GMenuItem) item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
 			g_menu_append_item(recent_menu, item);
 		}
 		gtk_recent_info_unref(info);
@@ -1454,7 +1454,7 @@ i7_app_update_extensions_menu(I7App *self)
 
 		if(gtk_tree_model_iter_children(model, &title, &author))
 		{
-			GMenu *extmenu = g_menu_new();
+			g_autoptr(GMenu) extmenu = g_menu_new();
 			do {
 				char *extname;
 				GFile *extension_file;
@@ -1465,7 +1465,7 @@ i7_app_update_extensions_menu(I7App *self)
 					I7_APP_EXTENSION_FILE, &extension_file,
 					-1);
 				g_autofree char *uri = g_file_get_uri(extension_file);
-				GMenuItem *extitem = g_menu_item_new(extname, NULL);
+				g_autoptr(GMenuItem) extitem = g_menu_item_new(extname, NULL);
 				if(readonly) {
 					g_menu_item_set_icon(extitem, builtin_emblem);
 					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, TRUE);
