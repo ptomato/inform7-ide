@@ -58,11 +58,7 @@ check_and_load_idle(I7Story *story)
 
 /* Load all the correct files in the index tabs, if they exist */
 void
-i7_story_reload_index_tabs(I7Story *story, gboolean wait)
+i7_story_reload_index_tabs(I7Story *story)
 {
-	if(wait)
-		while(check_and_load_idle(story))
-			;
-	else
-		g_idle_add((GSourceFunc)check_and_load_idle, story);
+	g_idle_add((GSourceFunc)check_and_load_idle, story);
 }

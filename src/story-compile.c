@@ -264,7 +264,7 @@ ui_finish_i7_compiler(FinishI7Data *data)
 	}
 
 	/* Reload the Index in the background */
-	i7_story_reload_index_tabs(data->story, FALSE);
+	i7_story_reload_index_tabs(data->story);
 
 	return G_SOURCE_REMOVE;
 }

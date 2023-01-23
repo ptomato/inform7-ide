@@ -1344,7 +1344,7 @@ i7_story_open(I7Story *self, GFile *input_file)
     g_object_notify(object, "basic-inform");
 
 	/* Load index tabs if they exist */
-	i7_story_reload_index_tabs(self, FALSE);
+	i7_story_reload_index_tabs(self);
 
 	/* Check if the story uses the old-style name for the Materials folder, and if
 	so, quietly rename it */
