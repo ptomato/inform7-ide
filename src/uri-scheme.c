@@ -71,11 +71,13 @@ on_inform_file_read(GFile *real_file, GAsyncResult *result, WebKitURISchemeReque
 		webkit_uri_scheme_request_finish_error(request, error);
 		g_autofree char *uri = g_file_get_uri(file);
 		g_warning("problem reading %s: %s", uri, error->message);
+		g_object_unref(request);
 		return;
 	}
 
 	webkit_uri_scheme_request_finish(request, G_INPUT_STREAM(stream), -1,
 		NULL /* guess mimetype from extension */);
+	g_object_unref(request);
 }
 
 static void
