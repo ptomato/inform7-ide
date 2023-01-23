@@ -109,7 +109,6 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 #define FILE_OPERATIONS    "File"
 #define SEARCH_OPERATIONS  "Search"
 #define COMPILE_OPERATIONS "Compile"
-#define INDEX_TABS         "Index"
 
 GType i7_document_get_type(void) G_GNUC_CONST;
 GFile *i7_document_get_file(I7Document *self);

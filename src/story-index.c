@@ -14,46 +14,69 @@
 #include "panel.h"
 #include "story.h"
 
-static void
-load_index_file(I7Story *story, int counter)
-{
-	GFile *parent = i7_document_get_file(I7_DOCUMENT(story));
-	GFile *child1 = g_file_get_child(parent, "Index");
-	GFile *file = g_file_get_child(child1, i7_panel_index_names[counter]);
-	g_object_unref(parent);
-	g_object_unref(child1);
+typedef struct {
+	I7Story *story;
+	GQueue *q;  /* element type GFile */
+	I7PaneIndexTab ix;
+} IndexLoadClosure;
 
-	if(g_file_query_exists(file, NULL)) {
-		html_load_file(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]), file);
-		html_load_file(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]), file);
+static void
+on_index_file_load_finish(GFile *file, GAsyncResult *res, IndexLoadClosure *data)
+{
+	g_autofree char *contents = NULL;
+	g_autoptr(GError) err = NULL;
+	if (!g_file_load_contents_finish(file, res, &contents, /* length = */ NULL, /* etag = */ NULL, &err)) {
+		if (!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+			g_critical("Index page %u not loaded for other reason than not found: %s", data->ix, err->message);
+
+		html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->index_tabs[data->ix]));
+		html_load_blank(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->index_tabs[data->ix]));
 	} else {
-		html_load_blank(WEBKIT_WEB_VIEW(story->panel[LEFT]->index_tabs[counter]));
-		html_load_blank(WEBKIT_WEB_VIEW(story->panel[RIGHT]->index_tabs[counter]));
+		g_autofree char *base_url = g_file_get_uri(file);
+		webkit_web_view_load_html(WEBKIT_WEB_VIEW(data->story->panel[LEFT]->index_tabs[data->ix]), contents, base_url);
+		webkit_web_view_load_html(WEBKIT_WEB_VIEW(data->story->panel[RIGHT]->index_tabs[data->ix]), contents, base_url);
 	}
-	g_object_unref(file);
+
+	g_debug("Index load: loaded page %u", data->ix);
+
+	g_autoptr(GFile) next_file = g_queue_pop_head(data->q);
+	if (next_file) {
+		data->ix++;
+		g_file_load_contents_async(next_file, /* cancellable = */ NULL,
+			(GAsyncReadyCallback)on_index_file_load_finish, data);
+		return;
+	}
+
+	g_debug("Index load: finished loading pages");
+
+	g_object_unref(data->story);
+	g_queue_free(data->q);
+	g_free(data);
 }
 
-/* Idle function to check whether an index file exists and to load it, or a
-blank page if it doesn't exist. */
+/* Idle function to load the index pages. This is done in idle time because the
+ * index isn't what a user sees immediately when the app starts. */
 static gboolean
 check_and_load_idle(I7Story *story)
 {
-	static I7PaneIndexTab counter = 0;
+	g_autoptr(GFile) parent = i7_document_get_file(I7_DOCUMENT(story));
+	g_autoptr(GFile) index_dir = g_file_get_child(parent, "Index");
 
-	load_index_file(story, counter);
-	counter++; /* next time, load the next tab */
-	if(counter == I7_INDEX_NUM_TABS) {
-		counter = 0; /* next time, load the first tab */
-		i7_document_display_progress_percentage(I7_DOCUMENT(story), 0.0);
-		i7_document_remove_status_message(I7_DOCUMENT(story), INDEX_TABS);
-		return FALSE; /* quit the cycle */
+	IndexLoadClosure *data = g_new0(IndexLoadClosure, 1);
+	data->story = g_object_ref(story);
+	data->q = g_queue_new();
+	data->ix = 0;
+
+	for (I7PaneIndexTab counter = 0; counter < I7_INDEX_NUM_TABS; counter++) {
+		GFile* index_file = g_file_get_child(index_dir, i7_panel_index_names[counter]);
+		g_queue_push_tail(data->q, index_file);
 	}
 
-	/* Update the status bar */
-	i7_document_display_progress_percentage(I7_DOCUMENT(story), (gdouble)counter / (gdouble)I7_INDEX_NUM_TABS);
-	i7_document_display_status_message(I7_DOCUMENT(story), _("Reloading index..."), INDEX_TABS);
+	g_autoptr(GFile) index_file = g_queue_pop_head(data->q);
+	g_file_load_contents_async(index_file, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_index_file_load_finish, data);
 
-	return TRUE; /* make sure there is a next time */
+	return G_SOURCE_REMOVE;
 }
 
 /* Load all the correct files in the index tabs, if they exist */
