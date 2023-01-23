@@ -259,15 +259,14 @@ on_begin_print(GtkPrintOperation *print, GtkPrintContext *context,
 	g_autofree char *fontstring = i7_app_get_document_font_string(theapp);
 	gtk_source_print_compositor_set_body_font_name(compositor, fontstring);
 
-	/* Display a notification in the status bar while paginating */
-	i7_document_display_status_message(document, _("Paginating..."), PRINT_OPERATIONS);
+	/* This is unlikely to block the UI significantly, but set the status to
+	 * busy while it's happening just in case */
+	g_application_mark_busy(G_APPLICATION(theapp));
 	while(!gtk_source_print_compositor_paginate(compositor, context)) {
-		i7_document_display_progress_percentage(document, gtk_source_print_compositor_get_pagination_progress(compositor));
 		while(gtk_events_pending())
 			gtk_main_iteration();
 	}
-	i7_document_display_progress_percentage(document, 0.0);
-	i7_document_remove_status_message(document, PRINT_OPERATIONS);
+	g_application_unmark_busy(G_APPLICATION(theapp));
 
 	gtk_print_operation_set_n_pages(print, gtk_source_print_compositor_get_n_pages(compositor));
 }

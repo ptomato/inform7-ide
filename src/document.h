@@ -107,7 +107,6 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 
 /* Statusbar Contexts */
 #define FILE_OPERATIONS    "File"
-#define PRINT_OPERATIONS   "Print"
 #define SEARCH_OPERATIONS  "Search"
 #define COMPILE_OPERATIONS "Compile"
 #define INDEX_TABS         "Index"
