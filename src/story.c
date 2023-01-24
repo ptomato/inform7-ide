@@ -121,7 +121,7 @@ on_storywindow_delete_event(GtkWidget *window, GdkEvent *event)
 
 	save_storywindow_size(I7_STORY(window));
 
-	gtk_widget_destroy(I7_STORY(window)->notes_window);
+	gtk_widget_hide(I7_STORY(window)->notes_window);
 	i7_story_stop_running_game(I7_STORY(window));
 
 	GFile *file = i7_document_get_file(I7_DOCUMENT(window));
@@ -935,6 +935,10 @@ i7_story_init(I7Story *self)
 	LOAD_WIDGET(skein_trim_popover);
 	LOAD_WIDGET(skein_trim_slider);
 
+	/* Hold a reference to the notes window so the pointer doesn't become
+	 * invalid when the window is closed. */
+	g_object_ref(self->notes_window);
+
 	/* Build the Open Extensions menu */
 	i7_app_update_extensions_menu(theapp);
 
@@ -1051,6 +1055,7 @@ i7_story_finalize(GObject *object)
 	g_clear_pointer(&priv->manifest, plist_free);
     g_clear_object(&self->skein_spacing_popover);
     g_clear_object(&self->skein_trim_popover);
+	g_clear_object(&self->notes_window);
 	G_OBJECT_CLASS(i7_story_parent_class)->finalize(object);
 }
 
