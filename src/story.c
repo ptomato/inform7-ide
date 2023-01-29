@@ -416,6 +416,8 @@ remove_recent_story_file(FileRemoveFromRecent *file)
  * Use g_steal_pointer on success. */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(FileRemoveFromRecent, remove_recent_story_file);
 
+/* Forward declare async callbacks so that the operation reads in order */
+static void on_save_skein_finish(I7Skein *skein, GAsyncResult *res, I7Story *self);
 /* Save story in the given directory  */
 static void
 i7_story_save_as(I7Document *document, GFile *file)
@@ -470,10 +472,8 @@ i7_story_save_as(I7Document *document, GFile *file)
 
 	/* Save the skein */
 	GFile *skein_file = g_file_get_child(file, "Skein.skein");
-	if(!i7_skein_save(priv->skein, skein_file, &err)) {
-		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the Skein. Your story will still be saved. Problem: "));
-		err = NULL;
-	}
+	i7_skein_save_async(priv->skein, skein_file, G_PRIORITY_DEFAULT, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_save_skein_finish, g_object_ref(self));
 	g_object_unref(skein_file);
 
 	/* Save the notes */
@@ -511,6 +511,19 @@ i7_story_save_as(I7Document *document, GFile *file)
 	i7_document_set_modified(document, FALSE);
 
 	i7_document_remove_status_message(document, FILE_OPERATIONS);
+}
+
+static void
+on_save_skein_finish(I7Skein *skein, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(I7Story) self = data;
+	GError *err = NULL;
+
+	if (!i7_skein_save_finish(skein, res, &err)) {
+		error_dialog(GTK_WINDOW(self), err, _("There was an error saving the Skein. Your story will still be saved. Problem: "));
+	} else {
+		g_debug("Save as: Skein.skein saved");
+	}
 }
 
 static void
