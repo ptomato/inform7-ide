@@ -135,7 +135,7 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 	g_menu_remove_all(recent_menu);
 
 	for (GList *iter = recent; iter != NULL; iter = g_list_next(iter)) {
-		GtkRecentInfo *info = gtk_recent_info_ref(iter->data);
+		g_autoptr(GtkRecentInfo) info = iter->data;
 		if (gtk_recent_info_has_application(info, "Inform 7")) {
 			const char *group = NULL;
 			if (gtk_recent_info_has_group(info, "inform7_project"))
@@ -149,11 +149,11 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 
             g_autofree char *escaped_uri = g_strescape(gtk_recent_info_get_uri(info), NULL);
 			g_autofree char *action = g_strdup_printf("app.open-recent((\"%s\",'%s'))", escaped_uri, group);
-			GMenuItem *item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
+			g_autoptr(GMenuItem) item = g_menu_item_new(gtk_recent_info_get_display_name(info), action);
 			g_menu_append_item(recent_menu, item);
 		}
-		gtk_recent_info_unref(info);
 	}
+    g_list_free(recent);
 }
 
 static void
@@ -425,25 +425,22 @@ is_valid_extension(I7App *self, const char *text, char **version, char **name, c
 	g_return_val_if_fail(text != NULL, FALSE);
 
 	GMatchInfo *match = NULL;
-	char *matched_name, *matched_author;
 
 	if(!g_regex_match(self->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
 		g_match_info_free(match);
 		return FALSE;
 	}
-	matched_name = g_match_info_fetch_named(match, "title");
-	matched_author = g_match_info_fetch_named(match, "author");
+	g_autofree char *matched_name = g_match_info_fetch_named(match, "title");
+	g_autofree char *matched_author = g_match_info_fetch_named(match, "author");
 	if(matched_name == NULL || matched_author == NULL) {
-		g_free(matched_name);
-		g_free(matched_author);
 		g_match_info_free(match);
 		return FALSE;
 	}
 
 	if(name != NULL)
-		*name = matched_name;
+		*name = g_steal_pointer(&matched_name);
 	if(author != NULL)
-		*author = matched_author;
+		*author = g_steal_pointer(&matched_author);
 	if(version != NULL)
 		*version = g_match_info_fetch_named(match, "version");
 
@@ -1449,12 +1446,12 @@ i7_app_update_extensions_menu(I7App *self)
 
 	gtk_tree_model_get_iter_first(model, &author);
 	do {
-		gchar *authorname;
+		g_autofree char *authorname = NULL;
 		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);
 
 		if(gtk_tree_model_iter_children(model, &title, &author))
 		{
-			GMenu *extmenu = g_menu_new();
+			g_autoptr(GMenu) extmenu = g_menu_new();
 			do {
 				char *extname;
 				GFile *extension_file;
@@ -1465,7 +1462,7 @@ i7_app_update_extensions_menu(I7App *self)
 					I7_APP_EXTENSION_FILE, &extension_file,
 					-1);
 				g_autofree char *uri = g_file_get_uri(extension_file);
-				GMenuItem *extitem = g_menu_item_new(extname, NULL);
+				g_autoptr(GMenuItem) extitem = g_menu_item_new(extname, NULL);
 				if(readonly) {
 					g_menu_item_set_icon(extitem, builtin_emblem);
 					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, TRUE);

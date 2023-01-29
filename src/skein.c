@@ -610,6 +610,7 @@ i7_skein_load(I7Skein *self, GFile *file, GError **error)
 	g_free(root_id);
 	g_free(active_id);
 	g_hash_table_destroy(nodetable);
+    xmlFreeDoc(xmldoc);
 
 	return TRUE;
 fail:
@@ -638,7 +639,7 @@ i7_skein_save(I7Skein *self, GFile *file, GError **error)
 		return FALSE;
 	GDataOutputStream *skein_stream = g_data_output_stream_new(G_OUTPUT_STREAM(fstream));
 
-	char *header = g_strdup_printf(
+	g_autofree char *header = g_strdup_printf(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 			"<Skein rootNode=\"%s\" "
 			"xmlns=\"http://www.logicalshift.org.uk/IF/Skein\">\n"

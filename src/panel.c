@@ -877,7 +877,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 	WebKitNavigationAction *action = webkit_navigation_policy_decision_get_navigation_action(WEBKIT_NAVIGATION_POLICY_DECISION(decision));
 	WebKitURIRequest *request = webkit_navigation_action_get_request(action);
 	const char *uri = webkit_uri_request_get_uri(request);
-	gchar *scheme = g_uri_parse_scheme(uri);
+	g_autofree char *scheme = g_uri_parse_scheme(uri);
 
 	/* If no protocol found, treat it as a file:// */
 	if(scheme == NULL)
@@ -887,14 +887,11 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 
 	if(strcmp(scheme, "about") == 0 || strcmp(scheme, "resource") == 0) {
 		/* These are protocols that we explicitly allow WebKit to load */
-		g_free(scheme);
 		webkit_policy_decision_use(decision);
 		g_debug("- about or resource: USE");
 		return TRUE;  /* handled */
 
 	} else if(strcmp(scheme, "file") == 0) {
-		g_free(scheme);
-
 		/* If the file is an index page that is not displayed in the correct
 		webview, then redirect the request to the index page */
 		char *path = g_filename_from_uri(uri, NULL, NULL);
@@ -903,7 +900,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			g_debug("- file with no filename: USE");
 			return TRUE;  /* handled */
 		}
-		char *filename = g_path_get_basename(path);
+		g_autofree char *filename = g_path_get_basename(path);
 		g_free(path);
 
 		/* Chop off any URI parameters and save them for the signal emission */
@@ -924,12 +921,10 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		/* We've determined that this is an index page */
 		if (webview != WEBKIT_WEB_VIEW(self->index_tabs[tabnum])) {
 			g_signal_emit_by_name(self, "display-index-page", tabnum, param);
-			g_free(filename);
 			webkit_policy_decision_ignore(decision);
 			g_debug("- index file, page %u (at %s): IGNORE", tabnum, param);
 			return TRUE;  /* handled */
 		}
-		g_free(filename);
 		webkit_policy_decision_use(decision);
 		g_debug("- display in this webview: USE");
 		return TRUE;  /* handled */
@@ -948,13 +943,11 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		 * Results pane. */
 		if (load_in_extensions_pane && webview != WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS])) {
 			g_signal_emit_by_name(self, "display-extensions-docpage", uri);
-			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
 			g_debug("- display inform document in extensions pane: IGNORE");
 			return TRUE;  /* handled */
 		} else if (load_in_report_tab && webview != WEBKIT_WEB_VIEW(self->results_tabs[I7_RESULTS_TAB_REPORT])) {
 			g_signal_emit_by_name(self, "display-compiler-report", uri);
-			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
 			g_debug("- display inform document in report tab: IGNORE");
 			return TRUE;  /* handled */
@@ -963,7 +956,6 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			/* Others should be loaded in the documentation pane; if this is another
 			pane, then redirect the request to the documentation pane */
 			g_signal_emit_by_name(self, "display-docpage", uri);
-			g_free(scheme);
 			webkit_policy_decision_ignore(decision);
 			g_debug("- display inform document in documentation pane: IGNORE");
 			return TRUE;  /* handled */
@@ -1038,8 +1030,6 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 	} else {
 		g_warning("Unrecognized URI scheme: %s", scheme);
 	}
-
-	g_free(scheme);
 
 	webkit_policy_decision_ignore(decision);
 	return TRUE;  /* handled */

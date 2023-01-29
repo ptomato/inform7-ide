@@ -398,7 +398,7 @@ i7_extension_init(I7Extension *self)
 	priv->readonly = FALSE;
 
 	/* Build the interface */
-	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/story.ui");
+	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/extension.ui");
 	gtk_builder_connect_signals(builder, self);
 
 	/* Build the toolbars */
