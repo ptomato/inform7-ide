@@ -416,59 +416,124 @@ remove_recent_story_file(FileRemoveFromRecent *file)
  * Use g_steal_pointer on success. */
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(FileRemoveFromRecent, remove_recent_story_file);
 
-/* Forward declare async callbacks so that the operation reads in order */
+typedef I7Story SaveAsRefs;
+
+static void *
+hold_save_as_refs(I7Story *self)
+{
+	I7StoryPrivate *priv = i7_story_get_instance_private(self);
+
+	g_object_ref(self);
+
+	/* Keep references on objects that are normally owned by child widgets,
+	 * because the child widgets might get destroyed if we are saving while
+	 * closing the window */
+	g_object_ref(i7_document_get_buffer(I7_DOCUMENT(self)));
+	g_object_ref(priv->skein);
+	g_object_ref(priv->notes);
+
+	return self;
+}
+
+static void
+release_save_as_refs(SaveAsRefs *self)
+{
+	I7StoryPrivate *priv = i7_story_get_instance_private(self);
+	g_object_unref(self);
+	g_object_unref(i7_document_get_buffer(I7_DOCUMENT(self)));
+	g_object_unref(priv->skein);
+	g_object_unref(priv->notes);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(SaveAsRefs, release_save_as_refs);
+
+/* The tree of async operations when saving looks like this:
+ * +- Ensure project dir exists
+ * |    +- Ensure Source dir exists
+ * |    |   +- Save story.ni
+ * |    |       +- Monitor story.ni & indicate in UI the story is saved
+ * |    +- Save Skein.skein
+ * |    +- Save notes.rtf
+ * |    +- Save Settings.plist
+ * |    +- Ensure Build dir exists
+ * |    |   +- Clean out build files
+ * |    +- Ensure Index dir exists
+ * |    |   +- Clean out index files
+ * |    +- Ensure custom icon on project dir
+ * +- Check Materials dir is a dir
+ *      +- Ensure custom icon on Materials dir
+ *
+ * It would be better to use GTask to keep track of the task data rather than
+ * the above SaveAsRefs, but because the async calls are a tree rather than a
+ * linear sequence, we would need something like Promise.all(). GTask doesn't
+ * have this. So we use SaveAsRefs ad hoc for the operations that need to access
+ * objects owned by child widgets.
+ *
+ * Here, we forward declare all the async callbacks so that the operation reads
+ * in order.
+ */
+static void on_ensure_project_dir_finish(GFile *file, GAsyncResult *res, I7Story *self);
+static void on_ensure_source_dir_finish(GFile *file, GAsyncResult *res, I7Story *self);
+static void on_save_story_file_finish(GFile *file, GAsyncResult *res, I7Story *self);
 static void on_save_skein_finish(I7Skein *skein, GAsyncResult *res, I7Story *self);
+static void on_save_notes_finish(GFile *file, GAsyncResult *res, I7Story *self);
+static void on_save_settings_finish(GFile *file, GAsyncResult *res, I7Story *self);
+static void on_project_file_set_icon_finish(GFile *file, GAsyncResult *res);
+static void on_ensure_build_dir_finish(GFile *file, GAsyncResult *res, I7Story *self);
+static void on_ensure_index_dir_finish(GFile *file, GAsyncResult *res, I7Story *self);
+static void on_materials_file_query_finish(GFile *materials_file, GAsyncResult *res);
+static void on_materials_file_set_icon_finish(GFile *materials_file, GAsyncResult *res);
+
 /* Save story in the given directory  */
 static void
 i7_story_save_as(I7Document *document, GFile *file)
 {
 	I7Story *self = I7_STORY(document);
-	I7StoryPrivate *priv = i7_story_get_instance_private(self);
-	GError *err = NULL;
-
-	i7_document_display_status_message(document, _("Saving project..."), FILE_OPERATIONS);
 
 	i7_document_stop_file_monitor(document);
 
 	/* Create the project directory if it does not already exist */
-	GFile *build_file = g_file_get_child(file, "Build");
-	GFile *index_file = g_file_get_child(file, "Index");
-	GFile *source_file = g_file_get_child(file, "Source");
-	if(!make_directory_unless_exists(file, NULL, &err)
-		|| !make_directory_unless_exists(build_file, NULL, &err)
-		|| !make_directory_unless_exists(index_file, NULL, &err)
-		|| !make_directory_unless_exists(source_file, NULL, &err))
+	g_file_make_directory_async(file, G_PRIORITY_HIGH, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_ensure_project_dir_finish, hold_save_as_refs(self));
+
+	/* Check the Materials dir is a dir, and set a custom icon on it */
+	g_autoptr(GFile) materials_file = i7_story_get_materials_file(self);
+	g_application_hold(g_application_get_default());
+	g_file_query_info_async(materials_file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, G_PRIORITY_LOW,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_materials_file_query_finish, NULL);
+}
+
+static void
+on_ensure_project_dir_finish(GFile *file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(SaveAsRefs) self = data;
+	I7StoryPrivate *priv = i7_story_get_instance_private(self);
+	GError *err = NULL;
+
+	if (!g_file_make_directory_finish(file, res, &err) &&
+		!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_EXISTS))
 	{
-		IO_ERROR_DIALOG(GTK_WINDOW(document), file, err, "creating project directory");
-		g_object_unref(build_file);
-		g_object_unref(index_file);
-		g_object_unref(source_file);
+		IO_ERROR_DIALOG(GTK_WINDOW(self), file, err, "creating project directory");
 		return;
 	}
-	g_object_unref(build_file);
-	g_object_unref(index_file);
 
-	/* Save the source */
-	gchar *text = i7_document_get_source_text(document);
-	/* Write text to file */
-	GFile *story_file = g_file_get_child(source_file, "story.ni");
-	g_object_unref(source_file);
+	g_debug("Save as: project directory exists");
 
-	if(!g_file_replace_contents(story_file, text, strlen(text), NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &err)) {
-		error_dialog_file_operation(GTK_WINDOW(document), story_file, err, I7_FILE_ERROR_SAVE, NULL);
-		g_object_unref(story_file);
-		g_free(text);
-		return;
-	}
-	g_free(text);
+	g_clear_error(&err);
 
-	gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(i7_document_get_buffer(document)), FALSE);
+	g_autoptr(GFile) source_file = g_file_get_child(file, "Source");
+	g_file_make_directory_async(source_file, G_PRIORITY_HIGH, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_ensure_source_dir_finish, hold_save_as_refs(self));
+
+	g_autoptr(GFile) build_file = g_file_get_child(file, "Build");
+	g_file_make_directory_async(build_file, G_PRIORITY_LOW, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_ensure_build_dir_finish, g_object_ref(self));
+
+	g_autoptr(GFile) index_file = g_file_get_child(file, "Index");
+	g_file_make_directory_async(index_file, G_PRIORITY_LOW, /* cancellable = */ NULL,
+		(GAsyncReadyCallback)on_ensure_index_dir_finish, g_object_ref(self));
 
 	update_recent_story_file(self, file);
-
-	/* Start file monitoring again */
-	i7_document_monitor_file(document, story_file);
-	g_object_unref(story_file);
 
 	/* Save the skein */
 	GFile *skein_file = g_file_get_child(file, "Skein.skein");
@@ -478,39 +543,77 @@ i7_story_save_as(I7Document *document, GFile *file)
 
 	/* Save the notes */
 	GFile *notes_file = g_file_get_child(file, "notes.rtf");
-	if(!rtf_text_buffer_export_file(priv->notes, notes_file, NULL, &err)) {
-		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the Notepad. Your story will still be saved. Problem: "));
-		err = NULL;
-	}
-	gtk_text_buffer_set_modified(priv->notes, FALSE);
+	char *text = rtf_text_buffer_export_to_string(priv->notes);
+	g_autoptr(GBytes) notes_bytes = g_bytes_new_take(text, strlen(text));
+	g_file_replace_contents_bytes_async(notes_file, notes_bytes, /* etag = */ NULL, /* backup = */ FALSE, G_FILE_CREATE_NONE,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_save_notes_finish, hold_save_as_refs(self));
 	g_object_unref(notes_file);
 
 	/* Save the project settings */
 	char *xml = NULL;
 	uint32_t length;
 	plist_to_xml(priv->settings, &xml, &length);
+	g_autoptr(GBytes) xml_bytes = g_bytes_new_take(xml, length);
 	GFile *settings_file = g_file_get_child(file, "Settings.plist");
-	if (!g_file_replace_contents(settings_file, xml, length, NULL, FALSE, G_FILE_CREATE_NONE, NULL, /* cancellable = */ NULL, &err)) {
-		error_dialog(GTK_WINDOW(document), err, _("There was an error saving the project settings. Your story will still be saved. Problem: "));
-		err = NULL;
-	}
-	free(xml);
+	g_file_replace_contents_bytes_async(settings_file, xml_bytes, /* etag = */ NULL, /* backup = */ FALSE, G_FILE_CREATE_NONE,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_save_settings_finish, g_object_ref(self));
 	g_object_unref(settings_file);
 
-	/* Delete the build files from the project directory */
-	delete_build_files(self);
-	delete_index_files(self);
-
 	/* Set the folder icon to be the Inform 7 project icon */
-	file_set_custom_icon(file, "com.inform7.IDE.application-x-inform");
-	GFile *materials_file = i7_story_get_materials_file(self);
-	if(file_exists_and_is_dir(materials_file))
-		file_set_custom_icon(materials_file, "com.inform7.IDE.application-x-inform-materials");
-	g_object_unref(materials_file);
+	g_autoptr(GFileInfo) info = g_file_info_new();
+	g_file_info_set_attribute_string(info, "metadata::custom-icon-name", "com.inform7.IDE.application-x-inform-materials");
+	g_application_hold(g_application_get_default());
+	g_file_set_attributes_async(file, info, G_FILE_QUERY_INFO_NONE, G_PRIORITY_LOW,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_project_file_set_icon_finish, NULL);
+}
+
+static void
+on_ensure_source_dir_finish(GFile *source_file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(SaveAsRefs) self = data;
+	g_autoptr(GError) err = NULL;
+
+	if (!g_file_make_directory_finish(source_file, res, &err) &&
+	    !g_error_matches(err, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+		IO_ERROR_DIALOG(GTK_WINDOW(self), source_file, g_steal_pointer(&err), "creating project Source directory");
+		return;
+	}
+
+	g_debug("Save as: Source directory exists");
+
+	/* Save the source */
+	I7Document *document = I7_DOCUMENT(self);
+	gchar *text = i7_document_get_source_text(document);
+	g_autoptr(GBytes) bytes = g_bytes_new_take(text, strlen(text));
+	/* Write text to file */
+	GFile *story_file = g_file_get_child(source_file, "story.ni");
+
+	g_file_replace_contents_bytes_async(story_file, bytes, /* etag = */ NULL, /* backup = */ FALSE, G_FILE_CREATE_NONE,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_save_story_file_finish, hold_save_as_refs(self));
+
+	g_object_unref(story_file);
+}
+
+static void
+on_save_story_file_finish(GFile *story_file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(SaveAsRefs) self = data;
+	g_autoptr(GError) err = NULL;
+
+	if (!g_file_replace_contents_finish(story_file, res, /* etag = */ NULL, &err)) {
+		error_dialog_file_operation(GTK_WINDOW(self), story_file, g_steal_pointer(&err), I7_FILE_ERROR_SAVE, NULL);
+		return;
+	}
+
+	g_debug("Save as: Source/story.ni saved");
+
+	I7Document *document = I7_DOCUMENT(self);
+	gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(i7_document_get_buffer(document)), FALSE);
+
+	/* Start file monitoring again */
+	i7_document_monitor_file(document, story_file);
 
 	i7_document_set_modified(document, FALSE);
-
-	i7_document_remove_status_message(document, FILE_OPERATIONS);
 }
 
 static void
@@ -524,6 +627,134 @@ on_save_skein_finish(I7Skein *skein, GAsyncResult *res, I7Story *data)
 	} else {
 		g_debug("Save as: Skein.skein saved");
 	}
+}
+
+static void
+on_save_notes_finish(GFile *file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(SaveAsRefs) self = data;
+	I7StoryPrivate *priv = i7_story_get_instance_private(self);
+	GError *err = NULL;
+
+	if (!g_file_replace_contents_finish(file, res, /* etag = */ NULL, &err)) {
+		error_dialog(GTK_WINDOW(self), err, _("There was an error saving the Notepad. Your story will still be saved. Problem: "));
+		return;
+	}
+
+	g_debug("Save as: notes.rtf saved");
+	gtk_text_buffer_set_modified(priv->notes, FALSE);
+}
+
+static void
+on_save_settings_finish(GFile *file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(I7Story) self = data;
+	GError *err = NULL;
+
+	if (!g_file_replace_contents_finish(file, res, /* etag = */ NULL, &err)) {
+		error_dialog(GTK_WINDOW(self), err, _("There was an error saving the project settings. Your story will still be saved. Problem: "));
+		return;
+	}
+
+	g_debug("Save as: Settings.plist saved");
+}
+
+static void
+on_project_file_set_icon_finish(GFile *file, GAsyncResult *res)
+{
+	g_application_release(g_application_get_default());
+	g_autoptr(GError) err = NULL;
+
+	if (!g_file_set_attributes_finish(file, res, /* info out = */ NULL, &err)) {
+		g_message("Failed to set custom icon on project dir: %s", err->message);
+		return;
+	}
+
+	g_debug("Save as: Custom icon set on project directory");
+}
+
+static void
+on_ensure_build_dir_finish(GFile *file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(I7Story) self = data;
+	g_autoptr(GError) err = NULL;
+
+	if (!g_file_make_directory_finish(file, res, &err)) {
+		if (!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+			IO_ERROR_DIALOG(GTK_WINDOW(self), file, g_steal_pointer(&err), "creating project Build directory");
+			return;
+		}
+
+		/* Delete the build files from the project directory */
+		delete_build_files(self);
+	}
+
+	/* If the directory was just created, no files to delete */
+	g_debug("Save as: Build directory exists");
+}
+
+static void
+on_ensure_index_dir_finish(GFile *file, GAsyncResult *res, I7Story *data)
+{
+	g_autoptr(I7Story) self = data;
+	g_autoptr(GError) err = NULL;
+
+	if (!g_file_make_directory_finish(file, res, &err)) {
+		if (!g_error_matches(err, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+			IO_ERROR_DIALOG(GTK_WINDOW(self), file, g_steal_pointer(&err), "creating project Index directory");
+			return;
+		}
+
+		/* Delete the index files from the project directory */
+		delete_index_files(self);
+	}
+
+	/* If the directory was just created, no files to delete */
+	g_debug("Save as: Index directory exists");
+}
+
+static void
+on_materials_file_query_finish(GFile *materials_file, GAsyncResult *res)
+{
+	g_application_release(g_application_get_default());
+	g_autoptr(GError) err = NULL;
+
+	g_autoptr(GFileInfo) info = g_file_query_info_finish(materials_file, res, &err);
+	if (err) {
+		if (g_error_matches(err, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+			return;  /* ignore */
+		g_message("Failed to read materials dir: %s", err->message);
+		return;
+	}
+
+	if (g_file_info_get_file_type(info) != G_FILE_TYPE_DIRECTORY) {
+		g_message("There's a regular file in place of the materials dir");
+		return;
+	}
+
+	g_debug("Save as: Materials directory exists");
+
+	/* Reuse the GFileInfo to set the custom icon on the folder */
+	g_file_info_remove_attribute(info, G_FILE_ATTRIBUTE_STANDARD_TYPE);
+	g_file_info_set_attribute_string(info, "metadata::custom-icon-name", "com.inform7.IDE.application-x-inform-materials");
+
+	g_application_hold(g_application_get_default());
+	g_file_set_attributes_async(materials_file, info, G_FILE_QUERY_INFO_NONE, G_PRIORITY_LOW,
+		/* cancellable = */ NULL, (GAsyncReadyCallback)on_materials_file_set_icon_finish, NULL);
+}
+
+static void
+on_materials_file_set_icon_finish(GFile *materials_file, GAsyncResult *res)
+{
+	g_application_release(g_application_get_default());
+	g_autoptr(GError) err = NULL;
+
+	if (!g_file_set_attributes_finish(materials_file, res, /* info out = */ NULL, &err)) {
+		g_message("Failed to set custom icon on materials dir: %s", err->message);
+		return;
+	}
+
+	g_debug("Save as: Custom icon set on Materials directory");
 }
 
 static void
