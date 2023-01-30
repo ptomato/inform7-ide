@@ -14,6 +14,7 @@
 
 #include "document.h"
 #include "searchwindow.h"
+#include "toast.h"
 
 /* THE "SEARCH ENGINE" */
 
@@ -170,11 +171,8 @@ on_replace_all_button_clicked(GtkButton *button, I7Document *self)
 	gtk_text_buffer_end_user_action(buffer);
 
 	gchar *message = g_strdup_printf(_("%d occurrences replaced"), replace_count);
-	i7_document_flash_status_message(self, message, SEARCH_OPERATIONS);
+	i7_toast_show_message(self->search_toast, message);
 	g_free(message);
-
-	/* Close the dialog */
-	gtk_widget_hide(self->find_dialog);
 }
 
 void
@@ -258,7 +256,7 @@ i7_document_find(I7Document *self, const char *text, gboolean forward, gboolean 
 
 	if(!find(buffer, text, forward, ignore_case, restrict_search, search_type, &start, &end))
 	{
-		i7_document_flash_status_message(self, _("Phrase not found"), SEARCH_OPERATIONS);
+		i7_toast_show_message(self->search_toast, _("Phrase not found"));
 		return;
 	}
 

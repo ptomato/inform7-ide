@@ -25,6 +25,7 @@
 #include "file.h"
 #include "prefs.h"
 #include "searchwindow.h"
+#include "toast.h"
 
 typedef struct {
 	/* The file this document refers to */
@@ -52,6 +53,8 @@ typedef struct {
 } I7DocumentPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7Document, i7_document, GTK_TYPE_APPLICATION_WINDOW);
+
+static void i7_document_flash_status_message(I7Document *document, const char *message, const char *context);
 
 /* CALLBACKS */
 
@@ -308,6 +311,10 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(download_label);
 	LOAD_WIDGET(download_progress);
 	gtk_container_add(GTK_CONTAINER(self), self->box);
+
+	self->search_toast = i7_toast_new();
+	GtkWidget *dialog_contents = GTK_WIDGET(load_object(builder, "find_dialog_contents"));
+	gtk_overlay_add_overlay(GTK_OVERLAY(dialog_contents), GTK_WIDGET(self->search_toast));
 
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
@@ -1147,7 +1154,7 @@ end_flash_message(struct StatusData *data)
 	return FALSE;
 }
 
-void
+static void
 i7_document_flash_status_message(I7Document *document, const gchar *message, const gchar *context)
 {
 	struct StatusData *data = g_slice_new0(struct StatusData);
