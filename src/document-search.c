@@ -237,10 +237,14 @@ i7_document_unhighlight_quicksearch(I7Document *self)
 void
 i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found)
 {
+	GAction *find_previous = g_action_map_lookup_action(G_ACTION_MAP(self), "find-previous");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(find_previous), !not_found);
+	GAction *find_next = g_action_map_lookup_action(G_ACTION_MAP(self), "find-next");
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(find_next), !not_found);
+
 	GtkStyleContext *style = gtk_widget_get_style_context(self->findbar_entry);
 	if(not_found) {
 		gtk_style_context_add_class(style, "error");
-		i7_document_flash_status_message(self, _("Phrase not found"), SEARCH_OPERATIONS);
 	} else {
 		gtk_style_context_remove_class(style, "error");
 	}
