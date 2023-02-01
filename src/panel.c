@@ -242,7 +242,7 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 finally:
 	for(ix = 0; ix < n_extensions; ix++) {
 		g_free(ids[ix]);
-		g_object_unref(files[ix]);
+		g_clear_object(&files[ix]);
 		g_free(authors[ix]);
 		g_free(titles[ix]);
 		g_free(versions[ix]);
