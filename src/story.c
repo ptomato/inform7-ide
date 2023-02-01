@@ -1173,7 +1173,7 @@ i7_story_init(I7Story *self)
 	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, "about:blank");
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
 	gtk_paned_pack2(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[RIGHT]), TRUE, FALSE);
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), self->facing_pages, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(I7_DOCUMENT(self)->contents), self->facing_pages);
 
 	/* Set the last saved window size and slider position */
 	g_settings_get(state, PREFS_STATE_WINDOW_SIZE, "(ii)", &w, &h);

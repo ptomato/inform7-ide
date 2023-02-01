@@ -44,6 +44,8 @@ typedef struct {
 	GtkTreePath *current_heading;
 	/* The view with a search match currently being highlighted */
 	GtkWidget *highlighted_view;
+	/* App notification */
+	I7Toast *toast;
 
 	/* Download counts */
 	unsigned downloads_completed;
@@ -53,8 +55,6 @@ typedef struct {
 } I7DocumentPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7Document, i7_document, GTK_TYPE_APPLICATION_WINDOW);
-
-static void i7_document_flash_status_message(I7Document *document, const char *message, const char *context);
 
 /* CALLBACKS */
 
@@ -280,7 +280,7 @@ i7_document_init(I7Document *self)
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(entire_source), FALSE);
 
 	/* Public members */
-	LOAD_WIDGET(box);
+	LOAD_WIDGET(contents);
 	LOAD_WIDGET(statusline);
 	LOAD_WIDGET(statusbar);
 	LOAD_WIDGET(progressbar);
@@ -310,7 +310,12 @@ i7_document_init(I7Document *self)
 	gtk_window_set_transient_for(GTK_WINDOW(self->multi_download_dialog), GTK_WINDOW(self));
 	LOAD_WIDGET(download_label);
 	LOAD_WIDGET(download_progress);
-	gtk_container_add(GTK_CONTAINER(self), self->box);
+
+	GtkWidget *box = GTK_WIDGET(load_object(builder, "box"));
+	gtk_container_add(GTK_CONTAINER(self), box);
+	priv->toast = i7_toast_new();
+	gtk_widget_set_margin_bottom(GTK_WIDGET(priv->toast), 20);
+	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(priv->toast));
 
 	self->search_toast = i7_toast_new();
 	GtkWidget *dialog_contents = GTK_WIDGET(load_object(builder, "find_dialog_contents"));
@@ -527,6 +532,8 @@ on_document_deleted_or_unmounted_idle(I7Document *document) {
 static gboolean
 on_document_created_or_changed_idle(I7DocumentFileMonitorIdleClosure *data)
 {
+	I7DocumentPrivate *priv = i7_document_get_instance_private(data->document);
+
 	/* g_file_set_contents works by deleting and creating, so both of
 	these options mean the source text has been modified. Don't ask for
 	confirmation - just read in the new source text. (See mantis #681
@@ -534,7 +541,7 @@ on_document_created_or_changed_idle(I7DocumentFileMonitorIdleClosure *data)
 	g_autofree char *text = read_source_file(data->file);
 	if (text) {
 		i7_document_set_source_text(data->document, text);
-		i7_document_flash_status_message(data->document, _("Source code reloaded."), FILE_OPERATIONS);
+		i7_toast_show_message(priv->toast, _("Source code reloaded."));
 		i7_document_set_modified(data->document, FALSE);
 		return G_SOURCE_REMOVE;
 	}
@@ -1138,31 +1145,6 @@ i7_document_show_entire_source(I7Document *self)
 
 	gtk_tree_path_free(priv->current_heading);
 	priv->current_heading = gtk_tree_path_new_first();
-}
-
-struct StatusData {
-	GtkStatusbar *status;
-	guint context_id;
-	guint message_id;
-};
-
-static gboolean
-end_flash_message(struct StatusData *data)
-{
-	gtk_statusbar_remove(data->status, data->context_id, data->message_id);
-	g_slice_free(struct StatusData, data);
-	return FALSE;
-}
-
-static void
-i7_document_flash_status_message(I7Document *document, const gchar *message, const gchar *context)
-{
-	struct StatusData *data = g_slice_new0(struct StatusData);
-	data->status = GTK_STATUSBAR(document->statusbar);
-	data->context_id = gtk_statusbar_get_context_id(data->status, context);
-	gtk_statusbar_pop(data->status, data->context_id);
-	data->message_id = gtk_statusbar_push(data->status, data->context_id, message);
-	g_timeout_add_seconds(1, (GSourceFunc)end_flash_message, data);
 }
 
 /* Displays a percentage in the progress indicator */

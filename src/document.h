@@ -47,7 +47,7 @@ typedef struct {
 typedef struct {
 	GtkApplicationWindow parent_instance;
 
-	GtkWidget *box;
+	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
 	GtkWidget *statusline;
 	GtkWidget *statusbar;

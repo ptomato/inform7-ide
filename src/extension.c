@@ -423,7 +423,7 @@ i7_extension_init(I7Extension *self)
 	gtk_style_context_add_class(style, "font-family-setting");
 	gtk_style_context_add_class(style, "font-size-setting");
 	gtk_widget_show(GTK_WIDGET(self->sourceview));
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), GTK_WIDGET(self->sourceview), TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(I7_DOCUMENT(self)->contents), GTK_WIDGET(self->sourceview));
 
 	/* Build the Open Extensions menu */
 	i7_app_update_extensions_menu(theapp);
