@@ -225,7 +225,7 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 		g_autoptr(JSCValue) id_val = jsc_value_object_get_property_at_index(array, 3 * ix);
 		g_autoptr(JSCValue) uri_val = jsc_value_object_get_property_at_index(array, 3 * ix + 1);
 		g_autoptr(JSCValue) desc_val = jsc_value_object_get_property_at_index(array, 3 * ix + 2);
-		char *id = js_string_value_to_string(id_val);
+		char *id = jsc_value_to_string(id_val);  /* is a number, but we pass it around as a string */
 		g_autofree char *uri = js_string_value_to_string(uri_val);
 		char *desc = js_string_value_to_string(desc_val);
 		if(id == NULL || uri == NULL || desc == NULL) {
