@@ -48,11 +48,22 @@ test_blob_status(BlobFixture *fx, const void *)
 static void
 test_blob_progress(BlobFixture *fx, const void *)
 {
-	i7_blob_set_progress(fx->blob, 0.0);
-	i7_blob_set_progress(fx->blob, 0.5);
-	i7_blob_set_progress(fx->blob, 1.0);
+	i7_blob_set_progress(fx->blob, 0.0, NULL);
+	i7_blob_set_progress(fx->blob, 0.5, NULL);
+	i7_blob_set_progress(fx->blob, 1.0, NULL);
 
 	i7_blob_pulse_progress(fx->blob);
+
+	i7_blob_clear_progress(fx->blob);
+}
+
+static void
+test_blob_progress_cancellable(BlobFixture *fx, const void *)
+{
+	GCancellable *cancel = g_cancellable_new();
+	i7_blob_set_progress(fx->blob, 0.5, cancel);
+
+	g_cancellable_cancel(cancel);
 
 	i7_blob_clear_progress(fx->blob);
 }
@@ -65,5 +76,6 @@ add_blob_tests(void)
 	ADD_BLOB_TEST(create)
 	ADD_BLOB_TEST(status)
 	ADD_BLOB_TEST(progress)
+	ADD_BLOB_TEST(progress_cancellable)
 #undef ADD_BLOB_TEST
 }

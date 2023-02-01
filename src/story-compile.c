@@ -156,7 +156,7 @@ progress_percentage_data_free(ProgressPercentageData *data)
 static gboolean
 ui_display_progress_percentage(ProgressPercentageData *data)
 {
-	i7_blob_set_progress(data->story->blob, data->fraction);
+	i7_blob_set_progress(data->story->blob, data->fraction, NULL);
 	return G_SOURCE_REMOVE;
 }
 

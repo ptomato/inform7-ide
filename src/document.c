@@ -121,14 +121,6 @@ on_findbar_entry_key_release_event(GtkEntry *entry, GdkEventKey *event, I7Docume
 }
 
 void
-on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *self)
-{
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	if(response == GTK_RESPONSE_CANCEL)
-		g_cancellable_cancel(priv->cancel_download);
-}
-
-void
 on_search_entry_activate(GtkEntry *entry, I7Story *self)
 {
 	const char *text = gtk_entry_get_text(entry);
@@ -306,10 +298,6 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(search_files_documentation);
 	LOAD_WIDGET(search_files_ignore_case);
 	LOAD_WIDGET(search_files_find);
-	LOAD_WIDGET(multi_download_dialog);
-	gtk_window_set_transient_for(GTK_WINDOW(self->multi_download_dialog), GTK_WINDOW(self));
-	LOAD_WIDGET(download_label);
-	LOAD_WIDGET(download_progress);
 
 	GtkWidget *box = GTK_WIDGET(load_object(builder, "box"));
 	gtk_container_add(GTK_CONTAINER(self), box);
@@ -1165,7 +1153,7 @@ static void
 single_download_progress(goffset current, goffset total, I7Document *self)
 {
 	if (I7_IS_STORY(self))
-		i7_blob_set_progress(I7_STORY(self)->blob, (double)current / total);
+		i7_blob_set_progress(I7_STORY(self)->blob, (double)current / total, NULL);
 
 	while(gtk_events_pending())
 		gtk_main_iteration();
@@ -1214,29 +1202,19 @@ i7_document_download_single_extension(I7Document *self, GFile *remote_file, cons
 	return TRUE;
 }
 
-/* Helper function: label text for downloads dialog. Free return value when done */
-char *
-format_download_label_text(unsigned completed, unsigned total, unsigned failed)
-{
-	if(failed > 0)
-		return g_strdup_printf(_("Installed %d of %d (%d failed)"), completed, total, failed);
-	return g_strdup_printf(_("Installed %d of %d"), completed, total);
-}
-
 /* Helper function: progress callback for downloading more than one extension.
-Indicator appears in a dialog box. */
+ * Indicator appears in the Blob UI if it's a story window. Currently we can't
+ * get here from an extension window. */
 static void
 multi_download_progress(goffset current, goffset total, I7Document *self)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
-	double current_fraction = (double)current / total;
-	double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->download_progress), total_fraction);
-
-	char *label = format_download_label_text(priv->downloads_completed, priv->downloads_total, priv->downloads_failed);
-	gtk_label_set_text(GTK_LABEL(self->download_label), label);
-	g_free(label);
+	if (I7_IS_STORY(self)) {
+		double current_fraction = (double)current / total;
+		double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
+		i7_blob_set_progress(I7_STORY(self)->blob, total_fraction, priv->cancel_download);
+	}
 
 	while(gtk_events_pending())
 		gtk_main_iteration();
@@ -1282,11 +1260,9 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 	priv->downloads_total = n_extensions;
 	priv->downloads_failed = 0;
 
-	char *label = format_download_label_text(0, priv->downloads_total, 0);
-	gtk_label_set_text(GTK_LABEL(self->download_label), label);
-	g_free(label);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->download_progress), 0.0);
-	gtk_widget_show_all(self->multi_download_dialog);
+	if (I7_IS_STORY(self))
+		i7_blob_set_progress(I7_STORY(self)->blob, 0.0, priv->cancel_download);
+
 	while(gtk_events_pending())
 		gtk_main_iteration();
 
@@ -1311,8 +1287,10 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 		multi_download_progress(0, 1, self);
 	}
 	char *text = g_string_free(messages, FALSE);
-	gtk_widget_hide(self->multi_download_dialog);
 	g_clear_object(&priv->cancel_download);
+
+	if (I7_IS_STORY(self))
+		i7_blob_clear_progress(I7_STORY(self)->blob);
 
 	GtkWidget *dialog;
 	if(priv->downloads_failed > 0) {

@@ -75,10 +75,6 @@ typedef struct {
 	GtkWidget *search_files_documentation;
 	GtkWidget *search_files_ignore_case;
 	GtkWidget *search_files_find;
-	/* "Multi Download" dialog widgets */
-	GtkWidget *multi_download_dialog;
-	GtkWidget *download_label;
-	GtkWidget *download_progress;
 } I7Document;
 
 typedef enum  {
