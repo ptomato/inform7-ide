@@ -228,8 +228,11 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 		char *id = js_string_value_to_string(id_val);
 		g_autofree char *uri = js_string_value_to_string(uri_val);
 		char *desc = js_string_value_to_string(desc_val);
-		if(id == NULL || uri == NULL || desc == NULL)
+		if(id == NULL || uri == NULL || desc == NULL) {
+			g_critical("Couldn't make sense of extension information: id %s, uri: %s, desc: %s. Breaking off download",
+				id, uri, desc);
 			goto finally;
+		}
 
 		ids[ix] = id;
 		files[ix] = library_uri_to_real_uri(uri, &authors[ix], &titles[ix], NULL);
