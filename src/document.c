@@ -1147,28 +1147,6 @@ i7_document_show_entire_source(I7Document *self)
 	priv->current_heading = gtk_tree_path_new_first();
 }
 
-/* Displays a percentage in the progress indicator */
-static void
-i7_document_display_progress_percentage(I7Document *document, gdouble fraction)
-{
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), fraction);
-}
-
-/* Displays a message in the progress indicator */
-static void
-i7_document_display_progress_message(I7Document *document, const gchar *message)
-{
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(document->progressbar), message);
-}
-
-/* Clears the message and progress percentage */
-static void
-i7_document_clear_progress(I7Document *document)
-{
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), 0.0);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(document->progressbar), NULL);
-}
-
 void
 i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 {
@@ -1181,17 +1159,14 @@ i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 }
 
 /* Helper function: progress callback for downloading a single extension.
-Indicator appears in the progress bar on the bottom left of the document window. */
+ * Indicator appears in the Blob UI if it's a story window. Currently we can't
+ * get here from an extension window. */
 static void
 single_download_progress(goffset current, goffset total, I7Document *self)
 {
-	if(current == total) {
-		i7_document_display_progress_message(self, _("Installing extension"));
-		i7_document_display_progress_percentage(self, 1.0);
-	} else {
-		i7_document_display_progress_message(self, _("Downloading extension"));
-		i7_document_display_progress_percentage(self, (double)current / total);
-	}
+	if (I7_IS_STORY(self))
+		i7_blob_set_progress(I7_STORY(self)->blob, (double)current / total);
+
 	while(gtk_events_pending())
 		gtk_main_iteration();
 }
@@ -1218,7 +1193,8 @@ i7_document_download_single_extension(I7Document *self, GFile *remote_file, cons
 
 	gboolean success = i7_app_download_extension(theapp, remote_file, NULL, (GFileProgressCallback)single_download_progress, self, &error);
 
-	i7_document_clear_progress(self);
+	if (I7_IS_STORY(self))
+		i7_blob_clear_progress(I7_STORY(self)->blob);
 
 	if(!success) {
 		error_dialog(GTK_WINDOW(self), error, _("\"%s\" by %s could not be downloaded. The error was: %s"), title, author, error->message);
