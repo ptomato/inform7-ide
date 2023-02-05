@@ -49,9 +49,6 @@ typedef struct {
 
 	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
-	GtkWidget *statusline;
-	GtkWidget *statusbar;
-	GtkWidget *progressbar;
 	GtkWidget *findbar;
 	GtkWidget *findbar_entry;
 	/* "Find and Replace" dialog widgets */

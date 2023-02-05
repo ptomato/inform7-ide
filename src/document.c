@@ -273,9 +273,6 @@ i7_document_init(I7Document *self)
 
 	/* Public members */
 	LOAD_WIDGET(contents);
-	LOAD_WIDGET(statusline);
-	LOAD_WIDGET(statusbar);
-	LOAD_WIDGET(progressbar);
 	LOAD_WIDGET(findbar);
 	LOAD_WIDGET(findbar_entry);
 	LOAD_WIDGET(find_dialog);
