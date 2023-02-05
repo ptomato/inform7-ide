@@ -222,9 +222,7 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 	unsigned n_extensions = length / 3;
 	char **ids = g_new0(char *, n_extensions);
 	GFile **files = g_new0(GFile *, n_extensions);
-	char **authors = g_new0(char *, n_extensions);
-	char **titles = g_new0(char *, n_extensions);
-	char **versions = g_new0(char *, n_extensions);
+	char **descs = g_new0(char *, n_extensions);
 	unsigned ix;
 	for(ix = 0; ix < n_extensions; ix++) {
 		g_autoptr(JSCValue) id_val = jsc_value_object_get_property_at_index(array, 3 * ix);
@@ -240,26 +238,22 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 		}
 
 		ids[ix] = id;
-		files[ix] = library_uri_to_real_uri(uri, &authors[ix], &titles[ix], NULL);
-		versions[ix] = desc;
+		files[ix] = library_uri_to_real_uri(uri, NULL, NULL, NULL);
+		descs[ix] = desc;
 	}
 
 	I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
-	i7_document_download_multiple_extensions(doc, n_extensions, ids, files, authors, titles, versions, (I7DocumentExtensionDownloadCallback)on_download_finished, panel->tabs[I7_PANE_EXTENSIONS]);
+	i7_document_download_multiple_extensions(doc, n_extensions, ids, files, descs, (I7DocumentExtensionDownloadCallback)on_download_finished, panel->tabs[I7_PANE_EXTENSIONS]);
 
 finally:
 	for(ix = 0; ix < n_extensions; ix++) {
 		g_free(ids[ix]);
 		g_clear_object(&files[ix]);
-		g_free(authors[ix]);
-		g_free(titles[ix]);
-		g_free(versions[ix]);
+		g_free(descs[ix]);
 	}
 	g_free(ids);
 	g_free(files);
-	g_free(authors);
-	g_free(titles);
-	g_free(versions);
+	g_free(descs);
 }
 
 /* ACTIONS */

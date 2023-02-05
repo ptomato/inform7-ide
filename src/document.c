@@ -1236,9 +1236,7 @@ i7_document_download_single_extension_finish(I7Document *self, GAsyncResult *res
 typedef struct {
 	char *id;  /* owned */
 	GFile *remote_file;  /* ref owned */
-	char *title;  /* owned */
-	char *author;  /* owned */
-	char *version;  /* owned */
+	char *description;  /* owned */
 } DownloadQueueItem;
 
 static void
@@ -1246,9 +1244,7 @@ download_queue_item_free(DownloadQueueItem *item)
 {
 	g_free(item->id);
 	g_object_unref(item->remote_file);
-	g_free(item->title);
-	g_free(item->author);
-	g_free(item->version);
+	g_free(item->description);
 	g_free(item);
 }
 
@@ -1289,11 +1285,8 @@ multi_download_progress(off_t current, off_t total, MultiDownloadClosure *data)
  * be passed to @callback
  * @remote_files: (array length=n_extensions): #GFile references to extensions
  * to download (real URIs)
- * @authors: (array length=n_extensions): author strings of extensions to
- * download
- * @titles: (array length=n_extensions): title strings of extensions to download
- * @versions: (array length=n_extensions): version strings of extensions to
- * download
+ * @descriptions: (array length=n_extensions): human-readable description
+ *   strings of extensions to download
  * @callback: (scope call): function to be called after each download has
  * succeeded or failed
  * @data: (closure callback): user data for @callback
@@ -1310,7 +1303,7 @@ multi_download_progress(off_t current, off_t total, MultiDownloadClosure *data)
  * downloads after that.
  */
 void
-i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback one_finished_callback, void *one_finished_data)
+i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *descriptions, I7DocumentExtensionDownloadCallback one_finished_callback, void *one_finished_data)
 {
 	MultiDownloadClosure *data = g_new0(MultiDownloadClosure, 1);
 	data->self = g_object_ref(self);
@@ -1324,9 +1317,7 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 		DownloadQueueItem *item = g_new0(DownloadQueueItem, 1);
 		item->id = g_strdup(ids[ix]);
 		item->remote_file = g_object_ref(remote_files[ix]);
-		item->title = g_strdup(titles[ix]);
-		item->author = g_strdup(authors[ix]);
-		item->version = g_strdup(versions[ix]);
+		item->description = g_strdup(descriptions[ix]);
 		g_queue_push_tail(data->q, item);
 	}
 
@@ -1372,9 +1363,9 @@ on_multi_download_one_finished(I7App *theapp, GAsyncResult *res, MultiDownloadCl
 		data->completed++;
 	} else {
 		data->failed++;
-		g_string_append_printf(data->messages, _("The extension \"%s\" by %s "
-			"(%s) could not be downloaded. The server reported: %s.\n\n"),
-			item->title, item->author, item->version, error->message);
+		g_string_append_printf(data->messages, _("The extension %s could not "
+			"be downloaded. The server reported: %s.\n\n"),
+			item->description, error->message);
 		g_clear_error(&error);
 	}
 	multi_download_progress(0, 1, data);
