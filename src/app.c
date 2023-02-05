@@ -685,56 +685,95 @@ cancel_extension_download(GCancellable *inner_cancellable)
 	return G_SOURCE_REMOVE;
 }
 
+typedef struct {
+	GCancellable *inner_cancellable;  /* owns ref */
+	GFile *destination_file;  /* owns ref */
+	unsigned cancel_handler;
+	unsigned timeout_handler;
+} DownloadExtensionClosure;
+
+static void
+download_extension_closure_free(DownloadExtensionClosure *data)
+{
+	g_clear_object(&data->inner_cancellable);
+	g_clear_object(&data->destination_file);
+	g_free(data);
+}
+
+static void on_download_extension_finished(GFile *remote_file, GAsyncResult *res, GTask *task);
+
 /**
- * i7_app_download_extension:
+ * i7_app_download_extension_async:
  * @self: the app
  * @file: #GFile reference to a URI from which to download the extension
  * @cancellable: (allow-none): #GCancellable which will stop the operation, or
  * %NULL
- * @progress_callback: (allow-none) (scope call): function to call with progress
- * information, or %NULL
- * @progress_callback_data: (closure): user data to pass to @progress_callback,
- * or %NULL
- * @error: return location for a #GError, or %NULL
+ * @progress_callback: (nullable) (scope notified): function to call with
+ *   progress information, or %NULL
+ * @progress_callback_data: (closure progress_callback): user data to pass to
+ *   @progress_callback, or %NULL
+ * @finish_callback: (scope async): function to call when the operation finishes
+ * @finish_callback_data: (closure finish_callback): user data to pass to
+ *   @finish_callback, or %NULL
  *
  * Downloads an Inform 7 extension from @file and installs it.
  * The download will automatically be cancelled if it takes more than a
  * reasonable number of seconds (currently 15.)
- *
- * Returns: %TRUE if the download succeeded, %FALSE if not, in which case
- * @error is set.
  */
-gboolean
-i7_app_download_extension(I7App *self, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, gpointer progress_callback_data, GError **error)
+void
+i7_app_download_extension_async(I7App *self, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, void *progress_callback_data, GAsyncReadyCallback finish_callback, void *finish_callback_data)
 {
-	if(g_cancellable_set_error_if_cancelled(cancellable, error))
-		return FALSE;
+	GTask *task = g_task_new(self, cancellable, finish_callback, finish_callback_data);
+	if (g_task_return_error_if_cancelled(task))
+		return;
+
+	DownloadExtensionClosure *task_data = g_new0(DownloadExtensionClosure, 1);
+	g_task_set_task_data(task, task_data, (GDestroyNotify)download_extension_closure_free);
 
 	/* Pick a location to download the file to */
 	GFile *downloads_area = g_file_new_for_path(g_get_user_cache_dir());
 	char *basename = g_file_get_basename(file);
-	GFile *destination_file = g_file_get_child(downloads_area, basename);
+	task_data->destination_file = g_file_get_child(downloads_area, basename);
 	g_object_unref(downloads_area);
 	g_free(basename);
 
 	/* Break off the download after a suitable wait */
-	GCancellable *inner_cancellable = g_cancellable_new();
-	unsigned cancel_handler, timeout_handler;
+	task_data->inner_cancellable = g_cancellable_new();
 	if(cancellable != NULL)
-		cancel_handler = g_cancellable_connect(cancellable, G_CALLBACK(propagate_cancel), inner_cancellable, g_object_unref);
-	timeout_handler = g_timeout_add_seconds(EXTENSION_DOWNLOAD_TIMEOUT_S, (GSourceFunc)cancel_extension_download, inner_cancellable);
+		task_data->cancel_handler = g_cancellable_connect(cancellable, G_CALLBACK(propagate_cancel), task_data->inner_cancellable, g_object_unref);
+	task_data->timeout_handler = g_timeout_add_seconds(EXTENSION_DOWNLOAD_TIMEOUT_S, (GSourceFunc)cancel_extension_download, task_data->inner_cancellable);
 
-	gboolean success = g_file_copy(file, destination_file, G_FILE_COPY_OVERWRITE, inner_cancellable, progress_callback, progress_callback_data, error);
+	g_file_copy_async(file, task_data->destination_file, G_FILE_COPY_OVERWRITE, G_PRIORITY_DEFAULT, task_data->inner_cancellable,
+		progress_callback, progress_callback_data,
+		(GAsyncReadyCallback)on_download_extension_finished, task);
+}
 
-	g_source_remove(timeout_handler);
+static void
+on_download_extension_finished(GFile *remote_file, GAsyncResult *res, GTask *task)
+{
+	DownloadExtensionClosure *data = g_task_get_task_data(task);
+	I7App *self = g_task_get_source_object(task);
+	GCancellable *cancellable = g_task_get_cancellable(task);  /* unowned */
+
+	g_source_remove(data->timeout_handler);
 	if(cancellable != NULL)
-		g_cancellable_disconnect(cancellable, cancel_handler);  /* unrefs inner_cancellable */
+		g_cancellable_disconnect(cancellable, data->cancel_handler);
 
-	if(!success)
-		return FALSE;
+	GError *err = NULL;
+	if (!g_file_copy_finish(remote_file, res, &err)) {
+		g_task_return_error(task, err);
+		return;
+	}
 
-	i7_app_install_extension(self, destination_file);
-	return TRUE;
+	i7_app_install_extension(self, data->destination_file);
+	g_task_return_boolean(task, TRUE);
+}
+
+bool
+i7_app_download_extension_finish(I7App *self, GAsyncResult *res, GError **err)
+{
+	g_return_val_if_fail(g_task_is_valid(G_TASK(res), self), FALSE);
+	return g_task_propagate_boolean(G_TASK(res), err);
 }
 
 /* Helper function: iterate over authors in installed extensions @store, to see

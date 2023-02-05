@@ -150,7 +150,8 @@ void i7_document_show_entire_source(I7Document *self);
 void i7_document_set_spellcheck(I7Document *self, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *self);
 
-gboolean i7_document_download_single_extension(I7Document *self, GFile *remote_file, const char *author, const char *title);
+void i7_document_download_single_extension_async(I7Document *self, GFile *remote_file, const char *author, const char *title, GAsyncReadyCallback callback, void *data);
+bool i7_document_download_single_extension_finish(I7Document *self, GAsyncResult *res);
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, void *data);
 
 /* Search, document-search.c */

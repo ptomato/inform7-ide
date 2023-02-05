@@ -46,12 +46,6 @@ typedef struct {
 	GtkWidget *highlighted_view;
 	/* App notification */
 	I7Toast *toast;
-
-	/* Download counts */
-	unsigned downloads_completed;
-	unsigned downloads_total;
-	unsigned downloads_failed;
-	GCancellable *cancel_download;
 } I7DocumentPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7Document, i7_document, GTK_TYPE_APPLICATION_WINDOW);
@@ -1151,70 +1145,140 @@ single_download_progress(goffset current, goffset total, I7Document *self)
 {
 	if (I7_IS_STORY(self))
 		i7_blob_set_progress(I7_STORY(self)->blob, (double)current / total, NULL);
-
-	while(gtk_events_pending())
-		gtk_main_iteration();
 }
 
+typedef struct {
+	char *author;  /* owned */
+	char *title;  /* owned */
+} SingleDownloadClosure;
+
+static void
+single_download_closure_free(SingleDownloadClosure *data) {
+	g_free(data->author);
+	g_free(data->title);
+	g_free(data);
+}
+
+static void on_single_download_finished(I7App *theapp, GAsyncResult *res, GTask *task);
+
 /**
- * i7_document_download_single_extension:
+ * i7_document_download_single_extension_async:
  * @self: the document
  * @remote_file: a #GFile pointing to the extension (real URI, not
  * <code>library:/</code>)
  * @author: display name of the extension's author
  * @title: display name of the extension's title
+ * @callback: function to call when the download is finished
+ * @data: user data to pass to @callback
  *
  * Instructs the view to display downloading a single extension; calls
- * i7_app_download_extension() and takes care of all the GUI work that goes
- * with it.
+ * i7_app_download_extension_async() and takes care of all the GUI work that
+ * goes with it.
  *
  * Returns: %TRUE if the download succeeded, %FALSE if not.
  */
-gboolean
-i7_document_download_single_extension(I7Document *self, GFile *remote_file, const char *author, const char *title)
+void
+i7_document_download_single_extension_async(I7Document *self, GFile *remote_file, const char *author, const char *title, GAsyncReadyCallback callback, void *data)
 {
-	GError *error = NULL;
 	I7App *theapp = I7_APP(g_application_get_default());
 
-	gboolean success = i7_app_download_extension(theapp, remote_file, NULL, (GFileProgressCallback)single_download_progress, self, &error);
+	GTask *task = g_task_new(self, /* cancellable = */ NULL, callback, data);
+	SingleDownloadClosure *task_data = g_new0(SingleDownloadClosure, 1);
+	task_data->author = g_strdup(author);
+	task_data->title = g_strdup(title);
+	g_task_set_task_data(task, task_data, (GDestroyNotify)single_download_closure_free);
+
+	g_debug("download extension %s by %s", title, author);
+
+	i7_app_download_extension_async(theapp, remote_file, /* cancellable = */ NULL,
+		(GFileProgressCallback)single_download_progress, self,
+		(GAsyncReadyCallback)on_single_download_finished, task);
+}
+
+static void
+on_single_download_finished(I7App *theapp, GAsyncResult *res, GTask *task)
+{
+	GError *error = NULL;
+
+	SingleDownloadClosure *data = g_task_get_task_data(task);
+	I7Document *self = g_task_get_source_object(task);
+
+	bool success = i7_app_download_extension_finish(theapp, res, &error);
 
 	if (I7_IS_STORY(self))
 		i7_blob_clear_progress(I7_STORY(self)->blob);
 
 	if(!success) {
-		error_dialog(GTK_WINDOW(self), error, _("\"%s\" by %s could not be downloaded. The error was: %s"), title, author, error->message);
-		return FALSE;
+		error_dialog(GTK_WINDOW(self), error, _("\"%s\" by %s could not be downloaded. The error was: %s"), data->title, data->author, error->message);
+		g_task_return_boolean(task, FALSE);
 	}
 
-	char *version = i7_app_get_extension_version(theapp, author, title, NULL);
+	char *version = i7_app_get_extension_version(theapp, data->author, data->title, NULL);
 	GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
 		_("Installation complete"));
 	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-		_("\"%s\" by %s (Version %s) has been installed successfully."), title, author, version);
+		_("\"%s\" by %s (Version %s) has been installed successfully."), data->title, data->author, version);
 	g_free(version);
 
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
-	return TRUE;
+	g_task_return_boolean(task, TRUE);
 }
+
+bool
+i7_document_download_single_extension_finish(I7Document *self, GAsyncResult *res)
+{
+	g_return_val_if_fail(g_task_is_valid(G_TASK(res), self), false);
+	return g_task_propagate_boolean(G_TASK(res), NULL);
+}
+
+typedef struct {
+	char *id;  /* owned */
+	GFile *remote_file;  /* ref owned */
+	char *title;  /* owned */
+	char *author;  /* owned */
+	char *version;  /* owned */
+} DownloadQueueItem;
+
+static void
+download_queue_item_free(DownloadQueueItem *item)
+{
+	g_free(item->id);
+	g_object_unref(item->remote_file);
+	g_free(item->title);
+	g_free(item->author);
+	g_free(item->version);
+	g_free(item);
+}
+
+typedef struct {
+	I7Document *self;  /* ref owned */
+	GQueue *q;  /* owned */
+	GString *messages;  /* owned */
+	GCancellable *cancel_download;  /* owned */
+	I7DocumentExtensionDownloadCallback one_finished_callback;
+	void *one_finished_data;  /* not owned */
+	unsigned completed;
+	unsigned total;
+	unsigned failed;
+} MultiDownloadClosure;
+
+static void download_next_from_queue(MultiDownloadClosure *data);
+static void on_multi_download_one_finished(I7App *theapp, GAsyncResult *res, MultiDownloadClosure *data);
+static void on_multi_download_all_finished(MultiDownloadClosure *data);
 
 /* Helper function: progress callback for downloading more than one extension.
  * Indicator appears in the Blob UI if it's a story window. Currently we can't
  * get here from an extension window. */
 static void
-multi_download_progress(goffset current, goffset total, I7Document *self)
+multi_download_progress(off_t current, off_t total, MultiDownloadClosure *data)
 {
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-
-	if (I7_IS_STORY(self)) {
+	if (I7_IS_STORY(data->self)) {
 		double current_fraction = (double)current / total;
-		double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
-		i7_blob_set_progress(I7_STORY(self)->blob, total_fraction, priv->cancel_download);
+		double total_fraction = ((double)data->completed + data->failed + current_fraction) / data->total;
+		i7_blob_set_progress(I7_STORY(data->self)->blob, total_fraction, data->cancel_download);
 	}
-
-	while(gtk_events_pending())
-		gtk_main_iteration();
 }
 
 /**
@@ -1235,8 +1299,8 @@ multi_download_progress(goffset current, goffset total, I7Document *self)
  * @data: (closure callback): user data for @callback
  *
  * Instructs the view to display downloading multiple extensions in sequence;
- * calls i7_app_download_extension() and takes care of all the GUI work that
- * goes with it.
+ * calls i7_app_download_extension_async() and takes care of all the GUI work
+ * that goes with it.
  *
  * Calls @callback with a boolean value indicating the success of the download
  * and the id from @ids of that particular download, every time a download
@@ -1246,55 +1310,95 @@ multi_download_progress(goffset current, goffset total, I7Document *self)
  * downloads after that.
  */
 void
-i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback callback, gpointer data)
+i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *authors, char * const *titles, char * const *versions, I7DocumentExtensionDownloadCallback one_finished_callback, void *one_finished_data)
+{
+	MultiDownloadClosure *data = g_new0(MultiDownloadClosure, 1);
+	data->self = g_object_ref(self);
+	data->cancel_download = g_cancellable_new();
+	data->one_finished_callback = one_finished_callback;
+	data->one_finished_data = one_finished_data;
+	data->total = n_extensions;
+
+	data->q = g_queue_new();
+	for (unsigned ix = 0; ix < n_extensions; ix++) {
+		DownloadQueueItem *item = g_new0(DownloadQueueItem, 1);
+		item->id = g_strdup(ids[ix]);
+		item->remote_file = g_object_ref(remote_files[ix]);
+		item->title = g_strdup(titles[ix]);
+		item->author = g_strdup(authors[ix]);
+		item->version = g_strdup(versions[ix]);
+		g_queue_push_tail(data->q, item);
+	}
+
+	if (I7_IS_STORY(self))
+		i7_blob_set_progress(I7_STORY(self)->blob, 0.0, data->cancel_download);
+
+	data->messages = g_string_new("");
+
+	download_next_from_queue(data);
+}
+
+static void
+download_next_from_queue(MultiDownloadClosure *data)
+{
+	if(g_cancellable_is_cancelled(data->cancel_download)) {
+		on_multi_download_all_finished(data);
+		return;
+	}
+
+	DownloadQueueItem *item = g_queue_peek_head(data->q);
+	if (item == NULL) {
+		on_multi_download_all_finished(data);
+		return;
+	}
+
+	I7App *theapp = I7_APP(g_application_get_default());
+	i7_app_download_extension_async(theapp, item->remote_file, data->cancel_download,
+		(GFileProgressCallback)multi_download_progress, data->self,
+		(GAsyncReadyCallback)on_multi_download_one_finished, data);
+}
+
+static void
+on_multi_download_one_finished(I7App *theapp, GAsyncResult *res, MultiDownloadClosure *data)
 {
 	GError *error = NULL;
-	I7App *theapp = I7_APP(g_application_get_default());
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
-	priv->cancel_download = g_cancellable_new();
-	priv->downloads_completed = 0;
-	priv->downloads_total = n_extensions;
-	priv->downloads_failed = 0;
+	DownloadQueueItem *item = g_queue_pop_head(data->q);
 
-	if (I7_IS_STORY(self))
-		i7_blob_set_progress(I7_STORY(self)->blob, 0.0, priv->cancel_download);
+	bool success = i7_app_download_extension_finish(theapp, res, &error);
+	data->one_finished_callback(success, item->id, data->one_finished_data);
 
-	while(gtk_events_pending())
-		gtk_main_iteration();
-
-	unsigned ix;
-	GString *messages = g_string_new("");
-	for(ix = 0; ix < n_extensions; ix++) {
-		if(g_cancellable_is_cancelled(priv->cancel_download))
-			break;
-
-		gboolean success = i7_app_download_extension(theapp, remote_files[ix], priv->cancel_download, (GFileProgressCallback)multi_download_progress, self, &error);
-		callback(success, ids[ix], data);
-
-		if(success)
-			priv->downloads_completed++;
-		else {
-			priv->downloads_failed++;
-			g_string_append_printf(messages, _("The extension \"%s\" by %s "
-				"(%s) could not be downloaded. The server reported: %s.\n\n"),
-				titles[ix], authors[ix], versions[ix], error->message);
-			g_clear_error(&error);
-		}
-		multi_download_progress(0, 1, self);
+	if (success) {
+		data->completed++;
+	} else {
+		data->failed++;
+		g_string_append_printf(data->messages, _("The extension \"%s\" by %s "
+			"(%s) could not be downloaded. The server reported: %s.\n\n"),
+			item->title, item->author, item->version, error->message);
+		g_clear_error(&error);
 	}
-	char *text = g_string_free(messages, FALSE);
-	g_clear_object(&priv->cancel_download);
+	multi_download_progress(0, 1, data);
 
-	if (I7_IS_STORY(self))
-		i7_blob_clear_progress(I7_STORY(self)->blob);
+	download_queue_item_free(item);
+
+	download_next_from_queue(data);
+}
+
+static void
+on_multi_download_all_finished(MultiDownloadClosure *data)
+{
+	g_autofree char *text = g_string_free(data->messages, FALSE);
+	g_clear_object(&data->cancel_download);
+
+	if (I7_IS_STORY(data->self))
+		i7_blob_clear_progress(I7_STORY(data->self)->blob);
 
 	GtkWidget *dialog;
-	if(priv->downloads_failed > 0) {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+	if(data->failed > 0) {
+		dialog = gtk_message_dialog_new(GTK_WINDOW(data->self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE,
-			ngettext("%u extension installed successfully, %u failed.", "%u extensions installed successfully, %u failed.", priv->downloads_completed),
-			priv->downloads_completed, priv->downloads_failed);
+			ngettext("%u extension installed successfully, %u failed.", "%u extensions installed successfully, %u failed.", data->completed),
+			data->completed, data->failed);
 		GtkWidget *area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 		GtkWidget *sw = gtk_scrolled_window_new(NULL, NULL);
 		gtk_widget_set_size_request(sw, -1, 200);
@@ -1305,15 +1409,18 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 		gtk_container_add(GTK_CONTAINER(sw), view);
 		gtk_box_pack_start(GTK_BOX(area), sw, TRUE, TRUE, 6);
 	} else {
-		dialog = gtk_message_dialog_new(GTK_WINDOW(self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		dialog = gtk_message_dialog_new(GTK_WINDOW(data->self), GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 			GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-			ngettext("%u extension installed successfully.", "%u extensions installed successfully.", priv->downloads_completed),
-			priv->downloads_completed);
+			ngettext("%u extension installed successfully.", "%u extensions installed successfully.", data->completed),
+			data->completed);
 	}
-	g_free(text);
 	gtk_widget_show_all(dialog);
 	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
+
+	g_object_unref(data->self);
+	g_queue_free_full(data->q, (GDestroyNotify)download_queue_item_free);
+	g_free(data);
 }
 
 /**

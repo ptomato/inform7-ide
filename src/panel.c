@@ -879,6 +879,25 @@ filename_to_index_tab(const char *filename)
 	return I7_INDEX_TAB_NONE;
 }
 
+typedef struct {
+	WebKitWebView *webview;  /* not owned */
+	char *id;  /* owned */
+} LibraryDownloadData;
+
+static void
+on_library_download_finish(I7Document *self, GAsyncResult *res, LibraryDownloadData *data)
+{
+	if (i7_document_download_single_extension_finish(self, res)) {
+		g_debug("Notifying Public Library that download ID %s succeeded", data->id);
+		notify_download_succeeded(data->webview, data->id);
+	} else {
+		g_warning("Download ID %s failed", data->id);
+	}
+
+	g_free(data->id);
+	g_free(data);
+}
+
 static gboolean
 i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitPolicyDecision *decision)
 {
@@ -1023,18 +1042,18 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		char *id, *author, *title;
 		GFile *remote_file = library_uri_to_real_uri(uri, &author, &title, &id);
 
+		LibraryDownloadData *data = g_new0(LibraryDownloadData, 1);
+		data->webview = webview;
+		data->id = id;
+
 		I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(self)));
-		gboolean success = i7_document_download_single_extension(doc, remote_file, author, title);
+		i7_document_download_single_extension_async(doc, remote_file, author, title,
+			(GAsyncReadyCallback)on_library_download_finish, data);
 
 		g_debug("- library download %s by %s (id %s): IGNORE", title, author, id);
 		g_object_unref(remote_file);
 		g_free(author);
 		g_free(title);
-
-		if (success)
-			notify_download_succeeded(webview, id);
-		g_free(id);
-
 	} else {
 		g_warning("Unrecognized URI scheme: %s", scheme);
 	}
