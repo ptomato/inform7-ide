@@ -110,7 +110,7 @@ void i7_story_remove_debug_tabs(I7Story *story);
 GtkSourceBuffer *create_inform6_source_buffer(void);
 
 /* Index pane, story-index.c */
-void i7_story_reload_index_tabs(I7Story *self, gboolean wait);
+void i7_story_reload_index_tabs(I7Story *self);
 
 /* Settings pane, story-settings.c */
 plist_t create_default_settings(void);

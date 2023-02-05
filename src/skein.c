@@ -627,16 +627,32 @@ node_write_xml(GNode *gnode, GDataOutputStream *stream)
 	return FALSE; /* Do not stop the traversal */
 }
 
-gboolean
-i7_skein_save(I7Skein *self, GFile *file, GError **error)
+static void on_file_replace_finish(GFile *file, GAsyncResult *res, GTask *data);
+
+void
+i7_skein_save_async(I7Skein *self, GFile *file, int priority, GCancellable *cancel, GAsyncReadyCallback callback, void *data)
 {
-	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
+    GTask *task = g_task_new(self, cancel, callback, data);
 
-	I7SkeinPrivate *priv = i7_skein_get_instance_private(self);
+    g_file_replace_async(file, /* etag = */ NULL, /* backup = */ FALSE, G_FILE_CREATE_NONE, priority, cancel,
+        (GAsyncReadyCallback)on_file_replace_finish, task);
+}
 
-	GFileOutputStream *fstream = g_file_replace(file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, error);
-	if(!fstream)
-		return FALSE;
+static void
+on_file_replace_finish(GFile *file, GAsyncResult *res, GTask *data)
+{
+	g_autoptr(GTask) task = data;
+	I7SkeinPrivate *priv = i7_skein_get_instance_private(g_task_get_source_object(task));
+	GError *error = NULL;
+
+	GFileOutputStream *fstream = g_file_replace_finish(file, res, &error);
+	if (!fstream) {
+		g_task_return_error(task, error);
+		return;
+	}
+
+	g_debug("Save Skein: Skein.skein opened for writing");
+
 	GDataOutputStream *skein_stream = g_data_output_stream_new(G_OUTPUT_STREAM(fstream));
 
 	g_autofree char *header = g_strdup_printf(
@@ -647,20 +663,33 @@ i7_skein_save(I7Skein *self, GFile *file, GError **error)
 			"  <activeNode nodeId=\"%s\"/>\n",
 			i7_node_get_unique_id(priv->root),
 			i7_node_get_unique_id(priv->current));
-	if(!g_data_output_stream_put_string(skein_stream, header, NULL, error))
-		return FALSE;
+	if(!g_data_output_stream_put_string(skein_stream, header, NULL, &error)) {
+		g_task_return_error(task, error);
+		return;
+	}
 
 	g_node_traverse(priv->root->gnode, G_PRE_ORDER, G_TRAVERSE_ALL, -1, (GNodeTraverseFunc)node_write_xml, skein_stream);
 
-	if(!g_data_output_stream_put_string(skein_stream, "</Skein>\n", NULL, error))
-		return FALSE;
+	if (!g_data_output_stream_put_string(skein_stream, "</Skein>\n", NULL, &error)) {
+		g_task_return_error(task, error);
+		return;
+	}
 
 	g_object_unref(skein_stream);
 	g_object_unref(fstream);
 
 	priv->modified = FALSE;
 
-	return TRUE;
+	g_task_return_boolean(task, TRUE);
+
+	g_debug("Save Skein: finished saving");
+}
+
+bool
+i7_skein_save_finish(I7Skein *self, GAsyncResult *res, GError **error)
+{
+	g_return_val_if_fail(error == NULL || *error == NULL, FALSE);
+	return g_task_propagate_boolean(G_TASK(res), error);
 }
 
 /* Imports a list of commands into the Skein */

@@ -203,25 +203,36 @@ remove_recent_extension_file(GFile *file)
 	g_free(uri);
 }
 
+/* Forward declare so that it reads in order */
+static void on_save_as_finished(GFile *, GAsyncResult *, I7Document *);
+
 /* Save extension in the given directory  */
 static void
 i7_extension_save_as(I7Document *document, GFile *file)
 {
-	GError *err = NULL;
-
-	i7_document_display_status_message(document, _("Saving project..."), FILE_OPERATIONS);
-
 	i7_document_stop_file_monitor(document);
 
 	/* Save the source */
 	gchar *text = i7_document_get_source_text(document);
+	g_autoptr(GBytes) bytes = g_bytes_new_take(text, strlen(text));
+
 	/* Write text to file */
-	if(!g_file_replace_contents(file, text, strlen(text), NULL, FALSE, G_FILE_CREATE_NONE, NULL, NULL, &err)) {
+	g_file_replace_contents_bytes_async(file, bytes, /* etag = */ NULL, /* backup = */ FALSE, G_FILE_CREATE_NONE,
+		/* cancellable = */ NULL, (GAsyncReadyCallback) on_save_as_finished, g_object_ref(document));
+}
+
+static void
+on_save_as_finished(GFile *file, GAsyncResult *res, I7Document *document)
+{
+	GError *err = NULL;
+
+	if (!g_file_replace_contents_finish(file, res, /* etag = */ NULL, &err)) {
 		error_dialog_file_operation(GTK_WINDOW(document), file, err, I7_FILE_ERROR_SAVE, NULL);
-		g_free(text);
+		g_object_unref(document);
 		return;
 	}
-	g_free(text);
+
+	g_debug("Save as: finished saving extension file");
 
 	update_recent_extension_file(I7_EXTENSION(document), file, FALSE);
 
@@ -230,7 +241,7 @@ i7_extension_save_as(I7Document *document, GFile *file)
 
 	i7_document_set_modified(document, FALSE);
 
-	i7_document_remove_status_message(document, FILE_OPERATIONS);
+	g_object_unref(document);
 }
 
 static GFile *

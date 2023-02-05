@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include <cairo.h>
 #include <glib.h>
 #include <glib-object.h>
@@ -75,7 +77,8 @@ void i7_skein_set_current_node(I7Skein *self, I7Node *node);
 gboolean i7_skein_is_node_in_current_thread(I7Skein *self, I7Node *node);
 I7Node *i7_skein_get_played_node(I7Skein *self);
 gboolean i7_skein_load(I7Skein *self, GFile *file, GError **error);
-gboolean i7_skein_save(I7Skein *self, GFile *file, GError **error);
+void i7_skein_save_async(I7Skein *self, GFile *file, int priority, GCancellable *cancel, GAsyncReadyCallback callback, void *data);
+bool i7_skein_save_finish(I7Skein *self, GAsyncResult *res, GError **error);
 gboolean i7_skein_import(I7Skein *self, GFile *file, GError **error);
 void i7_skein_reset(I7Skein *self, gboolean current);
 void i7_skein_draw(I7Skein *self, GooCanvas *canvas);

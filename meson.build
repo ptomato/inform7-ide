@@ -37,6 +37,7 @@ add_project_arguments('-DLOCALEDIR="@0@"'.format(abs_localedir),
     '-DPACKAGE_LOCALE_DIR="@0@"'.format(abs_localedir),
     '-DPACKAGE_DATA_DIR="@0@"'.format(abs_datadir),
     '-DPACKAGE_LIBEXEC_DIR="@0@"'.format(abs_pkglibexecdir),
+    '-DG_LOG_DOMAIN="@0@"'.format(appname),
     language: 'c')
 
 top_include = include_directories('.')
