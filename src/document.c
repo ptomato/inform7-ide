@@ -96,7 +96,7 @@ on_search_entry_activate(GtkEntry *entry, I7Story *self)
 {
 	const char *text = gtk_entry_get_text(entry);
 
-	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, TRUE, I7_SEARCH_CONTAINS);
+	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
 	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
 	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
 }
@@ -326,7 +326,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->update_fonts = NULL;
 	klass->update_font_sizes = NULL;
 	klass->expand_headings_view = NULL;
-	klass->highlight_search = NULL;
+	klass->find_text = NULL;
 	klass->set_spellcheck = NULL;
 	klass->can_revert = NULL;
 	klass->revert = NULL;

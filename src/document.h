@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
@@ -38,7 +40,7 @@ typedef struct {
 	void (*update_fonts)();
 	void (*update_font_sizes)();
 	void (*expand_headings_view)();
-	gboolean (*highlight_search)();
+	gboolean (*find_text)();
 	void (*set_spellcheck)();
 	gboolean (*can_revert)();
 	void (*revert)();
@@ -94,10 +96,14 @@ typedef enum  {
 } I7Heading;
 
 typedef enum {
-	I7_SEARCH_CONTAINS,
-	I7_SEARCH_STARTS_WORD,
-	I7_SEARCH_FULL_WORD
-} I7SearchType;
+	I7_SEARCH_CONTAINS       = 0x00,
+	I7_SEARCH_STARTS_WORD    = 0x01,
+	I7_SEARCH_FULL_WORD      = 0x02,
+	I7_SEARCH_ALGORITHM_MASK = 0x03, /* bottom two bits: type of search */
+	I7_SEARCH_REVERSE        = 0x04,
+	I7_SEARCH_RESTRICT       = 0x08, /* restrict to currently visible section */
+	I7_SEARCH_IGNORE_CASE    = 0x10,
+} I7SearchFlags;
 
 typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char *id, gpointer);
 
@@ -155,11 +161,11 @@ bool i7_document_download_single_extension_finish(I7Document *self, GAsyncResult
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *descriptions, I7DocumentExtensionDownloadCallback callback, void *data);
 
 /* Search, document-search.c */
-gboolean i7_document_highlight_quicksearch(I7Document *self, const char *text, gboolean forward);
+bool i7_document_find_text(I7Document *self, const char *text, I7SearchFlags flags);
 void i7_document_unhighlight_quicksearch(I7Document *self);
 void i7_document_set_highlighted_view(I7Document *self, GtkWidget *view);
 GtkWidget *i7_document_get_highlighted_view(I7Document *self);
 void i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found);
-void i7_document_find(I7Document *self, const char *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type);
+void i7_document_find_in_source(I7Document *self, const char *text, I7SearchFlags flags);
 
 #endif /* _DOCUMENT_H_ */

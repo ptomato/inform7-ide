@@ -34,7 +34,7 @@ typedef struct {
 } I7SearchWindow;
 
 GType i7_search_window_get_type(void) G_GNUC_CONST;
-GtkWidget *i7_search_window_new(I7Document *document, const gchar *text, gboolean ignore_case, I7SearchType algorithm);
+GtkWidget *i7_search_window_new(I7Document *document, const char *text, I7SearchFlags flags);
 void i7_search_window_search_documentation(I7SearchWindow *self);
 void i7_search_window_search_project(I7SearchWindow *self);
 void i7_search_window_search_extensions(I7SearchWindow *self);

@@ -340,7 +340,7 @@ do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextI
 }
 
 static gboolean
-i7_extension_highlight_search(I7Document *document, const gchar *text, gboolean forward)
+i7_extension_find_text(I7Document *document, const gchar *text, I7SearchFlags flags)
 {
 	if(*text == '\0') {
 		/* If the text is blank, unhighlight everything and return TRUE */
@@ -361,6 +361,7 @@ i7_extension_highlight_search(I7Document *document, const gchar *text, gboolean 
 	/* Source view and text view */
 	GtkTextIter iter, start, end;
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focus));
+	bool forward = !(flags & I7_SEARCH_REVERSE);
 
 	/* Start the search at either the beginning or end of the selection
 	 depending on the direction */
@@ -498,7 +499,7 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->update_fonts = i7_extension_update_fonts;
 	document_class->update_font_sizes = i7_extension_update_font_sizes;
 	document_class->expand_headings_view = i7_extension_expand_headings_view;
-	document_class->highlight_search = i7_extension_highlight_search;
+	document_class->find_text = i7_extension_find_text;
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
 	document_class->revert = i7_extension_revert;
 

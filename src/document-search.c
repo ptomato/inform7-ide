@@ -20,7 +20,7 @@
 
 gboolean
 find_no_wrap(const GtkTextIter *startpos, const char *text, gboolean forward, GtkTextSearchFlags flags,
-    I7SearchType search_type, GtkTextIter *match_start, GtkTextIter *match_end)
+    I7SearchFlags search_type, GtkTextIter *match_start, GtkTextIter *match_end)
 {
 	if(search_type == I7_SEARCH_CONTAINS)
 		return forward?
@@ -47,10 +47,14 @@ find_no_wrap(const GtkTextIter *startpos, const char *text, gboolean forward, Gt
 }
 
 static gboolean
-find(GtkTextBuffer *buffer, const gchar *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type, GtkTextIter *match_start, GtkTextIter *match_end)
+find(GtkTextBuffer *buffer, const char *text, I7SearchFlags flags, GtkTextIter *match_start, GtkTextIter *match_end)
 {
 	GtkTextIter iter;
-	GtkTextSearchFlags flags = GTK_TEXT_SEARCH_TEXT_ONLY
+	bool ignore_case = flags & I7_SEARCH_IGNORE_CASE;
+	bool forward = !(flags & I7_SEARCH_REVERSE);
+	bool restrict_search = flags & I7_SEARCH_RESTRICT;
+	I7SearchFlags search_type = flags & I7_SEARCH_ALGORITHM_MASK;
+	GtkTextSearchFlags gtk_flags = GTK_TEXT_SEARCH_TEXT_ONLY
 		| (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0)
 		| (restrict_search? GTK_TEXT_SEARCH_VISIBLE_ONLY : 0);
 
@@ -60,14 +64,14 @@ find(GtkTextBuffer *buffer, const gchar *text, gboolean forward, gboolean ignore
 	else
 		gtk_text_buffer_get_iter_at_mark(buffer, &iter, gtk_text_buffer_get_insert(buffer));
 
-	if(!find_no_wrap(&iter, text, forward, flags, search_type, match_start, match_end))
+	if(!find_no_wrap(&iter, text, forward, gtk_flags, search_type, match_start, match_end))
 	{
 		/* Wrap around to the beginning or end */
 		if(forward)
 			gtk_text_buffer_get_start_iter(buffer, &iter);
 		else
 			gtk_text_buffer_get_end_iter(buffer, &iter);
-		if(!find_no_wrap(&iter, text, forward, flags, search_type, match_start, match_end))
+		if(!find_no_wrap(&iter, text, forward, gtk_flags, search_type, match_start, match_end))
 			return FALSE;
 	}
 	return TRUE;
@@ -80,7 +84,8 @@ on_findbar_entry_search_changed(GtkSearchEntry *entry, I7Document *self)
 {
 	i7_document_unhighlight_quicksearch(self);
 	const char *search_text = gtk_entry_get_text(GTK_ENTRY(entry));
-	i7_document_set_quicksearch_not_found(self, !i7_document_highlight_quicksearch(self, search_text, TRUE));
+	bool found = i7_document_find_text(self, search_text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
+	i7_document_set_quicksearch_not_found(self, !found);
 }
 
 void
@@ -104,10 +109,13 @@ on_find_button_clicked(GtkButton *button, I7Document *self)
 {
 	const char *text = gtk_entry_get_text(GTK_ENTRY(self->find_entry));
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
-	gboolean forward = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->reverse));
+	bool reverse = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->reverse));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
-	I7SearchType search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
-	i7_document_find(self, text, forward, ignore_case, restrict_search, search_type);
+	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type))
+		| (ignore_case? I7_SEARCH_IGNORE_CASE : 0)
+		| (restrict_search? I7_SEARCH_RESTRICT : 0)
+		| (reverse? I7_SEARCH_REVERSE : 0);
+	i7_document_find_in_source(self, text, flags);
 }
 
 void
@@ -116,9 +124,12 @@ on_replace_button_clicked(GtkButton *button, I7Document *self)
 	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->find_entry));
 	const char *replace_text = gtk_entry_get_text(GTK_ENTRY(self->replace_entry));
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
-	gboolean forward = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->reverse));
+	bool reverse = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->reverse));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
-	I7SearchType search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
+	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type))
+		| (ignore_case? I7_SEARCH_IGNORE_CASE : 0)
+		| (restrict_search? I7_SEARCH_RESTRICT : 0)
+		| (reverse? I7_SEARCH_REVERSE : 0);
 	GtkTextIter start, end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
 
@@ -137,7 +148,7 @@ on_replace_button_clicked(GtkButton *button, I7Document *self)
 	g_free(selected);
 
 	/* Find the next occurrence of the text */
-	i7_document_find(self, search_text, forward, ignore_case, restrict_search, search_type);
+	i7_document_find_in_source(self, search_text, flags);
 }
 
 void
@@ -147,10 +158,10 @@ on_replace_all_button_clicked(GtkButton *button, I7Document *self)
 	const char *replace_text = gtk_entry_get_text(GTK_ENTRY(self->replace_entry));
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
-	I7SearchType search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
+	I7SearchFlags search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
 	GtkTextIter cursor, start, end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
-	GtkTextSearchFlags flags = GTK_TEXT_SEARCH_TEXT_ONLY
+	GtkTextSearchFlags gtk_flags = GTK_TEXT_SEARCH_TEXT_ONLY
 		| (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0)
 		| (restrict_search? GTK_TEXT_SEARCH_VISIBLE_ONLY : 0);
 
@@ -160,7 +171,7 @@ on_replace_all_button_clicked(GtkButton *button, I7Document *self)
 	gtk_text_buffer_get_start_iter(buffer, &cursor);
 	int replace_count = 0;
 
-	while(find_no_wrap(&cursor, search_text, TRUE, flags, search_type, &start, &end)) {
+	while (find_no_wrap(&cursor, search_text, /* forwards = */ TRUE, gtk_flags, search_type, &start, &end)) {
 		/* delete preserves start and end iterators */
 		gtk_text_buffer_delete(buffer, &start, &end);
 		/* Save end position */
@@ -193,12 +204,13 @@ on_search_files_find_clicked(GtkButton *button, I7Document *self)
 {
 	const char *text = gtk_entry_get_text(GTK_ENTRY(self->search_files_entry));
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_ignore_case));
-	I7SearchType search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_files_type));
+	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_files_type))
+			| (ignore_case? I7_SEARCH_IGNORE_CASE : 0);
 
 	/* Close the dialog */
 	gtk_widget_hide(self->search_files_dialog);
 
-	GtkWidget *search_window = i7_search_window_new(self, text, ignore_case, search_type);
+	GtkWidget *search_window = i7_search_window_new(self, text, flags);
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_project)))
 		i7_search_window_search_project(I7_SEARCH_WINDOW(search_window));
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_extensions)))
@@ -210,10 +222,10 @@ on_search_files_find_clicked(GtkButton *button, I7Document *self)
 
 /* PUBLIC FUNCTIONS */
 
-gboolean
-i7_document_highlight_quicksearch(I7Document *self, const char *text, gboolean forward)
+bool
+i7_document_find_text(I7Document *self, const char *text, I7SearchFlags flags)
 {
-	return I7_DOCUMENT_GET_CLASS(self)->highlight_search(self, text, forward);
+	return I7_DOCUMENT_GET_CLASS(self)->find_text(self, text, flags);
 }
 
 void
@@ -254,13 +266,12 @@ i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found)
 }
 
 void
-i7_document_find(I7Document *self, const char *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type)
+i7_document_find_in_source(I7Document *self, const char *text, I7SearchFlags flags)
 {
 	GtkTextIter start, end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
 
-	if(!find(buffer, text, forward, ignore_case, restrict_search, search_type, &start, &end))
-	{
+	if (!find(buffer, text, flags, &start, &end)) {
 		i7_toast_show_message(self->search_toast, _("Phrase not found"));
 		return;
 	}

@@ -80,8 +80,7 @@ struct _I7SearchWindowPrivate
 	GtkListStore *results;
 	I7Document *document; /* Associated document window */
 	gchar *text; /* Search string */
-	gboolean ignore_case;
-	I7SearchType algorithm;
+	I7SearchFlags flags;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
@@ -321,8 +320,7 @@ i7_search_window_init(I7SearchWindow *self)
 
 	priv->document = NULL;
 	priv->text = NULL;
-	priv->ignore_case = FALSE;
-	priv->algorithm = I7_SEARCH_CONTAINS;
+	priv->flags = I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE;
 
 	gtk_window_set_destroy_with_parent(GTK_WINDOW(self), TRUE);
 	gtk_window_set_icon_name(GTK_WINDOW(self), "com.inform7.IDE");
@@ -517,7 +515,7 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 }
 
 /* Borrow from document-search.c */
-extern gboolean find_no_wrap(const GtkTextIter *, const gchar *, gboolean, GtkTextSearchFlags, I7SearchType, GtkTextIter *, GtkTextIter *);
+extern gboolean find_no_wrap(const GtkTextIter *, const char *, gboolean, GtkTextSearchFlags, I7SearchFlags, GtkTextIter *, GtkTextIter *);
 
 /* Helper function: extract some characters of context around the match, with
  the match itself highlighted in bold. String must be freed. */
@@ -553,10 +551,12 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 	g_autoptr(GtkTextBuffer) buffer = gtk_text_buffer_new(NULL);
 	gtk_text_buffer_set_text(buffer, doctext->body, -1);
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
+    bool ignore_case = priv->flags & I7_SEARCH_IGNORE_CASE;
+    I7SearchFlags algorithm = priv->flags & I7_SEARCH_ALGORITHM_MASK;
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
-		priv->algorithm, &match_start, &match_end))
+		GTK_TEXT_SEARCH_TEXT_ONLY | (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
+		algorithm, &match_start, &match_end))
 	{
 		while(gtk_events_pending())
 			gtk_main_iteration();
@@ -604,15 +604,14 @@ stop_spinner(I7SearchWindow *self)
 
 /* Create a new search results window */
 GtkWidget *
-i7_search_window_new(I7Document *document, const gchar *text, gboolean ignore_case, I7SearchType algorithm)
+i7_search_window_new(I7Document *document, const char *text, I7SearchFlags flags)
 {
 	I7SearchWindow *self = I7_SEARCH_WINDOW(g_object_new(I7_TYPE_SEARCH_WINDOW, NULL));
 	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 
 	priv->document = document;
 	priv->text = g_strdup(text);
-	priv->ignore_case = ignore_case;
-	priv->algorithm = algorithm;
+	priv->flags = flags;
 
 	/* Keep on top of the document window and close when document is closed */
 	gtk_window_set_transient_for(GTK_WINDOW(self), GTK_WINDOW(document));
@@ -695,12 +694,14 @@ i7_search_window_search_project(I7SearchWindow *self)
 	GtkTextIter search_from, match_start, match_end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(priv->document));
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
+    bool ignore_case = priv->flags & I7_SEARCH_IGNORE_CASE;
+    I7SearchFlags algorithm = priv->flags & I7_SEARCH_ALGORITHM_MASK;
 
 	start_spinner(self);
 
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
-		priv->algorithm, &match_start, &match_end))
+		GTK_TEXT_SEARCH_TEXT_ONLY | (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
+		algorithm, &match_start, &match_end))
 	{
 		while(gtk_events_pending())
 			gtk_main_iteration();
@@ -765,9 +766,12 @@ extension_search_result(I7App *app, GFile *parent, GFileInfo *info, gpointer unu
 
 	start_spinner(self);
 
+    bool ignore_case = priv->flags & I7_SEARCH_IGNORE_CASE;
+    I7SearchFlags algorithm = priv->flags & I7_SEARCH_ALGORITHM_MASK;
+
 	while(find_no_wrap(&search_from, priv->text, TRUE,
-		GTK_TEXT_SEARCH_TEXT_ONLY | (priv->ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
-		priv->algorithm, &match_start, &match_end))
+		GTK_TEXT_SEARCH_TEXT_ONLY | (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
+		algorithm, &match_start, &match_end))
 	{
 		unsigned lineno;
 		char *sort, *context;
