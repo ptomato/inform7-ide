@@ -1263,6 +1263,8 @@ i7_story_init(I7Story *self)
 
 	/* Create a callback for the delete event */
 	g_signal_connect(self, "delete-event", G_CALLBACK(on_storywindow_delete_event), NULL);
+
+	gtk_widget_grab_focus(self->panel[LEFT]->sourceview->source);
 }
 
 static void

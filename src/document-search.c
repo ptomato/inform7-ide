@@ -76,12 +76,17 @@ find(GtkTextBuffer *buffer, const gchar *text, gboolean forward, gboolean ignore
 /* CALLBACKS */
 
 void
-on_findbar_entry_changed(GtkEditable *editable, I7Document *self)
+on_findbar_entry_search_changed(GtkSearchEntry *entry, I7Document *self)
 {
 	i7_document_unhighlight_quicksearch(self);
-	gchar *search_text = gtk_editable_get_chars(editable, 0, -1);
+	const char *search_text = gtk_entry_get_text(GTK_ENTRY(entry));
 	i7_document_set_quicksearch_not_found(self, !i7_document_highlight_quicksearch(self, search_text, TRUE));
-	g_free(search_text);
+}
+
+void
+on_findbar_entry_stop_search(GtkSearchEntry *entry, I7Document *self)
+{
+	i7_document_unhighlight_quicksearch(self);
 }
 
 void

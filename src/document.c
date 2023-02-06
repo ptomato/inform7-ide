@@ -91,29 +91,6 @@ filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *self)
 	return depth <= priv->heading_depth;
 }
 
-static void
-close_findbar(I7Document *self)
-{
-	gtk_widget_hide(self->findbar);
-	i7_document_unhighlight_quicksearch(self);
-}
-
-void
-on_findbar_close_clicked(GtkToolButton *button, I7Document *self)
-{
-	close_findbar(self);
-}
-
-gboolean
-on_findbar_entry_key_release_event(GtkEntry *entry, GdkEventKey *event, I7Document *self)
-{
-	if (event->keyval == GDK_KEY_Escape) {
-		close_findbar(self);
-		return GDK_EVENT_STOP;
-	}
-	return GDK_EVENT_PROPAGATE;
-}
-
 void
 on_search_entry_activate(GtkEntry *entry, I7Story *self)
 {
@@ -299,6 +276,8 @@ i7_document_init(I7Document *self)
 	self->search_toast = i7_toast_new();
 	GtkWidget *dialog_contents = GTK_WIDGET(load_object(builder, "find_dialog_contents"));
 	gtk_overlay_add_overlay(GTK_OVERLAY(dialog_contents), GTK_WIDGET(self->search_toast));
+
+	gtk_search_bar_connect_entry(GTK_SEARCH_BAR(self->findbar), GTK_ENTRY(self->findbar_entry));
 
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,

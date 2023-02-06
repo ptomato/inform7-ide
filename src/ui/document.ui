@@ -266,12 +266,6 @@
       <action-widget response="0">find_button</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkImage" id="findbar_close_icon">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">window-close</property>
-    <property name="icon_size">1</property>
-  </object>
   <object class="GtkBox" id="box">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -283,98 +277,110 @@
         <child>
           <placeholder/>
         </child>
+        <child type="overlay">
+          <object class="GtkSearchBar" id="findbar">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">start</property>
+            <property name="valign">end</property>
+            <property name="margin-start">12</property>
+            <property name="show-close-button">True</property>
+            <child>
+              <!-- n-columns=2 n-rows=1 -->
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="row-spacing">6</property>
+                <property name="column-spacing">6</property>
+                <child>
+                  <object class="GtkSearchEntry" id="findbar_entry">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="valign">center</property>
+                    <property name="hexpand">True</property>
+                    <property name="primary-icon-name">edit-find-symbolic</property>
+                    <property name="primary-icon-activatable">False</property>
+                    <property name="primary-icon-sensitive">False</property>
+                    <signal name="search-changed" handler="on_findbar_entry_search_changed" swapped="no"/>
+                    <signal name="stop-search" handler="on_findbar_entry_stop_search" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="tooltip-text" translatable="yes">Search backwards for the find text</property>
+                        <property name="halign">start</property>
+                        <property name="action-name">win.find-previous</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="icon-name">go-previous-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="tooltip-text" translatable="yes">Search forwards for the find text</property>
+                        <property name="halign">start</property>
+                        <property name="action-name">win.find-next</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="icon-name">go-next-symbolic</property>
+                            <style>
+                              <class name="linked"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="index">-1</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkToolbar" id="findbar">
-        <property name="can-focus">False</property>
-        <property name="no-show-all">True</property>
-        <property name="toolbar-style">both-horiz</property>
-        <child>
-          <object class="GtkToolItem" id="findbar_entry_container">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <child>
-              <object class="GtkEntry" id="findbar_entry">
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="primary-icon-activatable">False</property>
-                <property name="secondary-icon-activatable">False</property>
-                <signal name="changed" handler="on_findbar_entry_changed" swapped="no"/>
-                <signal name="key-release-event" handler="on_findbar_entry_key_release_event" swapped="no"/>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToolButton" id="findbar_previous">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="tooltip-text" translatable="yes" comments="Edit Menu">Search backwards for the find text</property>
-            <property name="action-name">win.find-previous</property>
-            <property name="label" translatable="yes" comments="Edit Menu">Find Pre_vious</property>
-            <property name="use-underline">True</property>
-            <property name="icon-name">go-previous</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToolButton" id="findbar_next">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="tooltip-text" translatable="yes" comments="Edit Menu">Search forwards for the find text</property>
-            <property name="action-name">win.find-next</property>
-            <property name="label" translatable="yes" comments="Edit Menu">Find Ne_xt</property>
-            <property name="use-underline">True</property>
-            <property name="icon-name">go-next</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparatorToolItem" id="findbar_separator1">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="draw">False</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="homogeneous">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToolButton" id="findbar_close">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="use-underline">True</property>
-            <property name="icon-widget">findbar_close_icon</property>
-            <signal name="clicked" handler="on_findbar_close_clicked" swapped="no"/>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">True</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="pack-type">end</property>
-        <property name="position">1</property>
       </packing>
     </child>
   </object>

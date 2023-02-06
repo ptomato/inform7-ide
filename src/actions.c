@@ -406,7 +406,7 @@ action_select_all(GSimpleAction *action, GVariant *parameter, I7Document *docume
 void
 action_find(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	gtk_widget_show(document->findbar);
+	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(document->findbar), TRUE);
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
 	/* don't free */
 	i7_document_set_quicksearch_not_found(document, !i7_document_highlight_quicksearch(document, text, TRUE));
