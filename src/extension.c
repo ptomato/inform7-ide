@@ -342,6 +342,8 @@ do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextI
 static gboolean
 i7_extension_find_text(I7Document *document, const gchar *text, I7SearchFlags flags)
 {
+    gtk_widget_hide(document->search_label);
+
 	if(*text == '\0') {
 		/* If the text is blank, unhighlight everything and return TRUE */
 		i7_document_unhighlight_quicksearch(document);

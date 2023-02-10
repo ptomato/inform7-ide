@@ -62,6 +62,7 @@ typedef struct {
 	GtkWidget *replace_box;
 	GtkWidget *replace_button;
 	GtkWidget *replace_all_button;
+	GtkWidget *search_label;
 	/* "Search Files" dialog widgets */
 	GtkWidget *search_files_dialog;
 	GtkWidget *search_files_type;

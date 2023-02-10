@@ -914,37 +914,6 @@ i7_story_set_contents_display(I7Document *document, I7ContentsDisplay display)
 	i7_source_view_set_contents_display(story->panel[RIGHT]->sourceview, display);
 }
 
-/* Returns the currently focused view in either the left or right pane. Returns
-NULL if there is not really a view, like on the Settings tab. */
-static GtkWidget *
-get_focus_view(I7Story *self)
-{
-	I7StoryPrivate *priv = i7_story_get_instance_private(self);
-	I7Panel *panel = I7_PANEL(priv->last_focused);
-	if(!panel)
-		panel = self->panel[LEFT];
-	switch(gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->notebook))) {
-		case I7_PANE_SETTINGS:
-		case I7_PANE_SKEIN:
-		case I7_PANE_TRANSCRIPT:
-			return NULL;
-		case I7_PANE_STORY:
-			return panel->tabs[I7_PANE_STORY];
-		case I7_PANE_SOURCE:
-			return panel->source_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE]))];
-		case I7_PANE_RESULTS:
-			return panel->results_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_RESULTS]))];
-		case I7_PANE_INDEX:
-			return panel->index_tabs[gtk_notebook_get_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_INDEX]))];
-		case I7_PANE_DOCUMENTATION:
-			return panel->tabs[I7_PANE_DOCUMENTATION];
-		case I7_PANE_EXTENSIONS:
-			return panel->tabs[I7_PANE_EXTENSIONS];
-		default:
-			g_assert_not_reached();
-	}
-}
-
 static gboolean
 do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextIter *startpos, GtkTextIter *start, GtkTextIter *end)
 {
@@ -958,17 +927,30 @@ i7_story_find_text(I7Document *document, const char *text, I7SearchFlags flags)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(I7_STORY(document));
 
-	GtkWidget *focus = get_focus_view(I7_STORY(document));
-	if(!focus)
-		return TRUE;
+	I7Panel *panel = I7_PANEL(priv->last_focused);
+	if (!panel)
+		panel = I7_STORY(document)->panel[LEFT];
 
-	if(GTK_IS_TREE_VIEW(focus)) {
-		/* Headings view is visible, switch back to source code view */
-		I7Panel *panel = I7_PANEL(priv->last_focused);
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(panel->tabs[I7_PANE_SOURCE]), I7_SOURCE_VIEW_TAB_SOURCE);
-		focus = panel->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE];
-		gtk_widget_grab_focus(document->findbar_entry);
+	const char *description = NULL;
+	GtkWidget *focus = i7_panel_get_searchable_view(panel, &description);
+	if (!focus) {
+		/* Try the other panel */
+		panel = I7_STORY(document)->panel[panel == I7_STORY(document)->panel[LEFT] ? RIGHT : LEFT];
+		focus = i7_panel_get_searchable_view(panel, &description);
 	}
+
+	if (!focus) {
+		gtk_widget_error_bell(GTK_WIDGET(document));
+		gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(document->findbar), FALSE);
+		return TRUE;
+	}
+
+	GtkLabel *search_label = GTK_LABEL(document->search_label);
+	g_autofree char *descr = g_strdup_printf(_("Searching <b>%s</b>"), description);
+	gtk_label_set_markup(search_label, descr);
+
+	bool can_replace = GTK_IS_TEXT_VIEW(focus) && gtk_text_view_get_editable(GTK_TEXT_VIEW(focus));
+	gtk_widget_set_visible(document->replace_mode_button, can_replace);
 
 	i7_document_set_highlighted_view(document, focus);
 	bool has_sections = (focus == I7_STORY(document)->panel[LEFT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] ||

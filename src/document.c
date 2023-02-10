@@ -255,6 +255,7 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(replace_box);
 	LOAD_WIDGET(replace_button);
 	LOAD_WIDGET(replace_all_button);
+	LOAD_WIDGET(search_label);
 	LOAD_WIDGET(search_files_dialog);
 	gtk_window_set_transient_for(GTK_WINDOW(self->search_files_dialog), GTK_WINDOW(self));
 	LOAD_WIDGET(search_files_type);
