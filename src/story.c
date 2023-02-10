@@ -958,13 +958,6 @@ i7_story_find_text(I7Document *document, const char *text, I7SearchFlags flags)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(I7_STORY(document));
 
-	if(*text == '\0') {
-		/* If the text is blank, unhighlight everything and return TRUE so the
-		find entry doesn't stay red on a WebView */
-		i7_document_unhighlight_quicksearch(document);
-		return TRUE;
-	}
-
 	GtkWidget *focus = get_focus_view(I7_STORY(document));
 	if(!focus)
 		return TRUE;
@@ -978,6 +971,16 @@ i7_story_find_text(I7Document *document, const char *text, I7SearchFlags flags)
 	}
 
 	i7_document_set_highlighted_view(document, focus);
+	bool has_sections = (focus == I7_STORY(document)->panel[LEFT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] ||
+		focus == I7_STORY(document)->panel[RIGHT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]);
+	gtk_widget_set_visible(document->restrict_search, has_sections);
+
+	if (*text == '\0') {
+		/* If the text is blank, unhighlight everything and return TRUE so the
+		find entry doesn't stay red on a WebView */
+		i7_document_unhighlight_quicksearch(document);
+		return TRUE;
+	}
 
 	if(GTK_IS_TEXT_VIEW(focus)) {
 		/* Source view and text view */

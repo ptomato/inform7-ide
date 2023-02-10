@@ -171,10 +171,9 @@ create_document_actions(I7Document *self)
 		{ "copy", (ActionCallback)action_copy },
 		{ "paste", (ActionCallback)action_paste },
 		{ "select-all", (ActionCallback)action_select_all },
-		{ "find", (ActionCallback)action_find },
+		{ "find", (ActionCallback)action_find, "b" /* boolean: show replace mode */ },
 		{ "find-next", (ActionCallback)action_find_next },
 		{ "find-previous", (ActionCallback)action_find_previous },
-		{ "replace", (ActionCallback)action_replace },
 		{ "scroll-selection", (ActionCallback)action_scroll_selection },
 		{ "search", (ActionCallback)action_search },
 		{ "autocheck-spelling", NULL, NULL, "true", (ActionCallback)action_autocheck_spelling_toggle },
@@ -246,15 +245,14 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(contents);
 	LOAD_WIDGET(findbar);
 	LOAD_WIDGET(findbar_entry);
-	LOAD_WIDGET(find_dialog);
-	gtk_window_set_transient_for(GTK_WINDOW(self->find_dialog), GTK_WINDOW(self));
+	LOAD_WIDGET(replace_mode_button);
+	LOAD_WIDGET(search_options_button);
+	LOAD_WIDGET(search_options_box);
 	LOAD_WIDGET(search_type);
-	LOAD_WIDGET(find_entry);
 	LOAD_WIDGET(replace_entry);
 	LOAD_WIDGET(ignore_case);
-	LOAD_WIDGET(reverse);
 	LOAD_WIDGET(restrict_search);
-	LOAD_WIDGET(find_button);
+	LOAD_WIDGET(replace_box);
 	LOAD_WIDGET(replace_button);
 	LOAD_WIDGET(replace_all_button);
 	LOAD_WIDGET(search_files_dialog);
@@ -273,11 +271,16 @@ i7_document_init(I7Document *self)
 	gtk_widget_set_margin_bottom(GTK_WIDGET(priv->toast), 20);
 	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(priv->toast));
 
-	self->search_toast = i7_toast_new();
-	GtkWidget *dialog_contents = GTK_WIDGET(load_object(builder, "find_dialog_contents"));
-	gtk_overlay_add_overlay(GTK_OVERLAY(dialog_contents), GTK_WIDGET(self->search_toast));
-
 	gtk_search_bar_connect_entry(GTK_SEARCH_BAR(self->findbar), GTK_ENTRY(self->findbar_entry));
+	g_object_bind_property(self->replace_mode_button, "active",
+		self->replace_entry, "visible",
+		G_BINDING_SYNC_CREATE);
+	g_object_bind_property(self->replace_mode_button, "active",
+		self->replace_box, "visible",
+		G_BINDING_SYNC_CREATE);
+	g_object_bind_property(self->search_options_button, "active",
+		self->search_options_box, "visible",
+		G_BINDING_SYNC_CREATE);
 
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,

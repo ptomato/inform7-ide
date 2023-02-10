@@ -15,8 +15,6 @@
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 
-#include "toast.h"
-
 #define I7_TYPE_DOCUMENT            (i7_document_get_type())
 #define I7_DOCUMENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_DOCUMENT, I7Document))
 #define I7_DOCUMENT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), I7_TYPE_DOCUMENT, I7DocumentClass))
@@ -51,20 +49,19 @@ typedef struct {
 
 	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
+	/* Search bar widgets */
 	GtkWidget *findbar;
 	GtkWidget *findbar_entry;
-	/* "Find and Replace" dialog widgets */
-	GtkWidget *find_dialog;
+	GtkWidget *replace_mode_button;
+	GtkWidget *search_options_button;
+	GtkWidget *search_options_box;
 	GtkWidget *search_type;
-	GtkWidget *find_entry;
 	GtkWidget *replace_entry;
 	GtkWidget *ignore_case;
-	GtkWidget *reverse;
 	GtkWidget *restrict_search;
-	GtkWidget *find_button;
+	GtkWidget *replace_box;
 	GtkWidget *replace_button;
 	GtkWidget *replace_all_button;
-	I7Toast *search_toast;
 	/* "Search Files" dialog widgets */
 	GtkWidget *search_files_dialog;
 	GtkWidget *search_files_type;

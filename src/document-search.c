@@ -80,6 +80,12 @@ find(GtkTextBuffer *buffer, const char *text, I7SearchFlags flags, GtkTextIter *
 /* CALLBACKS */
 
 void
+on_close_button_clicked(GtkButton *button, I7Document *self)
+{
+	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self->findbar), FALSE);
+}
+
+void
 on_findbar_entry_search_changed(GtkSearchEntry *entry, I7Document *self)
 {
 	i7_document_unhighlight_quicksearch(self);
@@ -95,41 +101,15 @@ on_findbar_entry_stop_search(GtkSearchEntry *entry, I7Document *self)
 }
 
 void
-on_find_entry_changed(GtkEditable *editable, I7Document *self)
-{
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(editable));
-	gboolean text_not_empty = !(text == NULL || strlen(text) == 0);
-	gtk_widget_set_sensitive(self->find_button, text_not_empty);
-	gtk_widget_set_sensitive(self->replace_button, text_not_empty);
-	gtk_widget_set_sensitive(self->replace_all_button, text_not_empty);
-}
-
-void
-on_find_button_clicked(GtkButton *button, I7Document *self)
-{
-	const char *text = gtk_entry_get_text(GTK_ENTRY(self->find_entry));
-	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
-	bool reverse = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->reverse));
-	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
-	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type))
-		| (ignore_case? I7_SEARCH_IGNORE_CASE : 0)
-		| (restrict_search? I7_SEARCH_RESTRICT : 0)
-		| (reverse? I7_SEARCH_REVERSE : 0);
-	i7_document_find_in_source(self, text, flags);
-}
-
-void
 on_replace_button_clicked(GtkButton *button, I7Document *self)
 {
-	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->find_entry));
+	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->findbar_entry));
 	const char *replace_text = gtk_entry_get_text(GTK_ENTRY(self->replace_entry));
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
-	bool reverse = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->reverse));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
 	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type))
 		| (ignore_case? I7_SEARCH_IGNORE_CASE : 0)
-		| (restrict_search? I7_SEARCH_RESTRICT : 0)
-		| (reverse? I7_SEARCH_REVERSE : 0);
+		| (restrict_search? I7_SEARCH_RESTRICT : 0);
 	GtkTextIter start, end;
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
 
@@ -154,7 +134,7 @@ on_replace_button_clicked(GtkButton *button, I7Document *self)
 void
 on_replace_all_button_clicked(GtkButton *button, I7Document *self)
 {
-	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->find_entry));
+	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->findbar_entry));
 	const char *replace_text = gtk_entry_get_text(GTK_ENTRY(self->replace_entry));
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
@@ -169,7 +149,6 @@ on_replace_all_button_clicked(GtkButton *button, I7Document *self)
 	gtk_text_buffer_begin_user_action(buffer);
 
 	gtk_text_buffer_get_start_iter(buffer, &cursor);
-	int replace_count = 0;
 
 	while (find_no_wrap(&cursor, search_text, /* forwards = */ TRUE, gtk_flags, search_type, &start, &end)) {
 		/* delete preserves start and end iterators */
@@ -181,14 +160,9 @@ on_replace_all_button_clicked(GtkButton *button, I7Document *self)
 		 contains search text */
 		gtk_text_buffer_get_iter_at_mark(buffer, &cursor, tempmark);
 		gtk_text_buffer_delete_mark(buffer, tempmark);
-		replace_count++;
 	}
 
 	gtk_text_buffer_end_user_action(buffer);
-
-	gchar *message = g_strdup_printf(_("%d occurrences replaced"), replace_count);
-	i7_toast_show_message(self->search_toast, message);
-	g_free(message);
 }
 
 void
@@ -263,6 +237,9 @@ i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found)
 	} else {
 		gtk_style_context_remove_class(style, "error");
 	}
+
+	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_button), !not_found);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_all_button), !not_found);
 }
 
 void
@@ -272,9 +249,10 @@ i7_document_find_in_source(I7Document *self, const char *text, I7SearchFlags fla
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
 
 	if (!find(buffer, text, flags, &start, &end)) {
-		i7_toast_show_message(self->search_toast, _("Phrase not found"));
+		i7_document_set_quicksearch_not_found(self, TRUE);
 		return;
 	}
+	i7_document_set_quicksearch_not_found(self, FALSE);
 
 	/* We may have searched the invisible regions, so if the found text is
 	 invisible, go back to showing the entire source. */

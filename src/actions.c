@@ -406,6 +406,18 @@ action_select_all(GSimpleAction *action, GVariant *parameter, I7Document *docume
 void
 action_find(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
+	bool replace_mode = g_variant_get_boolean(parameter);
+
+	/* Replace mode doesn't make any sense if we are searching some uneditable
+	 * view, like a webview. Focus the Source pane before starting replace mode.
+	 */
+	if (replace_mode && I7_IS_STORY(document)) {
+		i7_story_show_pane(I7_STORY(document), I7_PANE_SOURCE);
+		I7StoryPanel side = i7_story_choose_panel(I7_STORY(document), I7_PANE_SOURCE);
+		gtk_widget_grab_focus(I7_STORY(document)->panel[side]->sourceview->source);
+	}
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(document->replace_mode_button), replace_mode);
 	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(document->findbar), TRUE);
 	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
 	/* don't free */
@@ -432,15 +444,6 @@ action_find_previous(GSimpleAction *action, GVariant *parameter, I7Document *doc
 	i7_document_set_quicksearch_not_found(document, !found);
 }
 
-/* Edit->Find and Replace... - For more complicated find operations, we use a
- dialog instead of the find bar */
-void
-action_replace(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	gtk_widget_show(document->find_dialog);
-	gtk_window_present(GTK_WINDOW(document->find_dialog));
-}
-
 /* Edit->Scroll to Selection */
 void
 action_scroll_selection(GSimpleAction *action, GVariant *parameter, I7Document *document)
@@ -448,8 +451,8 @@ action_scroll_selection(GSimpleAction *action, GVariant *parameter, I7Document *
 	i7_document_scroll_to_selection(document);
 }
 
-/* Edit->Search Files... - This is another dialog that searches any combination
- of the story, the installed extensions, and the documentation. */
+/* Edit->Search Files... - This is a dialog that searches any combination of the
+ * story, the installed extensions, and the documentation. */
 void
 action_search(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
