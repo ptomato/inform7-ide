@@ -265,8 +265,7 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(search_files_ignore_case);
 	LOAD_WIDGET(search_files_find);
 
-	GtkWidget *box = GTK_WIDGET(load_object(builder, "box"));
-	gtk_container_add(GTK_CONTAINER(self), box);
+	gtk_container_add(GTK_CONTAINER(self), self->contents);
 	priv->toast = i7_toast_new();
 	gtk_widget_set_margin_bottom(GTK_WIDGET(priv->toast), 20);
 	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(priv->toast));
