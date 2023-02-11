@@ -514,7 +514,7 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 	return retval;
 }
 
-/* Borrow from document-search.c */
+/* Borrow from searchbar.c */
 extern gboolean find_no_wrap(const GtkTextIter *, const char *, gboolean, GtkTextSearchFlags, I7SearchFlags, GtkTextIter *, GtkTextIter *);
 
 /* Helper function: extract some characters of context around the match, with

@@ -18,6 +18,7 @@
 #include "file.h"
 #include "lang.h"
 #include "prefs.h"
+#include "searchbar.h"
 
 typedef struct _I7ExtensionPrivate I7ExtensionPrivate;
 struct _I7ExtensionPrivate
@@ -342,7 +343,7 @@ do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextI
 static gboolean
 i7_extension_find_text(I7Document *document, const gchar *text, I7SearchFlags flags)
 {
-    gtk_widget_hide(document->search_label);
+    i7_search_bar_set_target_description(I7_SEARCH_BAR(document->findbar), NULL);
 
 	if(*text == '\0') {
 		/* If the text is blank, unhighlight everything and return TRUE */
@@ -355,7 +356,6 @@ i7_extension_find_text(I7Document *document, const gchar *text, I7SearchFlags fl
 	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(I7_EXTENSION(document)->sourceview->notebook)) == I7_SOURCE_VIEW_TAB_CONTENTS) {
 		/* Headings view is visible, switch back to source code view */
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(I7_EXTENSION(document)->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
-		gtk_widget_grab_focus(document->findbar_entry);
 	}
 
 	i7_document_set_highlighted_view(document, focus);

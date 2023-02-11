@@ -49,20 +49,7 @@ typedef struct {
 
 	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
-	/* Search bar widgets */
 	GtkWidget *findbar;
-	GtkWidget *findbar_entry;
-	GtkWidget *replace_mode_button;
-	GtkWidget *search_options_button;
-	GtkWidget *search_options_box;
-	GtkWidget *search_type;
-	GtkWidget *replace_entry;
-	GtkWidget *ignore_case;
-	GtkWidget *restrict_search;
-	GtkWidget *replace_box;
-	GtkWidget *replace_button;
-	GtkWidget *replace_all_button;
-	GtkWidget *search_label;
 	/* "Search Files" dialog widgets */
 	GtkWidget *search_files_dialog;
 	GtkWidget *search_files_type;
@@ -158,12 +145,11 @@ void i7_document_download_single_extension_async(I7Document *self, GFile *remote
 bool i7_document_download_single_extension_finish(I7Document *self, GAsyncResult *res);
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *descriptions, I7DocumentExtensionDownloadCallback callback, void *data);
 
-/* Search, document-search.c */
+/* Search, searchbar.c */
 bool i7_document_find_text(I7Document *self, const char *text, I7SearchFlags flags);
 void i7_document_unhighlight_quicksearch(I7Document *self);
 void i7_document_set_highlighted_view(I7Document *self, GtkWidget *view);
 GtkWidget *i7_document_get_highlighted_view(I7Document *self);
-void i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found);
 void i7_document_find_in_source(I7Document *self, const char *text, I7SearchFlags flags);
 
 #endif /* _DOCUMENT_H_ */

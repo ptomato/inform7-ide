@@ -27,6 +27,7 @@
 #include "newdialog.h"
 #include "panel.h"
 #include "prefs.h"
+#include "searchbar.h"
 #include "story.h"
 
 /* File->New... */
@@ -417,31 +418,28 @@ action_find(GSimpleAction *action, GVariant *parameter, I7Document *document)
 		gtk_widget_grab_focus(I7_STORY(document)->panel[side]->sourceview->source);
 	}
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(document->replace_mode_button), replace_mode);
-	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(document->findbar), TRUE);
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
-	/* don't free */
+	i7_search_bar_activate(I7_SEARCH_BAR(document->findbar), replace_mode);
+	const char *text = i7_search_bar_get_search_string(I7_SEARCH_BAR(document->findbar));
 	bool found = i7_document_find_text(document, text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_document_set_quicksearch_not_found(document, !found);
-	gtk_widget_grab_focus(document->findbar_entry);
+	i7_search_bar_set_not_found(I7_SEARCH_BAR(document->findbar), !found);
 }
 
 /* Edit->Find Next */
 void
 action_find_next(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
+	const char *text = i7_search_bar_get_search_string(I7_SEARCH_BAR(document->findbar));
 	bool found = i7_document_find_text(document, text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_document_set_quicksearch_not_found(document, !found);
+	i7_search_bar_set_not_found(I7_SEARCH_BAR(document->findbar), !found);
 }
 
 /* Edit->Find Previous */
 void
 action_find_previous(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
+	const char *text = i7_search_bar_get_search_string(I7_SEARCH_BAR(document->findbar));
 	bool found = i7_document_find_text(document, text, I7_SEARCH_REVERSE | I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_document_set_quicksearch_not_found(document, !found);
+	i7_search_bar_set_not_found(I7_SEARCH_BAR(document->findbar), !found);
 }
 
 /* Edit->Scroll to Selection */

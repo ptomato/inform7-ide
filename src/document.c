@@ -24,6 +24,7 @@
 #include "error.h"
 #include "file.h"
 #include "prefs.h"
+#include "searchbar.h"
 #include "searchwindow.h"
 #include "toast.h"
 
@@ -243,19 +244,6 @@ i7_document_init(I7Document *self)
 
 	/* Public members */
 	LOAD_WIDGET(contents);
-	LOAD_WIDGET(findbar);
-	LOAD_WIDGET(findbar_entry);
-	LOAD_WIDGET(replace_mode_button);
-	LOAD_WIDGET(search_options_button);
-	LOAD_WIDGET(search_options_box);
-	LOAD_WIDGET(search_type);
-	LOAD_WIDGET(replace_entry);
-	LOAD_WIDGET(ignore_case);
-	LOAD_WIDGET(restrict_search);
-	LOAD_WIDGET(replace_box);
-	LOAD_WIDGET(replace_button);
-	LOAD_WIDGET(replace_all_button);
-	LOAD_WIDGET(search_label);
 	LOAD_WIDGET(search_files_dialog);
 	gtk_window_set_transient_for(GTK_WINDOW(self->search_files_dialog), GTK_WINDOW(self));
 	LOAD_WIDGET(search_files_type);
@@ -271,16 +259,8 @@ i7_document_init(I7Document *self)
 	gtk_widget_set_margin_bottom(GTK_WIDGET(priv->toast), 20);
 	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(priv->toast));
 
-	gtk_search_bar_connect_entry(GTK_SEARCH_BAR(self->findbar), GTK_ENTRY(self->findbar_entry));
-	g_object_bind_property(self->replace_mode_button, "active",
-		self->replace_entry, "visible",
-		G_BINDING_SYNC_CREATE);
-	g_object_bind_property(self->replace_mode_button, "active",
-		self->replace_box, "visible",
-		G_BINDING_SYNC_CREATE);
-	g_object_bind_property(self->search_options_button, "active",
-		self->search_options_box, "visible",
-		G_BINDING_SYNC_CREATE);
+	self->findbar = GTK_WIDGET(i7_search_bar_new(self));
+	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(self->findbar));
 
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,

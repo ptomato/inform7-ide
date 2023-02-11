@@ -13,8 +13,37 @@
 #include <webkit2/webkit2.h>
 
 #include "document.h"
+#include "searchbar.h"
 #include "searchwindow.h"
 #include "toast.h"
+
+struct _I7SearchBar {
+	GtkSearchBar parent;
+
+	/* template children */
+	GtkSearchEntry *entry;
+	GtkCheckButton *ignore_case;
+	GtkButton *replace;
+	GtkButton *replace_all;
+	GtkBox *replace_box;
+	GtkEntry *replace_entry;
+	GtkToggleButton *replace_mode_button;
+	GtkCheckButton *restrict_search;
+	GtkLabel *search_label;
+	GtkBox *search_options_box;
+	GtkToggleButton *search_options_button;
+	GtkComboBoxText *search_type;
+
+	/* private */
+	I7Document *document;  /* ref, released on dispose */
+};
+
+G_DEFINE_TYPE(I7SearchBar, i7_search_bar, GTK_TYPE_SEARCH_BAR);
+
+enum  {
+	PROP_0,
+	PROP_DOCUMENT,
+};
 
 /* THE "SEARCH ENGINE" */
 
@@ -80,38 +109,38 @@ find(GtkTextBuffer *buffer, const char *text, I7SearchFlags flags, GtkTextIter *
 /* CALLBACKS */
 
 void
-on_close_button_clicked(GtkButton *button, I7Document *self)
+on_close_button_clicked(GtkButton *button, I7SearchBar *self)
 {
-	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self->findbar), FALSE);
+	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self), FALSE);
 }
 
 void
-on_findbar_entry_search_changed(GtkSearchEntry *entry, I7Document *self)
+on_findbar_entry_search_changed(GtkSearchEntry *entry, I7SearchBar *self)
 {
-	i7_document_unhighlight_quicksearch(self);
+	i7_document_unhighlight_quicksearch(self->document);
 	const char *search_text = gtk_entry_get_text(GTK_ENTRY(entry));
-	bool found = i7_document_find_text(self, search_text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_document_set_quicksearch_not_found(self, !found);
+	bool found = i7_document_find_text(self->document, search_text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
+	i7_search_bar_set_not_found(self, !found);
 }
 
 void
-on_findbar_entry_stop_search(GtkSearchEntry *entry, I7Document *self)
+on_findbar_entry_stop_search(GtkSearchEntry *entry, I7SearchBar *self)
 {
-	i7_document_unhighlight_quicksearch(self);
+	i7_document_unhighlight_quicksearch(self->document);
 }
 
 void
-on_replace_button_clicked(GtkButton *button, I7Document *self)
+on_replace_button_clicked(GtkButton *button, I7SearchBar *self)
 {
-	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->findbar_entry));
-	const char *replace_text = gtk_entry_get_text(GTK_ENTRY(self->replace_entry));
+	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->entry));
+	const char *replace_text = gtk_entry_get_text(self->replace_entry);
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
 	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type))
 		| (ignore_case? I7_SEARCH_IGNORE_CASE : 0)
 		| (restrict_search? I7_SEARCH_RESTRICT : 0);
 	GtkTextIter start, end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self->document));
 
 	gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
 	gchar *selected = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
@@ -128,19 +157,19 @@ on_replace_button_clicked(GtkButton *button, I7Document *self)
 	g_free(selected);
 
 	/* Find the next occurrence of the text */
-	i7_document_find_in_source(self, search_text, flags);
+	i7_document_find_in_source(self->document, search_text, flags);
 }
 
 void
-on_replace_all_button_clicked(GtkButton *button, I7Document *self)
+on_replace_all_button_clicked(GtkButton *button, I7SearchBar *self)
 {
-	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->findbar_entry));
-	const char *replace_text = gtk_entry_get_text(GTK_ENTRY(self->replace_entry));
+	const char *search_text = gtk_entry_get_text(GTK_ENTRY(self->entry));
+	const char *replace_text = gtk_entry_get_text(self->replace_entry);
 	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
 	gboolean restrict_search = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->restrict_search));
 	I7SearchFlags search_type = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
 	GtkTextIter cursor, start, end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self->document));
 	GtkTextSearchFlags gtk_flags = GTK_TEXT_SEARCH_TEXT_ONLY
 		| (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0)
 		| (restrict_search? GTK_TEXT_SEARCH_VISIBLE_ONLY : 0);
@@ -194,7 +223,135 @@ on_search_files_find_clicked(GtkButton *button, I7Document *self)
 	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
 }
 
+/* TYPE SYSTEM */
+
+static void
+i7_search_bar_init(I7SearchBar *self)
+{
+	gtk_widget_init_template(GTK_WIDGET(self));
+
+	gtk_search_bar_connect_entry(GTK_SEARCH_BAR(self), GTK_ENTRY(self->entry));
+	g_object_bind_property(self->replace_mode_button, "active",
+		self->replace_entry, "visible",
+		G_BINDING_SYNC_CREATE);
+	g_object_bind_property(self->replace_mode_button, "active",
+		self->replace_box, "visible",
+		G_BINDING_SYNC_CREATE);
+	g_object_bind_property(self->search_options_button, "active",
+		self->search_options_box, "visible",
+		G_BINDING_SYNC_CREATE);
+}
+
+static void
+i7_search_bar_get_property(GObject *object, unsigned prop_id, GValue *value, GParamSpec *pspec)
+{
+	I7SearchBar *self = I7_SEARCH_BAR(object);
+
+	switch(prop_id) {
+		case PROP_DOCUMENT:
+			g_value_set_object(value, self->document);
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+	}
+}
+
+static void
+i7_search_bar_set_property(GObject *object, unsigned prop_id, const GValue *value, GParamSpec *pspec)
+{
+	I7SearchBar *self = I7_SEARCH_BAR(object);
+
+	switch(prop_id) {
+		case PROP_DOCUMENT:
+			g_assert(self->document == NULL);  /* construct only */
+			self->document = g_value_dup_object(value);
+			g_return_if_fail(self->document != NULL);
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(self, prop_id, pspec);
+	}
+}
+
+static void
+i7_search_bar_dispose(GObject *object)
+{
+	I7SearchBar *self = I7_SEARCH_BAR(object);
+
+	g_clear_object(&self->document);
+
+	G_OBJECT_CLASS(i7_search_bar_parent_class)->dispose(object);
+}
+
+static void
+i7_search_bar_class_init(I7SearchBarClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	object_class->get_property = i7_search_bar_get_property;
+	object_class->set_property = i7_search_bar_set_property;
+	object_class->dispose = i7_search_bar_dispose;
+
+	g_object_class_install_property(object_class, PROP_DOCUMENT,
+		g_param_spec_object("document", "Document", "Document window to be searched", I7_TYPE_DOCUMENT,
+			G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+	gtk_widget_class_set_template_from_resource(widget_class, "/com/inform7/IDE/ui/searchbar.ui");
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, entry);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, ignore_case);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, replace);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, replace_all);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, replace_box);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, replace_entry);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, replace_mode_button);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, restrict_search);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, search_label);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, search_options_box);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, search_options_button);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchBar, search_type);
+	gtk_widget_class_bind_template_callback(widget_class, on_close_button_clicked);
+	gtk_widget_class_bind_template_callback(widget_class, on_findbar_entry_search_changed);
+	gtk_widget_class_bind_template_callback(widget_class, on_findbar_entry_stop_search);
+	gtk_widget_class_bind_template_callback(widget_class, on_replace_all_button_clicked);
+	gtk_widget_class_bind_template_callback(widget_class, on_replace_button_clicked);
+}
+
 /* PUBLIC FUNCTIONS */
+
+I7SearchBar *
+i7_search_bar_new(I7Document *document)
+{
+	g_return_val_if_fail(I7_IS_DOCUMENT(document), NULL);
+	return I7_SEARCH_BAR(g_object_new(I7_TYPE_SEARCH_BAR,
+		"document", document,
+		NULL));
+}
+
+void
+i7_search_bar_activate(I7SearchBar *self, bool replace_mode)
+{
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->replace_mode_button), replace_mode);
+	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self), TRUE);
+	gtk_widget_grab_focus(GTK_WIDGET(self->entry));
+}
+
+const char *
+i7_search_bar_get_search_string(I7SearchBar *self)
+{
+	return gtk_entry_get_text(GTK_ENTRY(self->entry));
+}
+
+void
+i7_search_bar_set_target_description(I7SearchBar *self, const char *descr)
+{
+	if (descr == NULL) {
+		gtk_widget_hide(GTK_WIDGET(self->search_label));
+		return;
+	}
+
+	g_autofree char *text = g_strdup_printf(_("Searching <b>%s</b>"), descr);
+	gtk_label_set_markup(GTK_LABEL(self->search_label), text);
+	gtk_widget_show(GTK_WIDGET(self->search_label));
+}
 
 bool
 i7_document_find_text(I7Document *self, const char *text, I7SearchFlags flags)
@@ -224,22 +381,34 @@ i7_document_unhighlight_quicksearch(I7Document *self)
 }
 
 void
-i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found)
+i7_search_bar_set_not_found(I7SearchBar *self, bool not_found)
 {
-	GAction *find_previous = g_action_map_lookup_action(G_ACTION_MAP(self), "find-previous");
+	GAction *find_previous = g_action_map_lookup_action(G_ACTION_MAP(self->document), "find-previous");
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(find_previous), !not_found);
-	GAction *find_next = g_action_map_lookup_action(G_ACTION_MAP(self), "find-next");
+	GAction *find_next = g_action_map_lookup_action(G_ACTION_MAP(self->document), "find-next");
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(find_next), !not_found);
 
-	GtkStyleContext *style = gtk_widget_get_style_context(self->findbar_entry);
+	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->entry));
 	if(not_found) {
 		gtk_style_context_add_class(style, "error");
 	} else {
 		gtk_style_context_remove_class(style, "error");
 	}
 
-	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_button), !not_found);
-	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_all_button), !not_found);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->replace), !not_found);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_all), !not_found);
+}
+
+void
+i7_search_bar_set_can_replace(I7SearchBar *self, bool can_replace)
+{
+	gtk_widget_set_visible(GTK_WIDGET(self->replace_mode_button), can_replace);
+}
+
+void
+i7_search_bar_set_can_restrict(I7SearchBar *self, bool can_restrict)
+{
+	gtk_widget_set_visible(GTK_WIDGET(self->restrict_search), can_restrict);
 }
 
 void
@@ -249,10 +418,10 @@ i7_document_find_in_source(I7Document *self, const char *text, I7SearchFlags fla
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self));
 
 	if (!find(buffer, text, flags, &start, &end)) {
-		i7_document_set_quicksearch_not_found(self, TRUE);
+		i7_search_bar_set_not_found(I7_SEARCH_BAR(self->findbar), true);
 		return;
 	}
-	i7_document_set_quicksearch_not_found(self, FALSE);
+	i7_search_bar_set_not_found(I7_SEARCH_BAR(self->findbar), false);
 
 	/* We may have searched the invisible regions, so if the found text is
 	 invisible, go back to showing the entire source. */

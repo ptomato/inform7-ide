@@ -31,6 +31,7 @@
 #include "node.h"
 #include "panel.h"
 #include "project-settings.h"
+#include "searchbar.h"
 #include "skein.h"
 #include "skein-view.h"
 #include "source-view.h"
@@ -945,17 +946,14 @@ i7_story_find_text(I7Document *document, const char *text, I7SearchFlags flags)
 		return TRUE;
 	}
 
-	GtkLabel *search_label = GTK_LABEL(document->search_label);
-	g_autofree char *descr = g_strdup_printf(_("Searching <b>%s</b>"), description);
-	gtk_label_set_markup(search_label, descr);
-
-	bool can_replace = GTK_IS_TEXT_VIEW(focus) && gtk_text_view_get_editable(GTK_TEXT_VIEW(focus));
-	gtk_widget_set_visible(document->replace_mode_button, can_replace);
+	i7_search_bar_set_target_description(I7_SEARCH_BAR(document->findbar), description);
+	i7_search_bar_set_can_replace(I7_SEARCH_BAR(document->findbar),
+		GTK_IS_TEXT_VIEW(focus) && gtk_text_view_get_editable(GTK_TEXT_VIEW(focus)));
 
 	i7_document_set_highlighted_view(document, focus);
 	bool has_sections = (focus == I7_STORY(document)->panel[LEFT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] ||
 		focus == I7_STORY(document)->panel[RIGHT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]);
-	gtk_widget_set_visible(document->restrict_search, has_sections);
+	i7_search_bar_set_can_restrict(I7_SEARCH_BAR(document->findbar), has_sections);
 
 	if (*text == '\0') {
 		/* If the text is blank, unhighlight everything and return TRUE so the
