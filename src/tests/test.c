@@ -14,6 +14,8 @@
 #include "skein-test.h"
 #include "story-test.h"
 
+void add_blob_tests(void);
+
 int
 main(int argc, char **argv)
 {
@@ -27,6 +29,8 @@ main(int argc, char **argv)
 	g_test_add_func("/app/extensions/case-insensitive", test_app_extensions_case_insensitive);
 	g_test_add_func("/app/colorscheme/install-remove", test_app_colorscheme_install_remove);
 	g_test_add_func("/app/colorscheme/get-current", test_app_colorscheme_get_current);
+
+	add_blob_tests();
 
 	g_test_add_func("/diffs/same", test_diffs_same);
 	g_test_add_func("/diffs/whitespace", test_diffs_whitespace);

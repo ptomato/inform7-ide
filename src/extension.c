@@ -412,11 +412,9 @@ i7_extension_init(I7Extension *self)
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/extension.ui");
 	gtk_builder_connect_signals(builder, self);
 
-	/* Build the toolbars */
-	I7_DOCUMENT(self)->toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "extension-toolbar"));
-
-	/* Build the rest of the interface */
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
+	/* Build the title bar */
+	I7_DOCUMENT(self)->titlebar = GTK_HEADER_BAR(gtk_builder_get_object(builder, "titlebar"));
+	gtk_window_set_titlebar(GTK_WINDOW(self), GTK_WIDGET(I7_DOCUMENT(self)->titlebar));
 
 	/* Create source view */
 	self->sourceview = I7_SOURCE_VIEW(i7_source_view_new());
@@ -425,7 +423,7 @@ i7_extension_init(I7Extension *self)
 	gtk_style_context_add_class(style, "font-family-setting");
 	gtk_style_context_add_class(style, "font-size-setting");
 	gtk_widget_show(GTK_WIDGET(self->sourceview));
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), GTK_WIDGET(self->sourceview), TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(I7_DOCUMENT(self)->contents), GTK_WIDGET(self->sourceview));
 
 	/* Build the Open Extensions menu */
 	i7_app_update_extensions_menu(theapp);

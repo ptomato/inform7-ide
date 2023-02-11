@@ -83,8 +83,13 @@ config.set_quoted('GETTEXT_PACKAGE', appname)
 config.set_quoted('PACKAGE_VERSION', app_version)
 
 # Get current year for updating copyrights
-copyright_year = run_command(date, '+%Y').stdout().strip()
+copyright_year = run_command(date, '+%Y', check: true).stdout().strip()
 config.set_quoted('COPYRIGHT_YEAR', copyright_year)
+
+# Find Inform version
+inform7_output = run_command(inform7, '-version', check: true).stdout()
+inform7_version = inform7_output.replace('inform7 version ', '').split()[0]
+config.set_quoted('INFORM7_VERSION', inform7_version)
 
 if glib.version().version_compare('>=2.60')
     config.set('GLIB_VERSION_MIN_REQUIRED', 'GLIB_VERSION_2_60')

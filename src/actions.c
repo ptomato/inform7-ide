@@ -475,32 +475,6 @@ action_preferences(GSimpleAction *action, GVariant *parameter, I7App *app)
 	gtk_window_present(GTK_WINDOW(win));
 }
 
-/* View->Toolbar */
-void
-action_view_toolbar_toggled(GSimpleAction *action, GVariant *state, I7Document *document)
-{
-	g_simple_action_set_state(action, state);
-
-	/* Set the default value for the next time a window is opened */
-	GSettings *app_state = i7_app_get_state(I7_APP(g_application_get_default()));
-	g_settings_set_value(app_state, PREFS_STATE_SHOW_TOOLBAR, state);
-
-	gtk_widget_set_visible(document->toolbar, g_variant_get_boolean(state));
-}
-
-/* View->Statusbar */
-void
-action_view_statusbar_toggled(GSimpleAction *action, GVariant *state, I7Document *document)
-{
-	g_simple_action_set_state(action, state);
-
-	/* Set the default value for the next time a window is opened */
-	GSettings *app_state = i7_app_get_state(I7_APP(g_application_get_default()));
-	g_settings_set_value(app_state, PREFS_STATE_SHOW_STATUSBAR, state);
-
-	gtk_widget_set_visible(document->statusline, g_variant_get_boolean(state));
-}
-
 /* View->Notepad */
 void
 action_view_notepad_toggled(GSimpleAction *action, GVariant *state, I7Story *story)
@@ -826,7 +800,7 @@ action_stop(GSimpleAction *action, GVariant *parameter, I7Story *story)
 void
 action_refresh_index(GSimpleAction *action, GVariant *parameter, I7Story *story)
 {
-	i7_story_compile(story, FALSE, TRUE, (CompileActionFunc)i7_story_show_pane, GUINT_TO_POINTER(I7_PANE_INDEX));
+	i7_story_compile(story, FALSE, TRUE, (CompileActionFunc)i7_story_finish_refresh_index, NULL);
 }
 
 /* Replay->Replay Last Commands */

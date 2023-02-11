@@ -24,6 +24,8 @@
 #include "error.h"
 #include "file.h"
 #include "prefs.h"
+#include "searchwindow.h"
+#include "toast.h"
 
 typedef struct {
 	/* The file this document refers to */
@@ -42,6 +44,8 @@ typedef struct {
 	GtkTreePath *current_heading;
 	/* The view with a search match currently being highlighted */
 	GtkWidget *highlighted_view;
+	/* App notification */
+	I7Toast *toast;
 
 	/* Download counts */
 	unsigned downloads_completed;
@@ -117,11 +121,19 @@ on_findbar_entry_key_release_event(GtkEntry *entry, GdkEventKey *event, I7Docume
 }
 
 void
-on_multi_download_dialog_response(GtkDialog *dialog, int response, I7Document *self)
+on_search_entry_activate(GtkEntry *entry, I7Story *self)
 {
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	if(response == GTK_RESPONSE_CANCEL)
-		g_cancellable_cancel(priv->cancel_download);
+	const char *text = gtk_entry_get_text(entry);
+
+	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, TRUE, I7_SEARCH_CONTAINS);
+	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
+	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
+}
+
+void
+on_search_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event)
+{
+	gtk_entry_set_text(entry, "");
 }
 
 /* Helper function: run through the list of preferred system languages in order
@@ -195,8 +207,6 @@ create_document_actions(I7Document *self)
 		{ "scroll-selection", (ActionCallback)action_scroll_selection },
 		{ "search", (ActionCallback)action_search },
 		{ "autocheck-spelling", NULL, NULL, "true", (ActionCallback)action_autocheck_spelling_toggle },
-		{ "view-toolbar", NULL, NULL, "true", (ActionCallback)action_view_toolbar_toggled },
-		{ "view-statusbar", NULL, NULL, "true", (ActionCallback)action_view_statusbar_toggled },
 		{ "show-headings", (ActionCallback)action_show_headings },
 		{ "current-section-only", (ActionCallback)action_current_section_only },
 		{ "increase-restriction", (ActionCallback)action_increase_restriction },
@@ -221,7 +231,6 @@ i7_document_init(I7Document *self)
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	I7App *theapp = I7_APP(g_application_get_default());
 	GSettings *prefs = i7_app_get_prefs(theapp);
-	GSettings *state = i7_app_get_state(theapp);
 
 	/* Set the icon */
 	gtk_window_set_icon_name(GTK_WINDOW(self), "com.inform7.IDE");
@@ -263,10 +272,7 @@ i7_document_init(I7Document *self)
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(entire_source), FALSE);
 
 	/* Public members */
-	LOAD_WIDGET(box);
-	LOAD_WIDGET(statusline);
-	LOAD_WIDGET(statusbar);
-	LOAD_WIDGET(progressbar);
+	LOAD_WIDGET(contents);
 	LOAD_WIDGET(findbar);
 	LOAD_WIDGET(findbar_entry);
 	LOAD_WIDGET(find_dialog);
@@ -289,11 +295,16 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(search_files_documentation);
 	LOAD_WIDGET(search_files_ignore_case);
 	LOAD_WIDGET(search_files_find);
-	LOAD_WIDGET(multi_download_dialog);
-	gtk_window_set_transient_for(GTK_WINDOW(self->multi_download_dialog), GTK_WINDOW(self));
-	LOAD_WIDGET(download_label);
-	LOAD_WIDGET(download_progress);
-	gtk_container_add(GTK_CONTAINER(self), self->box);
+
+	GtkWidget *box = GTK_WIDGET(load_object(builder, "box"));
+	gtk_container_add(GTK_CONTAINER(self), box);
+	priv->toast = i7_toast_new();
+	gtk_widget_set_margin_bottom(GTK_WIDGET(priv->toast), 20);
+	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(priv->toast));
+
+	self->search_toast = i7_toast_new();
+	GtkWidget *dialog_contents = GTK_WIDGET(load_object(builder, "find_dialog_contents"));
+	gtk_overlay_add_overlay(GTK_OVERLAY(dialog_contents), GTK_WIDGET(self->search_toast));
 
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
@@ -303,10 +314,6 @@ i7_document_init(I7Document *self)
 	GSettings *system_settings = i7_app_get_system_settings(theapp);
 	g_signal_connect_swapped(system_settings, "changed::document-font-name", G_CALLBACK(i7_document_update_fonts), self);
 	g_signal_connect_swapped(system_settings, "changed::monospace-font-name", G_CALLBACK(i7_document_update_fonts), self);
-
-	/* Show statusbar if necessary */
-	GAction *view_statusbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-statusbar");
-	g_simple_action_set_state(G_SIMPLE_ACTION(view_statusbar), g_settings_get_value(state, PREFS_STATE_SHOW_STATUSBAR));
 }
 
 static void
@@ -510,6 +517,8 @@ on_document_deleted_or_unmounted_idle(I7Document *document) {
 static gboolean
 on_document_created_or_changed_idle(I7DocumentFileMonitorIdleClosure *data)
 {
+	I7DocumentPrivate *priv = i7_document_get_instance_private(data->document);
+
 	/* g_file_set_contents works by deleting and creating, so both of
 	these options mean the source text has been modified. Don't ask for
 	confirmation - just read in the new source text. (See mantis #681
@@ -517,7 +526,7 @@ on_document_created_or_changed_idle(I7DocumentFileMonitorIdleClosure *data)
 	g_autofree char *text = read_source_file(data->file);
 	if (text) {
 		i7_document_set_source_text(data->document, text);
-		i7_document_flash_status_message(data->document, _("Source code reloaded."), FILE_OPERATIONS);
+		i7_toast_show_message(priv->toast, _("Source code reloaded."));
 		i7_document_set_modified(data->document, FALSE);
 		return G_SOURCE_REMOVE;
 	}
@@ -1123,78 +1132,6 @@ i7_document_show_entire_source(I7Document *self)
 	priv->current_heading = gtk_tree_path_new_first();
 }
 
-/* Displays the message text in the status bar of the current window. */
-void
-i7_document_display_status_message(I7Document *self, const char *message, const char *context)
-{
-	GtkStatusbar *status = GTK_STATUSBAR(self->statusbar);
-	guint id = gtk_statusbar_get_context_id(status, context);
-	gtk_statusbar_pop(status, id);
-	gtk_statusbar_push(status, id, message);
-}
-
-void
-i7_document_remove_status_message(I7Document *self, const char *context)
-{
-	GtkStatusbar *status = GTK_STATUSBAR(self->statusbar);
-	guint id = gtk_statusbar_get_context_id(status, context);
-	gtk_statusbar_pop(status, id);
-}
-
-struct StatusData {
-	GtkStatusbar *status;
-	guint context_id;
-	guint message_id;
-};
-
-static gboolean
-end_flash_message(struct StatusData *data)
-{
-	gtk_statusbar_remove(data->status, data->context_id, data->message_id);
-	g_slice_free(struct StatusData, data);
-	return FALSE;
-}
-
-void
-i7_document_flash_status_message(I7Document *document, const gchar *message, const gchar *context)
-{
-	struct StatusData *data = g_slice_new0(struct StatusData);
-	data->status = GTK_STATUSBAR(document->statusbar);
-	data->context_id = gtk_statusbar_get_context_id(data->status, context);
-	gtk_statusbar_pop(data->status, data->context_id);
-	data->message_id = gtk_statusbar_push(data->status, data->context_id, message);
-	g_timeout_add_seconds(1, (GSourceFunc)end_flash_message, data);
-}
-
-/* Pulses the progress bar */
-void
-i7_document_display_progress_busy(I7Document *document)
-{
-	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(document->progressbar));
-}
-
-/* Displays a percentage in the progress indicator */
-void
-i7_document_display_progress_percentage(I7Document *document, gdouble fraction)
-{
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), fraction);
-}
-
-/* Displays a message in the progress indicator */
-void
-i7_document_display_progress_message(I7Document *document, const gchar *message)
-{
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(document->progressbar), message);
-}
-
-/* Clears the message and progress percentage */
-void
-i7_document_clear_progress(I7Document *document)
-{
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(document->progressbar), 0.0);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(document->progressbar), NULL);
-}
-
 void
 i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 {
@@ -1207,17 +1144,14 @@ i7_document_set_spellcheck(I7Document *document, gboolean spellcheck)
 }
 
 /* Helper function: progress callback for downloading a single extension.
-Indicator appears in the progress bar on the bottom left of the document window. */
+ * Indicator appears in the Blob UI if it's a story window. Currently we can't
+ * get here from an extension window. */
 static void
 single_download_progress(goffset current, goffset total, I7Document *self)
 {
-	if(current == total) {
-		i7_document_display_progress_message(self, _("Installing extension"));
-		i7_document_display_progress_percentage(self, 1.0);
-	} else {
-		i7_document_display_progress_message(self, _("Downloading extension"));
-		i7_document_display_progress_percentage(self, (double)current / total);
-	}
+	if (I7_IS_STORY(self))
+		i7_blob_set_progress(I7_STORY(self)->blob, (double)current / total, NULL);
+
 	while(gtk_events_pending())
 		gtk_main_iteration();
 }
@@ -1244,7 +1178,8 @@ i7_document_download_single_extension(I7Document *self, GFile *remote_file, cons
 
 	gboolean success = i7_app_download_extension(theapp, remote_file, NULL, (GFileProgressCallback)single_download_progress, self, &error);
 
-	i7_document_clear_progress(self);
+	if (I7_IS_STORY(self))
+		i7_blob_clear_progress(I7_STORY(self)->blob);
 
 	if(!success) {
 		error_dialog(GTK_WINDOW(self), error, _("\"%s\" by %s could not be downloaded. The error was: %s"), title, author, error->message);
@@ -1264,29 +1199,19 @@ i7_document_download_single_extension(I7Document *self, GFile *remote_file, cons
 	return TRUE;
 }
 
-/* Helper function: label text for downloads dialog. Free return value when done */
-char *
-format_download_label_text(unsigned completed, unsigned total, unsigned failed)
-{
-	if(failed > 0)
-		return g_strdup_printf(_("Installed %d of %d (%d failed)"), completed, total, failed);
-	return g_strdup_printf(_("Installed %d of %d"), completed, total);
-}
-
 /* Helper function: progress callback for downloading more than one extension.
-Indicator appears in a dialog box. */
+ * Indicator appears in the Blob UI if it's a story window. Currently we can't
+ * get here from an extension window. */
 static void
 multi_download_progress(goffset current, goffset total, I7Document *self)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 
-	double current_fraction = (double)current / total;
-	double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->download_progress), total_fraction);
-
-	char *label = format_download_label_text(priv->downloads_completed, priv->downloads_total, priv->downloads_failed);
-	gtk_label_set_text(GTK_LABEL(self->download_label), label);
-	g_free(label);
+	if (I7_IS_STORY(self)) {
+		double current_fraction = (double)current / total;
+		double total_fraction = ((double)priv->downloads_completed + priv->downloads_failed + current_fraction) / priv->downloads_total;
+		i7_blob_set_progress(I7_STORY(self)->blob, total_fraction, priv->cancel_download);
+	}
 
 	while(gtk_events_pending())
 		gtk_main_iteration();
@@ -1332,11 +1257,9 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 	priv->downloads_total = n_extensions;
 	priv->downloads_failed = 0;
 
-	char *label = format_download_label_text(0, priv->downloads_total, 0);
-	gtk_label_set_text(GTK_LABEL(self->download_label), label);
-	g_free(label);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->download_progress), 0.0);
-	gtk_widget_show_all(self->multi_download_dialog);
+	if (I7_IS_STORY(self))
+		i7_blob_set_progress(I7_STORY(self)->blob, 0.0, priv->cancel_download);
+
 	while(gtk_events_pending())
 		gtk_main_iteration();
 
@@ -1361,8 +1284,10 @@ i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions
 		multi_download_progress(0, 1, self);
 	}
 	char *text = g_string_free(messages, FALSE);
-	gtk_widget_hide(self->multi_download_dialog);
 	g_clear_object(&priv->cancel_download);
+
+	if (I7_IS_STORY(self))
+		i7_blob_clear_progress(I7_STORY(self)->blob);
 
 	GtkWidget *dialog;
 	if(priv->downloads_failed > 0) {

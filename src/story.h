@@ -18,6 +18,7 @@
 #include <plist/plist.h>
 
 #include "app.h"
+#include "blob.h"
 #include "document.h"
 #include "panel.h"
 #include "skein.h"
@@ -50,6 +51,7 @@ typedef struct {
 typedef struct {
 	I7Document parent_instance;
 
+	I7Blob *blob;
 	GtkWidget *facing_pages;
 	GtkWidget *notes_window;
 	GtkWidget *notes_view;
@@ -133,6 +135,7 @@ void i7_story_save_ifiction(I7Story *self);
 /* Story pane, story-game.c */
 void i7_story_run_compiler_output(I7Story *self);
 void i7_story_test_compiler_output(I7Story *self);
+void i7_story_finish_refresh_index(I7Story *self);
 void i7_story_run_compiler_output_and_replay(I7Story *self);
 void i7_story_run_compiler_output_and_play_to_node(I7Story *self, I7Node *node);
 void i7_story_run_commands_from_node(I7Story *self, I7Node *node);

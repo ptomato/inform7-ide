@@ -13,6 +13,8 @@
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 
+#include "toast.h"
+
 #define I7_TYPE_DOCUMENT            (i7_document_get_type())
 #define I7_DOCUMENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_DOCUMENT, I7Document))
 #define I7_DOCUMENT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), I7_TYPE_DOCUMENT, I7DocumentClass))
@@ -45,11 +47,8 @@ typedef struct {
 typedef struct {
 	GtkApplicationWindow parent_instance;
 
-	GtkWidget *box;
-	GtkWidget *toolbar;
-	GtkWidget *statusline;
-	GtkWidget *statusbar;
-	GtkWidget *progressbar;
+	GtkWidget *contents;
+	GtkHeaderBar *titlebar;
 	GtkWidget *findbar;
 	GtkWidget *findbar_entry;
 	/* "Find and Replace" dialog widgets */
@@ -63,6 +62,7 @@ typedef struct {
 	GtkWidget *find_button;
 	GtkWidget *replace_button;
 	GtkWidget *replace_all_button;
+	I7Toast *search_toast;
 	/* "Search Files" dialog widgets */
 	GtkWidget *search_files_dialog;
 	GtkWidget *search_files_type;
@@ -72,10 +72,6 @@ typedef struct {
 	GtkWidget *search_files_documentation;
 	GtkWidget *search_files_ignore_case;
 	GtkWidget *search_files_find;
-	/* "Multi Download" dialog widgets */
-	GtkWidget *multi_download_dialog;
-	GtkWidget *download_label;
-	GtkWidget *download_progress;
 } I7Document;
 
 typedef enum  {
@@ -107,8 +103,6 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 
 /* Statusbar Contexts */
 #define FILE_OPERATIONS    "File"
-#define SEARCH_OPERATIONS  "Search"
-#define COMPILE_OPERATIONS "Compile"
 
 GType i7_document_get_type(void) G_GNUC_CONST;
 GFile *i7_document_get_file(I7Document *self);
@@ -152,14 +146,6 @@ GtkTreePath *i7_document_get_shallower_heading(I7Document *self);
 GtkTreePath *i7_document_get_deeper_heading(I7Document *self);
 GtkTreePath *i7_document_get_deepest_heading(I7Document *self);
 void i7_document_show_entire_source(I7Document *self);
-
-void i7_document_display_status_message(I7Document *self, const char *message, const char *context);
-void i7_document_remove_status_message(I7Document *self, const char *context);
-void i7_document_flash_status_message(I7Document *self, const char *message, const char *context);
-void i7_document_display_progress_busy(I7Document *self);
-void i7_document_display_progress_percentage(I7Document *self, double fraction);
-void i7_document_display_progress_message(I7Document *self, const char *message);
-void i7_document_clear_progress(I7Document *self);
 
 void i7_document_set_spellcheck(I7Document *self, gboolean spellcheck);
 void i7_document_check_spelling(I7Document *self);

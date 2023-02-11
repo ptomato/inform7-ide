@@ -74,6 +74,13 @@ i7_story_test_compiler_output(I7Story *self)
 	gtk_widget_grab_focus(GTK_WIDGET(glk));
 }
 
+void
+i7_story_finish_refresh_index(I7Story *self)
+{
+	i7_blob_clear_progress(self->blob);
+	i7_story_show_pane(self, I7_PANE_INDEX);
+}
+
 /* Finish setting up the interpreter when forced input is done processing;
  * this signal is set up in play_commands() because the interpreter processes
  * the commands you feed it asynchronously. */
@@ -269,6 +276,7 @@ i7_story_run_compiler_output_and_entire_skein(I7Story *self)
 	I7Skein *skein = i7_story_get_skein(self);
 	GSList *blessed_nodes = i7_skein_get_blessed_thread_ends(skein);
 	if (blessed_nodes == NULL) {
+		i7_blob_clear_progress(self->blob);
 		return;
 	}
 
@@ -374,6 +382,11 @@ load_blorb_resource(ChimaraResourceType usage, uint32_t resnum, I7Story *self)
 void
 on_game_started(ChimaraGlk *game, I7Story *self)
 {
+	/* Blob message */
+	g_autoptr(GDateTime) datetime = g_date_time_new_now_local();
+	g_autofree char *format = g_date_time_format(datetime, _("Story started at %R."));
+	i7_blob_set_status(self->blob, format, true);
+
 	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), TRUE);
 }
@@ -382,6 +395,8 @@ on_game_started(ChimaraGlk *game, I7Story *self)
 void
 on_game_stopped(ChimaraGlk *game, I7Story *self)
 {
+	i7_blob_set_status(self->blob, "Story stopped.", false);
+
 	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), FALSE);
 }

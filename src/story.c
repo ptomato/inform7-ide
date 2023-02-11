@@ -20,6 +20,7 @@
 
 #include "actions.h"
 #include "app.h"
+#include "blob.h"
 #include "builder.h"
 #include "configfile.h"
 #include "document.h"
@@ -30,7 +31,6 @@
 #include "node.h"
 #include "panel.h"
 #include "project-settings.h"
-#include "searchwindow.h"
 #include "skein.h"
 #include "skein-view.h"
 #include "source-view.h"
@@ -235,22 +235,6 @@ on_facing_pages_set_focus_child(GtkContainer *container, GtkWidget *child, I7Sto
 		priv->last_focused = child;
 	/* Do not save the pointer if it is NULL: that means the focus left the
 	 widget */
-}
-
-void
-on_search_entry_activate(GtkEntry *entry, I7Story *self)
-{
-	const gchar *text = gtk_entry_get_text(entry);
-
-	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, TRUE, I7_SEARCH_CONTAINS);
-	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
-	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
-}
-
-void
-on_search_entry_icon_press(GtkEntry *entry, GtkEntryIconPosition icon_pos, GdkEvent *event)
-{
-	gtk_entry_set_text(entry, "");
 }
 
 /* OVERRIDES */
@@ -1158,16 +1142,11 @@ i7_story_init(I7Story *self)
 	GAction *stop = g_action_map_lookup_action(G_ACTION_MAP(self), "stop");
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(stop), FALSE);
 
-	/* Build the toolbars */
-	I7_DOCUMENT(self)->toolbar = GTK_WIDGET(gtk_builder_get_object(builder, "main-toolbar"));
-
-	/* Set the initial visible state of the toolbar based on the most recent
-	choice the user made */
-	GAction *view_toolbar = g_action_map_lookup_action(G_ACTION_MAP(self), "view-toolbar");
-	g_action_change_state(view_toolbar, g_settings_get_value(state, PREFS_STATE_SHOW_TOOLBAR));
-
-	/* Build the rest of the interface */
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), I7_DOCUMENT(self)->toolbar, FALSE, FALSE, 0);
+	/* Build the title bar */
+	I7_DOCUMENT(self)->titlebar = GTK_HEADER_BAR(gtk_builder_get_object(builder, "titlebar"));
+	gtk_window_set_titlebar(GTK_WINDOW(self), GTK_WIDGET(I7_DOCUMENT(self)->titlebar));
+	self->blob = i7_blob_new();
+	gtk_header_bar_pack_end(I7_DOCUMENT(self)->titlebar, GTK_WIDGET(self->blob));
 
 	/* Save public pointers to other widgets */
 	LOAD_WIDGET(facing_pages);
@@ -1194,7 +1173,7 @@ i7_story_init(I7Story *self)
 	i7_panel_reset_queue(self->panel[RIGHT], I7_PANE_DOCUMENTATION, 0, "about:blank");
 	gtk_paned_pack1(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[LEFT]), TRUE, FALSE);
 	gtk_paned_pack2(GTK_PANED(self->facing_pages), GTK_WIDGET(self->panel[RIGHT]), TRUE, FALSE);
-	gtk_box_pack_start(GTK_BOX(I7_DOCUMENT(self)->box), self->facing_pages, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(I7_DOCUMENT(self)->contents), self->facing_pages);
 
 	/* Set the last saved window size and slider position */
 	g_settings_get(state, PREFS_STATE_WINDOW_SIZE, "(ii)", &w, &h);
