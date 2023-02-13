@@ -38,6 +38,8 @@ struct _I7SearchBar {
 
 	/* private */
 	GtkWidget *searched_view;  /* ref, released on dispose */
+	unsigned long webview_found_handler;
+	unsigned long webview_not_found_handler;
 };
 
 G_DEFINE_TYPE(I7SearchBar, i7_search_bar, GTK_TYPE_SEARCH_BAR);
@@ -201,6 +203,13 @@ end_search_webview(I7SearchBar *self)
 
 	WebKitFindController *controller = webkit_web_view_get_find_controller(view);
 	webkit_find_controller_search_finish(controller);
+
+	if (self->webview_found_handler != 0)
+		g_signal_handler_disconnect(controller, self->webview_found_handler);
+	self->webview_found_handler = 0;
+	if (self->webview_not_found_handler != 0)
+		g_signal_handler_disconnect(controller, self->webview_not_found_handler);
+	self->webview_not_found_handler = 0;
 }
 
 static void
@@ -219,6 +228,18 @@ start_search_textview(I7SearchBar *self, I7SearchFlags flags)
 }
 
 static void
+on_webview_found_text(WebKitFindController *controller, unsigned count, I7SearchBar *self)
+{
+	set_not_found(self, false);
+}
+
+static void
+on_webview_failed_to_find_text(WebKitFindController *controller, I7SearchBar *self)
+{
+	set_not_found(self, true);
+}
+
+static void
 start_search_webview(I7SearchBar *self, const char *text, I7SearchFlags flags)
 {
 	WebKitFindController *controller = webkit_web_view_get_find_controller(WEBKIT_WEB_VIEW(self->searched_view));
@@ -227,7 +248,12 @@ start_search_webview(I7SearchBar *self, const char *text, I7SearchFlags flags)
 		((flags & I7_SEARCH_IGNORE_CASE)? WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE : 0) |
 		((flags & I7_SEARCH_STARTS_WORD)? WEBKIT_FIND_OPTIONS_AT_WORD_STARTS : 0);
 
-	webkit_find_controller_search(controller, text, webkit_flags, /* max matches? */ 0);
+	self->webview_found_handler =
+		g_signal_connect_object(controller, "found-text", G_CALLBACK(on_webview_found_text), self, /* flags = */ 0);
+	self->webview_not_found_handler =
+		g_signal_connect_object(controller, "failed-to-find-text", G_CALLBACK(on_webview_failed_to_find_text), self, /* flags = */ 0);
+
+	webkit_find_controller_search(controller, text, webkit_flags, /* max matches = */ G_MAXUINT);
 }
 
 static void
