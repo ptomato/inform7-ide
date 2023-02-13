@@ -52,12 +52,18 @@ enum {
 static unsigned i7_search_bar_signals[LAST_SIGNAL] = { 0 };
 
 static void
+set_can_find(I7SearchBar *self, bool can_find)
+{
+	gtk_widget_set_sensitive(GTK_WIDGET(self->find_previous), can_find);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->find_next), can_find);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->replace), can_find);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_all), can_find);
+}
+
+static void
 set_not_found(I7SearchBar *self, bool not_found)
 {
-	gtk_widget_set_sensitive(GTK_WIDGET(self->find_previous), !not_found);
-	gtk_widget_set_sensitive(GTK_WIDGET(self->find_next), !not_found);
-	gtk_widget_set_sensitive(GTK_WIDGET(self->replace), !not_found);
-	gtk_widget_set_sensitive(GTK_WIDGET(self->replace_all), !not_found);
+	set_can_find(self, !not_found);
 
 	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(self->entry));
 	if (not_found) {
@@ -266,6 +272,7 @@ start_search(I7SearchBar *self)
 		 * entry doesn't stay red on a WebView */
 		end_search(self);
 		set_not_found(self, false);
+		set_can_find(self, false);
 		return;
 	}
 
@@ -483,6 +490,8 @@ i7_search_bar_activate(I7SearchBar *self, bool replace_mode, bool can_restrict, 
 		gtk_label_set_markup(GTK_LABEL(self->search_label), text);
 		gtk_widget_show(GTK_WIDGET(self->search_label));
 	}
+
+	set_can_find(self, false);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->replace_mode_button), replace_mode);
 	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self), TRUE);
