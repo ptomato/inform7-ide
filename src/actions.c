@@ -408,38 +408,7 @@ void
 action_find(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	bool replace_mode = g_variant_get_boolean(parameter);
-
-	/* Replace mode doesn't make any sense if we are searching some uneditable
-	 * view, like a webview. Focus the Source pane before starting replace mode.
-	 */
-	if (replace_mode && I7_IS_STORY(document)) {
-		i7_story_show_pane(I7_STORY(document), I7_PANE_SOURCE);
-		I7StoryPanel side = i7_story_choose_panel(I7_STORY(document), I7_PANE_SOURCE);
-		gtk_widget_grab_focus(I7_STORY(document)->panel[side]->sourceview->source);
-	}
-
-	i7_search_bar_activate(I7_SEARCH_BAR(document->findbar), replace_mode);
-	const char *text = i7_search_bar_get_search_string(I7_SEARCH_BAR(document->findbar));
-	bool found = i7_document_find_text(document, text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_search_bar_set_not_found(I7_SEARCH_BAR(document->findbar), !found);
-}
-
-/* Edit->Find Next */
-void
-action_find_next(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	const char *text = i7_search_bar_get_search_string(I7_SEARCH_BAR(document->findbar));
-	bool found = i7_document_find_text(document, text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_search_bar_set_not_found(I7_SEARCH_BAR(document->findbar), !found);
-}
-
-/* Edit->Find Previous */
-void
-action_find_previous(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	const char *text = i7_search_bar_get_search_string(I7_SEARCH_BAR(document->findbar));
-	bool found = i7_document_find_text(document, text, I7_SEARCH_REVERSE | I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_search_bar_set_not_found(I7_SEARCH_BAR(document->findbar), !found);
+	i7_document_activate_search(document, replace_mode);
 }
 
 /* Edit->Scroll to Selection */

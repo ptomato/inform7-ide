@@ -38,7 +38,7 @@ typedef struct {
 	void (*update_fonts)();
 	void (*update_font_sizes)();
 	void (*expand_headings_view)();
-	gboolean (*find_text)();
+	void (*activate_search)();
 	void (*set_spellcheck)();
 	gboolean (*can_revert)();
 	void (*revert)();
@@ -125,7 +125,6 @@ void i7_document_update_fonts(I7Document *self);
 void i7_document_update_font_sizes(I7Document *self);
 void i7_document_update_font_styles(I7Document *self);
 void i7_document_refresh_elastic_tabstops(I7Document *self);
-gboolean i7_document_iter_is_invisible(I7Document *self, GtkTextIter *iter);
 
 void i7_document_expand_headings_view(I7Document *self);
 void i7_document_set_headings_filter_level(I7Document *self, gint depth);
@@ -145,11 +144,6 @@ void i7_document_download_single_extension_async(I7Document *self, GFile *remote
 bool i7_document_download_single_extension_finish(I7Document *self, GAsyncResult *res);
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *descriptions, I7DocumentExtensionDownloadCallback callback, void *data);
 
-/* Search, searchbar.c */
-bool i7_document_find_text(I7Document *self, const char *text, I7SearchFlags flags);
-void i7_document_unhighlight_quicksearch(I7Document *self);
-void i7_document_set_highlighted_view(I7Document *self, GtkWidget *view);
-GtkWidget *i7_document_get_highlighted_view(I7Document *self);
-void i7_document_find_in_source(I7Document *self, const char *text, I7SearchFlags flags);
+void i7_document_activate_search(I7Document *self, bool replace_mode);
 
 #endif /* _DOCUMENT_H_ */

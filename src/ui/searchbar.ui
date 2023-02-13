@@ -24,8 +24,10 @@
             <property name="primary-icon-name">edit-find-symbolic</property>
             <property name="primary-icon-activatable">False</property>
             <property name="primary-icon-sensitive">False</property>
-            <signal name="search-changed" handler="on_findbar_entry_search_changed" swapped="no"/>
-            <signal name="stop-search" handler="on_findbar_entry_stop_search" swapped="no"/>
+            <signal name="next-match" handler="on_find_next" swapped="no"/>
+            <signal name="previous-match" handler="on_find_previous" swapped="no"/>
+            <signal name="search-changed" handler="start_search" swapped="yes"/>
+            <signal name="stop-search" handler="end_search" swapped="yes"/>
           </object>
           <packing>
             <property name="left-attach">0</property>
@@ -159,13 +161,13 @@
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="find_previous">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Search backwards for the find text</property>
+                    <property name="tooltip-text" translatable="yes">Search backwards for the find text (Shift+Ctrl+G)</property>
                     <property name="halign">start</property>
-                    <property name="action-name">win.find-previous</property>
+                    <signal name="clicked" handler="on_find_previous" swapped="no"/>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -181,13 +183,13 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="find_next">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <property name="tooltip-text" translatable="yes">Search forwards for the find text</property>
+                    <property name="tooltip-text" translatable="yes">Search forwards for the find text (Ctrl+G)</property>
                     <property name="halign">start</property>
-                    <property name="action-name">win.find-next</property>
+                    <signal name="clicked" handler="on_find_next" swapped="no"/>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>

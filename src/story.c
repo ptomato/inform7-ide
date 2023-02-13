@@ -915,78 +915,45 @@ i7_story_set_contents_display(I7Document *document, I7ContentsDisplay display)
 	i7_source_view_set_contents_display(story->panel[RIGHT]->sourceview, display);
 }
 
-static gboolean
-do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextIter *startpos, GtkTextIter *start, GtkTextIter *end)
+static void
+i7_story_activate_search(I7Document *document, gboolean replace_mode)
 {
-	if(forward)
-		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-}
+	I7Story *self = I7_STORY(document);
+	I7StoryPrivate *priv = i7_story_get_instance_private(self);
 
-static gboolean
-i7_story_find_text(I7Document *document, const char *text, I7SearchFlags flags)
-{
-	I7StoryPrivate *priv = i7_story_get_instance_private(I7_STORY(document));
-
-	I7Panel *panel = I7_PANEL(priv->last_focused);
-	if (!panel)
-		panel = I7_STORY(document)->panel[LEFT];
-
+	GtkWidget *searched_view;
 	const char *description = NULL;
-	GtkWidget *focus = i7_panel_get_searchable_view(panel, &description);
-	if (!focus) {
-		/* Try the other panel */
-		panel = I7_STORY(document)->panel[panel == I7_STORY(document)->panel[LEFT] ? RIGHT : LEFT];
-		focus = i7_panel_get_searchable_view(panel, &description);
-	}
 
-	if (!focus) {
-		gtk_widget_error_bell(GTK_WIDGET(document));
-		gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(document->findbar), FALSE);
-		return TRUE;
-	}
+	if (replace_mode) {
+		/* Replace mode doesn't make any sense if we are searching some
+		 * uneditable view, like a webview. Focus the Source pane before
+		 * starting replace mode. */
+		i7_story_show_pane(self, I7_PANE_SOURCE);
+		I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_SOURCE);
+		searched_view = self->panel[side]->sourceview->source;
+		description = _("Source");
+	} else {
+		I7Panel *panel = I7_PANEL(priv->last_focused);
+		if (!panel)
+			panel = self->panel[LEFT];
 
-	i7_search_bar_set_target_description(I7_SEARCH_BAR(document->findbar), description);
-	i7_search_bar_set_can_replace(I7_SEARCH_BAR(document->findbar),
-		GTK_IS_TEXT_VIEW(focus) && gtk_text_view_get_editable(GTK_TEXT_VIEW(focus)));
-
-	i7_document_set_highlighted_view(document, focus);
-	bool has_sections = (focus == I7_STORY(document)->panel[LEFT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] ||
-		focus == I7_STORY(document)->panel[RIGHT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]);
-	i7_search_bar_set_can_restrict(I7_SEARCH_BAR(document->findbar), has_sections);
-
-	if (*text == '\0') {
-		/* If the text is blank, unhighlight everything and return TRUE so the
-		find entry doesn't stay red on a WebView */
-		i7_document_unhighlight_quicksearch(document);
-		return TRUE;
-	}
-
-	if(GTK_IS_TEXT_VIEW(focus)) {
-		/* Source view and text view */
-		GtkTextIter iter, start, end;
-		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focus));
-		bool forward = !(flags & I7_SEARCH_REVERSE);
-
-		/* Start the search at either the beginning or end of the selection
-		 depending on the direction */
-		GtkTextMark *startmark = forward? gtk_text_buffer_get_selection_bound(buffer) : gtk_text_buffer_get_insert(buffer);
-		gtk_text_buffer_get_iter_at_mark(buffer, &iter, startmark);
-		if(!do_search(GTK_TEXT_VIEW(focus), text, forward, &iter, &start, &end)) {
-			if(forward)
-				gtk_text_buffer_get_start_iter(buffer, &iter);
-			else
-				gtk_text_buffer_get_end_iter(buffer, &iter);
-			if(!do_search(GTK_TEXT_VIEW(focus), text, forward, &iter, &start, &end))
-				return FALSE;
+		searched_view = i7_panel_get_searchable_view(panel, &description);
+		if (!searched_view) {
+			/* Try the other panel */
+			panel = self->panel[panel == self->panel[LEFT] ? RIGHT : LEFT];
+			searched_view = i7_panel_get_searchable_view(panel, &description);
 		}
-		gtk_text_buffer_select_range(buffer, &start, &end);
-		gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(focus), gtk_text_buffer_get_insert(buffer), 0.25, FALSE, 0.0, 0.0);
-	} else if(WEBKIT_IS_WEB_VIEW(focus)) {
-		WebKitFindController *controller = webkit_web_view_get_find_controller(WEBKIT_WEB_VIEW(focus));
-		webkit_find_controller_search(controller, text, WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE | WEBKIT_FIND_OPTIONS_WRAP_AROUND, /* max matches? */ 0);
-	} /* else do nothing */
-	return TRUE;
+
+		if (!searched_view) {
+			gtk_widget_error_bell(GTK_WIDGET(document));
+			return;
+		}
+	}
+
+	bool has_sections = (searched_view == self->panel[LEFT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE] ||
+		searched_view == self->panel[RIGHT]->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE]);
+
+	i7_search_bar_activate(I7_SEARCH_BAR(document->findbar), replace_mode, has_sections, searched_view, description);
 }
 
 static void
@@ -1284,7 +1251,7 @@ i7_story_class_init(I7StoryClass *klass)
 	document_class->update_fonts = i7_story_update_fonts;
 	document_class->update_font_sizes = i7_story_update_font_sizes;
 	document_class->expand_headings_view = i7_story_expand_headings_view;
-	document_class->find_text = i7_story_find_text;
+	document_class->activate_search = i7_story_activate_search;
 	document_class->set_spellcheck = i7_story_set_spellcheck;
 	document_class->can_revert = i7_story_can_revert;
 	document_class->revert = i7_story_revert;
