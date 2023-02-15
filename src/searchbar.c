@@ -284,6 +284,16 @@ start_search(I7SearchBar *self)
 		start_search_webview(self, text, flags);
 }
 
+static void
+finish_activate(I7SearchBar *self)
+{
+	bool has_text = *gtk_entry_get_text(GTK_ENTRY(self->entry)) == '\0';
+	set_can_find(self, has_text);
+
+	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self), TRUE);
+	gtk_widget_grab_focus(GTK_WIDGET(self->entry));
+}
+
 /* CALLBACKS */
 
 void
@@ -397,6 +407,38 @@ on_search_files_find_clicked(GtkButton *button, I7Document *self)
 	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
 }
 
+static void
+on_webview_get_selection(WebKitWebView *view, GAsyncResult *result, I7SearchBar *self)
+{
+	g_autoptr(GError) err = NULL;
+	g_autoptr(WebKitJavascriptResult) js_result = webkit_web_view_run_javascript_finish(view, result, &err);
+	if (js_result == NULL) {
+		g_warning("Failed to get selection in web page: %s", err->message);
+		finish_activate(self);
+		return;
+	}
+
+	JSCValue *js_value = webkit_javascript_result_get_js_value(js_result);
+	JSCException *exception = jsc_context_get_exception(jsc_value_get_context(js_value));
+	if (exception) {
+		g_warning("Exception from getting selection in web page: %s", jsc_exception_get_message(exception));
+		finish_activate(self);
+		return;
+	}
+
+	if (!jsc_value_is_string(js_value)) {
+		g_warning("Non-string value from getting selection in web page");
+		finish_activate(self);
+		return;
+	}
+
+	g_autofree char *selected_text = jsc_value_to_string(js_value);
+	if (*selected_text != '\0')
+		gtk_entry_set_text(GTK_ENTRY(self->entry), selected_text);
+
+	finish_activate(self);
+}
+
 /* TYPE SYSTEM */
 
 static void
@@ -480,6 +522,7 @@ i7_search_bar_activate(I7SearchBar *self, bool replace_mode, bool can_restrict, 
 
 	bool can_replace = GTK_IS_TEXT_VIEW(view) && gtk_text_view_get_editable(GTK_TEXT_VIEW(view));
 	gtk_widget_set_visible(GTK_WIDGET(self->replace_mode_button), can_replace);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->replace_mode_button), replace_mode);
 
 	gtk_widget_set_visible(GTK_WIDGET(self->restrict_search), can_restrict);
 
@@ -491,9 +534,20 @@ i7_search_bar_activate(I7SearchBar *self, bool replace_mode, bool can_restrict, 
 		gtk_widget_show(GTK_WIDGET(self->search_label));
 	}
 
-	set_can_find(self, false);
+	if (GTK_IS_TEXT_VIEW(view)) {
+		GtkTextIter start, end;
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(view));
+		if (gtk_text_buffer_get_selection_bounds(buffer, &start, &end)) {
+			g_autofree char *selected_text = gtk_text_buffer_get_text(buffer, &start, &end, /* include hidden = */ FALSE);
+			if (*selected_text != '\0')
+				gtk_entry_set_text(GTK_ENTRY(self->entry), selected_text);
+		}
+	} else if (WEBKIT_IS_WEB_VIEW(view)) {
+		webkit_web_view_run_javascript(WEBKIT_WEB_VIEW(view),
+			"window.getSelection().toString()", /* cancellable = */ NULL,
+			(GAsyncReadyCallback)on_webview_get_selection, self);
+		return;
+	}
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->replace_mode_button), replace_mode);
-	gtk_search_bar_set_search_mode(GTK_SEARCH_BAR(self), TRUE);
-	gtk_widget_grab_focus(GTK_WIDGET(self->entry));
+	finish_activate(self);
 }
