@@ -92,9 +92,6 @@ typedef enum {
 
 typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char *id, gpointer);
 
-/* Statusbar Contexts */
-#define FILE_OPERATIONS    "File"
-
 GType i7_document_get_type(void) G_GNUC_CONST;
 GFile *i7_document_get_file(I7Document *self);
 gchar *i7_document_get_display_name(I7Document *self);
