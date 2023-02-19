@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2015, 2019, 2021-2023 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -104,9 +104,10 @@ on_search_entry_activate(GtkEntry *entry, I7Story *self)
 {
 	const char *text = gtk_entry_get_text(entry);
 
-	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
-	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
-	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
+	I7SearchWindow *search_window = i7_search_window_new(I7_DOCUMENT(self));
+	i7_search_window_prefill_ui(search_window, text, I7_SEARCH_TARGET_DOCUMENTATION, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
+	gtk_window_present(GTK_WINDOW(search_window));
+	i7_search_window_do_search(search_window);
 }
 
 void
@@ -248,15 +249,6 @@ i7_document_init(I7Document *self)
 
 	/* Public members */
 	LOAD_WIDGET(contents);
-	LOAD_WIDGET(search_files_dialog);
-	gtk_window_set_transient_for(GTK_WINDOW(self->search_files_dialog), GTK_WINDOW(self));
-	LOAD_WIDGET(search_files_type);
-	LOAD_WIDGET(search_files_entry);
-	LOAD_WIDGET(search_files_project);
-	LOAD_WIDGET(search_files_extensions);
-	LOAD_WIDGET(search_files_documentation);
-	LOAD_WIDGET(search_files_ignore_case);
-	LOAD_WIDGET(search_files_find);
 
 	gtk_container_add(GTK_CONTAINER(self), self->contents);
 	priv->toast = i7_toast_new();

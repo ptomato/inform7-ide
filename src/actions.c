@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2015, 2019 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2015, 2019, 2023 Philip Chimento <philip.chimento@gmail.com>
  */
 
 /* All the callbacks for the "activate" signal of the GtkActions from the main
@@ -24,6 +24,7 @@
 #include "newdialog.h"
 #include "panel.h"
 #include "prefs.h"
+#include "searchwindow.h"
 #include "story.h"
 
 /* File->New... */
@@ -419,9 +420,8 @@ action_scroll_selection(GSimpleAction *action, GVariant *parameter, I7Document *
 void
 action_search(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	gtk_widget_show(document->search_files_dialog);
-	gtk_window_present(GTK_WINDOW(document->search_files_dialog));
-    gtk_widget_grab_focus(document->search_files_entry);
+	I7SearchWindow *dialog = i7_search_window_new(document);
+	gtk_window_present(GTK_WINDOW(dialog));
 }
 
 /* Edit->Autocheck Spelling */

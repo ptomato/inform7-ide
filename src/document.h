@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2015, 2019 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2015, 2019, 2023 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #ifndef _DOCUMENT_H_
@@ -50,15 +50,6 @@ typedef struct {
 	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
 	GtkWidget *findbar;
-	/* "Search Files" dialog widgets */
-	GtkWidget *search_files_dialog;
-	GtkWidget *search_files_type;
-	GtkWidget *search_files_entry;
-	GtkWidget *search_files_project;
-	GtkWidget *search_files_extensions;
-	GtkWidget *search_files_documentation;
-	GtkWidget *search_files_ignore_case;
-	GtkWidget *search_files_find;
 } I7Document;
 
 typedef enum  {

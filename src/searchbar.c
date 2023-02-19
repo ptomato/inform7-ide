@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2010, 2021 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2008-2010, 2021, 2023 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -14,7 +14,6 @@
 
 #include "document.h"
 #include "searchbar.h"
-#include "searchwindow.h"
 
 struct _I7SearchBar {
 	GtkSearchBar parent;
@@ -375,35 +374,6 @@ on_replace_all_button_clicked(GtkButton *button, I7SearchBar *self)
 	}
 
 	gtk_text_buffer_end_user_action(buffer);
-}
-
-void
-on_search_files_entry_changed(GtkEditable *editable, I7Document *self)
-{
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(editable));
-	gboolean text_not_empty = !(text == NULL || strlen(text) == 0);
-	gtk_widget_set_sensitive(self->search_files_find, text_not_empty);
-}
-
-void
-on_search_files_find_clicked(GtkButton *button, I7Document *self)
-{
-	const char *text = gtk_entry_get_text(GTK_ENTRY(self->search_files_entry));
-	gboolean ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_ignore_case));
-	I7SearchFlags flags = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_files_type))
-			| (ignore_case? I7_SEARCH_IGNORE_CASE : 0);
-
-	/* Close the dialog */
-	gtk_widget_hide(self->search_files_dialog);
-
-	GtkWidget *search_window = i7_search_window_new(self, text, flags);
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_project)))
-		i7_search_window_search_project(I7_SEARCH_WINDOW(search_window));
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_extensions)))
-		i7_search_window_search_extensions(I7_SEARCH_WINDOW(search_window));
-	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->search_files_documentation)))
-		i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
-	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
 }
 
 static void

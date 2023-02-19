@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2012, 2014, 2015, 2022 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2012, 2014, 2015, 2022, 2023 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -12,7 +12,6 @@
 #include <webkit2/webkit2.h>
 
 #include "app.h"
-#include "builder.h"
 #include "document.h"
 #include "error.h"
 #include "file.h"
@@ -72,16 +71,34 @@ typedef struct {
 	GSList *completed_doctexts;
 } Ctxt;
 
-typedef struct _I7SearchWindowPrivate I7SearchWindowPrivate;
-struct _I7SearchWindowPrivate
-{
+struct _I7SearchWindow {
+	GtkDialog parent;
+
+	/* template children */
+	GtkTreeViewColumn *document_column;
+	GtkCellRendererText *document_renderer;
+	GtkEntry *entry;
+	GtkButton *find;
+	GtkCheckButton *ignore_case;
+	GtkTreeViewColumn *result_column;
+	GtkCellRendererText *result_renderer;
 	GtkListStore *results;
+	GtkLabel *results_label;
+	GtkRevealer *results_revealer;
+	GtkSpinner *spinner;
+	GtkComboBoxText *search_type;
+	GtkCheckButton *target_documentation;
+	GtkCheckButton *target_extensions;
+	GtkCheckButton *target_project;
+	GtkTreeViewColumn *type_column;
+	GtkCellRendererText *type_renderer;
+
+	/* private */
 	I7Document *document; /* Associated document window */
-	gchar *text; /* Search string */
-	I7SearchFlags flags;
+	bool search_in_progress : 1;  /* Some things not possible while in progress */
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE(I7SearchWindow, i7_search_window, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE(I7SearchWindow, i7_search_window, GTK_TYPE_DIALOG);
 
 /* CALLBACKS */
 
@@ -110,11 +127,18 @@ finish_copy_resource_to_temp(GFile *resource, GAsyncResult *res, CopyResourceClo
 	show_file_in_browser(temp_file, win);
 }
 
+static void
+on_entry_changed(GtkEditable *editable, I7SearchWindow *self)
+{
+	const char *text = gtk_entry_get_text(GTK_ENTRY(editable));
+	bool text_not_empty = !(text == NULL || strlen(text) == 0);
+	gtk_widget_set_sensitive(GTK_WIDGET(self->find), text_not_empty);
+}
+
 /* Callback for double-clicking on one of the search results */
-void
+static void
 on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 	g_return_if_fail(model);
@@ -138,16 +162,16 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 		/* Display the documentation page in the appropriate widget if this
 		 is a story with facing pages. Otherwise, open the documentation in
 		 the web browser. */
-		if(I7_IS_STORY(priv->document)) {
+		if (I7_IS_STORY(self->document)) {
 			g_autofree char *page = g_file_get_basename(file);
 			g_autofree char *uri = g_strconcat("inform:///", page, NULL);
 			g_autoptr(GFile) inform_file = g_file_new_for_uri(uri);
 			/* Jump to the proper example */
 			if(anchor != NULL) {
-				i7_story_show_docpage_at_anchor(I7_STORY(priv->document), inform_file, anchor);
+				i7_story_show_docpage_at_anchor(I7_STORY(self->document), inform_file, anchor);
 				g_free(anchor);
 			} else {
-				i7_story_show_docpage(I7_STORY(priv->document), inform_file);
+				i7_story_show_docpage(I7_STORY(self->document), inform_file);
 			}
 		} else {
 			/* Copy the GResource to a temporary file so it's available to the
@@ -171,7 +195,7 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 	}
 		break;
 	case I7_RESULT_TYPE_PROJECT:
-		i7_document_jump_to_line(priv->document, lineno);
+		i7_document_jump_to_line(self->document, lineno);
 		break;
 	case I7_RESULT_TYPE_EXTENSION:
 	{
@@ -192,7 +216,9 @@ on_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeV
 static gboolean
 on_search_window_delete_event(I7SearchWindow *self, GdkEvent *event)
 {
-	return TRUE; /* block deletion */
+	if (self->search_in_progress)
+		return GDK_EVENT_STOP;
+	return GDK_EVENT_PROPAGATE;
 }
 
 /* This would be better done with two GtkCellRendererText-s in a GtkCellArea,
@@ -235,8 +261,6 @@ result_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel 
 static void
 location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
-
 	I7ResultType type;
 	guint lineno;
 	GFile *file;
@@ -251,15 +275,14 @@ location_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeMode
 
 	switch(type) {
 		case I7_RESULT_TYPE_PROJECT:
-			if(I7_IS_STORY(priv->document))
+			if (I7_IS_STORY(self->document))
 				text = g_strdup_printf(_("Story, line %d"), lineno);
 			else {
-				gchar *displayname = i7_document_get_display_name(priv->document);
+				g_autofree char *displayname = i7_document_get_display_name(self->document);
 				if(displayname == NULL) {
 					text = g_strdup_printf(_("Untitled story, line %d"), lineno);
 				} else {
 					text = g_strdup_printf(_("%s, line %d"), displayname, lineno);
-					g_free(displayname);
 				}
 			}
 			break;
@@ -314,58 +337,44 @@ type_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *m
 static void
 i7_search_window_init(I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
-
-	priv->document = NULL;
-	priv->text = NULL;
-	priv->flags = I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE;
-
-	gtk_window_set_destroy_with_parent(GTK_WINDOW(self), TRUE);
-	gtk_window_set_icon_name(GTK_WINDOW(self), "com.inform7.IDE");
-	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(self), TRUE);
-	gtk_window_set_title(GTK_WINDOW(self), _("Search Results"));
-	gtk_window_set_type_hint(GTK_WINDOW(self), GDK_WINDOW_TYPE_HINT_UTILITY);
-	gtk_container_set_border_width(GTK_CONTAINER(self), 12);
-	gtk_window_set_default_size(GTK_WINDOW(self), 400, 400);
-
-	/* Build the interface from the builder file */
-	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/searchwindow.ui");
-	gtk_builder_connect_signals(builder, self);
+	gtk_widget_init_template(GTK_WIDGET(self));
 
 	/* Build the rest of the interface */
-	gtk_container_add(GTK_CONTAINER(self), GTK_WIDGET(load_object(builder, "search_window")));
-	priv->results = GTK_LIST_STORE(load_object(builder, "results"));
-	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "result_column")),
-		GTK_CELL_RENDERER(load_object(builder, "result_renderer")),
+	gtk_tree_view_column_set_cell_data_func(self->result_column, GTK_CELL_RENDERER(self->result_renderer),
 		(GtkTreeCellDataFunc)result_data_func, self, NULL);
-	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "document_column")),
-		GTK_CELL_RENDERER(load_object(builder, "document_renderer")),
+	gtk_tree_view_column_set_cell_data_func(self->document_column, GTK_CELL_RENDERER(self->document_renderer),
 		(GtkTreeCellDataFunc)location_data_func, self, NULL);
-	gtk_tree_view_column_set_cell_data_func(GTK_TREE_VIEW_COLUMN(load_object(builder, "type_column")),
-		GTK_CELL_RENDERER(load_object(builder, "type_renderer")),
+	gtk_tree_view_column_set_cell_data_func(self->type_column, GTK_CELL_RENDERER(self->type_renderer),
 		(GtkTreeCellDataFunc)type_data_func, NULL, NULL);
-	g_signal_connect(self, "delete-event", G_CALLBACK(on_search_window_delete_event), NULL);
-
-	/* Save public pointers to other widgets */
-	LOAD_WIDGET(search_text);
-	LOAD_WIDGET(results_view);
-	LOAD_WIDGET(spinner);
-}
-
-static void
-i7_search_window_finalize(GObject *object)
-{
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(I7_SEARCH_WINDOW(object));
-	g_free(priv->text);
-
-	G_OBJECT_CLASS(i7_search_window_parent_class)->finalize(object);
 }
 
 static void
 i7_search_window_class_init(I7SearchWindowClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS(klass);
-	object_class->finalize = i7_search_window_finalize;
+	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+	gtk_widget_class_set_template_from_resource(widget_class, "/com/inform7/IDE/ui/searchwindow.ui");
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, document_column);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, document_renderer);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, entry);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, find);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, ignore_case);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, result_column);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, result_renderer);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_label);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_revealer);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, search_type);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, spinner);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, target_documentation);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, target_extensions);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, target_project);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, type_column);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, type_renderer);
+	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_hide);
+	gtk_widget_class_bind_template_callback(widget_class, gtk_widget_hide_on_delete);
+	gtk_widget_class_bind_template_callback(widget_class, on_entry_changed);
+	gtk_widget_class_bind_template_callback(widget_class, on_results_view_row_activated);
+	gtk_widget_class_bind_template_callback(widget_class, on_search_window_delete_event);
 }
 
 /* INTERNAL FUNCTIONS */
@@ -373,10 +382,9 @@ i7_search_window_class_init(I7SearchWindowClass *klass)
 static void
 update_label(I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
-	gchar *label = g_strdup_printf(_("Search results for: \"%s\""), priv->text);
-	gtk_label_set_text(GTK_LABEL(self->search_text), label);
-	g_free(label);
+	const char *text = gtk_entry_get_text(self->entry);
+	g_autofree char *label = g_strdup_printf(_("Search results for: \"%s\""), text);
+	gtk_label_set_text(self->results_label, label);
 }
 
 /* Expand only the standard entities (gt, lt, amp, apos, quot) */
@@ -543,16 +551,16 @@ extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *ma
 static void
 search_documentation(DocText *doctext, I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
 	g_autoptr(GtkTextBuffer) buffer = gtk_text_buffer_new(NULL);
 	gtk_text_buffer_set_text(buffer, doctext->body, -1);
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
-    bool ignore_case = priv->flags & I7_SEARCH_IGNORE_CASE;
-    I7SearchFlags algorithm = priv->flags & I7_SEARCH_ALGORITHM_MASK;
+	bool ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
+	I7SearchFlags algorithm = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
+	const char *text = gtk_entry_get_text(GTK_ENTRY(self->entry));
 
-	while(find_no_wrap(&search_from, priv->text, TRUE,
+	while (find_no_wrap(&search_from, text, TRUE,
 		GTK_TEXT_SEARCH_TEXT_ONLY | (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		algorithm, &match_start, &match_end))
 	{
@@ -564,8 +572,8 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 		gchar *context = extract_context(buffer, &match_start, &match_end);
 		gchar *location = g_strconcat(doctext->section, ": ", doctext->title, NULL);
 
-		gtk_list_store_append(priv->results, &result);
-		gtk_list_store_set(priv->results, &result,
+		gtk_list_store_append(self->results, &result);
+		gtk_list_store_set(self->results, &result,
 			I7_RESULT_CONTEXT_COLUMN, context,
 			I7_RESULT_SORT_STRING_COLUMN, doctext->sort,
 			I7_RESULT_FILE_COLUMN, doctext->file,
@@ -587,45 +595,20 @@ search_documentation(DocText *doctext, I7SearchWindow *self)
 static void
 start_spinner(I7SearchWindow *self)
 {
-	gtk_spinner_start(GTK_SPINNER(self->spinner));
-	gtk_widget_show(self->spinner);
+	gtk_spinner_start(self->spinner);
+	gtk_widget_show(GTK_WIDGET(self->spinner));
 }
 
 static void
 stop_spinner(I7SearchWindow *self)
 {
-	gtk_spinner_stop(GTK_SPINNER(self->spinner));
-	gtk_widget_hide(self->spinner);
-}
-
-/* PUBLIC FUNCTIONS */
-
-/* Create a new search results window */
-GtkWidget *
-i7_search_window_new(I7Document *document, const char *text, I7SearchFlags flags)
-{
-	I7SearchWindow *self = I7_SEARCH_WINDOW(g_object_new(I7_TYPE_SEARCH_WINDOW, NULL));
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
-
-	priv->document = document;
-	priv->text = g_strdup(text);
-	priv->flags = flags;
-
-	/* Keep on top of the document window and close when document is closed */
-	gtk_window_set_transient_for(GTK_WINDOW(self), GTK_WINDOW(document));
-
-	update_label(self);
-
-	/* Bring window to front */
-	gtk_widget_show_all(GTK_WIDGET(self));
-	gtk_window_present(GTK_WINDOW(self));
-
-	return GTK_WIDGET(self);
+	gtk_spinner_stop(self->spinner);
+	gtk_widget_hide(GTK_WIDGET(self->spinner));
 }
 
 /* Search the documentation pages for the string 'text', building the index
   if necessary */
-void
+static void
 i7_search_window_search_documentation(I7SearchWindow *self)
 {
 	GError *err;
@@ -652,7 +635,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 				continue;
 
 			char *label = g_strdup_printf(_("Please be patient, indexing %s..."), displayname);
-			gtk_label_set_text(GTK_LABEL(self->search_text), label);
+			gtk_label_set_text(self->results_label, label);
 			g_free(label);
 
 			while(gtk_events_pending())
@@ -684,20 +667,20 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 }
 
 /* Search the project file for the string 'text' */
-void
+static void
 i7_search_window_search_project(I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
-	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(priv->document));
+	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(i7_document_get_buffer(self->document));
 	gtk_text_buffer_get_start_iter(buffer, &search_from);
-    bool ignore_case = priv->flags & I7_SEARCH_IGNORE_CASE;
-    I7SearchFlags algorithm = priv->flags & I7_SEARCH_ALGORITHM_MASK;
+	bool ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
+	I7SearchFlags algorithm = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
+	const char *text = gtk_entry_get_text(self->entry);
 
 	start_spinner(self);
 
-	while(find_no_wrap(&search_from, priv->text, TRUE,
+	while (find_no_wrap(&search_from, text, TRUE,
 		GTK_TEXT_SEARCH_TEXT_ONLY | (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		algorithm, &match_start, &match_end))
 	{
@@ -714,10 +697,10 @@ i7_search_window_search_project(I7SearchWindow *self)
 		/* Make a sort string */
 		gchar *sort = g_strdup_printf("%04i", lineno);
 		/* Put the full path to the project in */
-		GFile *file = i7_document_get_file(priv->document);
+		GFile *file = i7_document_get_file(self->document);
 
-		gtk_list_store_append(priv->results, &result);
-		gtk_list_store_set(priv->results, &result,
+		gtk_list_store_append(self->results, &result);
+		gtk_list_store_set(self->results, &result,
 			I7_RESULT_CONTEXT_COLUMN, context,
 			I7_RESULT_SORT_STRING_COLUMN, sort,
 			I7_RESULT_FILE_COLUMN, file,
@@ -735,7 +718,6 @@ i7_search_window_search_project(I7SearchWindow *self)
 static void
 extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
 {
-	I7SearchWindowPrivate *priv = i7_search_window_get_instance_private(self);
 	GError *err = NULL;
 	const char *basename = g_file_info_get_name(info);
 	GFile *file = g_file_get_child(parent, basename);
@@ -764,10 +746,11 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 
 	start_spinner(self);
 
-    bool ignore_case = priv->flags & I7_SEARCH_IGNORE_CASE;
-    I7SearchFlags algorithm = priv->flags & I7_SEARCH_ALGORITHM_MASK;
+	bool ignore_case = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->ignore_case));
+	I7SearchFlags algorithm = gtk_combo_box_get_active(GTK_COMBO_BOX(self->search_type));
+	const char *text = gtk_entry_get_text(self->entry);
 
-	while(find_no_wrap(&search_from, priv->text, TRUE,
+	while (find_no_wrap(&search_from, text, TRUE,
 		GTK_TEXT_SEARCH_TEXT_ONLY | (ignore_case? GTK_TEXT_SEARCH_CASE_INSENSITIVE : 0),
 		algorithm, &match_start, &match_end))
 	{
@@ -787,8 +770,8 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 		/* Make a sort string */
 		sort = g_strdup_printf("%s %04i", basename, lineno);
 
-		gtk_list_store_append(priv->results, &result);
-		gtk_list_store_set(priv->results, &result,
+		gtk_list_store_append(self->results, &result);
+		gtk_list_store_set(self->results, &result,
 			I7_RESULT_CONTEXT_COLUMN, context,
 			I7_RESULT_SORT_STRING_COLUMN, sort,
 			I7_RESULT_FILE_COLUMN, file,
@@ -811,7 +794,7 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
  *
  * Search the user-installed extensions for the search window's search text.
  */
-void
+static void
 i7_search_window_search_extensions(I7SearchWindow *self)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
@@ -819,12 +802,63 @@ i7_search_window_search_extensions(I7SearchWindow *self)
 	    (I7AppExtensionFunc)extension_search_result, self, NULL);
 }
 
+static void
+start_searching(I7SearchWindow *self)
+{
+	self->search_in_progress = true;
+}
+
 /* Notify the window that no more searches will be done, so it is allowed to
  close itself if asked to */
-void
-i7_search_window_done_searching(I7SearchWindow *self)
+static void
+done_searching(I7SearchWindow *self)
 {
-	g_signal_handlers_disconnect_by_func(self, on_search_window_delete_event, NULL);
+	self->search_in_progress = false;
+}
+
+/* PUBLIC FUNCTIONS */
+
+/* Create a new search results window */
+I7SearchWindow *
+i7_search_window_new(I7Document *document)
+{
+	I7SearchWindow *self = I7_SEARCH_WINDOW(g_object_new(I7_TYPE_SEARCH_WINDOW, NULL));
+
+	self->document = document;
+
+	/* Keep on top of the document window and close when document is closed */
+	gtk_window_set_transient_for(GTK_WINDOW(self), GTK_WINDOW(document));
+
+	return self;
+}
+
+void
+i7_search_window_prefill_ui(I7SearchWindow *self, const char *text, I7SearchTarget target, I7SearchFlags flags)
+{
+	gtk_entry_set_text(self->entry, text);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->target_project), !!(target & I7_SEARCH_TARGET_SOURCE));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->target_extensions), !!(target & I7_SEARCH_TARGET_EXTENSIONS));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->target_documentation), !!(target & I7_SEARCH_TARGET_DOCUMENTATION));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->ignore_case), !!(flags & I7_SEARCH_IGNORE_CASE));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(self->search_type), flags & I7_SEARCH_ALGORITHM_MASK);
+}
+
+void
+i7_search_window_do_search(I7SearchWindow *self)
+{
+	/* Show the results widget */
+	gtk_revealer_set_reveal_child(self->results_revealer, TRUE);
+
+	start_searching(self);
+
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->target_project)))
+		i7_search_window_search_project(self);
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->target_extensions)))
+		i7_search_window_search_extensions(self);
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self->target_documentation)))
+		i7_search_window_search_documentation(self);
+
+	done_searching(self);
 }
 
 /**
