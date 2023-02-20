@@ -178,11 +178,16 @@ library_uri_to_real_uri(const char *uri, char **author, char **title, char **id)
 	GFile *retval = g_file_new_for_uri(real_uri);
 	g_free(real_uri);
 
-	char **components = g_strsplit(uri, "/", 5); /* 0 = library:, 1 = payloads */
-	if(author != NULL)
-		*author = g_uri_unescape_string(components[2], NULL);
-	if(title != NULL)
-		*title = g_uri_unescape_string(components[3], NULL);
+	char **components = g_strsplit(uri, "/", -1);
+	unsigned n_components = g_strv_length(components);
+	if(author != NULL && n_components >= 2)
+		*author = g_uri_unescape_string(components[n_components - 2], NULL);
+	if(title != NULL && n_components >= 1) {
+		char *raw_title = components[n_components - 1];
+		char *ext = g_strrstr(raw_title, ".i7x");
+		ext[0] = '\0';
+		*title = g_uri_unescape_string(raw_title, NULL);
+	}
 	g_strfreev(components);
 
 	return retval;
@@ -217,41 +222,38 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 	unsigned n_extensions = length / 3;
 	char **ids = g_new0(char *, n_extensions);
 	GFile **files = g_new0(GFile *, n_extensions);
-	char **authors = g_new0(char *, n_extensions);
-	char **titles = g_new0(char *, n_extensions);
-	char **versions = g_new0(char *, n_extensions);
+	char **descs = g_new0(char *, n_extensions);
 	unsigned ix;
 	for(ix = 0; ix < n_extensions; ix++) {
 		g_autoptr(JSCValue) id_val = jsc_value_object_get_property_at_index(array, 3 * ix);
 		g_autoptr(JSCValue) uri_val = jsc_value_object_get_property_at_index(array, 3 * ix + 1);
 		g_autoptr(JSCValue) desc_val = jsc_value_object_get_property_at_index(array, 3 * ix + 2);
-		char *id = js_string_value_to_string(id_val);
+		char *id = jsc_value_to_string(id_val);  /* is a number, but we pass it around as a string */
 		g_autofree char *uri = js_string_value_to_string(uri_val);
 		char *desc = js_string_value_to_string(desc_val);
-		if(id == NULL || uri == NULL || desc == NULL)
+		if(id == NULL || uri == NULL || desc == NULL) {
+			g_critical("Couldn't make sense of extension information: id %s, uri: %s, desc: %s. Breaking off download",
+				id, uri, desc);
 			goto finally;
+		}
 
 		ids[ix] = id;
-		files[ix] = library_uri_to_real_uri(uri, &authors[ix], &titles[ix], NULL);
-		versions[ix] = desc;
+		files[ix] = library_uri_to_real_uri(uri, NULL, NULL, NULL);
+		descs[ix] = desc;
 	}
 
 	I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(panel)));
-	i7_document_download_multiple_extensions(doc, n_extensions, ids, files, authors, titles, versions, (I7DocumentExtensionDownloadCallback)on_download_finished, panel->tabs[I7_PANE_EXTENSIONS]);
+	i7_document_download_multiple_extensions(doc, n_extensions, ids, files, descs, (I7DocumentExtensionDownloadCallback)on_download_finished, panel->tabs[I7_PANE_EXTENSIONS]);
 
 finally:
 	for(ix = 0; ix < n_extensions; ix++) {
 		g_free(ids[ix]);
-		g_object_unref(files[ix]);
-		g_free(authors[ix]);
-		g_free(titles[ix]);
-		g_free(versions[ix]);
+		g_clear_object(&files[ix]);
+		g_free(descs[ix]);
 	}
 	g_free(ids);
 	g_free(files);
-	g_free(authors);
-	g_free(titles);
-	g_free(versions);
+	g_free(descs);
 }
 
 /* ACTIONS */
@@ -871,6 +873,25 @@ filename_to_index_tab(const char *filename)
 	return I7_INDEX_TAB_NONE;
 }
 
+typedef struct {
+	WebKitWebView *webview;  /* not owned */
+	char *id;  /* owned */
+} LibraryDownloadData;
+
+static void
+on_library_download_finish(I7Document *self, GAsyncResult *res, LibraryDownloadData *data)
+{
+	if (i7_document_download_single_extension_finish(self, res)) {
+		g_debug("Notifying Public Library that download ID %s succeeded", data->id);
+		notify_download_succeeded(data->webview, data->id);
+	} else {
+		g_warning("Download ID %s failed", data->id);
+	}
+
+	g_free(data->id);
+	g_free(data);
+}
+
 static gboolean
 i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitPolicyDecision *decision)
 {
@@ -1015,18 +1036,18 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		char *id, *author, *title;
 		GFile *remote_file = library_uri_to_real_uri(uri, &author, &title, &id);
 
+		LibraryDownloadData *data = g_new0(LibraryDownloadData, 1);
+		data->webview = webview;
+		data->id = id;
+
 		I7Document *doc = I7_DOCUMENT(gtk_widget_get_toplevel(GTK_WIDGET(self)));
-		gboolean success = i7_document_download_single_extension(doc, remote_file, author, title);
+		i7_document_download_single_extension_async(doc, remote_file, author, title,
+			(GAsyncReadyCallback)on_library_download_finish, data);
 
 		g_debug("- library download %s by %s (id %s): IGNORE", title, author, id);
 		g_object_unref(remote_file);
 		g_free(author);
 		g_free(title);
-
-		if (success)
-			notify_download_succeeded(webview, id);
-		g_free(id);
-
 	} else {
 		g_warning("Unrecognized URI scheme: %s", scheme);
 	}
