@@ -66,10 +66,11 @@ $ make
 
 Regardless of whether this was a first build or a subsequent build, you now need
 to copy a file that tells where to install the Inform compiler and its
-materials, to a place where the Inform build process can find it:
+materials, to a place where the Inform build process can find it, one level above
+the `inweb`, `intest`, and `inform` folders:
 
 ```bash
-$ cp inform7-ide/build-aux/make-integration-settings.mk .
+$ cp ../inform7-ide/build-aux/make-integration-settings.mk ..
 ```
 
 Now do the following to install the files into the inform7-ide checkout:
