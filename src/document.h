@@ -8,12 +8,12 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
-
-#include "toast.h"
 
 #define I7_TYPE_DOCUMENT            (i7_document_get_type())
 #define I7_DOCUMENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_DOCUMENT, I7Document))
@@ -38,7 +38,7 @@ typedef struct {
 	void (*update_fonts)();
 	void (*update_font_sizes)();
 	void (*expand_headings_view)();
-	gboolean (*highlight_search)();
+	void (*activate_search)();
 	void (*set_spellcheck)();
 	gboolean (*can_revert)();
 	void (*revert)();
@@ -50,19 +50,6 @@ typedef struct {
 	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
 	GtkWidget *findbar;
-	GtkWidget *findbar_entry;
-	/* "Find and Replace" dialog widgets */
-	GtkWidget *find_dialog;
-	GtkWidget *search_type;
-	GtkWidget *find_entry;
-	GtkWidget *replace_entry;
-	GtkWidget *ignore_case;
-	GtkWidget *reverse;
-	GtkWidget *restrict_search;
-	GtkWidget *find_button;
-	GtkWidget *replace_button;
-	GtkWidget *replace_all_button;
-	I7Toast *search_toast;
 	/* "Search Files" dialog widgets */
 	GtkWidget *search_files_dialog;
 	GtkWidget *search_files_type;
@@ -94,15 +81,16 @@ typedef enum  {
 } I7Heading;
 
 typedef enum {
-	I7_SEARCH_CONTAINS,
-	I7_SEARCH_STARTS_WORD,
-	I7_SEARCH_FULL_WORD
-} I7SearchType;
+	I7_SEARCH_CONTAINS       = 0x00,
+	I7_SEARCH_STARTS_WORD    = 0x01,
+	I7_SEARCH_FULL_WORD      = 0x02,
+	I7_SEARCH_ALGORITHM_MASK = 0x03, /* bottom two bits: type of search */
+	I7_SEARCH_REVERSE        = 0x04,
+	I7_SEARCH_RESTRICT       = 0x08, /* restrict to currently visible section */
+	I7_SEARCH_IGNORE_CASE    = 0x10,
+} I7SearchFlags;
 
 typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char *id, gpointer);
-
-/* Statusbar Contexts */
-#define FILE_OPERATIONS    "File"
 
 GType i7_document_get_type(void) G_GNUC_CONST;
 GFile *i7_document_get_file(I7Document *self);
@@ -134,7 +122,6 @@ void i7_document_update_fonts(I7Document *self);
 void i7_document_update_font_sizes(I7Document *self);
 void i7_document_update_font_styles(I7Document *self);
 void i7_document_refresh_elastic_tabstops(I7Document *self);
-gboolean i7_document_iter_is_invisible(I7Document *self, GtkTextIter *iter);
 
 void i7_document_expand_headings_view(I7Document *self);
 void i7_document_set_headings_filter_level(I7Document *self, gint depth);
@@ -154,12 +141,6 @@ void i7_document_download_single_extension_async(I7Document *self, GFile *remote
 bool i7_document_download_single_extension_finish(I7Document *self, GAsyncResult *res);
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *descriptions, I7DocumentExtensionDownloadCallback callback, void *data);
 
-/* Search, document-search.c */
-gboolean i7_document_highlight_quicksearch(I7Document *self, const char *text, gboolean forward);
-void i7_document_unhighlight_quicksearch(I7Document *self);
-void i7_document_set_highlighted_view(I7Document *self, GtkWidget *view);
-GtkWidget *i7_document_get_highlighted_view(I7Document *self);
-void i7_document_set_quicksearch_not_found(I7Document *self, gboolean not_found);
-void i7_document_find(I7Document *self, const char *text, gboolean forward, gboolean ignore_case, gboolean restrict_search, I7SearchType search_type);
+void i7_document_activate_search(I7Document *self, bool replace_mode);
 
 #endif /* _DOCUMENT_H_ */

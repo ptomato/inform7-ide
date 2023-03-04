@@ -24,6 +24,7 @@
 #include "error.h"
 #include "file.h"
 #include "prefs.h"
+#include "searchbar.h"
 #include "searchwindow.h"
 #include "toast.h"
 
@@ -42,8 +43,6 @@ typedef struct {
 	GtkTreeStore *headings;
 	GtkTreeModel *filter;
 	GtkTreePath *current_heading;
-	/* The view with a search match currently being highlighted */
-	GtkWidget *highlighted_view;
 	/* App notification */
 	I7Toast *toast;
 } I7DocumentPrivate;
@@ -82,6 +81,15 @@ on_buffer_modified_changed(GtkTextBuffer *buffer, I7Document *document)
 		i7_document_set_modified(document, TRUE);
 }
 
+void
+on_findbar_maybe_show_entire_source(I7SearchBar *search_bar, GtkTextIter *start, GtkTextIter *end, I7Document *self)
+{
+	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
+
+	if (gtk_text_iter_has_tag(start, priv->invisible_tag) || gtk_text_iter_has_tag(end, priv->invisible_tag))
+		i7_document_show_entire_source(self);
+}
+
 static gboolean
 filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *self)
 {
@@ -91,35 +99,12 @@ filter_depth(GtkTreeModel *model, GtkTreeIter *iter, I7Document *self)
 	return depth <= priv->heading_depth;
 }
 
-static void
-close_findbar(I7Document *self)
-{
-	gtk_widget_hide(self->findbar);
-	i7_document_unhighlight_quicksearch(self);
-}
-
-void
-on_findbar_close_clicked(GtkToolButton *button, I7Document *self)
-{
-	close_findbar(self);
-}
-
-gboolean
-on_findbar_entry_key_release_event(GtkEntry *entry, GdkEventKey *event, I7Document *self)
-{
-	if (event->keyval == GDK_KEY_Escape) {
-		close_findbar(self);
-		return GDK_EVENT_STOP;
-	}
-	return GDK_EVENT_PROPAGATE;
-}
-
 void
 on_search_entry_activate(GtkEntry *entry, I7Story *self)
 {
 	const char *text = gtk_entry_get_text(entry);
 
-	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, TRUE, I7_SEARCH_CONTAINS);
+	GtkWidget *search_window = i7_search_window_new(I7_DOCUMENT(self), text, I7_SEARCH_CONTAINS | I7_SEARCH_IGNORE_CASE);
 	i7_search_window_search_documentation(I7_SEARCH_WINDOW(search_window));
 	i7_search_window_done_searching(I7_SEARCH_WINDOW(search_window));
 }
@@ -194,10 +179,7 @@ create_document_actions(I7Document *self)
 		{ "copy", (ActionCallback)action_copy },
 		{ "paste", (ActionCallback)action_paste },
 		{ "select-all", (ActionCallback)action_select_all },
-		{ "find", (ActionCallback)action_find },
-		{ "find-next", (ActionCallback)action_find_next },
-		{ "find-previous", (ActionCallback)action_find_previous },
-		{ "replace", (ActionCallback)action_replace },
+		{ "find", (ActionCallback)action_find, "b" /* boolean: show replace mode */ },
 		{ "scroll-selection", (ActionCallback)action_scroll_selection },
 		{ "search", (ActionCallback)action_search },
 		{ "autocheck-spelling", NULL, NULL, "true", (ActionCallback)action_autocheck_spelling_toggle },
@@ -256,7 +238,6 @@ i7_document_init(I7Document *self)
 	g_object_ref(priv->filter);
 	gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(priv->filter), (GtkTreeModelFilterVisibleFunc)filter_depth, self, NULL);
 	priv->current_heading = gtk_tree_path_new_first();
-	priv->highlighted_view = NULL;
 	priv->modified = FALSE;
 
 	create_document_actions(self);
@@ -267,19 +248,6 @@ i7_document_init(I7Document *self)
 
 	/* Public members */
 	LOAD_WIDGET(contents);
-	LOAD_WIDGET(findbar);
-	LOAD_WIDGET(findbar_entry);
-	LOAD_WIDGET(find_dialog);
-	gtk_window_set_transient_for(GTK_WINDOW(self->find_dialog), GTK_WINDOW(self));
-	LOAD_WIDGET(search_type);
-	LOAD_WIDGET(find_entry);
-	LOAD_WIDGET(replace_entry);
-	LOAD_WIDGET(ignore_case);
-	LOAD_WIDGET(reverse);
-	LOAD_WIDGET(restrict_search);
-	LOAD_WIDGET(find_button);
-	LOAD_WIDGET(replace_button);
-	LOAD_WIDGET(replace_all_button);
 	LOAD_WIDGET(search_files_dialog);
 	gtk_window_set_transient_for(GTK_WINDOW(self->search_files_dialog), GTK_WINDOW(self));
 	LOAD_WIDGET(search_files_type);
@@ -290,15 +258,14 @@ i7_document_init(I7Document *self)
 	LOAD_WIDGET(search_files_ignore_case);
 	LOAD_WIDGET(search_files_find);
 
-	GtkWidget *box = GTK_WIDGET(load_object(builder, "box"));
-	gtk_container_add(GTK_CONTAINER(self), box);
+	gtk_container_add(GTK_CONTAINER(self), self->contents);
 	priv->toast = i7_toast_new();
 	gtk_widget_set_margin_bottom(GTK_WIDGET(priv->toast), 20);
 	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(priv->toast));
 
-	self->search_toast = i7_toast_new();
-	GtkWidget *dialog_contents = GTK_WIDGET(load_object(builder, "find_dialog_contents"));
-	gtk_overlay_add_overlay(GTK_OVERLAY(dialog_contents), GTK_WIDGET(self->search_toast));
+	self->findbar = GTK_WIDGET(i7_search_bar_new());
+	gtk_overlay_add_overlay(GTK_OVERLAY(self->contents), GTK_WIDGET(self->findbar));
+	g_signal_connect(self->findbar, "maybe-show-entire-source", G_CALLBACK(on_findbar_maybe_show_entire_source), self);
 
 	/* Bind settings one-way to some properties */
 	g_settings_bind(prefs, PREFS_SYNTAX_HIGHLIGHTING,
@@ -347,7 +314,7 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->update_fonts = NULL;
 	klass->update_font_sizes = NULL;
 	klass->expand_headings_view = NULL;
-	klass->highlight_search = NULL;
+	klass->activate_search = NULL;
 	klass->set_spellcheck = NULL;
 	klass->can_revert = NULL;
 	klass->revert = NULL;
@@ -715,13 +682,6 @@ void
 i7_document_refresh_elastic_tabstops(I7Document *document)
 {
 	elastic_recalculate_view(i7_document_get_default_view(document));
-}
-
-gboolean
-i7_document_iter_is_invisible(I7Document *self, GtkTextIter *iter)
-{
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	return gtk_text_iter_has_tag(iter, priv->invisible_tag);
 }
 
 void
@@ -1456,15 +1416,7 @@ i7_document_revert(I7Document *self)
 }
 
 void
-i7_document_set_highlighted_view(I7Document *self, GtkWidget *view)
+i7_document_activate_search(I7Document *self, bool replace_mode)
 {
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	priv->highlighted_view = view;
-}
-
-GtkWidget *
-i7_document_get_highlighted_view(I7Document *self)
-{
-	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	return priv->highlighted_view;
+	I7_DOCUMENT_GET_CLASS(self)->activate_search(self, replace_mode);
 }

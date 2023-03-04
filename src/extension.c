@@ -18,6 +18,7 @@
 #include "file.h"
 #include "lang.h"
 #include "prefs.h"
+#include "searchbar.h"
 
 typedef struct _I7ExtensionPrivate I7ExtensionPrivate;
 struct _I7ExtensionPrivate
@@ -331,53 +332,17 @@ i7_extension_expand_headings_view(I7Document *document)
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(I7_EXTENSION(document)->sourceview->headings));
 }
 
-static gboolean
-do_search(GtkTextView *view, const gchar *text, gboolean forward, const GtkTextIter *startpos, GtkTextIter *start, GtkTextIter *end)
+static void
+i7_extension_activate_search(I7Document *document, gboolean replace_mode)
 {
-	if(forward)
-		return gtk_text_iter_forward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-	return gtk_text_iter_backward_search(startpos, text, GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY | GTK_TEXT_SEARCH_CASE_INSENSITIVE, start, end, NULL);
-}
+	I7Extension *self = I7_EXTENSION(document);
 
-static gboolean
-i7_extension_highlight_search(I7Document *document, const gchar *text, gboolean forward)
-{
-	if(*text == '\0') {
-		/* If the text is blank, unhighlight everything and return TRUE */
-		i7_document_unhighlight_quicksearch(document);
-		return TRUE;
-	}
-
-	GtkWidget *focus = I7_EXTENSION(document)->sourceview->source;
-
-	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(I7_EXTENSION(document)->sourceview->notebook)) == I7_SOURCE_VIEW_TAB_CONTENTS) {
+	if(gtk_notebook_get_current_page(GTK_NOTEBOOK(self->sourceview->notebook)) == I7_SOURCE_VIEW_TAB_CONTENTS) {
 		/* Headings view is visible, switch back to source code view */
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(I7_EXTENSION(document)->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
-		gtk_widget_grab_focus(document->findbar_entry);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(self->sourceview->notebook), I7_SOURCE_VIEW_TAB_SOURCE);
 	}
 
-	i7_document_set_highlighted_view(document, focus);
-
-	/* Source view and text view */
-	GtkTextIter iter, start, end;
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(focus));
-
-	/* Start the search at either the beginning or end of the selection
-	 depending on the direction */
-	GtkTextMark *startmark = forward? gtk_text_buffer_get_selection_bound(buffer) : gtk_text_buffer_get_insert(buffer);
-	gtk_text_buffer_get_iter_at_mark(buffer, &iter, startmark);
-	if(!do_search(GTK_TEXT_VIEW(focus), text, forward, &iter, &start, &end)) {
-		if(forward)
-			gtk_text_buffer_get_start_iter(buffer, &iter);
-		else
-			gtk_text_buffer_get_end_iter(buffer, &iter);
-		if(!do_search(GTK_TEXT_VIEW(focus), text, forward, &iter, &start, &end))
-			return FALSE;
-	}
-	gtk_text_buffer_select_range(buffer, &start, &end);
-	gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(focus), gtk_text_buffer_get_insert(buffer), 0.25, FALSE, 0.0, 0.0);
-
-	return TRUE;
+	i7_search_bar_activate(I7_SEARCH_BAR(document->findbar), replace_mode, /* can_restrict = */ true, self->sourceview->source, /* description = */ NULL);
 }
 
 static void
@@ -498,7 +463,7 @@ i7_extension_class_init(I7ExtensionClass *klass)
 	document_class->update_fonts = i7_extension_update_fonts;
 	document_class->update_font_sizes = i7_extension_update_font_sizes;
 	document_class->expand_headings_view = i7_extension_expand_headings_view;
-	document_class->highlight_search = i7_extension_highlight_search;
+	document_class->activate_search = i7_extension_activate_search;
 	document_class->set_spellcheck = i7_extension_set_spellcheck;
 	document_class->revert = i7_extension_revert;
 

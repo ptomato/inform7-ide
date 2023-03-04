@@ -27,6 +27,7 @@
 #include "newdialog.h"
 #include "panel.h"
 #include "prefs.h"
+#include "searchbar.h"
 #include "story.h"
 
 /* File->New... */
@@ -406,36 +407,8 @@ action_select_all(GSimpleAction *action, GVariant *parameter, I7Document *docume
 void
 action_find(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
-	gtk_widget_show(document->findbar);
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
-	/* don't free */
-	i7_document_set_quicksearch_not_found(document, !i7_document_highlight_quicksearch(document, text, TRUE));
-	gtk_widget_grab_focus(document->findbar_entry);
-}
-
-/* Edit->Find Next */
-void
-action_find_next(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
-	i7_document_set_quicksearch_not_found(document, !i7_document_highlight_quicksearch(document, text, TRUE));
-}
-
-/* Edit->Find Previous */
-void
-action_find_previous(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	const gchar *text = gtk_entry_get_text(GTK_ENTRY(document->findbar_entry));
-	i7_document_set_quicksearch_not_found(document, !i7_document_highlight_quicksearch(document, text, FALSE));
-}
-
-/* Edit->Find and Replace... - For more complicated find operations, we use a
- dialog instead of the find bar */
-void
-action_replace(GSimpleAction *action, GVariant *parameter, I7Document *document)
-{
-	gtk_widget_show(document->find_dialog);
-	gtk_window_present(GTK_WINDOW(document->find_dialog));
+	bool replace_mode = g_variant_get_boolean(parameter);
+	i7_document_activate_search(document, replace_mode);
 }
 
 /* Edit->Scroll to Selection */
@@ -445,8 +418,8 @@ action_scroll_selection(GSimpleAction *action, GVariant *parameter, I7Document *
 	i7_document_scroll_to_selection(document);
 }
 
-/* Edit->Search Files... - This is another dialog that searches any combination
- of the story, the installed extensions, and the documentation. */
+/* Edit->Search Files... - This is a dialog that searches any combination of the
+ * story, the installed extensions, and the documentation. */
 void
 action_search(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {

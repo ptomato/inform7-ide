@@ -1263,3 +1263,54 @@ i7_panel_get_current_history_item(I7Panel *self)
 	I7PanelPrivate *priv = i7_panel_get_instance_private(self);
 	return g_queue_peek_nth(priv->history, priv->current);
 }
+
+/* Returns a searchable view for the currently open panel. Returns NULL if there
+ * is not really a view, like on the Settings panel. Places a human-readable
+ * static string in description_out. */
+GtkWidget *
+i7_panel_get_searchable_view(I7Panel *self, const char **description_out)
+{
+	static const char *tab_names[] = {
+		N_("Source"), /* Results */ NULL, /* Index */ NULL, /* Skein */ NULL,
+		/* Transcript */ NULL, N_("Story"), N_("Documentation"),
+		N_("Extensions"), /* Settings */ NULL,
+	};
+	G_STATIC_ASSERT(G_N_ELEMENTS(tab_names) == I7_PANEL_NUM_PANES);
+	static const char *results_tab_names[] = {
+		N_("Progress"), N_("Debugging"), N_("Report"), N_("Inform 6"),
+	};
+	G_STATIC_ASSERT(G_N_ELEMENTS(results_tab_names) == I7_RESULTS_NUM_TABS);
+	static const char *index_tab_names[] = {
+		N_("Index"), N_("Contents"), N_("Actions"), N_("Kinds"),
+		N_("Phrasebook"), N_("Rules"), N_("Scenes"), N_("World"),
+	};
+	G_STATIC_ASSERT(G_N_ELEMENTS(index_tab_names) == I7_INDEX_NUM_TABS);
+
+	int ix = gtk_notebook_get_current_page(GTK_NOTEBOOK(self->notebook));
+	switch (ix) {
+		case I7_PANE_SOURCE:
+			/* If headings view is visible, switch back to source code view */
+			gtk_notebook_set_current_page(GTK_NOTEBOOK(self->tabs[I7_PANE_SOURCE]), I7_SOURCE_VIEW_TAB_SOURCE);
+			*description_out = gettext(tab_names[ix]);
+			return self->source_tabs[I7_SOURCE_VIEW_TAB_SOURCE];
+		case I7_PANE_RESULTS:
+			ix = gtk_notebook_get_current_page(GTK_NOTEBOOK(self->tabs[I7_PANE_RESULTS]));
+			*description_out = gettext(results_tab_names[ix]);
+			return self->results_tabs[ix];
+		case I7_PANE_INDEX:
+			ix = gtk_notebook_get_current_page(GTK_NOTEBOOK(self->tabs[I7_PANE_INDEX]));
+			*description_out = gettext(index_tab_names[ix]);
+			return self->index_tabs[ix];
+		case I7_PANE_SKEIN:
+		case I7_PANE_TRANSCRIPT:
+		case I7_PANE_SETTINGS:
+			return NULL;
+		case I7_PANE_STORY:
+		case I7_PANE_DOCUMENTATION:
+		case I7_PANE_EXTENSIONS:
+			*description_out = gettext(tab_names[ix]);
+			return self->tabs[ix];
+		default:
+			g_assert_not_reached();
+	}
+}
