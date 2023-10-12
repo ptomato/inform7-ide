@@ -20,7 +20,7 @@ The Inform project was created by Graham Nelson in 1993 and first came
 to the Macintosh Programmer's Workshop in 1995, and is now available as
 an app.
 It combines the core Inform software with full documentation, including
-two books and nearly 500 fully working Examples.
+two books and nearly 500 fully working examples.
 Connecting to the Inform website, it can automatically download and
 update extensions from a fully curated Public Library used by the
 world-wide Inform community.
