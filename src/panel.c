@@ -1216,6 +1216,7 @@ i7_panel_update_fonts(I7Panel *self)
 	GtkStyleContext* cx = gtk_widget_get_style_context(GTK_WIDGET(glk));
 	g_autofree char *note_color = get_named_color_from_theme(cx, "warning_color", "#aaaa00");
 	g_autofree char *alert_color = get_named_color_from_theme(cx, "error_color", "#aa0000");
+	/* COMPAT: Render input text in @accent_color in GTK 4 */
 
 	gchar *css = g_strdup_printf(
 		"grid.normal { font-size: %d; }"
@@ -1228,7 +1229,7 @@ i7_panel_update_fonts(I7Panel *self)
 		"buffer.alert { color: %s; font-weight: bold; }"
 		"buffer.note { color: %s; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
-		"buffer.input { font-size: %d; color: #0000aa; font-style: italic; }"
+		"buffer.input { font-size: %d; font-weight: bold; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
 		size_pt, font, size_pt, size_pt, size_pt,
