@@ -411,28 +411,27 @@ static void
 on_webview_get_selection(WebKitWebView *view, GAsyncResult *result, I7SearchBar *self)
 {
 	g_autoptr(GError) err = NULL;
-	g_autoptr(WebKitJavascriptResult) js_result = webkit_web_view_run_javascript_finish(view, result, &err);
+	g_autoptr(JSCValue) js_result = webkit_web_view_evaluate_javascript_finish(view, result, &err);
 	if (js_result == NULL) {
 		g_warning("Failed to get selection in web page: %s", err->message);
 		finish_activate(self);
 		return;
 	}
 
-	JSCValue *js_value = webkit_javascript_result_get_js_value(js_result);
-	JSCException *exception = jsc_context_get_exception(jsc_value_get_context(js_value));
+	JSCException *exception = jsc_context_get_exception(jsc_value_get_context(js_result));
 	if (exception) {
 		g_warning("Exception from getting selection in web page: %s", jsc_exception_get_message(exception));
 		finish_activate(self);
 		return;
 	}
 
-	if (!jsc_value_is_string(js_value)) {
+	if (!jsc_value_is_string(js_result)) {
 		g_warning("Non-string value from getting selection in web page");
 		finish_activate(self);
 		return;
 	}
 
-	g_autofree char *selected_text = jsc_value_to_string(js_value);
+	g_autofree char *selected_text = jsc_value_to_string(js_result);
 	if (*selected_text != '\0')
 		gtk_entry_set_text(GTK_ENTRY(self->entry), selected_text);
 
@@ -543,9 +542,9 @@ i7_search_bar_activate(I7SearchBar *self, bool replace_mode, bool can_restrict, 
 				gtk_entry_set_text(GTK_ENTRY(self->entry), selected_text);
 		}
 	} else if (WEBKIT_IS_WEB_VIEW(view)) {
-		webkit_web_view_run_javascript(WEBKIT_WEB_VIEW(view),
-			"window.getSelection().toString()", /* cancellable = */ NULL,
-			(GAsyncReadyCallback)on_webview_get_selection, self);
+		webkit_web_view_evaluate_javascript(WEBKIT_WEB_VIEW(view),
+			"window.getSelection().toString()", -1, /* world = */ NULL, /* source_uri = */ NULL,
+			/* cancellable = */ NULL, (GAsyncReadyCallback)on_webview_get_selection, self);
 		return;
 	}
 

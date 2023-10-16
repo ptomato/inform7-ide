@@ -168,7 +168,7 @@ on_panel_display_compiler_report(I7Panel *panel, char *uri, I7Story *self)
 static void
 ignore_script_finish(WebKitWebView *webview, GAsyncResult *res, void *data) {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(WebKitJavascriptResult) js_result = webkit_web_view_run_javascript_finish(webview, res, &error);
+	g_autoptr(JSCValue) js_result = webkit_web_view_evaluate_javascript_finish(webview, res, &error);
 	/* ignore error */
 	if (!js_result)
 		g_warning("Error refreshing window.location.search: %s", error->message);
@@ -184,8 +184,9 @@ on_panel_display_index_page(I7Panel *panel, I7PaneIndexTab tabnum, char *param, 
 	but it helps */
 	if(param != NULL) {
 		char *script = g_strconcat("window.location.search = '", param, "'", NULL);
-		webkit_web_view_run_javascript(WEBKIT_WEB_VIEW(self->panel[side]->index_tabs[tabnum]),
-		    script, NULL, (GAsyncReadyCallback)ignore_script_finish, NULL);
+		webkit_web_view_evaluate_javascript(WEBKIT_WEB_VIEW(self->panel[side]->index_tabs[tabnum]),
+			script, -1, /* world = */ NULL, /* source_id = */ NULL, /* cancel = */ NULL,
+			(GAsyncReadyCallback)ignore_script_finish, NULL);
 		g_free(script);
 	}
 

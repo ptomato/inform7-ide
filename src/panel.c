@@ -156,7 +156,7 @@ static void
 on_download_succeeded_script_finished(WebKitWebView *webview, GAsyncResult *res, void *unused)
 {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(WebKitJavascriptResult) js_result = webkit_web_view_run_javascript_finish(webview, res, &error);
+	g_autoptr(JSCValue) js_result = webkit_web_view_evaluate_javascript_finish(webview, res, &error);
 	if (!js_result) {
 		g_warning("Error notifying that the download succeeded, refreshing Public Library: %s", error->message);
 		webkit_web_view_reload(webview);
@@ -197,7 +197,8 @@ static void
 notify_download_succeeded(WebKitWebView *webview, const char *id)
 {
 	g_autofree char *script = g_strconcat("downloadSucceeded(", id, ");", NULL);
-	webkit_web_view_run_javascript(webview, script, NULL, (GAsyncReadyCallback)on_download_succeeded_script_finished, NULL);
+	webkit_web_view_evaluate_javascript(webview, script, -1, /* world = */ NULL, /* source_uri = */ NULL,
+		/* cancel = */ NULL, (GAsyncReadyCallback)on_download_succeeded_script_finished, NULL);
 }
 
 static void
