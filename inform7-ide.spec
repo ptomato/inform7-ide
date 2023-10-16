@@ -30,7 +30,7 @@ BuildRequires: gtk3-devel >= 3.24
 BuildRequires: libhandy-devel
 BuildRequires: gtksourceview4-devel
 BuildRequires: gspell-devel
-BuildRequires: webkit2gtk3-devel
+BuildRequires: webkit2gtk4.1-devel
 BuildRequires: goocanvas2-devel
 BuildRequires: gstreamer1-devel
 BuildRequires: gstreamer1-plugins-base
