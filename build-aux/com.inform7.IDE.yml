@@ -1,7 +1,7 @@
 ---
 app-id: com.inform7.IDE
 runtime: org.gnome.Platform
-runtime-version: '42'
+runtime-version: '45'
 sdk: org.gnome.Sdk
 finish-args:
   - --socket=x11
@@ -133,6 +133,7 @@ modules:
       - /lib/libgst*.so*
       - /lib/pkgconfig
     buildsystem: meson
+    subdir: subprojects/gst-plugins-bad
     config-opts:
       - -Dauto_features=disabled
       - -Dnls=enabled
@@ -142,9 +143,12 @@ modules:
       # elements/components/gstreamer-plugins-bad.bst on the applicable release
       # branch
       - type: git
-        url: https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad.git
-        tag: '1.18.5'
-        commit: d3af58d5b31941caa26c3ded85d7a7b84a91f0cc
+        url: https://gitlab.freedesktop.org/gstreamer/gstreamer.git
+        tag: '1.22.5'
+        commit: bf6ce1d64a0697e7910826147b48f8f658366a5a
+        # Workaround for 'smudge error' with git-lfs
+        # https://github.com/flatpak/flatpak-github-actions/issues/159
+        disable-submodules: true
   - name: chimara
     cleanup:
       - /include
@@ -207,7 +211,11 @@ modules:
     build-commands:
       - bash inweb/scripts/first.sh linux
       - bash intest/scripts/first.sh
-      - cd inform; bash scripts/first.sh
+      # Work around UB and/or miscompilation with -O2
+      # _FORTIFY_SOURCE requires optimization, so disable that too
+      - |
+        cd inform;
+        CFLAGS="$CFLAGS -O0 -fPIE -Wp,-U_FORTIFY_SOURCE" bash scripts/first.sh
       - make -C inform forceintegration
       - make -C inform retrospective
       - cp -R inform/retrospective /app/tmp
