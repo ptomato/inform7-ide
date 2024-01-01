@@ -31,7 +31,6 @@ prefix = get_option('prefix')
 abs_datadir = prefix / datadir
 abs_pkglibexecdir = prefix / pkglibexecdir
 abs_localedir = prefix / datadir / 'locale'
-abs_plugindir = prefix / get_option('libdir') / appname
 
 add_project_arguments('-DLOCALEDIR="@0@"'.format(abs_localedir),
     '-DPACKAGE_LOCALE_DIR="@0@"'.format(abs_localedir),
@@ -55,7 +54,6 @@ glib = dependency('glib-2.0', version: '>=2.52')
 gio = dependency('gio-2.0', version: '>=2.30')
 gdk = dependency('gdk-3.0')
 handy = dependency('libhandy-1')
-pango = dependency('pango')
 gtk = dependency('gtk+-3.0', version: '>=3.24')
 gtksourceview = dependency('gtksourceview-4')
 gspell = dependency('gspell-1')

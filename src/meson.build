@@ -36,7 +36,6 @@ executable('inform7-ide', 'main.c', export_dynamic: true,
     link_whole: gui, install: true, install_dir: get_option('bindir'),
     install_rpath: get_option('prefix') / get_option('libdir'))
 
-test_data_dir = meson.current_source_dir() / 'tests'
 test_inform7 = executable('test-inform7', 'tests/app-test.c',
     'tests/blob-test.c', 'tests/difftest.c', 'tests/skein-test.c',
     'tests/story-test.c', 'tests/test.c',
