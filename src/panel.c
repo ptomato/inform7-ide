@@ -1182,6 +1182,24 @@ i7_panel_update_tabs(I7Panel *self)
 	g_idle_add((GSourceFunc)update_tabs, GTK_SOURCE_VIEW(self->results_tabs[I7_RESULTS_TAB_INFORM6]));
 }
 
+static char *
+get_named_color_from_theme(GtkStyleContext *cx, const char *named_color, const char *fallback_hex)
+{
+	GdkRGBA color;
+	if (!gtk_style_context_lookup_color(cx, named_color, &color))
+		return g_strdup(fallback_hex);
+
+	uint8_t r = color.red * 255;
+	uint8_t g = color.green * 255;
+	uint8_t b = color.blue * 255;
+	uint8_t alpha = color.alpha * 255;
+
+	if (alpha != 255) {
+		return g_strdup_printf("#%02X%02X%02X%02X", r, g, b, alpha);
+	}
+	return g_strdup_printf("#%02X%02X%02X", r, g, b);
+}
+
 /* Update the fonts of the widgets in this pane */
 void
 i7_panel_update_fonts(I7Panel *self)
@@ -1193,6 +1211,13 @@ i7_panel_update_fonts(I7Panel *self)
     const char *font = pango_font_description_get_family(desc);
     int size_pt = pango_font_description_get_size(desc) / PANGO_SCALE;
 
+	ChimaraGlk *glk = CHIMARA_GLK(self->tabs[I7_PANE_STORY]);
+
+	GtkStyleContext* cx = gtk_widget_get_style_context(GTK_WIDGET(glk));
+	g_autofree char *note_color = get_named_color_from_theme(cx, "warning_color", "#aaaa00");
+	g_autofree char *alert_color = get_named_color_from_theme(cx, "error_color", "#aa0000");
+	/* COMPAT: Render input text in @accent_color in GTK 4 */
+
 	gchar *css = g_strdup_printf(
 		"grid.normal { font-size: %d; }"
 		"grid.user1 { color: #303030; background-color: #ffffff; }"
@@ -1201,15 +1226,16 @@ i7_panel_update_fonts(I7Panel *self)
         "buffer.emphasized { font-size: %d; font-style: italic; }"
 		"buffer.header { font-size: %d; font-weight: bold; }"
 		"buffer.subheader { font-size: %d; font-weight: bold; }"
-		"buffer.alert { color: #aa0000; font-weight: bold; }"
-		"buffer.note { color: #aaaa00; font-weight: bold; }"
+		"buffer.alert { color: %s; font-weight: bold; }"
+		"buffer.note { color: %s; font-weight: bold; }"
 		"buffer.block-quote { text-align: center; font-style: italic; }"
-		"buffer.input { font-size: %d; color: #0000aa; font-style: italic; }"
+		"buffer.input { font-size: %d; font-weight: bold; font-style: italic; }"
 		"buffer.user1 { }"
 		"buffer.user2 { }",
 		size_pt, font, size_pt, size_pt, size_pt,
-		(int)(size_pt * RELATIVE_SIZE_MEDIUM), size_pt, size_pt);
-	chimara_glk_set_css_from_string(CHIMARA_GLK(self->tabs[I7_PANE_STORY]), css);
+		(int)(size_pt * RELATIVE_SIZE_MEDIUM), size_pt, alert_color, note_color,
+		size_pt);
+	chimara_glk_set_css_from_string(glk, css);
 	g_free(css);
 }
 
