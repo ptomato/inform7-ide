@@ -16,7 +16,7 @@ $ sudo apt-get install -y \
     libcanberra-gtk3-module dbus-x11 ninja-build virtualenv \
     libxml2-dev pkg-config libglib2.0-dev libgoocanvas-2.0-dev \
     libwebkit2gtk-4.1-dev libgtksourceview-4-dev libgspell-1-dev \
-    libplist-dev desktop-file-utils libgstreamer1.0-dev \
+    libhandy-1-dev libplist-dev desktop-file-utils libgstreamer1.0-dev \
     gstreamer1.0-plugins-bad gstreamer1.0-plugins-good \
     gstreamer1.0-tools git build-essential
 ```
@@ -96,7 +96,7 @@ Then you can prepare the build. If you built the Inform compiler correctly, the
 following command should not complain about being unable to find files:
 
 ```
-$ meson _build
+$ meson setup _build
 ```
 
 Now you can compile and run it, for testing, with
