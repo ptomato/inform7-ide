@@ -13,6 +13,7 @@
 #include "app.h"
 #include "app-retrospective.h"
 #include "story.h"
+#include "configfile.h"
 
 typedef enum {
 	INFORM_10_1,
@@ -179,6 +180,16 @@ i7_app_get_inform_command_line(I7App *self, const char *version_id, int format, 
 	else
 		g_ptr_array_add(builder, g_strdup("-internal"));
 	g_ptr_array_add(builder, internal_path);
+
+	GSettings *prefs = i7_app_get_prefs(self);
+	g_autofree char *added_nest_dir = g_settings_get_string(prefs, PREFS_ADDED_NEST);
+	if (added_nest_dir[0] != '\0') {
+		if (style == INFORM_9_1 || style == INFORM_9_2)
+			g_ptr_array_add(builder, g_strdup("-external"));
+		else if (style == INFORM_10_1)
+			g_ptr_array_add(builder, g_strdup("-nest"));
+		g_ptr_array_add(builder, g_strdup(added_nest_dir));
+	}
 
 	g_ptr_array_add(builder, g_strdup(get_inform_format_arg(style, (I7StoryFormat)format, debug)));
 

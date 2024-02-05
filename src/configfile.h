@@ -65,6 +65,7 @@ typedef enum {
 #define PREFS_AUTO_INDENT          "auto-indent"
 #define PREFS_AUTO_NUMBER          "auto-number"
 #define PREFS_INTERPRETER          "interpreter"
+#define PREFS_ADDED_NEST           "added-nest"
 #define PREFS_CLEAN_BUILD_FILES    "clean-build-files"
 #define PREFS_CLEAN_INDEX_FILES    "clean-index-files"
 #define PREFS_SHOW_DEBUG_LOG       "show-debug-log"

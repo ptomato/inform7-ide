@@ -92,6 +92,7 @@ struct _I7PrefsWindow {
 	GtkSwitch *enable_highlighting;
 	HdyPreferencesGroup *font_group;
 	HdyComboRow *glulx_interpreter;
+	GtkEntry *added_nest;
 	GtkButton *restore_default_font;
 	GtkSwitch *show_debug_tabs;
 	GtkSpinButton *tab_width;
@@ -519,6 +520,7 @@ i7_prefs_window_class_init(I7PrefsWindowClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, enable_highlighting);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, font_group);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, glulx_interpreter);
+	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, added_nest);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, restore_default_font);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, show_debug_tabs);
 	gtk_widget_class_bind_template_child(widget_class, I7PrefsWindow, source_example);
@@ -571,6 +573,7 @@ i7_prefs_window_bind_settings(I7PrefsWindow *self, GSettings *prefs)
 	BIND(PREFS_TAB_WIDTH, tab_width, "value");
 	BIND_COMBO_BOX(PREFS_DOCS_FONT_SIZE, docs_font_size, font_size_enum);
 	BIND_COMBO_BOX(PREFS_INTERPRETER, glulx_interpreter, interpreter_enum);
+	BIND(PREFS_ADDED_NEST, added_nest, "text");
 #undef BIND
 #undef BIND_COMBO_BOX
 	g_settings_bind_with_mapping(prefs, PREFS_FONT_SET,
