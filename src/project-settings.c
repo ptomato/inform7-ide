@@ -48,7 +48,7 @@ G_DEFINE_TYPE(I7ProjectSettings, i7_project_settings, HDY_TYPE_PREFERENCES_PAGE)
 /* PRIVATE FUNCTIONS */
 
 static char *
-story_format_get_name(HdyEnumValueObject *enum_obj, void *)
+story_format_get_name(HdyEnumValueObject *enum_obj, void *unused)
 {
 	int value = hdy_enum_value_object_get_value(enum_obj);
 	switch (value) {
@@ -62,13 +62,13 @@ story_format_get_name(HdyEnumValueObject *enum_obj, void *)
 }
 
 static char *
-retrospective_get_name(void *item, void *)
+retrospective_get_name(void *item, void *unused)
 {
 	return g_strdup(i7_retrospective_get_display_name(I7_RETROSPECTIVE(item)));
 }
 
 static gboolean
-story_format_to_index(GBinding *, const GValue *from, GValue *to, void *)
+story_format_to_index(GBinding *unused, const GValue *from, GValue *to, void *unused2)
 {
 	I7StoryFormat story_format = g_value_get_uint(from);
 	switch (story_format) {
@@ -85,7 +85,7 @@ story_format_to_index(GBinding *, const GValue *from, GValue *to, void *)
 }
 
 static gboolean
-index_to_story_format(GBinding *, const GValue *from, GValue *to, void *)
+index_to_story_format(GBinding *unused, const GValue *from, GValue *to, void *unused2)
 {
 	static const I7StoryFormat formats[2] = { I7_STORY_FORMAT_Z8, I7_STORY_FORMAT_GLULX };
 	int ix = g_value_get_int(from);
@@ -98,7 +98,7 @@ index_to_story_format(GBinding *, const GValue *from, GValue *to, void *)
 }
 
 static gboolean
-language_version_to_index(GBinding *, const GValue *from, GValue *to, void *)
+language_version_to_index(GBinding *unused, const GValue *from, GValue *to, void *unused2)
 {
 	I7App *app = I7_APP(g_application_get_default());
 	GListStore *retrospectives = i7_app_get_retrospectives(app);
@@ -118,7 +118,7 @@ language_version_to_index(GBinding *, const GValue *from, GValue *to, void *)
 }
 
 static gboolean
-index_to_language_version(GBinding *, const GValue *from, GValue *to, void *)
+index_to_language_version(GBinding *unused, const GValue *from, GValue *to, void *unused2)
 {
 	I7App *app = I7_APP(g_application_get_default());
 	GListStore *retrospectives = i7_app_get_retrospectives(app);

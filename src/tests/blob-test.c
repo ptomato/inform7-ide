@@ -19,26 +19,26 @@ typedef struct {
 } BlobFixture;
 
 static void
-blob_setup(BlobFixture *fx, const void *)
+blob_setup(BlobFixture *fx, const void *unused)
 {
 	fx->blob = i7_blob_new();
 	g_object_ref_sink(fx->blob);
 }
 
 static void
-blob_teardown(BlobFixture *fx, const void *)
+blob_teardown(BlobFixture *fx, const void *unused)
 {
 	g_object_unref(fx->blob);
 }
 
 static void
-test_blob_create(BlobFixture *fx, const void *)
+test_blob_create(BlobFixture *fx, const void *unused)
 {
 	g_assert_true(I7_IS_BLOB(fx->blob));
 }
 
 static void
-test_blob_status(BlobFixture *fx, const void *)
+test_blob_status(BlobFixture *fx, const void *unused)
 {
 	i7_blob_set_status(fx->blob, "status message", true);
 
@@ -46,7 +46,7 @@ test_blob_status(BlobFixture *fx, const void *)
 }
 
 static void
-test_blob_progress(BlobFixture *fx, const void *)
+test_blob_progress(BlobFixture *fx, const void *unused)
 {
 	i7_blob_set_progress(fx->blob, 0.0, NULL);
 	i7_blob_set_progress(fx->blob, 0.5, NULL);
@@ -58,7 +58,7 @@ test_blob_progress(BlobFixture *fx, const void *)
 }
 
 static void
-test_blob_progress_cancellable(BlobFixture *fx, const void *)
+test_blob_progress_cancellable(BlobFixture *fx, const void *unused)
 {
 	GCancellable *cancel = g_cancellable_new();
 	i7_blob_set_progress(fx->blob, 0.5, cancel);
