@@ -1483,7 +1483,8 @@ i7_app_update_extensions_menu(I7App *self)
 
 	g_autoptr(GIcon) builtin_emblem = g_themed_icon_new("com.inform7.IDE.builtin");
 
-	gtk_tree_model_get_iter_first(model, &author);
+	if (!gtk_tree_model_get_iter_first(model, &author))
+		return;
 	do {
 		g_autofree char *authorname = NULL;
 		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);

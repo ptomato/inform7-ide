@@ -484,9 +484,11 @@ on_public_library_load_failed(WebKitWebView *html, WebKitLoadEvent status, char 
 static char *
 build_extensions_javascript_source(I7App *app) {
 	GtkTreeModel *model = GTK_TREE_MODEL(i7_app_get_installed_extensions_tree(app));
-	GString *builder = g_string_new("window.EXTENSIONS = {");
 	GtkTreeIter author, title;
-	gtk_tree_model_get_iter_first(model, &author);
+	if (!gtk_tree_model_get_iter_first(model, &author))
+		return g_strdup("window.EXTENSIONS = {};");
+
+	GString *builder = g_string_new("window.EXTENSIONS = {");
 	do {
 		g_autofree char *authorname;
 		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);
