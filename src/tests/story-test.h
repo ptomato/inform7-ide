@@ -7,7 +7,6 @@
 #define STORY_TEST_H
 
 #include <glib.h>
-#include "story.h"
 
 G_BEGIN_DECLS
 

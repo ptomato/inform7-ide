@@ -8,7 +8,6 @@
 
 #include "config.h"
 
-#include <stdarg.h>
 #include <stdbool.h>
 
 #include <glib.h>
@@ -22,7 +21,6 @@
 #include "document.h"
 #include "panel.h"
 #include "skein.h"
-#include "story.h"
 
 typedef enum {
 	I7_STORY_FORMAT_Z5 = 5,  /* deprecated, only used in old projects */

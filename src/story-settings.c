@@ -12,7 +12,6 @@
 #include <gtk/gtk.h>
 #include <plist/plist.h>
 
-#include "panel.h"
 #include "story.h"
 
 /* Helper function to insert @setting into @dict, under @key1/@key2. @key1 is

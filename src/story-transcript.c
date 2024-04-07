@@ -13,7 +13,6 @@
 #include "panel.h"
 #include "skein.h"
 #include "story.h"
-#include "transcript-entry.h"
 
 /* Helper function: the two Transcript panes might have different selections
  * showing, so pick the one most likely to be shown by scroll_to_index() and

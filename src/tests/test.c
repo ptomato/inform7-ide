@@ -8,7 +8,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "app.h"
 #include "app-test.h"
 #include "difftest.h"
 #include "skein-test.h"

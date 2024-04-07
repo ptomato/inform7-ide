@@ -5,10 +5,9 @@
 
 #pragma once
 
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib-object.h>
-
-#include "app.h"
 
 G_BEGIN_DECLS
 

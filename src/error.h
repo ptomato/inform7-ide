@@ -8,8 +8,6 @@
 
 #include "config.h"
 
-#include <stdarg.h>
-
 #include <glib.h>
 #include <gtk/gtk.h>
 

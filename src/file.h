@@ -11,7 +11,6 @@
 #include <glib.h>
 #include <gtksourceview/gtksource.h>
 
-#include "document.h"
 #include "story.h"
 
 char *read_source_file(GFile *file);

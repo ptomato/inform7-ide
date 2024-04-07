@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+#include <gio/gio.h>
 #include <glib.h>
 #include <pango/pango.h>
 

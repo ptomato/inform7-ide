@@ -8,7 +8,6 @@
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 
-#include "document.h"
 #include "lang.h"
 #include "story.h"
 

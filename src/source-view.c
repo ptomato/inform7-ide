@@ -10,11 +10,9 @@
 #include <gspell/gspell.h>
 #include <gtk/gtk.h>
 
-#include "app.h"
 #include "builder.h"
 #include "configfile.h"
 #include "elastic.h"
-#include "error.h"
 #include "source-view.h"
 
 /* TYPE SYSTEM */

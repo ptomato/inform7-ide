@@ -15,7 +15,6 @@
 #include "document.h"
 #include "searchbar.h"
 #include "searchwindow.h"
-#include "toast.h"
 
 struct _I7SearchBar {
 	GtkSearchBar parent;

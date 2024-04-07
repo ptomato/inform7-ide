@@ -11,7 +11,6 @@
 
 #include "app.h"
 #include "builder.h"
-#include "error.h"
 #include "newdialog.h"
 #include "story.h"
 #include "welcomedialog.h"

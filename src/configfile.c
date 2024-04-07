@@ -12,9 +12,7 @@
 #include <gtksourceview/gtksource.h>
 
 #include "app.h"
-#include "builder.h"
 #include "configfile.h"
-#include "error.h"
 #include "story.h"
 
 /* ---------  Events from now on:   ------------ */

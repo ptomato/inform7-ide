@@ -13,8 +13,8 @@
 #include <glib.h>
 
 /* Prerequisites for including Gnulib's diffseq algorithm */
-#include <limits.h>
-#include <stdbool.h>
+#include <limits.h>   // IWYU pragma: keep
+#include <stdbool.h>  // IWYU pragma: keep
 #define ELEMENT char *
 #define EQUAL(a,b) (strcmp((a), (b)) == 0)
 #define OFFSET ssize_t

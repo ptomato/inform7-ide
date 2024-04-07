@@ -13,7 +13,6 @@
 #include <gtksourceview/gtksource.h>
 
 #include "app.h"
-#include "configfile.h"
 #include "error.h"
 #include "searchwindow.h"
 

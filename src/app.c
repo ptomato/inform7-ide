@@ -5,10 +5,8 @@
 
 #include "config.h"
 
-#include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <signal.h>
 
 #include <gio/gio.h>
 #include <glib.h>
@@ -25,8 +23,6 @@
 #include "configfile.h"
 #include "error.h"
 #include "file.h"
-#include "lang.h"
-#include "prefs.h"
 #include "welcomedialog.h"
 
 #define EXTENSIONS_BASE_PATH "Inform", "Extensions"

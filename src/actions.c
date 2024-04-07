@@ -8,8 +8,6 @@
 
 #include "config.h"
 
-#include <errno.h>
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -18,7 +16,6 @@
 
 #include "actions.h"
 #include "app.h"
-#include "builder.h"
 #include "document.h"
 #include "configfile.h"
 #include "error.h"
@@ -27,7 +24,6 @@
 #include "newdialog.h"
 #include "panel.h"
 #include "prefs.h"
-#include "searchbar.h"
 #include "story.h"
 
 /* File->New... */

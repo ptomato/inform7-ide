@@ -10,7 +10,6 @@
 #include <gtk/gtk.h>
 
 #include "builder.h"
-#include "error.h"
 
 /* Miscellaneous GtkBuilder-related functions and macros; also, the arbitrary
  home of the START_TIMER and STOP_TIMER macros */
