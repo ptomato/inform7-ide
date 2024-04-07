@@ -13,7 +13,7 @@ resources_generated = gnome.compile_resources('resources-generated',
 resources = gnome.compile_resources('resources',
     'com.inform7.IDE.gresource.xml', dependencies: license_html, c_name: 'i7',
     source_dir: [meson.current_build_dir(),
-        meson.source_root() / 'retrospective'])
+        meson.project_source_root() / 'retrospective'])
 
 gui = static_library('inform7gui', 'actions.c', 'app.c', 'app-colorscheme.c',
     'app-retrospective.c', 'blob.c', 'builder.c', 'configfile.c', 'document.c',
@@ -55,9 +55,9 @@ skip_paths = [
 ]
 test_env = environment()
 test_env.append('LD_LIBRARY_PATH',
-    meson.build_root() / 'subprojects' / 'ratify',
-    meson.build_root() / 'subprojects' / 'chimara' / 'libchimara')
-test_env.append('GSETTINGS_SCHEMA_DIR', meson.build_root())
+    meson.project_build_root() / 'subprojects' / 'ratify',
+    meson.project_build_root() / 'subprojects' / 'chimara' / 'libchimara')
+test_env.append('GSETTINGS_SCHEMA_DIR', meson.project_build_root())
 test_env.set('GSETTINGS_BACKEND', 'memory')
 test_env.set('NO_AT_BRIDGE', '1')
 test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
