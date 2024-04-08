@@ -454,8 +454,7 @@ Documentation/Extensions.html from the user's extensions folder. */
 static void
 action_extensions_home(GSimpleAction *action, GVariant *parameter, I7Panel *panel)
 {
-	I7App *theapp = I7_APP(g_application_get_default());
-	GFile *docs_file = i7_app_get_extension_home_page(theapp);
+	GFile *docs_file = i7_app_get_extension_home_page();
 	i7_panel_goto_extensions_docpage(panel, docs_file);
 	g_object_unref(docs_file);
 }
@@ -762,7 +761,7 @@ i7_panel_init(I7Panel *self)
 
 	/* Load the documentation and extension pages */
 	webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_DOCUMENTATION]), "inform:///index.html");
-	g_autoptr(GFile) file = i7_app_get_extension_home_page(theapp);
+	g_autoptr(GFile) file = i7_app_get_extension_home_page();
 	html_load_file(WEBKIT_WEB_VIEW(self->tabs[I7_PANE_EXTENSIONS]), file);
 
 	/* Set the initial font size */
@@ -1020,9 +1019,8 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 			g_object_unref(file);
 			/* Check if we need to open the extension read-only */
 			I7App *theapp = I7_APP(g_application_get_default());
-			GFile *user_file = i7_app_get_extension_file(theapp, NULL, NULL);
+			g_autoptr(GFile) user_file = i7_app_get_extension_file(NULL, NULL);
 			gboolean readonly = !g_file_has_prefix(real_file, user_file);
-			g_object_unref(user_file);
 
 			I7Extension *ext = i7_extension_new_from_file(theapp, real_file, readonly);
 			if(ext != NULL) {

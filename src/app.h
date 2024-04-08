@@ -95,16 +95,16 @@ char *i7_app_get_extension_version(I7App *self, const char *author, const char *
 void i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFunc author_func, void *author_func_data, I7AppExtensionFunc extension_func, void *extension_func_data, GDestroyNotify free_author_result);
 void i7_app_run_census(I7App *self, gboolean wait);
 
-GFile *i7_app_get_extension_file(I7App *self, const gchar *author, const char *extname);
-GFile *i7_app_get_extension_docpage(I7App *self, const char *author, const char *extname);
-GFile *i7_app_get_extension_home_page(I7App *self);
+GFile *i7_app_get_extension_file(const char *author, const char *extname);
+GFile *i7_app_get_extension_docpage(const char *author, const char *extname);
+GFile *i7_app_get_extension_home_page(void);
 GFile *i7_app_get_internal_dir(I7App *self);
 GFile *i7_app_get_retrospective_internal_dir(I7App *self, const char *build);
 GFile *i7_app_get_data_file(I7App *self, const char *filename);
 GFile *i7_app_get_data_file_va(I7App *self, const char *path1, ...) G_GNUC_NULL_TERMINATED;
 GFile *i7_app_get_binary_file(I7App *self, const char *filename);
 GFile *i7_app_get_retrospective_binary_file(I7App *self, const char *build, const char *filename);
-GFile *i7_app_get_config_dir(I7App *self);
+GFile *i7_app_get_config_dir(void);
 
 GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *self);
 void i7_app_update_extensions_menu(I7App *self);
@@ -122,7 +122,7 @@ PangoFontDescription *i7_app_get_document_font_description(I7App *self);
 char *i7_app_get_ui_font(I7App *self);
 double i7_app_get_docs_font_scale(I7App *self);
 
-GFile *i7_app_get_last_opened_project(I7App *self);
+GFile *i7_app_get_last_opened_project(void);
 
 /* Color scheme functions, in app-colorscheme.c */
 

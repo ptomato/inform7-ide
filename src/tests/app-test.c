@@ -67,16 +67,16 @@ test_app_extensions_install_remove(void)
 
 	/* Test installing */
 	i7_app_install_extension(theapp, file);
-	GFile *installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	g_autoptr(GFile) installed_file = i7_app_get_extension_file("Regera Dowdy", "Lickable Wallpaper");
 	check_file(installed_file, "Lickable Wallpaper.i7x");
 	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
 	g_assert_no_error(err);
 
 	/* Test removing */
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
-	installed_file = i7_app_get_extension_file(theapp, "Regera Dowdy", "Lickable Wallpaper");
+	g_clear_object(&installed_file);
+	installed_file = i7_app_get_extension_file("Regera Dowdy", "Lickable Wallpaper");
 	g_assert(g_file_query_exists(installed_file, NULL) == FALSE);
-	g_object_unref(installed_file);
 
 	/* Make sure it was listed in the directory before */
 	g_assert(strstr(contents, "Regera Dowdy"));
@@ -155,7 +155,7 @@ test_app_extensions_case_insensitive(void)
 	/* Install test extension */
 	i7_app_install_extension(theapp, file);
 
-	GFile *extensions_file = i7_app_get_extension_file(theapp, NULL, NULL);
+	g_autoptr(GFile) extensions_file = i7_app_get_extension_file(NULL, NULL);
 	GFile *child1 = g_file_get_child(extensions_file, "Regera Dowdy");
 	GFile *child2 = g_file_get_child(extensions_file, "regera dowdy");
 	GFile *child3 = g_file_get_child(extensions_file, "Ogdred Weary");
@@ -166,7 +166,6 @@ test_app_extensions_case_insensitive(void)
 	GFile *test5 = g_file_get_child(child1, "Square Candies.i7x");
 	GFile *test6 = g_file_get_child(child2, "Square Candies.i7x");
 	GFile *test7 = g_file_get_child(child3, "Square Candies.i7x");
-	g_object_unref(extensions_file);
 	g_object_unref(child1);
 	g_object_unref(child2);
 	g_object_unref(child3);

@@ -94,7 +94,7 @@ create_color_scheme_manager(I7App *self)
 	g_object_unref(styles_dir);
 
 	/* Add the user styles directory */
-	GFile *config_dir = i7_app_get_config_dir(self);
+	GFile *config_dir = i7_app_get_config_dir();
 	styles_dir = g_file_get_child(config_dir, "styles");
 	g_object_unref(config_dir);
 	scheme_manager_append_search_path_gfile(manager, styles_dir);
@@ -198,11 +198,10 @@ i7_app_init(I7App *self)
 	priv->print_settings = NULL;
 
 	/* Create the Inform dir if it doesn't already exist */
-	GFile *extensions_file = i7_app_get_extension_file(self, NULL, NULL);
+	g_autoptr(GFile) extensions_file = i7_app_get_extension_file(NULL, NULL);
 	if(!make_directory_unless_exists(extensions_file, NULL, &error)) {
 		IO_ERROR_DIALOG(NULL, extensions_file, error, _("creating the Inform directory"));
 	}
-	g_object_unref(extensions_file);
 
 	/* Compile the regices */
 	I7AppRegexInfo regex_info[] = {
@@ -387,9 +386,8 @@ i7_app_monitor_extensions_directory(I7App *self)
 	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GError *error = NULL;
 	if(!priv->extension_dir_monitor) {
-		GFile *extdir = i7_app_get_extension_file(self, NULL, NULL);
+		g_autoptr(GFile) extdir = i7_app_get_extension_file(NULL, NULL);
 		priv->extension_dir_monitor = g_file_monitor_directory(extdir, G_FILE_MONITOR_NONE, NULL, &error);
-		g_object_unref(extdir);
 	}
 
 	g_signal_connect(G_OBJECT(priv->extension_dir_monitor), "changed", G_CALLBACK(extension_dir_changed), self);
@@ -499,13 +497,12 @@ i7_app_install_extension(I7App *self, GFile *file)
 	i7_app_stop_monitoring_extensions_directory(self);
 
 	/* Create the directory for that author if it does not exist already */
-	GFile *dir = i7_app_get_extension_file(self, author, NULL);
+	g_autoptr(GFile) dir = i7_app_get_extension_file(author, NULL);
 
 	if(!make_directory_unless_exists(dir, NULL, &err)) {
 		error_dialog_file_operation(NULL, dir, err, I7_FILE_ERROR_OTHER, _("creating a directory"));
 		g_free(name);
 		g_free(author);
-		g_object_unref(dir);
 		i7_app_monitor_extensions_directory(self);
 		return;
 	}
@@ -514,7 +511,6 @@ i7_app_install_extension(I7App *self, GFile *file)
 	GFile *target = g_file_get_child(dir, name);
 	GFile *canonical_target = g_file_get_child(dir, canonical_name);
 	g_free(canonical_name);
-	g_object_unref(dir);
 
 	/* Check if the extension is already installed */
 	if(g_file_query_exists(target, NULL) || g_file_query_exists(canonical_target, NULL))
@@ -595,30 +591,28 @@ remove_i7x_from_file(GFile *file)
 void
 i7_app_delete_extension(I7App *self, char *author, char *extname)
 {
-	GFile *file, *file_lc, *file_noext, *file_lc_noext, *author_dir, *author_dir_lc;
+	GFile *file_lc, *file_noext, *file_lc_noext, *author_dir, *author_dir_lc;
 	char *extname_lc;
 	GError *err = NULL;
 
 	i7_app_stop_monitoring_extensions_directory(self);
 
 	/* Get references to the various possible versions of this filename */
-	file = i7_app_get_extension_file(self, author, extname);
+	g_autoptr(GFile) file = i7_app_get_extension_file(author, extname);
 	file_noext = remove_i7x_from_file(file);
 
 	/* Remove extension, try versions with and without .i7x */
 	if(!g_file_delete(file, NULL, &err) && !g_file_delete(file_noext, NULL, &err)) {
 		error_dialog_file_operation(NULL, file, err, I7_FILE_ERROR_OTHER, _("deleting the file with or without extension"));
-		g_object_unref(file);
 		g_object_unref(file_noext);
 		goto finally;
 	}
-	g_object_unref(file);
 	g_object_unref(file_noext);
 
 	/* Remove lowercase symlink to extension (holdover from previous versions
 	of Inform) */
 	extname_lc = g_utf8_strdown(extname, -1);
-	file_lc = i7_app_get_extension_file(self, author, extname_lc);
+	file_lc = i7_app_get_extension_file(author, extname_lc);
 	file_lc_noext = remove_i7x_from_file(file_lc);
 	g_object_unref(file_lc);
 
@@ -633,7 +627,7 @@ i7_app_delete_extension(I7App *self, char *author, char *extname)
 	g_object_unref(file_lc_noext);
 
 	/* Remove author directory if empty */
-	author_dir = i7_app_get_extension_file(self, author, NULL);
+	author_dir = i7_app_get_extension_file(author, NULL);
 	if(!g_file_delete(author_dir, NULL, &err)) {
 		/* if the directory isn't empty, continue; but if it failed for any
 		other reason, display an error */
@@ -648,7 +642,7 @@ i7_app_delete_extension(I7App *self, char *author, char *extname)
 	/* Remove lowercase symlink to author directory (holdover from previous
 	versions of Inform) */
 	gchar *author_lc = g_utf8_strdown(author, -1);
-	author_dir_lc = i7_app_get_extension_file(self, author_lc, NULL);
+	author_dir_lc = i7_app_get_extension_file(author_lc, NULL);
 	g_free(author_lc);
 	/* Only do this if the symlink actually exists */
 	if(file_exists_and_is_symlink(author_dir_lc)) {
@@ -959,7 +953,7 @@ i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFun
 	if(builtin)
 		root_file = get_builtin_extension_file(self, NULL, NULL);
 	else
-		root_file = i7_app_get_extension_file(self, NULL, NULL);
+		root_file = i7_app_get_extension_file(NULL, NULL);
 
 	root_dir = g_file_enumerate_children(root_file, "standard::*", G_FILE_QUERY_INFO_NONE, NULL, &err);
 	if(!root_dir) {
@@ -1188,7 +1182,6 @@ i7_app_run_census(I7App *self, gboolean wait)
 
 /**
  * i7_app_get_extension_file:
- * @self: the application
  * @author: (allow-none): the extension author
  * @extname: (allow-none): the extensions name, with or without .i7x
  *
@@ -1199,7 +1192,7 @@ i7_app_run_census(I7App *self, gboolean wait)
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_file(I7App *self, const char *author, const char *extname)
+i7_app_get_extension_file(const char *author, const char *extname)
 {
 	char *path;
 
@@ -1225,7 +1218,6 @@ i7_app_get_extension_file(I7App *self, const char *author, const char *extname)
 
 /**
  * i7_app_get_extension_docpage:
- * @self: the application
  * @author: (allow-none): the extension author
  * @extname: (allow-none): the extension name, without .i7x
  *
@@ -1237,7 +1229,7 @@ i7_app_get_extension_file(I7App *self, const char *author, const char *extname)
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_docpage(I7App *self, const char *author, const char *extname)
+i7_app_get_extension_docpage(const char *author, const char *extname)
 {
 	char *path;
 
@@ -1255,7 +1247,6 @@ i7_app_get_extension_docpage(I7App *self, const char *author, const char *extnam
 
 /**
  * i7_app_get_extension_home_page:
- * @se;f: the application
  *
  * Returns the home page for installed extensions (by default,
  * $HOME/Inform/Documentation/Extensions.html.)
@@ -1263,7 +1254,7 @@ i7_app_get_extension_docpage(I7App *self, const char *author, const char *extnam
  * Returns: (transfer full): a new #GFile.
  */
 GFile *
-i7_app_get_extension_home_page(I7App *self)
+i7_app_get_extension_home_page(void)
 {
 	char *path = g_build_filename(g_get_home_dir(), EXTENSION_HOME_PATH, NULL);
 	GFile *retval = g_file_new_for_path(path);
@@ -1443,14 +1434,13 @@ i7_app_get_retrospective_binary_file(I7App *self, const char *build, const char 
 
 /**
  * i7_app_get_config_dir:
- * @self: the app
  *
  * Gets the location of the directory for user-specific configuration files.
  *
  * Returns: (transfer full): a #GFile pointing to the config dir
  */
 GFile *
-i7_app_get_config_dir(I7App *self)
+i7_app_get_config_dir(void)
 {
 	const char *config = g_get_user_config_dir();
 	char *path = g_build_filename(config, "inform7", NULL);
@@ -1566,7 +1556,6 @@ i7_app_update_css(I7App *self)
 
 /**
  * i7_app_get_last_opened_project:
- * @self: the app
  *
  * Looks for the story (not extension file) that was last opened.
  *
@@ -1575,7 +1564,7 @@ i7_app_update_css(I7App *self)
  * installed, or the recent documents history has been cleared.)
  */
 GFile *
-i7_app_get_last_opened_project(I7App *self)
+i7_app_get_last_opened_project(void)
 {
 	GtkRecentManager *manager = gtk_recent_manager_get_default();
 	GList *recent = gtk_recent_manager_get_items(manager);

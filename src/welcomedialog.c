@@ -45,11 +45,10 @@ void
 on_welcome_reopen_button_clicked(GtkButton *button, I7App *app)
 {
 	GtkWidget *welcomedialog = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	GFile *file = i7_app_get_last_opened_project(app);
+	g_autoptr(GFile) file = i7_app_get_last_opened_project();
 	g_assert(file); /* Button not sensitive if no last project */
 
 	I7Story *story = i7_story_new_from_file(app, file);
-	g_object_unref(file);
 
 	if (story)
 		gtk_widget_destroy(welcomedialog);
@@ -75,7 +74,7 @@ create_welcome_dialog(GtkApplication *theapp)
 	gtk_window_set_application(GTK_WINDOW(retval), theapp);
 
 	/* If there is no "last project", make the reopen button inactive */
-	GFile *last_project = i7_app_get_last_opened_project(I7_APP(theapp));
+	g_autoptr(GFile) last_project = i7_app_get_last_opened_project();
 	if (last_project) {
 		GtkWidget *reopen_button = GTK_WIDGET(load_object(builder, "welcome_reopen_button"));
 		g_file_query_info_async(g_steal_pointer(&last_project), G_FILE_ATTRIBUTE_STANDARD_TYPE,
