@@ -751,7 +751,6 @@ void
 i7_document_reindex_headings(I7Document *self)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
-	I7App *theapp = I7_APP(g_application_get_default());
 	GtkTextBuffer *buffer = GTK_TEXT_BUFFER(priv->buffer);
 	GtkTreeStore *tree = priv->headings;
 	gtk_tree_store_clear(tree);
@@ -778,6 +777,10 @@ i7_document_reindex_headings(I7Document *self)
 		-1);
 	g_free(realtitle);
 
+	g_autoptr(GRegex) regex = g_regex_new("^(?P<level>volume|book|part|chapter|section)\\s+(?P<secnum>.*?)(\\s+-\\s+(?P<sectitle>.*))?$",
+		G_REGEX_OPTIMIZE | G_REGEX_CASELESS, 0, /* ignore error */ NULL);
+	g_assert(regex && "Failed to compile section heading regex");
+
 	while(gtk_text_iter_forward_lines(&lastline, 3)) {
 		/* Swap the iterators around using end as a temporary variable */
 		end = nextline;
@@ -791,7 +794,7 @@ i7_document_reindex_headings(I7Document *self)
 		if(starts_blank_or_whitespace_line(&lastline)
 			&& starts_blank_or_whitespace_line(&nextline)
 			&& (text = gtk_text_iter_get_text(&thisline, &end))
-			&& g_regex_match(theapp->regices[I7_APP_REGEX_HEADINGS], text, 0, &match))
+			&& g_regex_match(regex, text, 0, &match))
 		{
 			gchar *level = g_match_info_fetch_named(match, "level");
 			int depth = get_heading_from_string(level);

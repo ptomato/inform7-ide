@@ -101,9 +101,11 @@ js_paste_code(WebKitUserContentManager *content, WebKitJavascriptResult *js_mess
 	if (!code)
 		return;
 
+	g_autoptr(GRegex) regex = g_regex_new("\\[=0x([0-9A-F]{4})=\\]", G_REGEX_OPTIMIZE, 0, /* ignore error */ NULL);
+	g_assert(regex && "Failed to compile unicode escape regex");
+
 	GError *error = NULL;
-	I7App *theapp = I7_APP(g_application_get_default());
-	gchar *unescaped = g_regex_replace_eval(theapp->regices[I7_APP_REGEX_UNICODE_ESCAPE], code, -1, 0, 0, unescape_unicode, NULL, &error);
+	g_autofree char *unescaped = g_regex_replace_eval(regex, code, -1, 0, 0, unescape_unicode, NULL, &error);
 	if(!unescaped) {
 		WARN(_("Cannot unescape unicode characters"), error);
 		g_error_free(error);
@@ -111,8 +113,6 @@ js_paste_code(WebKitUserContentManager *content, WebKitJavascriptResult *js_mess
 	}
 
 	g_signal_emit_by_name(panel, "paste-code", unescaped);
-
-	g_free(unescaped);
 }
 
 /* The 'openFile()' function in JavaScript. This simply opens its argument using

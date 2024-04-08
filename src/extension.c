@@ -98,16 +98,14 @@ on_next_action_notify_enabled(GObject *action, GParamSpec *paramspec, I7Extensio
 static gchar *
 i7_extension_extract_title(I7Document *document, gchar *text)
 {
-	I7App *app = I7_APP(g_application_get_default());
-	GMatchInfo *match = NULL;
+	g_autoptr(GRegex) regex = g_regex_new(REGEX_EXTENSION, G_REGEX_OPTIMIZE | G_REGEX_CASELESS, 0, /* ignore error */ NULL);
+	g_assert(regex && "Failed to compile extension regex");
 
-	if(!g_regex_match(app->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
-		g_match_info_free(match);
+	g_autoptr(GMatchInfo) match = NULL;
+	if (!g_regex_match(regex, text, 0, &match))
 		return g_strdup(_("Untitled"));
-	}
 
 	gchar *title = g_match_info_fetch_named(match, "title");
-	g_match_info_free(match);
 	if(!title)
 		return g_strdup(_("Untitled"));
 	return title;

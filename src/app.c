@@ -67,11 +67,6 @@ typedef struct {
 
 G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, GTK_TYPE_APPLICATION);
 
-typedef struct {
-	gchar *regex;
-	gboolean caseless;
-} I7AppRegexInfo;
-
 /* Helper function: call gtk_source_style_scheme_manager_append_search_path()
 with a #GFile */
 static void
@@ -203,23 +198,6 @@ i7_app_init(I7App *self)
 		IO_ERROR_DIALOG(NULL, extensions_file, error, _("creating the Inform directory"));
 	}
 
-	/* Compile the regices */
-	I7AppRegexInfo regex_info[] = {
-		{ "^(?P<level>volume|book|part|chapter|section)\\s+(?P<secnum>.*?)(\\s+-\\s+(?P<sectitle>.*))?$", TRUE },
-		{ "\\[=0x([0-9A-F]{4})=\\]", FALSE },
-		{ "^\\s*(?:version\\s(?P<version>.+)\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */
-		  "(?P<title>.+?)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)?" /* <title> [(for X only)] */
-		  "by\\s+(?P<author>.+)\\s+" /* by <author> */
-		  "begins?\\s+here\\.?\\s*$", /* begins here[.] */
-		  TRUE },
-	};
-	int i;
-	for(i = 0; i < I7_APP_NUM_REGICES; i++) {
-		self->regices[i] = g_regex_new(regex_info[i].regex, G_REGEX_OPTIMIZE | (regex_info[i].caseless? G_REGEX_CASELESS : 0), 0, &error);
-		if(!self->regices[i])
-			ERROR(_("Could not compile regex"), error);
-	}
-
 	/* Set up signals for GSettings keys. */
 	init_config_file(priv->prefs_settings);
 	g_signal_connect_swapped(priv->system_settings, "changed::document-font-name", G_CALLBACK(i7_app_update_css), self);
@@ -247,10 +225,6 @@ i7_app_finalize(GObject *object)
 	g_object_unref(priv->state_settings);
 	g_object_unref(priv->prefs_settings);
 	g_clear_object(&priv->font_settings_provider);
-
-	int i;
-	for(i = 0; i < I7_APP_NUM_REGICES; i++)
-		g_regex_unref(self->regices[i]);
 
 	G_OBJECT_CLASS(i7_app_parent_class)->finalize(object);
 }
@@ -414,22 +388,20 @@ the values returned in @name and @author must be freed, and the value in
 @version must be freed if it is not NULL. It is okay to pass NULL for @version,
 @name, and @author, in which case nothing will be stored there. */
 static gboolean
-is_valid_extension(I7App *self, const char *text, char **version, char **name, char **author)
+is_valid_extension(const char *text, char **version, char **name, char **author)
 {
 	g_return_val_if_fail(text != NULL, FALSE);
 
-	GMatchInfo *match = NULL;
+	g_autoptr(GRegex) regex = g_regex_new(REGEX_EXTENSION, G_REGEX_OPTIMIZE | G_REGEX_CASELESS, 0, /* ignore error */ NULL);
+	g_assert(regex && "Failed to compile extension regex");
 
-	if(!g_regex_match(self->regices[I7_APP_REGEX_EXTENSION], text, 0, &match)) {
-		g_match_info_free(match);
+	g_autoptr(GMatchInfo) match = NULL;
+	if (!g_regex_match(regex, text, 0, &match))
 		return FALSE;
-	}
 	g_autofree char *matched_name = g_match_info_fetch_named(match, "title");
 	g_autofree char *matched_author = g_match_info_fetch_named(match, "author");
-	if(matched_name == NULL || matched_author == NULL) {
-		g_match_info_free(match);
+	if (matched_name == NULL || matched_author == NULL)
 		return FALSE;
-	}
 
 	if(name != NULL)
 		*name = g_steal_pointer(&matched_name);
@@ -438,7 +410,6 @@ is_valid_extension(I7App *self, const char *text, char **version, char **name, c
 	if(version != NULL)
 		*version = g_match_info_fetch_named(match, "version");
 
-	g_match_info_free(match);
 	return TRUE;
 }
 
@@ -480,7 +451,7 @@ i7_app_install_extension(I7App *self, GFile *file)
 	/* Make sure the file is actually an Inform 7 extension */
 	gchar *name = NULL;
 	gchar *author = NULL;
-	if(!is_valid_extension(self, text, NULL, &name, &author)) {
+	if (!is_valid_extension(text, NULL, &name, &author)) {
 		char *display_name = file_get_display_name(file);
 		error_dialog(NULL, NULL, _("The file '%s' does not seem to be an "
 		  "extension. Extensions should be saved as UTF-8 text format files, "
@@ -1060,7 +1031,7 @@ add_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, GtkTreeI
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(app, firstline, &version, &title, NULL)) {
+	if (!is_valid_extension(firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;
@@ -1099,7 +1070,7 @@ add_builtin_extension_to_tree_store(I7App *app, GFile *parent, GFileInfo *info, 
 		g_error_free(error);
 		goto finally;
 	}
-	if(!is_valid_extension(app, firstline, &version, &title, NULL)) {
+	if (!is_valid_extension(firstline, &version, &title, NULL)) {
 		g_free(firstline);
 		g_warning("Invalid extension file %s, skipping.", extension_name);
 		goto finally;

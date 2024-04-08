@@ -24,12 +24,11 @@
 #define I7_IS_APP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), I7_TYPE_APP))
 #define I7_APP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), I7_TYPE_APP, I7AppClass))
 
-enum _I7AppRegices {
-	I7_APP_REGEX_HEADINGS, /* Matches story headings in the source text */
-	I7_APP_REGEX_UNICODE_ESCAPE, /* Matches Unicode escapes in Javascript paste code */
-	I7_APP_REGEX_EXTENSION, /* Matches the title of an extension in the proper format */
-	I7_APP_NUM_REGICES
-};
+#define REGEX_EXTENSION \
+	"^\\s*(?:version\\s(?P<version>.+)\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */ \
+	"(?P<title>.+?)\\s+(?:\\(for\\s.+\\sonly\\)\\s+)?" /* <title> [(for X only)] */ \
+	"by\\s+(?P<author>.+)\\s+" /* by <author> */ \
+	"begins?\\s+here\\.?\\s*$" /* begins here[.] */
 
 enum _I7AppExtensionsColumns {
 	I7_APP_EXTENSION_TEXT,  /* title rows are children of author rows */
@@ -48,9 +47,6 @@ typedef struct {
 
 typedef struct {
 	GtkApplication parent_instance;
-
-	/* Already-compiled regices */
-	GRegex *regices[I7_APP_NUM_REGICES];
 } I7App;
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7App, g_object_unref)
