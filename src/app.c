@@ -44,7 +44,13 @@
  - various compiled regices for use elsewhere in the program.
 */
 
-typedef struct {
+struct _I7AppClass {
+	GtkApplicationClass parent_class;
+};
+
+struct _I7App {
+	GtkApplication parent_instance;
+
 	/* Application directories */
 	GFile *datadir;
 	GFile *libexecdir;
@@ -65,7 +71,7 @@ typedef struct {
 	GtkCssProvider *font_settings_provider;
 } I7AppPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE(I7App, i7_app, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE(I7App, i7_app, GTK_TYPE_APPLICATION);
 
 /* Helper function: call gtk_source_style_scheme_manager_append_search_path()
 with a #GFile */
@@ -150,15 +156,14 @@ rebuild_recent_menu(GtkRecentManager *manager, I7App *self)
 static void
 i7_app_init(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GError *error = NULL;
 
-	priv->system_settings = g_settings_new(SCHEMA_SYSTEM);
-	priv->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
-	priv->state_settings = g_settings_new(SCHEMA_STATE);
+	self->system_settings = g_settings_new(SCHEMA_SYSTEM);
+	self->prefs_settings = g_settings_new(SCHEMA_PREFERENCES);
+	self->state_settings = g_settings_new(SCHEMA_STATE);
 
-	priv->font_settings_provider = gtk_css_provider_new();
-	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(priv->font_settings_provider),
+	self->font_settings_provider = gtk_css_provider_new();
+	gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(self->font_settings_provider),
 		GTK_STYLE_PROVIDER_PRIORITY_USER);
 	g_autoptr(GtkCssProvider) css = gtk_css_provider_new();
 	gtk_css_provider_load_from_resource(css, "/com/inform7/IDE/ui/application.css");
@@ -168,15 +173,15 @@ i7_app_init(I7App *self)
 	/* Retrieve data directories if set externally */
 	const gchar *env = g_getenv("INFORM7_IDE_DATA_DIR");
 	if(env) {
-		priv->datadir = g_file_new_for_path(env);
+		self->datadir = g_file_new_for_path(env);
 	} else {
 		char *path = g_build_filename(PACKAGE_DATA_DIR, "inform7-ide", NULL);
-		priv->datadir = g_file_new_for_path(path);
+		self->datadir = g_file_new_for_path(path);
 		g_free(path);
 	}
 
 	env = g_getenv("INFORM7_IDE_LIBEXEC_DIR");
-	priv->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
+	self->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
 
 	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/app.ui");
 	gtk_builder_connect_signals(builder, self);
@@ -186,11 +191,11 @@ i7_app_init(I7App *self)
 	GtkRecentManager *default_recent_manager = gtk_recent_manager_get_default();
 	g_signal_connect(default_recent_manager, "changed", G_CALLBACK(rebuild_recent_menu), self);
 
-	priv->installed_extensions = GTK_TREE_STORE(load_object(builder, "installed_extensions_store"));
-	g_object_ref(priv->installed_extensions);
+	self->installed_extensions = GTK_TREE_STORE(load_object(builder, "installed_extensions_store"));
+	g_object_ref(self->installed_extensions);
 	/* Set print settings to NULL, since they are not remembered across
 	application runs (yet) */
-	priv->print_settings = NULL;
+	self->print_settings = NULL;
 
 	/* Create the Inform dir if it doesn't already exist */
 	g_autoptr(GFile) extensions_file = i7_app_get_extension_file(NULL, NULL);
@@ -199,32 +204,32 @@ i7_app_init(I7App *self)
 	}
 
 	/* Set up signals for GSettings keys. */
-	init_config_file(priv->prefs_settings);
-	g_signal_connect_swapped(priv->system_settings, "changed::document-font-name", G_CALLBACK(i7_app_update_css), self);
-	g_signal_connect_swapped(priv->system_settings, "changed::monospace-font-name", G_CALLBACK(i7_app_update_css), self);
+	init_config_file(self->prefs_settings);
+	g_signal_connect_swapped(self->system_settings, "changed::document-font-name", G_CALLBACK(i7_app_update_css), self);
+	g_signal_connect_swapped(self->system_settings, "changed::monospace-font-name", G_CALLBACK(i7_app_update_css), self);
 
 	/* Create the color scheme manager (must be run after priv->datadir is set) */
-	priv->color_scheme_manager = create_color_scheme_manager(self);
+	self->color_scheme_manager = create_color_scheme_manager(self);
 
 	/* Parse the retrospective.txt file */
-	parse_retrospective_txt(&priv->retrospectives);
+	parse_retrospective_txt(&self->retrospectives);
 }
 
 static void
 i7_app_finalize(GObject *object)
 {
 	I7App *self = I7_APP(object);
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	g_object_unref(priv->datadir);
-	g_object_unref(priv->libexecdir);
+
+	g_object_unref(self->datadir);
+	g_object_unref(self->libexecdir);
 	i7_app_stop_monitoring_extensions_directory(self);
-	g_object_unref(priv->installed_extensions);
-	g_object_unref(priv->color_scheme_manager);
-	g_clear_object(&priv->retrospectives);
-	g_object_unref(priv->system_settings);
-	g_object_unref(priv->state_settings);
-	g_object_unref(priv->prefs_settings);
-	g_clear_object(&priv->font_settings_provider);
+	g_object_unref(self->installed_extensions);
+	g_object_unref(self->color_scheme_manager);
+	g_clear_object(&self->retrospectives);
+	g_object_unref(self->system_settings);
+	g_object_unref(self->state_settings);
+	g_object_unref(self->prefs_settings);
+	g_clear_object(&self->font_settings_provider);
 
 	G_OBJECT_CLASS(i7_app_parent_class)->finalize(object);
 }
@@ -233,7 +238,6 @@ static void
 i7_app_startup(GApplication *app)
 {
 	I7App *self = I7_APP(app);
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
 	G_APPLICATION_CLASS(i7_app_parent_class)->startup(app);
 
@@ -241,7 +245,6 @@ i7_app_startup(GApplication *app)
 
 	/* Set up monitor for extensions directory */
 	i7_app_run_census(self, FALSE);
-	priv->extension_dir_monitor = NULL;
 	i7_app_monitor_extensions_directory(self);
 
 	/* Set initial font sizes */
@@ -357,25 +360,22 @@ extension_dir_changed(GFileMonitor *monitor, GFile *file, GFile *other_file, GFi
 void
 i7_app_monitor_extensions_directory(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
 	GError *error = NULL;
-	if(!priv->extension_dir_monitor) {
+	if (!self->extension_dir_monitor) {
 		g_autoptr(GFile) extdir = i7_app_get_extension_file(NULL, NULL);
-		priv->extension_dir_monitor = g_file_monitor_directory(extdir, G_FILE_MONITOR_NONE, NULL, &error);
+		self->extension_dir_monitor = g_file_monitor_directory(extdir, G_FILE_MONITOR_NONE, NULL, &error);
 	}
 
-	g_signal_connect(G_OBJECT(priv->extension_dir_monitor), "changed", G_CALLBACK(extension_dir_changed), self);
+	g_signal_connect(G_OBJECT(self->extension_dir_monitor), "changed", G_CALLBACK(extension_dir_changed), self);
 }
 
 /* Turn off the file monitor on the user's extensions directory */
 void
 i7_app_stop_monitoring_extensions_directory(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	if (priv->extension_dir_monitor) {
-		g_file_monitor_cancel(priv->extension_dir_monitor);
-		g_object_unref(priv->extension_dir_monitor);
-		priv->extension_dir_monitor = NULL;
+	if (self->extension_dir_monitor) {
+		g_file_monitor_cancel(self->extension_dir_monitor);
+		g_clear_object(&self->extension_dir_monitor);
 	}
 }
 
@@ -854,8 +854,7 @@ get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter
 char *
 i7_app_get_extension_version(I7App *self, const char *author, const char *title, gboolean *builtin)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GtkTreeModel *store = GTK_TREE_MODEL(priv->installed_extensions);
+	GtkTreeModel *store = GTK_TREE_MODEL(self->installed_extensions);
 	GtkTreeIter parent_iter, child_iter;
 	char *version;
 	gboolean readonly;
@@ -1100,8 +1099,7 @@ finally:
 static gboolean
 update_installed_extensions_tree(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GtkTreeStore *store = priv->installed_extensions;
+	GtkTreeStore *store = self->installed_extensions;
 	gtk_tree_store_clear(store);
 
 	i7_app_foreach_installed_extension(self, FALSE,
@@ -1246,8 +1244,7 @@ i7_app_get_extension_home_page(void)
 GFile *
 i7_app_get_internal_dir(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return g_object_ref(priv->datadir);
+	return g_object_ref(self->datadir);
 }
 
 static void *
@@ -1273,8 +1270,7 @@ missing_data_file(const char *filename)
 GFile *
 i7_app_get_retrospective_internal_dir(I7App *self, const char *build)
 {
-    I7AppPrivate *priv = i7_app_get_instance_private(self);
-    g_autoptr(GFile) dir1 = g_file_get_child(priv->datadir, "retrospective");
+    g_autoptr(GFile) dir1 = g_file_get_child(self->datadir, "retrospective");
     g_autoptr(GFile) dir2 = g_file_get_child(dir1, build);
     g_autoptr(GFile) retval = g_file_get_child(dir2, g_str_equal(build, "6L02") ? "Extensions" : "Internal");
 
@@ -1300,8 +1296,7 @@ i7_app_get_retrospective_internal_dir(I7App *self, const char *build)
 GFile *
 i7_app_get_data_file(I7App *self, const char *filename)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GFile *retval = g_file_get_child(priv->datadir, filename);
+	GFile *retval = g_file_get_child(self->datadir, filename);
 
 	if(g_file_query_exists(retval, NULL))
 		return retval;
@@ -1329,9 +1324,8 @@ i7_app_get_data_file_va(I7App *self, const char *path1, ...)
 	va_list ap;
 	GFile *retval, *previous;
 	char *arg, *lastarg = NULL;
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
 
-	retval = previous = g_file_get_child(priv->datadir, path1);
+	retval = previous = g_file_get_child(self->datadir, path1);
 
 	va_start(ap, path1);
 	while((arg = va_arg(ap, char *)) != NULL) {
@@ -1363,8 +1357,7 @@ i7_app_get_data_file_va(I7App *self, const char *path1, ...)
 GFile *
 i7_app_get_binary_file(I7App *self, const char *filename)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GFile *retval = g_file_get_child(priv->libexecdir, filename);
+	GFile *retval = g_file_get_child(self->libexecdir, filename);
 
 	if(g_file_query_exists(retval, NULL))
 		return retval;
@@ -1390,8 +1383,7 @@ i7_app_get_binary_file(I7App *self, const char *filename)
 GFile *
 i7_app_get_retrospective_binary_file(I7App *self, const char *build, const char *filename)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	g_autoptr(GFile) dir1 = g_file_get_child(priv->libexecdir, "retrospective");
+	g_autoptr(GFile) dir1 = g_file_get_child(self->libexecdir, "retrospective");
 	g_autoptr(GFile) dir2 = g_file_get_child(dir1, build);
 	g_autoptr(GFile) retval = g_file_get_child(dir2, filename);
 
@@ -1424,16 +1416,14 @@ i7_app_get_config_dir(void)
 GtkTreeStore *
 i7_app_get_installed_extensions_tree(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->installed_extensions;
+	return self->installed_extensions;
 }
 
 /* Regenerate the installed extensions submenu */
 void
 i7_app_update_extensions_menu(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	GtkTreeModel *model = GTK_TREE_MODEL(priv->installed_extensions);
+	GtkTreeModel *model = GTK_TREE_MODEL(self->installed_extensions);
 	GtkTreeIter author, title;
 	GMenu *extensions_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "extensions");
 	g_menu_remove_all(extensions_menu);
@@ -1481,18 +1471,15 @@ i7_app_update_extensions_menu(I7App *self)
 GtkPrintSettings *
 i7_app_get_print_settings(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->print_settings;
+	return self->print_settings;
 }
 
 /* Setter function for the global print settings object */
 void
 i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	if(priv->print_settings)
-		g_object_unref(priv->print_settings);
-	priv->print_settings = settings;
+	g_clear_object(&self->print_settings);
+	self->print_settings = settings;
 }
 
 /*
@@ -1506,8 +1493,6 @@ i7_app_set_print_settings(I7App *self, GtkPrintSettings *settings)
 void
 i7_app_update_css(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
 	g_autoptr(PangoFontDescription) desc = i7_app_get_document_font_description(self);
 	const char *font_family = pango_font_description_get_family(desc);
 	int font_size = pango_font_description_get_size(desc) / PANGO_SCALE;
@@ -1521,7 +1506,7 @@ i7_app_update_css(I7App *self)
 	    "}", font_family, font_size);
 
 	g_autoptr(GError) error = NULL;
-	if (!gtk_css_provider_load_from_data(priv->font_settings_provider, css, -1, &error))
+	if (!gtk_css_provider_load_from_data(self->font_settings_provider, css, -1, &error))
 		g_warning("Invalid CSS: %s", error->message);
 }
 
@@ -1580,8 +1565,7 @@ i7_app_get_last_opened_project(void)
 GSettings *
 i7_app_get_system_settings(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->system_settings;
+	return self->system_settings;
 }
 
 /*
@@ -1595,8 +1579,7 @@ i7_app_get_system_settings(I7App *self)
 GSettings *
 i7_app_get_prefs(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->prefs_settings;
+	return self->prefs_settings;
 }
 
 /*
@@ -1611,17 +1594,15 @@ i7_app_get_prefs(I7App *self)
 GSettings *
 i7_app_get_state(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->state_settings;
+	return self->state_settings;
 }
 
-/* Private method. For access to priv->color_scheme_manager in app-colorscheme.c
+/* Private method. For access to self->color_scheme_manager in app-colorscheme.c
  * so that files can stay separated by topic. */
 GtkSourceStyleSchemeManager *
 i7_app_get_color_scheme_manager(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->color_scheme_manager;
+	return self->color_scheme_manager;
 }
 
 /*
@@ -1634,11 +1615,9 @@ i7_app_get_color_scheme_manager(I7App *self)
 char *
 i7_app_get_document_font_string(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	if (g_settings_get_enum(priv->prefs_settings, PREFS_FONT_SET) == FONT_CUSTOM)
-		return g_settings_get_string(priv->prefs_settings, PREFS_CUSTOM_FONT);
-	return g_settings_get_string(priv->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
+	if (g_settings_get_enum(self->prefs_settings, PREFS_FONT_SET) == FONT_CUSTOM)
+		return g_settings_get_string(self->prefs_settings, PREFS_CUSTOM_FONT);
+	return g_settings_get_string(self->system_settings, PREFS_SYSTEM_DOCUMENT_FONT);
 }
 
 /*
@@ -1665,9 +1644,7 @@ i7_app_get_document_font_description(I7App *self)
 char *
 i7_app_get_ui_font(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	return g_settings_get_string(priv->system_settings, PREFS_SYSTEM_UI_FONT);
+	return g_settings_get_string(self->system_settings, PREFS_SYSTEM_UI_FONT);
 }
 
 /*
@@ -1679,9 +1656,7 @@ i7_app_get_ui_font(I7App *self)
 double
 i7_app_get_docs_font_scale(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
-	switch(g_settings_get_enum(priv->prefs_settings, PREFS_DOCS_FONT_SIZE)) {
+	switch (g_settings_get_enum(self->prefs_settings, PREFS_DOCS_FONT_SIZE)) {
 		case FONT_SIZE_SMALLEST:
 			return RELATIVE_SIZE_SMALLEST;
 		case FONT_SIZE_SMALLER:
@@ -1704,11 +1679,9 @@ i7_app_get_docs_font_scale(I7App *self)
 bool
 i7_app_is_valid_retrospective_id(I7App *self, const char *id)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-
 	unsigned ix = 0;
 	I7Retrospective *record;
-	while ((record = g_list_model_get_item(G_LIST_MODEL(priv->retrospectives), ix++)) != NULL) {
+	while ((record = g_list_model_get_item(G_LIST_MODEL(self->retrospectives), ix++)) != NULL) {
 		const char *candidate = i7_retrospective_get_id(record);
 		if (strcmp(candidate, id) == 0)
 			return TRUE;
@@ -1719,6 +1692,5 @@ i7_app_is_valid_retrospective_id(I7App *self, const char *id)
 GListStore *
 i7_app_get_retrospectives(I7App *self)
 {
-	I7AppPrivate *priv = i7_app_get_instance_private(self);
-	return priv->retrospectives;
+	return self->retrospectives;
 }

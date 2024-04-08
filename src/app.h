@@ -18,11 +18,7 @@
 #include "document.h"
 
 #define I7_TYPE_APP            (i7_app_get_type())
-#define I7_APP(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_APP, I7App))
-#define I7_APP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), I7_TYPE_APP, I7AppClass))
-#define I7_IS_APP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), I7_TYPE_APP))
-#define I7_IS_APP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), I7_TYPE_APP))
-#define I7_APP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), I7_TYPE_APP, I7AppClass))
+G_DECLARE_FINAL_TYPE(I7App, i7_app, I7, APP, GtkApplication)
 
 #define REGEX_EXTENSION \
 	"^\\s*(?:version\\s(?P<version>.+)\\sof\\s+)?(?:the\\s+)?" /* Version X of [the] */ \
@@ -40,16 +36,6 @@ enum _I7AppExtensionsColumns {
 };
 
 typedef void (*I7DocumentForeachFunc)(I7Document *, gpointer);
-
-typedef struct {
-	GtkApplicationClass parent_class;
-} I7AppClass;
-
-typedef struct {
-	GtkApplication parent_instance;
-} I7App;
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7App, g_object_unref)
 
 /**
  * I7AppAuthorFunc:
