@@ -911,7 +911,7 @@ get_builtin_extension_file(I7App *self, const char *author,	const char *extname)
  * has been traversed, @free_author_result is called on the return value of
  * @author_func, if both of them are not %NULL.
  */
-void
+static void
 i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFunc author_func, void *author_func_data, I7AppExtensionFunc extension_func, void *extension_func_data, GDestroyNotify free_author_result)
 {
 	GError *err = NULL;

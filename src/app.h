@@ -72,7 +72,6 @@ void i7_app_delete_extension(I7App *self, char *author, char *extname);
 void i7_app_download_extension_async(I7App *self, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, void *progress_callback_data, GAsyncReadyCallback finish_callback, void *finish_callback_data);
 bool i7_app_download_extension_finish(I7App *self, GAsyncResult *res, GError **err);
 char *i7_app_get_extension_version(I7App *self, const char *author, const char *title, gboolean *builtin);
-void i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFunc author_func, void *author_func_data, I7AppExtensionFunc extension_func, void *extension_func_data, GDestroyNotify free_author_result);
 void i7_app_run_census(I7App *self, gboolean wait);
 
 GFile *i7_app_get_extension_file(const char *author, const char *extname);

@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2012, 2014, 2015, 2022, 2023 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2006-2012, 2014, 2015, 2022-2024 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -716,27 +716,21 @@ i7_search_window_search_project(I7SearchWindow *self)
 }
 
 static void
-extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7SearchWindow *self)
+extension_search_result(I7SearchWindow *self, GFile *file, const char *author_display_name, const char *ext_display_name)
 {
 	GError *err = NULL;
-	const char *basename = g_file_info_get_name(info);
-	GFile *file = g_file_get_child(parent, basename);
 	char *contents;
 	GtkTreeIter result;
 	GtkTextIter search_from, match_start, match_end;
 
 	if(!g_file_load_contents(file, NULL, &contents, NULL, NULL, &err)) {
-		char *author_display_name = file_get_display_name(parent);
-		const char *ext_display_name = g_file_info_get_display_name(info);
-
 		error_dialog_file_operation(GTK_WINDOW(self), file, err, I7_FILE_ERROR_OTHER,
 		  /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
 		  _("Error opening extension '%s' by '%s':"), author_display_name, ext_display_name);
-
-		g_free(author_display_name);
-		g_object_unref(file);
 		return;
 	}
+
+	g_autofree char *basename = g_file_get_basename(file);
 
 	g_autoptr(GtkTextBuffer) buffer = gtk_text_buffer_new(NULL);
 	gtk_text_buffer_set_text(buffer, contents, -1);
@@ -784,8 +778,6 @@ extension_search_result(GFile *parent, GFileInfo *info, gpointer unused, I7Searc
 	}
 
 	stop_spinner(self);
-
-	g_object_unref(file);
 }
 
 /**
@@ -798,8 +790,31 @@ static void
 i7_search_window_search_extensions(I7SearchWindow *self)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
-	i7_app_foreach_installed_extension(theapp, FALSE, NULL, NULL,
-	    (I7AppExtensionFunc)extension_search_result, self, NULL);
+	GtkTreeModel *model = GTK_TREE_MODEL(i7_app_get_installed_extensions_tree(theapp));
+
+	GtkTreeIter author, title;
+
+	if (!gtk_tree_model_get_iter_first(model, &author))
+		return;
+
+	do {
+		g_autofree char *author_name = NULL;
+		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &author_name, -1);
+
+		if (!gtk_tree_model_iter_children(model, &title, &author))
+			continue;
+
+		do {
+			g_autofree char *ext_name = NULL;
+			g_autoptr(GFile) extension_file = NULL;
+			gtk_tree_model_get(model, &title,
+				I7_APP_EXTENSION_TEXT, &ext_name,
+				I7_APP_EXTENSION_FILE, &extension_file,
+				-1);
+
+			extension_search_result(self, extension_file, author_name, ext_name);
+		} while (gtk_tree_model_iter_next(model, &title));
+	} while (gtk_tree_model_iter_next(model, &author));
 }
 
 static void
