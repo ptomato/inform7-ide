@@ -76,7 +76,6 @@ void i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuth
 void i7_app_run_census(I7App *self, gboolean wait);
 
 GFile *i7_app_get_extension_file(const char *author, const char *extname);
-GFile *i7_app_get_extension_docpage(const char *author, const char *extname);
 GFile *i7_app_get_extension_home_page(void);
 GFile *i7_app_get_internal_dir(I7App *self);
 GFile *i7_app_get_retrospective_internal_dir(I7App *self, const char *build);

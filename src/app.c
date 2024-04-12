@@ -1186,35 +1186,6 @@ i7_app_get_extension_file(const char *author, const char *extname)
 }
 
 /**
- * i7_app_get_extension_docpage:
- * @author: (allow-none): the extension author
- * @extname: (allow-none): the extension name, without .i7x
- *
- * Returns the documentation page for the extension @extname by @author.
- * If both are %NULL, returns the directory where extension documentation is
- * stored.
- * Does not check whether the file exists.
- *
- * Returns: (transfer full): a new #GFile.
- */
-GFile *
-i7_app_get_extension_docpage(const char *author, const char *extname)
-{
-	char *path;
-
-	if(author == NULL)
-		path = g_build_filename(g_get_home_dir(), EXTENSION_DOCS_BASE_PATH, NULL);
-	else if(extname == NULL)
-		path = g_build_filename(g_get_home_dir(), EXTENSION_DOCS_BASE_PATH, author, NULL);
-	else
-		path = g_build_filename(g_get_home_dir(), EXTENSION_DOCS_BASE_PATH, author, extname, NULL);
-
-	GFile *retval = g_file_new_for_path(path);
-	g_free(path);
-	return retval;
-}
-
-/**
  * i7_app_get_extension_home_page:
  *
  * Returns the home page for installed extensions (by default,
