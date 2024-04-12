@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2007-2015, 2019, 2021, 2022 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: 2007-2015, 2019, 2021, 2022, 2024 Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"
@@ -888,37 +888,27 @@ get_builtin_extension_file(I7App *self, const char *author,	const char *extname)
 	return i7_app_get_data_file_va(self, "Extensions", author, extname, NULL);
 }
 
+static GtkTreeIter *add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store);
+static void add_extension_to_tree_store(bool builtin, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store);
+
 /**
- * i7_app_foreach_installed_extension:
+ * iterate_and_add_installed_extensions:
  * @self: the app
+ * @store: the #GtkTreeStore to add to
  * @builtin: whether to iterate over the built-in extensions or the
  * user-installed ones
- * @author_func: (allow-none) (scope call): a function to call for each author
- * directory found, which may return a result
- * @author_func_data: (allow-none): data to pass to @author_func
- * @extension_func: (allow-none) (scope call): a function to call for each
- * extension file found in each author directory
- * @extension_func_data: (allow-none): data to pass to @extension_func
- * @free_author_result: (allow-none): function to free the return value of
- * @author_func
  *
  * Iterates over the installed extensions (the built-in ones if @builtin is
- * %TRUE, or the user-installed ones if %FALSE), calling functions for each
- * author directory and each installed extension in each author directory.
- *
- * @author_func may return a result, which is passed to the @extension_func when
- * called for extensions in that author directory. After the author directory
- * has been traversed, @free_author_result is called on the return value of
- * @author_func, if both of them are not %NULL.
+ * %true, or the user-installed ones if %false), adding each author directory
+ * and each installed extension in each author directory to @store.
  */
 static void
-i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFunc author_func, void *author_func_data, I7AppExtensionFunc extension_func, void *extension_func_data, GDestroyNotify free_author_result)
+iterate_and_add_installed_extensions(I7App *self, GtkTreeStore *store, bool builtin)
 {
 	GError *err = NULL;
 	GFile *root_file;
 	GFileEnumerator *root_dir;
 	GFileInfo *author_info;
-	gpointer author_result;
 
 	if(builtin)
 		root_file = get_builtin_extension_file(self, NULL, NULL);
@@ -944,10 +934,7 @@ i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFun
 		if(g_file_info_get_file_type(author_info) != G_FILE_TYPE_DIRECTORY)
 			continue;
 
-		if(author_func)
-			author_result = author_func(author_info, author_func_data);
-		else
-			author_result = NULL;
+		g_autoptr(GtkTreeIter) author_result = add_author_to_tree_store(author_info, store);
 
 		/* Descend into each author directory */
 		author_file = g_file_get_child(root_file, author_name);
@@ -964,14 +951,10 @@ i7_app_foreach_installed_extension(I7App *self, gboolean builtin, I7AppAuthorFun
 			if(g_file_info_get_is_symlink(extension_info))
 				continue;
 
-			if(extension_func)
-				extension_func(author_file, extension_info, author_result, extension_func_data);
+			add_extension_to_tree_store(builtin, author_file, extension_info, author_result, store);
 
 			g_object_unref(extension_info);
 		}
-
-		if(free_author_result && author_result)
-			free_author_result(author_result);
 
 		/* Finished enumerating author directory */
 		if(err) {
@@ -1014,9 +997,10 @@ add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
 	return gtk_tree_iter_copy(&parent_iter);
 }
 
-/* Helper function: add extension to tree store as a non-built-in extension */
+/* Helper function: add extension to tree store. Makes sure that user-installed
+ * extensions override the built-in ones. */
 static void
-add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+add_extension_to_tree_store(bool builtin, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
 {
 	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
@@ -1037,54 +1021,16 @@ add_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_
 	}
 	g_free(firstline);
 
-	gtk_tree_store_append(store, &child_iter, parent_iter);
-	gtk_tree_store_set(store, &child_iter,
-		I7_APP_EXTENSION_TEXT, title, /* copies */
-		I7_APP_EXTENSION_VERSION, version, /* copies */
-		I7_APP_EXTENSION_READ_ONLY, FALSE,
-		I7_APP_EXTENSION_ICON, NULL,
-		I7_APP_EXTENSION_FILE, extension_file, /* references */
-		-1);
-
-	g_free(title);
-	g_free(version);
-finally:
-	g_object_unref(extension_file);
-}
-
-/* Helper function: add extension to tree store as a built-in extension. Makes
- * sure that user-installed extensions override the built-in ones. */
-static void
-add_builtin_extension_to_tree_store(GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
-{
-	GError *error = NULL;
-	const char *extension_name = g_file_info_get_name(info);
-	GFile *extension_file = g_file_get_child(parent, extension_name);
-	GtkTreeIter child_iter;
-	char *version, *title;
-
-	char *firstline = read_first_line(extension_file, NULL, &error);
-	if(firstline == NULL) {
-		g_warning("Error reading extension file %s, skipping: %s", extension_name, error->message);
-		g_error_free(error);
-		goto finally;
-	}
-	if (!is_valid_extension(firstline, &version, &title, NULL)) {
-		g_free(firstline);
-		g_warning("Invalid extension file %s, skipping.", extension_name);
-		goto finally;
-	}
-	g_free(firstline);
-
-	/* Only add it if it is not overridden by a user-installed extension */
-	if(!get_iter_for_extension_title(GTK_TREE_MODEL(store), title, parent_iter, &child_iter)) {
+	/* Only add a built-in extension if it is not overridden by a user-installed
+	 * extension */
+	if (!builtin || !get_iter_for_extension_title(GTK_TREE_MODEL(store), title, parent_iter, &child_iter)) {
 		gtk_tree_store_append(store, &child_iter, parent_iter);
 		gtk_tree_store_set(store, &child_iter,
-			I7_APP_EXTENSION_TEXT, title,
-			I7_APP_EXTENSION_VERSION, version,
-			I7_APP_EXTENSION_READ_ONLY, TRUE,
-			I7_APP_EXTENSION_ICON, "com.inform7.IDE.builtin",
-			I7_APP_EXTENSION_FILE, extension_file,
+			I7_APP_EXTENSION_TEXT, title, /* copies */
+			I7_APP_EXTENSION_VERSION, version, /* copies */
+			I7_APP_EXTENSION_READ_ONLY, builtin,
+			I7_APP_EXTENSION_ICON, builtin ? "com.inform7.IDE.builtin" : NULL,
+			I7_APP_EXTENSION_FILE, extension_file, /* references */
 			-1);
 	}
 
@@ -1102,14 +1048,8 @@ update_installed_extensions_tree(I7App *self)
 	GtkTreeStore *store = self->installed_extensions;
 	gtk_tree_store_clear(store);
 
-	i7_app_foreach_installed_extension(self, FALSE,
-	    (I7AppAuthorFunc)add_author_to_tree_store, store,
-	    (I7AppExtensionFunc)add_extension_to_tree_store, store,
-	    (GDestroyNotify)gtk_tree_iter_free);
-	i7_app_foreach_installed_extension(self, TRUE,
-	    (I7AppAuthorFunc)add_author_to_tree_store, store,
-	    (I7AppExtensionFunc)add_builtin_extension_to_tree_store, store,
-	    (GDestroyNotify)gtk_tree_iter_free);
+	iterate_and_add_installed_extensions(self, store, false);
+	iterate_and_add_installed_extensions(self, store, true);
 
 	/* Rebuild the Open Extension menus */
 	i7_app_update_extensions_menu(self);
