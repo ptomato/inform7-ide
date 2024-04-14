@@ -1613,6 +1613,13 @@ i7_story_choose_panel(I7Story *story, I7PanelPane newpane)
 		if(left == I7_PANE_SKEIN)
 			return RIGHT;
 	}
+	/* If the Story is showing, use the other side for Results */
+	if (newpane == I7_PANE_RESULTS) {
+		if (right == I7_PANE_STORY)
+			return LEFT;
+		if (left == I7_PANE_STORY)
+			return RIGHT;
+	}
 	/* Always try to use the left panel for source */
 	if(newpane == I7_PANE_SOURCE)
 		return LEFT;

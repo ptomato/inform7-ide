@@ -13,6 +13,7 @@
 #include <libchimara/chimara-if.h>
 
 #include "error.h"
+#include "html.h"
 #include "node.h"
 #include "skein.h"
 #include "story.h"
@@ -406,6 +407,22 @@ void
 on_game_command(ChimaraIF *game, char *input, char *response, I7Story *self)
 {
 	I7Skein *skein = i7_story_get_skein(self);
+
+	/* Check response for run-time problem messages */
+	g_autoptr(GRegex) regex = g_regex_new("^\\*\\*\\* Run-time problem (?<token>P\\w+):",
+		G_REGEX_MULTILINE, 0, /* ignore error */ NULL);
+	g_assert(regex && "Invalid RTP regex");
+	g_autoptr(GMatchInfo) match = NULL;
+	if (g_regex_match(regex, response, 0, &match)) {
+		g_autofree char *token = g_match_info_fetch_named(match, "token");
+		g_autofree char *uri = g_strdup_printf("inform:///en/RTP_%s.html", token);
+
+		I7StoryPanel side = i7_story_choose_panel(self, I7_PANE_RESULTS);
+		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(self->panel[side]->results_tabs[I7_RESULTS_TAB_REPORT]), uri);
+		i7_story_show_tab(self, I7_PANE_RESULTS, I7_RESULTS_TAB_REPORT);
+
+		return;
+	}
 
 	if(!input) {
 		/* If no input, then this was either the text printed before the first 
