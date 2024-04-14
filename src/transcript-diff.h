@@ -3,6 +3,8 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
+#pragma once
+
 #include "config.h"
 
 #include <glib.h>

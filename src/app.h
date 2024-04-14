@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _APP_H_
-#define _APP_H_
+#pragma once
 
 #include "config.h"
 
@@ -122,5 +121,3 @@ GListStore *i7_app_get_retrospectives(I7App *self);
 
 char **i7_app_get_inform_command_line(I7App *self, const char *version_id, int /* I7StoryFormat */ format, bool debug, bool reproducible, bool basic_inform, GFile *project_file);
 char **i7_app_get_inblorb_command_line(I7App *self, const char *version_id, GFile *blorb_file);
-
-#endif /* _APP_H_ */

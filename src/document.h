@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _DOCUMENT_H_
-#define _DOCUMENT_H_
+#pragma once
 
 #include "config.h"
 
@@ -133,5 +132,3 @@ bool i7_document_download_single_extension_finish(I7Document *self, GAsyncResult
 void i7_document_download_multiple_extensions(I7Document *self, unsigned n_extensions, char * const *ids, GFile **remote_files, char * const *descriptions, I7DocumentExtensionDownloadCallback callback, void *data);
 
 void i7_document_activate_search(I7Document *self, bool replace_mode);
-
-#endif /* _DOCUMENT_H_ */

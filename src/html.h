@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef HTML_H
-#define HTML_H
+#pragma once
 
 #include "config.h"
 
@@ -14,5 +13,3 @@
 void html_load_file(WebKitWebView *html, GFile *filename);
 void html_load_file_at_anchor(WebKitWebView *html, GFile *file, const char *anchor);
 void html_load_blank(WebKitWebView *html);
-
-#endif

@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _SKEIN_H_
-#define _SKEIN_H_
+#pragma once
 
 #include "config.h"
 
@@ -110,5 +109,3 @@ void i7_skein_set_font(I7Skein *self, PangoFontDescription *font);
 void i7_skein_dump(I7Skein *self);
 
 G_END_DECLS
-
-#endif /* _SKEIN_H_ */

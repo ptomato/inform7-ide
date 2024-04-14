@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef ERROR_H
-#define ERROR_H
+#pragma once
 
 #include "config.h"
 
@@ -31,5 +30,3 @@ typedef enum {
 void error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...) G_GNUC_PRINTF(3, 4);
 void extended_error_dialog(GtkWindow *parent, const char *what_failed, const char *why_failed, const char *suggestions);
 void error_dialog_file_operation(GtkWindow *parent, GFile *file, GError *error, I7FileErrorWhat what, const char *msg, ...) G_GNUC_PRINTF(5, 6);
-
-#endif

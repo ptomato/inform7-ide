@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Zachary Amsden
  */
 
-#ifndef LANG_H
-#define LANG_H
+#pragma once
 
 #include "config.h"
 
@@ -12,5 +11,3 @@
 #include <gtksourceview/gtksource.h>
 
 void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang);
-
-#endif

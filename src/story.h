@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef STORY_H
-#define STORY_H
+#pragma once
 
 #include "config.h"
 
@@ -149,5 +148,3 @@ void i7_story_previous_difference(I7Story *self);
 void i7_story_next_difference(I7Story *self);
 void i7_story_next_difference_skein(I7Story *self);
 void i7_story_show_node_in_transcript(I7Story *self, I7Node *node);
-
-#endif

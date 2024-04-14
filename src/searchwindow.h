@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _SEARCHWINDOW_H
-#define _SEARCHWINDOW_H
+#pragma once
 
 #include "config.h"
 
@@ -28,5 +27,3 @@ void i7_search_window_prefill_ui(I7SearchWindow *self, const char *text, I7Searc
 void i7_search_window_do_search(I7SearchWindow *self);
 
 void i7_search_window_free_index(void);
-
-#endif /* _SEARCHWINDOW_H */

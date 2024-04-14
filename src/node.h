@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef __NODE_H__
-#define __NODE_H__
+#pragma once
 
 #include "config.h"
 
@@ -102,5 +101,3 @@ gboolean on_differs_badge_button_press(GooCanvasItem *item, GooCanvasItem *targe
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7Node, g_object_unref)
 
 G_END_DECLS
-
-#endif /* __NODE_H__ */

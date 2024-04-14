@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef APP_TEST_H
-#define APP_TEST_H
+#pragma once
 
 #include <glib.h>
 #include <app.h>
@@ -21,5 +20,3 @@ void test_app_colorscheme_install_remove(void);
 void test_app_colorscheme_get_current(void);
 
 G_END_DECLS
-
-#endif /* APP_TEST_H */

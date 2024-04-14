@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _SKEIN_VIEW_H_
-#define _SKEIN_VIEW_H_
+#pragma once
 
 #include "config.h"
 
@@ -46,5 +45,3 @@ void i7_skein_view_edit_label(I7SkeinView *self, I7Node *node);
 void i7_skein_view_show_node(I7SkeinView *self, I7Node *node, I7SkeinShowNodeReason why);
 
 G_END_DECLS
-
-#endif /* _SKEIN_VIEW_H_ */

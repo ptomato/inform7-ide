@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef PREFS_H
-#define PREFS_H
+#pragma once
 
 #include "config.h"
 
@@ -26,5 +25,3 @@ gboolean update_style(GtkSourceBuffer *buffer);
 gboolean update_tabs(GtkSourceView *view);
 
 G_END_DECLS
-
-#endif

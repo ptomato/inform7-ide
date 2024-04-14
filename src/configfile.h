@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef CONFIG_FILE_H
-#define CONFIG_FILE_H
+#pragma once
 
 #include "config.h"
 
@@ -86,5 +85,3 @@ typedef enum {
 #define PREFS_SYSTEM_DOCUMENT_FONT  "document-font-name"
 
 void init_config_file(GSettings *prefs);
-
-#endif

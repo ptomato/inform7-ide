@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _ACTIONS_H_
-#define _ACTIONS_H_
+#pragma once
 
 #include "config.h"
 
@@ -80,5 +79,3 @@ void action_help_recipe_book(GSimpleAction *action, GVariant *parameter, I7Story
 void action_visit_inform7_com(GSimpleAction *action, GVariant *parameter, I7App *app);
 void action_report_bug(GSimpleAction *action, GVariant *parameter, I7App *app);
 void action_about(GSimpleAction *action, GVariant *parameter, I7App *app);
-
-#endif /* _ACTIONS_H_ */

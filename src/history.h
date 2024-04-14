@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _HISTORY_H
-#define _HISTORY_H
+#pragma once
 
 #include "config.h"
 
@@ -19,5 +18,3 @@ void history_push_pane(I7Panel *panel, I7PanelPane pane);
 void history_push_tab(I7Panel *panel, I7PanelPane pane, guint tab);
 void history_push_docpage(I7Panel *panel, const gchar *uri);
 void history_push_extensions_page(I7Panel *panel, const char *uri);
-
-#endif /* _HISTORY_H */

@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef NEWDIALOG_H
-#define NEWDIALOG_H
+#pragma once
 
 #include "config.h"
 
@@ -17,5 +16,3 @@ typedef enum _I7NewDialogAction {
 } I7NewDialogAction;
 
 GtkWidget *create_new_dialog(I7NewDialogAction action);
-
-#endif

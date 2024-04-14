@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _PANEL_H_
-#define _PANEL_H_
+#pragma once
 
 #include "config.h"
 
@@ -122,5 +121,3 @@ void i7_panel_update_font_sizes(I7Panel *self);
 void i7_panel_push_history_item(I7Panel *self, I7PanelHistory *item);
 I7PanelHistory *i7_panel_get_current_history_item(I7Panel *self);
 GtkWidget *i7_panel_get_searchable_view(I7Panel *self, const char **description_out);
-
-#endif /* _PANEL_H_ */

@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _BUILDER_H_
-#define _BUILDER_H_
+#pragma once
 
 #include "config.h"
 
@@ -16,5 +15,3 @@ GObject *load_object(GtkBuilder *builder, const gchar *name);
 /* Shortcut for loading a public widget pointer in _init() functions.
 The object being init'ed must be called 'self'. */
 #define LOAD_WIDGET(name) self->name = GTK_WIDGET(load_object(builder, G_STRINGIFY(name)))
-
-#endif /* _BUILDER_H_ */

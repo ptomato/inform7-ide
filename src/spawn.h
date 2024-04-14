@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef _SPAWN_H
-#define _SPAWN_H
+#pragma once
 
 #include "config.h"
 
@@ -16,5 +15,3 @@ GPid run_command(GFile *wd_file, char **argv, GtkTextBuffer *output);
 GPid run_command_hook(GFile *wd_file, char **argv, GtkTextBuffer *output,
 					  IOHookFunc *callback, gpointer data, gboolean get_out,
 					  gboolean get_err);
-
-#endif /* _SPAWN_H */

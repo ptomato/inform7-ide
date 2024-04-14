@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef STORY_TEST_H
-#define STORY_TEST_H
+#pragma once
 
 #include <glib.h>
 
@@ -19,5 +18,3 @@ void test_story_old_materials_file(void);
 void test_story_renames_materials_file(void);
 
 G_END_DECLS
-
-#endif /* STORY_TEST_H */

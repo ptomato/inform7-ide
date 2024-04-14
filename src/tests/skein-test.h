@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef SKEIN_TEST_H
-#define SKEIN_TEST_H
+#pragma once
 
 #include <glib.h>
 #include <skein.h>
@@ -14,5 +13,3 @@ G_BEGIN_DECLS
 void test_skein_import(void);
 
 G_END_DECLS
-
-#endif /* SKEIN_TEST_H */

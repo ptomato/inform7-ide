@@ -3,8 +3,7 @@
  * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
-#ifndef FILE_H
-#define FILE_H
+#pragma once
 
 #include "config.h"
 
@@ -26,5 +25,3 @@ void file_set_custom_icon(GFile *file, const char *icon_name);
 gboolean show_uri_in_browser(const char *uri, GtkWindow *parent, const char *display_name);
 gboolean show_uri_externally(const char *uri, GtkWindow *parent, const char *display_name);
 gboolean show_file_in_browser(GFile *file, GtkWindow *parent);
-
-#endif
