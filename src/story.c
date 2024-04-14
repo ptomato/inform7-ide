@@ -326,7 +326,6 @@ i7_story_save(I7Document *document)
 		GFile *new_file = i7_document_run_save_dialog(document, file);
 		if(!new_file)
 			return FALSE;
-		i7_document_set_file(document, new_file);
 		i7_document_save_as(document, new_file);
 		g_object_unref(new_file);
 	}
@@ -977,9 +976,7 @@ i7_story_can_revert(I7Document *document)
 static void
 i7_story_revert(I7Document *document)
 {
-	GFile *file = i7_document_get_file(document);
-	i7_story_open(I7_STORY(document), file);
-	g_object_unref(file);
+	i7_story_open(I7_STORY(document));
 }
 
 static GtkWidget *
@@ -1309,9 +1306,8 @@ i7_story_new(I7App *app, GFile *file, const char *title, const char *author)
 	g_application_mark_busy(G_APPLICATION(app));
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY,
 		"application", app,
+		"file", file,
 		NULL));
-
-	i7_document_set_file(I7_DOCUMENT(story), file);
 
 	gchar *text = g_strconcat("\"", title, "\" by \"", author, "\"\n", NULL);
 	i7_document_set_source_text(I7_DOCUMENT(story), text);
@@ -1350,8 +1346,9 @@ i7_story_new_from_file(I7App *app, GFile *file)
 	g_application_mark_busy(G_APPLICATION(app));
 	I7Story *story = I7_STORY(g_object_new(I7_TYPE_STORY,
 		"application", app,
+		"file", real_file,
 		NULL));
-	if(!i7_story_open(story, real_file)) {
+	if(!i7_story_open(story)) {
 		gtk_widget_destroy(GTK_WIDGET(story));
 		g_object_unref(real_file);
 		g_application_unmark_busy(G_APPLICATION(app));
@@ -1392,8 +1389,8 @@ i7_story_new_from_dialog(I7App *app)
 
 /* Read a project directory, loading all the appropriate files into story and
 returning success */
-gboolean
-i7_story_open(I7Story *self, GFile *input_file)
+bool
+i7_story_open(I7Story *self)
 {
 	I7StoryPrivate *priv = i7_story_get_instance_private(self);
 	I7Document *document = I7_DOCUMENT(self);
@@ -1401,61 +1398,11 @@ i7_story_open(I7Story *self, GFile *input_file)
 	GObject *object = G_OBJECT(self);
 	GError *err = NULL;
 
-	g_autoptr(FileRemoveFromRecent) file = g_object_ref(input_file);
+	g_autoptr(FileRemoveFromRecent) file = i7_document_get_file(document);
 
 	GFile *source_file = g_file_get_child(file, "Source");
 	GFile *story_file = g_file_get_child(source_file, "story.ni");
 	g_object_unref(source_file);
-
-	/* Make sure that the file has the proper extension */
-	g_autofree char *display_name = file_get_display_name(file);
-	if(!g_str_has_suffix(display_name, ".inform")) {
-
-		if(g_file_query_exists(story_file, NULL)) {
-			/* This seems to be an Inform project, but with the wrong extension */
-			GtkWidget *dialog = gtk_message_dialog_new(window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			    GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-			    _("This project doesn't have a .inform extension."));
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-			    _("This extension is required for Inform story files to work "
-				    "on all platforms. The project will be renamed."));
-			gtk_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
-
-			/* Rename the file */
-			char *new_name = g_strconcat(display_name, ".inform", NULL);
-			GFile *old_file = file;
-			file = g_file_set_display_name(file, new_name, NULL, &err);
-			if(file == NULL) {
-				IO_ERROR_DIALOG(window, old_file, err, _("renaming the project file to a .inform extension"));
-				file = old_file;
-				return FALSE;
-			}
-			g_object_unref(old_file);
-			g_free(new_name);
-
-			g_object_unref(story_file);
-			source_file = g_file_get_child(file, "Source");
-			story_file = g_file_get_child(source_file, "story.ni");
-			g_object_unref(source_file);
-
-		} else {
-			/* This doesn't seem to be an Inform project */
-			char *path = g_file_get_path(file);
-			GtkWidget *dialog = gtk_message_dialog_new(window, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			    GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-			    _("The file \"%s\" doesn't seem to be an Inform story file."), display_name);
-			gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
-			    _("Make sure you are opening the correct file. This file was "
-				"located at: %s"), path);
-			g_free(path);
-			gtk_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
-			return FALSE;
-		}
-	}
-
-	i7_document_set_file(document, file);
 
 	/* Read the source */
 	char *text = read_source_file(story_file);

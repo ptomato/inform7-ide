@@ -28,6 +28,11 @@
 #include "searchwindow.h"
 #include "toast.h"
 
+enum {
+	PROP_0,
+	PROP_FILE,
+};
+
 typedef struct {
 	/* The file this document refers to */
 	GFile *file;
@@ -269,6 +274,34 @@ i7_document_init(I7Document *self)
 	g_signal_connect_swapped(system_settings, "changed::monospace-font-name", G_CALLBACK(i7_document_update_fonts), self);
 }
 
+static void set_file(I7Document *self, GFile *file);
+
+static void
+i7_document_set_property(GObject *object, unsigned prop_id, const GValue *value, GParamSpec *pspec)
+{
+	I7Document *self = I7_DOCUMENT(object);
+	switch (prop_id) {
+		case PROP_FILE:
+			set_file(self, g_value_get_object(value));
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
+}
+
+static void
+i7_document_get_property(GObject *object, unsigned prop_id, GValue *value, GParamSpec *pspec)
+{
+	I7Document *self = I7_DOCUMENT(object);
+	switch (prop_id) {
+		case PROP_FILE:
+			g_value_take_object(value, i7_document_get_file(self));
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+	}
+}
+
 static void
 i7_document_finalize(GObject *object)
 {
@@ -312,7 +345,14 @@ i7_document_class_init(I7DocumentClass *klass)
 	klass->revert = NULL;
 
 	GObjectClass *object_class = G_OBJECT_CLASS(klass);
+	object_class->set_property = i7_document_set_property;
+	object_class->get_property = i7_document_get_property;
 	object_class->finalize = i7_document_finalize;
+
+	/* Properties */
+	g_object_class_install_property(object_class, PROP_FILE,
+		g_param_spec_object("file", "File", "Reference to the document's file on disk",
+			G_TYPE_FILE, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -333,8 +373,8 @@ i7_document_refresh_title(I7Document *self)
 	g_free(documentname);
 }
 
-void
-i7_document_set_file(I7Document *self, GFile *file)
+static void
+set_file(I7Document *self, GFile *file)
 {
 	I7DocumentPrivate *priv = i7_document_get_instance_private(self);
 	if(priv->file)
@@ -549,6 +589,7 @@ i7_document_save(I7Document *document)
 void
 i7_document_save_as(I7Document *document, GFile *file)
 {
+	set_file(document, file);
 	I7_DOCUMENT_GET_CLASS(document)->save_as(document, file);
 }
 

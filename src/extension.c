@@ -147,7 +147,6 @@ i7_extension_save(I7Document *document)
 		GFile *newfile = i7_document_run_save_dialog(document, file);
 		if(!newfile)
 			return FALSE;
-		i7_document_set_file(document, newfile);
 		i7_document_save_as(document, newfile);
 		g_object_unref(newfile);
 	}
@@ -354,9 +353,7 @@ i7_extension_revert(I7Document *document)
 {
 	I7Extension *self = I7_EXTENSION(document);
 	I7ExtensionPrivate *priv = i7_extension_get_instance_private(self);
-	GFile *file = i7_document_get_file(document);
-	i7_extension_open(self, file, priv->readonly);
-	g_object_unref(file);
+	i7_extension_open(self, priv->readonly);
 }
 
 /* TYPE SYSTEM */
@@ -476,9 +473,8 @@ i7_extension_new(I7App *app, GFile *file, const char *title, const char *author)
 {
 	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION,
 		"application", app,
+		"file", file,
 		NULL));
-
-	i7_document_set_file(I7_DOCUMENT(extension), file);
 
 	gchar *text = g_strconcat(title, " by ", author, " begins here.\n\n", title, " ends here.\n", NULL);
 	i7_document_set_source_text(I7_DOCUMENT(extension), text);
@@ -501,8 +497,9 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 
 	I7Extension *extension = I7_EXTENSION(g_object_new(I7_TYPE_EXTENSION,
 		"application", app,
+		"file", file,
 		NULL));
-	if(!i7_extension_open(extension, file, readonly)) {
+	if (!i7_extension_open(extension, readonly)) {
 		gtk_widget_destroy(GTK_WIDGET(extension));
 		return NULL;
 	}
@@ -516,19 +513,17 @@ i7_extension_new_from_file(I7App *app, GFile *file, gboolean readonly)
 /**
  * i7_extension_open:
  * @self: the extension object
- * @file: a #GFile to open
  * @readonly: whether to open @file as a built-in extension or not
  *
- * Opens the extension from @file, and returns success.
+ * Opens the extension from its file, and returns success.
  *
  * Returns: %TRUE if successful, %FALSE if not.
  */
-gboolean
-i7_extension_open(I7Extension *self, GFile *file, gboolean readonly)
+bool
+i7_extension_open(I7Extension *self, bool readonly)
 {
 	I7Document *document = I7_DOCUMENT(self);
-
-	i7_document_set_file(document, file);
+	g_autoptr(GFile) file = i7_document_get_file(document);
 
 	/* If it was a built-in extension, set it read-only */
 	i7_extension_set_read_only(self, readonly);

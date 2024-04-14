@@ -85,7 +85,6 @@ typedef void (*I7DocumentExtensionDownloadCallback)(gboolean success, const char
 GType i7_document_get_type(void) G_GNUC_CONST;
 GFile *i7_document_get_file(I7Document *self);
 gchar *i7_document_get_display_name(I7Document *self);
-void i7_document_set_file(I7Document *self, GFile *file);
 GtkSourceBuffer *i7_document_get_buffer(I7Document *self);
 GtkTextView *i7_document_get_default_view(I7Document *self);
 void i7_document_set_source_text(I7Document *self, const char *text);

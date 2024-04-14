@@ -161,7 +161,6 @@ action_save_as(GSimpleAction *action, GVariant *parameter, I7Document *document)
 {
 	GFile *file = i7_document_run_save_dialog(document, NULL);
 	if(file) {
-		i7_document_set_file(document, file);
 		/* This hack is convenient so that if you save a built-in (read-only)
 		extension to another file name, it's not read-only anymore */
 		if(I7_IS_EXTENSION(document))

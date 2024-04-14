@@ -72,7 +72,7 @@ GType i7_story_get_type(void) G_GNUC_CONST;
 I7Story *i7_story_new(I7App *app, GFile *file, const char *title, const char *author);
 I7Story *i7_story_new_from_file(I7App *app, GFile *file);
 I7Story *i7_story_new_from_dialog(I7App *app);
-gboolean i7_story_open(I7Story *self, GFile *file);
+bool i7_story_open(I7Story *self);
 int i7_story_get_focus_panel(I7Story *self);
 I7StoryPanel i7_story_choose_panel(I7Story *self, I7PanelPane newtab);
 void i7_story_show_pane(I7Story *self, I7PanelPane pane);
