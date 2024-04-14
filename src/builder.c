@@ -13,9 +13,6 @@
 
 /* Miscellaneous GtkBuilder-related functions and macros */
 
-/* TODO: Move all the GtkBuilder interface definitions into one file and use
- gtk_builder_add_objects_from_file() to build the appropriate ones */
-
 /* Return a pointer to the object called @name constructed by @builder */
 GObject *
 load_object(GtkBuilder *builder, const gchar *name)
