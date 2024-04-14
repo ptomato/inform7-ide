@@ -10,8 +10,6 @@
 #include <glib-object.h>
 #include <goocanvas.h>
 
-G_BEGIN_DECLS
-
 #define I7_TYPE_NODE         (i7_node_get_type())
 #define I7_NODE(o)           (G_TYPE_CHECK_INSTANCE_CAST((o), I7_TYPE_NODE, I7Node))
 #define I7_NODE_CLASS(c)     (G_TYPE_CHECK_CLASS_CAST((c), I7_TYPE_NODE, I7NodeClass))
@@ -99,5 +97,3 @@ gboolean on_node_button_press(GooCanvasItem *item, GooCanvasItem *target_item, G
 gboolean on_differs_badge_button_press(GooCanvasItem *item, GooCanvasItem *target_item, GdkEventButton *event, GooCanvasItemModel *model);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(I7Node, g_object_unref)
-
-G_END_DECLS

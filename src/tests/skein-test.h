@@ -8,8 +8,4 @@
 #include <glib.h>
 #include <skein.h>
 
-G_BEGIN_DECLS
-
 void test_skein_import(void);
-
-G_END_DECLS

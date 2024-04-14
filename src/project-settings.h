@@ -13,12 +13,8 @@
 
 #include "story.h"
 
-G_BEGIN_DECLS
-
 #define I7_TYPE_PROJECT_SETTINGS i7_project_settings_get_type()
 G_DECLARE_FINAL_TYPE(I7ProjectSettings, i7_project_settings, I7, PROJECT_SETTINGS, HdyPreferencesPage)
 
 I7ProjectSettings *i7_project_settings_new(void);
 void i7_project_settings_bind_properties(I7ProjectSettings *self, I7Story *story);
-
-G_END_DECLS

@@ -22,8 +22,6 @@ typedef enum {
 	I7_REASON_USER_ACTION
 } I7SkeinShowNodeReason;
 
-G_BEGIN_DECLS
-
 #define I7_TYPE_SKEIN             (i7_skein_get_type ())
 #define I7_SKEIN(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), I7_TYPE_SKEIN, I7Skein))
 #define I7_SKEIN_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), I7_TYPE_SKEIN, I7SkeinClass))
@@ -107,5 +105,3 @@ void i7_skein_set_font(I7Skein *self, PangoFontDescription *font);
 
 /* DEBUG */
 void i7_skein_dump(I7Skein *self);
-
-G_END_DECLS

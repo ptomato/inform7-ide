@@ -10,8 +10,4 @@
 #include <glib.h>
 #include <webkit2/webkit2.h>
 
-G_BEGIN_DECLS
-
 void i7_uri_scheme_register(WebKitWebContext *web_context);
-
-G_END_DECLS
