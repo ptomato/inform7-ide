@@ -223,7 +223,7 @@ on_node_popup(I7SkeinView *view, I7Node *node)
 		ADD_MENU_ITEM(_("Delete _all in Thread"), on_popup_menu_delete_thread);
 	}
 	ADD_SEPARATOR;
-	ADD_MENU_ITEM(_("_Save Transcript to here..."), on_popup_menu_save_transcript);
+	ADD_MENU_ITEM(_("_Save Transcript to here…"), on_popup_menu_save_transcript);
 	gtk_widget_set_sensitive(menuitem, FALSE);
 
 	gtk_widget_show_all(menu);

@@ -129,8 +129,8 @@ i7_extension_save(I7Document *document)
 			_("<big><b>You are editing a built-in Inform extension.</b></big>"));
 		gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(dialog),
 			_("You are not allowed to overwrite the extensions built into "
-			"Inform. Instead, select <i>Save As...</i> or <i>Save a Copy...</i>"
-			" from the <i>File</i> menu to save a copy of the extension to a "
+			"Inform. Instead, select <i>Save As…</i> or <i>Save a Copy…</i> "
+			"from the <i>File</i> menu to save a copy of the extension to a "
 			"different file. You can then install the extension to the local "
 			"extensions directory by selecting <i>Install Extension</i> from "
 			"the <i>File</i> menu, and the compiler will use that extension "

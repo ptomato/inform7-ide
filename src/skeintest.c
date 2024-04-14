@@ -236,7 +236,7 @@ on_node_popup(I7Skein *skein, I7Node *node, I7SkeinView *view)
 	menuitem = gtk_separator_menu_item_new();
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 
-	menuitem = gtk_menu_item_new_with_label("Save Transcript to here...");
+	menuitem = gtk_menu_item_new_with_label("Save Transcript to here…");
 	gtk_widget_set_sensitive(menuitem, FALSE);
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
 

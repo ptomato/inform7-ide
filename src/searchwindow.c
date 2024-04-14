@@ -634,7 +634,7 @@ i7_search_window_search_documentation(I7SearchWindow *self)
 			   (!g_str_has_prefix(basename, "doc") && !g_str_has_prefix(basename, "Rdoc")))
 				continue;
 
-			char *label = g_strdup_printf(_("Please be patient, indexing %s..."), displayname);
+			char *label = g_strdup_printf(_("Please be patient, indexing %s…"), displayname);
 			gtk_label_set_text(self->results_label, label);
 			g_free(label);
 
