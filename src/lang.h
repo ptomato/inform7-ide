@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008 Zachary Amsden
+ * SPDX-FileCopyrightText: Zachary Amsden
  */
 
 #ifndef LANG_H

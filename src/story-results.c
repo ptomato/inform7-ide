@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2007-2010, 2012, 2014 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
 #include "config.h"

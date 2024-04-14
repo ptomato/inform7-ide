@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2008-2015, 2019, 2023 Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
  */
 
 #ifndef _DOCUMENT_H_

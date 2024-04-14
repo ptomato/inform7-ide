@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2006-2011, 2013 Philip Chimento <philip.chimento@gmail.com>
- * SPDX-FileCopyrightText: 2007 Nick Gravgaard
+ * SPDX-FileCopyrightText: Philip Chimento <philip.chimento@gmail.com>
+ * SPDX-FileCopyrightText: Nick Gravgaard
  * SPDX-FileComment: based on gedit-elastictabstops-plugin.c, released 2007-09-16
  */
 
