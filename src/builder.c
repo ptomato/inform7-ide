@@ -11,8 +11,7 @@
 
 #include "builder.h"
 
-/* Miscellaneous GtkBuilder-related functions and macros; also, the arbitrary
- home of the START_TIMER and STOP_TIMER macros */
+/* Miscellaneous GtkBuilder-related functions and macros */
 
 /* TODO: Move all the GtkBuilder interface definitions into one file and use
  gtk_builder_add_objects_from_file() to build the appropriate ones */
