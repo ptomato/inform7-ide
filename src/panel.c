@@ -459,26 +459,6 @@ action_extensions_home(GSimpleAction *action, GVariant *parameter, I7Panel *pane
 	g_object_unref(docs_file);
 }
 
-/* Helper function: turn everything back to normal when the Public Library is
-loaded */
-static void
-on_public_library_load_changed(WebKitWebView *html, WebKitLoadEvent status, GSimpleAction *action)
-{
-	if(status != WEBKIT_LOAD_FINISHED)
-		return;
-	g_simple_action_set_enabled(action, TRUE);
-	g_application_unmark_busy(g_application_get_default());
-	g_signal_handlers_disconnect_by_func(html, on_public_library_load_changed, action);
-}
-
-/* Helper function: load the "disconnected" page if an error occurred */
-static gboolean
-on_public_library_load_failed(WebKitWebView *html, WebKitLoadEvent status, char *uri, GError *web_error)
-{
-	webkit_web_view_load_uri(html, "inform:///en/pl404.html");
-	return TRUE; /* event handled */
-}
-
 static char *
 build_extensions_javascript_source(I7App *app) {
 	GtkTreeModel *model = GTK_TREE_MODEL(i7_app_get_installed_extensions_tree(app));
@@ -556,6 +536,15 @@ add_user_content(WebKitUserContentManager *content, I7App *theapp)
 	webkit_user_content_manager_add_script(content, extensions_javascript);
 }
 
+/* Helper function: turn everything back to normal when the Public Library is
+loaded */
+static void
+on_public_library_load_finished(WebKitWebView *html, GSimpleAction *action)
+{
+	g_simple_action_set_enabled(action, TRUE);
+	g_application_unmark_busy(g_application_get_default());
+}
+
 /* Signal handler for the action connected to the "Public Library" button in the
 panel toolbar when the Extensions panel is displayed. Displays the Inform public
 extensions library website. */
@@ -569,14 +558,14 @@ action_public_library(GSimpleAction *action, GVariant *parameter, I7Panel *panel
 	html_load_blank(html);
 	g_simple_action_set_enabled(action, FALSE);
 	g_application_mark_busy(g_application_get_default());
-	g_signal_connect(html, "load-changed", G_CALLBACK(on_public_library_load_changed), action);
-	g_signal_connect(html, "load-failed", G_CALLBACK(on_public_library_load_failed), NULL);
 
 	I7PanelPrivate *priv = i7_panel_get_instance_private(panel);
 	webkit_user_content_manager_remove_all_scripts(priv->content);
 	add_user_content(priv->content, I7_APP(g_application_get_default()));
 
-	webkit_web_view_load_uri(html, PUBLIC_LIBRARY_HOME_URI);
+	/* Load the "disconnected" page if an error occurred */
+	html_load_with_fallback(html, PUBLIC_LIBRARY_HOME_URI, "inform:///en/pl404.html",
+		(LoadFinishedCallback) on_public_library_load_finished, action, /* destroy notify = */ NULL);
 }
 
 typedef void (*ActionCallback)(GSimpleAction *action, GVariant *param, gpointer data);
