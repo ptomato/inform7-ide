@@ -1,5 +1,5 @@
 project('inform7-ide', 'c', version: '2.0.0', license: 'GPL-3.0-or-later',
-    meson_version: '>=0.58.0')
+    meson_version: '>=0.63.0')
 
 appname = meson.project_name()
 app_version = meson.project_version()

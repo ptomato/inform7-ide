@@ -1,10 +1,7 @@
 subdir('inform/licenses')
 
 generate_resource_xml = find_program('generate-resource-xml.py')
-# The "input" argument is bogus here. This is a workaround for
-# https://github.com/mesonbuild/meson/issues/10367
-generated_gresource_xml = configure_file(
-    input: generate_resource_xml.full_path(),
+generated_gresource_xml = custom_target('resources-generated-xml',
     output: 'com.inform7.IDE.generated.gresource.xml',
     command: [generate_resource_xml, meson.current_source_dir(), '@OUTPUT@'])
 resources_generated = gnome.compile_resources('resources-generated',

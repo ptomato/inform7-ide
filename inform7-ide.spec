@@ -18,7 +18,7 @@ Source2: https://github.com/ganelson/intest/archive/refs/tags/%{intest_ref}#/gan
 Source3: https://github.com/ganelson/inform/archive/refs/tags/%{inform_ref}#/ganelson-inform-%{inform_ref}-0-g%{inform_short_sha}.tar.gz
 
 # Build requirements:
-BuildRequires: meson >= 0.56
+BuildRequires: meson >= 0.63
 # Extra build tools
 BuildRequires: gettext
 BuildRequires: pkgconfig
