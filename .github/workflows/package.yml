@@ -132,7 +132,7 @@ jobs:
             "$(rpm --eval %_srcrpmdir)"/inform7-*.src.rpm .
           ls -l
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: RPM package
           path: inform7-ide-2.0.0-1.fc37.x86_64.rpm
@@ -218,7 +218,10 @@ jobs:
       - name: build-deb
         run: debuild -rfakeroot -D -us -uc
 
-      - uses: actions/upload-artifact@v1
+      - name: Work around actions/upload-artifact#176
+        run: echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
+
+      - uses: actions/upload-artifact@v4
         with:
           name: Debian package
-          path: ../inform7-ide_2.0.0-1_amd64.deb
+          path: ${{ env.artifacts_path }}/inform7-ide_2.0.0-1_amd64.deb
