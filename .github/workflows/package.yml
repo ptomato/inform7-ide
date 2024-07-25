@@ -139,13 +139,14 @@ jobs:
 
   deb:
     name: Debian
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: install-deps
         run: |
           sudo apt-get update
           sudo apt install -y libunwind-dev
           sudo apt-get -y install \
+            build-essential \
             debhelper \
             devscripts \
             gstreamer1.0-plugins-bad \
@@ -210,7 +211,7 @@ jobs:
           cd ..
           tar cJf "../inform7-ide_$version.orig.tar.xz" \
             --xform "s:^:inform7-ide-$version/:" \
-            COPYING INSTALL.md README.md com.inform7.IDE.* \
+            COPYING BUILD.md INSTALL.md README.md com.inform7.IDE.* \
             meson.build *.spec *.xml \
             .clangd .github .tx build-aux data debian pixmaps po src subprojects
 

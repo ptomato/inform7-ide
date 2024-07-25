@@ -6,7 +6,7 @@ or trying out a pre-release.
 
 These instructions assume that you have a Linux distribution that is not
 too old; the most recent long-term-support (LTS) version of Ubuntu Linux
-(at the time of writing, 22.04) or stable version of Debian Linux (at
+(at the time of writing, 24.04) or stable version of Debian Linux (at
 the time of writing, Bookworm) will do.
 The instructions should be fairly similar for any other Debian-based
 distributions, as well.
