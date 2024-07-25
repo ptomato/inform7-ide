@@ -32,44 +32,18 @@ enum SchemesListColumns {
 const char *font_size_enum[] = { "Smallest", "Smaller", "Small", "Medium", "Large", "Larger", "Largest", NULL };
 const char *interpreter_enum[] = { "Glulxe (default)", "Git", NULL };
 
-/* COMPAT: Use G_DEFINE_ENUM_TYPE in GLib >= 2.74 */
-static GType
-i7_prefs_font_size_get_type(void)
-{
-	static GType gtype = 0;
-	if (g_once_init_enter(&gtype)) {
-		static const GEnumValue values[] = {
-			{ FONT_SIZE_SMALLEST, "FONT_SIZE_SMALLEST", "smallest" },
-			{ FONT_SIZE_SMALLER, "FONT_SIZE_SMALLER", "smaller" },
-			{ FONT_SIZE_SMALL, "FONT_SIZE_SMALL", "small" },
-			{ FONT_SIZE_MEDIUM, "FONT_SIZE_MEDIUM", "medium" },
-			{ FONT_SIZE_LARGE, "FONT_SIZE_LARGE", "large" },
-			{ FONT_SIZE_LARGER, "FONT_SIZE_LARGER", "larger" },
-			{ FONT_SIZE_LARGEST, "FONT_SIZE_LARGEST", "largest" },
-			{ 0, NULL, NULL },
-		};
-		GType new_gtype = g_enum_register_static(g_intern_static_string("I7PrefsFontSize"), values);
-		g_once_init_leave(&gtype, new_gtype);
-	}
-	return gtype;
-}
+G_DEFINE_ENUM_TYPE(I7PrefsFontSize, i7_prefs_font_size,
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_SMALLEST, "smallest"),
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_SMALLER, "smaller"),
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_SMALL, "small"),
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_MEDIUM, "medium"),
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_LARGE, "large"),
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_LARGER, "larger"),
+	G_DEFINE_ENUM_VALUE(FONT_SIZE_LARGEST, "largest"))
 
-/* COMPAT: Use G_DEFINE_ENUM_TYPE in GLib >= 2.74 */
-static GType
-i7_prefs_interpreter_get_type(void)
-{
-	static GType gtype = 0;
-	if (g_once_init_enter(&gtype)) {
-		static const GEnumValue values[] = {
-			{ INTERPRETER_GLULXE, "INTERPRETER_GLULXE", "glulxe" },
-			{ INTERPRETER_GIT, "INTERPRETER_GIT", "git" },
-			{ 0, NULL, NULL },
-		};
-		GType new_gtype = g_enum_register_static(g_intern_static_string("I7PrefsInterpreter"), values);
-		g_once_init_leave(&gtype, new_gtype);
-	}
-	return gtype;
-}
+G_DEFINE_ENUM_TYPE(I7PrefsInterpreter, i7_prefs_interpreter,
+	G_DEFINE_ENUM_VALUE(INTERPRETER_GLULXE, "glulxe"),
+	G_DEFINE_ENUM_VALUE(INTERPRETER_GIT, "git"))
 
 struct _I7PrefsWindow {
 	HdyPreferencesWindow parent;

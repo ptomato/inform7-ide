@@ -25,7 +25,7 @@ BuildRequires: pkgconfig
 BuildRequires: gcc-c++
 # Library devel packages:
 BuildRequires: libplist-devel
-BuildRequires: glib2-devel >= 2.52
+BuildRequires: glib2-devel >= 2.74
 BuildRequires: gtk3-devel >= 3.24
 BuildRequires: libhandy-devel
 BuildRequires: gtksourceview4-devel

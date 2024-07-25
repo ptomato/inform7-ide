@@ -50,7 +50,7 @@ find_program('xz')
 libm = cc.find_library('m', required: false)
 
 libxml = dependency('libxml-2.0')
-glib = dependency('glib-2.0', version: '>=2.52')
+glib = dependency('glib-2.0', version: '>=2.74')
 gio = dependency('gio-2.0', version: '>=2.30')
 gdk = dependency('gdk-3.0')
 handy = dependency('libhandy-1')
