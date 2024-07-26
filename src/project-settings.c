@@ -14,22 +14,9 @@
 #include "project-settings.h"
 #include "story.h"
 
-/* COMPAT: Use G_DEFINE_ENUM_TYPE in GLib >= 2.74 */
-static GType
-i7_story_format_get_type(void)
-{
-	static GType gtype = 0;
-	if (g_once_init_enter(&gtype)) {
-		static const GEnumValue values[] = {
-			{ I7_STORY_FORMAT_Z8, "I7_STORY_FORMAT_Z8", "z8" },
-			{ I7_STORY_FORMAT_GLULX, "I7_STORY_FORMAT_GLULX", "glulx" },
-			{ 0, NULL, NULL },
-		};
-		GType new_gtype = g_enum_register_static(g_intern_static_string("I7StoryFormat"), values);
-		g_once_init_leave(&gtype, new_gtype);
-	}
-	return gtype;
-}
+G_DEFINE_ENUM_TYPE(I7StoryFormat, i7_story_format,
+	G_DEFINE_ENUM_VALUE(I7_STORY_FORMAT_Z8, "z8"),
+	G_DEFINE_ENUM_VALUE(I7_STORY_FORMAT_GLULX, "glulx"))
 
 struct _I7ProjectSettings {
 	HdyPreferencesPage parent;
