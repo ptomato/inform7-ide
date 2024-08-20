@@ -5,6 +5,8 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -432,36 +434,21 @@ character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 }
 
 static void
-get_quoted_contents(const xmlChar *comment, char **quote1, char **quote2)
-{
-	char *retval1, *retval2;
-	int matched = sscanf((const char *)comment, "\"%m[^\"]\" \"%m[^\"]\"", &retval1, &retval2);
-	if(quote1 != NULL)
-		*quote1 = (matched >= 1)? retval1 : NULL;
-	if(quote2 != NULL)
-		*quote2 = (matched >= 2)? retval2 : NULL;
-}
-
-#define SEARCH_TITLE_LEN 14   /* length(" SEARCH TITLE ") */
-#define SEARCH_SECTION_LEN 16 /* length(" SEARCH SECTION ") */
-#define SEARCH_SORT_LEN 13    /* length(" SEARCH SORT ") */
-#define START_EXAMPLE_LEN 15  /* length(" START EXAMPLE ") */
-
-static void
 comment_callback(Ctxt *ctxt, const xmlChar *value)
 {
-	/* Extract metadata from comments */
-	if(g_str_has_prefix((gchar *)value, " SEARCH TITLE "))
-		get_quoted_contents(value + SEARCH_TITLE_LEN, &ctxt->doctext->title, NULL);
-	else if(g_str_has_prefix((char *)value, " SEARCH SECTION "))
-		get_quoted_contents(value + SEARCH_SECTION_LEN, &ctxt->doctext->section, NULL);
-	else if(g_str_has_prefix((char *)value, " SEARCH SORT "))
-		get_quoted_contents(value + SEARCH_SORT_LEN, &ctxt->doctext->sort, NULL);
+	/* Extract metadata from comments. Use sscanf() to be lenient about space */
+	if (sscanf((char *) value, " SEARCH TITLE \"%m[^\"]\"", &ctxt->doctext->title) == 1)
+		return;
+	if (sscanf((char *) value, " SEARCH SECTION \"%m[^\"]\"", &ctxt->doctext->section) == 1)
+		return;
+	if (sscanf((char *) value, " SEARCH SORT \"%m[^\"]\"", &ctxt->doctext->sort) == 1)
+		return;
 
 	/* From here on, these are particular subsections of the documentation page,
 	such as examples. We assume that the above metadata always appear before a
 	subsection can appear, and that subsections cannot be nested. */
-	else if(g_str_has_prefix((char *)value, " START EXAMPLE ")) {
+
+	if (sscanf((char *) value, " START EXAMPLE \"%m[^\"]\" \"%m[^\"]\"", &ctxt->doctext->example_title, &ctxt->doctext->anchor) == 2) {
 		ctxt->outer_chars = ctxt->chars;
 		ctxt->chars = g_string_new("");
 
@@ -472,17 +459,44 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 		ctxt->doctext->section = g_strdup(ctxt->outer_doctext->section);
 		ctxt->doctext->title = g_strdup(ctxt->outer_doctext->title);
 		ctxt->doctext->sort = g_strdup(ctxt->outer_doctext->sort);
-		get_quoted_contents(value + START_EXAMPLE_LEN, &ctxt->doctext->example_title, &ctxt->doctext->anchor);
-	} else if(g_str_has_prefix((char *)value, " END EXAMPLE ")) {
-		ctxt->doctext->body = g_string_free(ctxt->chars, FALSE);
-		ctxt->completed_doctexts = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
+		return;
+	}
 
-		ctxt->doctext = ctxt->outer_doctext;
-		ctxt->chars = ctxt->outer_chars;
-	} else if(g_str_has_prefix((char *)value, " START IGNORE "))
-		ctxt->in_ignore_section = TRUE;
-	else if(g_str_has_prefix((char *)value, " END IGNORE "))
-		ctxt->in_ignore_section = FALSE;
+	char section_type[8];  /* len(EXAMPLE) + 1 */
+	if (sscanf((char *) value, " START %7s", section_type) == 1) {
+		if (strcmp(section_type, "IGNORE") == 0) {
+			ctxt->in_ignore_section = true;
+			return;
+		}
+
+		if (strcmp(section_type, "CODE") == 0 || strcmp(section_type, "PHRASE") == 0) {
+			/* Ignore for now */
+			return;
+		}
+
+		g_warning("Unhandled START %s section in doc comments", section_type);
+	}
+
+	if (sscanf((char *) value, " END %7s", section_type) == 1) {
+		if (strcmp(section_type, "EXAMPLE") == 0) {
+			ctxt->doctext->body = g_string_free(ctxt->chars, false);
+			ctxt->completed_doctexts = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
+
+			ctxt->doctext = ctxt->outer_doctext;
+			ctxt->chars = ctxt->outer_chars;
+			return;
+		}
+
+		if (strcmp(section_type, "IGNORE") == 0) {
+			ctxt->in_ignore_section = false;
+			return;
+		}
+
+		if (strcmp(section_type, "CODE") == 0 || strcmp(section_type, "PHRASE") == 0)
+			return;
+
+		g_warning("Unhandled END %s section in doc comments", section_type);
+	}
 }
 
 xmlSAXHandler i7_html_sax = {
