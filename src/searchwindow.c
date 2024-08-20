@@ -512,7 +512,13 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 		g_warning("Error loading documentation resource '%s': %s", uri, error->message);
 		return NULL;
 	}
-	htmlSAXParseDoc((xmlChar*)html_contents, NULL, &i7_html_sax, ctxt);
+
+	// COMPAT: 2.11 - use htmlNewSAXParserCtxt()
+	htmlParserCtxtPtr html_parser = htmlNewParserCtxt();
+	html_parser->sax = &i7_html_sax;
+	html_parser->userData = ctxt;
+	xmlFreeDoc(htmlCtxtReadDoc(html_parser, (xmlChar *) html_contents,
+		/* URL = */ NULL, /* encoding = */ NULL, HTML_PARSE_NONET));
 
 	doctext->body = g_string_free(ctxt->chars, FALSE);
 	GSList *retval = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
