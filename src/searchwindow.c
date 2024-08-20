@@ -87,6 +87,7 @@ struct _I7SearchWindow {
 	GtkListStore *results;
 	GtkLabel *results_label;
 	GtkRevealer *results_revealer;
+	GtkTreeModelSort *results_sorted;
 	GtkSpinner *spinner;
 	GtkComboBoxText *search_type;
 	GtkCheckButton *target_documentation;
@@ -348,6 +349,7 @@ i7_search_window_init(I7SearchWindow *self)
 		(GtkTreeCellDataFunc)location_data_func, self, NULL);
 	gtk_tree_view_column_set_cell_data_func(self->type_column, GTK_CELL_RENDERER(self->type_renderer),
 		(GtkTreeCellDataFunc)type_data_func, NULL, NULL);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->results_sorted), I7_RESULT_SORT_STRING_COLUMN, GTK_SORT_ASCENDING);
 }
 
 static void
@@ -365,6 +367,7 @@ i7_search_window_class_init(I7SearchWindowClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_label);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_revealer);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_sorted);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, search_type);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, spinner);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, target_documentation);
