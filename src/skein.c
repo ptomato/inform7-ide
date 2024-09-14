@@ -505,7 +505,7 @@ i7_skein_load(I7Skein *self, GFile *file, GError **error)
 	xmlDoc *xmldoc = xmlParseFile(filename);
 	g_free(filename);
 	if(!xmldoc) {
-		xmlErrorPtr xml_error = xmlGetLastError();
+		const xmlError *xml_error = xmlGetLastError();
 		if(error)
 			*error = g_error_new_literal(I7_SKEIN_ERROR, I7_SKEIN_ERROR_XML, g_strdup(xml_error->message));
 		return FALSE;
