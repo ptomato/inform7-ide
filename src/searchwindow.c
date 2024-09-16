@@ -5,6 +5,7 @@
 
 #include "config.h"
 
+#include <ctype.h>
 #include <stdbool.h>
 
 #include <glib.h>
@@ -406,20 +407,11 @@ is_ignore_element(const xmlChar *name)
 		|| xmlStrcasecmp(name, (xmlChar *)"script") == 0;
 }
 
-static gboolean
-is_newline_element(const xmlChar *name)
-{
-	return xmlStrcasecmp(name, (xmlChar *)"br") == 0
-		|| xmlStrcasecmp(name, (xmlChar *)"p") == 0;
-}
-
 static void
 start_element_callback(Ctxt *ctxt, const xmlChar *name, const xmlChar **atts)
 {
 	if(is_ignore_element(name))
 		ctxt->ignore++;
-	else if(is_newline_element(name) && ctxt->ignore == 0 && !ctxt->in_ignore_section)
-		g_string_append_c(ctxt->chars, ' '); /* Add spaces instead of newlines */
 }
 
 static void
@@ -432,8 +424,27 @@ end_element_callback(Ctxt *ctxt, const xmlChar *name)
 static void
 character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 {
-	if(ctxt->ignore == 0 && !ctxt->in_ignore_section)
-		g_string_append_len(ctxt->chars, (gchar *)ch, len);
+	if(ctxt->ignore != 0 || ctxt->in_ignore_section)
+		return;
+
+	/* Collapse multiple white space characters into one space  */
+	g_autofree char *condensed = g_malloc(len + 1);
+	char *outp = condensed;
+	for (int count = 0; count < len;) {
+		if (isspace(ch[count])) {
+			while(++count < len && isspace(ch[count]))
+				;
+			*outp++ = ' ';
+			if (count >= len)
+				break;
+		}
+		*outp++ = ch[count++];
+	}
+	*outp = '\0';
+
+	if (ctxt->chars->len && ctxt->chars->str[ctxt->chars->len - 1] != ' ')
+		g_string_append_c(ctxt->chars, ' ');
+	g_string_append(ctxt->chars, g_strstrip(condensed));
 }
 
 static void
@@ -565,7 +576,6 @@ extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *ma
 	gchar *term = gtk_text_buffer_get_text(buffer, match_start, match_end, TRUE);
 	gchar *after = gtk_text_buffer_get_text(buffer, match_end, &context_end, TRUE);
 	gchar *context = g_strconcat(before, "<b>", term, "</b>", after, NULL);
-	g_strdelimit(context, "\n\r\t", ' ');
 	g_free(before);
 	g_free(term);
 	g_free(after);
