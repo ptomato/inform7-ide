@@ -456,12 +456,15 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 		ctxt->chars = g_string_new("");
 
 		ctxt->outer_doctext = ctxt->doctext;
-		ctxt->doctext = g_slice_dup(DocText, ctxt->outer_doctext);
+		ctxt->doctext = g_slice_new0(DocText);
 		ctxt->doctext->is_example = TRUE;
-		g_object_ref(ctxt->doctext->file);
+		ctxt->doctext->is_recipebook = ctxt->outer_doctext->is_recipebook;
 		ctxt->doctext->section = g_strdup(ctxt->outer_doctext->section);
 		ctxt->doctext->title = g_strdup(ctxt->outer_doctext->title);
 		ctxt->doctext->sort = g_strdup(ctxt->outer_doctext->sort);
+		ctxt->doctext->file = g_object_ref(ctxt->outer_doctext->file);
+		ctxt->doctext->anchor = g_steal_pointer(&ctxt->outer_doctext->anchor);
+		ctxt->doctext->example_title = g_steal_pointer(&ctxt->outer_doctext->example_title);
 		return;
 	}
 
