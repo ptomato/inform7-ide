@@ -225,8 +225,6 @@ on_search_window_delete_event(I7SearchWindow *self, GdkEvent *event)
 	return GDK_EVENT_PROPAGATE;
 }
 
-/* This would be better done with two GtkCellRendererText-s in a GtkCellArea,
-but that requires GTK 3. */
 static void
 result_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
 {
