@@ -68,9 +68,10 @@ typedef struct {
 	/* Metadata */
 	DocText *doctext;
 
-	/* Temporary storage for subsections */
-	GString *outer_chars;
-	DocText *outer_doctext;
+	/* Stacks that we push onto when we encounter subsections */
+	GSList *chars_stack;  /* type GString */
+	GSList *doctext_stack;  /* type DocText */
+
 	GSList *completed_doctexts;
 } Ctxt;
 
@@ -445,6 +446,18 @@ character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 	g_string_append(ctxt->chars, g_strstrip(condensed));
 }
 
+static DocText *
+dup_doctext(const DocText *doctext)
+{
+	DocText *retval = g_slice_new0(DocText);
+	retval->is_recipebook = doctext->is_recipebook;
+	retval->section = g_strdup(doctext->section);
+	retval->title = g_strdup(doctext->title);
+	retval->sort = g_strdup(doctext->sort);
+	retval->file = g_object_ref(doctext->file);
+	return retval;
+}
+
 static void
 comment_callback(Ctxt *ctxt, const xmlChar *value)
 {
@@ -458,34 +471,41 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 
 	/* From here on, these are particular subsections of the documentation page,
 	such as examples. We assume that the above metadata always appear before a
-	subsection can appear, and that subsections cannot be nested. */
+	subsection can appear. */
 
 	if (sscanf((char *) value, " START EXAMPLE \"%m[^\"]\" \"%m[^\"]\"", &ctxt->doctext->example_title, &ctxt->doctext->anchor) == 2) {
-		ctxt->outer_chars = ctxt->chars;
+		ctxt->chars_stack = g_slist_prepend(ctxt->chars_stack, g_steal_pointer(&ctxt->chars));
 		ctxt->chars = g_string_new("");
 
-		ctxt->outer_doctext = ctxt->doctext;
-		ctxt->doctext = g_slice_new0(DocText);
-		ctxt->doctext->is_example = TRUE;
-		ctxt->doctext->is_recipebook = ctxt->outer_doctext->is_recipebook;
-		ctxt->doctext->section = g_strdup(ctxt->outer_doctext->section);
-		ctxt->doctext->title = g_strdup(ctxt->outer_doctext->title);
-		ctxt->doctext->sort = g_strdup(ctxt->outer_doctext->sort);
-		ctxt->doctext->file = g_object_ref(ctxt->outer_doctext->file);
-		ctxt->doctext->anchor = g_steal_pointer(&ctxt->outer_doctext->anchor);
-		ctxt->doctext->example_title = g_steal_pointer(&ctxt->outer_doctext->example_title);
+		DocText *doctext = dup_doctext(ctxt->doctext);
+		doctext->is_example = true;
+		doctext->anchor = g_steal_pointer(&ctxt->doctext->anchor);
+		doctext->example_title = g_steal_pointer(&ctxt->doctext->example_title);
+		ctxt->doctext_stack = g_slist_prepend(ctxt->doctext_stack, g_steal_pointer(&ctxt->doctext));
+		ctxt->doctext = doctext;
 		return;
 	}
 
 	char section_type[8];  /* len(EXAMPLE) + 1 */
-	if (sscanf((char *) value, " START %7s", section_type) == 1) {
-		if (strcmp(section_type, "IGNORE") == 0) {
-			ctxt->in_ignore_section = true;
+	if (sscanf((char *) value, " START %7s \"%m[^\"]\"", section_type, &ctxt->doctext->anchor) == 2) {
+		if (strcmp(section_type, "CODE") != 0 && strcmp(section_type, "PHRASE") != 0) {
+			g_warning("Unhandled START %s section in doc comments", section_type);
 			return;
 		}
 
-		if (strcmp(section_type, "CODE") == 0 || strcmp(section_type, "PHRASE") == 0) {
-			/* Ignore for now */
+		ctxt->chars_stack = g_slist_prepend(ctxt->chars_stack, g_steal_pointer(&ctxt->chars));
+		ctxt->chars = g_string_new("");
+
+		DocText *doctext = dup_doctext(ctxt->doctext);
+		doctext->anchor = g_steal_pointer(&ctxt->doctext->anchor);
+		ctxt->doctext_stack = g_slist_prepend(ctxt->doctext_stack, g_steal_pointer(&ctxt->doctext));
+		ctxt->doctext = doctext;
+		return;
+	}
+	
+	if (sscanf((char *) value, " START %7s", section_type) == 1) {
+		if (strcmp(section_type, "IGNORE") == 0) {
+			ctxt->in_ignore_section = true;
 			return;
 		}
 
@@ -493,12 +513,20 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 	}
 
 	if (sscanf((char *) value, " END %7s", section_type) == 1) {
-		if (strcmp(section_type, "EXAMPLE") == 0) {
+		if (strcmp(section_type, "EXAMPLE") == 0 || strcmp(section_type, "CODE") == 0 || strcmp(section_type, "PHRASE") == 0) {
 			ctxt->doctext->body = g_string_free(ctxt->chars, false);
 			ctxt->completed_doctexts = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
 
-			ctxt->doctext = ctxt->outer_doctext;
-			ctxt->chars = ctxt->outer_chars;
+			/* Awkward idiom to pop the first item of GSList */
+			GSList *head = ctxt->doctext_stack;
+			ctxt->doctext_stack = g_slist_remove_link(ctxt->doctext_stack, head);
+			ctxt->doctext = head->data;
+			g_slist_free1(head);
+
+			head = ctxt->chars_stack;
+			ctxt->chars_stack = g_slist_remove_link(ctxt->chars_stack, head);
+			ctxt->chars = head->data;
+			g_slist_free1(head);
 			return;
 		}
 
@@ -506,9 +534,6 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 			ctxt->in_ignore_section = false;
 			return;
 		}
-
-		if (strcmp(section_type, "CODE") == 0 || strcmp(section_type, "PHRASE") == 0)
-			return;
 
 		g_warning("Unhandled END %s section in doc comments", section_type);
 	}
