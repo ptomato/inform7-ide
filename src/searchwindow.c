@@ -897,6 +897,8 @@ i7_search_window_prefill_ui(I7SearchWindow *self, const char *text, I7SearchTarg
 void
 i7_search_window_do_search(I7SearchWindow *self)
 {
+	gtk_list_store_clear(self->results);
+
 	/* Show the results widget */
 	gtk_revealer_set_reveal_child(self->results_revealer, TRUE);
 
