@@ -580,17 +580,22 @@ extern gboolean find_no_wrap(const GtkTextIter *, const char *, gboolean, GtkTex
 static gchar *
 extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *match_end)
 {
+	static const ssize_t CONTEXT_BEFORE = 8;
+	static const ssize_t CONTEXT_AFTER = 32;
 	GtkTextIter context_start = *match_start, context_end = *match_end;
 
 	/* Create a larger range to extract the context */
-	gtk_text_iter_backward_chars(&context_start, 8);
-	gtk_text_iter_forward_chars(&context_end, 32);
+	gtk_text_iter_backward_chars(&context_start, CONTEXT_BEFORE);
+	gtk_text_iter_forward_chars(&context_end, CONTEXT_AFTER);
 
 	/* Get the surrounding text as context */
 	gchar *before = gtk_text_buffer_get_text(buffer, &context_start, match_start, TRUE);
 	gchar *term = gtk_text_buffer_get_text(buffer, match_start, match_end, TRUE);
 	gchar *after = gtk_text_buffer_get_text(buffer, match_end, &context_end, TRUE);
-	gchar *context = g_strconcat(before, "<b>", term, "</b>", after, NULL);
+	g_autofree char *escaped_before = g_markup_escape_text(before, CONTEXT_BEFORE);
+	g_autofree char *escaped_term = g_markup_escape_text(term, -1);
+	g_autofree char *escaped_after = g_markup_escape_text(after, CONTEXT_AFTER);
+	gchar *context = g_strconcat(escaped_before, "<b>", escaped_term, "</b>", escaped_after, NULL);
 	g_free(before);
 	g_free(term);
 	g_free(after);
