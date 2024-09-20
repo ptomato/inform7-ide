@@ -592,9 +592,17 @@ extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *ma
 	gchar *before = gtk_text_buffer_get_text(buffer, &context_start, match_start, TRUE);
 	gchar *term = gtk_text_buffer_get_text(buffer, match_start, match_end, TRUE);
 	gchar *after = gtk_text_buffer_get_text(buffer, match_end, &context_end, TRUE);
-	g_autofree char *escaped_before = g_markup_escape_text(before, CONTEXT_BEFORE);
+
+	/* We may have chopped a multibyte character in half */
+	while (!g_utf8_validate(before, -1, NULL))
+		before++;
+	char* end;
+	if (!g_utf8_validate(after, CONTEXT_AFTER, (const char **)&end))
+		*end = '\0';
+
+	g_autofree char *escaped_before = g_markup_escape_text(before, -1);
 	g_autofree char *escaped_term = g_markup_escape_text(term, -1);
-	g_autofree char *escaped_after = g_markup_escape_text(after, CONTEXT_AFTER);
+	g_autofree char *escaped_after = g_markup_escape_text(after, -1);
 	gchar *context = g_strconcat(escaped_before, "<b>", escaped_term, "</b>", escaped_after, NULL);
 	g_free(before);
 	g_free(term);
