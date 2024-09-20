@@ -392,13 +392,6 @@ update_label(I7SearchWindow *self)
 	gtk_label_set_text(self->results_label, label);
 }
 
-/* Expand only the standard entities (gt, lt, amp, apos, quot) */
-static xmlEntityPtr
-entity_callback(Ctxt *ctxt, const xmlChar *name)
-{
-	return xmlGetPredefinedEntity(name);
-}
-
 static gboolean
 is_ignore_element(const xmlChar *name)
 {
@@ -540,7 +533,6 @@ comment_callback(Ctxt *ctxt, const xmlChar *value)
 }
 
 xmlSAXHandler i7_html_sax = {
-	.getEntity = (getEntitySAXFunc)entity_callback,
 	.startElement = (startElementSAXFunc)start_element_callback,
 	.endElement = (endElementSAXFunc)end_element_callback,
 	.characters = (charactersSAXFunc)character_callback,
