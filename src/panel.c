@@ -461,40 +461,27 @@ action_extensions_home(GSimpleAction *action, GVariant *parameter, I7Panel *pane
 
 static char *
 build_extensions_javascript_source(I7App *app) {
-	GtkTreeModel *model = GTK_TREE_MODEL(i7_app_get_installed_extensions_tree(app));
-	GtkTreeIter author, title;
-	if (!gtk_tree_model_get_iter_first(model, &author))
+	GNode *tree = i7_app_get_installed_extensions_tree(app);
+	GNode *author_iter = g_node_first_child(tree);
+	if (!author_iter)
 		return g_strdup("window.EXTENSIONS = {};");
 
 	GString *builder = g_string_new("window.EXTENSIONS = {");
-	do {
-		g_autofree char *authorname;
-		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);
+	for (; author_iter != NULL; author_iter = g_node_next_sibling(author_iter)) {
+		I7InstalledExtensionAuthor *author_data = author_iter->data;
 
-		g_autofree char *author_escaped = g_strescape(authorname, NULL);
+		g_autofree char *author_escaped = g_strescape(author_data->author_name, NULL);
 		g_string_append_printf(builder, "\"%s\": {", author_escaped);
 
-		if(gtk_tree_model_iter_children(model, &title, &author))
-		{
-			do {
-				g_autofree char *extname;
-				g_autofree char *version;
-				gboolean readonly;
-				gtk_tree_model_get(model, &title,
-					I7_APP_EXTENSION_TEXT, &extname,
-					I7_APP_EXTENSION_READ_ONLY, &readonly,
-					I7_APP_EXTENSION_VERSION, &version,
-					-1);
-
-				g_autofree char *name_escaped = g_strescape(extname, NULL);
-				g_autofree char *version_escaped = g_strescape(version, NULL);
-				g_string_append_printf(builder, "\"%s\": {builtin: %s, version: \"%s\"},",
-					name_escaped, readonly ? "true" : "false", version_escaped);
-			} while(gtk_tree_model_iter_next(model, &title));
-
-			g_string_append(builder, "},");
+		for (GNode *iter = g_node_first_child(author_iter); iter != NULL; iter = g_node_next_sibling(iter)) {
+			I7InstalledExtension *data = iter->data;
+			g_autofree char *name_escaped = g_strescape(data->title, NULL);
+			g_autofree char *version_escaped = g_strescape(data->version, NULL);
+			g_string_append_printf(builder, "\"%s\": {builtin: %s, version: \"%s\"},",
+				name_escaped, data->read_only ? "true" : "false", version_escaped);
 		}
-	} while(gtk_tree_model_iter_next(model, &author));
+		g_string_append(builder, "},");
+	}
 
 	g_string_append(builder, "};");
 

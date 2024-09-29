@@ -19,7 +19,6 @@
 #include "app.h"
 #include "app-retrospective.h"
 #include "actions.h"
-#include "builder.h"
 #include "configfile.h"
 #include "error.h"
 #include "file.h"
@@ -56,8 +55,8 @@ struct _I7App {
 	GFile *libexecdir;
 	/* File monitor for extension directory */
 	GFileMonitor *extension_dir_monitor;
-	/* Tree of installed extensions */
-	GtkTreeStore *installed_extensions;
+	/* Tree of installed extensions (GNode<I7InstalledExtension>) */
+	GNode *installed_extensions;
 	/* Current print settings */
 	GtkPrintSettings *print_settings;
 	/* Color scheme manager */
@@ -72,6 +71,26 @@ struct _I7App {
 } I7AppPrivate;
 
 G_DEFINE_TYPE(I7App, i7_app, GTK_TYPE_APPLICATION);
+
+static gboolean
+free_installed_extension_node(GNode *node, void *unused)
+{
+	I7InstalledExtension *data = node->data;
+	if (data) {
+		g_clear_pointer(&data->title, g_free);
+		g_clear_pointer(&data->version, g_free);
+		g_clear_object(&data->file);
+		g_free(data);
+	}
+	return false;  /* keep going */
+}
+
+static void
+free_installed_extensions_tree(GNode *root)
+{
+	g_node_traverse(root, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_installed_extension_node, NULL);
+	g_node_destroy(root);
+}
 
 /* Helper function: call gtk_source_style_scheme_manager_append_search_path()
 with a #GFile */
@@ -183,16 +202,12 @@ i7_app_init(I7App *self)
 	env = g_getenv("INFORM7_IDE_LIBEXEC_DIR");
 	self->libexecdir = g_file_new_for_path(env? env : PACKAGE_LIBEXEC_DIR);
 
-	g_autoptr(GtkBuilder) builder = gtk_builder_new_from_resource("/com/inform7/IDE/ui/app.ui");
-	gtk_builder_connect_signals(builder, self);
-
 	create_app_actions(self);
 
 	GtkRecentManager *default_recent_manager = gtk_recent_manager_get_default();
 	g_signal_connect(default_recent_manager, "changed", G_CALLBACK(rebuild_recent_menu), self);
 
-	self->installed_extensions = GTK_TREE_STORE(load_object(builder, "installed_extensions_store"));
-	g_object_ref(self->installed_extensions);
+	self->installed_extensions = g_node_new(NULL);
 	/* Set print settings to NULL, since they are not remembered across
 	application runs (yet) */
 	self->print_settings = NULL;
@@ -223,7 +238,7 @@ i7_app_finalize(GObject *object)
 	g_object_unref(self->datadir);
 	g_object_unref(self->libexecdir);
 	i7_app_stop_monitoring_extensions_directory(self);
-	g_object_unref(self->installed_extensions);
+	g_clear_pointer(&self->installed_extensions, free_installed_extensions_tree);
 	g_object_unref(self->color_scheme_manager);
 	g_clear_object(&self->retrospectives);
 	g_object_unref(self->system_settings);
@@ -738,28 +753,19 @@ i7_app_download_extension_finish(I7App *self, GAsyncResult *res, GError **err)
 }
 
 /* Helper function: iterate over authors in installed extensions @store, to see
-if @author is there. If so, return a tree iter pointing to @author in @iter, and
-return TRUE from function. Otherwise, return FALSE, and @iter is invalidated. */
-gboolean
-get_iter_for_author(GtkTreeModel *store, const char *author, GtkTreeIter *iter)
+if @author is there. If so, return the node containing @author. Otherwise,
+return a null pointer. */
+GNode *
+get_node_for_author(GNode *tree, const char *author)
 {
-	gboolean found = FALSE;
-	if(gtk_tree_model_get_iter_first(store, iter)) {
-		do {
-			char *found_author, *author_nocase, *found_author_nocase;
-			gtk_tree_model_get(store, iter, I7_APP_EXTENSION_TEXT, &found_author, -1);
-			author_nocase = g_utf8_casefold(author, -1);
-			found_author_nocase = g_utf8_casefold(found_author, -1);
-			g_free(found_author);
-			if(strcmp(author_nocase, found_author_nocase) == 0)
-				found = TRUE;
-			g_free(author_nocase);
-			g_free(found_author_nocase);
-			if(found)
-				break;
-		} while(gtk_tree_model_iter_next(store, iter));
+	for (GNode *iter = g_node_first_child(tree); iter; iter = g_node_next_sibling(iter)) {
+		I7InstalledExtensionAuthor *data = iter->data;
+		g_autofree char *author_nocase = g_utf8_casefold(author, -1);
+		g_autofree char *found_author_nocase = g_utf8_casefold(data->author_name, -1);
+		if (strcmp(author_nocase, found_author_nocase) == 0)
+			return iter;
 	}
-	return found;
+	return NULL;
 }
 
 /* Helper function: trim whitespace from string. Free return value when
@@ -794,46 +800,37 @@ remove_machine_spec_from_title(const char *title)
 	return retval;
 }
 
-/* Helper function: iterate over extensions by author pointed to by @parent_iter
-in installed extensions @store, to see if @title is there. If so, return a tree
-iter pointing to @title in @iter, and return TRUE from function. Otherwise,
-return FALSE, and @iter is invalidated. */
-gboolean
-get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter *parent_iter, GtkTreeIter *iter)
+/* Helper function: iterate over extensions by author contained in @author_node
+in installed extensions store, to see if @title is there. If so, return a node
+containing @title Otherwise, return a null pointer. */
+GNode *
+get_node_for_extension_title(GNode *author_node, const char *title)
 {
-	gboolean found = FALSE;
-	if(gtk_tree_model_iter_children(store, iter, parent_iter)) {
-		do {
-			char *found_title, *title_nocase, *found_title_nocase;
-			gtk_tree_model_get(store, iter, I7_APP_EXTENSION_TEXT, &found_title, -1);
-			title_nocase = g_utf8_casefold(title, -1);
-			found_title_nocase = g_utf8_casefold(found_title, -1);
-			g_free(found_title);
-			if(strcmp(title_nocase, found_title_nocase) == 0) {
-				found = TRUE;
-			} else if(g_str_has_prefix(title_nocase, found_title_nocase) || g_str_has_prefix(found_title_nocase, title_nocase)) {
-				char *canonical_title = remove_machine_spec_from_title(title_nocase);
-				char *canonical_found_title = remove_machine_spec_from_title(found_title_nocase);
-				if(canonical_title != NULL || canonical_found_title != NULL) {
-					if(canonical_title != NULL) {
-						g_free(title_nocase);
-						title_nocase = canonical_title;
-					}
-					if(canonical_found_title != NULL) {
-						g_free(found_title_nocase);
-						found_title_nocase = canonical_found_title;
-					}
-					if(strcmp(title_nocase, found_title_nocase) == 0)
-						found = TRUE;
+	for (GNode *iter = g_node_first_child(author_node); iter; iter = g_node_next_sibling(iter)) {
+		I7InstalledExtension *data = iter->data;
+		g_autofree char *title_nocase = g_utf8_casefold(title, -1);
+		g_autofree char *found_title_nocase = g_utf8_casefold(data->title, -1);
+		if (strcmp(title_nocase, found_title_nocase) == 0)
+			return iter;
+
+		if (g_str_has_prefix(title_nocase, found_title_nocase) || g_str_has_prefix(found_title_nocase, title_nocase)) {
+			g_autofree char *canonical_title = remove_machine_spec_from_title(title_nocase);
+			g_autofree char *canonical_found_title = remove_machine_spec_from_title(found_title_nocase);
+			if (canonical_title != NULL || canonical_found_title != NULL) {
+				if (canonical_title != NULL) {
+					g_free(title_nocase);
+					title_nocase = canonical_title;
 				}
+				if (canonical_found_title != NULL) {
+					g_free(found_title_nocase);
+					found_title_nocase = canonical_found_title;
+				}
+				if (strcmp(title_nocase, found_title_nocase) == 0)
+					return iter;
 			}
-			g_free(title_nocase);
-			g_free(found_title_nocase);
-			if(found)
-				break;
-		} while(gtk_tree_model_iter_next(store, iter));
+		}
 	}
-	return found;
+	return NULL;
 }
 
 /**
@@ -854,25 +851,17 @@ get_iter_for_extension_title(GtkTreeModel *store, const char *title, GtkTreeIter
 char *
 i7_app_get_extension_version(I7App *self, const char *author, const char *title, gboolean *builtin)
 {
-	GtkTreeModel *store = GTK_TREE_MODEL(self->installed_extensions);
-	GtkTreeIter parent_iter, child_iter;
-	char *version;
-	gboolean readonly;
-
-	if(!get_iter_for_author(store, author, &parent_iter))
+	GNode *author_node = get_node_for_author(self->installed_extensions, author);
+	if (author_node == NULL)
 		return NULL;
-	if(!get_iter_for_extension_title(store, title, &parent_iter, &child_iter))
+	GNode *ext_node = get_node_for_extension_title(author_node, title);
+	if (!ext_node)
 		return NULL;
 
-	gtk_tree_model_get(store, &child_iter,
-	    I7_APP_EXTENSION_VERSION, &version,
-	    I7_APP_EXTENSION_READ_ONLY, &readonly,
-	    -1);
+	I7InstalledExtension *data = ext_node->data;
 	if(builtin != NULL)
-		*builtin = readonly;
-	if(version == NULL)
-		return g_strdup("");
-	return version;
+		*builtin = data->read_only;
+	return g_strdup(data->version ? data->version : "");
 }
 
 /* Return the full path to the built-in Inform extension represented by @author
@@ -888,13 +877,12 @@ get_builtin_extension_file(I7App *self, const char *author,	const char *extname)
 	return i7_app_get_data_file_va(self, "Extensions", author, extname, NULL);
 }
 
-static GtkTreeIter *add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store);
-static void add_extension_to_tree_store(bool builtin, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store);
+static GNode *add_author_to_tree(GFileInfo *info, GNode *tree);
+static void add_extension_to_tree(bool builtin, GFile *parent, GFileInfo *info, GNode *author_node);
 
 /**
  * iterate_and_add_installed_extensions:
  * @self: the app
- * @store: the #GtkTreeStore to add to
  * @builtin: whether to iterate over the built-in extensions or the
  * user-installed ones
  *
@@ -903,7 +891,7 @@ static void add_extension_to_tree_store(bool builtin, GFile *parent, GFileInfo *
  * and each installed extension in each author directory to @store.
  */
 static void
-iterate_and_add_installed_extensions(I7App *self, GtkTreeStore *store, bool builtin)
+iterate_and_add_installed_extensions(I7App *self, bool builtin)
 {
 	GError *err = NULL;
 	GFile *root_file;
@@ -934,7 +922,7 @@ iterate_and_add_installed_extensions(I7App *self, GtkTreeStore *store, bool buil
 		if(g_file_info_get_file_type(author_info) != G_FILE_TYPE_DIRECTORY)
 			continue;
 
-		g_autoptr(GtkTreeIter) author_result = add_author_to_tree_store(author_info, store);
+		GNode *author_result = add_author_to_tree(author_info, self->installed_extensions);
 
 		/* Descend into each author directory */
 		author_file = g_file_get_child(root_file, author_name);
@@ -951,7 +939,7 @@ iterate_and_add_installed_extensions(I7App *self, GtkTreeStore *store, bool buil
 			if(g_file_info_get_is_symlink(extension_info))
 				continue;
 
-			add_extension_to_tree_store(builtin, author_file, extension_info, author_result, store);
+			add_extension_to_tree(builtin, author_file, extension_info, author_result);
 
 			g_object_unref(extension_info);
 		}
@@ -976,36 +964,32 @@ iterate_and_add_installed_extensions(I7App *self, GtkTreeStore *store, bool buil
 }
 
 /* Helper function: Add author to tree store callback */
-static GtkTreeIter *
-add_author_to_tree_store(GFileInfo *info, GtkTreeStore *store)
+static GNode *
+add_author_to_tree(GFileInfo *info, GNode *tree)
 {
-	GtkTreeIter parent_iter;
 	const char *author_display_name = g_file_info_get_display_name(info);
 
 	/* If the author directory was already indexed before, add the extension
 	to it instead of making a new entry */
-	if(!get_iter_for_author(GTK_TREE_MODEL(store), author_display_name, &parent_iter)) {
-		gtk_tree_store_append(store, &parent_iter, NULL);
-		gtk_tree_store_set(store, &parent_iter,
-			I7_APP_EXTENSION_TEXT, author_display_name,
-			I7_APP_EXTENSION_READ_ONLY, TRUE,
-			I7_APP_EXTENSION_ICON, NULL,
-			I7_APP_EXTENSION_FILE, NULL,
-			-1);
+	GNode *author_node = get_node_for_author(tree, author_display_name);
+	if (!author_node) {
+		I7InstalledExtension *data = g_new0(I7InstalledExtension, 1);
+		data->title = g_strdup(author_display_name);  /* Field 'author_name' is aliased */
+		data->read_only = true;
+		author_node = g_node_insert_data(tree, -1, data);
 	}
 
-	return gtk_tree_iter_copy(&parent_iter);
+	return author_node;
 }
 
 /* Helper function: add extension to tree store. Makes sure that user-installed
  * extensions override the built-in ones. */
 static void
-add_extension_to_tree_store(bool builtin, GFile *parent, GFileInfo *info, GtkTreeIter *parent_iter, GtkTreeStore *store)
+add_extension_to_tree(bool builtin, GFile *parent, GFileInfo *info, GNode *author_node)
 {
 	GError *error = NULL;
 	const char *extension_name = g_file_info_get_name(info);
 	GFile *extension_file = g_file_get_child(parent, extension_name);
-	GtkTreeIter child_iter;
 	char *version, *title;
 
 	char *firstline = read_first_line(extension_file, NULL, &error);
@@ -1023,15 +1007,13 @@ add_extension_to_tree_store(bool builtin, GFile *parent, GFileInfo *info, GtkTre
 
 	/* Only add a built-in extension if it is not overridden by a user-installed
 	 * extension */
-	if (!builtin || !get_iter_for_extension_title(GTK_TREE_MODEL(store), title, parent_iter, &child_iter)) {
-		gtk_tree_store_append(store, &child_iter, parent_iter);
-		gtk_tree_store_set(store, &child_iter,
-			I7_APP_EXTENSION_TEXT, title, /* copies */
-			I7_APP_EXTENSION_VERSION, version, /* copies */
-			I7_APP_EXTENSION_READ_ONLY, builtin,
-			I7_APP_EXTENSION_ICON, builtin ? "com.inform7.IDE.builtin" : NULL,
-			I7_APP_EXTENSION_FILE, extension_file, /* references */
-			-1);
+	if (!builtin || !get_node_for_extension_title(author_node, title)) {
+		I7InstalledExtension *data = g_new0(I7InstalledExtension, 1);
+		data->title = g_strdup(title);
+		data->version = g_strdup(version);
+		data->read_only = builtin;
+		data->file = g_object_ref(extension_file);
+		g_node_insert_data(author_node, -1, data);
 	}
 
 	g_free(title);
@@ -1045,11 +1027,11 @@ finally:
 static gboolean
 update_installed_extensions_tree(I7App *self)
 {
-	GtkTreeStore *store = self->installed_extensions;
-	gtk_tree_store_clear(store);
+	free_installed_extensions_tree(self->installed_extensions);
+	self->installed_extensions = g_node_new(NULL);
 
-	iterate_and_add_installed_extensions(self, store, false);
-	iterate_and_add_installed_extensions(self, store, true);
+	iterate_and_add_installed_extensions(self, false);
+	iterate_and_add_installed_extensions(self, true);
 
 	/* Rebuild the Open Extension menus */
 	i7_app_update_extensions_menu(self);
@@ -1324,7 +1306,7 @@ i7_app_get_config_dir(void)
 }
 
 /* Getter function for installed extensions tree (transfer none). */
-GtkTreeStore *
+GNode *
 i7_app_get_installed_extensions_tree(I7App *self)
 {
 	return self->installed_extensions;
@@ -1334,48 +1316,37 @@ i7_app_get_installed_extensions_tree(I7App *self)
 void
 i7_app_update_extensions_menu(I7App *self)
 {
-	GtkTreeModel *model = GTK_TREE_MODEL(self->installed_extensions);
-	GtkTreeIter author, title;
 	GMenu *extensions_menu = gtk_application_get_menu_by_id(GTK_APPLICATION(self), "extensions");
 	g_menu_remove_all(extensions_menu);
 
 	g_autoptr(GIcon) builtin_emblem = g_themed_icon_new("com.inform7.IDE.builtin");
 
-	if (!gtk_tree_model_get_iter_first(model, &author))
-		return;
-	do {
-		g_autofree char *authorname = NULL;
-		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &authorname, -1);
+	for (GNode *author_iter = g_node_first_child(self->installed_extensions);
+		author_iter != NULL;
+		author_iter = g_node_next_sibling(author_iter)) {
+		I7InstalledExtensionAuthor *author_data = author_iter->data;
 
-		if(gtk_tree_model_iter_children(model, &title, &author))
-		{
-			g_autoptr(GMenu) extmenu = g_menu_new();
-			do {
-				char *extname;
-				GFile *extension_file;
-				gboolean readonly;
-				gtk_tree_model_get(model, &title,
-					I7_APP_EXTENSION_TEXT, &extname,
-					I7_APP_EXTENSION_READ_ONLY, &readonly,
-					I7_APP_EXTENSION_FILE, &extension_file,
-					-1);
-				g_autofree char *uri = g_file_get_uri(extension_file);
-				g_autoptr(GMenuItem) extitem = g_menu_item_new(extname, NULL);
-				if(readonly) {
-					g_menu_item_set_icon(extitem, builtin_emblem);
-					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, TRUE);
-				} else {
-					g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, FALSE);
-				}
-				g_menu_append_item(extmenu, extitem);
+		GNode *iter = g_node_first_child(author_iter);
+		if (iter == NULL)
+			continue;
 
-				g_free(extname);
-				g_object_unref(extension_file);
+		g_autoptr(GMenu) extmenu = g_menu_new();
 
-			} while(gtk_tree_model_iter_next(model, &title));
-			g_menu_append_submenu(extensions_menu, authorname, G_MENU_MODEL(extmenu));
+		for (; iter != NULL; iter = g_node_next_sibling(iter)) {
+			I7InstalledExtension *data = iter->data;
+			g_autofree char *uri = g_file_get_uri(data->file);
+			g_autoptr(GMenuItem) extitem = g_menu_item_new(data->title, NULL);
+			if (data->read_only) {
+				g_menu_item_set_icon(extitem, builtin_emblem);
+				g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, TRUE);
+			} else {
+				g_menu_item_set_action_and_target(extitem, "app.open-extension", "(sb)", uri, FALSE);
+			}
+			g_menu_append_item(extmenu, extitem);
 		}
-	} while(gtk_tree_model_iter_next(model, &author));
+
+		g_menu_append_submenu(extensions_menu, author_data->author_name, G_MENU_MODEL(extmenu));
+	}
 }
 
 /* Getter function for the global print settings object */

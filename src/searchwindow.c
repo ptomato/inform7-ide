@@ -854,31 +854,15 @@ static void
 i7_search_window_search_extensions(I7SearchWindow *self)
 {
 	I7App *theapp = I7_APP(g_application_get_default());
-	GtkTreeModel *model = GTK_TREE_MODEL(i7_app_get_installed_extensions_tree(theapp));
+	GNode *tree = i7_app_get_installed_extensions_tree(theapp);
 
-	GtkTreeIter author, title;
-
-	if (!gtk_tree_model_get_iter_first(model, &author))
-		return;
-
-	do {
-		g_autofree char *author_name = NULL;
-		gtk_tree_model_get(model, &author, I7_APP_EXTENSION_TEXT, &author_name, -1);
-
-		if (!gtk_tree_model_iter_children(model, &title, &author))
-			continue;
-
-		do {
-			g_autofree char *ext_name = NULL;
-			g_autoptr(GFile) extension_file = NULL;
-			gtk_tree_model_get(model, &title,
-				I7_APP_EXTENSION_TEXT, &ext_name,
-				I7_APP_EXTENSION_FILE, &extension_file,
-				-1);
-
-			extension_search_result(self, extension_file, author_name, ext_name);
-		} while (gtk_tree_model_iter_next(model, &title));
-	} while (gtk_tree_model_iter_next(model, &author));
+	for (GNode *author_iter = g_node_first_child(tree); author_iter != NULL; author_iter = g_node_next_sibling(author_iter)) {
+		I7InstalledExtensionAuthor *author_data = author_iter->data;
+		for (GNode *iter = g_node_first_child(author_iter); iter != NULL; iter = g_node_next_sibling(iter)) {
+			I7InstalledExtension *data = iter->data;
+			extension_search_result(self, data->file, author_data->author_name, data->title);
+		}
+	}
 }
 
 static void
