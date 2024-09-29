@@ -5,6 +5,9 @@
 
 #include "config.h"
 
+#include <ctype.h>
+#include <stdbool.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -65,9 +68,10 @@ typedef struct {
 	/* Metadata */
 	DocText *doctext;
 
-	/* Temporary storage for subsections */
-	GString *outer_chars;
-	DocText *outer_doctext;
+	/* Stacks that we push onto when we encounter subsections */
+	GSList *chars_stack;  /* type GString */
+	GSList *doctext_stack;  /* type DocText */
+
 	GSList *completed_doctexts;
 } Ctxt;
 
@@ -85,6 +89,7 @@ struct _I7SearchWindow {
 	GtkListStore *results;
 	GtkLabel *results_label;
 	GtkRevealer *results_revealer;
+	GtkTreeModelSort *results_sorted;
 	GtkSpinner *spinner;
 	GtkComboBoxText *search_type;
 	GtkCheckButton *target_documentation;
@@ -221,8 +226,6 @@ on_search_window_delete_event(I7SearchWindow *self, GdkEvent *event)
 	return GDK_EVENT_PROPAGATE;
 }
 
-/* This would be better done with two GtkCellRendererText-s in a GtkCellArea,
-but that requires GTK 3. */
 static void
 result_data_func(GtkTreeViewColumn *column, GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, I7SearchWindow *self)
 {
@@ -346,6 +349,7 @@ i7_search_window_init(I7SearchWindow *self)
 		(GtkTreeCellDataFunc)location_data_func, self, NULL);
 	gtk_tree_view_column_set_cell_data_func(self->type_column, GTK_CELL_RENDERER(self->type_renderer),
 		(GtkTreeCellDataFunc)type_data_func, NULL, NULL);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(self->results_sorted), I7_RESULT_SORT_STRING_COLUMN, GTK_SORT_ASCENDING);
 }
 
 static void
@@ -363,6 +367,7 @@ i7_search_window_class_init(I7SearchWindowClass *klass)
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_label);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_revealer);
+	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, results_sorted);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, search_type);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, spinner);
 	gtk_widget_class_bind_template_child(widget_class, I7SearchWindow, target_documentation);
@@ -387,13 +392,6 @@ update_label(I7SearchWindow *self)
 	gtk_label_set_text(self->results_label, label);
 }
 
-/* Expand only the standard entities (gt, lt, amp, apos, quot) */
-static xmlEntityPtr
-entity_callback(Ctxt *ctxt, const xmlChar *name)
-{
-	return xmlGetPredefinedEntity(name);
-}
-
 static gboolean
 is_ignore_element(const xmlChar *name)
 {
@@ -401,20 +399,11 @@ is_ignore_element(const xmlChar *name)
 		|| xmlStrcasecmp(name, (xmlChar *)"script") == 0;
 }
 
-static gboolean
-is_newline_element(const xmlChar *name)
-{
-	return xmlStrcasecmp(name, (xmlChar *)"br") == 0
-		|| xmlStrcasecmp(name, (xmlChar *)"p") == 0;
-}
-
 static void
 start_element_callback(Ctxt *ctxt, const xmlChar *name, const xmlChar **atts)
 {
 	if(is_ignore_element(name))
 		ctxt->ignore++;
-	else if(is_newline_element(name) && ctxt->ignore == 0 && !ctxt->in_ignore_section)
-		g_string_append_c(ctxt->chars, ' '); /* Add spaces instead of newlines */
 }
 
 static void
@@ -427,66 +416,123 @@ end_element_callback(Ctxt *ctxt, const xmlChar *name)
 static void
 character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 {
-	if(ctxt->ignore == 0 && !ctxt->in_ignore_section)
-		g_string_append_len(ctxt->chars, (gchar *)ch, len);
+	if(ctxt->ignore != 0 || ctxt->in_ignore_section)
+		return;
+
+	/* Collapse multiple white space characters into one space  */
+	g_autofree char *condensed = g_malloc(len + 1);
+	char *outp = condensed;
+	for (int count = 0; count < len;) {
+		if (isspace(ch[count])) {
+			while(++count < len && isspace(ch[count]))
+				;
+			*outp++ = ' ';
+			if (count >= len)
+				break;
+		}
+		*outp++ = ch[count++];
+	}
+	*outp = '\0';
+
+	if (ctxt->chars->len && ctxt->chars->str[ctxt->chars->len - 1] != ' ')
+		g_string_append_c(ctxt->chars, ' ');
+	g_string_append(ctxt->chars, g_strstrip(condensed));
 }
 
-static void
-get_quoted_contents(const xmlChar *comment, char **quote1, char **quote2)
+static DocText *
+dup_doctext(const DocText *doctext)
 {
-	char *retval1, *retval2;
-	int matched = sscanf((const char *)comment, "\"%m[^\"]\" \"%m[^\"]\"", &retval1, &retval2);
-	if(quote1 != NULL)
-		*quote1 = (matched >= 1)? retval1 : NULL;
-	if(quote2 != NULL)
-		*quote2 = (matched >= 2)? retval2 : NULL;
+	DocText *retval = g_slice_new0(DocText);
+	retval->is_recipebook = doctext->is_recipebook;
+	retval->section = g_strdup(doctext->section);
+	retval->title = g_strdup(doctext->title);
+	retval->sort = g_strdup(doctext->sort);
+	retval->file = g_object_ref(doctext->file);
+	return retval;
 }
-
-#define SEARCH_TITLE_LEN 14   /* length(" SEARCH TITLE ") */
-#define SEARCH_SECTION_LEN 16 /* length(" SEARCH SECTION ") */
-#define SEARCH_SORT_LEN 13    /* length(" SEARCH SORT ") */
-#define START_EXAMPLE_LEN 15  /* length(" START EXAMPLE ") */
 
 static void
 comment_callback(Ctxt *ctxt, const xmlChar *value)
 {
-	/* Extract metadata from comments */
-	if(g_str_has_prefix((gchar *)value, " SEARCH TITLE "))
-		get_quoted_contents(value + SEARCH_TITLE_LEN, &ctxt->doctext->title, NULL);
-	else if(g_str_has_prefix((char *)value, " SEARCH SECTION "))
-		get_quoted_contents(value + SEARCH_SECTION_LEN, &ctxt->doctext->section, NULL);
-	else if(g_str_has_prefix((char *)value, " SEARCH SORT "))
-		get_quoted_contents(value + SEARCH_SORT_LEN, &ctxt->doctext->sort, NULL);
+	/* Extract metadata from comments. Use sscanf() to be lenient about space */
+	if (sscanf((char *) value, " SEARCH TITLE \"%m[^\"]\"", &ctxt->doctext->title) == 1)
+		return;
+	if (sscanf((char *) value, " SEARCH SECTION \"%m[^\"]\"", &ctxt->doctext->section) == 1)
+		return;
+	if (sscanf((char *) value, " SEARCH SORT \"%m[^\"]\"", &ctxt->doctext->sort) == 1)
+		return;
 
 	/* From here on, these are particular subsections of the documentation page,
 	such as examples. We assume that the above metadata always appear before a
-	subsection can appear, and that subsections cannot be nested. */
-	else if(g_str_has_prefix((char *)value, " START EXAMPLE ")) {
-		ctxt->outer_chars = ctxt->chars;
+	subsection can appear. */
+
+	if (sscanf((char *) value, " START EXAMPLE \"%m[^\"]\" \"%m[^\"]\"", &ctxt->doctext->example_title, &ctxt->doctext->anchor) == 2) {
+		ctxt->chars_stack = g_slist_prepend(ctxt->chars_stack, g_steal_pointer(&ctxt->chars));
 		ctxt->chars = g_string_new("");
 
-		ctxt->outer_doctext = ctxt->doctext;
-		ctxt->doctext = g_slice_dup(DocText, ctxt->outer_doctext);
-		ctxt->doctext->is_example = TRUE;
-		g_object_ref(ctxt->doctext->file);
-		ctxt->doctext->section = g_strdup(ctxt->outer_doctext->section);
-		ctxt->doctext->title = g_strdup(ctxt->outer_doctext->title);
-		ctxt->doctext->sort = g_strdup(ctxt->outer_doctext->sort);
-		get_quoted_contents(value + START_EXAMPLE_LEN, &ctxt->doctext->example_title, &ctxt->doctext->anchor);
-	} else if(g_str_has_prefix((char *)value, " END EXAMPLE ")) {
-		ctxt->doctext->body = g_string_free(ctxt->chars, FALSE);
-		ctxt->completed_doctexts = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
+		DocText *doctext = dup_doctext(ctxt->doctext);
+		doctext->is_example = true;
+		doctext->anchor = g_steal_pointer(&ctxt->doctext->anchor);
+		doctext->example_title = g_steal_pointer(&ctxt->doctext->example_title);
+		ctxt->doctext_stack = g_slist_prepend(ctxt->doctext_stack, g_steal_pointer(&ctxt->doctext));
+		ctxt->doctext = doctext;
+		return;
+	}
 
-		ctxt->doctext = ctxt->outer_doctext;
-		ctxt->chars = ctxt->outer_chars;
-	} else if(g_str_has_prefix((char *)value, " START IGNORE "))
-		ctxt->in_ignore_section = TRUE;
-	else if(g_str_has_prefix((char *)value, " END IGNORE "))
-		ctxt->in_ignore_section = FALSE;
+	char section_type[8];  /* len(EXAMPLE) + 1 */
+	if (sscanf((char *) value, " START %7s \"%m[^\"]\"", section_type, &ctxt->doctext->anchor) == 2) {
+		if (strcmp(section_type, "CODE") != 0 && strcmp(section_type, "PHRASE") != 0) {
+			g_warning("Unhandled START %s section in doc comments", section_type);
+			return;
+		}
+
+		ctxt->chars_stack = g_slist_prepend(ctxt->chars_stack, g_steal_pointer(&ctxt->chars));
+		ctxt->chars = g_string_new("");
+
+		DocText *doctext = dup_doctext(ctxt->doctext);
+		doctext->anchor = g_steal_pointer(&ctxt->doctext->anchor);
+		ctxt->doctext_stack = g_slist_prepend(ctxt->doctext_stack, g_steal_pointer(&ctxt->doctext));
+		ctxt->doctext = doctext;
+		return;
+	}
+	
+	if (sscanf((char *) value, " START %7s", section_type) == 1) {
+		if (strcmp(section_type, "IGNORE") == 0) {
+			ctxt->in_ignore_section = true;
+			return;
+		}
+
+		g_warning("Unhandled START %s section in doc comments", section_type);
+	}
+
+	if (sscanf((char *) value, " END %7s", section_type) == 1) {
+		if (strcmp(section_type, "EXAMPLE") == 0 || strcmp(section_type, "CODE") == 0 || strcmp(section_type, "PHRASE") == 0) {
+			ctxt->doctext->body = g_string_free(ctxt->chars, false);
+			ctxt->completed_doctexts = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
+
+			/* Awkward idiom to pop the first item of GSList */
+			GSList *head = ctxt->doctext_stack;
+			ctxt->doctext_stack = g_slist_remove_link(ctxt->doctext_stack, head);
+			ctxt->doctext = head->data;
+			g_slist_free1(head);
+
+			head = ctxt->chars_stack;
+			ctxt->chars_stack = g_slist_remove_link(ctxt->chars_stack, head);
+			ctxt->chars = head->data;
+			g_slist_free1(head);
+			return;
+		}
+
+		if (strcmp(section_type, "IGNORE") == 0) {
+			ctxt->in_ignore_section = false;
+			return;
+		}
+
+		g_warning("Unhandled END %s section in doc comments", section_type);
+	}
 }
 
 xmlSAXHandler i7_html_sax = {
-	.getEntity = (getEntitySAXFunc)entity_callback,
 	.startElement = (startElementSAXFunc)start_element_callback,
 	.endElement = (endElementSAXFunc)end_element_callback,
 	.characters = (charactersSAXFunc)character_callback,
@@ -512,7 +558,13 @@ html_to_ascii(GFile *file, gboolean is_recipebook)
 		g_warning("Error loading documentation resource '%s': %s", uri, error->message);
 		return NULL;
 	}
-	htmlSAXParseDoc((xmlChar*)html_contents, NULL, &i7_html_sax, ctxt);
+
+	// COMPAT: 2.11 - use htmlNewSAXParserCtxt()
+	htmlParserCtxtPtr html_parser = htmlNewParserCtxt();
+	html_parser->sax = &i7_html_sax;
+	html_parser->userData = ctxt;
+	xmlFreeDoc(htmlCtxtReadDoc(html_parser, (xmlChar *) html_contents,
+		/* URL = */ NULL, /* encoding = */ NULL, HTML_PARSE_NONET));
 
 	doctext->body = g_string_free(ctxt->chars, FALSE);
 	GSList *retval = g_slist_prepend(ctxt->completed_doctexts, ctxt->doctext);
@@ -528,18 +580,30 @@ extern gboolean find_no_wrap(const GtkTextIter *, const char *, gboolean, GtkTex
 static gchar *
 extract_context(GtkTextBuffer *buffer, GtkTextIter *match_start, GtkTextIter *match_end)
 {
+	static const ssize_t CONTEXT_BEFORE = 8;
+	static const ssize_t CONTEXT_AFTER = 32;
 	GtkTextIter context_start = *match_start, context_end = *match_end;
 
 	/* Create a larger range to extract the context */
-	gtk_text_iter_backward_chars(&context_start, 8);
-	gtk_text_iter_forward_chars(&context_end, 32);
+	gtk_text_iter_backward_chars(&context_start, CONTEXT_BEFORE);
+	gtk_text_iter_forward_chars(&context_end, CONTEXT_AFTER);
 
 	/* Get the surrounding text as context */
 	gchar *before = gtk_text_buffer_get_text(buffer, &context_start, match_start, TRUE);
 	gchar *term = gtk_text_buffer_get_text(buffer, match_start, match_end, TRUE);
 	gchar *after = gtk_text_buffer_get_text(buffer, match_end, &context_end, TRUE);
-	gchar *context = g_strconcat(before, "<b>", term, "</b>", after, NULL);
-	g_strdelimit(context, "\n\r\t", ' ');
+
+	/* We may have chopped a multibyte character in half */
+	while (!g_utf8_validate(before, -1, NULL))
+		before++;
+	char* end;
+	if (!g_utf8_validate(after, CONTEXT_AFTER, (const char **)&end))
+		*end = '\0';
+
+	g_autofree char *escaped_before = g_markup_escape_text(before, -1);
+	g_autofree char *escaped_term = g_markup_escape_text(term, -1);
+	g_autofree char *escaped_after = g_markup_escape_text(after, -1);
+	gchar *context = g_strconcat(escaped_before, "<b>", escaped_term, "</b>", escaped_after, NULL);
 	g_free(before);
 	g_free(term);
 	g_free(after);
@@ -861,6 +925,8 @@ i7_search_window_prefill_ui(I7SearchWindow *self, const char *text, I7SearchTarg
 void
 i7_search_window_do_search(I7SearchWindow *self)
 {
+	gtk_list_store_clear(self->results);
+
 	/* Show the results widget */
 	gtk_revealer_set_reveal_child(self->results_revealer, TRUE);
 

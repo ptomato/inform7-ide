@@ -24,7 +24,7 @@ find_real_file_for_inform_uri_scheme(const char *path)
 	/* Replace the slashes by platform-dependent path separators */
 	g_auto(GStrv) elements = g_strsplit(unescaped, "/", -1);
 
-	g_autofree char *relative_path;
+	g_autofree char *relative_path = NULL;
 	if (elements[0] && strcmp(elements[0], "Extensions") == 0) {
 		/* inform://Extensions is an exception; change it so it will be picked
 		 up by the last attempt below, in the home directory */

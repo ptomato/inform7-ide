@@ -2,6 +2,31 @@
 <!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
+  <object class="GtkListStore" id="results">
+    <columns>
+      <!-- column-name context -->
+      <column type="gchararray"/>
+      <!-- column-name file -->
+      <column type="GFile"/>
+      <!-- column-name anchor -->
+      <column type="gchararray"/>
+      <!-- column-name type -->
+      <column type="gint"/>
+      <!-- column-name lineno -->
+      <column type="guint"/>
+      <!-- column-name sort_string -->
+      <column type="gchararray"/>
+      <!-- column-name location -->
+      <column type="gchararray"/>
+      <!-- column-name example_title -->
+      <column type="gchararray"/>
+      <!-- column-name background_color -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkTreeModelSort" id="results_sorted">
+    <property name="model">results</property>
+  </object>
   <template class="I7SearchWindow" parent="GtkDialog">
     <property name="can-focus">False</property>
     <property name="border-width">12</property>
@@ -264,7 +289,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="vexpand">True</property>
-                        <property name="model">results</property>
+                        <property name="model">results_sorted</property>
                         <property name="headers-clickable">False</property>
                         <property name="enable-search">False</property>
                         <property name="search-column">0</property>
@@ -309,7 +334,7 @@
                         <child>
                           <object class="GtkTreeViewColumn" id="type_column">
                             <property name="resizable">True</property>
-                            <property name="title" translatable="yes" comments="Search Files results dialog">Type</property>
+                            <property name="title" translatable="yes" comments="Search Files results dialog">Found In</property>
                             <property name="clickable">True</property>
                             <property name="sort-indicator">True</property>
                             <property name="sort-column-id">3</property>
@@ -346,26 +371,4 @@
       <action-widget response="0">find</action-widget>
     </action-widgets>
   </template>
-  <object class="GtkListStore" id="results">
-    <columns>
-      <!-- column-name context -->
-      <column type="gchararray"/>
-      <!-- column-name file -->
-      <column type="GFile"/>
-      <!-- column-name anchor -->
-      <column type="gchararray"/>
-      <!-- column-name type -->
-      <column type="gint"/>
-      <!-- column-name lineno -->
-      <column type="guint"/>
-      <!-- column-name sort_string -->
-      <column type="gchararray"/>
-      <!-- column-name location -->
-      <column type="gchararray"/>
-      <!-- column-name example_title -->
-      <column type="gchararray"/>
-      <!-- column-name background_color -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
 </interface>
