@@ -166,18 +166,32 @@ on_download_succeeded_script_finished(WebKitWebView *webview, GAsyncResult *res,
 other information from the URI. Assumes an id parameter is given and that it is
 the only (last?) query parameter. Unref return value when done */
 static GFile *
-library_uri_to_real_uri(const char *uri, char **author, char **title, char **id)
+library_uri_to_real_uri(GUri *uri, char **author, char **title, char **id)
 {
-	if(id != NULL)
-		*id = g_strdup(strstr(uri, "?id=") + strlen("?id="));
+	if (id != NULL) {
+		GUriParamsIter iter;
+		g_autoptr(GError) error = NULL;
+		const char *query = g_uri_get_query(uri);
+		g_uri_params_iter_init(&iter, query, -1, "&", G_URI_PARAMS_NONE);
+		char *unowned_attr, *unowned_value;
+		while (g_uri_params_iter_next(&iter, &unowned_attr, &unowned_value, &error)) {
+			g_autofree char *attr = g_steal_pointer(&unowned_attr);
+			g_autofree char *value = g_steal_pointer(&unowned_value);
+			if (strcmp(attr, "id") == 0) {
+				*id = g_steal_pointer(&value);
+				break;
+			}
+		}
+		if (error)
+			g_critical("Malformed library URI query %s: %s", query, error->message);
+	}
 
-	char *path = g_strdup(uri + strlen("library:"));
+	const char *path = g_uri_get_path(uri);
 	char *real_uri = g_strconcat(PUBLIC_LIBRARY_URI, path, NULL);
-	g_free(path);
 	GFile *retval = g_file_new_for_uri(real_uri);
 	g_free(real_uri);
 
-	char **components = g_strsplit(uri, "/", -1);
+	char **components = g_strsplit(path, "/", -1);
 	unsigned n_components = g_strv_length(components);
 	if(author != NULL && n_components >= 2)
 		*author = g_uri_unescape_string(components[n_components - 2], NULL);
@@ -224,6 +238,7 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 	GFile **files = g_new0(GFile *, n_extensions);
 	char **descs = g_new0(char *, n_extensions);
 	unsigned ix;
+	g_autoptr(GError) error = NULL;
 	for(ix = 0; ix < n_extensions; ix++) {
 		g_autoptr(JSCValue) id_val = jsc_value_object_get_property_at_index(array, 3 * ix);
 		g_autoptr(JSCValue) uri_val = jsc_value_object_get_property_at_index(array, 3 * ix + 1);
@@ -238,7 +253,13 @@ js_download_multi(WebKitUserContentManager *content, WebKitJavascriptResult *js_
 		}
 
 		ids[ix] = id;
-		files[ix] = library_uri_to_real_uri(uri, NULL, NULL, NULL);
+		g_autoptr(GUri) parse = g_uri_parse(uri, G_URI_FLAGS_NON_DNS, &error);
+		if (!parse) {
+			g_critical("Malformed library URI %s: %s", uri, error->message);
+			g_clear_pointer(&error, g_error_free);
+			goto finally;
+		}
+		files[ix] = library_uri_to_real_uri(parse, NULL, NULL, NULL);
 		descs[ix] = desc;
 	}
 
@@ -874,14 +895,19 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 {
 	WebKitNavigationAction *action = webkit_navigation_policy_decision_get_navigation_action(WEBKIT_NAVIGATION_POLICY_DECISION(decision));
 	WebKitURIRequest *request = webkit_navigation_action_get_request(action);
-	const char *uri = webkit_uri_request_get_uri(request);
-	g_autofree char *scheme = g_uri_parse_scheme(uri);
 
-	/* If no protocol found, treat it as a file:// */
-	if(scheme == NULL)
-		scheme = g_strdup("file");
+	g_autoptr(GError) error = NULL;
+	const char *uri = webkit_uri_request_get_uri(request);
+	g_autoptr(GUri) parse = g_uri_parse(uri, G_URI_FLAGS_NON_DNS, &error);
+	if (!uri) {
+		g_critical("Malformed URI %s in Inform documentation: %s", uri, error->message);
+		webkit_policy_decision_ignore(decision);
+		return true;  /* handled */
+	}
 
 	g_debug("Decide navigation policy %s", uri);
+
+	const char *scheme = g_uri_get_scheme(parse);
 
 	if(strcmp(scheme, "about") == 0 || strcmp(scheme, "resource") == 0) {
 		/* These are protocols that we explicitly allow WebKit to load */
@@ -901,14 +927,6 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		g_autofree char *filename = g_path_get_basename(path);
 		g_free(path);
 
-		/* Chop off any URI parameters and save them for the signal emission */
-		char *param_location = strchr(filename, '?');
-		char *param = NULL;
-		if(param_location != NULL) {
-			*param_location = '\0';
-			param = param_location + 1; /* freeing filename frees param now */
-		}
-
 		I7PaneIndexTab tabnum = filename_to_index_tab(filename);
 		if (tabnum == I7_INDEX_TAB_NONE) {
 			webkit_policy_decision_use(decision);
@@ -918,6 +936,9 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 
 		/* We've determined that this is an index page */
 		if (webview != WEBKIT_WEB_VIEW(self->index_tabs[tabnum])) {
+			/* Use URI parameters for the signal emission */
+			const char *param = g_uri_get_query(parse);
+
 			g_signal_emit_by_name(self, "display-index-page", tabnum, param);
 			webkit_policy_decision_ignore(decision);
 			g_debug("- index file, page %u (at %s): IGNORE", tabnum, param);
@@ -977,15 +998,17 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		g_debug("- show http or mailto in browser: IGNORE");
 
 	} else if(strcmp(scheme, "source") == 0) {
+		const char *path = g_uri_get_path(parse);
+		const char *anchor = g_uri_get_fragment(parse);
 		guint line = 0;
-		gchar *path = g_strdup(uri + strlen("source:"));
-		gchar *ptr = strrchr(path, '#');
-		gchar *anchor = g_strdup(ptr);
-		*ptr = 0;
+		bool should_jump_to_line = false;
+		if (anchor) {
+			should_jump_to_line = !!sscanf(anchor, "#line%u", &line);
+		}
 
 		/* If it links to the source file, just jump to the line */
 		if(strcmp(path, "story.ni") == 0) {
-			if(sscanf(anchor, "#line%u", &line))
+			if (should_jump_to_line)
 				g_signal_emit_by_name(self, "jump-to-line", line);
 			g_debug("- jump to source line %u: IGNORE", line);
 		} else {
@@ -1000,17 +1023,15 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 
 			I7Extension *ext = i7_extension_new_from_file(theapp, real_file, readonly);
 			if(ext != NULL) {
-				if(sscanf(anchor, "#line%u", &line))
+				if (should_jump_to_line)
 					i7_source_view_jump_to_line(ext->sourceview, line);
 				g_debug("- jump to source line %u of extension %s: IGNORE", line, path);
 			}
 		}
-		g_free(path);
-		g_free(anchor);
 
 	} else if(strcmp(scheme, "library") == 0) {
 		char *id, *author, *title;
-		GFile *remote_file = library_uri_to_real_uri(uri, &author, &title, &id);
+		GFile *remote_file = library_uri_to_real_uri(parse, &author, &title, &id);
 
 		LibraryDownloadData *data = g_new0(LibraryDownloadData, 1);
 		data->webview = webview;
