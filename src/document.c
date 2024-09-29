@@ -1207,6 +1207,7 @@ on_single_download_finished(I7App *theapp, GAsyncResult *res, GTask *task)
 	if(!success) {
 		error_dialog(GTK_WINDOW(self), error, _("\"%s\" by %s could not be downloaded. The error was: %s"), data->title, data->author, error->message);
 		g_task_return_boolean(task, FALSE);
+		return;
 	}
 
 	char *version = i7_app_get_extension_version(theapp, data->author, data->title, NULL);
