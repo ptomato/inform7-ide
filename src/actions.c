@@ -70,7 +70,7 @@ action_open_recent(GSimpleAction *action, GVariant *parameter, I7App *app)
 static void
 install_extensions_and_free(GFile *file, I7App *app)
 {
-	i7_app_install_extension(app, file);
+	i7_app_install_extension(app, file);  /* ignore success value */
 	g_object_unref(file);
 }
 

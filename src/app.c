@@ -448,19 +448,23 @@ read_first_line(GFile *file, GCancellable *cancellable, GError **error)
  * @self: the application
  * @file: a #GFile
  *
- * Install the extension @file into the user's extensions directory.
+ * Install the extension @file into the user's extensions directory, possibly
+ * asking for confirmation to overwrite; or display an error dialog if an error
+ * occurred.
+ *
+ * Returns: %true if successful, %false if the extension was not installed.
  */
-void
+bool
 i7_app_install_extension(I7App *self, GFile *file)
 {
-	g_return_if_fail(file);
+	g_return_val_if_fail(file, false);
 	GError *err = NULL;
 
 	char *text = read_first_line(file, NULL, &err);
 	if(text == NULL) {
 		g_warning("Error reading extension: %s", err->message);
 		g_error_free(err);
-		return;
+		return false;
 	}
 
 	/* Make sure the file is actually an Inform 7 extension */
@@ -475,7 +479,7 @@ i7_app_install_extension(I7App *self, GFile *file)
 		  "<Author> begins here."), display_name);
 		g_free(display_name);
 		g_free(text);
-		return;
+		return false;
 	}
 	g_free(text);
 
@@ -490,7 +494,7 @@ i7_app_install_extension(I7App *self, GFile *file)
 		g_free(name);
 		g_free(author);
 		i7_app_monitor_extensions_directory(self);
-		return;
+		return false;
 	}
 
 	char *canonical_name = g_strconcat(name, ".i7x", NULL);
@@ -511,7 +515,7 @@ i7_app_install_extension(I7App *self, GFile *file)
 			g_free(name);
 			g_free(author);
 			i7_app_monitor_extensions_directory(self);
-			return;
+			return false;
 		}
 		gtk_widget_destroy(dialog);
 	}
@@ -525,7 +529,7 @@ i7_app_install_extension(I7App *self, GFile *file)
 		g_object_unref(target);
 		g_object_unref(canonical_target);
 		i7_app_monitor_extensions_directory(self);
-		return;
+		return false;
 	}
 	g_object_unref(canonical_target);
 
@@ -541,6 +545,8 @@ i7_app_install_extension(I7App *self, GFile *file)
 
 	/* Index the new extensions, in the foreground */
 	i7_app_run_census(self, TRUE);
+
+	return true;
 }
 
 /*
@@ -741,10 +747,18 @@ on_download_extension_finished(GFile *remote_file, GAsyncResult *res, GTask *tas
 		return;
 	}
 
-	i7_app_install_extension(self, data->destination_file);
-	g_task_return_boolean(task, TRUE);
+	bool success = i7_app_install_extension(self, data->destination_file);
+	g_task_return_boolean(task, success);
 }
 
+/** 
+ * i7_app_download_extension_finish:
+ *
+ * Note that the return value may be false even if @err is not set.
+ * This happens when an error dialog has already been displayed to the user as
+ * part of i7_app_install_extension().
+ * TODO: This should be refactored in the future.
+ */
 bool
 i7_app_download_extension_finish(I7App *self, GAsyncResult *res, GError **err)
 {

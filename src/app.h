@@ -70,7 +70,7 @@ void i7_app_close_all_documents(I7App *self);
 
 void i7_app_monitor_extensions_directory(I7App *self);
 void i7_app_stop_monitoring_extensions_directory(I7App *self);
-void i7_app_install_extension(I7App *self, GFile *file);
+bool i7_app_install_extension(I7App *self, GFile *file);
 void i7_app_delete_extension(I7App *self, char *author, char *extname);
 void i7_app_download_extension_async(I7App *self, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, void *progress_callback_data, GAsyncReadyCallback finish_callback, void *finish_callback_data);
 bool i7_app_download_extension_finish(I7App *self, GAsyncResult *res, GError **err);
