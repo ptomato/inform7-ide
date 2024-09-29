@@ -93,6 +93,32 @@ on_next_action_notify_enabled(GObject *action, GParamSpec *paramspec, I7Extensio
 	gtk_widget_set_visible(self->sourceview->next, enabled);
 }
 
+static void
+update_background_color(I7Extension *self, GtkSourceStyleScheme *scheme)
+{
+	GtkSourceStyle *i7x_plain = gtk_source_style_scheme_get_style(scheme, "inform7x:plain");
+	if (!i7x_plain) {
+		/* Color scheme doesn't define a separate color for extensions */
+		bool success = gtk_css_provider_load_from_data(self->background_provider, "* {}", -1, NULL);
+		g_assert(success && "'* {}' should be valid CSS");
+		return;
+	}
+
+	g_autofree char *extension_paper_color = NULL;
+	g_object_get(i7x_plain, "background", &extension_paper_color, NULL);
+	g_autofree char *css = g_strdup_printf("* { background-color: %s; }", extension_paper_color);
+	if (!gtk_css_provider_load_from_data(self->background_provider, css, -1, NULL))
+		g_critical("Invalid generated CSS for extension paper background");
+}
+
+static void
+on_config_style_scheme_changed(GSettings *settings, const char *key, I7Extension *self)
+{
+	I7App *theapp = I7_APP(g_application_get_default());
+	GtkSourceStyleScheme *scheme = i7_app_get_current_color_scheme(theapp);
+	update_background_color(self, scheme);
+}
+
 /* IMPLEMENTATIONS OF VIRTUAL FUNCTIONS */
 
 static gchar *
@@ -396,12 +422,19 @@ i7_extension_init(I7Extension *self)
 	/* Set up the Natural Inform highlighting */
 	GtkSourceBuffer *buffer = i7_document_get_buffer(I7_DOCUMENT(self));
 	set_buffer_language(buffer, "inform7x");
-	gtk_source_buffer_set_style_scheme(buffer, i7_app_get_current_color_scheme(theapp));
+	GtkSourceStyleScheme *scheme = i7_app_get_current_color_scheme(theapp);
+	gtk_source_buffer_set_style_scheme(buffer, scheme);
+
+	GtkStyleContext *sourceview_style = gtk_widget_get_style_context(self->sourceview->source);
+	self->background_provider = gtk_css_provider_new();
+	gtk_style_context_add_provider(sourceview_style, GTK_STYLE_PROVIDER(self->background_provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	update_background_color(self, scheme);
 
 	/* Connect other signals */
 	g_signal_connect(self->sourceview->heading_depth, "value-changed", G_CALLBACK(on_heading_depth_value_changed), self);
 	g_signal_connect(self->sourceview->notebook, "switch-page", G_CALLBACK(on_notebook_switch_page), self);
 	g_signal_connect(self->sourceview->headings, "row-activated", G_CALLBACK(on_headings_row_activated), self);
+	g_signal_connect_object(prefs, "changed::" PREFS_STYLE_SCHEME, G_CALLBACK(on_config_style_scheme_changed), self, 0);
 
 	/* Connect various models to various views */
 	gtk_text_view_set_buffer(GTK_TEXT_VIEW(self->sourceview->source), GTK_TEXT_BUFFER(buffer));
@@ -438,9 +471,12 @@ i7_extension_init(I7Extension *self)
 }
 
 static void
-i7_extension_finalize(GObject *self)
+i7_extension_finalize(GObject *self_obj)
 {
-	G_OBJECT_CLASS(i7_extension_parent_class)->finalize(self);
+	I7Extension *self = I7_EXTENSION(self_obj);
+	g_clear_object(&self->background_provider);
+
+	G_OBJECT_CLASS(i7_extension_parent_class)->finalize(self_obj);
 }
 
 static void

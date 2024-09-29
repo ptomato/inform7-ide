@@ -11,6 +11,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 
 #include "app.h"
 #include "document.h"
@@ -31,6 +32,7 @@ typedef struct {
 	I7Document parent_instance;
 
 	I7SourceView *sourceview;
+	GtkCssProvider *background_provider;
 } I7Extension;
 
 GType i7_extension_get_type(void) G_GNUC_CONST;
