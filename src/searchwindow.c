@@ -413,14 +413,14 @@ end_element_callback(Ctxt *ctxt, const xmlChar *name)
 		ctxt->ignore--;
 }
 
-static void
-character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
+/* Collapse multiple white space characters into one space  */
+static char *
+collapse_whitespace(const char *ch, ssize_t len)
 {
-	if(ctxt->ignore != 0 || ctxt->in_ignore_section)
-		return;
+	if (len < 0)
+		len = strlen(ch);
 
-	/* Collapse multiple white space characters into one space  */
-	g_autofree char *condensed = g_malloc(len + 1);
+	char *condensed = g_malloc(len + 1);
 	char *outp = condensed;
 	for (int count = 0; count < len;) {
 		if (isspace(ch[count])) {
@@ -433,6 +433,16 @@ character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
 		*outp++ = ch[count++];
 	}
 	*outp = '\0';
+	return condensed;
+}
+
+static void
+character_callback(Ctxt *ctxt, const xmlChar *ch, int len)
+{
+	if(ctxt->ignore != 0 || ctxt->in_ignore_section)
+		return;
+
+	g_autofree char *condensed = collapse_whitespace((const char *)ch, len);
 
 	if (ctxt->chars->len && ctxt->chars->str[ctxt->chars->len - 1] != ' ')
 		g_string_append_c(ctxt->chars, ' ');
@@ -757,6 +767,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 		guint lineno = gtk_text_iter_get_line(&match_start) + 1;
 
 		gchar *context = extract_context(buffer, &match_start, &match_end);
+		g_autofree char *condensed_context = collapse_whitespace(context, -1);
 
 		/* Make a sort string */
 		gchar *sort = g_strdup_printf("%04i", lineno);
@@ -765,7 +776,7 @@ i7_search_window_search_project(I7SearchWindow *self)
 
 		gtk_list_store_append(self->results, &result);
 		gtk_list_store_set(self->results, &result,
-			I7_RESULT_CONTEXT_COLUMN, context,
+			I7_RESULT_CONTEXT_COLUMN, condensed_context,
 			I7_RESULT_SORT_STRING_COLUMN, sort,
 			I7_RESULT_FILE_COLUMN, file,
 			I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_PROJECT,
@@ -824,13 +835,14 @@ extension_search_result(I7SearchWindow *self, GFile *file, const char *author_di
 		lineno = gtk_text_iter_get_line(&match_start) + 1;
 
 		context = extract_context(buffer, &match_start, &match_end);
+		g_autofree char *condensed_context = collapse_whitespace(context, -1);
 
 		/* Make a sort string */
 		sort = g_strdup_printf("%s %04i", basename, lineno);
 
 		gtk_list_store_append(self->results, &result);
 		gtk_list_store_set(self->results, &result,
-			I7_RESULT_CONTEXT_COLUMN, context,
+			I7_RESULT_CONTEXT_COLUMN, condensed_context,
 			I7_RESULT_SORT_STRING_COLUMN, sort,
 			I7_RESULT_FILE_COLUMN, file,
 			I7_RESULT_RESULT_TYPE_COLUMN, I7_RESULT_TYPE_EXTENSION,
