@@ -20,8 +20,8 @@ You'll need to work out yourself which packages to install, but the
 
 ```bash
 sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install -y \
+sudo apt-get upgrade --assume-yes --show-progress
+sudo apt-get install --assume-yes --show-progress \
     libcanberra-gtk3-module dbus-x11 ninja-build meson \
     libxml2-dev pkg-config libglib2.0-dev libgoocanvas-2.0-dev \
     libwebkit2gtk-4.1-dev libgtksourceview-4-dev libgspell-1-dev \
@@ -126,7 +126,7 @@ Note that this will **overwrite** any existing installation of the app
 if you installed a DEB or RPM package.
 
 ```bash
-meson _build -Dprefix=/usr
+meson setup _build -Dprefix=/usr
 ninja -C _build
 sudo ninja -C _build install
 ```

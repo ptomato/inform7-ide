@@ -6,6 +6,7 @@ app_version = meson.project_version()
 
 gnome = import('gnome')
 i18n = import('i18n')
+fs = import('fs')
 
 cc = meson.get_compiler('c')
 
@@ -146,8 +147,12 @@ retrospective_data_dirs = {
 foreach build, internal_dirs : retrospective_data_dirs
     retrospectivedir = pkgdatadir / 'retrospective' / build
     foreach internal_dir : internal_dirs
-        install_subdir('retrospective/@0@/@1@'.format(build, internal_dir),
-            install_dir: retrospectivedir)
+        isd = 'retrospective/@0@/@1@'.format(build, internal_dir)
+	if fs.exists(isd)
+            install_subdir(isd, install_dir: retrospectivedir)
+        else
+            install_emptydir(retrospectivedir)
+        endif
     endforeach
 endforeach
 
