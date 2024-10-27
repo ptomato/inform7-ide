@@ -66,7 +66,8 @@ test_app_extensions_install_remove(void)
 	g_free(path);
 
 	/* Test installing */
-	i7_app_install_extension(theapp, file);
+	bool success = i7_app_install_extension(theapp, file);
+	g_assert_true(success);
 	g_autoptr(GFile) installed_file = i7_app_get_extension_file("Regera Dowdy", "Lickable Wallpaper");
 	check_file(installed_file, "Lickable Wallpaper.i7x");
 	g_file_load_contents(exts, NULL, &contents, NULL, NULL, &err);
@@ -106,7 +107,8 @@ test_app_extensions_get_builtin(void)
 	/* Test that non-builtin extension is not given as builtin */
 	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
 	g_autoptr(GFile) file = g_file_new_for_path(filename);
-	i7_app_install_extension(theapp, file);
+	bool success = i7_app_install_extension(theapp, file);
+	g_assert_true(success);
 	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", &builtin);
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	g_assert(version_string != NULL);
@@ -127,7 +129,8 @@ test_app_extensions_get_version(void)
 	/* Test that "Title by Author begins here" is given as empty string */
 	const char *filename = g_test_get_filename(G_TEST_DIST, "tests", "Lickable Wallpaper.i7x", NULL);
 	g_autoptr(GFile) file = g_file_new_for_path(filename);
-	i7_app_install_extension(theapp, file);
+	bool success = i7_app_install_extension(theapp, file);
+	g_assert_true(success);
 	version_string = i7_app_get_extension_version(theapp, "Regera Dowdy", "Lickable Wallpaper", NULL);
 	i7_app_delete_extension(theapp, "Regera Dowdy", "Lickable Wallpaper");
 	g_assert(version_string != NULL);
@@ -136,7 +139,8 @@ test_app_extensions_get_version(void)
 
 	/* Test that "Version X of Title by Author begins here" is given as "X" */
 	file = g_file_new_for_path("tests/Square Candies.i7x");
-	i7_app_install_extension(theapp, file);
+	success = i7_app_install_extension(theapp, file);
+	g_assert_true(success);
 	g_object_unref(file);
 	version_string = i7_app_get_extension_version(theapp, "Ogdred Weary", "Square Candies", NULL);
 	i7_app_delete_extension(theapp, "Ogdred Weary", "Square Candies");
@@ -153,7 +157,8 @@ test_app_extensions_case_insensitive(void)
 	g_autoptr(I7App) theapp = i7_app_new();
 
 	/* Install test extension */
-	i7_app_install_extension(theapp, file);
+	bool success = i7_app_install_extension(theapp, file);
+	g_assert_true(success);
 
 	g_autoptr(GFile) extensions_file = i7_app_get_extension_file(NULL, NULL);
 	GFile *child1 = g_file_get_child(extensions_file, "Regera Dowdy");

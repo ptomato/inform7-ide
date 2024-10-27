@@ -25,14 +25,18 @@ G_DECLARE_FINAL_TYPE(I7App, i7_app, I7, APP, GtkApplication)
 	"by\\s+(?P<author>.+)\\s+" /* by <author> */ \
 	"begins?\\s+here\\.?\\s*$" /* begins here[.] */
 
-enum _I7AppExtensionsColumns {
-	I7_APP_EXTENSION_TEXT,  /* title rows are children of author rows */
-	I7_APP_EXTENSION_VERSION,
-	I7_APP_EXTENSION_READ_ONLY,
-	I7_APP_EXTENSION_ICON,
-	I7_APP_EXTENSION_FILE,
-	I7_APP_NUM_EXTENSION_COLUMNS
-};
+typedef struct {
+	char *title;  /* author also stored in this field */
+	char *version;
+	GFile *file;
+	bool read_only : 1;
+	bool is_author : 1;
+} I7InstalledExtension;
+
+/* Aliases I7InstalledExtension */
+typedef struct {
+	char *author_name;
+} I7InstalledExtensionAuthor;
 
 typedef void (*I7DocumentForeachFunc)(I7Document *, gpointer);
 
@@ -66,7 +70,7 @@ void i7_app_close_all_documents(I7App *self);
 
 void i7_app_monitor_extensions_directory(I7App *self);
 void i7_app_stop_monitoring_extensions_directory(I7App *self);
-void i7_app_install_extension(I7App *self, GFile *file);
+bool i7_app_install_extension(I7App *self, GFile *file);
 void i7_app_delete_extension(I7App *self, char *author, char *extname);
 void i7_app_download_extension_async(I7App *self, GFile *file, GCancellable *cancellable, GFileProgressCallback progress_callback, void *progress_callback_data, GAsyncReadyCallback finish_callback, void *finish_callback_data);
 bool i7_app_download_extension_finish(I7App *self, GAsyncResult *res, GError **err);
@@ -83,7 +87,7 @@ GFile *i7_app_get_binary_file(I7App *self, const char *filename);
 GFile *i7_app_get_retrospective_binary_file(I7App *self, const char *build, const char *filename);
 GFile *i7_app_get_config_dir(void);
 
-GtkTreeStore *i7_app_get_installed_extensions_tree(I7App *self);
+GNode *i7_app_get_installed_extensions_tree(I7App *self);  /* GNode<I7InstalledExtension> */
 void i7_app_update_extensions_menu(I7App *self);
 const char *i7_app_lookup_action_tooltip(I7App *self, const char *action_name, GVariant *target_value);
 
