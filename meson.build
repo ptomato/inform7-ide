@@ -17,7 +17,7 @@ inform7 = find_program('intools/inform7', required: false)
 if not inform7.found()
     error('''I couldn't find the Inform
     compiler or its data files. You must first build the Inform compiler. See
-    INSTALL.md for instructions.''')
+    BUILD.md for instructions.''')
 endif
 
 ### DEFINE VARIABLES ###########################################################
