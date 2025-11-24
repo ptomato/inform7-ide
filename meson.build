@@ -1,4 +1,4 @@
-project('inform7-ide', 'c', version: '2.0.0', license: 'GPL-3.0-or-later',
+project('inform7-ide', 'c', version: '2.0.2', license: 'GPL-3.0-or-later',
     meson_version: '>=0.63.0')
 
 appname = meson.project_name()
