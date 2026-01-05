@@ -1003,7 +1003,7 @@ i7_panel_decide_navigation_policy(I7Panel *self, WebKitWebView *webview, WebKitP
 		guint line = 0;
 		bool should_jump_to_line = false;
 		if (anchor) {
-			should_jump_to_line = !!sscanf(anchor, "#line%u", &line);
+			should_jump_to_line = !!sscanf(anchor, "line%u", &line);
 		}
 
 		/* If it links to the source file, just jump to the line */
