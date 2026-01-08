@@ -144,7 +144,7 @@ on_config_debug_log_visible_changed(GSettings *settings, const char *key)
 
 struct KeyToMonitor {
 	const char *key;
-	void (*callback)();
+	void (*callback)(GSettings *, const char *);
 };
 
 static struct KeyToMonitor keys_to_monitor[] = {

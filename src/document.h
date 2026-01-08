@@ -14,6 +14,8 @@
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksource.h>
 
+#include "source-view.h"
+
 #define I7_TYPE_DOCUMENT            (i7_document_get_type())
 #define I7_DOCUMENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), I7_TYPE_DOCUMENT, I7Document))
 #define I7_DOCUMENT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), I7_TYPE_DOCUMENT, I7DocumentClass))
@@ -22,34 +24,34 @@
 #define I7_DOCUMENT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), I7_TYPE_DOCUMENT, I7DocumentClass))
 
 typedef struct {
-	GtkApplicationWindowClass parent_class;
-
-	/* Private pure virtual */
-	gchar * (*extract_title)();
-	void (*set_contents_display)();
-	/* Public pure virtual */
-	GtkTextView * (*get_default_view)();
-	gboolean (*save)();
-	void (*save_as)();
-	GFile *(*run_save_dialog)();
-	void (*scroll_to_selection)();
-	void (*update_tabs)();
-	void (*update_fonts)();
-	void (*update_font_sizes)();
-	void (*expand_headings_view)();
-	void (*activate_search)();
-	void (*set_spellcheck)();
-	gboolean (*can_revert)();
-	void (*revert)();
-} I7DocumentClass;
-
-typedef struct {
 	GtkApplicationWindow parent_instance;
 
 	GtkWidget *contents;
 	GtkHeaderBar *titlebar;
 	GtkWidget *findbar;
 } I7Document;
+
+typedef struct {
+	GtkApplicationWindowClass parent_class;
+
+	/* Private pure virtual */
+	gchar * (*extract_title)(I7Document *, char *);
+	void (*set_contents_display)(I7Document *, I7ContentsDisplay);
+	/* Public pure virtual */
+	GtkTextView * (*get_default_view)(I7Document *);
+	gboolean (*save)(I7Document *);
+	void (*save_as)(I7Document *, GFile *);
+	GFile *(*run_save_dialog)(I7Document *, GFile *);
+	void (*scroll_to_selection)(I7Document *);
+	void (*update_tabs)(I7Document *);
+	void (*update_fonts)(I7Document *);
+	void (*update_font_sizes)(I7Document *);
+	void (*expand_headings_view)(I7Document *);
+	void (*activate_search)(I7Document *, gboolean);
+	void (*set_spellcheck)(I7Document *, gboolean);
+	gboolean (*can_revert)(I7Document *);
+	void (*revert)(I7Document *);
+} I7DocumentClass;
 
 typedef enum  {
 	I7_HEADINGS_TITLE,
