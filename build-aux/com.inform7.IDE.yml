@@ -1,7 +1,7 @@
 ---
 app-id: com.inform7.IDE
 runtime: org.gnome.Platform
-runtime-version: '50'
+runtime-version: '51'
 sdk: org.gnome.Sdk
 finish-args:
   - --socket=x11
@@ -69,7 +69,6 @@ modules:
         sha256: cf4d16a716e813449bd631405dc1001ea89537b8cdae2b8abfb3999212bd43b4
   - name: plist
     cleanup:
-      - /bin
       - /include
       - /lib/libplist++*
       - /lib/pkgconfig
@@ -77,12 +76,14 @@ modules:
       - '*.la'
     config-opts:
       - --without-cython
+      - --without-tests
+      - --without-tools
       - --disable-static
     sources:
       - type: archive
         url: "https://github.com/libimobiledevice/libplist/releases/download/\
-          2.2.0/libplist-2.2.0.tar.bz2"
-        sha256: 4a5517e5377ec421df84c586ba85bb4e1d26f11ad203d7d450a907c0156fbd9a
+          2.7.0/libplist-2.7.0.tar.bz2"
+        sha256: 7ac42301e896b1ebe3c654634780c82baa7cb70df8554e683ff89f7c2643eb8b
   - name: gtksourceview
     cleanup:
       - /include
@@ -90,9 +91,35 @@ modules:
       - '*.la'
       # Of the language definitions, we need the RelaxNG files and def.lang,
       # everything else is never used
-      - /share/gtksourceview-4/language-specs/[a-ce-zA-Z]*.lang
-      - /share/gtksourceview-4/language-specs/d[a-df-z]*.lang
+      - /share/gtksourceview-4/language-specs/a*.lang
+      - /share/gtksourceview-4/language-specs/b*.lang
+      - /share/gtksourceview-4/language-specs/c*.lang
+      - /share/gtksourceview-4/language-specs/d.lang
+      - /share/gtksourceview-4/language-specs/da*.lang
       - /share/gtksourceview-4/language-specs/desktop.lang
+      - /share/gtksourceview-4/language-specs/di*.lang
+      - /share/gtksourceview-4/language-specs/do*.lang
+      - /share/gtksourceview-4/language-specs/dp*.lang
+      - /share/gtksourceview-4/language-specs/dt*.lang
+      - /share/gtksourceview-4/language-specs/e*.lang
+      - /share/gtksourceview-4/language-specs/f*.lang
+      - /share/gtksourceview-4/language-specs/g*.lang
+      - /share/gtksourceview-4/language-specs/h*.lang
+      - /share/gtksourceview-4/language-specs/i*.lang
+      - /share/gtksourceview-4/language-specs/j*.lang
+      - /share/gtksourceview-4/language-specs/k*.lang
+      - /share/gtksourceview-4/language-specs/l*.lang
+      - /share/gtksourceview-4/language-specs/m*.lang
+      - /share/gtksourceview-4/language-specs/n*.lang
+      - /share/gtksourceview-4/language-specs/o*.lang
+      - /share/gtksourceview-4/language-specs/p*.lang
+      - /share/gtksourceview-4/language-specs/r*.lang
+      - /share/gtksourceview-4/language-specs/s*.lang
+      - /share/gtksourceview-4/language-specs/t*.lang
+      - /share/gtksourceview-4/language-specs/v*.lang
+      - /share/gtksourceview-4/language-specs/x*.lang
+      - /share/gtksourceview-4/language-specs/y*.lang
+      - /share/gtksourceview-4/language-specs/R*.lang
     buildsystem: meson
     config-opts:
       - -Dvapi=false
@@ -140,6 +167,7 @@ modules:
       - /include
       - /lib/libgst*.so*
       - /lib/pkgconfig
+      - /share/gstreamer-1.0/encoding-profiles
     buildsystem: meson
     subdir: subprojects/gst-plugins-bad
     config-opts:
@@ -148,15 +176,29 @@ modules:
       - -Dmodplug=enabled
     sources:
       # Keep in sync with https://gitlab.com/freedesktop-sdk/freedesktop-sdk/
-      # elements/components/gstreamer-plugins-bad.bst on the applicable release
-      # branch
+      # elements/include/gstreamer-source.yml on the applicable release branch
       - type: git
         url: https://gitlab.freedesktop.org/gstreamer/gstreamer.git
-        tag: '1.22.5'
-        commit: bf6ce1d64a0697e7910826147b48f8f658366a5a
+        tag: '1.28.6'
+        commit: 2d3e05cbdad68e47d645f548899b432dc9fb4473
         # Workaround for 'smudge error' with git-lfs
         # https://github.com/flatpak/flatpak-github-actions/issues/159
         disable-submodules: true
+  - name: libhandy
+    cleanup:
+      - /include
+      - /lib/pkgconfig
+    buildsystem: meson
+    config-opts:
+      - -Dgtk_doc=false
+      - -Dtests=false
+      - -Dexamples=false
+      - -Dintrospection=disabled
+      - -Dvapi=false
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/libhandy/1.8/libhandy-1.8.3.tar.xz
+        sha256: 05b497229073ff557f10b326e074c5066f8743a302d4820ab97bcb5cd2dab087
   - name: chimara
     cleanup:
       - /include
@@ -192,8 +234,8 @@ modules:
     cleanup: ['*']
     sources:
       - type: archive
-        url: https://download.samba.org/pub/rsync/rsync-3.4.1.tar.gz
-        sha256: 2924bcb3a1ed8b551fc101f740b9f0fe0a202b115027647cf69850d65fd88c52
+        url: https://download.samba.org/pub/rsync/src/rsync-3.5.1.tar.gz
+        sha256: c55f9c9dc10fb8bec397b399a0fdded53cc9a2d8e30891bb0d63724d25c37bef
   - name: inform
     buildsystem: simple
     cleanup: ['*']
